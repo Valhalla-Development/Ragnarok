@@ -1,0 +1,130 @@
+{
+  "8ball": {
+    "yes": "Yes",
+    "no": "No",
+    "probably": "Probably",
+    "i_dont_know": "I don't know",
+    "most_likely": "Most likely",
+    "not_really": "Not really",
+    "ask_again": "Concentrate and ask me again",
+    "no_response": "I'd rather not respond to this question",
+    "noArguments": ":x: **| Incorrect usage! Please use `${prefix}8ball <question>`**"
+  },
+  "adsprot": {
+    "noPermission": ":x: **| Only the server's managers can use this command!**",
+    "alreadyOn": ":x: **| Ads protection is already enabled on this guild! To disable it, please use `${prefix}adsprot <off>`**",
+    "turnedOn": ":white_check_mark: **| Ads protection was turned on!**",
+    "alreadyOff": ":x: **| Ads protection is not enabled on this guild! To activate it, please use `${prefix}adsprot <on>`**",
+    "turnedOff": ":white_check_mark: **| Ads protection was turned off!**",
+    "incorrectUsage": ":x: **|  Incorrect command usage! Please use `${prefix}adsprot <on/off>`**"
+  },
+  "ascii": {
+    "noPermission": ":x: **| Only users with `EMBED_LINKS` can use this command!**",
+    "incorrectLength": ":x: **| Sorry, that message is too long!"
+  },
+  "autorole": {
+    "noPermission": ":x: **| Only users with `MANAGE_GUILD` can use this command!**",
+    "incorrectUsage": ":x: **|  Incorrect command usage! Please use `${prefix}autorole <role>` __the role is case sensitive!__**",
+    "roleSet": ":white_check_mark: **|Autorole, successfully set!**"
+  },
+  "autortoggle": {
+    "noPermission": ":x: **| Only users with `MANAGE_GUILD` can use this command!**",
+    "alreadyOn": ":x: **| Autorole is already turned on!**",
+    "notOn": ":x: **| To turn on autorole run the command `${prefix}autorole <role>` __the role is case sensitive!__**",
+    "alreadyOff": ":x: **| Autorole is not enabled on this guild! To activate it, please use  `${prefix}autorole <role>` __the role is case sensitive!__**",
+    "turnedOff": ":white_check_mark: **| Autorole was turned off!**",
+    "incorrectUsage": ":x: **|  Incorrect command usage! Please use `${prefix}autortoggle <off>` to turn the autorole off.**"
+  },
+  "ban" : {
+    "noAuthorPermission": ":x: **| You need to have the `BAN_MEMBERS` permission to use this command.**",
+    "noMention": ":x: **| You must mention someone!**",
+    "cannotBan": ":x: **| You cannot ban <@${user}>.**",
+    "cannotBanBot": ":x: **| You cannot ban me.**",
+    "cannotBanAuthor": ":x: **| You can't ban yourself!**",
+    "banningUser": "**You have 30 seconds to reply to this message with a reason for banning <@${user}>**",
+    "bannedUserLine1": ":white_check_mark: **| <@${user}> got successfully banned from the *${guild}* guild!**",
+    "bannedUserLine2": "**Reason: ${reason}**",
+    "bannedUserLine3": "**Moderator: ${moderator}**",
+    "canceled": ":x: **| Ban command canceled.**"
+  },
+  "calc" : {
+    "noInput": ":x: **| Please input a calculation!**",
+    "invalidInput": ":x: **| Please input a valid calculation!**"
+  },
+  "kick" : {
+    "noAuthorPermission": ":x: **| You need to have the `KICK_MEMBERS` permission to use this command.**",
+    "noMention": ":x: **| You must mention someone!**",
+    "cannotKick": ":x: **| You cannot kick <@${user}>.**",
+    "cannotKickBot": ":x: **| You cannot kick me.**",
+    "cannotKickAuthor": ":x: **| You can't kick yourself!**",
+    "kickingUser": "**You have 30 seconds to reply to this message with a reason for kicking <@${user}>**",
+    "kickedUserLine1": ":white_check_mark: **| <@${user}> got successfully kicked from the *${guild}* guild!**",
+    "kickedUserLine2": "**Reason: ${reason}**",
+    "kickedUserLine3": "**Moderator: ${moderator}**",
+    "canceled": ":x: **| Kick command canceled.**"
+  },
+  "meme": {
+    "noEmbedPermission": ":x: **| I need the `EMBED_LINKS` permission to this command to work.**"
+  },
+  "ping": {
+    "ping": ":ping_pong: **| Pong! My ping is: ${ping} ms**"
+  },
+  "poll": {
+    "incorrectUsage": ":x: **| Incorrect usage! The command is `${prefix}poll <question>`**",
+    "noPermission": ":x: **| Only the server's managers can use this command!**"
+  },
+  "profanity": {
+    "noPermission": ":x: **| Only the server's managers can use this command!**",
+    "alreadyOn": ":x: **| Profanity is already enabled on this guild! To disable it, please use `${prefix}profanity <off>`**",
+    "turnedOn": ":white_check_mark: **| Profanity protection was turned on!**",
+    "alreadyOff": ":x: **| Profanity protection is not enabled on this guild! To activate it, please use `${prefix}profanity <on>`**",
+    "turnedOff": ":white_check_mark: **| Profanity protection was turned off!**",
+    "incorrectUsage": ":x: **|  Incorrect command usage! Please use `${prefix}profanity <on/off>`**"
+  },
+  "tempmute": {
+    "noPermission": ":x: **| You need to have the `MANAGE_GUILD` permission to use this command.**",
+    "invalidDuration": ":x: **| The provided argument is not a valid duration.**",
+    "noMention": ":x: **| You must mention someone to unmute them.**",
+    "noRolesPermission": ":x: **| I need the `MANAGE_ROLES` permission to this command to work.**",
+    "muted": ":white_check_mark: **| ${user} was successfully muted for ${duration}**",
+    "creatingRole": "**Muted role created, executing mute command...**",
+    "noRoleAsigned": ":x: **| User cannot be unmuted because he does not longer have the MUTED role assigned.**",
+    "unmuted": ":white_check_mark: | ${user} was successfully unmuted!**"
+  },
+  "purge": {
+    "invalidNumber": ":x: **| The provided argument is not a valid number.**",
+    "noPermission": ":x: **| You need to have the `MANAGE_MESSAGES` permission to use this command.**",
+    "purged": ":white_check_mark: **| Successfully deleted ${messages} messages!**",
+    "notSpecified": ":x: **| You need to specify the amount of messages to purge!**",
+    "limitNumber": ":x: **| The value can not be higher than 100**"
+  },
+  "setprefix": {
+    "noPermission": ":x: **| You need to have the `MANAGE_GUILD` permission to use this command.**",
+    "incorrectUsage": ":x: **| Incorrect usage!**",
+    "prefixSet": "**:white_check_mark: | The prefix was set to ${prefix}!**",
+    "blacklistedPrefix": ":x: **| Blacklisted prefix! Please choose another prefix.**",
+    "cooldown": ":x: | **Wait 1 minute before changing the prefix again.**"
+  },
+  "setwelcome": {
+    "noPermission": ":x: **| You need to have the `MANAGE_GUILD` permission to use this command.**",
+    "step1": ":white_check_mark: **Alright, let's start the setup. First, which channel do you want the welcome messages to be in?\nTo see an example, run ${prefix}exwelcome \nYou can type `cancel` to stop the setup.\n\n`Type the name of the channel the welcome messages you want to be in.`**",
+    "canceled": "**:x: | Setup canceled.**",
+    "invalidChannel": ":x: **| Invalid channel name! Check if the entered channel's name is correct and then type the command again.**",
+    "invalidTextChannel": ":x: **| Invalid text channel! Check if the entered text channel's name is correct and then type the command again.**",
+    "noMessagePermission": ":x: **| I can't send messages in that channel! Please make sure that I have the `SEND_MESSAGES` permission in that channel and then type the command again.**",
+    "step2": ":white_check_mark: **| Channel set. What should the title be?**",
+    "step3": ":white_check_mark: **| Title set. What should the author be?**",
+    "step4": ":white_check_mark: **| Author set. What should the description be?**",
+    "finished": ":white_check_mark: **| Alright, I set the welcome message for this guild!**"
+  },
+  "unmute": {
+    "noMention": ":x: **| You must mention someone to unmute them!**",
+    "noPermission": ":x: **| You need to have the `MANAGE_GUILD` permission to use this command.**",
+    "noMutedRole": ":x: **| The Muted role does not exist. Use the tempmute command to create it.**",
+    "unmuted": ":white_check_mark: | ${user} was successfully unmuted!**",
+    "noRoleAsigned": ":x: **| User cannot be unmuted because he does not longer have the MUTED role assigned.**"
+  },
+  "userinfo": {
+    "noPermission": ":x: **| You need to have the `MANAGE_GUILD` permission to use this command.**"
+  }
+}
