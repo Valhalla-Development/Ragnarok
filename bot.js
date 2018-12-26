@@ -91,10 +91,6 @@ client.on("ready", () => {
   client.user.setActivity(`${prefixgen}help`, { type: "LISTENING" });
 });
 
-setInterval(() => {
-  console.log(`[Ragnarok] Bot's ping: ${Math.round(client.ping)}`);
-}, 30000);
-
 // welcome
 var welcomePath = "./Storage/welcome.json";
 var welcomeRead = fs.readFileSync(welcomePath);
