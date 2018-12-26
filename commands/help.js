@@ -549,6 +549,30 @@ module.exports.run = async (client, message, args, color) => {
 
         message.channel.send({ embed: coinflipHelp });
         break;
+      case "esay":
+        const esayHelp = new Discord.RichEmbed()
+          .setAuthor("Esay Command", client.user.avatarURL)
+          .setDescription("Posts an embed of your choosing")
+          .addField("Usage", `${prefixes[message.guild.id].prefixes}esay <message>`)
+          .setThumbnail(client.user.avatarURL)
+          .setFooter(
+            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            client.user.avatarURL
+          )
+          .setColor(color);
+
+        if (
+          !message.channel.permissionsFor(message.guild.me).has("EMBED_LINKS")
+        ) {
+          message.channel.send(
+            `:white_check_mark: **| Check your DMs. :ok_hand:**`
+          );
+          message.author.send({ embed: esayHelp });
+          return;
+        }
+
+        message.channel.send({ embed: esayHelp });
+        break;
       case "userinfo":
         const userinfoHelp = new Discord.RichEmbed()
           .setAuthor("Userinfo Command", client.user.avatarURL)
