@@ -51,6 +51,9 @@
     "noInput": ":x: **| Please input a calculation!**",
     "invalidInput": ":x: **| Please input a valid calculation!**"
   },
+  "esay" : {
+    "noPermission": ":x: **| Only the server's managers can use this command!**"
+  },
   "kick" : {
     "noAuthorPermission": ":x: **| You need to have the `KICK_MEMBERS` permission to use this command.**",
     "noMention": ":x: **| You must mention someone!**",
