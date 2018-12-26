@@ -683,6 +683,8 @@ module.exports.run = async (client, message, args, color) => {
             "🔨 Moderation Commands",
             `__${
               prefixes[message.guild.id].prefixes
+            }esay <message>__ - Posts an embed of your choosing\n__${  
+              prefixes[message.guild.id].prefixes
             }ban @mention__ - Ban the mentioned user\n__${
               prefixes[message.guild.id].prefixes
             }kick @mention__ - Kick the mentioned user\n__${
