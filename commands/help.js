@@ -539,7 +539,7 @@ module.exports.run = async (client, message, args, color) => {
             "Usage",
             `${
               prefixes[message.guild.id].prefixes
-            }>trakts <movie/show>`
+            }trakts <movie/show>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
