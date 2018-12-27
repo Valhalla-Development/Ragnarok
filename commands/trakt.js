@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const { get } = require("snekfetch");
+const encode = require("strict-uri-encode");
 
 const settings = {
     trakt: {
@@ -33,6 +34,10 @@ function search(query) {
 }
 
 module.exports.run = async(client, message, args, color) => {
+
+    let searchquery = encode(args.join(" "));
+    let link = `https://trakt.tv/search?query=${searchquery}`;
+    
     const query = args.join(" ");
     if(query.length<3) return message.channel.send("Enter a longer search.");
     message.channel.send({
@@ -64,7 +69,7 @@ module.exports.run = async(client, message, args, color) => {
             m.edit({
                 "embed": {
                     "title": movie.title,
-                    "description": `\'${movie.url}\'\n\n` + movie.description,
+                    "description": `\'${movie.url}\'\n\n` + `Not the content you were looking for? Try: ${link}\n\n` + movie.description,
                     "image": {
                         "url": movie.image
                     }
