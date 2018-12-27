@@ -498,6 +498,68 @@ module.exports.run = async (client, message, args, color) => {
 
         message.channel.send({ embed: tempmuteHelp });
         break;
+      case "trakt":
+        const traktHelp = new Discord.RichEmbed()
+          .setAuthor("Trakt Command", client.user.avatarURL)
+          .setDescription(
+            "Embeds the result of given search"
+          )
+          .addField(
+            "Usage",
+            `${
+              prefixes[message.guild.id].prefixes
+            }trakt <movie/show>`
+          )
+          .setThumbnail(client.user.avatarURL)
+          .setFooter(
+            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            client.user.avatarURL
+          )
+          .setColor(color);
+
+        if (
+          !message.channel.permissionsFor(message.guild.me).has("EMBED_LINKS")
+        ) {
+          message.channel.send(
+            `:white_check_mark: **| Check your DMs. :ok_hand:**`
+          );
+          message.author.send({ embed: traktHelp });
+          return;
+        }
+
+        message.channel.send({ embed: traktHelp });
+        break;
+      case "trakts":
+        const traktsHelp = new Discord.RichEmbed()
+          .setAuthor("Trakt Search Command", client.user.avatarURL)
+          .setDescription(
+            "Posts a link to search results for given search"
+          )
+          .addField(
+            "Usage",
+            `${
+              prefixes[message.guild.id].prefixes
+            }>trakts <movie/show>`
+          )
+          .setThumbnail(client.user.avatarURL)
+          .setFooter(
+            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            client.user.avatarURL
+          )
+          .setColor(color);
+
+        if (
+          !message.channel.permissionsFor(message.guild.me).has("EMBED_LINKS")
+        ) {
+          message.channel.send(
+            `:white_check_mark: **| Check your DMs. :ok_hand:**`
+          );
+          message.author.send({ embed: traktsHelp });
+          return;
+        }
+
+        message.channel.send({ embed: traktsHelp });
+        break;
       case "unmute":
         const unmuteHelp = new Discord.RichEmbed()
           .setAuthor("Unmute Command", client.user.avatarURL)
@@ -743,6 +805,10 @@ module.exports.run = async (client, message, args, color) => {
               prefixes[message.guild.id].prefixes
             }calc <equation>__ - Calculates a mathematical equation\n__${
               prefixes[message.guild.id].prefixes
+            }trakt <movie/show>__ - Embeds the result of given search\n__${
+              prefixes[message.guild.id].prefixes
+            }trakts <movie/show>__ - Posts a link to search results for given search\n__${
+              prefixes[message.guild.id].prefixes
             }coinflip__ - Flips a coin`,
             true
           )
@@ -753,19 +819,12 @@ module.exports.run = async (client, message, args, color) => {
           )
           .setColor(color);
 
-        if (
-          !message.channel.permissionsFor(message.guild.me).has("EMBED_LINKS")
-        ) {
           message.channel.send(
-            `:white_check_mark: **| Check your DMs. :ok_hand:**`
+            `:white_check_mark: **| Check your DMs.**`
           );
           message.author.send({ embed: helpEmbed });
-          return;
+          break;
         }
-
-        message.channel.send({ embed: helpEmbed });
-        break;
-    }
   }, 1000);
 };
 
