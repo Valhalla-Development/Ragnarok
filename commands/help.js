@@ -539,7 +539,7 @@ module.exports.run = async (client, message, args, color) => {
             "Usage",
             `${
               prefixes[message.guild.id].prefixes
-            }trakts <movie/show>`
+            }>trakts <movie/show>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
@@ -819,19 +819,12 @@ module.exports.run = async (client, message, args, color) => {
           )
           .setColor(color);
 
-        if (
-          !message.channel.permissionsFor(message.guild.me).has("EMBED_LINKS")
-        ) {
           message.channel.send(
-            `:white_check_mark: **| Check your DMs. :ok_hand:**`
+            `:white_check_mark: **| Check your DMs.**`
           );
           message.author.send({ embed: helpEmbed });
-          return;
+          break;
         }
-
-        message.channel.send({ embed: helpEmbed });
-        break;
-    }
   }, 1000);
 };
 
