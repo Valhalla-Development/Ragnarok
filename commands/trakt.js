@@ -64,7 +64,7 @@ module.exports.run = async(client, message, args, color) => {
             m.edit({
                 "embed": {
                     "title": movie.title,
-                    "description": `\`${movie.url}\`\n\n` + movie.description,
+                    "description": `\'${movie.url}\'\n\n` + movie.description,
                     "image": {
                         "url": movie.image
                     }
