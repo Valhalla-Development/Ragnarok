@@ -17,7 +17,7 @@ module.exports.run = async (client, message, args, color) => {
     message.channel.send(`${language["purge"].invalidNumber}`);
     return;
   }
-  if (args[0] > 100) {
+  if (args[0] > 10000) {
     message.channel.send(`${language["purge"].limitNumber}`);
     return;
   }
