@@ -4,10 +4,10 @@ const encode = require("strict-uri-encode");
 
 const settings = {
     trakt: {
-        apikey: "343592bf27fcc710800dace82ab7513d81a1061aae861c893bb7438a3f11c13a"
+        apikey: "REDACTED"
     },
     omdb: {
-        apikey: "201474cd"
+        apikey: "REDACTED"
     }
 }
 
@@ -59,7 +59,7 @@ module.exports.run = async(client, message, args, color) => {
             m.edit({
                 "embed": {
                     "title": movie.title,
-                    "description": `\`I could not find a trakt listing for that movie.\`\n\n` + movie.description,
+                    "description": `\`I could not find a trakt listing for that movie.\`\n\n` + `Not the content you were looking for? Try: ${link}\n\n` + movie.description,
                     "image": {
                         "url": movie.image || "https://www.freeiconspng.com/uploads/error-icon-4.png"
                     }
