@@ -148,6 +148,33 @@ module.exports.run = async (client, message, args, color) => {
 
         message.channel.send({ embed: remindmeHelp });
         break;
+      case "report":
+        const reportHelp = new Discord.RichEmbed()
+          .setAuthor("Report Command", client.user.avatarURL)
+          .setDescription("Reports the specified user")
+          .addField(
+            "Usage",
+            `${prefixes[message.guild.id].prefixes}report <@user> <reason>`
+          )
+          .setThumbnail(client.user.avatarURL)
+          .setFooter(
+            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            client.user.avatarURL
+          )
+          .setColor(color);
+
+        if (
+          !message.channel.permissionsFor(message.guild.me).has("EMBED_LINKS")
+        ) {
+          message.channel.send(
+            `:white_check_mark: **| Check your DMs. :ok_hand:**`
+          );
+          message.author.send({ embed: reportHelp });
+          return;
+        }
+
+        message.channel.send({ embed: reportHelp });
+        break;
       case "autorole":
         const autoroleHelp = new Discord.RichEmbed()
           .setAuthor("Autorole Command", client.user.avatarURL)
@@ -765,6 +792,8 @@ module.exports.run = async (client, message, args, color) => {
             }8ball <question>__ - Question the mighty 8Ball!\n__${
               prefixes[message.guild.id].prefixes
             }remindme <time > message>__ - Reminds you a message you choose - For detailed instructions, run the command >help remindme\n__${
+              prefixes[message.guild.id].prefixes
+            }report <@user> <reason>__ - Reports the specified user\n__${
               prefixes[message.guild.id].prefixes
             }lmgtfy <question>__ - Post a "Let me Google that for you" link\n__${
               prefixes[message.guild.id].prefixes

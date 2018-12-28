@@ -101,6 +101,12 @@
     "notSpecified": ":x: **| You need to specify the amount of messages to purge!**",
     "limitNumber": ":x: **| The value can not be higher than 100**"
   },
+  "report": {
+    "notarget": ":x: **| You must specify a user to report!**",
+    "noreason": ":x: **| You must specify a reason!**",
+    "channelcreated": ":white_check_mark: **| I could not find a channel named `reports`, so I made it for you :smiley: You must re-submit the report.**"
+
+  },
   "setprefix": {
     "noPermission": ":x: **| You need to have the `MANAGE_GUILD` permission to use this command.**",
     "incorrectUsage": ":x: **| Incorrect usage!**",
