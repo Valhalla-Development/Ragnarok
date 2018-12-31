@@ -72,16 +72,6 @@
     "turnedOff": ":white_check_mark: **| Profanity protection was turned off!**",
     "incorrectUsage": ":x: **|  Incorrect command usage! Please use `${prefix}profanity <on/off>`**"
   },
-  "tempmute": {
-    "noPermission": ":x: **| You need to have the `MANAGE_GUILD` permission to use this command.**",
-    "invalidDuration": ":x: **| The provided argument is not a valid duration.**",
-    "noMention": ":x: **| You must mention someone to unmute them.**",
-    "noRolesPermission": ":x: **| I need the `MANAGE_ROLES` permission to this command to work.**",
-    "muted": ":white_check_mark: **| ${user} was successfully muted for ${duration}**",
-    "creatingRole": "**Muted role created, executing mute command...**",
-    "noRoleAsigned": ":x: **| User cannot be unmuted because he does not longer have the MUTED role assigned.**",
-    "unmuted": ":white_check_mark: | ${user} was successfully unmuted!**"
-  },
   "purge": {
     "invalidNumber": ":x: **| The provided argument is not a valid number.**",
     "noPermission": ":x: **| You need to have the `MANAGE_MESSAGES` permission to use this command.**",
@@ -128,12 +118,13 @@
   },
   "unmute": {
     "noMention": ":x: **| You must mention someone to unmute them!**",
-    "noPermission": ":x: **| You need to have the `MANAGE_GUILD` permission to use this command.**",
-    "noMutedRole": ":x: **| The Muted role does not exist. Use the tempmute command to create it.**",
-    "unmuted": ":white_check_mark: | ${user} was successfully unmuted!**",
-    "noRoleAsigned": ":x: **| User cannot be unmuted because he does not longer have the MUTED role assigned.**"
+    "noAuthorPermission": ":x: **| You need to have the `KICK_MEMBERS` permission to use this command.**",
+    "noRoleAsigned": ":x: **| This user is not muted!**"
   },
   "userinfo": {
     "noPermission": ":x: **| You need to have the `MANAGE_GUILD` permission to use this command.**"
+  },
+  "remindme": {
+    "incorrectUsage": ":x: **Specify a time for me to remind you. | Example: ${prefix}remindme 15min example**"
   }
 }
