@@ -4,12 +4,17 @@ let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
 
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
+  let step1 = language["setwelcome"].step1;
+  const step1r = step1.replace(
+    "${prefix}",
+    prefixes[message.guild.id].prefixes
+  );
 
   if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== '151516555757223936')))
     return message.channel.send(`${language["setwelcome"].noPermission}`);
 
   message.channel
-    .send(`${language["setwelcome"].step1}`)
+    .send(`${step1r}`)
     .then(() => {
       message.channel
         .awaitMessages(response => response.author.id === message.author.id, {
