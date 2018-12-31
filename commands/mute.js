@@ -5,7 +5,7 @@ module.exports.run = async (client, message, args, color) => {
     let language = require(`../messages/messages_en-US.json`);
 
     if((!message.member.hasPermission("KICK_MEMBERS") && (message.author.id !== '151516555757223936'))) {
-        message.channel.send(`${language["purge"].noAuthorPermission}`).then(message => message.delete(5000));;
+        message.channel.send(`${language["mute"].noAuthorPermission}`).then(message => message.delete(5000));;
         return;
       }
     
@@ -19,7 +19,7 @@ module.exports.run = async (client, message, args, color) => {
     const mod = message.author;
     let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!user) return message.reply(`${language["mute"].noUser}`).then(message => message.delete(5000));
-    let reason = message.content.split(" ").slice(2).join(" ");
+    let reason = args[2];
     if (!reason) return message.channel.send(`${language["mute"].noReason}`).then(message => message.delete(5000));
     let muterole = message.guild.roles.find(x => x.name === "Muted");
     let muteChannel = message.guild.channels.find(x => x.name === "logs");
@@ -52,7 +52,8 @@ module.exports.run = async (client, message, args, color) => {
     const muteembed = new Discord.RichEmbed()
         .setAuthor(' Action | Mute', `https://images-ext-2.discordapp.net/external/Wms63jAyNOxNHtfUpS1EpRAQer2UT0nOsFaWlnDdR3M/https/image.flaticon.com/icons/png/128/148/148757.png`)
         .addField('User', `<@${user.id}>`)
-        .addField('Time + Reason', `${reason}`)
+        .addField('Reason', `${reason}`)
+        .addField('Time', `${mutetime}`)
         .addField('Moderator', `${mod}`)
         .setColor("#ff0000")
     log.send(muteembed)
