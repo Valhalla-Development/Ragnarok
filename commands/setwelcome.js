@@ -1,8 +1,8 @@
 const Discord = require("discord.js");
 const fs = require("fs");
-let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
 
 module.exports.run = async (client, message, args, color) => {
+  let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
   let language = require(`../messages/messages_en-US.json`);
   let step1 = language["setwelcome"].step1;
   const step1r = step1.replace(
