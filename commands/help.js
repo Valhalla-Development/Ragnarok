@@ -494,37 +494,6 @@ module.exports.run = async (client, message, args, color) => {
 
         message.channel.send({ embed: calcHelp });
         break;
-      case "tempmute":
-        const tempmuteHelp = new Discord.RichEmbed()
-          .setAuthor("Tempmute Command", client.user.avatarURL)
-          .setDescription(
-            "Mutes the mentioned user for a specified amount of time"
-          )
-          .addField(
-            "Usage",
-            `${
-              prefixes[message.guild.id].prefixes
-            }tempmute <@mention> <time in minutes>`
-          )
-          .setThumbnail(client.user.avatarURL)
-          .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
-            client.user.avatarURL
-          )
-          .setColor(color);
-
-        if (
-          !message.channel.permissionsFor(message.guild.me).has("EMBED_LINKS")
-        ) {
-          message.channel.send(
-            `:white_check_mark: **| Check your DMs. :ok_hand:**`
-          );
-          message.author.send({ embed: tempmuteHelp });
-          return;
-        }
-
-        message.channel.send({ embed: tempmuteHelp });
-        break;
       case "trakt":
         const traktHelp = new Discord.RichEmbed()
           .setAuthor("Trakt Command", client.user.avatarURL)
@@ -781,8 +750,6 @@ module.exports.run = async (client, message, args, color) => {
             }mute <time> <reason>__ - Mutes the mentioned user\n__${
               prefixes[message.guild.id].prefixes
             }unmute @mention__ - Unmutes the mentioned user\n__${
-              prefixes[message.guild.id].prefixes
-            }tempmute @mention <time in minutes>__ - Mutes the mentioned user for a specified amount of time\n__${
               prefixes[message.guild.id].prefixes
             }purge <amount of messages>__ - Deletes a specified amount of messages\n__${
               prefixes[message.guild.id].prefixes
