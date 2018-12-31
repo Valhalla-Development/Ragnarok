@@ -3,93 +3,42 @@ const Discord = require("discord.js");
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
 
-  // no perms check
-
-  if((!message.member.hasPermission("BAN_MEMBERS") && (message.author.id !== '151516555757223936')))
-    return message.channel.send(`${language["ban"].noAuthorPermission}`);
-
-  // no mention check
-
-  if (message.mentions.users.size < 1)
-    return message.channel.send(`${language["ban"].noMention}`);
-
-  let user = message.mentions.users.first();
-
-  // perms checking again
-
-  if (
-    message.mentions.members.first().hasPermission("MANAGE_GUILD") ||
-    message.mentions.members.first().hasPermission("ADMINISTRATOR") ||
-    !message.mentions.members.first().kickable
-  ) {
-    let cannotBanMessage = language["ban"].cannotBan;
-    const cannotBan = cannotBanMessage.replace("${user}", user.id);
-
-    message.channel.send(`${cannotBan}`);
+  if ((!message.member.hasPermission("BAN_MEMBERS") && (message.author.id !== '151516555757223936'))) {
+    message.channel.send(`${language["ban"].noAuthorPermission}`).then(msg => {
+      msg.delete(10000);
+    });
     return;
   }
 
-  // other checks
+  let cnt = message.content
+  if (cnt !== " ") {
+    message.delete(10) // ?
+  };
 
-  if (user.id === client.user.id)
-    return message.channel.send(`${language["ban"].cannotBanBot}`);
-  if (user.id === message.author.id)
-    return message.channel.send(`${language["ban"].cannotBanAuthor}`);
-
-  // message sending (await message)
-
-  let banningUserMessage = language["ban"].banningUser;
-  const banningUser = banningUserMessage.replace("${user}", user.id);
-
-  message.channel.send(`${banningUser}`).then(() => {
-    message.channel
-      .awaitMessages(response => response.author.id === message.author.id, {
-        max: 1,
-        time: 30000,
-        errors: ["time"]
-      })
-
-      // collected
-
-      .then(collected => {
-        message.mentions.members
-          .first()
-          .ban({ reason: collected.first().content })
-          .then(() => {
-            let bannedUserLine1Message = language["ban"].bannedUserLine1;
-            let bannedUser1U = bannedUserLine1Message.replace(
-              "${user}",
-              user.id
-            );
-            let bannedUser1 = bannedUser1U.replace(
-              "${guild}",
-              message.guild.name
-            );
-
-            let bannedUserLine2Message = language["ban"].bannedUserLine2;
-            const bannedUser2 = bannedUserLine2Message.replace(
-              "${reason}",
-              collected.first().content
-            );
-
-            let bannedUserLine3Message = language["ban"].bannedUserLine3;
-            const bannedUser3 = bannedUserLine3Message.replace(
-              "${moderator}",
-              message.author.tag
-            );
-
-            message.channel.send(
-              `${bannedUser1}\n${bannedUser2}\n${bannedUser3}`
-            );
-            return;
-          });
-      })
-
-      // error catching
-      .catch(() => {
-        message.channel.send(`${language["ban"].canceled}`);
-      });
+  let logs = message.guild.channels.find(x => x.name === "logs");
+  if (!logs) return message.guild.createChannel("logs").then(channel => {
+    channel.setTopic(`Log channel`).then(message.channel.send(`${language["ban"].channelcreated}`).then(message => message.delete(5000)));
   });
+
+  let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+  if (!user) return message.reply(`${language["ban"].notarget}`).then(message => message.delete(5000));
+
+  let reason = args.slice(1).join(' ');
+  if (!reason) reason = "No reason given";
+
+  message.guild.member(user).ban(reason);
+
+  let logsEmbed = new Discord.RichEmbed()
+    .setTitle("User Banned")
+    .setFooter("User Ban Logs")
+    .setColor("#ff0000")
+    .setTimestamp()
+    .addField("Banned User:", `${user}, ID: ${user.id}`)
+    .addField("Reason:", reason)
+    .addField("Moderator:", `${message.author}, ID: ${message.author.id}`)
+    .addField("Time:", message.createdAt)
+
+  logs.send(logsEmbed);
 };
 
 module.exports.help = {

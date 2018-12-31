@@ -4,21 +4,26 @@ module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
 
   if((!message.member.hasPermission("MANAGE_MESSAGES") && (message.author.id !== '151516555757223936'))) {
-    message.channel.send(`${language["purge"].noPermission}`);
+    message.channel.send(`${language["purge"].noPermission}`).then(message => message.delete(5000));;
     return;
   }
 
+  let cnt = message.content
+  if (cnt !== " ") {
+      message.delete(10) // ?
+  };
+
   const argresult = args.join(" ");
   if (!argresult) {
-    message.channel.send(`${language["purge"].notSpecified}`);
+    message.channel.send(`${language["purge"].notSpecified}`).then(message => message.delete(5000));;
     return;
   }
   if (isNaN(argresult)) {
-    message.channel.send(`${language["purge"].invalidNumber}`);
+    message.channel.send(`${language["purge"].invalidNumber}`).then(message => message.delete(5000));;
     return;
   }
   if (args[0] > 100) {
-    message.channel.send(`${language["purge"].limitNumber}`);
+    message.channel.send(`${language["purge"].limitNumber}`).then(message => message.delete(5000));;
     return;
   }
 

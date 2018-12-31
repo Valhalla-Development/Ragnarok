@@ -35,18 +35,6 @@
     "turnedOff": ":white_check_mark: **| Autorole was turned off!**",
     "incorrectUsage": ":x: **|  Incorrect command usage! Please use `${prefix}autortoggle <off>` to turn the autorole off.**"
   },
-  "ban" : {
-    "noAuthorPermission": ":x: **| You need to have the `BAN_MEMBERS` permission to use this command.**",
-    "noMention": ":x: **| You must mention someone!**",
-    "cannotBan": ":x: **| You cannot ban <@${user}>.**",
-    "cannotBanBot": ":x: **| You cannot ban me.**",
-    "cannotBanAuthor": ":x: **| You can't ban yourself!**",
-    "banningUser": "**You have 30 seconds to reply to this message with a reason for banning <@${user}>**",
-    "bannedUserLine1": ":white_check_mark: **| <@${user}> got successfully banned from the *${guild}* guild!**",
-    "bannedUserLine2": "**Reason: ${reason}**",
-    "bannedUserLine3": "**Moderator: ${moderator}**",
-    "canceled": ":x: **| Ban command canceled.**"
-  },
   "calc" : {
     "noInput": ":x: **| Please input a calculation!**",
     "invalidInput": ":x: **| Please input a valid calculation!**"
@@ -84,16 +72,6 @@
     "turnedOff": ":white_check_mark: **| Profanity protection was turned off!**",
     "incorrectUsage": ":x: **|  Incorrect command usage! Please use `${prefix}profanity <on/off>`**"
   },
-  "tempmute": {
-    "noPermission": ":x: **| You need to have the `MANAGE_GUILD` permission to use this command.**",
-    "invalidDuration": ":x: **| The provided argument is not a valid duration.**",
-    "noMention": ":x: **| You must mention someone to unmute them.**",
-    "noRolesPermission": ":x: **| I need the `MANAGE_ROLES` permission to this command to work.**",
-    "muted": ":white_check_mark: **| ${user} was successfully muted for ${duration}**",
-    "creatingRole": "**Muted role created, executing mute command...**",
-    "noRoleAsigned": ":x: **| User cannot be unmuted because he does not longer have the MUTED role assigned.**",
-    "unmuted": ":white_check_mark: | ${user} was successfully unmuted!**"
-  },
   "purge": {
     "invalidNumber": ":x: **| The provided argument is not a valid number.**",
     "noPermission": ":x: **| You need to have the `MANAGE_MESSAGES` permission to use this command.**",
@@ -105,7 +83,12 @@
     "notarget": ":x: **| You must specify a user to report!**",
     "noreason": ":x: **| You must specify a reason!**",
     "channelcreated": ":white_check_mark: **| I could not find a channel named `reports`, so I made it for you :smiley: You must re-submit the report.**"
-
+  },
+  "ban": {
+    "notarget": ":x: **| You must specify a user to ban!**",
+    "noreason": ":x: **| You must specify a reason!**",
+    "channelcreated": ":white_check_mark: **| I could not find a channel named `logs`, so I made it for you :smiley: You must re-submit the ban.**",
+    "noAuthorPermission": ":x: **| You need to have the `BAN_MEMBERS` permission to use this command.**"
   },
   "setprefix": {
     "noPermission": ":x: **| You need to have the `MANAGE_GUILD` permission to use this command.**",
@@ -126,14 +109,22 @@
     "step4": ":white_check_mark: **| Author set. What should the description be?**",
     "finished": ":white_check_mark: **| Alright, I set the welcome message for this guild!**"
   },
+  "mute": {
+    "noUser": ":x: **| Incorrect usage! Do `>help mute` If you are unsure.**",
+    "noAuthorPermission": ":x: **| You need to have the `KICK_MEMBERS` permission to use this command.**",
+    "noReason": ":x: **| You must specify a reason for the mute!**",
+    "noTime": ":x: **| You must specify an amount of time to apply the `Muted` role!**",
+    "createdChannel": ":white_check_mark: **| I could not find a channel named `logs`, so I made it for you :smiley: You must re-submit the mute.**"
+  },
   "unmute": {
     "noMention": ":x: **| You must mention someone to unmute them!**",
-    "noPermission": ":x: **| You need to have the `MANAGE_GUILD` permission to use this command.**",
-    "noMutedRole": ":x: **| The Muted role does not exist. Use the tempmute command to create it.**",
-    "unmuted": ":white_check_mark: | ${user} was successfully unmuted!**",
-    "noRoleAsigned": ":x: **| User cannot be unmuted because he does not longer have the MUTED role assigned.**"
+    "noAuthorPermission": ":x: **| You need to have the `KICK_MEMBERS` permission to use this command.**",
+    "noRoleAsigned": ":x: **| This user is not muted!**"
   },
   "userinfo": {
     "noPermission": ":x: **| You need to have the `MANAGE_GUILD` permission to use this command.**"
+  },
+  "remindme": {
+    "incorrectUsage": ":x: **Specify a time for me to remind you. | Example: ${prefix}remindme 15min example**"
   }
 }

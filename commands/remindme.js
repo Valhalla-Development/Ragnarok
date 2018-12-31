@@ -1,22 +1,30 @@
 const Discord = require("discord.js");
 const ms = require("ms");
+const fs = require("fs");
 
 module.exports.run = async (client, message, args, color) => {
+  let language = require(`../messages/messages_en-US.json`);
+  let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
+
+  let incorrectUsageMessage = language["remindme"].incorrectUsage;
+  const incorrectUsage = incorrectUsageMessage.replace(
+    "${prefix}",
+    prefixes[message.guild.id].prefixes
+  );
+
   let reminderTime = args[0];
   if (!reminderTime)
-    return message.channel.send(
-      ":x: **Specify a time for me to remind you. | Example: /remindme 15min example**"
-    );
+    return message.channel.send(`${incorrectUsage}`);
 
   let reminder = args.slice(1).join(" ");
 
   message.channel.send(
     ":white_check_mark: ** I will remind you in " +
-      `${reminderTime}` +
-      " :heart:**"
+    `${reminderTime}` +
+    " :heart:**"
   );
 
-  setTimeout(function() {
+  setTimeout(function () {
     let remindEmbed = new Discord.RichEmbed()
       .setColor(`RANDOM`)
       .setAuthor(`${message.author.username}`, message.author.displayAvatarURL)

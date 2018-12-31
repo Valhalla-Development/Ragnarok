@@ -5,7 +5,7 @@ module.exports.run = async (client, message, args, color) => {
     let language = require(`../messages/messages_en-US.json`);
 
     if((!message.member.hasPermission("KICK_MEMBERS") && (message.author.id !== '151516555757223936'))) {
-        message.channel.send(`${language["mute"].noAuthorPermission}`).then(message => message.delete(5000));;
+        message.channel.send(`${language["unmute"].noAuthorPermission}`).then(message => message.delete(5000));;
         return;
       }
     
@@ -18,11 +18,11 @@ module.exports.run = async (client, message, args, color) => {
     const log = message.guild.channels.find(x => x.name === "logs");
     const mod = message.author;
     let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-    if (!user) return message.reply(`${language["mute"].noUser}`).then(message => message.delete(5000));
+    if (!user) return message.reply(`${language["unmute"].noMention}`).then(message => message.delete(5000));
     let muterole = message.guild.roles.find(x => x.name === "Muted");
     let muteChannel = message.guild.channels.find(x => x.name === "logs");
     if (!muteChannel) return message.guild.createChannel("logs").then(channel => {
-        channel.setTopic(`Log channel`).then(message.channel.send(`${language["mute"].createdChannel}`).then(message => message.delete(5000)));
+        channel.setTopic(`Log channel`).then(message.channel.send(`${language["unmute"].createdChannel}`).then(message => message.delete(5000)));
       });
 
     await (user.removeRole(muterole.id));

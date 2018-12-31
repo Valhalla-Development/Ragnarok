@@ -39,7 +39,7 @@ module.exports.run = async(client, message, args, color) => {
     let link = `https://trakt.tv/search?query=${searchquery}`;
     
     const query = args.join(" ");
-    if(query.length<3) return message.channel.send("Enter a longer search.");
+    if(query.length<3) return message.channel.send(":x: **Enter a longer search.**");
     message.channel.send({
         "embed": {
             "title": "Please wait...",
