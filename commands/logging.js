@@ -13,7 +13,8 @@ module.exports.run = async (client, message, args, color) => {
     const table = db.prepare(`SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'logging';`).get();
     
     if (args[0] === 'off') {
-        message.channel.send('You need to set this up, but you don\'t know how to delete the records');
+        message.channel.send('Logging turned off!');
+//        db.prepare(`DELETE FROM logging WHERE guildid = '${message.guild.id}'`).run();
         return;
     } else if (!lchan === undefined) {
         message.channel.send(`${language["logging"].invalidChannel}`);
