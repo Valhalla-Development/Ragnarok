@@ -6,6 +6,8 @@ const config = require("./Storage/config.json");
 const prefixgen = config.prefix;
 const logging = config.logging;
 const color = config.color;
+const SQLite = require('better-sqlite3')
+const sql = new SQLite('./Storage/db/db.sqlite');
 
 client.commands = new Discord.Collection();
 
@@ -88,20 +90,32 @@ client.on("ready", () => {
 
   // activity
 
-  client.user.setActivity(`Serving ${client.guilds.size} servers | ${prefixgen}help`, { type: "PLAYING" });
+  client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`, {
+    type: "WATCHING"
+  });
 
   client.on("guildCreate", guild => {
     //  when the bot joins a guild.
     console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-    client.user.setActivity(`Serving ${client.guilds.size} servers | ${prefixgen}help`);
+    client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
   });
 
   client.on("guildDelete", guild => {
     // when the bot is removed from a guild.
     console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-    client.user.setActivity(`Serving ${client.guilds.size} servers | ${prefixgen}help`);
+    client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
   });
 
+  // points system
+  const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
+  if (!table['count(*)']) {
+    sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER);").run();
+    sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON scores (id);").run();
+    sql.pragma("synchronous = 1");
+    sql.pragma("journal_mode = wal");
+}
+  client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
+  client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);");
 });
 
 // welcome
@@ -126,7 +140,9 @@ client.on("guildMemberAdd", member => {
       .setColor(3447003)
       .setDescription(`${description} ${member.user}`)
       .setThumbnail(member.user.avatarURL);
-    client.channels.get(sendchannel).send({ embed });
+    client.channels.get(sendchannel).send({
+      embed
+    });
   }
 });
 
@@ -145,6 +161,26 @@ client.on("guildMemberAdd", member => {
     member.addRole(myRole);
   }
 });
+
+// logging messages
+
+client.on('messageDelete', async (message) => {
+  const logs = `SELECT channel FROM logging WHERE guildid = ${message.guild.id};`;
+  if (!logs) return;
+  const entry = await message.guild.fetchAuditLogs({
+    type: 'MESSAGE_DELETE'
+  }).then(audit => audit.entries.first())
+  let user = ""
+  if (entry.extra.channel.id === message.channel.id &&
+    (entry.target.id === message.author.id) &&
+    (entry.createdTimestamp > (Date.now() - 5000)) &&
+    (entry.extra.count >= 1)) {
+    user = entry.executor.username
+  } else {
+    user = message.author.username
+  }
+  logs.send(`A message was deleted in ${message.channel.name} by ${user}`);
+})
 
 // on message edit (ads protection)
 
@@ -246,6 +282,24 @@ client.on("message", message => {
     });
   }
 
+    // points
+
+    if (message.author.bot) return;
+    let score;
+    if (message.guild) {
+      score = client.getScore.get(message.author.id, message.guild.id);
+      if (!score) {
+        score = { id: `${message.guild.id}-${message.author.id}`, user: message.author.id, guild: message.guild.id, points: 0, level: 1 }
+      }
+      score.points++;
+      const curLevel = Math.floor(0.1 * Math.sqrt(score.points));
+      if(score.level < curLevel) {
+        score.level++;
+        message.reply(`You've leveled up to level **${curLevel}**! Ain't that dandy?`);
+      }
+      client.setScore.run(score);
+    };
+    
   // custom prefixes
   let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
   if (!prefixes[message.guild.id] || prefixes[message.guild.id] === undefined) {
