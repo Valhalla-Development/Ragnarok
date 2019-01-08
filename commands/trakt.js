@@ -1,13 +1,15 @@
 const Discord = require("discord.js");
 const { get } = require("snekfetch");
 const encode = require("strict-uri-encode");
+const fs = require("fs");
 
+let config = JSON.parse(fs.readFileSync("./Storage/config.json", "utf8"));
 const settings = {
     trakt: {
-        apikey: "REDACTED"
+        apikey: (config.traktapi)
     },
     omdb: {
-        apikey: "REDACTED"
+        apikey: (config.omdbapi)
     }
 }
 
