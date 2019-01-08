@@ -165,7 +165,8 @@ client.on("guildMemberAdd", member => {
 // logging messages
 
 client.on('messageDelete', async (message) => {
-  const logs = `SELECT channel FROM logging WHERE guildid = ${message.guild.id};`;
+  const id = sql.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
+  const logs = client.channels.get(id);
   if (!logs) return;
   const entry = await message.guild.fetchAuditLogs({
     type: 'MESSAGE_DELETE'
