@@ -2,7 +2,7 @@
   "token": "NTA5MTIyMjg2NTYxNzg3OTA0.DwRGHA.GvVbs5aR5YlRPbV2bIWL7SNeStg",
   "traktapi": "343592bf27fcc710800dace82ab7513d81a1061aae861c893bb7438a3f11c13a",
   "omdbapi": "201474cd",
-  "ownerID": "message.author.id !== config.ownerID",
+  "ownerID": "151516555757223936",
   "prefix": ">",
   "logging": true,
   "color": "RED"
