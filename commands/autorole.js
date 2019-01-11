@@ -2,11 +2,14 @@ const Discord = require("discord.js");
 const fs = require("fs");
 let autorole = JSON.parse(fs.readFileSync("./Storage/autorole.json", "utf8"));
 let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
+const config = JSON.parse(
+  fs.readFileSync("./Storage/config.json", "utf8")
+);
 
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
 
-  if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== '151516555757223936')))
+  if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
     return message.channel.send(`${language["autorole"].noPermission}`);
 
   if (!args[0]) {

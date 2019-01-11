@@ -1,8 +1,12 @@
 const Discord = require("discord.js");
+const fs = require("fs");
+const config = JSON.parse(
+  fs.readFileSync("./Storage/config.json", "utf8")
+);
 
 module.exports.run = async (client, message, args) => {
 
-  if((!message.member.hasPermission("CREATE_INSTANT_INVITE") && (message.author.id !== '151516555757223936'))) {
+  if((!message.member.hasPermission("CREATE_INSTANT_INVITE") && (message.author.id !== config.ownerID))) {
     message.channel.send(`${language["invite"].noPermission}`);
     return;
   }

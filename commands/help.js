@@ -231,34 +231,6 @@ module.exports.run = async (client, message, args, color) => {
         message.channel.send({ embed: autortoggleHelp });
         break;
 
-      case "ascii":
-        const asciiHelp = new Discord.RichEmbed()
-          .setAuthor("Ascii Command", client.user.avatarURL)
-          .setDescription("Post an ascii of the message")
-          .addField(
-            "Usage",
-            `${prefixes[message.guild.id].prefixes}ascii <text>`
-          )
-          .setThumbnail(client.user.avatarURL)
-          .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
-            client.user.avatarURL
-          )
-          .setColor(color);
-
-        if (
-          !message.channel.permissionsFor(message.guild.me).has("EMBED_LINKS")
-        ) {
-          message.channel.send(
-            `:white_check_mark: **| Check your DMs. :ok_hand:**`
-          );
-          message.author.send({ embed: asciiHelp });
-          return;
-        }
-
-        message.channel.send({ embed: asciiHelp });
-        break;
-
       case "ban":
         const banHelp = new Discord.RichEmbed()
           .setAuthor("Ban Command", client.user.avatarURL)
@@ -796,8 +768,6 @@ module.exports.run = async (client, message, args, color) => {
             }report <@user> <reason>__ - Reports the specified user\n__${
               prefixes[message.guild.id].prefixes
             }lmgtfy <question>__ - Post a "Let me Google that for you" link\n__${
-              prefixes[message.guild.id].prefixes
-            }ascii <text>__ - Post an ascii of the message!\n__${
               prefixes[message.guild.id].prefixes
             }meme__ - Random meme!\n__${
               prefixes[message.guild.id].prefixes
