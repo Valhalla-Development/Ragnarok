@@ -1,9 +1,13 @@
 const Discord = require('discord.js');
 let language = require(`../messages/messages_en-US.json`);
+const fs = require("fs");
+const config = JSON.parse(
+  fs.readFileSync("./Storage/config.json", "utf8")
+);
 
 module.exports.run = async (client, message, args) => {
 
-  if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== '151516555757223936'))) {
+  if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
     message.channel.send(`${language["esay"].noPermission}`);
     return;
   }

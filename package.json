@@ -1,0 +1,21 @@
+{
+  "name": "package.json",
+  "version": "1.0.0",
+  "description": "Ragnarok DEV Bot",
+  "main": "bot.js",
+  "dependencies": {
+    "ascii-art": "^1.5.0",
+    "better-sqlite3": "^5.2.1",
+    "discord.js": "^11.4.2",
+    "mathjs": "^5.4.0",
+    "memejs": "^1.0.7",
+    "moment": "^2.23.0",
+    "strict-uri-encode": "^2.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "RagnarLothbrok-Odin",
+  "license": "ISC"
+}

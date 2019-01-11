@@ -1,9 +1,13 @@
 const Discord = require("discord.js");
+const fs = require("fs");
+const config = JSON.parse(
+  fs.readFileSync("./Storage/config.json", "utf8")
+);
 
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
 
-  if((!message.member.hasPermission("MANAGE_MESSAGES") && (message.author.id !== '151516555757223936'))) {
+  if((!message.member.hasPermission("MANAGE_MESSAGES") && (message.author.id !== config.ownerID))) {
     message.channel.send(`${language["purge"].noPermission}`).then(message => message.delete(5000));;
     return;
   }

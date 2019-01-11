@@ -1,5 +1,8 @@
 const Discord = require("discord.js");
 const fs = require("fs");
+const config = JSON.parse(
+  fs.readFileSync("./Storage/config.json", "utf8")
+);
 
 module.exports.run = async (client, message, args, color) => {
   let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
@@ -10,7 +13,7 @@ module.exports.run = async (client, message, args, color) => {
     prefixes[message.guild.id].prefixes
   );
 
-  if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== '151516555757223936')))
+  if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
     return message.channel.send(`${language["setwelcome"].noPermission}`);
 
   message.channel
@@ -182,15 +185,8 @@ module.exports.run = async (client, message, args, color) => {
                                     if (err) throw err;
                                   }
                                 );
-
-
                               })
                             })
-
-
-
-
-
                         })
                       })
                   });
