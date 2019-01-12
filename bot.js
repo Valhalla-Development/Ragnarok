@@ -11,7 +11,7 @@ const sql = new SQLite('./Storage/db/db.sqlite');
 
 client.commands = new Discord.Collection();
 
-const clean = text => {
+function clean(text) {
   if (typeof(text) === "string")
     return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
   else
@@ -319,7 +319,7 @@ client.on("message", message => {
       const curLevel = Math.floor(0.1 * Math.sqrt(score.points));
       if(score.level < curLevel) {
         score.level++;
-        message.reply(`You've leveled up to level **${curLevel}**! Ain't that dandy?`);
+        message.reply(`you just advanced to level **${curLevel}**! Ain't that dandy?`);
       }
       client.setScore.run(score);
     };
