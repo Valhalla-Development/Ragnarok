@@ -704,87 +704,51 @@ module.exports.run = async (client, message, args, color) => {
         break;
 
       default:
-        const helpEmbed = new Discord.RichEmbed()
-          .setAuthor(client.user.username, client.user.avatarURL)
-          .setDescription(
-            "Hey, I'm [**__Ragnarok__**]! A multi-purpose bot that can do a lot of things!\nMy creator is always open for suggestions!, contact him on Discord -\n`Ragnar Lothbrok#1948`"
-          )
-          .addField(
-            "🔨 Moderation Commands",
-            `__${
-              prefixes[message.guild.id].prefixes
-            }esay <message>__ - Posts an embed of your choosing\n__${  
-              prefixes[message.guild.id].prefixes
-            }ban <@user> <reason>__ - Ban the mentioned user\n__${
-              prefixes[message.guild.id].prefixes
-            }kick @mention__ - Kick the mentioned user\n__${
-              prefixes[message.guild.id].prefixes
-            }mute <time> <reason>__ - Mutes the mentioned user\n__${
-              prefixes[message.guild.id].prefixes
-            }unmute @mention__ - Unmutes the mentioned user\n__${
-              prefixes[message.guild.id].prefixes
-            }purge <amount of messages>__ - Deletes a specified amount of messages\n__${
-              prefixes[message.guild.id].prefixes
-            }poll <question>__ - Starts a poll`
-          )
-          .addField(
-            ":gear: Administration Commands",
-            `__${
-              prefixes[message.guild.id].prefixes
-            }setprefix <new prefix>__ - Set a new guild prefix\n__${
-              prefixes[message.guild.id].prefixes
-            }adsprot <on/off>__ - Activates ads protection\n__${
-              prefixes[message.guild.id].prefixes
-            }profanity <on/off>__ - Activates profanity protection\n__${
-              prefixes[message.guild.id].prefixes
-            }setwelcome__ - Enables welcome messages (detailed setup)\n__${
-              prefixes[message.guild.id].prefixes
-            }autorole <role>__ - Sets the role on join (case sensitive)\n__${
-              prefixes[message.guild.id].prefixes
-            }autortoggle <off>__ - Toggles the autorole function`,
-            true
-          )
-          .addField(
-            "📃 Informative Commands",
-            `__${
-              prefixes[message.guild.id].prefixes
-            }ping__ - Displays the bot's ping!\n__${
-              prefixes[message.guild.id].prefixes
-            }userinfo @mention__ - Displays information about the mentioned user\n__${
-              prefixes[message.guild.id].prefixes
-            }serverinfo__ - Displays information about the server\n__${
-              prefixes[message.guild.id].prefixes
-            }uptime__ - Displays how long the bot has been running`,
-            true
-          )
-          .addField(
-            ":red_car: Fun Commands",
-            `__${
-              prefixes[message.guild.id].prefixes
-            }8ball <question>__ - Question the mighty 8Ball!\n__${
-              prefixes[message.guild.id].prefixes
-            }remindme <time > message>__ - Reminds you a message you choose - For detailed instructions, run the command >help remindme\n__${
-              prefixes[message.guild.id].prefixes
-            }report <@user> <reason>__ - Reports the specified user\n__${
-              prefixes[message.guild.id].prefixes
-            }lmgtfy <question>__ - Post a "Let me Google that for you" link\n__${
-              prefixes[message.guild.id].prefixes
-            }meme__ - Random meme!\n__${
-              prefixes[message.guild.id].prefixes
-            }calc <equation>__ - Calculates a mathematical equation\n__${
-              prefixes[message.guild.id].prefixes
-            }trakt <movie/show>__ - Embeds the result of given search\n__${
-              prefixes[message.guild.id].prefixes
-            }coinflip__ - Flips a coin`,
-            true
-          )
-          .setTimestamp()
-          .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
-            client.user.avatarURL
-          )
-          .setColor(color);
-
+      const prefix = prefixes[message.guild.id].prefixes
+      const helpEmbed = new Discord.RichEmbed()
+        .setAuthor(client.user.username, client.user.avatarURL)
+        .setColor(color)
+        .setDescription(`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!\nRun \`${prefix}help <command>\` to see command specific instructions!`)
+        .setFooter(`This guild's prefix is ${prefix}`, client.user.avatarURL)
+        .setTimestamp()
+        .addField("🔨 Moderation Commands", 
+        `${prefix}ban - Bans the mentioned user
+        ${prefix}esay - Posts an embed of your choosing
+        ${prefix}invite - Links an invite to the guild
+        ${prefix}kick - Kicks the mentioned user
+        ${prefix}mute - Mutes the mentioned user
+        ${prefix}poll - Starts a poll
+        ${prefix}purge - Deletes specified amount of messages
+        ${prefix}unmute - Unmutes the mentioned user`, true)
+        .addField(":gear: Administration Commands",
+        `${prefix}adsprot - Toggles ads protection
+        ${prefix}autorole - Configures the autorole on join
+        ${prefix}autortoggle - Toggles autorole
+        ${prefix}logging - Enables logging for the guild
+        ${prefix}profanity - Toggles profanity checks
+        ${prefix}setprefix - Sets the guilds prefix
+        ${prefix}setwelcome - Sets the welcome message`, true)
+        .addField("📃 Informative Commands",
+        `${prefix}close - Closes a support ticket
+        ${prefix}ginvite - Links the invite for the bot
+        ${prefix}new - Creates a ticket
+        ${prefix}ping - Checks ping of bot
+        ${prefix}pleader - Displays points leaderboard
+        ${prefix}points - Display current points
+        ${prefix}remindme - Reminds you of specificed message
+        ${prefix}report - Reports mentioned user
+        ${prefix}serverinfo - Display serverinfo
+        ${prefix}ticket - Displays instructions on tickets
+        ${prefix}uptime - Displays how long the bot has been online
+        ${prefix}userinfo - Userinfo of mentioned user`, true)
+        .addField(":red_car: Fun Commands",
+        `${prefix}8ball - Question the mighty 8Ball
+        ${prefix}calc - Calculated an equation
+        ${prefix}coinflip - Flips a coin
+        ${prefix}lmgtfy - Links a LetMeGoogleThatForYou link
+        ${prefix}meme - Posts a meme
+        ${prefix}trakt - Searches trakt for specified Movie`, true);
+      
           message.channel.send(
             `:white_check_mark: **| Check your DMs.**`
           );
