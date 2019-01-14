@@ -123,6 +123,43 @@ client.on("ready", () => {
   }
   client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
   client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);");
+
+  // logging messages
+
+  const loggingtable = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'logging';").get();
+  if (!loggingtable['count(*)']) {
+    console.log('Logging table created!')
+    sql.prepare("CREATE TABLE logging (guildid TEXT PRIMARY KEY, channel TEXT);").run();
+    sql.prepare("CREATE UNIQUE INDEX idx_logging_id ON logging (guildid);").run();
+    sql.pragma("synchronous = 1");
+    sql.pragma("journal_mode = wal");
+  }
+
+  client.on('messageDelete', async (message) => {
+    const id = sql.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
+    const logs = id.channel
+    if (!logs) return;
+    const entry = await message.guild.fetchAuditLogs({
+      type: 'MESSAGE_DELETE'
+    }).then(audit => audit.entries.first())
+    let user = ""
+    if (entry.extra.channel.id === message.channel.id &&
+      (entry.target.id === message.author.id) &&
+      (entry.createdTimestamp > (Date.now() - 5000)) &&
+      (entry.extra.count >= 1)) {
+      user = entry.executor.username
+    } else {
+      user = message.author.username
+    }
+    const logembed = new Discord.RichEmbed()
+      .setAuthor(user, message.author.displayAvatarURL)
+      .setDescription(`**Message sent by <@${message.author.id}> deleted in <#${message.channel.id}>** \n ${message.content}`)
+      .setColor(message.guild.member(client.user).displayHexColor)
+      .setFooter(`ID: ${message.channel.id}`)
+      .setTimestamp()
+    client.channels.get(logs).send(logembed);
+  });
+
 });
 
 // welcome
@@ -168,26 +205,6 @@ client.on("guildMemberAdd", member => {
     member.addRole(myRole);
   }
 });
-
-// logging messages
-
-client.on('messageDelete', async (message) => {
-  const logs = sql.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
-  if (!logs) return;
-  const entry = await message.guild.fetchAuditLogs({
-    type: 'MESSAGE_DELETE'
-  }).then(audit => audit.entries.first())
-  let user = ""
-  if (entry.extra.channel.id === message.channel.id &&
-    (entry.target.id === message.author.id) &&
-    (entry.createdTimestamp > (Date.now() - 5000)) &&
-    (entry.extra.count >= 1)) {
-    user = entry.executor.username
-  } else {
-    user = message.author.username
-  }
-  client.channels.get(logs).send(`A message was deleted in ${message.channel.name} by ${user}`);
-})
 
 // on message edit (ads protection)
 
