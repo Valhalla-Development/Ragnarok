@@ -124,6 +124,17 @@ client.on("ready", () => {
   client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
   client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);");
 
+  // adsprot 
+
+  const adsprottable = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'adsprot';").get();
+  if (!adsprottable['count(*)']) {
+    console.log('Logging table created!')
+    sql.prepare("CREATE TABLE adsprot (guildid TEXT PRIMARY KEY, status TEXT);").run();
+    sql.prepare("CREATE UNIQUE INDEX idx_adsprot_id ON adsprot (guildid);").run();
+    sql.pragma("synchronous = 1");
+    sql.pragma("journal_mode = wal");
+  };
+
   // logging messages
 
   const loggingtable = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'logging';").get();
