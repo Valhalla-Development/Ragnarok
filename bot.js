@@ -254,6 +254,29 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
         msg.delete(10000);
       });
   }
+  // profanity filter
+  let swearwords = JSON.parse(
+    fs.readFileSync("./Storage/swearwords.json", "utf8")
+  );
+  if (
+    swearwords.words.some(word => newMessage.content.toLowerCase().includes(word))
+  ) {
+    const profanity = sql.prepare("SELECT count(*) FROM profanity WHERE guildid = ?").get(newMessage.guild.id);
+    if (!profanity['count(*)']) {
+      return;
+    } else if (newMessage.member.hasPermission("MANAGE_GUILD")) return;
+    newMessage.delete();
+    newMessage.channel
+      .send(
+        `**Your message contained a blocked word and it was deleted, <@${
+                newMessage.author.id
+              }>**`
+      )
+      .then(msg => {
+        msg.delete(10000);
+      });
+  }
+
 });
 
 // guild join event
@@ -336,23 +359,20 @@ client.on("message", message => {
   if (
     swearwords.words.some(word => message.content.toLowerCase().includes(word))
   ) {
-    fs.readFile("./Storage/profanity.json", "utf8", (err, data) => {
-      if (err) throw err;
-      const db = JSON.parse(data);
-      if (db[message.guild.id]) {
-        if (message.member.hasPermission("MANAGE_GUILD")) return;
-        message.delete();
-        message.channel
-          .send(
-            `**Your message contained a blocked word and it was deleted, <@${
+    const profanity = sql.prepare("SELECT count(*) FROM profanity WHERE guildid = ?").get(message.guild.id);
+    if (!profanity['count(*)']) {
+      return;
+    } else if (message.member.hasPermission("MANAGE_GUILD")) return;
+    message.delete();
+    message.channel
+      .send(
+        `**Your message contained a blocked word and it was deleted, <@${
               message.author.id
             }>**`
-          )
-          .then(msg => {
-            msg.delete(10000);
-          });
-      }
-    });
+      )
+      .then(msg => {
+        msg.delete(10000);
+      });
   }
 
   // points
