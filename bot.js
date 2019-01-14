@@ -113,6 +113,14 @@ client.on("ready", () => {
     client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
   });
 
+  // profanity table
+  const profanity = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'profanity';").get();
+  if (!profanity['count(*)']) {
+    sql.prepare("CREATE TABLE profanity (guildid TEXT PRIMARY KEY, status TEXT);").run();
+    sql.prepare("CREATE UNIQUE INDEX idx_profanity_id ON profanity (guildid);").run();
+    sql.pragma("synchronous = 1");
+    sql.pragma("journal_mode = wal");
+  };
   // autorole table
   const autorole = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'autorole';").get();
   if (!autorole['count(*)']) {
@@ -120,7 +128,7 @@ client.on("ready", () => {
     sql.prepare("CREATE UNIQUE INDEX idx_autorole_id ON autorole (guildid);").run();
     sql.pragma("synchronous = 1");
     sql.pragma("journal_mode = wal");
-  }
+  };
   // scores table
   const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
   if (!table['count(*)']) {
@@ -128,7 +136,7 @@ client.on("ready", () => {
     sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON scores (id);").run();
     sql.pragma("synchronous = 1");
     sql.pragma("journal_mode = wal");
-  }
+  };
   client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
   client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);");
   // adsprot table
@@ -148,7 +156,7 @@ client.on("ready", () => {
     sql.prepare("CREATE UNIQUE INDEX idx_logging_id ON logging (guildid);").run();
     sql.pragma("synchronous = 1");
     sql.pragma("journal_mode = wal");
-  }
+  };
 
   // logging
   client.on('messageDelete', async (message) => {
