@@ -24,8 +24,6 @@ module.exports.run = async (client, message, args, color) => {
   if (message.guild.id) {
     status = client.getTable.get(message.guild.id);
 
-    const thing = JSON.parse(fs.readFileSync("./Storage/ads.json", "utf8"));
-
     if (args[0] === "on") {
       // if already on
       if (status) {
