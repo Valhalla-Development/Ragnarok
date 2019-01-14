@@ -113,6 +113,14 @@ client.on("ready", () => {
     client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
   });
 
+  // setwelcome table
+  const setwelcome = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'setwelcome';").get();
+  if (!setwelcome['count(*)']) {
+    sql.prepare("CREATE TABLE setwelcome (guildid TEXT PRIMARY KEY, channel TEXT, title TEXT, author TEXT, description TEXT);").run();
+    sql.prepare("CREATE UNIQUE INDEX idx_setwelcome_id ON setwelcome (guildid);").run();
+    sql.pragma("synchronous = 1");
+    sql.pragma("journal_mode = wal");
+  };
   // profanity table
   const profanity = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'profanity';").get();
   if (!profanity['count(*)']) {
@@ -188,21 +196,18 @@ client.on("ready", () => {
 });
 
 // welcome
-var welcomePath = "./Storage/welcome.json";
-var welcomeRead = fs.readFileSync(welcomePath);
-var welcomeFile = JSON.parse(welcomeRead);
 
 client.on("guildMemberAdd", member => {
   const Discord = require("discord.js");
-  var guildId = member.guild.id;
-  if (!welcomeFile[guildId]) {
+  const setwelcome = sql.prepare(`SELECT * FROM setwelcome WHERE guildid = ${member.guild.id};`).get();
+  console.log(setwelcome)
+  if (!setwelcome) {
     return;
   } else {
-    let welcome = welcomeFile[guildId];
-    var title = welcome.title;
-    var author = welcome.author;
-    var description = welcome.description;
-    var sendchannel = welcome.channel;
+    var title = setwelcome.title;
+    var author = setwelcome.author;
+    var description = setwelcome.description;
+    var sendchannel = setwelcome.channel;
     let embed = new Discord.RichEmbed()
       .setTitle(`${title}`)
       .setAuthor(`${author}`, member.user.avatarURL)
