@@ -22,6 +22,11 @@ module.exports.run = async (client, message, args, color) => {
         status = client.getTable.get(message.guild.id);
         
   
+    if (args[0] === undefined) {
+        message.channel.send(":x: | **Please mention a channel!**");
+        return;
+    };
+    
     if (args[0] === 'off') { // to turn logging off
             if (!status) {
                 message.channel.send(":x: | **Logging is already disabled!**");
