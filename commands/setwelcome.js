@@ -1,4 +1,6 @@
 const Discord = require("discord.js");
+const SQLite = require('better-sqlite3')
+const db = new SQLite('./Storage/db/db.sqlite');
 const fs = require("fs");
 const config = JSON.parse(
   fs.readFileSync("./Storage/config.json", "utf8")
@@ -13,149 +15,97 @@ module.exports.run = async (client, message, args, color) => {
     prefixes[message.guild.id].prefixes
   );
 
-  if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
+  if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
     return message.channel.send(`${language["setwelcome"].noPermission}`);
 
-  message.channel
-    .send(`${step1r}`)
-    .then(() => {
-      message.channel
-        .awaitMessages(response => response.author.id === message.author.id, {
-          max: 1,
-          time: 30000,
-          errors: ["time"]
-        })
+  client.getTable = db.prepare("SELECT * FROM setwelcome WHERE guildid = ?");
+  let status;
+  if (message.guild.id) {
+    status = client.getTable.get(message.guild.id);
 
-        .then(collected => {
-          if (collected.first().content === "cancel") {
-            message.channel.send(`${language["setwelcome"].canceled}`);
-            return;
-          }
 
-          const wchan = message.guild.channels.find(
-            "name",
-            collected.first().content
-          );
-          if (!wchan || wchan === undefined) {
-            message.channel.send(`${language["setwelcome"].invalidChannel}`);
-            return;
-          }
+    if (args[0] === 'off') {
+      db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
+      message.channel.send(':white_check_mark: | **Welcome message disabled!**');
+      return;
+    };
+      message.channel.send(`${step1r}`).then(() => {
+          message.channel
+            .awaitMessages(response => response.author.id === message.author.id, {
+              max: 1,
+              time: 30000,
+              errors: ["time"]
+            })
 
-          if (wchan.type === "voice" || wchan.type === "category") {
-            message.channel.send(
-              `${language["setwelcome"].invalidTextChannel}`
-            );
-            return;
-          }
+            .then(collected => {
+              if (collected.first().content === "cancel") {
+                message.channel.send(`${language["setwelcome"].canceled}`);
+                return;
+              }
 
-          if (!wchan.permissionsFor(message.guild.me).has("SEND_MESSAGES")) {
-            message.channel.send(
-              `${language["setwelcome"].noMessagePermission}`
-            );
-            return;
-          }
+              const wchan = message.guild.channels.find("name",collected.first().content);
+              if (!wchan || wchan === undefined) {
+                message.channel.send(`${language["setwelcome"].invalidChannel}`);
+                return;
+              }
 
-          const thing = JSON.parse(
-            fs.readFileSync("./Storage/welcome.json", "utf8")
-          );
+              if (wchan.type === "voice" || wchan.type === "category") {
+                message.channel.send(
+                  `${language["setwelcome"].invalidTextChannel}`
+                );
+                return;
+              }
 
-          thing[message.guild.id] = {
-            channel: message.guild.channels.find(
-              "name",
-              collected.first().content
-            ).id
-          };
+              if (!wchan.permissionsFor(message.guild.me).has("SEND_MESSAGES")) {
+                message.channel.send(
+                  `${language["setwelcome"].noMessagePermission}`
+                );
+                return;
+              }
 
-          fs.writeFile(
-            "./Storage/welcome.json",
-            JSON.stringify(thing, null, 2),
-            err => {
-              if (err) throw err;
-            }
-          );
+                const chid = message.guild.channels.find("name", collected.first().content).id
+                const insertch = db.prepare("INSERT INTO setwelcome (guildid, channel) VALUES (@guildid, @channel);");
+                insertch.run({
+                  guildid: `${message.guild.id}`,
+                  channel: `${chid}`
+                });
 
-          setTimeout(() => {
-            const chan = JSON.parse(
-              fs.readFileSync("./Storage/welcome.json", "utf8")
-            );
+              setTimeout(() => {
 
-            message.channel
-              .send(`${language["setwelcome"].step2}`)
-              .then(() => {
                 message.channel
-                  .awaitMessages(
-                    response => response.author.id === message.author.id,
-                    {
-                      max: 1,
-                      time: 30000,
-                      errors: ["time"]
-                    }
-                  )
-
-                  .then(collected => {
-                    if (collected.first().content === "cancel") {
-                      message.channel.send(
-                        `${language["setwelcome"].canceled}`
-                      );
-                      return;
-                    }
-
-                    const thing = JSON.parse(
-                      fs.readFileSync("./Storage/welcome.json", "utf8")
-                    );
-
-                    thing[message.guild.id].title = collected.first().content;
-
-                    fs.writeFile(
-                      "./Storage/welcome.json",
-                      JSON.stringify(thing, null, 2),
-                      err => {
-                        if (err) throw err;
-                      }
-                    );
-
+                  .send(`${language["setwelcome"].step2}`)
+                  .then(() => {
                     message.channel
-                      .send(`${language["setwelcome"].step3}`)
-                      .then(() => {
+                      .awaitMessages(
+                        response => response.author.id === message.author.id, {
+                          max: 1,
+                          time: 30000,
+                          errors: ["time"]
+                        }
+                      )
+
+                      .then(collected => {
+                        if (collected.first().content === "cancel") {
+                          db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
+                          message.channel.send(
+                            `${language["setwelcome"].canceled}`
+                          );
+                          return;
+                        }
+
+                          const title = collected.first().content;
+                          const updateit = db.prepare("UPDATE setwelcome SET title = (@title) WHERE guildid = (@guildid);");
+                          updateit.run({
+                            guildid: `${message.guild.id}`,
+                            title: `${title}`
+                          });
+
                         message.channel
-                        .awaitMessages(
-                          response => response.author.id === message.author.id,
-                          {
-                            max: 1,
-                            time: 30000,
-                            errors: ["time"]
-                          }
-                        )
-
-                        .then(collected => {
-                          if (collected.first().content === "cancel") {
-                            message.channel.send(
-                              `${language["setwelcome"].canceled}`
-                            );
-                            return;
-                          }
-
-                          const thing = JSON.parse(
-                            fs.readFileSync("./Storage/welcome.json", "utf8")
-                          );
-
-                          thing[message.guild.id].author = collected.first().content;
-
-                          fs.writeFile(
-                            "./Storage/welcome.json",
-                            JSON.stringify(thing, null, 2),
-                            err => {
-                              if (err) throw err;
-                            }
-                          );
-                          
-                          message.channel
-                            .send(`${language["setwelcome"].step4}`)
-                            .then(() => {
-                              message.channel
+                          .send(`${language["setwelcome"].step3}`)
+                          .then(() => {
+                            message.channel
                               .awaitMessages(
-                                response => response.author.id === message.author.id,
-                                {
+                                response => response.author.id === message.author.id, {
                                   max: 1,
                                   time: 30000,
                                   errors: ["time"]
@@ -164,43 +114,68 @@ module.exports.run = async (client, message, args, color) => {
 
                               .then(collected => {
                                 if (collected.first().content === "cancel") {
+                                  db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
                                   message.channel.send(
                                     `${language["setwelcome"].canceled}`
                                   );
                                   return;
                                 }
 
-                                const thing = JSON.parse(
-                                  fs.readFileSync("./Storage/welcome.json", "utf8")
-                                );
+                                  const author = collected.first().content;
+                                  const updateaut = db.prepare("UPDATE setwelcome SET author = (@author) WHERE guildid = (@guildid);");
+                                  updateaut.run({
+                                    guildid: `${message.guild.id}`,
+                                    author: `${author}`
+                                  });
 
-                                thing[message.guild.id].description = collected.first().content;
+                                message.channel
+                                  .send(`${language["setwelcome"].step4}`)
+                                  .then(() => {
+                                    message.channel
+                                      .awaitMessages(
+                                        response => response.author.id === message.author.id, {
+                                          max: 1,
+                                          time: 30000,
+                                          errors: ["time"]
+                                        }
+                                      )
 
-                                message.channel.send(`${language["setwelcome"].finished}`);
+                                      .then(collected => {
+                                        if (collected.first().content === "cancel") {
+                                          db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
+                                          message.channel.send(
+                                            `${language["setwelcome"].canceled}`
+                                          );
+                                          return;
+                                        }
 
-                                fs.writeFile(
-                                  "./Storage/welcome.json",
-                                  JSON.stringify(thing, null, 2),
-                                  err => {
-                                    if (err) throw err;
-                                  }
-                                );
-                              })
+                                          const description = collected.first().content;
+                                          const updatedes = db.prepare("UPDATE setwelcome SET description = (@description) WHERE guildid = (@guildid);");
+                                          updatedes.run({
+                                            guildid: `${message.guild.id}`,
+                                            description: `${description}`
+                                          });
+
+                                        message.channel.send(`${language["setwelcome"].finished}`);
+
+                                    })
+                                })
                             })
                         })
-                      })
-                  });
-              })
-              .catch(() => {
-                message.channel.send(`${language["setwelcome"].canceled}`);
-              });
-          }, 1000);
-        });
-    })
-    .catch(e => {
-      console.log(e);
-      message.channel.send("**:x: | Setup canceled.**");
-    });
+                    });
+                })
+                .catch(() => {
+                  message.channel.send(`${language["setwelcome"].canceled}`);
+                  db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
+                });
+            }, 1000);
+          });
+      })
+      .catch(e => {
+        console.log(e);
+        message.channel.send("**:x: | Setup canceled.**");
+      });
+  };
 };
 
 module.exports.help = {

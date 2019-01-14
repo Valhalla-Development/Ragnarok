@@ -1,4 +1,6 @@
 const Discord = require("discord.js");
+const SQLite = require('better-sqlite3')
+const db = new SQLite('./Storage/db/db.sqlite');
 const fs = require("fs");
 let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
 const config = JSON.parse(
@@ -10,67 +12,65 @@ module.exports.run = async (client, message, args, color) => {
 
   // perms checking
 
-  if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
+  if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
     message.channel.send(`${language["adsprot"].noPermission}`);
     return;
   };
-  
-  // reading json file
 
-  const thing = JSON.parse(fs.readFileSync("./Storage/ads.json", "utf8"));
+  // preparing count
 
-  // if args is on
+  client.getTable = db.prepare("SELECT * FROM adsprot WHERE guildid = ?");
+  let status;
+  if (message.guild.id) {
+    status = client.getTable.get(message.guild.id);
 
-  if (args[0] === "on") {
-    // if already on
-    if (thing[message.guild.id]) {
-      let alreadyOnMessage = language["adsprot"].alreadyOn;
-      const alreadyOn = alreadyOnMessage.replace(
+    if (args[0] === "on") {
+      // if already on
+      if (status) {
+        let alreadyOnMessage = language["adsprot"].alreadyOn;
+        const alreadyOn = alreadyOnMessage.replace(
+          "${prefix}",
+          prefixes[message.guild.id].prefixes
+        );
+        message.channel.send(`${alreadyOn}`);
+        return;
+      } else {
+        const insert = db.prepare("INSERT INTO adsprot (guildid, status) VALUES (@guildid, @status);");
+        insert.run({
+          guildid: `${message.guild.id}`,
+          status: 'on'
+        });
+        message.channel.send(`${language["adsprot"].turnedOn}`);
+      };
+
+      // if args = off
+    } else if (args[0] === "off") {
+      // if already off
+      if (!status) {
+        let alreadyOffMessage = language["adsprot"].alreadyOff;
+        const alreadyOff = alreadyOffMessage.replace(
+          "${prefix}",
+          prefixes[message.guild.id].prefixes
+        );
+        message.channel.send(`${alreadyOff}`);
+        return;
+      } else {
+        db.prepare("DELETE FROM adsprot WHERE guildid = ?").run(message.guild.id);
+        message.channel.send(`${language["adsprot"].turnedOff}`);
+        return;
+      }
+
+    } else if (args[0] !== "off" || args[0] !== "on") {
+      let incorrectUsageMessage = language["adsprot"].incorrectUsage;
+      const incorrectUsage = incorrectUsageMessage.replace(
         "${prefix}",
         prefixes[message.guild.id].prefixes
       );
 
-      message.channel.send(`${alreadyOn}`);
+      message.channel.send(`${incorrectUsage}`);
       return;
     }
-
-    // if not already on
-    thing[message.guild.id] = "on";
-    fs.writeFile("./Storage/ads.json", JSON.stringify(thing, null, 2), err => {
-      if (err) throw err;
-    });
-    message.channel.send(`${language["adsprot"].turnedOn}`);
-
-    // if args = off
-  } else if (args[0] === "off") {
-    // if already off
-    if (!thing[message.guild.id]) {
-      let alreadyOffMessage = language["adsprot"].alreadyOff;
-      const alreadyOff = alreadyOffMessage.replace(
-        "${prefix}",
-        prefixes[message.guild.id].prefixes
-      );
-
-      message.channel.send(`${alreadyOff}`);
-      return;
-    }
-
-    //if not already off
-    message.channel.send(`${language["adsprot"].turnedOff}`);
-    delete thing[message.guild.id];
-    fs.writeFile("./Storage/ads.json", JSON.stringify(thing, null, 2), err => {
-      if (err) throw err;
-    });
-  } else if (args[0] !== "off" || args[0] !== "on") {
-    let incorrectUsageMessage = language["adsprot"].incorrectUsage;
-    const incorrectUsage = incorrectUsageMessage.replace(
-      "${prefix}",
-      prefixes[message.guild.id].prefixes
-    );
-
-    message.channel.send(`${incorrectUsage}`);
-    return;
-  }
+  };
 };
 
 module.exports.help = {

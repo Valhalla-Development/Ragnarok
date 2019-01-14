@@ -113,34 +113,101 @@ client.on("ready", () => {
     client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
   });
 
-  // points system
+  // setwelcome table
+  const setwelcome = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'setwelcome';").get();
+  if (!setwelcome['count(*)']) {
+    sql.prepare("CREATE TABLE setwelcome (guildid TEXT PRIMARY KEY, channel TEXT, title TEXT, author TEXT, description TEXT);").run();
+    sql.prepare("CREATE UNIQUE INDEX idx_setwelcome_id ON setwelcome (guildid);").run();
+    sql.pragma("synchronous = 1");
+    sql.pragma("journal_mode = wal");
+  };
+  // profanity table
+  const profanity = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'profanity';").get();
+  if (!profanity['count(*)']) {
+    sql.prepare("CREATE TABLE profanity (guildid TEXT PRIMARY KEY, status TEXT);").run();
+    sql.prepare("CREATE UNIQUE INDEX idx_profanity_id ON profanity (guildid);").run();
+    sql.pragma("synchronous = 1");
+    sql.pragma("journal_mode = wal");
+  };
+  // autorole table
+  const autorole = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'autorole';").get();
+  if (!autorole['count(*)']) {
+    sql.prepare("CREATE TABLE autorole (guildid TEXT PRIMARY KEY, role TEXT);").run();
+    sql.prepare("CREATE UNIQUE INDEX idx_autorole_id ON autorole (guildid);").run();
+    sql.pragma("synchronous = 1");
+    sql.pragma("journal_mode = wal");
+  };
+  // scores table
   const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
   if (!table['count(*)']) {
     sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER);").run();
     sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON scores (id);").run();
     sql.pragma("synchronous = 1");
     sql.pragma("journal_mode = wal");
-  }
+  };
   client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
   client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);");
+  // adsprot table
+  const adsprottable = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'adsprot';").get();
+  if (!adsprottable['count(*)']) {
+    console.log('Logging table created!')
+    sql.prepare("CREATE TABLE adsprot (guildid TEXT PRIMARY KEY, status TEXT);").run();
+    sql.prepare("CREATE UNIQUE INDEX idx_adsprot_id ON adsprot (guildid);").run();
+    sql.pragma("synchronous = 1");
+    sql.pragma("journal_mode = wal");
+  };
+  // logging table
+  const loggingtable = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'logging';").get();
+  if (!loggingtable['count(*)']) {
+    console.log('Logging table created!')
+    sql.prepare("CREATE TABLE logging (guildid TEXT PRIMARY KEY, channel TEXT);").run();
+    sql.prepare("CREATE UNIQUE INDEX idx_logging_id ON logging (guildid);").run();
+    sql.pragma("synchronous = 1");
+    sql.pragma("journal_mode = wal");
+  };
+
+  // logging
+  client.on('messageDelete', async (message) => {
+    const id = sql.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
+    if (!id) return;
+    const logs = id.channel
+    if (!logs) return;
+    const entry = await message.guild.fetchAuditLogs({
+      type: 'MESSAGE_DELETE'
+    }).then(audit => audit.entries.first())
+    let user = ""
+    if (entry.extra.channel.id === message.channel.id &&
+      (entry.target.id === message.author.id) &&
+      (entry.createdTimestamp > (Date.now() - 5000)) &&
+      (entry.extra.count >= 1)) {
+      user = entry.executor.username
+    } else {
+      user = message.author.username
+    }
+    const logembed = new Discord.RichEmbed()
+      .setAuthor(user, message.author.displayAvatarURL)
+      .setDescription(`**Message sent by <@${message.author.id}> deleted in <#${message.channel.id}>** \n ${message.content}`)
+      .setColor(message.guild.member(client.user).displayHexColor)
+      .setFooter(`ID: ${message.channel.id}`)
+      .setTimestamp()
+    client.channels.get(logs).send(logembed);
+  });
+
 });
 
 // welcome
-var welcomePath = "./Storage/welcome.json";
-var welcomeRead = fs.readFileSync(welcomePath);
-var welcomeFile = JSON.parse(welcomeRead);
 
 client.on("guildMemberAdd", member => {
   const Discord = require("discord.js");
-  var guildId = member.guild.id;
-  if (!welcomeFile[guildId]) {
+  const setwelcome = sql.prepare(`SELECT * FROM setwelcome WHERE guildid = ${member.guild.id};`).get();
+  console.log(setwelcome)
+  if (!setwelcome) {
     return;
   } else {
-    let welcome = welcomeFile[guildId];
-    var title = welcome.title;
-    var author = welcome.author;
-    var description = welcome.description;
-    var sendchannel = welcome.channel;
+    var title = setwelcome.title;
+    var author = setwelcome.author;
+    var description = setwelcome.description;
+    var sendchannel = setwelcome.channel;
     let embed = new Discord.RichEmbed()
       .setTitle(`${title}`)
       .setAuthor(`${author}`, member.user.avatarURL)
@@ -154,40 +221,18 @@ client.on("guildMemberAdd", member => {
 });
 
 // autorole
-var jsonPath = "./Storage/autorole.json";
-var jsonRead = fs.readFileSync(jsonPath);
-var jsonFile = JSON.parse(jsonRead);
 
 client.on("guildMemberAdd", member => {
-  var guildId = member.guild.id;
-  if (!jsonFile[guildId]) {
+  const autoroletable = sql.prepare(`SELECT role FROM autorole WHERE guildid = ${member.guild.id};`).get();
+  if (!autoroletable) return;
+  const autorole = autoroletable.role
+  if (!autorole) {
     return;
   } else {
-    let autoRole = jsonFile[guildId];
-    let myRole = member.guild.roles.find(role => role.name === autoRole);
+    let myRole = member.guild.roles.find(role => role.name === autorole);
     member.addRole(myRole);
   }
 });
-
-// logging messages
-
-client.on('messageDelete', async (message) => {
-  const logs = sql.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
-  if (!logs) return;
-  const entry = await message.guild.fetchAuditLogs({
-    type: 'MESSAGE_DELETE'
-  }).then(audit => audit.entries.first())
-  let user = ""
-  if (entry.extra.channel.id === message.channel.id &&
-    (entry.target.id === message.author.id) &&
-    (entry.createdTimestamp > (Date.now() - 5000)) &&
-    (entry.extra.count >= 1)) {
-    user = entry.executor.username
-  } else {
-    user = message.author.username
-  }
-  client.channels.get(logs).send(`A message was deleted in ${message.channel.name} by ${user}`);
-})
 
 // on message edit (ads protection)
 
@@ -199,27 +244,44 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
     newMessage.content.includes("discord.me") ||
     newMessage.content.includes("discord.io")
   ) {
-    // reading the file
-
-    fs.readFile("./Storage/ads.json", "utf8", (err, data) => {
-      // if err
-      if (err) throw err;
-      const db = JSON.parse(data);
-      if (db[newMessage.guild.id]) {
-        if (newMessage.member.hasPermission("MANAGE_GUILD")) return;
-        newMessage.delete();
-        newMessage.channel
-          .send(
-            `**Your message contained a link and it was deleted, <@${
+    const adsprot = sql.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?").get(newMessage.guild.id);
+    if (!adsprot['count(*)']) {
+      return;
+    } else if (newMessage.member.hasPermission("MANAGE_GUILD")) return;
+    newMessage.delete();
+    newMessage.channel
+      .send(
+        `**Your message contained a link and it was deleted, <@${
               newMessage.author.id
             }>**`
-          )
-          .then(msg => {
-            msg.delete(10000);
-          });
-      }
-    });
+      )
+      .then(msg => {
+        msg.delete(10000);
+      });
   }
+  // profanity filter
+  let swearwords = JSON.parse(
+    fs.readFileSync("./Storage/swearwords.json", "utf8")
+  );
+  if (
+    swearwords.words.some(word => newMessage.content.toLowerCase().includes(word))
+  ) {
+    const profanity = sql.prepare("SELECT count(*) FROM profanity WHERE guildid = ?").get(newMessage.guild.id);
+    if (!profanity['count(*)']) {
+      return;
+    } else if (newMessage.member.hasPermission("MANAGE_GUILD")) return;
+    newMessage.delete();
+    newMessage.channel
+      .send(
+        `**Your message contained a blocked word and it was deleted, <@${
+                newMessage.author.id
+              }>**`
+      )
+      .then(msg => {
+        msg.delete(10000);
+      });
+  }
+
 });
 
 // guild join event
@@ -279,26 +341,20 @@ client.on("message", message => {
     message.content.includes("discord.me") ||
     message.content.includes("discord.io")
   ) {
-    // reading the file
-
-    fs.readFile("./Storage/ads.json", "utf8", (err, data) => {
-      // if err
-      if (err) throw err;
-      const db = JSON.parse(data);
-      if (db[message.guild.id]) {
-        if (message.member.hasPermission("MANAGE_GUILD")) return;
-        message.delete();
-        message.channel
-          .send(
-            `**Your message contained a link and it was deleted, <@${
+    const adsprot = sql.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?").get(message.guild.id);
+    if (!adsprot['count(*)']) {
+      return;
+    } else if (message.member.hasPermission("MANAGE_GUILD")) return;
+    message.delete();
+    message.channel
+      .send(
+        `**Your message contained a link and it was deleted, <@${
               message.author.id
             }>**`
-          )
-          .then(msg => {
-            msg.delete(10000);
-          });
-      }
-    });
+      )
+      .then(msg => {
+        msg.delete(10000);
+      });
   }
 
   // profanity filter
@@ -308,23 +364,20 @@ client.on("message", message => {
   if (
     swearwords.words.some(word => message.content.toLowerCase().includes(word))
   ) {
-    fs.readFile("./Storage/profanity.json", "utf8", (err, data) => {
-      if (err) throw err;
-      const db = JSON.parse(data);
-      if (db[message.guild.id]) {
-        if (message.member.hasPermission("MANAGE_GUILD")) return;
-        message.delete();
-        message.channel
-          .send(
-            `**Your message contained a blocked word and it was deleted, <@${
+    const profanity = sql.prepare("SELECT count(*) FROM profanity WHERE guildid = ?").get(message.guild.id);
+    if (!profanity['count(*)']) {
+      return;
+    } else if (message.member.hasPermission("MANAGE_GUILD")) return;
+    message.delete();
+    message.channel
+      .send(
+        `**Your message contained a blocked word and it was deleted, <@${
               message.author.id
             }>**`
-          )
-          .then(msg => {
-            msg.delete(10000);
-          });
-      }
-    });
+      )
+      .then(msg => {
+        msg.delete(10000);
+      });
   }
 
   // points
