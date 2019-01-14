@@ -11,11 +11,11 @@ const sql = new SQLite('./Storage/db/db.sqlite');
 
 client.commands = new Discord.Collection();
 
-const clean = text => {
-  if (typeof(text) === "string")
+function clean(text) {
+  if (typeof (text) === "string")
     return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
   else
-      return text;
+    return text;
 }
 
 fs.readdir("./commands/", (err, files) => {
@@ -120,7 +120,7 @@ client.on("ready", () => {
     sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON scores (id);").run();
     sql.pragma("synchronous = 1");
     sql.pragma("journal_mode = wal");
-}
+  }
   client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
   client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);");
 });
@@ -172,8 +172,7 @@ client.on("guildMemberAdd", member => {
 // logging messages
 
 client.on('messageDelete', async (message) => {
-  const id = sql.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
-  const logs = client.channels.get(id);
+  const logs = sql.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
   if (!logs) return;
   const entry = await message.guild.fetchAuditLogs({
     type: 'MESSAGE_DELETE'
@@ -187,7 +186,7 @@ client.on('messageDelete', async (message) => {
   } else {
     user = message.author.username
   }
-  logs.send(`A message was deleted in ${message.channel.name} by ${user}`);
+  client.channels.get(logs).send(`A message was deleted in ${message.channel.name} by ${user}`);
 })
 
 // on message edit (ads protection)
@@ -223,6 +222,24 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
   }
 });
 
+// guild join event
+
+client.on('guildCreate', guild => {
+  let defaultChannel = "";
+  guild.channels.forEach((channel) => {
+    if (channel.type == "text" && defaultChannel == "") {
+      if (channel.permissionsFor(guild.me).has("SEND_MESSAGES")) {
+        defaultChannel = channel;
+      }
+    }
+  })
+  let embed = new Discord.RichEmbed()
+    .setTitle(`Hello, I'm **Ragnarok**! Thanks for inviting me!`)
+    .setDescription(`The prefix for all my commands is \`-\`, e.g: \`-help\`.`)
+  defaultChannel.send({
+    embed
+  });
+});
 // client message event
 
 client.on("message", message => {
@@ -230,25 +247,29 @@ client.on("message", message => {
   if (message.channel.type === "dm") return;
   let messageArray = message.content.split(" ");
   let cmd = messageArray[0];
+  let command = messageArray[0].toLowerCase();
   let args = messageArray.slice(1);
   let argresult = args.join(" ");
 
   // eval command
   const evalargs = message.content.split(" ").slice(1);
   if (message.content.startsWith(config.prefix + "eval")) {
-    if(message.author.id !== config.ownerID) return;
+    if (message.author.id !== config.ownerID) return;
     try {
       const code = evalargs.join(" ");
       let evaled = eval(code);
- 
+
       if (typeof evaled !== "string")
         evaled = require("util").inspect(evaled);
- 
-      message.channel.send(clean(evaled), {code:"xl"});
+
+      message.channel.send(clean(evaled), {
+        code: "xl"
+      });
     } catch (err) {
       message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
     }
   };
+
   // ads protection checks
 
   if (
@@ -306,24 +327,30 @@ client.on("message", message => {
     });
   }
 
-    // points
+  // points
 
-    if (message.author.bot) return;
-    let score;
-    if (message.guild) {
-      score = client.getScore.get(message.author.id, message.guild.id);
-      if (!score) {
-        score = { id: `${message.guild.id}-${message.author.id}`, user: message.author.id, guild: message.guild.id, points: 0, level: 1 }
+  if (message.author.bot) return;
+  let score;
+  if (message.guild) {
+    score = client.getScore.get(message.author.id, message.guild.id);
+    if (!score) {
+      score = {
+        id: `${message.guild.id}-${message.author.id}`,
+        user: message.author.id,
+        guild: message.guild.id,
+        points: 0,
+        level: 1
       }
-      score.points++;
-      const curLevel = Math.floor(0.1 * Math.sqrt(score.points));
-      if(score.level < curLevel) {
-        score.level++;
-        message.reply(`You've leveled up to level **${curLevel}**! Ain't that dandy?`);
-      }
-      client.setScore.run(score);
-    };
-    
+    }
+    score.points++;
+    const curLevel = Math.floor(0.1 * Math.sqrt(score.points));
+    if (score.level < curLevel) {
+      score.level++;
+      message.reply(`you just advanced to level **${curLevel}**! Ain't that dandy?`);
+    }
+    client.setScore.run(score);
+  };
+
   // custom prefixes
   let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
   if (!prefixes[message.guild.id] || prefixes[message.guild.id] === undefined) {

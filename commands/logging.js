@@ -13,40 +13,42 @@ module.exports.run = async (client, message, args, color) => {
     if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
         return message.channel.send(`${language["logging"].noPermission}`);
 
+    client.getTable = db.prepare("SELECT * FROM logging WHERE guildid = ?");
+
     const lchan = message.mentions.channels.first();
-    const table = db.prepare(`SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'logging';`).get();
 
-
+    let status;
+    if (message.guild.id) {
+        status = client.getTable.get(message.guild.id);
+        
+  
     if (args[0] === 'off') { // to turn logging off
-        try {
-            db.prepare(`DELETE FROM logging WHERE guildid = ?`).run(message.guild.id);
-        } catch {
-            message.channel.send("There was an error. This channel's logging was likely already off.");
-        }
-    } else if (!lchan) { // if args[0] is not a channel send...
-        message.channel.send(`${language["logging"].invalidChannel}`);
-        return;
-    } else if (lchan.type === "voice" || lchan.type === "category") { // if args[0] is not a text channel send...
-        message.channel.send(`${language["logging"].invalidTextChannel}`);
-        return;
-    } else if (!table['count(*)']) {
-        message.channel.send(`:white_check_mark: | **Logging channel set to ${lchan}**!`)
-        db.prepare(`CREATE TABLE logging (guildid TEXT, channel TEXT);`).run(); // if there are no contents on the table, create the guildid and channel
-        const create = db.prepare('INSERT OR REPLACE INTO logging (guildid, channel) VALUES (@guildid, @channel);'); // then write the guild and channel values
-        create.run({
-            guildid: `${message.guild.id}`,
-            channel: `${lchan}`
-        });
-    } else {
-        message.channel.send(`:white_check_mark: | **Logging channel updated to ${lchan}**!`)
-        const update = db.prepare(`INSERT OR REPLACE INTO logging (guildid, channel) VALUES (@guildid, @channel);`); // replace the channel record where it matches with guildid
-        update.run({
-            guildid: `${message.guild.id}`,
-            channel: `${lchan}`
-        });
+            if (!status) {
+                message.channel.send(":x: | **Logging is already disabled!**");
+                return;
+            } else {
+                message.channel.send(":white_check_mark: | **Logging disabled!**");
+                db.prepare(`DELETE FROM logging WHERE guildid='${message.guild.id}'`).run();
+                return;
+            };
+        } else if (!lchan) {
+            message.channel.send(`${language["logging"].invalidChannel}`);
+            return;
+        } else if (lchan.type === "voice" || lchan.type === "category") {
+            message.channel.send(`${language["logging"].invalidTextChannel}`);
+            return;
+        } else if (!status) {
+            db.prepare(`INSERT INTO logging (guildid, channel) VALUES ('${message.guild.id}', '${lchan.id}');`).run();
+            message.channel.send(`:white_check_mark: | **Logging set to ${lchan}**`);
+            return;
+        } else {
+            db.prepare(`UPDATE logging SET channel='${lchan.id}' WHERE guildid='${message.guild.id}';`).run();
+            message.channel.send(`:white_check_mark: | ** Logging updated to ${lchan}**`);
+            return;
+        };
     };
 };
-
+        
 module.exports.help = {
     name: "logging"
 };
