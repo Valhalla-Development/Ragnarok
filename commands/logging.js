@@ -28,7 +28,7 @@ module.exports.run = async (client, message, args, color) => {
                 return;
             } else {
                 message.channel.send(":white_check_mark: | **Logging disabled!**");
-                db.prepare(`DELETE FROM logging WHERE guildid='${message.guild.id}'`).run();
+                db.prepare("DELETE FROM logging WHERE guildid = ?").run(message.guild.id);
                 return;
             };
         } else if (!lchan) {
@@ -38,11 +38,19 @@ module.exports.run = async (client, message, args, color) => {
             message.channel.send(`${language["logging"].invalidTextChannel}`);
             return;
         } else if (!status) {
-            db.prepare(`INSERT INTO logging (guildid, channel) VALUES ('${message.guild.id}', '${lchan.id}');`).run();
+            const insert = db.prepare("INSERT INTO logging (guildid, channel) VALUES (@guildid, @channel);");
+            insert.run({
+                guildid: `${message.guild.id}`,
+                channel: `${lchan.id}`
+            });
             message.channel.send(`:white_check_mark: | **Logging set to ${lchan}**`);
             return;
         } else {
-            db.prepare(`UPDATE logging SET channel='${lchan.id}' WHERE guildid='${message.guild.id}';`).run();
+            const update = db.prepare("UPDATE logging SET channel = (@channel) WHERE guildid = (@guildid);");
+            update.run({
+                guildid: `${message.guild.id}`,
+                channel: `${lchan.id}`
+            });
             message.channel.send(`:white_check_mark: | ** Logging updated to ${lchan}**`);
             return;
         };
@@ -52,25 +60,3 @@ module.exports.run = async (client, message, args, color) => {
 module.exports.help = {
     name: "logging"
 };
-
-//  const logembed = new Discord.RichEmbed()
-//    .setAuthor(user.tag, message.author.displayAvatarURL)
-//    .setDescription(`**Message sent by <@${message.author.id}> deleted in <#${message.channel.id}>** \n ${message.content}`)
-//    .setColor(message.guild.member(client.user).displayHexColor)
-//    .setFooter(`ID: ${message.channel.id}`)
-//    .setTimestamp()
-//  logchannel.send(logembed);
-
-
-//    if (args[0] === 'off') {
-//        if (!table['count(*)']) {
-//            message.channel.send(`:x: | **Logging is already turned off!**`)
-//            return;
-//        } else
-//            db.prepare(`DELETE FROM logging WHERE guildid = @guildid`).run({
-//                guildid: `${message.guild.id}`
-//            });
-//    } else if (!lchan) {
-//        message.channel.send(`${language["logging"].invalidChannel}`);
-//        return;
-//    }
