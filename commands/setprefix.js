@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
+const SQLite = require('better-sqlite3')
+const db = new SQLite('./Storage/db/db.sqlite');
 const fs = require("fs");
-let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
 const config = JSON.parse(
   fs.readFileSync("./Storage/config.json", "utf8")
 );
@@ -24,6 +25,20 @@ module.exports.run = async (client, message, args, color) => {
   if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
     return message.channel.send(`${language["setprefix"].noPermission}`);
 
+  client.getTable = db.prepare("SELECT * FROM setprefix WHERE guildid = ?");
+  let prefix;
+  if (message.guild.id) {
+    prefix = client.getTable.get(message.guild.id);
+  };
+
+  if (args[0] === "off") {
+    const off = db.prepare("UPDATE setprefix SET prefix = ('-') WHERE guildid = (@guildid);")
+    off.run({
+      guildid: `${message.guild.id}`,
+  });
+    message.channel.send(':white_check_mark: | **Custom prefix disabled!**')
+    return;
+  }
   if (
     args[0] === "[" ||
     args[0] === "{" ||
@@ -38,22 +53,23 @@ module.exports.run = async (client, message, args, color) => {
   if (!args[0])
     return message.channel.send(`${language["setprefix"].incorrectUsage}`);
 
-  prefixes[message.guild.id] = {
-    prefixes: args[0]
+    if (prefix) {
+    const update = db.prepare("UPDATE setprefix SET prefix = (@prefix) WHERE guildid = (@guildid);");
+    update.run({
+        guildid: `${message.guild.id}`,
+        prefix: `${args[0]}`
+    });
+    message.channel.send(':white_check_mark: | **Prefix updated!**');
+    return;
+  } else {
+    const insert = db.prepare("INSERT INTO setprefix (guildid, prefix) VALUES (@guildid, @prefix);");
+    insert.run({
+      guildid: `${message.guild.id}`,
+      prefix: `${args[0]}`
+    });
+    message.channel.send(':white_check_mark: | **Prefix set!**');
+    return;
   };
-
-  fs.writeFile(
-    "./Storage/prefixes.json",
-    JSON.stringify(prefixes, null, 2),
-    err => {
-      if (err) console.log(err);
-    }
-  );
-
-  let prefixSetMessage = language["setprefix"].prefixSet;
-  const prefixSet = prefixSetMessage.replace("${prefix}", args[0]);
-
-  message.channel.send(`${prefixSet}`);
 };
 
 module.exports.help = {
