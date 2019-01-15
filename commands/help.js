@@ -203,34 +203,6 @@ module.exports.run = async (client, message, args, color) => {
         message.channel.send({ embed: autoroleHelp });
         break;
 
-      case "autortoggle":
-        const autortoggleHelp = new Discord.RichEmbed()
-          .setAuthor("Autortoggle Command", client.user.avatarURL)
-          .setDescription("Toggles the autorole function")
-          .addField(
-            "Usage",
-            `${prefixes[message.guild.id].prefixes}autortoggle <off>`
-          )
-          .setThumbnail(client.user.avatarURL)
-          .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
-            client.user.avatarURL
-          )
-          .setColor(color);
-
-        if (
-          !message.channel.permissionsFor(message.guild.me).has("EMBED_LINKS")
-        ) {
-          message.channel.send(
-            `:white_check_mark: **| Check your DMs. :ok_hand:**`
-          );
-          message.author.send({ embed: autortoggleHelp });
-          return;
-        }
-
-        message.channel.send({ embed: autortoggleHelp });
-        break;
-
       case "ban":
         const banHelp = new Discord.RichEmbed()
           .setAuthor("Ban Command", client.user.avatarURL)
@@ -723,7 +695,6 @@ module.exports.run = async (client, message, args, color) => {
         .addField(":gear: Administration Commands",
         `${prefix}adsprot - Toggles ads protection
         ${prefix}autorole - Configures the autorole on join
-        ${prefix}autortoggle - Toggles autorole
         ${prefix}logging - Enables logging for the guild
         ${prefix}profanity - Toggles profanity checks
         ${prefix}setprefix - Sets the guilds prefix
@@ -738,6 +709,7 @@ module.exports.run = async (client, message, args, color) => {
         ${prefix}remindme - Reminds you of specificed message
         ${prefix}report - Reports mentioned user
         ${prefix}serverinfo - Display serverinfo
+        ${prefix}stats - Displays bot stats
         ${prefix}ticket - Displays instructions on tickets
         ${prefix}uptime - Displays how long the bot has been online
         ${prefix}userinfo - Userinfo of mentioned user`, true)
