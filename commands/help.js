@@ -1,13 +1,14 @@
 const Discord = require("discord.js");
+const SQLite = require('better-sqlite3')
+const db = new SQLite('./Storage/db/db.sqlite');
 const fs = require("fs");
 
 module.exports.run = async (client, message, args, color) => {
-  fs.readFileSync("./Storage/prefixes.json", "utf8");
 
   setTimeout(() => {
-    let prefixes = JSON.parse(
-      fs.readFileSync("./Storage/prefixes.json", "utf8")
-    );
+    const prefixgrab = db.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
+
+    let prefix = prefixgrab.prefix;  
 
     switch (args[0]) {
       case "8ball":
@@ -16,11 +17,11 @@ module.exports.run = async (client, message, args, color) => {
           .setDescription("Question the mighty 8Ball!")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}8ball <question>`
+            `${prefix}8ball <question>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -44,11 +45,11 @@ module.exports.run = async (client, message, args, color) => {
           .setDescription("Activates ads protection")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}adsprot <on/off>`
+            `${prefix}adsprot <on/off>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -72,11 +73,11 @@ module.exports.run = async (client, message, args, color) => {
           .setDescription("Activates profanity protection")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}profanity <on/off>`
+            `${prefix}profanity <on/off>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -100,11 +101,11 @@ module.exports.run = async (client, message, args, color) => {
           .setDescription("Starts a poll")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}poll <question>`
+            `${prefix}poll <question>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -127,11 +128,11 @@ module.exports.run = async (client, message, args, color) => {
           .setDescription("Reminds you with args given")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}remindme <time> <message> [Example: /remindme 15min example]`
+            `${prefix}remindme <time> <message> [Example: /remindme 15min example]`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -154,11 +155,11 @@ module.exports.run = async (client, message, args, color) => {
           .setDescription("Reports the specified user")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}report <@user> <reason>`
+            `${prefix}report <@user> <reason>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -181,11 +182,11 @@ module.exports.run = async (client, message, args, color) => {
           .setDescription("Sets the role on join (case sensitive)")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}autorole <role>`
+            `${prefix}autorole <role>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -203,45 +204,17 @@ module.exports.run = async (client, message, args, color) => {
         message.channel.send({ embed: autoroleHelp });
         break;
 
-      case "autortoggle":
-        const autortoggleHelp = new Discord.RichEmbed()
-          .setAuthor("Autortoggle Command", client.user.avatarURL)
-          .setDescription("Toggles the autorole function")
-          .addField(
-            "Usage",
-            `${prefixes[message.guild.id].prefixes}autortoggle <off>`
-          )
-          .setThumbnail(client.user.avatarURL)
-          .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
-            client.user.avatarURL
-          )
-          .setColor(color);
-
-        if (
-          !message.channel.permissionsFor(message.guild.me).has("EMBED_LINKS")
-        ) {
-          message.channel.send(
-            `:white_check_mark: **| Check your DMs. :ok_hand:**`
-          );
-          message.author.send({ embed: autortoggleHelp });
-          return;
-        }
-
-        message.channel.send({ embed: autortoggleHelp });
-        break;
-
       case "ban":
         const banHelp = new Discord.RichEmbed()
           .setAuthor("Ban Command", client.user.avatarURL)
           .setDescription("Ban the mentioned user")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}ban <@user> <reason>`
+            `${prefix}ban <@user> <reason>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -264,11 +237,11 @@ module.exports.run = async (client, message, args, color) => {
           .setDescription("Shows up a list of commands")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}help [<command>]`
+            `${prefix}help [<command>]`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -291,11 +264,11 @@ module.exports.run = async (client, message, args, color) => {
           .setDescription("Kick the mentioned user")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}kick <@user>`
+            `${prefix}kick <@user>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -316,10 +289,10 @@ module.exports.run = async (client, message, args, color) => {
         const memeHelp = new Discord.RichEmbed()
           .setAuthor("Meme Command", client.user.avatarURL)
           .setDescription("Random meme!")
-          .addField("Usage", `${prefixes[message.guild.id].prefixes}meme`)
+          .addField("Usage", `${prefix}meme`)
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -340,10 +313,10 @@ module.exports.run = async (client, message, args, color) => {
         const pingHelp = new Discord.RichEmbed()
           .setAuthor("Ping Command", client.user.avatarURL)
           .setDescription("Displays the bot's ping")
-          .addField("Usage", `${prefixes[message.guild.id].prefixes}ping`)
+          .addField("Usage", `${prefix}ping`)
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -367,11 +340,11 @@ module.exports.run = async (client, message, args, color) => {
           .setDescription("Deletes a specified amount of messages")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}purge <amount of messages>`
+            `${prefix}purge <amount of messages>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -394,11 +367,11 @@ module.exports.run = async (client, message, args, color) => {
           .setDescription("Set a new guild prefix")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}setprefix <new prefix>`
+            `${prefix}setprefix <new prefix>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -419,10 +392,10 @@ module.exports.run = async (client, message, args, color) => {
         const setwelcomeHelp = new Discord.RichEmbed()
           .setAuthor("Setwelcome Command", client.user.avatarURL)
           .setDescription("Enables welcome messages (detailed setup)")
-          .addField("Usage", `${prefixes[message.guild.id].prefixes}setwelcome`)
+          .addField("Usage", `${prefix}setwelcome`)
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -445,11 +418,11 @@ module.exports.run = async (client, message, args, color) => {
           .setDescription("Calculates a mathematical equation")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}calc <equation>`
+            `${prefix}calc <equation>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -475,12 +448,12 @@ module.exports.run = async (client, message, args, color) => {
           .addField(
             "Usage",
             `${
-              prefixes[message.guild.id].prefixes
+              prefix
             }trakt <movie/show>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -506,12 +479,12 @@ module.exports.run = async (client, message, args, color) => {
           .addField(
             "Usage",
             `${
-              prefixes[message.guild.id].prefixes
+              prefix
             }mute <time> <reason>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -534,11 +507,11 @@ module.exports.run = async (client, message, args, color) => {
           .setDescription("Unmutes the mentioned user")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}unmute <@mention>`
+            `${prefix}unmute <@mention>`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -559,10 +532,10 @@ module.exports.run = async (client, message, args, color) => {
         const coinflipHelp = new Discord.RichEmbed()
           .setAuthor("Coinflip Command", client.user.avatarURL)
           .setDescription("Flips a coin")
-          .addField("Usage", `${prefixes[message.guild.id].prefixes}coinflip`)
+          .addField("Usage", `${prefix}coinflip`)
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -583,10 +556,10 @@ module.exports.run = async (client, message, args, color) => {
         const esayHelp = new Discord.RichEmbed()
           .setAuthor("Esay Command", client.user.avatarURL)
           .setDescription("Posts an embed of your choosing")
-          .addField("Usage", `${prefixes[message.guild.id].prefixes}esay <message>`)
+          .addField("Usage", `${prefix}esay <message>`)
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -609,11 +582,11 @@ module.exports.run = async (client, message, args, color) => {
           .setDescription("Displays informations about the mentioned user")
           .addField(
             "Usage",
-            `${prefixes[message.guild.id].prefixes}userinfo [<@user>]`
+            `${prefix}userinfo [<@user>]`
           )
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -634,10 +607,10 @@ module.exports.run = async (client, message, args, color) => {
         const serverinfoHelp = new Discord.RichEmbed()
           .setAuthor("Serverinfo Command", client.user.avatarURL)
           .setDescription("Displays informations about the server")
-          .addField("Usage", `${prefixes[message.guild.id].prefixes}serverinfo`)
+          .addField("Usage", `${prefix}serverinfo`)
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -658,10 +631,10 @@ module.exports.run = async (client, message, args, color) => {
         const uptimeHelp = new Discord.RichEmbed()
           .setAuthor("Uptime Command", client.user.avatarURL)
           .setDescription("Displays how long the bot has been running")
-          .addField("Usage", `${prefixes[message.guild.id].prefixes}uptime`)
+          .addField("Usage", `${prefix}uptime`)
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -682,10 +655,10 @@ module.exports.run = async (client, message, args, color) => {
         const lmgtfyHelp = new Discord.RichEmbed()
           .setAuthor("LMGTFY Command", client.user.avatarURL)
           .setDescription("Post a 'Let me Google that for you' link")
-          .addField("Usage", `${prefixes[message.guild.id].prefixes}lmgtfy <question>`)
+          .addField("Usage", `${prefix}lmgtfy <question>`)
           .setThumbnail(client.user.avatarURL)
           .setFooter(
-            `This guild's prefix is ${prefixes[message.guild.id].prefixes}`,
+            `This guild's prefix is ${prefix}`,
             client.user.avatarURL
           )
           .setColor(color);
@@ -704,7 +677,6 @@ module.exports.run = async (client, message, args, color) => {
         break;
 
       default:
-      const prefix = prefixes[message.guild.id].prefixes
       const helpEmbed = new Discord.RichEmbed()
         .setAuthor(client.user.username, client.user.avatarURL)
         .setColor(color)
@@ -723,7 +695,6 @@ module.exports.run = async (client, message, args, color) => {
         .addField(":gear: Administration Commands",
         `${prefix}adsprot - Toggles ads protection
         ${prefix}autorole - Configures the autorole on join
-        ${prefix}autortoggle - Toggles autorole
         ${prefix}logging - Enables logging for the guild
         ${prefix}profanity - Toggles profanity checks
         ${prefix}setprefix - Sets the guilds prefix
@@ -738,6 +709,7 @@ module.exports.run = async (client, message, args, color) => {
         ${prefix}remindme - Reminds you of specificed message
         ${prefix}report - Reports mentioned user
         ${prefix}serverinfo - Display serverinfo
+        ${prefix}stats - Displays bot stats
         ${prefix}ticket - Displays instructions on tickets
         ${prefix}uptime - Displays how long the bot has been online
         ${prefix}userinfo - Userinfo of mentioned user`, true)

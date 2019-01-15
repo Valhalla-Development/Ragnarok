@@ -112,10 +112,19 @@ client.on("ready", () => {
     console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
     client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
   });
-
+  // setprefix table
+  const setprefix = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'setprefix';").get();
+  if (!setprefix['count(*)']) {
+    console.log('setprefix table created!')
+    sql.prepare("CREATE TABLE setprefix (guildid TEXT PRIMARY KEY, prefix TEXT);").run();
+    sql.prepare("CREATE UNIQUE INDEX idx_setprefix_id ON setprefix (guildid);").run();
+    sql.pragma("synchronous = 1");
+    sql.pragma("journal_mode = wal");
+  };
   // setwelcome table
   const setwelcome = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'setwelcome';").get();
   if (!setwelcome['count(*)']) {
+    console.log('setwelcome table created!')
     sql.prepare("CREATE TABLE setwelcome (guildid TEXT PRIMARY KEY, channel TEXT, title TEXT, author TEXT, description TEXT);").run();
     sql.prepare("CREATE UNIQUE INDEX idx_setwelcome_id ON setwelcome (guildid);").run();
     sql.pragma("synchronous = 1");
@@ -124,6 +133,7 @@ client.on("ready", () => {
   // profanity table
   const profanity = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'profanity';").get();
   if (!profanity['count(*)']) {
+    console.log('profanity table created!')
     sql.prepare("CREATE TABLE profanity (guildid TEXT PRIMARY KEY, status TEXT);").run();
     sql.prepare("CREATE UNIQUE INDEX idx_profanity_id ON profanity (guildid);").run();
     sql.pragma("synchronous = 1");
@@ -132,6 +142,7 @@ client.on("ready", () => {
   // autorole table
   const autorole = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'autorole';").get();
   if (!autorole['count(*)']) {
+    console.log('autorole table created!')
     sql.prepare("CREATE TABLE autorole (guildid TEXT PRIMARY KEY, role TEXT);").run();
     sql.prepare("CREATE UNIQUE INDEX idx_autorole_id ON autorole (guildid);").run();
     sql.pragma("synchronous = 1");
@@ -140,6 +151,7 @@ client.on("ready", () => {
   // scores table
   const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
   if (!table['count(*)']) {
+    console.log('scores table created!')
     sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER);").run();
     sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON scores (id);").run();
     sql.pragma("synchronous = 1");
@@ -150,7 +162,7 @@ client.on("ready", () => {
   // adsprot table
   const adsprottable = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'adsprot';").get();
   if (!adsprottable['count(*)']) {
-    console.log('Logging table created!')
+    console.log('adsprot table created!')
     sql.prepare("CREATE TABLE adsprot (guildid TEXT PRIMARY KEY, status TEXT);").run();
     sql.prepare("CREATE UNIQUE INDEX idx_adsprot_id ON adsprot (guildid);").run();
     sql.pragma("synchronous = 1");
@@ -159,7 +171,7 @@ client.on("ready", () => {
   // logging table
   const loggingtable = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'logging';").get();
   if (!loggingtable['count(*)']) {
-    console.log('Logging table created!')
+    console.log('logging table created!')
     sql.prepare("CREATE TABLE logging (guildid TEXT PRIMARY KEY, channel TEXT);").run();
     sql.prepare("CREATE UNIQUE INDEX idx_logging_id ON logging (guildid);").run();
     sql.pragma("synchronous = 1");
@@ -405,21 +417,19 @@ client.on("message", message => {
   };
 
   // custom prefixes
-  let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
-  if (!prefixes[message.guild.id] || prefixes[message.guild.id] === undefined) {
-    prefixes[message.guild.id] = {
-      prefixes: ">"
-    };
-    fs.writeFile(
-      "./Storage/prefixes.json",
-      JSON.stringify(prefixes, null, 2),
-      err => {
-        if (err) console.log(err);
-      }
-    );
+  const prefixes = sql.prepare("SELECT count(*) FROM setprefix WHERE guildid = ?").get(message.guild.id);
+  if (!prefixes['count(*)']) {
+    const insert = sql.prepare("INSERT INTO setprefix (guildid, prefix) VALUES (@guildid, @prefix);");
+    insert.run({
+      guildid: `${message.guild.id}`,
+      prefix: '-'
+    });
+    return;
   }
 
-  let prefix = prefixes[message.guild.id].prefixes;
+  const prefixgrab = sql.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
+
+  let prefix = prefixgrab.prefix;
 
   if (!message.content.startsWith(prefix)) return;
 

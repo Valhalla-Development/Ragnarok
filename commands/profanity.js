@@ -1,14 +1,16 @@
-const Discord = require("discord.js");
 const SQLite = require('better-sqlite3')
 const db = new SQLite('./Storage/db/db.sqlite');
 const fs = require("fs");
-let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
 const config = JSON.parse(
   fs.readFileSync("./Storage/config.json", "utf8")
 );
 
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
+
+  const prefixgrab = db.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
+
+  let prefix = prefixgrab.prefix;
 
   // perms checking
 
@@ -30,7 +32,7 @@ module.exports.run = async (client, message, args, color) => {
         let alreadyOnMessage = language["profanity"].alreadyOn;
         const alreadyOn = alreadyOnMessage.replace(
           "${prefix}",
-          prefixes[message.guild.id].prefixes
+          prefix
         );
         message.channel.send(`${alreadyOn}`);
         return;
@@ -50,7 +52,7 @@ module.exports.run = async (client, message, args, color) => {
         let alreadyOffMessage = language["profanity"].alreadyOff;
         const alreadyOff = alreadyOffMessage.replace(
           "${prefix}",
-          prefixes[message.guild.id].prefixes
+          prefix
         );
         message.channel.send(`${alreadyOff}`);
         return;
@@ -64,7 +66,7 @@ module.exports.run = async (client, message, args, color) => {
       let incorrectUsageMessage = language["profanity"].incorrectUsage;
       const incorrectUsage = incorrectUsageMessage.replace(
         "${prefix}",
-        prefixes[message.guild.id].prefixes
+        prefix
       );
 
       message.channel.send(`${incorrectUsage}`);

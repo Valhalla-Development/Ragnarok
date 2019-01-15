@@ -5,7 +5,7 @@ const config = JSON.parse(
   fs.readFileSync("./Storage/config.json", "utf8")
 );
 
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, message, args, color) => {
 
   if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
     message.channel.send(`${language["esay"].noPermission}`);

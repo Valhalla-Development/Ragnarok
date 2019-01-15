@@ -4,7 +4,7 @@ const config = JSON.parse(
   fs.readFileSync("./Storage/config.json", "utf8")
 );
 
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, message, args, color) => {
 
   if((!message.member.hasPermission("CREATE_INSTANT_INVITE") && (message.author.id !== config.ownerID))) {
     message.channel.send(`${language["invite"].noPermission}`);

@@ -1,4 +1,3 @@
-const Discord = require("discord.js");
 const fs = require("fs");
 const config = JSON.parse(
   fs.readFileSync("./Storage/config.json", "utf8")

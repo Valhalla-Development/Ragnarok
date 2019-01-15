@@ -1,14 +1,16 @@
-const Discord = require("discord.js");
 const SQLite = require('better-sqlite3')
 const db = new SQLite('./Storage/db/db.sqlite');
 const fs = require("fs");
-let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
 const config = JSON.parse(
   fs.readFileSync("./Storage/config.json", "utf8")
 );
 
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
+
+  const prefixgrab = db.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
+
+  let prefix = prefixgrab.prefix;
 
   if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
     return message.channel.send(`${language["autorole"].noPermission}`);
@@ -22,7 +24,7 @@ module.exports.run = async (client, message, args, color) => {
     let incorrectUsageMessage = language["autorole"].incorrectUsage;
     const incorrectUsage = incorrectUsageMessage.replace(
       "${prefix}",
-      prefixes[message.guild.id].prefixes
+      prefix
     );
     message.channel.send(`${incorrectUsage}`);
     return;

@@ -1,4 +1,3 @@
-const Discord = require("discord.js");
 const SQLite = require('better-sqlite3')
 const db = new SQLite('./Storage/db/db.sqlite');
 const fs = require("fs");
@@ -7,12 +6,15 @@ const config = JSON.parse(
 );
 
 module.exports.run = async (client, message, args, color) => {
-  let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
+  const prefixgrab = db.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
+
+  let prefix = prefixgrab.prefix;
+
   let language = require(`../messages/messages_en-US.json`);
   let step1 = language["setwelcome"].step1;
   const step1r = step1.replace(
     "${prefix}",
-    prefixes[message.guild.id].prefixes
+    prefix
   );
 
   if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))

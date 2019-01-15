@@ -1,10 +1,12 @@
 const Discord = require("discord.js");
-const fs = require("fs");
-const prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
+const SQLite = require('better-sqlite3')
+const db = new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
-    let prefix = prefixes[message.guild.id].prefixes;
+    const prefixgrab = db.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
 
+    let prefix = prefixgrab.prefix;
+  
         // And they specify a reason:
         const reason = message.content.split(" ").slice(1).join(" ");
         // Make sure the "Support Team" role exists in the server.
