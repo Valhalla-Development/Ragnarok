@@ -709,7 +709,6 @@ module.exports.run = async (client, message, args, color) => {
         ${prefix}remindme - Reminds you of specificed message
         ${prefix}report - Reports mentioned user
         ${prefix}serverinfo - Display serverinfo
-        ${prefix}stats - Displays bot stats
         ${prefix}ticket - Displays instructions on tickets
         ${prefix}uptime - Displays how long the bot has been online
         ${prefix}userinfo - Userinfo of mentioned user`, true)
