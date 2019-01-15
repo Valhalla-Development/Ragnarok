@@ -1,5 +1,3 @@
-const Discord = require("discord.js");
-
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
 

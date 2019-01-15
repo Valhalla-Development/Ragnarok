@@ -1,9 +1,7 @@
 const Discord = require("discord.js");
 const moment = require("moment");
-const fs = require("fs");
-const prefixes = JSON.parse(
-  fs.readFileSync("./Storage/prefixes.json", "utf8")
-);
+const SQLite = require('better-sqlite3')
+const db = new SQLite('./Storage/db/db.sqlite');
 
 function convertMS(ms) {
   var d, h, m, s;
@@ -23,7 +21,10 @@ function convertMS(ms) {
 }
 
 module.exports.run = async (client, message, args, color) => {
-  let prefix = prefixes[message.guild.id].prefixes;
+  const prefixgrab = db.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
+
+  let prefix = prefixgrab.prefix;
+
   if (!message.content.startsWith(prefix)) return;
 
   let u = convertMS(client.uptime);

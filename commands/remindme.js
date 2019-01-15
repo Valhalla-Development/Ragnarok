@@ -1,15 +1,20 @@
 const Discord = require("discord.js");
 const ms = require("ms");
-const fs = require("fs");
+const SQLite = require('better-sqlite3')
+const db = new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
-  let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
+
+  const prefixgrab = db.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
+
+  let prefix = prefixgrab.prefix;
+
 
   let incorrectUsageMessage = language["remindme"].incorrectUsage;
   const incorrectUsage = incorrectUsageMessage.replace(
     "${prefix}",
-    prefixes[message.guild.id].prefixes
+    prefix
   );
 
   let reminderTime = args[0];
