@@ -1,5 +1,2 @@
 node_modules/
-*.json
-*.sqlite
-*.sqlite-shm
-*.sqlite-wal
+Storage/
