@@ -412,7 +412,7 @@ client.on("message", message => {
   let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
   if (!prefixes[message.guild.id] || prefixes[message.guild.id] === undefined) {
     prefixes[message.guild.id] = {
-      prefixes: ">"
+      prefixes: "-"
     };
     fs.writeFile(
       "./Storage/prefixes.json",
