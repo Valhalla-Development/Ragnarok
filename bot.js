@@ -112,7 +112,15 @@ client.on("ready", () => {
     console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
     client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
   });
-
+  // setprefix table
+  const setprefix = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'setprefix';").get();
+  if (!setprefix['count(*)']) {
+    console.log('setprefix table created!')
+    sql.prepare("CREATE TABLE setprefix (guildid TEXT PRIMARY KEY, prefix TEXT);").run();
+    sql.prepare("CREATE UNIQUE INDEX idx_setprefix_id ON setprefix (guildid);").run();
+    sql.pragma("synchronous = 1");
+    sql.pragma("journal_mode = wal");
+  };
   // setwelcome table
   const setwelcome = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'setwelcome';").get();
   if (!setwelcome['count(*)']) {
@@ -409,21 +417,19 @@ client.on("message", message => {
   };
 
   // custom prefixes
-  let prefixes = JSON.parse(fs.readFileSync("./Storage/prefixes.json", "utf8"));
-  if (!prefixes[message.guild.id] || prefixes[message.guild.id] === undefined) {
-    prefixes[message.guild.id] = {
-      prefixes: "-"
-    };
-    fs.writeFile(
-      "./Storage/prefixes.json",
-      JSON.stringify(prefixes, null, 2),
-      err => {
-        if (err) console.log(err);
-      }
-    );
+  const prefixes = sql.prepare("SELECT count(*) FROM setprefix WHERE guildid = ?").get(message.guild.id);
+  if (!prefixes['count(*)']) {
+    const insert = sql.prepare("INSERT INTO setprefix (guildid, prefix) VALUES (@guildid, @prefix);");
+    insert.run({
+      guildid: `${message.guild.id}`,
+      prefix: '-'
+    });
+    return;
   }
 
-  let prefix = prefixes[message.guild.id].prefixes;
+  const prefixgrab = sql.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
+
+  let prefix = prefixgrab.prefix;
 
   if (!message.content.startsWith(prefix)) return;
 
