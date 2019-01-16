@@ -13,9 +13,7 @@ module.exports.run = async (client, message, args, color) => {
 
     if (!target) return message.channel.send(`${language["report"].notarget}`).then(message => message.delete(5000));
     if (!reason) return message.channel.send(`${language["report"].noreason}`).then(message => message.delete(5000));
-    if (!reports) return message.guild.createChannel("reports").then(channel => {
-        channel.setTopic(`Reports specific channel`).then(message.channel.send(`${language["report"].channelcreated}`).then(message => message.delete(5000)));
-    });
+    if (!reports) return message.channel.send(`${language["report"].nochannel}`).then(message => message.delete(5000));
 
     let reportembed = new Discord.RichEmbed()
         .setThumbnail(target.user.avatarURL)
