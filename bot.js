@@ -212,7 +212,6 @@ client.on("ready", () => {
 client.on("guildMemberAdd", member => {
   const Discord = require("discord.js");
   const setwelcome = sql.prepare(`SELECT * FROM setwelcome WHERE guildid = ${member.guild.id};`).get();
-  console.log(setwelcome)
   if (!setwelcome) {
     return;
   } else {
@@ -326,8 +325,12 @@ client.on("message", message => {
   let argresult = args.join(" ");
 
   // eval command
+  const prefixeval = sql.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
+
+  let prefixch = prefixeval.prefix;
+
   const evalargs = message.content.split(" ").slice(1);
-  if (message.content.startsWith(config.prefix + "eval")) {
+  if (message.content.startsWith(prefixch + "eval")) {
     if (message.author.id !== config.ownerID) return;
     try {
       const code = evalargs.join(" ");
