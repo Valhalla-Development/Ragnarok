@@ -65,9 +65,12 @@ module.exports.run = async (client, message, args, color) => {
               return;
             }
 
-            const select = db.prepare(`SELECT COUNT(*) FROM setwelcome WHERE guildid = ?`).get(message.guild.id);
-            const inorup = select.channel
-            if (inorup) {        
+            client.getTable = db.prepare("SELECT * FROM setwelcome WHERE guildid = ?");
+            let status;
+            if (message.guild.id) {
+                status = client.getTable.get(message.guild.id);
+
+            if (!status) {        
               const chid = message.guild.channels.find("name", collected.first().content).id
               const insertch = db.prepare("INSERT INTO setwelcome (guildid, channel) VALUES (@guildid, @channel);");
               insertch.run({
@@ -82,6 +85,7 @@ module.exports.run = async (client, message, args, color) => {
                   channel: `${chid}`
                 });
               }
+            }
 
             setTimeout(() => {
 
@@ -186,6 +190,7 @@ module.exports.run = async (client, message, args, color) => {
       })
       .catch(e => {
         console.log(e);
+        db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
         message.channel.send("**:x: | Setup canceled.**");
       });
   };
