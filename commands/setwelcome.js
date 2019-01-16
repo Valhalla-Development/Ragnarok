@@ -31,134 +31,145 @@ module.exports.run = async (client, message, args, color) => {
       message.channel.send(':white_check_mark: | **Welcome message disabled!**');
       return;
     };
-      message.channel.send(`${step1r}`).then(() => {
-          message.channel
-            .awaitMessages(response => response.author.id === message.author.id, {
-              max: 1,
-              time: 30000,
-              errors: ["time"]
-            })
+    message.channel.send(`${step1r}`).then(() => {
+        message.channel
+          .awaitMessages(response => response.author.id === message.author.id, {
+            max: 1,
+            time: 30000,
+            errors: ["time"]
+          })
 
-            .then(collected => {
-              if (collected.first().content === "cancel") {
-                message.channel.send(`${language["setwelcome"].canceled}`);
-                return;
-              }
+          .then(collected => {
+            if (collected.first().content === "cancel") {
+              message.channel.send(`${language["setwelcome"].canceled}`);
+              return;
+            }
 
-              const wchan = message.guild.channels.find("name",collected.first().content);
-              if (!wchan || wchan === undefined) {
-                message.channel.send(`${language["setwelcome"].invalidChannel}`);
-                return;
-              }
+            const wchan = message.guild.channels.find("name", collected.first().content);
+            if (!wchan || wchan === undefined) {
+              message.channel.send(`${language["setwelcome"].invalidChannel}`);
+              return;
+            }
 
-              if (wchan.type === "voice" || wchan.type === "category") {
-                message.channel.send(
-                  `${language["setwelcome"].invalidTextChannel}`
-                );
-                return;
-              }
+            if (wchan.type === "voice" || wchan.type === "category") {
+              message.channel.send(
+                `${language["setwelcome"].invalidTextChannel}`
+              );
+              return;
+            }
 
-              if (!wchan.permissionsFor(message.guild.me).has("SEND_MESSAGES")) {
-                message.channel.send(
-                  `${language["setwelcome"].noMessagePermission}`
-                );
-                return;
-              }
+            if (!wchan.permissionsFor(message.guild.me).has("SEND_MESSAGES")) {
+              message.channel.send(
+                `${language["setwelcome"].noMessagePermission}`
+              );
+              return;
+            }
 
+            const select = db.prepare(`SELECT COUNT(*) FROM setwelcome WHERE guildid = ?`).get(message.guild.id);
+            const inorup = select.channel
+            if (inorup) {        
+              const chid = message.guild.channels.find("name", collected.first().content).id
+              const insertch = db.prepare("INSERT INTO setwelcome (guildid, channel) VALUES (@guildid, @channel);");
+              insertch.run({
+                guildid: `${message.guild.id}`,
+                channel: `${chid}`
+              });
+              } else {
                 const chid = message.guild.channels.find("name", collected.first().content).id
-                const insertch = db.prepare("INSERT INTO setwelcome (guildid, channel) VALUES (@guildid, @channel);");
-                insertch.run({
+                const updatech = db.prepare("UPDATE setwelcome SET channel = (@channel) WHERE guildid = (@guildid);");
+                updatech.run({
                   guildid: `${message.guild.id}`,
                   channel: `${chid}`
                 });
+              }
 
-              setTimeout(() => {
+            setTimeout(() => {
 
-                message.channel
-                  .send(`${language["setwelcome"].step2}`)
-                  .then(() => {
-                    message.channel
-                      .awaitMessages(
-                        response => response.author.id === message.author.id, {
-                          max: 1,
-                          time: 30000,
-                          errors: ["time"]
-                        }
-                      )
+              message.channel
+                .send(`${language["setwelcome"].step2}`)
+                .then(() => {
+                  message.channel
+                    .awaitMessages(
+                      response => response.author.id === message.author.id, {
+                        max: 1,
+                        time: 30000,
+                        errors: ["time"]
+                      }
+                    )
 
-                      .then(collected => {
-                        if (collected.first().content === "cancel") {
-                          db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
-                          message.channel.send(
-                            `${language["setwelcome"].canceled}`
-                          );
-                          return;
-                        }
+                    .then(collected => {
+                      if (collected.first().content === "cancel") {
+                        db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
+                        message.channel.send(
+                          `${language["setwelcome"].canceled}`
+                        );
+                        return;
+                      }
 
-                          const title = collected.first().content;
-                          const updateit = db.prepare("UPDATE setwelcome SET title = (@title) WHERE guildid = (@guildid);");
-                          updateit.run({
-                            guildid: `${message.guild.id}`,
-                            title: `${title}`
-                          });
+                      const title = collected.first().content;
+                      const updateit = db.prepare("UPDATE setwelcome SET title = (@title) WHERE guildid = (@guildid);");
+                      updateit.run({
+                        guildid: `${message.guild.id}`,
+                        title: `${title}`
+                      });
 
-                        message.channel
-                          .send(`${language["setwelcome"].step3}`)
-                          .then(() => {
-                            message.channel
-                              .awaitMessages(
-                                response => response.author.id === message.author.id, {
-                                  max: 1,
-                                  time: 30000,
-                                  errors: ["time"]
-                                }
-                              )
+                      message.channel
+                        .send(`${language["setwelcome"].step3}`)
+                        .then(() => {
+                          message.channel
+                            .awaitMessages(
+                              response => response.author.id === message.author.id, {
+                                max: 1,
+                                time: 30000,
+                                errors: ["time"]
+                              }
+                            )
 
-                              .then(collected => {
-                                if (collected.first().content === "cancel") {
-                                  db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
-                                  message.channel.send(
-                                    `${language["setwelcome"].canceled}`
-                                  );
-                                  return;
-                                }
+                            .then(collected => {
+                              if (collected.first().content === "cancel") {
+                                db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
+                                message.channel.send(
+                                  `${language["setwelcome"].canceled}`
+                                );
+                                return;
+                              }
 
-                                  const author = collected.first().content;
-                                  const updateaut = db.prepare("UPDATE setwelcome SET author = (@author) WHERE guildid = (@guildid);");
-                                  updateaut.run({
-                                    guildid: `${message.guild.id}`,
-                                    author: `${author}`
-                                  });
+                              const author = collected.first().content;
+                              const updateaut = db.prepare("UPDATE setwelcome SET author = (@author) WHERE guildid = (@guildid);");
+                              updateaut.run({
+                                guildid: `${message.guild.id}`,
+                                author: `${author}`
+                              });
 
-                                message.channel
-                                  .send(`${language["setwelcome"].step4}`)
-                                  .then(() => {
-                                    message.channel
-                                      .awaitMessages(
-                                        response => response.author.id === message.author.id, {
-                                          max: 1,
-                                          time: 30000,
-                                          errors: ["time"]
-                                        }
-                                      )
+                              message.channel
+                                .send(`${language["setwelcome"].step4}`)
+                                .then(() => {
+                                  message.channel
+                                    .awaitMessages(
+                                      response => response.author.id === message.author.id, {
+                                        max: 1,
+                                        time: 30000,
+                                        errors: ["time"]
+                                      }
+                                    )
 
-                                      .then(collected => {
-                                        if (collected.first().content === "cancel") {
-                                          db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
-                                          message.channel.send(
-                                            `${language["setwelcome"].canceled}`
-                                          );
-                                          return;
-                                        }
+                                    .then(collected => {
+                                      if (collected.first().content === "cancel") {
+                                        db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
+                                        message.channel.send(
+                                          `${language["setwelcome"].canceled}`
+                                        );
+                                        return;
+                                      }
 
-                                          const description = collected.first().content;
-                                          const updatedes = db.prepare("UPDATE setwelcome SET description = (@description) WHERE guildid = (@guildid);");
-                                          updatedes.run({
-                                            guildid: `${message.guild.id}`,
-                                            description: `${description}`
-                                          });
+                                      const description = collected.first().content;
+                                      const updatedes = db.prepare("UPDATE setwelcome SET description = (@description) WHERE guildid = (@guildid);");
+                                      updatedes.run({
+                                        guildid: `${message.guild.id}`,
+                                        description: `${description}`
+                                      });
 
-                                        message.channel.send(`${language["setwelcome"].finished}`);
+                                      message.channel.send(`${language["setwelcome"].finished}`);
 
                                     })
                                 })
