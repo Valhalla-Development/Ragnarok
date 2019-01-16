@@ -111,7 +111,44 @@ client.on("ready", () => {
     // when the bot is removed from a guild.
     console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
     client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
+    // setprefix table
+    const delpre = sql.prepare("SELECT count(*) FROM setprefix WHERE guildid = ?;").get(guild.id);
+    if (delpre['count(*)']) {
+      sql.prepare("DELETE FROM setprefix WHERE guildid = ?").run(guild.id);
+    };
+    // setwelcome table
+    const delwel = sql.prepare("SELECT count(*) FROM setwelcome WHERE guildid = ?;").get(guild.id);
+    if (delwel['count(*)']) {
+      sql.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(guild.id);
+    };
+    // profanity table
+    const delpro = sql.prepare("SELECT count(*) FROM profanity WHERE guildid = ?;").get(guild.id);
+    if (delpro['count(*)']) {
+      sql.prepare("DELETE FROM profanity WHERE guildid = ?").run(guild.id);
+    };
+    // autorole table
+    const delaut = sql.prepare("SELECT count(*) FROM autorole WHERE guildid = ?;").get(guild.id);
+    if (delaut['count(*)']) {
+      sql.prepare("DELETE FROM autorole WHERE guildid = ?").run(guild.id);
+    };
+    // scores table
+    const delsco = sql.prepare("SELECT count(*) FROM scores WHERE guildid = ?;").get(guild.id);
+    if (delsco['count(*)']) {
+      sql.prepare("DELETE FROM scores WHERE guildid = ?").run(guild.id);
+    };
+    // adsprot table
+    const delads = sql.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?;").get(guild.id);
+    if (delads['count(*)']) {
+      sql.prepare("DELETE FROM adsprot WHERE guildid = ?").run(guild.id);
+    };
+    // logging table
+    const dellog = sql.prepare("SELECT count(*) FROM logging WHERE guildid = ?;").get(guild.id);
+    if (dellog['count(*)']) {
+      sql.prepare("DELETE FROM logging WHERE guildid = ?").run(guild.id);
+    };
   });
+
+
   // setprefix table
   const setprefix = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'setprefix';").get();
   if (!setprefix['count(*)']) {
@@ -324,28 +361,6 @@ client.on("message", message => {
   let args = messageArray.slice(1);
   let argresult = args.join(" ");
 
-  // eval command
-  const prefixeval = sql.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
-
-  let prefixch = prefixeval.prefix;
-
-  const evalargs = message.content.split(" ").slice(1);
-  if (message.content.startsWith(prefixch + "eval")) {
-    if (message.author.id !== config.ownerID) return;
-    try {
-      const code = evalargs.join(" ");
-      let evaled = eval(code);
-
-      if (typeof evaled !== "string")
-        evaled = require("util").inspect(evaled);
-
-      message.channel.send(clean(evaled), {
-        code: "xl"
-      });
-    } catch (err) {
-      message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
-    }
-  };
 
   // ads protection checks
 
