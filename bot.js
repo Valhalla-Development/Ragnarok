@@ -132,9 +132,9 @@ client.on("ready", () => {
       sql.prepare("DELETE FROM autorole WHERE guildid = ?").run(guild.id);
     };
     // scores table
-    const delsco = sql.prepare("SELECT count(*) FROM scores WHERE guildid = ?;").get(guild.id);
+    const delsco = sql.prepare("SELECT count(*) FROM scores WHERE guild = ?;").get(guild.id);
     if (delsco['count(*)']) {
-      sql.prepare("DELETE FROM scores WHERE guildid = ?").run(guild.id);
+      sql.prepare("DELETE FROM scores WHERE guild = ?").run(guild.id);
     };
     // adsprot table
     const delads = sql.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?;").get(guild.id);
