@@ -90,7 +90,7 @@
   "report": {
     "notarget": ":x: **| You must specify a user to report!**",
     "noreason": ":x: **| You must specify a reason!**",
-    "channelcreated": ":white_check_mark: **| I could not find a channel named `reports`, so I made it for you :smiley: You must re-submit the report.**"
+    "nochannel": ":x: **| Reports are disabled on this server! If you are an administrator, create the channel and name it `reports`**"
   },
   "ban": {
     "notarget": ":x: **| You must specify a user to ban!**",
