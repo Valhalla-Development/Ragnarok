@@ -12,10 +12,10 @@ const sql = new SQLite('./Storage/db/db.sqlite');
 client.commands = new Discord.Collection();
 
 function clean(text) {
-  if (typeof (text) === "string")
+  if (typeof(text) === "string")
     return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
   else
-    return text;
+      return text;
 }
 
 fs.readdir("./commands/", (err, files) => {
@@ -360,7 +360,26 @@ client.on("message", message => {
   let command = messageArray[0].toLowerCase();
   let args = messageArray.slice(1);
   let argresult = args.join(" ");
+  const evalargs = message.content.split(" ").slice(1);
 
+  // eval command
+  const prefixgrabe = sql.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
+  let evalprefix = prefixgrabe.prefix
+
+  if (message.content.startsWith(evalprefix + "eval")) {
+    if(message.author.id !== config.ownerID) return;
+    try {
+      const code = evalargs.join(" ");
+      let evaled = eval(code);
+ 
+      if (typeof evaled !== "string")
+        evaled = require("util").inspect(evaled);
+ 
+      message.channel.send(clean(evaled), {code:"xl"});
+    } catch (err) {
+      message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
+    }
+  };
 
   // ads protection checks
 
