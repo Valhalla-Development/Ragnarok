@@ -2,7 +2,6 @@ const Discord = require("discord.js");
 
 module.exports.run = async (client, message, args, color) => {
 
-    message.channel.send("This command is temporarily disabled, until the database rewrite is complete. Sorry")
     let cnt = message.content
     if (cnt !== " ") {
         message.delete(10) // ?
