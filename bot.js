@@ -363,10 +363,8 @@ client.on("message", message => {
   const evalargs = message.content.split(" ").slice(1);
 
   // eval command
-  const prefixgrabe = sql.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
-  let evalprefix = prefixgrabe.prefix
 
-  if (message.content.startsWith(evalprefix + "eval")) {
+  if (message.content.startsWith(config.prefix + "eval")) {
     if(message.author.id !== config.ownerID) return;
     try {
       const code = evalargs.join(" ");
