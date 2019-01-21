@@ -33,8 +33,10 @@ module.exports.run = async (client, message, args, color) => {
                 READ_MESSAGES: true
             });
             // Send a message saying the ticket has been created.
-            message.channel.send(`:white_check_mark: | **Your ticket has been created, <#${c.id}>.**`);
-            // Send a message in the ticket.
+            let newTicketE = new Discord.RichEmbed()
+                .setColor(`36393F`)
+                .setDescription(`:white_check_mark: Your ticket has been created, <#${c.id}>.`)
+            message.channel.send(newTicketE);            // Send a message in the ticket.
             const embed = new Discord.RichEmbed()
                 .setColor(0xCF40FA)
                 .addField(`Hey there, ${nickName}!`, `A member from the Support Team will be with you soon!\nPlease try to explain your issue while you are waiting.`)
