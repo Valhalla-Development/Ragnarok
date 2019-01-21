@@ -1,33 +1,67 @@
 const Discord = require("discord.js");
 
 module.exports.run = async (client, message, args, color) => {
-  	const modRole = message.guild.roles.find(r => ["Support Team"].includes(r.name))
-  	if (!modRole) return message.channel.send(`This server doesn't have a \`Support Team\` role made, so the ticket won't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
+  let language = require(`../messages/messages_en-US.json`);
 
-    if (!message.member.roles.has(modRole.id)) return message.reply(`Sorry! You do not have the **${modrole}** role.`);
+  const modRole = message.guild.roles.find(r => ["Support Team"].includes(r.name))
+
+  if (!modRole) {
+    let nomodRole = new Discord.RichEmbed()
+      .setColor(`36393F`)
+      .setDescription(`${language["tickets"].nomodRole}`)
+    message.channel.send(nomodRole);
+    return;
+  }
+
+  if (!message.member.roles.has(modRole.id)) {
+    let donthaveroleMessage = language["tickets"].donthaveRole;
+    const role = donthaveroleMessage.replace(
+      "${role}",
+      modRole
+    );
+    let donthaveRole = new Discord.RichEmbed()
+      .setColor(`36393F`)
+      .setDescription(`${role}`)
+    message.channel.send(donthaveRole);
+    return;
+  };
 
 
 
-    let rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-    if(!rUser) return message.channel.send("Couldn't find user.");
-    let rreason = args.join(" ").slice(22);
+  let rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+  if (!rUser) {
+    let nouser = new Discord.RichEmbed()
+      .setColor(`36393F`)
+      .setDescription(`${language["tickets"].cantfindUser}`)
+    message.channel.send(nouser);
+    return;
+  };
+  let rreason = args.join(" ").slice(22);
 
-    if (!message.channel.name.startsWith(`ticket-`)) return message.channel.send(`:x: You can't use the add command outside of a ticket channel.`);
-    message.delete().catch(O_o=>{});
+  if (!message.channel.name.startsWith(`ticket-`)) {
+    let badChannel = new Discord.RichEmbed()
+      .setColor(`36393F`)
+      .setDescription(`${language["tickets"].wrongChannel}`)
+    message.channel.send(badChannel);
+    return;
+  }
+  message.delete().catch(O_o => {});
 
 
-    message.channel.overwritePermissions(rUser, {
-          READ_MESSAGES: true,
-          SEND_MESSAGES: true
-    });
+  message.channel.overwritePermissions(rUser, {
+    READ_MESSAGES: true,
+    SEND_MESSAGES: true
+  });
 
-    let embed = new Discord.RichEmbed()
-    .setColor('36393F')
-    .setDescription(`${rUser} has been added!`)
-    message.channel.send(embed);
+  let addedMessage = language["tickets"].added;
+  const theuser = addedMessage.replace(
+    "${user}",
+    rUser
+  );
+  message.channel.send(`${theuser}`);
 
 }
 
 module.exports.help = {
-    name: "add"
-  }
+  name: "add"
+}
