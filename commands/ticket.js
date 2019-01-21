@@ -8,10 +8,8 @@ module.exports.run = async (client, message, args, color) => {
     let prefix = prefixgrab.prefix;
   
         const embed = new Discord.RichEmbed()
-            .setTitle(`Ragnarok - Tickets`)
             .setColor(0xCF40FA)
-            .setDescription(`Hello! I'm Ragnarok!`)
-            .addField(`Tickets`, `[${prefix}new]() : Opens up a new ticket\n[${prefix}close]() : Closes a ticket that has been resolved or been opened by accident`)
+            .addField(`Ragnarok - Tickets`, `[${prefix}new]() : Opens up a new ticket\n[${prefix}close]() : Closes a ticket that has been resolved\n**Admin commands:**\n[${prefix}add]() : Adds a user to a ticket (copy the user ID)\n[${prefix}remove]() : Removes a user from a ticket (copy the user ID)\n[${prefix}forceclose]() : Force closes a ticket`)
         message.channel.send({
             embed: embed
         });
