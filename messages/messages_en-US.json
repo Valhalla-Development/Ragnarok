@@ -11,21 +11,24 @@
     "noArguments": ":x: **| Incorrect usage! Please use `${prefix}8ball <question>`**"
   },
   "adsprot": {
-    "noPermission": ":x: **| Only the server's managers can use this command!**",
-    "alreadyOn": ":x: **| Ads protection is already enabled on this guild! To disable it, please use `${prefix}adsprot <off>`**",
-    "turnedOn": ":white_check_mark: **| Ads protection was turned on!**",
-    "alreadyOff": ":x: **| Ads protection is not enabled on this guild! To activate it, please use `${prefix}adsprot <on>`**",
-    "turnedOff": ":white_check_mark: **| Ads protection was turned off!**",
-    "incorrectUsage": ":x: **|  Incorrect command usage! Please use `${prefix}adsprot <on/off>`**"
+    "noPermission": ":x: **Only guild managers can use this command!**",
+    "alreadyOn": ":x: **Advert protection is already enabled on this guild! To disable it, please use `${prefix}adsprot <off>`**",
+    "turnedOn": ":white_check_mark: **Advert protection was enabled**",
+    "alreadyOff": ":x: **Advert protection is not enabled on this guild! To activate it, please use `${prefix}adsprot <on>`**",
+    "turnedOff": ":white_check_mark: **Advert protection was turned off!**",
+    "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}adsprot <on/off>`**"
   },
   "ascii": {
     "noPermission": ":x: **| Only users with `EMBED_LINKS` can use this command!**",
     "incorrectLength": ":x: **| Sorry, that message is too long!"
   },
   "autorole": {
-    "noPermission": ":x: **| Only users with `MANAGE_GUILD` can use this command!**",
-    "incorrectUsage": ":x: **|  Incorrect command usage! Please use `${prefix}autorole <role>` __the role is case sensitive!__**",
-    "roleSet": ":white_check_mark: **|Autorole, successfully set!**"
+    "noPermission": ":x: **Only users with the `MANAGE_GUILD` permission can use this command!**",
+    "incorrectUsage": ":x: ** Incorrect usage! Please use `${prefix}autorole <role>` __the role is case sensitive!__**",
+    "roleSet": ":white_check_mark: **Autorole set to `${autorole}`!**",
+    "turnedOff": ":white_check_mark: **Autorole disabled!**",
+    "updateRole": ":white_check_mark: **Autorole updated to `${autorole}`!**",
+    "invalidRole": ":x: **That role does not exist! Roles are case sensitive.**"
   },
   "autortoggle": {
     "noPermission": ":x: **| Only users with `MANAGE_GUILD` can use this command!**",
