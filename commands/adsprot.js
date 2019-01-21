@@ -4,6 +4,7 @@ const fs = require("fs");
 const config = JSON.parse(
   fs.readFileSync("./Storage/config.json", "utf8")
 );
+const Discord = require("discord.js");
 
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
@@ -15,7 +16,10 @@ module.exports.run = async (client, message, args, color) => {
   // perms checking
 
   if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
-    message.channel.send(`${language["adsprot"].noPermission}`);
+    let invalidpermsembed = new Discord.RichEmbed()
+    .setColor(`36393F`)
+    .setDescription(`${language["adsprot"].noPermission}`)
+    message.channel.send(invalidpermsembed);
     return;
   };
 
@@ -34,7 +38,10 @@ module.exports.run = async (client, message, args, color) => {
           "${prefix}",
           prefix
         );
-        message.channel.send(`${alreadyOn}`);
+        let alreadyonembed = new Discord.RichEmbed()
+        .setColor(`36393F`)
+        .setDescription(`${alreadyOn}`)
+        message.channel.send(alreadyonembed);
         return;
       } else {
         const insert = db.prepare("INSERT INTO adsprot (guildid, status) VALUES (@guildid, @status);");
@@ -42,7 +49,10 @@ module.exports.run = async (client, message, args, color) => {
           guildid: `${message.guild.id}`,
           status: 'on'
         });
-        message.channel.send(`${language["adsprot"].turnedOn}`);
+        let turnonembed = new Discord.RichEmbed()
+        .setColor(`36393F`)
+        .setDescription(`${language["adsprot"].turnedOn}`);
+        message.channel.send(turnonembed);
       };
 
       // if args = off
@@ -54,11 +64,17 @@ module.exports.run = async (client, message, args, color) => {
           "${prefix}",
           prefix
         );
-        message.channel.send(`${alreadyOff}`);
+        let alreadyoffembed = new Discord.RichEmbed()
+        .setColor(`36393F`)
+        .setDescription(`${alreadyOff}`)
+        message.channel.send(alreadyoffembed);
         return;
       } else {
         db.prepare("DELETE FROM adsprot WHERE guildid = ?").run(message.guild.id);
-        message.channel.send(`${language["adsprot"].turnedOff}`);
+        let turnedoffembed = new Discord.RichEmbed()
+        .setColor(`36393F`)
+        .setDescription(`${language["adsprot"].turnedOff}`)
+        message.channel.send(turnedoffembed);
         return;
       }
 
@@ -68,8 +84,10 @@ module.exports.run = async (client, message, args, color) => {
         "${prefix}",
         prefix
       );
-
-      message.channel.send(`${incorrectUsage}`);
+      let incorrectembed = new Discord.RichEmbed()
+      .setColor(`36393F`)
+      .setDescription(`${incorrectUsage}`)
+      message.channel.send(incorrectembed);
       return;
     }
   };
