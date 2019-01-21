@@ -53,7 +53,9 @@ module.exports.run = async (client, message, args, color) => {
         message.author.username
       }`
     );
-  message.channel.send({ embed: embed });
+  message.channel.send({
+    embed: embed
+  });
 };
 
 module.exports.help = {

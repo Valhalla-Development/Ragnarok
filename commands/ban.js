@@ -34,7 +34,7 @@ module.exports.run = async (client, message, args, color) => {
     let logsEmbed = new Discord.RichEmbed()
       .setTitle("User Banned")
       .setFooter("User Ban Logs")
-      .setColor("#ff0000")
+      .setColor(color)
       .setTimestamp()
       .addField("Banned User:", `${user}, ID: ${user.id}`)
       .addField("Reason:", reason)
@@ -66,8 +66,8 @@ module.exports.run = async (client, message, args, color) => {
       .addField("Moderator:", `${message.author}, ID: ${message.author.id}`)
       .addField("Time:", message.createdAt)
 
-      client.channels.get(logs).send(logembed);
-    };
+    client.channels.get(logs).send(logembed);
+  };
 };
 
 module.exports.help = {

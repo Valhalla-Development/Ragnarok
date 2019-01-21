@@ -2,22 +2,22 @@ const Discord = require("discord.js");
 const ms = require("ms");
 const fs = require("fs");
 const config = JSON.parse(
-  fs.readFileSync("./Storage/config.json", "utf8")
+    fs.readFileSync("./Storage/config.json", "utf8")
 );
 
 module.exports.run = async (client, message, args, color) => {
     let language = require(`../messages/messages_en-US.json`);
 
-    if((!message.member.hasPermission("KICK_MEMBERS") && (message.author.id !== config.ownerID))) {
+    if ((!message.member.hasPermission("KICK_MEMBERS") && (message.author.id !== config.ownerID))) {
         message.channel.send(`${language["mute"].noAuthorPermission}`).then(message => message.delete(5000));;
         return;
-      }
-    
-      let cnt = message.content
-      if (cnt !== " ") {
-          message.delete(10) // ?
-      };
-      
+    }
+
+    let cnt = message.content
+    if (cnt !== " ") {
+        message.delete(10) // ?
+    };
+
 
     const log = message.guild.channels.find(x => x.name === "logs");
     const mod = message.author;
@@ -29,8 +29,8 @@ module.exports.run = async (client, message, args, color) => {
     let muteChannel = message.guild.channels.find(x => x.name === "logs");
     if (!muteChannel) return message.guild.createChannel("logs").then(channel => {
         channel.setTopic(`Log channel`).then(message.channel.send(`${language["mute"].createdChannel}`).then(message => message.delete(5000)));
-      });
-        if (!muterole) {
+    });
+    if (!muterole) {
         try {
             muterole = await message.guild.createRole({
                 name: "Muted",
@@ -65,10 +65,10 @@ module.exports.run = async (client, message, args, color) => {
     setTimeout(function () {
         (user.removeRole(muterole.id));
         let unmuteembed = new Discord.RichEmbed()
-        .setAuthor(' Action | Un-Mute', `http://odinrepo.tk/speaker.png`)
-        .addField('User', `<@${user.id}>`)
-        .addField('Reason', 'Mute time ended')
-        .setColor("#ff0000")
+            .setAuthor(' Action | Un-Mute', `http://odinrepo.tk/speaker.png`)
+            .addField('User', `<@${user.id}>`)
+            .addField('Reason', 'Mute time ended')
+            .setColor("#ff0000")
 
         log.send(unmuteembed);
     }, ms(mutetime));

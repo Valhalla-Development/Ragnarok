@@ -7,20 +7,16 @@ const config = JSON.parse(
 
 module.exports.run = async (client, message, args, color) => {
 
-  if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
+  if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
     message.channel.send(`${language["esay"].noPermission}`);
     return;
   }
 
   const sayMessage = args.join(" ");
 
-  let servIcon = message.guild.iconURL;
   let esayEmbed = new Discord.RichEmbed()
-    .setTitle(`Read Me`)
-    .setColor(`RANDOM`)
-    .setThumbnail(servIcon)
+    .setColor(color)
     .setDescription(`${sayMessage}`)
-    .setTimestamp();
 
   const esayMessage = args.join(" ");
   message.delete().catch(O_o => {});

@@ -1,5 +1,7 @@
 const Discord = require("discord.js");
-const { get } = require("snekfetch");
+const {
+    get
+} = require("snekfetch");
 const encode = require("strict-uri-encode");
 const fs = require("fs");
 
@@ -16,8 +18,16 @@ const settings = {
 function search(query) {
     return new Promise(resolve => {
         get(`http://www.omdbapi.com/?apikey=${settings.omdb.apikey}&t=${query}`).then(response1 => {
-            if(response1.body.Reponse=="False") resolve({"title": "NopeDidntWork"});
-            get(`https://api.trakt.tv/movies/${response1.body.imdbID}`, { headers: {"content-type": "application/json", "trakt-api-key": settings.trakt.apikey, "trakt-api-version": 2} }).then(response2 => {
+            if (response1.body.Reponse == "False") resolve({
+                "title": "NopeDidntWork"
+            });
+            get(`https://api.trakt.tv/movies/${response1.body.imdbID}`, {
+                headers: {
+                    "content-type": "application/json",
+                    "trakt-api-key": settings.trakt.apikey,
+                    "trakt-api-version": 2
+                }
+            }).then(response2 => {
                 resolve({
                     title: response1.body.Title,
                     description: response1.body.Plot,
@@ -35,13 +45,13 @@ function search(query) {
     });
 }
 
-module.exports.run = async(client, message, args, color) => {
+module.exports.run = async (client, message, args, color) => {
 
     let searchquery = encode(args.join(" "));
     let link = `https://trakt.tv/search?query=${searchquery}`;
-    
+
     const query = args.join(" ");
-    if(query.length<3) return message.channel.send(":x: **Enter a longer search.**");
+    if (query.length < 3) return message.channel.send(":x: **Enter a longer search.**");
     message.channel.send({
         "embed": {
             "title": "Please wait...",
@@ -50,14 +60,14 @@ module.exports.run = async(client, message, args, color) => {
     }).then(async m => {
         let movie = await search(query);
 
-        if(movie.title=="NopeDidntWork") {
+        if (movie.title == "NopeDidntWork") {
             m.edit({
                 "embed": {
                     "title": "Sorry!",
                     "description": "I couldn't find that movie!"
                 }
             });
-        } else if(!movie.url) {
+        } else if (!movie.url) {
             m.edit({
                 "embed": {
                     "title": movie.title,
@@ -83,4 +93,4 @@ module.exports.run = async(client, message, args, color) => {
 
 module.exports.help = {
     name: "trakt"
-  };
+};

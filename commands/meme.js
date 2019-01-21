@@ -4,7 +4,7 @@ const meme = require("memejs");
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
 
-  meme(function(data) {
+  meme(function (data) {
     const embed = new Discord.RichEmbed()
       .setTitle(data.title[0])
       .setColor(color)
@@ -15,7 +15,9 @@ module.exports.run = async (client, message, args, color) => {
       return;
     }
 
-    message.channel.send({ embed });
+    message.channel.send({
+      embed
+    });
   });
 };
 
