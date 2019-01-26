@@ -362,6 +362,35 @@ client.on("message", message => {
   let argresult = args.join(" ");
   const evalargs = message.content.split(" ").slice(1);
 
+  // dad bot
+
+  let content = message.content.toLowerCase();
+  if (!(content.startsWith("im") || content.startsWith("i\'m"))){ return; }
+  if (args.length > 5){ return; }
+  if (args.length > 0){
+    message.channel.send(`Hi, ${argresult}, I'm Dad!`);
+    return;
+  }
+  switch (content){
+    case "im dad":
+    case "i\'m dad":
+      message.channel.send("No, I\'m Dad!");
+      return;
+    default: break;
+  }
+  if (content.includes("@everyone")){
+    message.channel.send("Hi unloved virgin, I\'m Dad!");
+    return;
+  }
+
+  // shrek
+
+  if(message.content.toLowerCase().includes('shrek')){
+    message.reply("What are you doing in mah SWAMP!", {
+      file: "https://media1.tenor.com/images/7d3f352b46140c04db37c92f71d4e157/tenor.gif"
+    });
+  }
+
   // eval command
 
   if (message.content.startsWith(config.prefix + "eval")) {
