@@ -266,17 +266,26 @@ client.on("guildMemberAdd", member => {
     var title = setwelcome.title;
     var author = setwelcome.author;
     var description = setwelcome.description;
+    if (!description) {
+      sql.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(member.guild.id);
+      return;
+    } else {
     var sendchannel = setwelcome.channel;
+    var chnsen = member.guild.channels.find(channel => channel.id === sendchannel)     
+    if (!chnsen) {
+      sql.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(member.guild.id);
+      console.log("deleted table record")
+      return;
+  };
     let embed = new Discord.RichEmbed()
       .setTitle(`${title}`)
       .setAuthor(`${author}`, member.user.avatarURL)
       .setColor(3447003)
       .setDescription(`${description} ${member.user}`)
       .setThumbnail(member.user.avatarURL);
-    client.channels.get(sendchannel).send({
-      embed
-    });
+    client.channels.get(sendchannel).send({ embed });
   }
+};
 });
 
 // autorole
