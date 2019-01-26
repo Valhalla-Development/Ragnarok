@@ -8,6 +8,8 @@ const logging = config.logging;
 const color = config.color;
 const SQLite = require('better-sqlite3')
 const sql = new SQLite('./Storage/db/db.sqlite');
+let coinCooldown = new Set();
+const coinCooldownSeconds = 5;
 
 client.commands = new Discord.Collection();
 
@@ -101,54 +103,6 @@ client.on("ready", () => {
     type: "WATCHING"
   });
 
-  client.on("guildCreate", guild => {
-    //  when the bot joins a guild.
-    console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-    client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
-  });
-
-  client.on("guildDelete", guild => {
-    // when the bot is removed from a guild.
-    console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-    client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
-    // setprefix table
-    const delpre = sql.prepare("SELECT count(*) FROM setprefix WHERE guildid = ?;").get(guild.id);
-    if (delpre['count(*)']) {
-      sql.prepare("DELETE FROM setprefix WHERE guildid = ?").run(guild.id);
-    };
-    // setwelcome table
-    const delwel = sql.prepare("SELECT count(*) FROM setwelcome WHERE guildid = ?;").get(guild.id);
-    if (delwel['count(*)']) {
-      sql.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(guild.id);
-    };
-    // profanity table
-    const delpro = sql.prepare("SELECT count(*) FROM profanity WHERE guildid = ?;").get(guild.id);
-    if (delpro['count(*)']) {
-      sql.prepare("DELETE FROM profanity WHERE guildid = ?").run(guild.id);
-    };
-    // autorole table
-    const delaut = sql.prepare("SELECT count(*) FROM autorole WHERE guildid = ?;").get(guild.id);
-    if (delaut['count(*)']) {
-      sql.prepare("DELETE FROM autorole WHERE guildid = ?").run(guild.id);
-    };
-    // scores table
-    const delsco = sql.prepare("SELECT count(*) FROM scores WHERE guild = ?;").get(guild.id);
-    if (delsco['count(*)']) {
-      sql.prepare("DELETE FROM scores WHERE guild = ?").run(guild.id);
-    };
-    // adsprot table
-    const delads = sql.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?;").get(guild.id);
-    if (delads['count(*)']) {
-      sql.prepare("DELETE FROM adsprot WHERE guildid = ?").run(guild.id);
-    };
-    // logging table
-    const dellog = sql.prepare("SELECT count(*) FROM logging WHERE guildid = ?;").get(guild.id);
-    if (dellog['count(*)']) {
-      sql.prepare("DELETE FROM logging WHERE guildid = ?").run(guild.id);
-    };
-  });
-
-
   // setprefix table
   const setprefix = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'setprefix';").get();
   if (!setprefix['count(*)']) {
@@ -185,6 +139,17 @@ client.on("ready", () => {
     sql.pragma("synchronous = 1");
     sql.pragma("journal_mode = wal");
   };
+  // balance table
+  const balancetable = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'balance';").get();
+  if (!balancetable['count(*)']) {
+    console.log('balance table created!')
+    sql.prepare("CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, balance INTEGER);").run();
+    sql.prepare("CREATE UNIQUE INDEX idx_balance_id ON balance (id);").run();
+    sql.pragma("synchronous = 1");
+    sql.pragma("journal_mode = wal");
+  };
+  client.getBalance = sql.prepare("SELECT * FROM balance WHERE user = ? AND guild = ?");
+  client.setBalance = sql.prepare("INSERT OR REPLACE INTO balance (id, user, guild, balance) VALUES (@id, @user, @guild, @balance);");
   // scores table
   const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
   if (!table['count(*)']) {
@@ -214,34 +179,80 @@ client.on("ready", () => {
     sql.pragma("synchronous = 1");
     sql.pragma("journal_mode = wal");
   };
+});
 
-  // logging
-  client.on('messageDelete', async (message) => {
-    const id = sql.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
-    if (!id) return;
-    const logs = id.channel
-    if (!logs) return;
-    const entry = await message.guild.fetchAuditLogs({
-      type: 'MESSAGE_DELETE'
-    }).then(audit => audit.entries.first())
-    let user = ""
-    if (entry.extra.channel.id === message.channel.id &&
-      (entry.target.id === message.author.id) &&
-      (entry.createdTimestamp > (Date.now() - 5000)) &&
-      (entry.extra.count >= 1)) {
-      user = entry.executor.username
-    } else {
-      user = message.author.username
-    }
-    const logembed = new Discord.RichEmbed()
-      .setAuthor(user, message.author.displayAvatarURL)
-      .setDescription(`**Message sent by <@${message.author.id}> deleted in <#${message.channel.id}>** \n ${message.content}`)
-      .setColor(message.guild.member(client.user).displayHexColor)
-      .setFooter(`ID: ${message.channel.id}`)
-      .setTimestamp()
-    client.channels.get(logs).send(logembed);
-  });
+// logging
+client.on('messageDelete', async (message) => {
+  const id = sql.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
+  if (!id) return;
+  const logs = id.channel
+  if (!logs) return;
+  const entry = await message.guild.fetchAuditLogs({
+    type: 'MESSAGE_DELETE'
+  }).then(audit => audit.entries.first())
+  let user = ""
+  if (entry.extra.channel.id === message.channel.id &&
+    (entry.target.id === message.author.id) &&
+    (entry.createdTimestamp > (Date.now() - 5000)) &&
+    (entry.extra.count >= 1)) {
+    user = entry.executor.username
+  } else {
+    user = message.author.username
+  }
+  const logembed = new Discord.RichEmbed()
+    .setAuthor(user, message.author.displayAvatarURL)
+    .setDescription(`**Message sent by <@${message.author.id}> deleted in <#${message.channel.id}>** \n ${message.content}`)
+    .setColor(message.guild.member(client.user).displayHexColor)
+    .setFooter(`ID: ${message.channel.id}`)
+    .setTimestamp()
+  client.channels.get(logs).send(logembed);
+});
 
+client.on("guildDelete", guild => {
+  // when the bot is removed from a guild.
+  console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
+  client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
+  // setprefix table
+  const delpre = sql.prepare("SELECT count(*) FROM setprefix WHERE guildid = ?;").get(guild.id);
+  if (delpre['count(*)']) {
+    sql.prepare("DELETE FROM setprefix WHERE guildid = ?").run(guild.id);
+  };
+  // setwelcome table
+  const delwel = sql.prepare("SELECT count(*) FROM setwelcome WHERE guildid = ?;").get(guild.id);
+  if (delwel['count(*)']) {
+    sql.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(guild.id);
+  };
+  // profanity table
+  const delpro = sql.prepare("SELECT count(*) FROM profanity WHERE guildid = ?;").get(guild.id);
+  if (delpro['count(*)']) {
+    sql.prepare("DELETE FROM profanity WHERE guildid = ?").run(guild.id);
+  };
+  // autorole table
+  const delaut = sql.prepare("SELECT count(*) FROM autorole WHERE guildid = ?;").get(guild.id);
+  if (delaut['count(*)']) {
+    sql.prepare("DELETE FROM autorole WHERE guildid = ?").run(guild.id);
+  };
+  // scores table
+  const delsco = sql.prepare("SELECT count(*) FROM scores WHERE guild = ?;").get(guild.id);
+  if (delsco['count(*)']) {
+    sql.prepare("DELETE FROM scores WHERE guild = ?").run(guild.id);
+  };
+  // adsprot table
+  const delads = sql.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?;").get(guild.id);
+  if (delads['count(*)']) {
+    sql.prepare("DELETE FROM adsprot WHERE guildid = ?").run(guild.id);
+  };
+  // logging table
+  const dellog = sql.prepare("SELECT count(*) FROM logging WHERE guildid = ?;").get(guild.id);
+  if (dellog['count(*)']) {
+    sql.prepare("DELETE FROM logging WHERE guildid = ?").run(guild.id);
+  };
+});
+
+client.on("guildCreate", guild => {
+  //  when the bot joins a guild.
+  console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
+  client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
 });
 
 // welcome
@@ -451,7 +462,34 @@ client.on("message", message => {
       });
   }
 
-  //Experience
+  //balance
+  if (message.author.bot) return;
+  let balance;
+  if (message.guild) {
+    balance = client.getBalance.get(message.author.id, message.guild.id);
+    if (!balance) {
+      balance = {
+        id: `${message.guild.id}-${message.author.id}`,
+        user: message.author.id,
+        guild: message.guild.id,
+        balance: 0,
+      }
+    }
+    let curBal = balance.balance
+    let coinAmt = Math.floor(Math.random() * 1) + 10;
+    let baseAmt = Math.floor(Math.random() * 1) + 10;
+    if(coinAmt === baseAmt){
+    if(!coinCooldown.has(message.author.id)) {balance.balance = curBal + coinAmt;
+    client.setBalance.run(balance);
+    coinCooldown.add(message.author.id);
+    setTimeout(function(){
+    coinCooldown.delete(message.author.id);
+    }, coinCooldownSeconds*1000)
+    }}
+  };
+
+
+  //scores
   if (message.author.bot) return;
   let score;
   if (message.guild) {
@@ -478,7 +516,6 @@ client.on("message", message => {
         .setThumbnail("https://i.imgur.com/lXeBiMs.png")
         .setColor(color)
         .addField("New Level", curlvl + 1)
-        .setFooter(`${difference} XP required to level up!`, message.author.displayAvatarURL);
       message.channel.send(lvlup);
     }
     client.setScore.run(score);
