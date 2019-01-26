@@ -13,7 +13,7 @@ module.exports.run = async (client, message, args, color) => {
 
   let prefix = prefixgrab.prefix;
 
-  if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
+  if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
     message.channel.send(`${language["poll"].noPermission}`);
     return;
   }
@@ -39,12 +39,14 @@ module.exports.run = async (client, message, args, color) => {
 
   let msg = await message.channel
     .send(embed)
-    .then(function(msg) {
+    .then(function (msg) {
       msg.react("✅");
       msg.react("❌"); // You can only add two reacts
-      message.delete({ timeout: 1000 });
+      message.delete({
+        timeout: 1000
+      });
     })
-    .catch(function(error) {
+    .catch(function (error) {
       console.log(error);
     });
 };

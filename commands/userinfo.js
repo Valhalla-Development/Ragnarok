@@ -8,7 +8,7 @@ const config = JSON.parse(
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
 
-  if((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
+  if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
     return message.channel.send(`${language["userinfo"].noPermission}`);
 
   const user = message.mentions.users.first() || message.author;
@@ -44,7 +44,9 @@ module.exports.run = async (client, message, args, color) => {
     return;
   }
 
-  message.channel.send({ embed: embed });
+  message.channel.send({
+    embed: embed
+  });
 };
 
 module.exports.help = {

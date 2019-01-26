@@ -10,7 +10,9 @@
     "mathjs": "^5.4.0",
     "memejs": "^1.0.7",
     "moment": "^2.23.0",
-    "strict-uri-encode": "^2.0.0"
+    "request": "^2.88.0",
+    "strict-uri-encode": "^2.0.0",
+    "trakt.tv": "^7.1.0"
   },
   "devDependencies": {},
   "scripts": {

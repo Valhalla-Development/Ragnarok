@@ -6,14 +6,14 @@ const config = JSON.parse(
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
 
-  if((!message.member.hasPermission("MANAGE_MESSAGES") && (message.author.id !== config.ownerID))) {
+  if ((!message.member.hasPermission("MANAGE_MESSAGES") && (message.author.id !== config.ownerID))) {
     message.channel.send(`${language["purge"].noPermission}`).then(message => message.delete(5000));;
     return;
   }
 
   let cnt = message.content
   if (cnt !== " ") {
-      message.delete(10) // ?
+    message.delete(10) // ?
   };
 
   const argresult = args.join(" ");
