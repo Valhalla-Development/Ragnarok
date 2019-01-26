@@ -1,3 +1,4 @@
+const Discord = require("discord.js");
 const SQLite = require('better-sqlite3')
 const sql = new SQLite('./Storage/db/db.sqlite');
 
@@ -12,9 +13,20 @@ module.exports.run = async (client, message, args, color) => {
         score = client.getScore.get(message.author.id, message.guild.id);
     };
 
-    message.reply(`You currently have ${score.points} points and are level ${score.level}!`);
 
-};
+  let nxtLvlXp = score.level * 5000;
+  let difference = nxtLvlXp - curxp;
+  let embed = new Discord.RichEmbed()
+  .setAuthor(`${message.author.username}'s Level`)
+  .setColor(color)
+  .setThumbnail("http://pixelartmaker.com/art/0fc29bffe9ca6e5.png")
+  .addField("Level", score.level, true)
+  .addField("XP", score.points, true)
+  .setFooter(`${difference} XP required to level up!`, message.author.displayAvatarURL);
+
+  message.channel.send(embed);
+}
+
 module.exports.help = {
-    name: "points"
-};
+  name: "level"
+}
