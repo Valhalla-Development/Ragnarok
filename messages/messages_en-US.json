@@ -26,6 +26,12 @@
     "updateRole": ":white_check_mark: **Autorole updated to `${autorole}`!**",
     "invalidRole": ":x: **That role does not exist! Roles are case sensitive.**"
   },
+  "slot": {
+    "noArgs": ":x: **Please provide an amount of coins to gamble!**",
+    "naN": ":x: **That is not a valid integer!**",
+    "invalidAmount": ":x: **You must gamble at least 10 coins!**",
+    "invalidBalance": ":x: **You do not have that many coins! You only have** `${balance}` **coins!**"
+  },
   "autortoggle": {
     "noPermission": ":x: **Only users with `MANAGE_GUILD` can use this command!**",
     "alreadyOn": ":x: **Autorole is already turned on!**",
