@@ -13,6 +13,13 @@ module.exports.run = async (client, message, args, color) => {
 
     let prefix = prefixgrab.prefix;
 
+
+    // config help
+
+    if (args[0] === undefined) {
+        message.channel.send("available commands etc.: boi do it you lazy fuck")
+    };
+    
     // profanity
 
     if (args[0] === "profanity") {

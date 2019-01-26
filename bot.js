@@ -12,10 +12,10 @@ const sql = new SQLite('./Storage/db/db.sqlite');
 client.commands = new Discord.Collection();
 
 function clean(text) {
-  if (typeof(text) === "string")
+  if (typeof (text) === "string")
     return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
   else
-      return text;
+    return text;
 }
 
 fs.readdir("./commands/", (err, files) => {
@@ -364,28 +364,21 @@ client.on("message", message => {
 
   // dad bot
 
-  let content = message.content.toLowerCase();
-  if (!(content.startsWith("im") || content.startsWith("i\'m"))){ return; }
-  if (args.length > 5){ return; }
-  if (args.length > 0){
-    message.channel.send(`Hi, ${argresult}, I'm Dad!`);
-    return;
-  }
-  switch (content){
-    case "im dad":
-    case "i\'m dad":
-      message.channel.send("No, I\'m Dad!");
+  if (message.content.toLowerCase().startsWith('im') || message.content.toLowerCase().startsWith('i\'m')) {
+    if (args[0] === undefined) {
       return;
-    default: break;
-  }
-  if (content.includes("@everyone")){
-    message.channel.send("Hi unloved virgin, I\'m Dad!");
-    return;
+    } else if (message.content.toLowerCase().includes('@everyone')) {
+      message.channel.send(`Hi unloved virgin, I\'m Dad!`);
+    } else if (message.content.toLowerCase().startsWith('im dad') || message.content.toLowerCase().startsWith('i\'m dad')) {
+      message.channel.send(`No, I\'m Dad!`);
+    } else {
+      message.channel.send(`Hi ${argresult}, I\'m Dad!`)
+    };
   }
 
   // shrek
 
-  if(message.content.toLowerCase().includes('shrek')){
+  if (message.content.toLowerCase().includes('shrek')) {
     message.reply("What are you doing in mah SWAMP!", {
       file: "https://media1.tenor.com/images/7d3f352b46140c04db37c92f71d4e157/tenor.gif"
     });
@@ -394,15 +387,17 @@ client.on("message", message => {
   // eval command
 
   if (message.content.startsWith(config.prefix + "eval")) {
-    if(message.author.id !== config.ownerID) return;
+    if (message.author.id !== config.ownerID) return;
     try {
       const code = evalargs.join(" ");
       let evaled = eval(code);
- 
+
       if (typeof evaled !== "string")
         evaled = require("util").inspect(evaled);
- 
-      message.channel.send(clean(evaled), {code:"xl"});
+
+      message.channel.send(clean(evaled), {
+        code: "xl"
+      });
     } catch (err) {
       message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
     }
@@ -456,8 +451,7 @@ client.on("message", message => {
       });
   }
 
-  // points
-
+  //Experience
   if (message.author.bot) return;
   let score;
   if (message.guild) {
@@ -471,15 +465,24 @@ client.on("message", message => {
         level: 1
       }
     }
-    score.points++;
-    const curLevel = Math.floor(0.1 * Math.sqrt(score.points));
-    if (score.level < curLevel) {
-      score.level++;
-      message.reply(`you just advanced to level **${curLevel}**! Ain't that dandy?`);
+    let xpAdd = Math.floor(Math.random() * 10) + 50;
+    let curxp = score.points;
+    let curlvl = score.level;
+    let nxtLvl = score.level * 5000;
+    score.points = curxp + xpAdd;
+    if (nxtLvl <= score.points) {
+      score.level = curlvl + 1;
+      let lvlup = new Discord.RichEmbed()
+        .setAuthor(`Congrats ${message.author.username}`, message.author.displayAvatarURL)
+        .setTitle("You have leveled up!")
+        .setThumbnail("https://i.imgur.com/lXeBiMs.png")
+        .setColor(color)
+        .addField("New Level", curlvl + 1)
+        .setFooter(`${difference} XP required to level up!`, message.author.displayAvatarURL);
+      message.channel.send(lvlup);
     }
     client.setScore.run(score);
   };
-
   // custom prefixes
   const prefixes = sql.prepare("SELECT count(*) FROM setprefix WHERE guildid = ?").get(message.guild.id);
   if (!prefixes['count(*)']) {

@@ -15,18 +15,18 @@ module.exports.run = async (client, message, args, color) => {
 
 
   let nxtLvlXp = score.level * 5000;
-  let difference = nxtLvlXp - curxp;
+  let difference = nxtLvlXp - score.points;
   let embed = new Discord.RichEmbed()
   .setAuthor(`${message.author.username}'s Level`)
   .setColor(color)
-  .setThumbnail("http://pixelartmaker.com/art/0fc29bffe9ca6e5.png")
-  .addField("Level", score.level, true)
+  .setThumbnail(message.author.displayAvatarURL)
   .addField("XP", score.points, true)
+  .addField("Level", score.level, true)
   .setFooter(`${difference} XP required to level up!`, message.author.displayAvatarURL);
 
   message.channel.send(embed);
 }
 
 module.exports.help = {
-  name: "level"
+  name: "points"
 }
