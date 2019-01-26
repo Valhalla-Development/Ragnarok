@@ -17,7 +17,11 @@ module.exports.run = async (client, message, args, color) => {
     // config help
 
     if (args[0] === undefined) {
-        message.channel.send("available commands etc.: boi do it you lazy fuck")
+        const undeembed = new Discord.RichEmbed()
+        .setColor(0xCF40FA)
+        .addField(`Ragnarok - Config`, `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config profanity]() : Enable/Disable profanity protection\n[${prefix}config welcome]() : Sets the welcome message`)
+        message.channel.send({ embed: undeembed });
+        return;
     };
     
     // profanity
