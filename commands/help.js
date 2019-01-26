@@ -680,50 +680,32 @@ module.exports.run = async (client, message, args, color) => {
       const helpEmbed = new Discord.RichEmbed()
         .setAuthor(client.user.username, client.user.avatarURL)
         .setColor(color)
-        .setDescription(`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!\nRun \`${prefix}help <command>\` to see command specific instructions!`)
+        .setDescription(`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!\nRun \`${prefix}help <command>\` to see command specific instructions!\n'Administration Commands' must be preceded by \`${prefix}config\` e.g. \`${prefix}config adsprot\``)
         .setFooter(`This guild's prefix is ${prefix}`, client.user.avatarURL)
         .setTimestamp()
-        .addField("🔨 Moderation Commands", 
-        `${prefix}ban - Bans the mentioned user
-        ${prefix}esay - Posts an embed of your choosing
-        ${prefix}invite - Links an invite to the guild
-        ${prefix}kick - Kicks the mentioned user
-        ${prefix}mute - Mutes the mentioned user
-        ${prefix}poll - Starts a poll
-        ${prefix}purge - Deletes specified amount of messages
-        ${prefix}unmute - Unmutes the mentioned user`, true)
         .addField(":gear: Administration Commands",
-        `${prefix}adsprot - Toggles ads protection
-        ${prefix}autorole - Configures the autorole on join
-        ${prefix}logging - Enables logging for the guild
-        ${prefix}profanity - Toggles profanity checks
-        ${prefix}setprefix - Sets the guilds prefix
-        ${prefix}setwelcome - Sets the welcome message`, true)
+        `\`${prefix}adsprot\` \`${prefix}autorole\` \`${prefix}logging\` \`${prefix}prefix\`
+        \`${prefix}profanity\` \`${prefix}welcome\``, true)
+        .addField("🔨 Moderation Commands", 
+        `\`${prefix}ban\` \`${prefix}esay\` \`${prefix}kick\` \`${prefix}mute\` 
+        \`${prefix}poll\` \`${prefix}purge\` \`${prefix}unmute\``, true)
         .addField("📃 Informative Commands",
-        `${prefix}close - Closes a support ticket
-        ${prefix}ginvite - Links the invite for the bot
-        ${prefix}new - Creates a ticket
-        ${prefix}ping - Checks ping of bot
-        ${prefix}pleader - Displays points leaderboard
-        ${prefix}points - Display current points
-        ${prefix}remindme - Reminds you of specificed message
-        ${prefix}report - Reports mentioned user
-        ${prefix}serverinfo - Display serverinfo
-        ${prefix}ticket - Displays instructions on tickets
-        ${prefix}uptime - Displays how long the bot has been online
-        ${prefix}userinfo - Userinfo of mentioned user`, true)
+        `\`${prefix}balance\` \`${prefix}config\` \`${prefix}help\` \`${prefix}ginvite\` 
+        \`${prefix}invite\` \`${prefix}ping\` \`${prefix}report\` \`${prefix}serverinfo\`
+        \`${prefix}uptime\` \`${prefix}userinfo\``, true)
+        .addField(":ticket: Ticket Commands",
+        `\`${prefix}ticket\` \`${prefix}add\` \`${prefix}close\` \`${prefix}forceclose\`
+        \`${prefix}new\` \`${prefix}remove\``, true)
         .addField(":red_car: Fun Commands",
-        `${prefix}8ball - Question the mighty 8Ball
-        ${prefix}calc - Calculated an equation
-        ${prefix}coinflip - Flips a coin
-        ${prefix}lmgtfy - Links a LetMeGoogleThatForYou link
-        ${prefix}meme - Posts a meme
-        ${prefix}trakt - Searches trakt for specified Movie`, true);
+        `\`${prefix}8ball\` \`${prefix}calc\` \`${prefix}coinflip\` \`${prefix}lmgtfy\`
+        \`${prefix}meme\` \`${prefix}pleader\` \`${prefix}points\` \`${prefix}remindme\`
+        \`${prefix}slot\` \`${prefix}trakt\``, true);
       
-          message.channel.send(
-            `:white_check_mark: **| Check your DMs.**`
-          );
-          message.author.send({ embed: helpEmbed });
+        message.channel.send({ embed: helpEmbed});
+          //message.channel.send(
+          //  `:white_check_mark: **| Check your DMs.**`
+          //);
+          //message.author.send({ embed: helpEmbed });
           break;
         }
   }, 1000);
