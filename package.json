@@ -1,23 +1,30 @@
 {
-  "name": "package.json",
+  "name": "ragnarok",
   "version": "1.0.0",
-  "description": "Ragnarok DEV Bot",
-  "main": "bot.js",
+  "description": "",
+  "main": "blank_template.js",
   "dependencies": {
-    "ascii-art": "^1.5.0",
-    "better-sqlite3": "^5.2.1",
+    "better-sqlite3": "^5.4.0",
     "discord.js": "^11.4.2",
-    "mathjs": "^5.4.0",
     "memejs": "^1.0.7",
-    "moment": "^2.23.0",
-    "request": "^2.88.0",
+    "moment": "^2.24.0",
+    "ms": "^2.1.1",
     "strict-uri-encode": "^2.0.0",
-    "trakt.tv": "^7.1.0"
+    "trakt.tv": "^7.1.0",
+    "mathjs": "^5.4.2"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "RagnarLothbrok-Odin",
-  "license": "ISC"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord/issues"
+  },
+  "homepage": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord#readme"
 }
