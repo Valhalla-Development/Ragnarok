@@ -7,7 +7,7 @@ const prefixgen = config.prefix;
 const logging = config.logging;
 const color = config.color;
 const SQLite = require('better-sqlite3')
-const sql = new SQLite('./Storage/db/db.sqlite');
+const db = new SQLite('./Storage/db/db.sqlite');
 let coinCooldown = new Set();
 const coinCooldownSeconds = 5;
 
@@ -65,7 +65,6 @@ if (logging === true) {
 client.login(config.token);
 
 // error notifiers
-
 client.on("error", e => {
   console.error(e);
 });
@@ -79,7 +78,6 @@ process.on("unhandledRejection", error => {
 });
 
 // client ready event
-
 client.on("ready", () => {
   // console logs
 
@@ -104,86 +102,87 @@ client.on("ready", () => {
   });
 
   // setprefix table
-  const setprefix = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'setprefix';").get();
+  const setprefix = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'setprefix';").get();
   if (!setprefix['count(*)']) {
     console.log('setprefix table created!')
-    sql.prepare("CREATE TABLE setprefix (guildid TEXT PRIMARY KEY, prefix TEXT);").run();
-    sql.prepare("CREATE UNIQUE INDEX idx_setprefix_id ON setprefix (guildid);").run();
-    sql.pragma("synchronous = 1");
-    sql.pragma("journal_mode = wal");
+    db.prepare("CREATE TABLE setprefix (guildid TEXT PRIMARY KEY, prefix TEXT);").run();
+    db.prepare("CREATE UNIQUE INDEX idx_setprefix_id ON setprefix (guildid);").run();
+    db.pragma("synchronous = 1");
+    db.pragma("journal_mode = wal");
   };
   // setwelcome table
-  const setwelcome = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'setwelcome';").get();
+  const setwelcome = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'setwelcome';").get();
   if (!setwelcome['count(*)']) {
     console.log('setwelcome table created!')
-    sql.prepare("CREATE TABLE setwelcome (guildid TEXT PRIMARY KEY, channel TEXT, title TEXT, author TEXT, description TEXT);").run();
-    sql.prepare("CREATE UNIQUE INDEX idx_setwelcome_id ON setwelcome (guildid);").run();
-    sql.pragma("synchronous = 1");
-    sql.pragma("journal_mode = wal");
+    db.prepare("CREATE TABLE setwelcome (guildid TEXT PRIMARY KEY, channel TEXT, title TEXT, author TEXT, description TEXT);").run();
+    db.prepare("CREATE UNIQUE INDEX idx_setwelcome_id ON setwelcome (guildid);").run();
+    db.pragma("synchronous = 1");
+    db.pragma("journal_mode = wal");
   };
   // profanity table
-  const profanity = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'profanity';").get();
+  const profanity = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'profanity';").get();
   if (!profanity['count(*)']) {
     console.log('profanity table created!')
-    sql.prepare("CREATE TABLE profanity (guildid TEXT PRIMARY KEY, status TEXT);").run();
-    sql.prepare("CREATE UNIQUE INDEX idx_profanity_id ON profanity (guildid);").run();
-    sql.pragma("synchronous = 1");
-    sql.pragma("journal_mode = wal");
+    db.prepare("CREATE TABLE profanity (guildid TEXT PRIMARY KEY, status TEXT);").run();
+    db.prepare("CREATE UNIQUE INDEX idx_profanity_id ON profanity (guildid);").run();
+    db.pragma("synchronous = 1");
+    db.pragma("journal_mode = wal");
   };
   // autorole table
-  const autorole = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'autorole';").get();
+  const autorole = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'autorole';").get();
   if (!autorole['count(*)']) {
     console.log('autorole table created!')
-    sql.prepare("CREATE TABLE autorole (guildid TEXT PRIMARY KEY, role TEXT);").run();
-    sql.prepare("CREATE UNIQUE INDEX idx_autorole_id ON autorole (guildid);").run();
-    sql.pragma("synchronous = 1");
-    sql.pragma("journal_mode = wal");
+    db.prepare("CREATE TABLE autorole (guildid TEXT PRIMARY KEY, role TEXT);").run();
+    db.prepare("CREATE UNIQUE INDEX idx_autorole_id ON autorole (guildid);").run();
+    db.pragma("synchronous = 1");
+    db.pragma("journal_mode = wal");
   };
   // balance table
-  const balancetable = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'balance';").get();
+  const balancetable = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'balance';").get();
   if (!balancetable['count(*)']) {
     console.log('balance table created!')
-    sql.prepare("CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, balance INTEGER);").run();
-    sql.prepare("CREATE UNIQUE INDEX idx_balance_id ON balance (id);").run();
-    sql.pragma("synchronous = 1");
-    sql.pragma("journal_mode = wal");
+    db.prepare("CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, balance INTEGER);").run();
+    db.prepare("CREATE UNIQUE INDEX idx_balance_id ON balance (id);").run();
+    db.pragma("synchronous = 1");
+    db.pragma("journal_mode = wal");
   };
-  client.getBalance = sql.prepare("SELECT * FROM balance WHERE user = ? AND guild = ?");
-  client.setBalance = sql.prepare("INSERT OR REPLACE INTO balance (id, user, guild, balance) VALUES (@id, @user, @guild, @balance);");
+  client.getBalance = db.prepare("SELECT * FROM balance WHERE user = ? AND guild = ?");
+  client.setBalance = db.prepare("INSERT OR REPLACE INTO balance (id, user, guild, balance) VALUES (@id, @user, @guild, @balance);");
   // scores table
-  const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
+  const table = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
   if (!table['count(*)']) {
     console.log('scores table created!')
-    sql.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER);").run();
-    sql.prepare("CREATE UNIQUE INDEX idx_scores_id ON scores (id);").run();
-    sql.pragma("synchronous = 1");
-    sql.pragma("journal_mode = wal");
+    db.prepare("CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER);").run();
+    db.prepare("CREATE UNIQUE INDEX idx_scores_id ON scores (id);").run();
+    db.pragma("synchronous = 1");
+    db.pragma("journal_mode = wal");
   };
-  client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
-  client.setScore = sql.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);");
+  client.getScore = db.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
+  client.setScore = db.prepare("INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);");
   // adsprot table
-  const adsprottable = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'adsprot';").get();
+  const adsprottable = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'adsprot';").get();
   if (!adsprottable['count(*)']) {
     console.log('adsprot table created!')
-    sql.prepare("CREATE TABLE adsprot (guildid TEXT PRIMARY KEY, status TEXT);").run();
-    sql.prepare("CREATE UNIQUE INDEX idx_adsprot_id ON adsprot (guildid);").run();
-    sql.pragma("synchronous = 1");
-    sql.pragma("journal_mode = wal");
+    db.prepare("CREATE TABLE adsprot (guildid TEXT PRIMARY KEY, status TEXT);").run();
+    db.prepare("CREATE UNIQUE INDEX idx_adsprot_id ON adsprot (guildid);").run();
+    db.pragma("synchronous = 1");
+    db.pragma("journal_mode = wal");
   };
   // logging table
-  const loggingtable = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'logging';").get();
+  const loggingtable = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'logging';").get();
   if (!loggingtable['count(*)']) {
     console.log('logging table created!')
-    sql.prepare("CREATE TABLE logging (guildid TEXT PRIMARY KEY, channel TEXT);").run();
-    sql.prepare("CREATE UNIQUE INDEX idx_logging_id ON logging (guildid);").run();
-    sql.pragma("synchronous = 1");
-    sql.pragma("journal_mode = wal");
+    db.prepare("CREATE TABLE logging (guildid TEXT PRIMARY KEY, channel TEXT);").run();
+    db.prepare("CREATE UNIQUE INDEX idx_logging_id ON logging (guildid);").run();
+    db.pragma("synchronous = 1");
+    db.pragma("journal_mode = wal");
   };
 });
 
 // logging
 client.on('messageDelete', async (message) => {
-  const id = sql.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
+  if(message.author.bot) return;
+  const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
   if (!id) return;
   const logs = id.channel
   if (!logs) return;
@@ -208,44 +207,148 @@ client.on('messageDelete', async (message) => {
   client.channels.get(logs).send(logembed);
 });
 
+client.on('guildBanAdd', async (guild, user) => {
+  const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`).get();
+  if (!id) return;
+  const logs = id.channel
+  if (!logs) return;
+  const entry = await guild.fetchAuditLogs({
+    type: 'MEMBER_BAN_ADD'
+  }).then(audit => audit.entries.first())
+  let mod = entry.executor.id
+  const logembed = new Discord.RichEmbed()
+  .setAuthor(guild, guild.iconURL)
+  .setDescription(`**User Banned: \`${user.tag}\`.**\nModerator: <@${mod}>`)
+  .setColor(color)
+  .setFooter(`ID: ${mod}`)
+  .setTimestamp()
+client.channels.get(logs).send(logembed);
+});
+
+client.on('guildBanRemove', async (guild, user) => {
+  const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`).get();
+  if (!id) return;
+  const logs = id.channel
+  if (!logs) return;
+  const entry = await guild.fetchAuditLogs({
+    type: 'MEMBER_BAN_REMOVE'
+  }).then(audit => audit.entries.first())
+  let mod = entry.executor.id
+  const logembed = new Discord.RichEmbed()
+  .setAuthor(guild, guild.iconURL)
+  .setDescription(`**User Unbanned: \`${user.tag}\`.**\nModerator: <@${mod}>`)
+  .setColor(color)
+  .setFooter(`ID: ${mod}`)
+  .setTimestamp()
+client.channels.get(logs).send(logembed);
+});
+
+client.on('roleDelete', role => {
+  const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${role.guild.id};`).get();
+  if (!id) return;
+  const logs = id.channel
+  if (!logs) return;
+  const logembed = new Discord.RichEmbed()
+  .setAuthor(role.guild, role.guild.iconURL)
+  .setDescription(`**Role Deleted: \`${role.name}\`.**`)
+  .setColor(color)
+  .setTimestamp()
+client.channels.get(logs).send(logembed);
+});
+
+client.on('roleCreate', role => {
+  const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${role.guild.id};`).get();
+  if (!id) return;
+  const logs = id.channel
+  if (!logs) return;
+  const logembed = new Discord.RichEmbed()
+  .setAuthor(role.guild, role.guild.iconURL)
+  .setDescription(`**Role Created: \`${role.name}\`.**`)
+  .setColor(color)
+  .setTimestamp()
+client.channels.get(logs).send(logembed);
+});
+
+client.on('messageDeleteBulk', messages => {
+  const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${messages.first().guild.id};`).get();
+  if (!id) return;
+  const logs = id.channel
+  if (!logs) return;
+  const logembed = new Discord.RichEmbed()
+  .setAuthor(messages.first().guild, messages.first().guild.iconURL)
+  .setDescription(`**Bulk delete in: <#${messages.first().channel.id}>, ${messages.size} deleted.**`)
+  .setColor(color)
+  .setTimestamp()
+client.channels.get(logs).send(logembed);
+});
+
+client.on('channelCreate', channel => {
+  const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${channel.guild.id};`).get();
+  console.log(id)
+  if (!id) return;
+  const logs = id.channel
+  if (!logs) return;
+  const logembed = new Discord.RichEmbed()
+  .setAuthor(channel.guild, channel.guild.iconURL)
+  .setDescription(`**Channel Created: <#${channel.id}>**`)
+  .setColor(color)
+  .setFooter(`ID: ${channel.id}`)
+  .setTimestamp()
+client.channels.get(logs).send(logembed);
+});
+
+client.on('channelDelete', channel => {
+  const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${channel.guild.id};`).get();
+  if (!id) return;
+  const logs = id.channel
+  if (!logs) return;
+  const logembed = new Discord.RichEmbed()
+  .setAuthor(channel.guild, channel.guild.iconURL)
+  .setDescription(`**Channel Deleted:** #${channel.name}`)
+  .setColor(color)
+  .setFooter(`ID: ${channel.id}`)
+  .setTimestamp()
+client.channels.get(logs).send(logembed);
+});
+
 client.on("guildDelete", guild => {
   // when the bot is removed from a guild.
   console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
   client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
   // setprefix table
-  const delpre = sql.prepare("SELECT count(*) FROM setprefix WHERE guildid = ?;").get(guild.id);
+  const delpre = db.prepare("SELECT count(*) FROM setprefix WHERE guildid = ?;").get(guild.id);
   if (delpre['count(*)']) {
-    sql.prepare("DELETE FROM setprefix WHERE guildid = ?").run(guild.id);
+    db.prepare("DELETE FROM setprefix WHERE guildid = ?").run(guild.id);
   };
   // setwelcome table
-  const delwel = sql.prepare("SELECT count(*) FROM setwelcome WHERE guildid = ?;").get(guild.id);
+  const delwel = db.prepare("SELECT count(*) FROM setwelcome WHERE guildid = ?;").get(guild.id);
   if (delwel['count(*)']) {
-    sql.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(guild.id);
+    db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(guild.id);
   };
   // profanity table
-  const delpro = sql.prepare("SELECT count(*) FROM profanity WHERE guildid = ?;").get(guild.id);
+  const delpro = db.prepare("SELECT count(*) FROM profanity WHERE guildid = ?;").get(guild.id);
   if (delpro['count(*)']) {
-    sql.prepare("DELETE FROM profanity WHERE guildid = ?").run(guild.id);
+    db.prepare("DELETE FROM profanity WHERE guildid = ?").run(guild.id);
   };
   // autorole table
-  const delaut = sql.prepare("SELECT count(*) FROM autorole WHERE guildid = ?;").get(guild.id);
+  const delaut = db.prepare("SELECT count(*) FROM autorole WHERE guildid = ?;").get(guild.id);
   if (delaut['count(*)']) {
-    sql.prepare("DELETE FROM autorole WHERE guildid = ?").run(guild.id);
+    db.prepare("DELETE FROM autorole WHERE guildid = ?").run(guild.id);
   };
   // scores table
-  const delsco = sql.prepare("SELECT count(*) FROM scores WHERE guild = ?;").get(guild.id);
+  const delsco = db.prepare("SELECT count(*) FROM scores WHERE guild = ?;").get(guild.id);
   if (delsco['count(*)']) {
-    sql.prepare("DELETE FROM scores WHERE guild = ?").run(guild.id);
+    db.prepare("DELETE FROM scores WHERE guild = ?").run(guild.id);
   };
   // adsprot table
-  const delads = sql.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?;").get(guild.id);
+  const delads = db.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?;").get(guild.id);
   if (delads['count(*)']) {
-    sql.prepare("DELETE FROM adsprot WHERE guildid = ?").run(guild.id);
+    db.prepare("DELETE FROM adsprot WHERE guildid = ?").run(guild.id);
   };
   // logging table
-  const dellog = sql.prepare("SELECT count(*) FROM logging WHERE guildid = ?;").get(guild.id);
+  const dellog = db.prepare("SELECT count(*) FROM logging WHERE guildid = ?;").get(guild.id);
   if (dellog['count(*)']) {
-    sql.prepare("DELETE FROM logging WHERE guildid = ?").run(guild.id);
+    db.prepare("DELETE FROM logging WHERE guildid = ?").run(guild.id);
   };
 });
 
@@ -255,26 +358,50 @@ client.on("guildCreate", guild => {
   client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
 });
 
-// welcome
+client.on("guildMemberRemove", member => {
+  const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${member.guild.id};`).get();
+  if (!id) return;
+  const logs = id.channel
+  if (!logs) return;
+  const logembed = new Discord.RichEmbed()
+  .setAuthor('Member Left', member.user.avatarURL)
+  .setDescription(`<@${member.user.id}> - ${member.user.tag}`)
+  .setColor(color)
+  .setFooter(`ID: ${member.user.id}`)
+  .setTimestamp()
+client.channels.get(logs).send(logembed);
+});
 
+// logging join
 client.on("guildMemberAdd", member => {
-  const Discord = require("discord.js");
-  const setwelcome = sql.prepare(`SELECT * FROM setwelcome WHERE guildid = ${member.guild.id};`).get();
-  if (!setwelcome) {
-    return;
-  } else {
+  const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${member.guild.id};`).get();
+  if (!id) return;
+  const logs = id.channel
+  if (!logs) return;
+  const logembed = new Discord.RichEmbed()
+  .setAuthor('Member Joined', member.user.avatarURL)
+  .setDescription(`<@${member.user.id}> - ${member.user.tag}`)
+  .setColor(color)
+  .setFooter(`ID: ${member.user.id}`)
+  .setTimestamp()
+client.channels.get(logs).send(logembed);
+})
+
+// welcome
+client.on("guildMemberAdd", member => {
+  const setwelcome = db.prepare(`SELECT * FROM setwelcome WHERE guildid = ${member.guild.id};`).get();
+  if (!setwelcome) return;
     var title = setwelcome.title;
     var author = setwelcome.author;
     var description = setwelcome.description;
     if (!description) {
-      sql.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(member.guild.id);
+      db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(member.guild.id);
       return;
     } else {
     var sendchannel = setwelcome.channel;
     var chnsen = member.guild.channels.find(channel => channel.id === sendchannel)     
     if (!chnsen) {
-      sql.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(member.guild.id);
-      console.log("deleted table record")
+      db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(member.guild.id);
       return;
   };
     let embed = new Discord.RichEmbed()
@@ -284,14 +411,12 @@ client.on("guildMemberAdd", member => {
       .setDescription(`${description} ${member.user}`)
       .setThumbnail(member.user.avatarURL);
     client.channels.get(sendchannel).send({ embed });
-  }
 };
 });
 
 // autorole
-
 client.on("guildMemberAdd", member => {
-  const autoroletable = sql.prepare(`SELECT role FROM autorole WHERE guildid = ${member.guild.id};`).get();
+  const autoroletable = db.prepare(`SELECT role FROM autorole WHERE guildid = ${member.guild.id};`).get();
   if (!autoroletable) return;
   const autorole = autoroletable.role
   if (!autorole) {
@@ -303,7 +428,6 @@ client.on("guildMemberAdd", member => {
 });
 
 // on message edit (ads protection)
-
 client.on("messageUpdate", (oldMessage, newMessage) => {
   if (
     newMessage.content.includes("https://") ||
@@ -312,7 +436,7 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
     newMessage.content.includes("discord.me") ||
     newMessage.content.includes("discord.io")
   ) {
-    const adsprot = sql.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?").get(newMessage.guild.id);
+    const adsprot = db.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?").get(newMessage.guild.id);
     if (!adsprot['count(*)']) {
       return;
     } else if (newMessage.member.hasPermission("MANAGE_GUILD")) return;
@@ -334,7 +458,7 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
   if (
     swearwords.words.some(word => newMessage.content.toLowerCase().includes(word))
   ) {
-    const profanity = sql.prepare("SELECT count(*) FROM profanity WHERE guildid = ?").get(newMessage.guild.id);
+    const profanity = db.prepare("SELECT count(*) FROM profanity WHERE guildid = ?").get(newMessage.guild.id);
     if (!profanity['count(*)']) {
       return;
     } else if (newMessage.member.hasPermission("MANAGE_GUILD")) return;
@@ -353,7 +477,6 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
 });
 
 // guild join event
-
 client.on('guildCreate', guild => {
   let defaultChannel = "";
   guild.channels.forEach((channel) => {
@@ -370,8 +493,8 @@ client.on('guildCreate', guild => {
     embed
   });
 });
-// client message event
 
+// client message event
 client.on("message", message => {
   if (message.author.bot) return;
   if (message.channel.type === "dm") return;
@@ -432,7 +555,7 @@ client.on("message", message => {
     message.content.includes("discord.me") ||
     message.content.includes("discord.io")
   ) {
-    const adsprot = sql.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?").get(message.guild.id);
+    const adsprot = db.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?").get(message.guild.id);
     if (!adsprot['count(*)']) {
       return;
     } else if (message.member.hasPermission("MANAGE_GUILD")) return;
@@ -455,7 +578,7 @@ client.on("message", message => {
   if (
     swearwords.words.some(word => message.content.toLowerCase().includes(word))
   ) {
-    const profanity = sql.prepare("SELECT count(*) FROM profanity WHERE guildid = ?").get(message.guild.id);
+    const profanity = db.prepare("SELECT count(*) FROM profanity WHERE guildid = ?").get(message.guild.id);
     if (!profanity['count(*)']) {
       return;
     } else if (message.member.hasPermission("MANAGE_GUILD")) return;
@@ -530,9 +653,9 @@ client.on("message", message => {
     client.setScore.run(score);
   };
   // custom prefixes
-  const prefixes = sql.prepare("SELECT count(*) FROM setprefix WHERE guildid = ?").get(message.guild.id);
+  const prefixes = db.prepare("SELECT count(*) FROM setprefix WHERE guildid = ?").get(message.guild.id);
   if (!prefixes['count(*)']) {
-    const insert = sql.prepare("INSERT INTO setprefix (guildid, prefix) VALUES (@guildid, @prefix);");
+    const insert = db.prepare("INSERT INTO setprefix (guildid, prefix) VALUES (@guildid, @prefix);");
     insert.run({
       guildid: `${message.guild.id}`,
       prefix: '-'
@@ -540,7 +663,7 @@ client.on("message", message => {
     return;
   }
 
-  const prefixgrab = sql.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
+  const prefixgrab = db.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
 
   let prefix = prefixgrab.prefix;
 
@@ -570,4 +693,16 @@ client.on("message", message => {
       console.log(LoggingArgs);
     }
   }
+    // logging command exectuion
+  const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
+  if (!id) return;
+  const logs = id.channel
+  if (!logs) return;
+  const logembed = new Discord.RichEmbed()
+  .setAuthor(message.author.tag, message.guild.iconURL)
+  .setDescription(`**Used** ${cmd} **command in ${message.channel}**\n${cmd} ${argresult}`)
+  .setColor(color)
+  .setFooter(`ID: ${message.channel.id}`)
+  .setTimestamp()
+client.channels.get(logs).send(logembed);
 });
