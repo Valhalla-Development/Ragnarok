@@ -3,6 +3,7 @@ const SQLite = require('better-sqlite3')
 const sql = new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
+  let language = require(`../messages/messages_en-US.json`);
 
     const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'scores';").get();
     client.getScore = sql.prepare("SELECT * FROM scores WHERE user = ? AND guild = ?");
@@ -13,7 +14,7 @@ module.exports.run = async (client, message, args, color) => {
         score = client.getScore.get(message.author.id, message.guild.id);
     };
 
-
+  if(!args[0]) {
   let nxtLvlXp = score.level * 5000;
   let difference = nxtLvlXp - score.points;
   let embed = new Discord.RichEmbed()
@@ -25,6 +26,32 @@ module.exports.run = async (client, message, args, color) => {
   .setFooter(`${difference} XP required to level up!`, message.author.displayAvatarURL);
 
   message.channel.send(embed);
+  } else {
+    const user = message.mentions.users.first();
+    if (!user) {
+        let noUserEmbed = new Discord.RichEmbed()
+        .setColor(`36393F`)
+        .setDescription(`${language["points"].noUser}`)
+        message.channel.send(noUserEmbed)
+        return;
+    };
+    let otherbalance;
+    if (message.guild) {
+        otherbalance = client.getScore.get(user.id, message.guild.id)
+    };
+    let nxtLvlXp = otherbalance.level * 5000;
+    let difference = nxtLvlXp - otherbalance.points;  
+    let otherembed = new Discord.RichEmbed()
+    .setAuthor(`${user.username}'s Level`)
+    .setColor(color)
+    .setThumbnail(user.displayAvatarURL)
+    .addField("XP", otherbalance.points, true)
+    .addField("Level", otherbalance.level, true)
+    .setFooter(`${difference} XP required to level up!`, message.author.displayAvatarURL);
+
+  
+    message.channel.send(otherembed);    
+  }
 }
 
 module.exports.help = {

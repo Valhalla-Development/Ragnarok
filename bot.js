@@ -604,7 +604,7 @@ client.on("message", message => {
         id: `${message.guild.id}-${message.author.id}`,
         user: message.author.id,
         guild: message.guild.id,
-        balance: 0,
+        balance: 100,
       }
     }
     let curBal = balance.balance

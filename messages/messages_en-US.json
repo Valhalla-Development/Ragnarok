@@ -40,6 +40,12 @@
     "turnedOff": ":white_check_mark: **Autorole was turned off!**",
     "incorrectUsage": ":x: **Incorrect command usage! Please use `${prefix}autortoggle <off>` to turn the autorole off.**"
   },
+  "balance": {
+    "noUser": ":x: **You must tag a user!**"
+  },
+  "points": {
+    "noUser": ":x: **You must tag a user!**"
+  },
   "calc": {
     "noInput": ":x: **Please input a calculation!**",
     "invalidInput": ":x: **Please input a valid calculation!**"
