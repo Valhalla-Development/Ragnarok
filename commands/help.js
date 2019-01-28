@@ -684,8 +684,8 @@ module.exports.run = async (client, message, args, color) => {
         .setFooter(`This guild's prefix is ${prefix}`, client.user.avatarURL)
         .setTimestamp()
         .addField(":gear: Administration Commands",
-        `\`${prefix}adsprot\` \`${prefix}autorole\` \`${prefix}logging\` \`${prefix}prefix\`
-        \`${prefix}profanity\` \`${prefix}welcome\``, true)
+        `\`adsprot\` \`autorole\` \`logging\` \`prefix\`
+        \`profanity\` \`welcome\``, true)
         .addField("🔨 Moderation Commands", 
         `\`${prefix}ban\` \`${prefix}esay\` \`${prefix}kick\` \`${prefix}mute\` 
         \`${prefix}poll\` \`${prefix}purge\` \`${prefix}unmute\``, true)
@@ -697,9 +697,9 @@ module.exports.run = async (client, message, args, color) => {
         `\`${prefix}ticket\` \`${prefix}add\` \`${prefix}close\` \`${prefix}forceclose\`
         \`${prefix}new\` \`${prefix}remove\``, true)
         .addField(":red_car: Fun Commands",
-        `\`${prefix}8ball\` \`${prefix}calc\` \`${prefix}coinflip\` \`${prefix}lmgtfy\`
-        \`${prefix}meme\` \`${prefix}pleader\` \`${prefix}points\` \`${prefix}remindme\`
-        \`${prefix}slot\` \`${prefix}trakt\``, true);
+        `\`${prefix}8ball\` \`${prefix}avatar\` \`${prefix}calc\` \`${prefix}coinflip\`
+        \`${prefix}lmgtfy\` \`${prefix}meme\` \`${prefix}pleader\` \`${prefix}points\`
+        \`${prefix}remindme\` \`${prefix}slot\` \`${prefix}trakt\``, true);
       
         message.channel.send({ embed: helpEmbed});
           //message.channel.send(

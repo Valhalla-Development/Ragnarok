@@ -4,6 +4,8 @@ const fs = require("fs");
 const config = JSON.parse(
     fs.readFileSync("./Storage/config.json", "utf8")
 );
+const SQLite = require('better-sqlite3')
+const db= new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
     let language = require(`../messages/messages_en-US.json`);
@@ -19,17 +21,12 @@ module.exports.run = async (client, message, args, color) => {
     };
 
 
-    const log = message.guild.channels.find(x => x.name === "logs");
     const mod = message.author;
     let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!user) return message.reply(`${language["mute"].noUser}`).then(message => message.delete(5000));
     let reason = args[2];
     if (!reason) return message.channel.send(`${language["mute"].noReason}`).then(message => message.delete(5000));
     let muterole = message.guild.roles.find(x => x.name === "Muted");
-    let muteChannel = message.guild.channels.find(x => x.name === "logs");
-    if (!muteChannel) return message.guild.createChannel("logs").then(channel => {
-        channel.setTopic(`Log channel`).then(message.channel.send(`${language["mute"].createdChannel}`).then(message => message.delete(5000)));
-    });
     if (!muterole) {
         try {
             muterole = await message.guild.createRole({
@@ -52,6 +49,8 @@ module.exports.run = async (client, message, args, color) => {
     if (!mutetime) return message.channel.send(`${language["mute"].noTime}`).then(message => message.delete(5000));
 
 
+    const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
+    if (!dbid) {
     await (user.addRole(muterole.id));
     const muteembed = new Discord.RichEmbed()
         .setAuthor(' Action | Mute', `https://images-ext-2.discordapp.net/external/Wms63jAyNOxNHtfUpS1EpRAQer2UT0nOsFaWlnDdR3M/https/image.flaticon.com/icons/png/128/148/148757.png`)
@@ -60,7 +59,7 @@ module.exports.run = async (client, message, args, color) => {
         .addField('Time', `${mutetime}`)
         .addField('Moderator', `${mod}`)
         .setColor("#ff0000")
-    log.send(muteembed)
+    message.channel.send(muteembed)
 
     setTimeout(function () {
         (user.removeRole(muterole.id));
@@ -70,8 +69,31 @@ module.exports.run = async (client, message, args, color) => {
             .addField('Reason', 'Mute time ended')
             .setColor("#ff0000")
 
-        log.send(unmuteembed);
+        message.channel.send(unmuteembed);
     }, ms(mutetime));
+} else {
+    const dblogs = dbid.channel
+    await (user.addRole(muterole.id));
+    const muteembed = new Discord.RichEmbed()
+        .setAuthor(' Action | Mute', `https://images-ext-2.discordapp.net/external/Wms63jAyNOxNHtfUpS1EpRAQer2UT0nOsFaWlnDdR3M/https/image.flaticon.com/icons/png/128/148/148757.png`)
+        .addField('User', `<@${user.id}>`)
+        .addField('Reason', `${reason}`)
+        .addField('Time', `${mutetime}`)
+        .addField('Moderator', `${mod}`)
+        .setColor("#ff0000")
+    client.channels.get(dblogs).send(muteembed);
+
+    setTimeout(function () {
+        (user.removeRole(muterole.id));
+        let unmuteembed = new Discord.RichEmbed()
+            .setAuthor(' Action | Un-Mute', `http://odinrepo.tk/speaker.png`)
+            .addField('User', `<@${user.id}>`)
+            .addField('Reason', 'Mute time ended')
+            .setColor("#ff0000")
+            
+        client.channels.get(dblogs).send(unmuteembed);
+    }, ms(mutetime));
+}
 };
 
 

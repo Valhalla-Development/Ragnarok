@@ -3,6 +3,8 @@ const fs = require("fs");
 const config = JSON.parse(
     fs.readFileSync("./Storage/config.json", "utf8")
 );
+const SQLite = require('better-sqlite3')
+const db= new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
     let language = require(`../messages/messages_en-US.json`);
@@ -18,24 +20,31 @@ module.exports.run = async (client, message, args, color) => {
     };
 
 
-    const log = message.guild.channels.find(x => x.name === "logs");
     const mod = message.author;
     let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!user) return message.reply(`${language["unmute"].noMention}`).then(message => message.delete(5000));
     let muterole = message.guild.roles.find(x => x.name === "Muted");
-    let muteChannel = message.guild.channels.find(x => x.name === "logs");
-    if (!muteChannel) return message.guild.createChannel("logs").then(channel => {
-        channel.setTopic(`Log channel`).then(message.channel.send(`${language["unmute"].createdChannel}`).then(message => message.delete(5000)));
-    });
+    if (!user.roles.find(x => x.id === muterole.id)) return message.channel.send(`${language["unmute"].noRoleAsigned}`);
 
+    const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
+    if (!dbid) {
     await (user.removeRole(muterole.id));
     const unmuteembed = new Discord.RichEmbed()
         .setAuthor(' Action | Un-Mute', `http://odinrepo.tk/speaker.png`)
         .addField('User', `<@${user.id}>`)
         .addField('Staff Member', `${mod}`)
         .setColor("#ff0000")
-    log.send(unmuteembed)
-
+    message.channel.send(unmuteembed)
+    } else {
+        const dblogs = dbid.channel
+        await (user.removeRole(muterole.id));
+        const unmuteembed = new Discord.RichEmbed()
+            .setAuthor(' Action | Un-Mute', `http://odinrepo.tk/speaker.png`)
+            .addField('User', `<@${user.id}>`)
+            .addField('Staff Member', `${mod}`)
+            .setColor("#ff0000")
+        client.channels.get(dblogs).send(unmuteembed);
+    }
 };
 
 
