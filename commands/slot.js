@@ -1,13 +1,13 @@
 const Discord = require("discord.js");
 const SQLite = require('better-sqlite3')
-const sql = new SQLite('./Storage/db/db.sqlite');
+const db= new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
     let language = require(`../messages/messages_en-US.json`);
 
-    const table = sql.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'balance';").get();
-    client.getBalance = sql.prepare("SELECT * FROM balance WHERE user = ? AND guild = ?");
-    client.setBalance = sql.prepare("INSERT OR REPLACE INTO balance (id, user, guild, balance) VALUES (@id, @user, @guild, @balance);");
+    const table = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'balance';").get();
+    client.getBalance = db.prepare("SELECT * FROM balance WHERE user = ? AND guild = ?");
+    client.setBalance = db.prepare("INSERT OR REPLACE INTO balance (id, user, guild, balance) VALUES (@id, @user, @guild, @balance);");
 
     let balance;
     if (message.guild) {
