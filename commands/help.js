@@ -698,8 +698,8 @@ module.exports.run = async (client, message, args, color) => {
         \`${prefix}new\` \`${prefix}remove\``, true)
         .addField(":red_car: Fun Commands",
         `\`${prefix}8ball\` \`${prefix}avatar\` \`${prefix}calc\` \`${prefix}coinflip\`
-        \`${prefix}lmgtfy\` \`${prefix}meme\` \`${prefix}pleader\` \`${prefix}points\`
-        \`${prefix}remindme\` \`${prefix}gamble\` \`${prefix}trakt\``, true);
+        \`${prefix}gamble\` \`${prefix}lmgtfy\` \`${prefix}meme\` \`${prefix}pleader\`
+        \`${prefix}points\` \`${prefix}remindme\` \`${prefix}trakt\``, true);
       
         message.channel.send({ embed: helpEmbed});
           //message.channel.send(
