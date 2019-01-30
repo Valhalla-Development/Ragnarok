@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const ms = require("ms");
 
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
@@ -37,7 +38,15 @@ module.exports.run = async (client, message, args, color) => {
   };
 
   if (message.channel.name.startsWith("ticket-")) {
-    message.channel.delete();
+    let forceclosetimer = new Discord.RichEmbed()
+    .setColor(`36393F`)
+    .setTitle(':no_entry_sign: Closing Ticket! :no_entry_sign:')
+    .setDescription(`${language["tickets"].closeTimer}`)
+    message.channel.send(forceclosetimer);
+    setTimeout(function () {
+      message.channel.delete();
+    }, ms('10s'));
+
   }
 };
 
