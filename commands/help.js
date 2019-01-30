@@ -692,7 +692,7 @@ module.exports.run = async (client, message, args, color) => {
         .addField("📃 Informative Commands",
         `\`${prefix}balance\` \`${prefix}bugreport\` \`${prefix}config\` \`${prefix}help\`
         \`${prefix}ginvite\` \`${prefix}invite\` \`${prefix}ping\` \`${prefix}report\`
-        \`${prefix}serverinfo\` \`${prefix}uptime\` \`${prefix}userinfo\``, true)
+        \`${prefix}serverinfo\` \`${prefix}uptime\` \`${prefix}userinfo\` \`${prefix}website\``, true)
         .addField(":ticket: Ticket Commands",
         `\`${prefix}ticket\` \`${prefix}add\` \`${prefix}close\` \`${prefix}forceclose\`
         \`${prefix}new\` \`${prefix}remove\``, true)
