@@ -690,16 +690,16 @@ module.exports.run = async (client, message, args, color) => {
         `\`${prefix}ban\` \`${prefix}esay\` \`${prefix}kick\` \`${prefix}mute\` 
         \`${prefix}poll\` \`${prefix}purge\` \`${prefix}unmute\``, true)
         .addField("📃 Informative Commands",
-        `\`${prefix}balance\` \`${prefix}config\` \`${prefix}help\` \`${prefix}ginvite\` 
-        \`${prefix}invite\` \`${prefix}ping\` \`${prefix}report\` \`${prefix}serverinfo\`
-        \`${prefix}uptime\` \`${prefix}userinfo\``, true)
+        `\`${prefix}balance\` \`${prefix}bugreport\` \`${prefix}config\` \`${prefix}help\`
+        \`${prefix}ginvite\` \`${prefix}invite\` \`${prefix}ping\` \`${prefix}report\`
+        \`${prefix}serverinfo\` \`${prefix}uptime\` \`${prefix}userinfo\` \`${prefix}website\``, true)
         .addField(":ticket: Ticket Commands",
         `\`${prefix}ticket\` \`${prefix}add\` \`${prefix}close\` \`${prefix}forceclose\`
         \`${prefix}new\` \`${prefix}remove\``, true)
         .addField(":red_car: Fun Commands",
         `\`${prefix}8ball\` \`${prefix}avatar\` \`${prefix}calc\` \`${prefix}coinflip\`
-        \`${prefix}lmgtfy\` \`${prefix}meme\` \`${prefix}pleader\` \`${prefix}points\`
-        \`${prefix}remindme\` \`${prefix}slot\` \`${prefix}trakt\``, true);
+        \`${prefix}gamble\` \`${prefix}lmgtfy\` \`${prefix}meme\` \`${prefix}pleader\`
+        \`${prefix}points\` \`${prefix}remindme\` \`${prefix}trakt\``, true);
       
         message.channel.send({ embed: helpEmbed});
           //message.channel.send(

@@ -19,6 +19,7 @@ module.exports.run = async (client, message, args, color) => {
         let noinput = new Discord.RichEmbed()
             .setColor(`36393F`)
             .setDescription(`${language["slot"].noArgs}`)
+            .addField("Current Balance", balance.balance)
         message.channel.send(noinput);
         return;
     };
@@ -112,5 +113,5 @@ module.exports.run = async (client, message, args, color) => {
 }
 
 module.exports.help = {
-    name: "slot",
+    name: "gamble",
 }
