@@ -50,7 +50,8 @@ module.exports.run = async (client, message, args, color) => {
         let newTicketE = new Discord.RichEmbed()
             .setColor(`36393F`)
             .setDescription(`${language["tickets"].ticketCreated}, <#${c.id}>.`)
-        message.channel.send(newTicketE); // Send a message in the ticket.
+        message.channel.send(newTicketE).then(msg => msg.delete(5000));
+        message.delete(5000);
         let ticketMessageMessage = language["tickets"].ticketMessage;
         const ticketm = ticketMessageMessage.replace(
             "${nick}",
