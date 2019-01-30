@@ -23,6 +23,16 @@ module.exports.run = async (client, message, args, color) => {
 
   let reminder = args.slice(1).join(" ");
 
+  if (message.content.includes('@everyone')) {
+    message.reply('NO!')
+    return;
+  };
+  if (message.content.includes('@here')) {
+    message.reply('NO!')
+    return;
+  };
+
+
   message.channel.send(
     ":white_check_mark: ** I will remind you in " +
     `${reminderTime}` +
