@@ -284,10 +284,10 @@ client.channels.get(logs).send(logembed);
 
 client.on('channelCreate', channel => {
   const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${channel.guild.id};`).get();
-  console.log(id)
   if (!id) return;
   const logs = id.channel
   if (!logs) return;
+  if (channel.type === "voice" || channel.type === "category") return;
   const logembed = new Discord.RichEmbed()
   .setAuthor(channel.guild, channel.guild.iconURL)
   .setDescription(`**Channel Created: <#${channel.id}>**`)
@@ -302,6 +302,7 @@ client.on('channelDelete', channel => {
   if (!id) return;
   const logs = id.channel
   if (!logs) return;
+  if (channel.type === "voice" || channel.type === "category") return;
   const logembed = new Discord.RichEmbed()
   .setAuthor(channel.guild, channel.guild.iconURL)
   .setDescription(`**Channel Deleted:** #${channel.name}`)
@@ -508,9 +509,16 @@ client.on("message", message => {
   // dad bot
 
   if (message.content.toLowerCase().startsWith('im') || message.content.toLowerCase().startsWith('i\'m')) {
+    if (args.length > 5) {
+      return;
+    }
     if (args[0] === undefined) {
       return;
-    } else if (message.content.toLowerCase().includes('@everyone')) {
+    } else if (message.content.includes('@everyone')) {
+      message.channel.send(`Hi unloved virgin, I\'m Dad!`);
+    } else if (message.content.includes('@here')) {
+      message.channel.send(`Hi unloved virgin, I\'m Dad!`);
+    } else if (message.content.toLowerCase().includes('`')) {
       message.channel.send(`Hi unloved virgin, I\'m Dad!`);
     } else if (message.content.toLowerCase().startsWith('im dad') || message.content.toLowerCase().startsWith('i\'m dad')) {
       message.channel.send(`No, I\'m Dad!`);
