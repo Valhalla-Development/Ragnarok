@@ -51,7 +51,8 @@
     "invalidInput": ":x: **Please input a valid calculation!**"
   },
   "esay": {
-    "noPermission": ":x: **Only the server's managers can use this command!**"
+    "noPermission": ":x: **Only the server's managers can use this command!**",
+    "noInput": ":x: **You need to input text!**"
   },
   "invite": {
     "noPermission": ":x: **You must have the `CREATE_INSTANT_INVITE` permission to use this command!**"
@@ -157,7 +158,8 @@
     "removed": "${user} has been removed from the ticket!",
     "existingTicket": ":x: You already have a ticket open!",
     "ticketCreated": ":white_check_mark: Your ticket has been created, ",
-    "ticketMessage": "**Hey there, ${nick}!, A member from the Support Team will be with you soon!**\nPlease try to explain your issue while you are waiting."
+    "ticketMessage": "**Hey there, ${nick}!, A member from the Support Team will be with you soon!**\nPlease try to explain your issue while you are waiting.",
+    "closeTimer": "**This ticket will automatically close in 10 seconds.**"
   },
   "remindme": {
     "incorrectUsage": ":x: **Specify a time for me to remind you. | Example: ${prefix}remindme 15min example**"
