@@ -24,7 +24,7 @@ module.exports.run = async (client, message, args, color) => {
     const mod = message.author;
     let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!user) return message.reply(`${language["mute"].noUser}`).then(message => message.delete(5000));
-    let reason = args.slice(2).join(' ');
+    let reason = message.content.split(' ').splice(3).join(' ')
     if (!reason) return message.channel.send(`${language["mute"].noReason}`).then(message => message.delete(5000));
     let muterole = message.guild.roles.find(x => x.name === "Muted");
     if (!muterole) {
