@@ -19,76 +19,11 @@ module.exports.run = async (client, message, args, color) => {
     if (args[0] === undefined) {
         const undeembed = new Discord.RichEmbed()
         .setColor(0xCF40FA)
-        .addField(`Ragnarok - Config`, `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config profanity]() : Enable/Disable profanity protection\n[${prefix}config welcome]() : Sets the welcome message`)
+        .addField(`Ragnarok - Config`, `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config welcome]() : Sets the welcome message`)
         message.channel.send({ embed: undeembed });
         return;
     };
     
-    // profanity
-
-    if (args[0] === "profanity") {
-        // perms checking
-
-        if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
-            message.channel.send(`${language["profanity"].noPermission}`);
-            return;
-        };
-
-        // preparing count
-
-        client.getTable = db.prepare("SELECT * FROM profanity WHERE guildid = ?");
-        let status;
-        if (message.guild.id) {
-            status = client.getTable.get(message.guild.id);
-
-            if (args[1] === "on") {
-                // if already on
-                if (status) {
-                    let alreadyOnMessage = language["profanity"].alreadyOn;
-                    const alreadyOn = alreadyOnMessage.replace(
-                        "${prefix}",
-                        prefix
-                    );
-                    message.channel.send(`${alreadyOn}`);
-                    return;
-                } else {
-                    const insert = db.prepare("INSERT INTO profanity (guildid, status) VALUES (@guildid, @status);");
-                    insert.run({
-                        guildid: `${message.guild.id}`,
-                        status: 'on'
-                    });
-                    message.channel.send(`${language["profanity"].turnedOn}`);
-                };
-
-                // if args = off
-            } else if (args[1] === "off") {
-                // if already off
-                if (!status) {
-                    let alreadyOffMessage = language["profanity"].alreadyOff;
-                    const alreadyOff = alreadyOffMessage.replace(
-                        "${prefix}",
-                        prefix
-                    );
-                    message.channel.send(`${alreadyOff}`);
-                    return;
-                } else {
-                    db.prepare("DELETE FROM profanity WHERE guildid = ?").run(message.guild.id);
-                    message.channel.send(`${language["profanity"].turnedOff}`);
-                    return;
-                }
-
-            } else if (args[1] !== "off" || args[1] !== "on") {
-                let incorrectUsageMessage = language["profanity"].incorrectUsage;
-                const incorrectUsage = incorrectUsageMessage.replace(
-                    "${prefix}",
-                    prefix
-                );
-
-                message.channel.send(`${incorrectUsage}`);
-                return;
-            }
-        };
-    };
 
     // adsprot
     if (args[0] === "adsprot") {
@@ -293,6 +228,61 @@ module.exports.run = async (client, message, args, color) => {
             };
         };
     };
+
+        // ticket category
+
+        if (args[0] === "ticket") {
+
+            if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
+                return message.channel.send(`${language["tickets"].noPermission}`);
+    
+            client.getTable = db.prepare("SELECT * FROM ticket WHERE guildid = ?");
+    
+
+            const category = message.guild.channels.find(c => c.name == args.slice(1).join(" ").toLowerCase() && c.type == "category");
+    
+            let status;
+            if (message.guild.id) {
+                status = client.getTable.get(message.guild.id);
+    
+    
+                if (args[1] === undefined) {
+                    message.channel.send(":x: | **Please type the name of the category!**");
+                    return;
+                };
+    
+                if (args[1] === 'off') { // to turn logging off
+                    if (!status) {
+                        message.channel.send(":x: | **Ticket Category is already disabled!**");
+                        return;
+                    } else {
+                        message.channel.send(":white_check_mark: | **Ticket Category disabled!**");
+                        db.prepare("DELETE FROM ticket WHERE guildid = ?").run(message.guild.id);
+                        return;
+                    };
+                } else if (!category) {
+                    message.channel.send(`${language["tickets"].invalidCategory}`);
+                    return;
+                } else if (!status) {
+                    const insert = db.prepare("INSERT INTO ticket (guildid, category) VALUES (@guildid, @category);");
+                    insert.run({
+                        guildid: `${message.guild.id}`,
+                        category: `${category.id}`
+                    });
+                    message.channel.send(`:white_check_mark: | **Ticket Category set to \`${category.name}\`**`);
+                    return;
+                } else {
+                    const update = db.prepare("UPDATE ticket SET category = (@category) WHERE guildid = (@guildid);");
+                    update.run({
+                        guildid: `${message.guild.id}`,
+                        category: `${category.id}`
+                    });
+                    message.channel.send(`:white_check_mark: | ** Ticket Category updated to \`${category.name}\`**`);
+                    return;
+                };
+            };
+        };
+
 
     // setprefix
 

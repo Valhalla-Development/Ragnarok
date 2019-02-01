@@ -12,15 +12,15 @@
   },
   "adsprot": {
     "noPermission": ":x: **Only guild managers can use this command!**",
-    "alreadyOn": ":x: **Advert protection is already enabled on this guild! To disable it, please use `${prefix}adsprot <off>`**",
+    "alreadyOn": ":x: **Advert protection is already enabled on this guild! To disable it, please use `${prefix}config adsprot <off>`**",
     "turnedOn": ":white_check_mark: **Advert protection was enabled**",
-    "alreadyOff": ":x: **Advert protection is not enabled on this guild! To activate it, please use `${prefix}adsprot <on>`**",
+    "alreadyOff": ":x: **Advert protection is not enabled on this guild! To activate it, please use `${prefix}config adsprot <on>`**",
     "turnedOff": ":white_check_mark: **Advert protection was turned off!**",
-    "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}adsprot <on/off>`**"
+    "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}config adsprot <on/off>`**"
   },
   "autorole": {
     "noPermission": ":x: **Only users with the `MANAGE_GUILD` permission can use this command!**",
-    "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}autorole <role>` __the role is case sensitive!__**",
+    "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}config autorole <role>` __the role is case sensitive!__**",
     "roleSet": ":white_check_mark: **Autorole set to `${autorole}`!**",
     "turnedOff": ":white_check_mark: **Autorole disabled!**",
     "updateRole": ":white_check_mark: **Autorole updated to `${autorole}`!**",
@@ -152,6 +152,7 @@
     "donthaveRole": ":x: Sorry! You do not have the **${role}** role.",
     "cantfindUser": ":x: Couldn't find user.",
     "wrongChannel": ":x: You can't use the add command outside of a ticket channel.",
+    "wrongChannelRename": ":x: **You can't use the rename command outside of a ticket channel!**",
     "wrongChannelClose": ":x: You can't use the close command outside of a ticket channel.",
     "closeConfirm": "Are you sure? Once confirmed, you cannot reverse this action!\nTo confirm, type `${prefix}confirm`. This will time out in 20 seconds and be cancelled.",
     "added": "${user} has been added to the ticket!",
@@ -159,7 +160,10 @@
     "existingTicket": ":x: You already have a ticket open!",
     "ticketCreated": ":white_check_mark: Your ticket has been created, ",
     "ticketMessage": "**Hey there, ${nick}!, A member from the Support Team will be with you soon!**\nPlease try to explain your issue while you are waiting.",
-    "closeTimer": "**This ticket will automatically close in 10 seconds.**"
+    "closeTimer": "**This ticket will automatically close in 10 seconds.**",
+    "noinp": ":x: **You did not input any text!**",
+    "noPermission": ":x: **Only users with `MANAGE_GUILD` can use this command!**",
+    "invalidCategory": ":x: **Invalid category name! Check if the entered channel's name is correct and then type the command again.**"
   },
   "remindme": {
     "incorrectUsage": ":x: **Specify a time for me to remind you. | Example: ${prefix}remindme 15min example**"

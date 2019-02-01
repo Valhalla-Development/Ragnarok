@@ -29,6 +29,10 @@ module.exports.run = async (client, message, args, color) => {
         message.channel.send(existTM);
         return;
     };
+
+
+    const id = db.prepare(`SELECT category FROM ticket WHERE guildid = ${message.guild.id};`).get();
+    if (!id) {
     // Create the channel with the name "ticket-" then the user's ID.
     message.guild.createChannel(`ticket-${nickName}`, "text").then(c => {
         // Apply the appropriate permissions so that only the user and the support team can see it.
@@ -65,6 +69,46 @@ module.exports.run = async (client, message, args, color) => {
         });
         // And display any errors in the console.
     }).catch(console.error);
+} else {
+    const ticategory = id.category
+    // Create the channel with the name "ticket-" then the user's ID.
+    message.guild.createChannel(`ticket-${nickName}`, "text").then(c => {
+        c.setParent(ticategory)
+        // Apply the appropriate permissions so that only the user and the support team can see it.
+        let role = message.guild.roles.find(x => x.name === "Support Team");
+        let role2 = message.guild.roles.find(x => x.name === "@everyone");
+        c.overwritePermissions(role, {
+            SEND_MESSAGES: true,
+            READ_MESSAGES: true
+        });
+        c.overwritePermissions(role2, {
+            SEND_MESSAGES: false,
+            READ_MESSAGES: false
+        });
+        c.overwritePermissions(message.author, {
+            SEND_MESSAGES: true,
+            READ_MESSAGES: true
+        });
+        // Send a message saying the ticket has been created.
+        let newTicketE = new Discord.RichEmbed()
+            .setColor(`36393F`)
+            .setDescription(`${language["tickets"].ticketCreated}, <#${c.id}>.`)
+        message.channel.send(newTicketE).then(msg => msg.delete(5000));
+        message.delete(5000);
+        let ticketMessageMessage = language["tickets"].ticketMessage;
+        const ticketm = ticketMessageMessage.replace(
+            "${nick}",
+            nickName
+        );
+        const embed = new Discord.RichEmbed()
+            .setColor(0xCF40FA)
+            .setDescription(`${ticketm}`)
+        c.send({
+            embed: embed
+        });
+        // And display any errors in the console.
+    }).catch(console.error);
+}
 
 };
 module.exports.help = {

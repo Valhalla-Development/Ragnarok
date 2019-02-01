@@ -20,7 +20,7 @@ module.exports.run = async (client, message, args, color) => {
     maxAge: 0
   }).then(invite => {
     let embed = new Discord.RichEmbed()
-      .setColor('RANDOM')
+      .setColor('36393F')
       .setDescription(`:white_check_mark: **Permanent Invite Link**: ${invite}`);
     message.channel.send(embed);
   });

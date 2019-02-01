@@ -99,10 +99,11 @@ module.exports.run = async (client, message, args, color) => {
         if (rand == 4) randEmojis.push(":fire:")
     }
     amt = ~~amt
+    let newbal = balance.balance - gambledCoins + amt;
     //send the message
     let slotembed = new Discord.RichEmbed()
         .setColor("#098aed")
-        .addField("**SLOTS**", `${randEmojis[0]} | ${randEmojis[1]} | ${randEmojis[2]}\n${randEmojis[3]} | ${randEmojis[4]} | ${randEmojis[5]}\n${randEmojis[6]} | ${randEmojis[7]} | ${randEmojis[8]}\n${message.member} you gambled **${gambledCoins}** coins and recieved back **${amt}** coins!`)
+        .addField("**SLOTS**", `${randEmojis[0]} | ${randEmojis[1]} | ${randEmojis[2]}\n${randEmojis[3]} | ${randEmojis[4]} | ${randEmojis[5]}\n${randEmojis[6]} | ${randEmojis[7]} | ${randEmojis[8]}\n${message.member} you gambled **${gambledCoins}** coins and recieved back **${amt}** coins!\nYour balance is now **${newbal}**`)
     message.channel.send(slotembed);
 
     //set the coins for the user
