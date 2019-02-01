@@ -119,15 +119,6 @@ client.on("ready", () => {
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   };
-  // profanity table
-  const profanity = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'profanity';").get();
-  if (!profanity['count(*)']) {
-    console.log('profanity table created!')
-    db.prepare("CREATE TABLE profanity (guildid TEXT PRIMARY KEY, status TEXT);").run();
-    db.prepare("CREATE UNIQUE INDEX idx_profanity_id ON profanity (guildid);").run();
-    db.pragma("synchronous = 1");
-    db.pragma("journal_mode = wal");
-  };
   // autorole table
   const autorole = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'autorole';").get();
   if (!autorole['count(*)']) {
@@ -174,6 +165,15 @@ client.on("ready", () => {
     console.log('logging table created!')
     db.prepare("CREATE TABLE logging (guildid TEXT PRIMARY KEY, channel TEXT);").run();
     db.prepare("CREATE UNIQUE INDEX idx_logging_id ON logging (guildid);").run();
+    db.pragma("synchronous = 1");
+    db.pragma("journal_mode = wal");
+  };
+    // ticket table
+  const tickettable = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'ticket';").get();
+  if (!tickettable['count(*)']) {
+    console.log('ticket table created!')
+    db.prepare("CREATE TABLE ticket (guildid TEXT PRIMARY KEY, category TEXT);").run();
+    db.prepare("CREATE UNIQUE INDEX idx_ticket_id ON ticket (guildid);").run();
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   };
@@ -326,11 +326,6 @@ client.on("guildDelete", guild => {
   if (delwel['count(*)']) {
     db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(guild.id);
   };
-  // profanity table
-  const delpro = db.prepare("SELECT count(*) FROM profanity WHERE guildid = ?;").get(guild.id);
-  if (delpro['count(*)']) {
-    db.prepare("DELETE FROM profanity WHERE guildid = ?").run(guild.id);
-  };
   // autorole table
   const delaut = db.prepare("SELECT count(*) FROM autorole WHERE guildid = ?;").get(guild.id);
   if (delaut['count(*)']) {
@@ -452,29 +447,6 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
         msg.delete(10000);
       });
   }
-  // profanity filter
-  let swearwords = JSON.parse(
-    fs.readFileSync("./Storage/swearwords.json", "utf8")
-  );
-  if (
-    swearwords.words.some(word => newMessage.content.toLowerCase().includes(word))
-  ) {
-    const profanity = db.prepare("SELECT count(*) FROM profanity WHERE guildid = ?").get(newMessage.guild.id);
-    if (!profanity['count(*)']) {
-      return;
-    } else if (newMessage.member.hasPermission("MANAGE_GUILD")) return;
-    newMessage.delete();
-    newMessage.channel
-      .send(
-        `**Your message contained a blocked word and it was deleted, <@${
-                newMessage.author.id
-              }>**`
-      )
-      .then(msg => {
-        msg.delete(10000);
-      });
-  }
-
 });
 
 // guild join event
@@ -571,29 +543,6 @@ client.on("message", message => {
     message.channel
       .send(
         `**Your message contained a link and it was deleted, <@${
-              message.author.id
-            }>**`
-      )
-      .then(msg => {
-        msg.delete(10000);
-      });
-  }
-
-  // profanity filter
-  let swearwords = JSON.parse(
-    fs.readFileSync("./Storage/swearwords.json", "utf8")
-  );
-  if (
-    swearwords.words.some(word => message.content.toLowerCase().includes(word))
-  ) {
-    const profanity = db.prepare("SELECT count(*) FROM profanity WHERE guildid = ?").get(message.guild.id);
-    if (!profanity['count(*)']) {
-      return;
-    } else if (message.member.hasPermission("MANAGE_GUILD")) return;
-    message.delete();
-    message.channel
-      .send(
-        `**Your message contained a blocked word and it was deleted, <@${
               message.author.id
             }>**`
       )
