@@ -27,5 +27,5 @@ module.exports.run = async (client, message, args, color) => {
     message.channel.send(loggedEmbed);
 };
 module.exports.help = {
-    name: "bugreport"
+    name: "suggest"
 };
