@@ -37,6 +37,16 @@ module.exports.run = async (client, message, args, color) => {
                 })
                 .then((collected) => {
                     message.channel.delete();
+                    const logget = db.prepare(`SELECT channel FROM ticketlog WHERE guildid = ${message.guild.id};`).get();
+                    if (!logget) {
+                        return;
+                    } else {
+                        const logchan = logget.channel
+                        let loggingembed = new Discord.RichEmbed()
+                            .setColor(color)
+                            .setDescription(`<@${message.author.id}> has closed ticket \`#${message.channel.name}\``);
+                        client.channels.get(logchan).send(loggingembed);
+                        }            
                 })
                 .catch(() => {
                     m.delete()

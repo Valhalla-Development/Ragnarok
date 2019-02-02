@@ -19,7 +19,7 @@ module.exports.run = async (client, message, args, color) => {
     if (args[0] === undefined) {
         const undeembed = new Discord.RichEmbed()
         .setColor(0xCF40FA)
-        .addField(`Ragnarok - Config`, `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config welcome]() : Sets the welcome message`)
+        .addField(`Ragnarok - Config`, `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Seys the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config welcome]() : Sets the welcome message`)
         message.channel.send({ embed: undeembed });
         return;
     };
@@ -229,9 +229,11 @@ module.exports.run = async (client, message, args, color) => {
         };
     };
 
-        // ticket category
+        // ticket cat and log
 
         if (args[0] === "ticket") {
+
+            if (args[1] === "cat") {
 
             if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
                 return message.channel.send(`${language["tickets"].noPermission}`);
@@ -239,19 +241,19 @@ module.exports.run = async (client, message, args, color) => {
             client.getTable = db.prepare("SELECT * FROM ticket WHERE guildid = ?");
     
 
-            const category = message.guild.channels.find(c => c.name == args.slice(1).join(" ").toLowerCase() && c.type == "category");
+            const category = message.guild.channels.find(c => c.name == args.slice(2).join(" ").toLowerCase() && c.type == "category");
     
             let status;
             if (message.guild.id) {
                 status = client.getTable.get(message.guild.id);
     
     
-                if (args[1] === undefined) {
+                if (args[2] === undefined) {
                     message.channel.send(":x: | **Please type the name of the category!**");
                     return;
                 };
     
-                if (args[1] === 'off') { // to turn logging off
+                if (args[2] === 'off') { // to turn logging off
                     if (!status) {
                         message.channel.send(":x: | **Ticket Category is already disabled!**");
                         return;
@@ -281,7 +283,58 @@ module.exports.run = async (client, message, args, color) => {
                     return;
                 };
             };
-        };
+        } else if (args[1] === "log") {
+
+            if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
+                return message.channel.send(`${language["tickets"].noPermission}`);
+    
+            client.getTable = db.prepare("SELECT * FROM ticketlog WHERE guildid = ?");
+    
+
+            const lchan = message.mentions.channels.first();
+    
+            let status;
+            if (message.guild.id) {
+                status = client.getTable.get(message.guild.id);
+    
+    
+                if (args[2] === undefined) {
+                    message.channel.send(":x: | **Please mention a channel!**");
+                    return;
+                };
+    
+                if (args[2] === 'off') { // to turn logging off
+                    if (!status) {
+                        message.channel.send(":x: | **Ticket Logging is already disabled!**");
+                        return;
+                    } else {
+                        message.channel.send(":white_check_mark: | **Ticket Logging disabled!**");
+                        db.prepare("DELETE FROM ticketlog WHERE guildid = ?").run(message.guild.id);
+                        return;
+                    };
+                } else if (!lchan) {
+                    message.channel.send(`${language["tickets"].invalidCategory}`);
+                    return;
+                } else if (!status) {
+                    const insert = db.prepare("INSERT INTO ticketlog (guildid, channel) VALUES (@guildid, @channel);");
+                    insert.run({
+                        guildid: `${message.guild.id}`,
+                        channel: `${lchan.id}`
+                    });
+                    message.channel.send(`:white_check_mark: | **Ticket Logging set to ${lchan}**`);
+                    return;
+                } else {
+                    const update = db.prepare("UPDATE ticketlog SET channel = (@channel) WHERE guildid = (@guildid);");
+                    update.run({
+                        guildid: `${message.guild.id}`,
+                        channel: `${lchan.id}`
+                    });
+                    message.channel.send(`:white_check_mark: | ** Ticket Logging updated to ${lchan}**`);
+                    return;
+                };
+            };
+        }
+    };
 
 
     // setprefix

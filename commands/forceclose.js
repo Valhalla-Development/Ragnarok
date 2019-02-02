@@ -1,5 +1,7 @@
 const Discord = require("discord.js");
 const ms = require("ms");
+const SQLite = require('better-sqlite3')
+const db = new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
@@ -38,16 +40,38 @@ module.exports.run = async (client, message, args, color) => {
   };
 
   if (message.channel.name.startsWith("ticket-")) {
+    let fclosecoll = args.join(" ");
     let forceclosetimer = new Discord.RichEmbed()
     .setColor(`36393F`)
-    .setTitle(':no_entry_sign: Closing Ticket! :no_entry_sign:')
+    .setTitle(':x: Closing Ticket! :x:')
     .setDescription(`${language["tickets"].closeTimer}`)
-    message.channel.send(forceclosetimer);
-    setTimeout(function () {
-      message.channel.delete();
-    }, ms('10s'));
+    message.channel.send(forceclosetimer)
+        message.channel
+        .awaitMessages(response => response.author.id === message.author.id, {
+            max: 1,
+            time: 10000,
+            errors: ["time"]
+        }).catch(e => {
+          message.channel.delete();
+          const logget = db.prepare(`SELECT channel FROM ticketlog WHERE guildid = ${message.guild.id};`).get();
+          if (!logget) {
+              return;
+          } else {
+              const logchan = logget.channel
+              let loggingembed = new Discord.RichEmbed()
+                  .setColor(color)
+                  .setDescription(`<@${message.author.id}> has closed ticket \`#${message.channel.name}\``);
+              client.channels.get(logchan).send(loggingembed);
+              }            
 
-  }
+      });        
+
+
+    //setTimeout(function () {
+    //  message.channel.delete();
+    //}, ms('10s'));
+
+  };
 };
 
 module.exports.help = {

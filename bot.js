@@ -177,6 +177,15 @@ client.on("ready", () => {
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   };
+    // ticket log table
+  const ticketlogtable = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'ticketlog';").get();
+  if (!ticketlogtable['count(*)']) {
+    console.log('ticket log table created!')
+    db.prepare("CREATE TABLE ticketlog (guildid TEXT PRIMARY KEY, channel TEXT);").run();
+    db.prepare("CREATE UNIQUE INDEX idx_ticketlog_id ON ticketlog (guildid);").run();
+    db.pragma("synchronous = 1");
+    db.pragma("journal_mode = wal");
+  };
 });
 
 // logging
@@ -331,11 +340,6 @@ client.on("guildDelete", guild => {
   if (delaut['count(*)']) {
     db.prepare("DELETE FROM autorole WHERE guildid = ?").run(guild.id);
   };
-  // scores table
-  const delsco = db.prepare("SELECT count(*) FROM scores WHERE guild = ?;").get(guild.id);
-  if (delsco['count(*)']) {
-    db.prepare("DELETE FROM scores WHERE guild = ?").run(guild.id);
-  };
   // adsprot table
   const delads = db.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?;").get(guild.id);
   if (delads['count(*)']) {
@@ -345,6 +349,15 @@ client.on("guildDelete", guild => {
   const dellog = db.prepare("SELECT count(*) FROM logging WHERE guildid = ?;").get(guild.id);
   if (dellog['count(*)']) {
     db.prepare("DELETE FROM logging WHERE guildid = ?").run(guild.id);
+  };  // ticket table
+  const deltic = db.prepare("SELECT count(*) FROM ticket WHERE guildid = ?;").get(guild.id);
+  if (deltic['count(*)']) {
+    db.prepare("DELETE FROM ticket WHERE guildid = ?").run(guild.id);
+  };
+  // ticket log table
+  const delticlog = db.prepare("SELECT count(*) FROM ticketlog WHERE guildid = ?;").get(guild.id);
+  if (delticlog['count(*)']) {
+    db.prepare("DELETE FROM ticketlog WHERE guildid = ?").run(guild.id);
   };
 });
 

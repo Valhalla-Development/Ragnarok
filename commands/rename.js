@@ -47,6 +47,17 @@ module.exports.run = async (client, message, args, color) => {
         .setDescription(`Channel Renamed!`);
     message.channel.send(renamem);
     message.channel.setName(`ticket-${argresult}`)
+    const logget = db.prepare(`SELECT channel FROM ticketlog WHERE guildid = ${message.guild.id};`).get();
+    if (!logget) {
+        return;
+    } else {
+        const logchan = logget.channel
+        let loggingembed = new Discord.RichEmbed()
+            .setColor(color)
+            .setDescription(`<@${message.author.id}> renamed ticket from \`#${message.channel.name}\` to <#${message.channel.id}>`);
+        client.channels.get(logchan).send(loggingembed);
+        }
+  
 
     };    
 
