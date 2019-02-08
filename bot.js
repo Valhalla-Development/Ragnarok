@@ -97,7 +97,7 @@ client.on("ready", () => {
 
   // activity
 
-  client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`, {
+  client.user.setActivity(`${prefixgen}help | ${client.guilds.size} Guilds ${client.users.size} Users`, {
     type: "WATCHING"
   });
 
@@ -381,6 +381,19 @@ client.on("guildMemberRemove", member => {
 client.channels.get(logs).send(logembed);
 });
 
+// update status
+client.on("guildMemberRemove", member => {
+  client.user.setActivity(`${prefixgen}help | ${client.guilds.size} Guilds ${client.users.size} Users`, {
+    type: "WATCHING"
+  });
+});
+
+client.on("guildMemberAdd", member => {
+  client.user.setActivity(`${prefixgen}help | ${client.guilds.size} Guilds ${client.users.size} Users`, {
+    type: "WATCHING"
+  });
+});
+
 // logging join
 client.on("guildMemberAdd", member => {
   const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${member.guild.id};`).get();
@@ -499,6 +512,16 @@ client.on("message", message => {
     }
     if (args[0] === undefined) {
       return;
+    } else if (message.content.includes("https://")) {
+      message.channel.send(`Hi unloved virgin, I\'m Dad!`);
+    } else if (message.content.includes("http://")) {
+      message.channel.send(`Hi unloved virgin, I\'m Dad!`);
+    } else if (message.content.includes("discord.gg")) {
+      message.channel.send(`Hi unloved virgin, I\'m Dad!`);
+    } else if (message.content.includes("discord.me")) {
+      message.channel.send(`Hi unloved virgin, I\'m Dad!`);
+    } else if (message.content.includes("discord.io")) {
+      message.channel.send(`Hi unloved virgin, I\'m Dad!`);
     } else if (message.content.includes('@everyone')) {
       message.channel.send(`Hi unloved virgin, I\'m Dad!`);
     } else if (message.content.includes('@here')) {
