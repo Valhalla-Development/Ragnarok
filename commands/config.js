@@ -241,7 +241,7 @@ module.exports.run = async (client, message, args, color) => {
             client.getTable = db.prepare("SELECT * FROM ticket WHERE guildid = ?");
     
 
-            const category = message.guild.channels.find(c => c.name == args.slice(2).join(" ").toLowerCase() && c.type == "category");
+            const category = message.guild.channels.find(c => c.name == args.slice(2).join(" ") && c.type == "category");
     
             let status;
             if (message.guild.id) {
