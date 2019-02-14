@@ -504,6 +504,18 @@ client.on("message", message => {
   let argresult = args.join(" ");
   const evalargs = message.content.split(" ").slice(1);
 
+  // prefix command
+  let prefixgrab = db.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
+
+  let prefixcommand = prefixgrab.prefix;
+
+  if(command === prefixgen + 'prefix') {
+    let embed = new Discord.RichEmbed()
+    .setColor(color)
+    .setDescription(`This server's prefix is: \`${prefixcommand}\``);
+    message.channel.send(embed);
+  };
+
   // dad bot
 
   if (message.content.toLowerCase().startsWith('im') || message.content.toLowerCase().startsWith('i\'m')) {
@@ -656,7 +668,6 @@ client.on("message", message => {
     return;
   }
 
-  const prefixgrab = db.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
 
   let prefix = prefixgrab.prefix;
 
