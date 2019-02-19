@@ -46,17 +46,18 @@ module.exports.run = async (client, message, args, color) => {
   } else {
     const logch = id.channel
 
-    let logs = client.channels.get(logch)
+    let logsch = client.channels.get(logch)
 
     let chuser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!chuser) return message.reply(`${language["ban"].notarget}`).then(message => message.delete(5000));
 
     let chreason = args.slice(1).join(' ');
-    if (!chreason) reason = "No reason given";
+    if (!chreason) reasonch = "No reason given";
 
-    message.guild.member(user).ban(reason);
+    message.guild.member(chuser).ban(chreason);
+    message.channel.send(`${chuser}, was banned by ${message.author}\nCheck <#${logsch}> for more information!`).then(message.delete(1000));
 
-    let logsEmbed = new Discord.RichEmbed()
+    let logsEmbedD = new Discord.RichEmbed()
       .setTitle("User Banned")
       .setFooter("User Ban Logs")
       .setColor("#ff0000")
@@ -66,7 +67,7 @@ module.exports.run = async (client, message, args, color) => {
       .addField("Moderator:", `${message.author}, ID: ${message.author.id}`)
       .addField("Time:", message.createdAt)
 
-    client.channels.get(logs).send(logembed);
+    client.channels.get(logsch).send(logsEmbedD);
   };
 };
 
