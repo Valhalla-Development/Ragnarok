@@ -144,8 +144,8 @@
     "noPermission": ":x: **You need to have the `MANAGE_GUILD` permission to use this command.**"
   },
   "bugreport": {
-    "noInput": ":x: **You did not specify a bug to report!**",
-    "bugLogged": ":white_check_mark: **Bug successfully reported!**"
+    "noInput": ":x: **You did not specify a suggestion!**",
+    "bugLogged": ":white_check_mark: **Suggestion successfully logged!**"
   },
   "tickets": {
     "nomodRole": ":x: This server doesn't have a `Support Team` role made, so the ticket won't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.",
