@@ -1,6 +1,7 @@
 const { RichEmbed } = require('discord.js');
 const request = require('request');
 const Trakt = require('trakt.tv');
+const decode = require('unescape');
 const { traktKey, traktSecret, fanartKey } = require('../Storage/config.json');
 
 module.exports.run = async (client, message, args) => {
@@ -38,7 +39,7 @@ module.exports.run = async (client, message, args) => {
         return new RichEmbed()
             .setColor('#EA2027')
             .setTitle(`${title} - Trakt`)
-            .setDescription(`${desc}\n**Rating: ${rating}%** - ${votes} votes\n\n${link}\n\n**Not the content you were looking for?**\nTry: https://trakt.tv/search?query=${searchQuery}`)
+            .setDescription(`${decode(desc, 'all')}\n**Rating: ${rating}%** - ${votes} votes\n\n${link}\n\n**Not the content you were looking for?**\nTry: https://trakt.tv/search?query=${searchQuery}`)
             .setImage(image)
             .setFooter('Trakt.TV', 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png')
             .setTimestamp();
@@ -72,8 +73,10 @@ module.exports.run = async (client, message, args) => {
                 reqDesc = movieInfo[0].movie.overview;
                 reqLink = `https://trakt.tv/movies/${movieInfo[0].movie.ids.slug}`;
                 reqSearch = args.split(' ').join('+');
+                reqRating = Math.round(movieInfo[0].movie.rating * 10);
+                reqVotes = toThousand(movieInfo[0].movie.votes);
 
-                message.channel.send(getTraktEmbed(reqTitle, reqDesc, reqImage, reqLink, reqSearch));
+                message.channel.send(getTraktEmbed(reqTitle, reqDesc, reqImage, reqLink, reqSearch, reqRating, reqVotes));
             });
         }).catch(() => {
             reqSearch = args.split(' ').join('+');
@@ -99,8 +102,10 @@ module.exports.run = async (client, message, args) => {
                 reqDesc = showInfo[0].show.overview;
                 reqLink = `https://trakt.tv/shows/${showInfo[0].show.ids.slug}`;
                 reqSearch = args.split(' ').join('+');
+                reqRating = Math.round(showInfo[0].show.rating * 10);
+                reqVotes = toThousand(showInfo[0].show.votes);
 
-                message.channel.send(getTraktEmbed(reqTitle, reqDesc, reqImage, reqLink, reqSearch));
+                message.channel.send(getTraktEmbed(reqTitle, reqDesc, reqImage, reqLink, reqSearch, reqRating, reqVotes));
             });
         }).catch(() => {
             reqSearch = args.split(' ').join('+');
@@ -160,8 +165,10 @@ module.exports.run = async (client, message, args) => {
                             reqDesc = info[0].show.overview;
                             reqLink = `https://trakt.tv/shows/${info[0].show.ids.slug}`;
                             reqSearch = args.split(' ').join('+');
+                            reqRating = Math.round(info[0].show.rating * 10);
+                            reqVotes = toThousand(info[0].show.votes);
             
-                            message.channel.send(getTraktEmbed(reqTitle, reqDesc, reqImage, reqLink, reqSearch));
+                            message.channel.send(getTraktEmbed(reqTitle, reqDesc, reqImage, reqLink, reqSearch, reqRating, reqVotes));
                         });
                     break;
                 }
