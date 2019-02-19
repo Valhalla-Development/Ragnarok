@@ -74,7 +74,7 @@ module.exports.run = async (client, message, args, color) => {
             const logchan = logget.channel
             let loggingembed = new Discord.RichEmbed()
                 .setColor(color)
-                .setDescription(`${nickNameID} has opened a new ticket <#${c.id}>`);
+                .setDescription(`${nickNameID} has opened a new ticket \`#${c.name}\``);
             client.channels.get(logchan).send(loggingembed);
             }
         
@@ -124,7 +124,7 @@ module.exports.run = async (client, message, args, color) => {
             const logchan = logget.channel
             let loggingembed = new Discord.RichEmbed()
                 .setColor(color)
-                .setDescription(`${nickNameID} has opened a new ticket <#${c.id}>`);
+                .setDescription(`${nickNameID} has opened a new ticket \`#${c.name}\``);
             client.channels.get(logchan).send(loggingembed);
             }        
     }).catch(console.error);
