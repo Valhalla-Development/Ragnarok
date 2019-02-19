@@ -324,7 +324,9 @@ client.channels.get(logs).send(logembed);
 client.on("guildDelete", guild => {
   // when the bot is removed from a guild.
   console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-  client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
+  client.user.setActivity(`${prefixgen}help | ${client.guilds.size} Guilds ${client.users.size} Users`, {
+    type: "WATCHING"
+  });
   // setprefix table
   const delpre = db.prepare("SELECT count(*) FROM setprefix WHERE guildid = ?;").get(guild.id);
   if (delpre['count(*)']) {
@@ -364,7 +366,9 @@ client.on("guildDelete", guild => {
 client.on("guildCreate", guild => {
   //  when the bot joins a guild.
   console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-  client.user.setActivity(`${client.guilds.size} Guilds | ${prefixgen}help`);
+  client.user.setActivity(`${prefixgen}help | ${client.guilds.size} Guilds ${client.users.size} Users`, {
+    type: "WATCHING"
+  });
 });
 
 client.on("guildMemberRemove", member => {
