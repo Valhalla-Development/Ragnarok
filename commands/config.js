@@ -64,7 +64,9 @@ module.exports.run = async (client, message, args, color) => {
         } else {
             let foundRoleList = JSON.parse(foundRoleMenu.roleList);
             message.mentions.roles.forEach(role => {
-                foundRoleList.push(role.id)
+                if (!foundRoleList.includes(role.id)) {
+                    foundRoleList.push(role.id);
+                }
             });
             const updateRoleMenu = db.prepare(`UPDATE rolemenu SET roleList = (@roleList) WHERE guildid=${message.guild.id}`);
             updateRoleMenu.run({
