@@ -1,9 +1,10 @@
 const { RichEmbed } = require('discord.js');
 const request = require('request');
 const Trakt = require('trakt.tv');
-const { traktKey, traktSecret, omdbKey } = require('../Storage/config.json');
+const decode = require('unescape');
+const { traktKey, traktSecret, fanartKey } = require('../Storage/config.json');
 
-module.exports.run = (client, message, args) => {
+module.exports.run = async (client, message, args) => {
     const trakt = new Trakt({
         client_id: traktKey,
         client_secret: traktSecret
@@ -14,6 +15,17 @@ module.exports.run = (client, message, args) => {
     let reqImage = '';
     let reqLink = '';
     let reqSearch = '';
+    let reqRating = '';
+    let reqVotes = '';
+
+    const toThousand = (num) => {
+        num = parseInt(num);
+        if(num >= 10000) {
+            return `${(num / 1000).toFixed(1)}k`;
+        } else {
+            return num;
+        }
+    }
 
     const getTrakt = (query, type) => {
         return trakt.search.text({
@@ -23,47 +35,81 @@ module.exports.run = (client, message, args) => {
         });
     }
 
-    let getTraktEmbed = (title, desc, image, link, searchQuery) => {
+    let getTraktEmbed = (title, desc, image, link, searchQuery, rating, votes) => {
         return new RichEmbed()
             .setColor('#EA2027')
             .setTitle(`${title} - Trakt`)
-            .setDescription(`${desc}\n\n${link}\n\n**Not the content you were looking for?**\nTry: https://trakt.tv/search?query=${searchQuery}`)
+            .setDescription(`${decode(desc, 'all')}\n**Rating: ${rating}%** - ${votes} votes\n\n${link}\n\n**Not the content you were looking for?**\nTry: https://trakt.tv/search?query=${searchQuery}`)
             .setImage(image)
             .setFooter('Trakt.TV', 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png')
             .setTimestamp();
     }
 
+    const notFound = (searchQuery) => {
+        let embed = new RichEmbed()
+            .setColor('#d63031')
+            .setDescription(`**Couldn't find the movie/show you were looking for.**\nTry again or try on Trakt.TV here: https://trakt.tv/search?query=${searchQuery}`);
+
+        message.channel.send(embed);
+    }
+
     if (args[0] == 'movie') {
         args = args.slice(1).join(' ');
         getTrakt(args, 'movie').then(movieInfo => {
-            const imdbQuery = movieInfo[0].movie.ids.imdb;
-            const titleQuery = movieInfo[0].movie.title.toLowerCase();
-            request(`http://www.omdbapi.com/?apikey=${omdbKey}&i=${imdbQuery}&t=${titleQuery}`, (err, resp, body) => {
-                let omdbData = JSON.parse(body);
-                reqImage = omdbData.Poster;
+            request(`http://webservice.fanart.tv/v3/movies/${movieInfo[0].movie.ids.tmdb}?api_key=${fanartKey}`, (err, resp, body) => {
+                let fanartData = JSON.parse(body);
+                if (!fanartData.movieposter) {
+                    if (!fanartData.hdmovielogo) {
+                        reqImage = '';
+                    } else {
+                        const randomIndex = Math.floor(Math.random() * fanartData.hdmovielogo.length);
+                        reqImage = fanartData.hdmovielogo[0].url;
+                    }
+                } else {
+                    const randomIndex = Math.floor(Math.random() * fanartData.movieposter.length);
+                    reqImage = fanartData.movieposter[randomIndex].url;
+                }
                 reqTitle = movieInfo[0].movie.title;
                 reqDesc = movieInfo[0].movie.overview;
                 reqLink = `https://trakt.tv/movies/${movieInfo[0].movie.ids.slug}`;
                 reqSearch = args.split(' ').join('+');
+                reqRating = Math.round(movieInfo[0].movie.rating * 10);
+                reqVotes = toThousand(movieInfo[0].movie.votes);
 
-                message.channel.send(getTraktEmbed(reqTitle, reqDesc, reqImage, reqLink, reqSearch));
+                message.channel.send(getTraktEmbed(reqTitle, reqDesc, reqImage, reqLink, reqSearch, reqRating, reqVotes));
             });
+        }).catch(() => {
+            reqSearch = args.split(' ').join('+');
+            notFound(reqSearch);
         });
     } else if (args[0] == 'show') {
         args = args.slice(1).join(' ');
         getTrakt(args, 'show').then(showInfo => {
-            const imdbQuery = showInfo[0].show.ids.imdb;
-            const titleQuery = showInfo[0].show.title.toLowerCase();
-            request(`http://www.omdbapi.com/?apikey=${omdbKey}&i=${imdbQuery}&t=${titleQuery}`, (err, resp, body) => {
-                let omdbData = JSON.parse(body);
-                reqImage = omdbData.Poster;
+            request(`http://webservice.fanart.tv/v3/tv/${showInfo[0].show.ids.tvdb}?api_key=${fanartKey}`, (err, resp, body) => {
+                let fanartData = JSON.parse(body);
+                if (!fanartData.tvposter) {
+                    if (!fanartData.hdtvlogo) {
+                        reqImage = '';
+                    } else {
+                        const randomIndex = Math.floor(Math.random() * fanartData.hdtvlogo.length);
+                        reqImage = fanartData.hdtvlogo[0].url;
+                    }
+                } else {
+                    const randomIndex = Math.floor(Math.random() * fanartData.tvposter.length);
+                    reqImage = fanartData.tvposter[randomIndex].url;
+                }
                 reqTitle = showInfo[0].show.title;
                 reqDesc = showInfo[0].show.overview;
                 reqLink = `https://trakt.tv/shows/${showInfo[0].show.ids.slug}`;
                 reqSearch = args.split(' ').join('+');
+                reqRating = Math.round(showInfo[0].show.rating * 10);
+                reqVotes = toThousand(showInfo[0].show.votes);
 
-                message.channel.send(getTraktEmbed(reqTitle, reqDesc, reqImage, reqLink, reqSearch));
+                message.channel.send(getTraktEmbed(reqTitle, reqDesc, reqImage, reqLink, reqSearch, reqRating, reqVotes));
             });
+        }).catch(() => {
+            reqSearch = args.split(' ').join('+');
+            notFound(reqSearch);
         });
     } else {
         if (args.length == 0) {
@@ -75,37 +121,60 @@ module.exports.run = (client, message, args) => {
         } else {
             args = args.join(' ');
             getTrakt(args, 'movie,show').then(info => {
-                if (info[0].type == 'movie') {
-                    const imdbQuery = info[0].movie.ids.imdb;
-                    const titleQuery = info[0].movie.title.toLowerCase();
-                    request(`http://www.omdbapi.com/?apikey=${omdbKey}&i=${imdbQuery}&t=${titleQuery}`, (err, resp, body) => {
-                        let omdbData = JSON.parse(body);
-                        reqImage = omdbData.Poster;
-                        reqTitle = info[0].movie.title;
-                        reqDesc = info[0].movie.overview;
-                        reqLink = `https://trakt.tv/movies/${info[0].movie.ids.slug}`;
-                        reqSearch = args.split(' ').join('+');
-        
-                        message.channel.send(getTraktEmbed(reqTitle, reqDesc, reqImage, reqLink, reqSearch));
-                    });
-                    return;
-                }
+                switch(info[0].type) {
+                    case 'movie':
+                        request(`http://webservice.fanart.tv/v3/movies/${info[0].movie.ids.tmdb}?api_key=${fanartKey}`, (err, resp, body) => {
+                            let fanartData = JSON.parse(body);
+                            if (!fanartData.movieposter) {
+                                if (!fanartData.hdmovielogo) {
+                                    reqImage = '';
+                                } else {
+                                    const randomIndex = Math.floor(Math.random() * fanartData.hdmovielogo.length);
+                                    reqImage = fanartData.hdmovielogo[0].url;
+                                }
+                            } else {
+                                const randomIndex = Math.floor(Math.random() * fanartData.movieposter.length);
+                                reqImage = fanartData.movieposter[randomIndex].url;
+                            }
+                            reqTitle = info[0].movie.title;
+                            reqDesc = info[0].movie.overview;
+                            reqLink = `https://trakt.tv/movies/${info[0].movie.ids.slug}`;
+                            reqSearch = args.split(' ').join('+');
+                            reqRating = Math.round(info[0].movie.rating * 10);
+                            reqVotes = toThousand(info[0].movie.votes);
+            
+                            message.channel.send(getTraktEmbed(reqTitle, reqDesc, reqImage, reqLink, reqSearch, reqRating, reqVotes));
+                        });
+                    break;
 
-                if(info[0].type == 'show') {
-                    const imdbQuery = info[0].show.ids.imdb;
-                    const titleQuery = info[0].show.title.toLowerCase();
-                    request(`http://www.omdbapi.com/?apikey=${omdbKey}&i=${imdbQuery}&t=${titleQuery}`, (err, resp, body) => {
-                        let omdbData = JSON.parse(body);
-                        reqImage = omdbData.Poster;
-                        reqTitle = info[0].show.title;
-                        reqDesc = info[0].show.overview;
-                        reqLink = `https://trakt.tv/shows/${info[0].show.ids.slug}`;
-                        reqSearch = args.split(' ').join('+');
-        
-                        message.channel.send(getTraktEmbed(reqTitle, reqDesc, reqImage, reqLink, reqSearch));
-                    });
-                    return;
+                    case 'show': 
+                        request(`http://webservice.fanart.tv/v3/tv/${info[0].show.ids.tvdb}?api_key=${fanartKey}`, (err, resp, body) => {
+                            let fanartData = JSON.parse(body);
+                            if (!fanartData.tvposter) {
+                                if (!fanartData.hdtvlogo) {
+                                    reqImage = '';
+                                } else {
+                                    const randomIndex = Math.floor(Math.random() * fanartData.hdtvlogo.length);
+                                    reqImage = fanartData.hdtvlogo[0].url;
+                                }
+                            } else {
+                                const randomIndex = Math.floor(Math.random() * fanartData.tvposter.length);
+                                reqImage = fanartData.tvposter[randomIndex].url;
+                            }
+                            reqTitle = info[0].show.title;
+                            reqDesc = info[0].show.overview;
+                            reqLink = `https://trakt.tv/shows/${info[0].show.ids.slug}`;
+                            reqSearch = args.split(' ').join('+');
+                            reqRating = Math.round(info[0].show.rating * 10);
+                            reqVotes = toThousand(info[0].show.votes);
+            
+                            message.channel.send(getTraktEmbed(reqTitle, reqDesc, reqImage, reqLink, reqSearch, reqRating, reqVotes));
+                        });
+                    break;
                 }
+            }).catch(() => {
+                reqSearch = args.split(' ').join('+');
+                notFound(reqSearch);
             });
         }
     }
@@ -114,4 +183,3 @@ module.exports.run = (client, message, args) => {
 module.exports.help = {
     name: 'trakt'
 }
-

@@ -9,8 +9,6 @@ module.exports.run = async (client, message, args, color) => {
 
     let prefix = prefixgrab.prefix;
 
-    // And they specify a reason:
-    const reason = message.content.split(" ").slice(1).join(" ");
     // Make sure the "Support Team" role exists in the server.
     if (!message.guild.roles.some(r => ["Support Team"].includes(r.name))) {
         let nomodRole = new Discord.RichEmbed()
@@ -20,6 +18,7 @@ module.exports.run = async (client, message, args, color) => {
         return;
     };
     // Make sure this is the user's only ticket.
+    const nickNameID = message.guild.members.get(message.author.id)
     const nickName = message.guild.members.get(message.author.id).displayName
     const userConv = nickName.toLowerCase().replace(/ /g, "-");
     if (message.guild.channels.some(c => [`ticket-${userConv}`].includes(c.name))) {
@@ -68,6 +67,17 @@ module.exports.run = async (client, message, args, color) => {
             embed: embed
         });
         // And display any errors in the console.
+        const logget = db.prepare(`SELECT channel FROM ticketlog WHERE guildid = ${message.guild.id};`).get();
+        if (!logget) {
+            return;
+        } else {
+            const logchan = logget.channel
+            let loggingembed = new Discord.RichEmbed()
+                .setColor(color)
+                .setDescription(`${nickNameID} has opened a new ticket \`#${c.name}\``);
+            client.channels.get(logchan).send(loggingembed);
+            }
+        
     }).catch(console.error);
 } else {
     const ticategory = id.category
@@ -107,9 +117,18 @@ module.exports.run = async (client, message, args, color) => {
             embed: embed
         });
         // And display any errors in the console.
+        const logget = db.prepare(`SELECT channel FROM ticketlog WHERE guildid = ${message.guild.id};`).get();
+        if (!logget) {
+            return;
+        } else {
+            const logchan = logget.channel
+            let loggingembed = new Discord.RichEmbed()
+                .setColor(color)
+                .setDescription(`${nickNameID} has opened a new ticket \`#${c.name}\``);
+            client.channels.get(logchan).send(loggingembed);
+            }        
     }).catch(console.error);
 }
-
 };
 module.exports.help = {
     name: "new"

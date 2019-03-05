@@ -1,4 +1,6 @@
 const Discord = require("discord.js");
+const SQLite = require('better-sqlite3')
+const db = new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
@@ -58,6 +60,17 @@ module.exports.run = async (client, message, args, color) => {
     rUser
   );
   message.channel.send(`${theuser}`);
+  const logget = db.prepare(`SELECT channel FROM ticketlog WHERE guildid = ${message.guild.id};`).get();
+  if (!logget) {
+      return;
+  } else {
+      const logchan = logget.channel
+      let loggingembed = new Discord.RichEmbed()
+          .setColor(color)
+          .setDescription(`<@${message.author.id}> removed ${rUser} from ticket <#${message.channel.id}>`);
+      client.channels.get(logchan).send(loggingembed);
+      }
+
 }
 
 module.exports.help = {
