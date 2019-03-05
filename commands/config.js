@@ -18,12 +18,115 @@ module.exports.run = async (client, message, args, color) => {
 
     if (args[0] === undefined) {
         const undeembed = new Discord.RichEmbed()
-        .setColor(0xCF40FA)
-        .addField(`Ragnarok - Config`, `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Seys the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config welcome]() : Sets the welcome message`)
-        message.channel.send({ embed: undeembed });
+            .setColor(0xCF40FA)
+            .addField(`Ragnarok - Config`, `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Seys the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config welcome]() : Sets the welcome message\n[${prefix}config rset]() : Sets the role menu roles\n[${prefix}config rremove]() : Removes a role from rolemenu\n[${prefix}config rclear]() : Removes all roles from rolemenu`)
+        message.channel.send({
+            embed: undeembed
+        });
         return;
     };
-    
+
+    // Rolemenu Config
+    if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
+        let invalidpermsembed = new Discord.RichEmbed()
+            .setColor(`36393F`)
+            .setDescription(`${language["autorole"].noPermission}`)
+        message.channel.send(invalidpermsembed);
+        return;
+    };
+
+    if (args[0] === 'rset') {
+        let roleList = [];
+
+        if (message.mentions.roles.size <= 0) {
+            let errEmbed = new Discord.RichEmbed()
+                .setColor('#ff4757')
+                .setDescription('\:x: You must mention a role to remove from the menu.');
+
+            message.channel.send(errEmbed);
+            return;
+        }
+
+        const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${message.guild.id}`).get();
+        if (!foundRoleMenu) {
+            message.mentions.roles.forEach(role => {
+                roleList.push(role.id);
+            });
+            const newRoleMenu = db.prepare(`INSERT INTO rolemenu (guildid, roleList) VALUES (@guildid, @roleList);`);
+            newRoleMenu.run({
+                guildid: `${message.guild.id}`,
+                roleList: JSON.stringify(roleList)
+            });
+            let succEmbed = new Discord.RichEmbed()
+                .setColor('#2ed573')
+                .setDescription(`\:white_check_mark: Roles successfully set in the assignable role menu!`);
+            message.channel.send(succEmbed);
+        } else {
+            let foundRoleList = JSON.parse(foundRoleMenu.roleList);
+            message.mentions.roles.forEach(role => {
+                foundRoleList.push(role.id)
+            });
+            const updateRoleMenu = db.prepare(`UPDATE rolemenu SET roleList = (@roleList) WHERE guildid=${message.guild.id}`);
+            updateRoleMenu.run({
+                roleList: JSON.stringify(foundRoleList)
+            });
+            let succEmbed = new Discord.RichEmbed()
+                .setColor('#2ed573')
+                .setDescription(`\:white_check_mark: Roles successfully set in the assignable role menu!`);
+            message.channel.send(succEmbed);
+        }
+        return;
+    } else if (args[0] === 'rremove') {
+        if (message.mentions.roles.size <= 0) {
+            let errEmbed = new Discord.RichEmbed()
+                .setColor('#ff4757')
+                .setDescription('\:x: You must mention a role to remove from the menu.');
+
+            message.channel.send(errEmbed);
+            return;
+        }
+
+        let mentions = message.mentions.roles.map(role => role.id);
+
+        const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid = ${message.guild.id}`).get();
+        let roleList = JSON.parse(foundRoleMenu.roleList);
+
+        for (const role of mentions) {
+            if (roleList.includes(role)) {
+                const index = roleList.indexOf(role);
+                roleList.splice(index, 1);
+                const updateRoleList = db.prepare(`UPDATE rolemenu SET roleList = (@roleList) WHERE guildid = (@guildid)`);
+                updateRoleList.run({
+                    guildid: `${message.guild.id}`,
+                    roleList: JSON.stringify(roleList)
+                });
+            }
+        }
+
+        let succEmbed = new Discord.RichEmbed()
+            .setColor('#2ed573')
+            .setDescription(`\:white_check_mark: Specified roles have successfully been cleared from the rolemenu!`);
+        message.channel.send(succEmbed);
+        return;
+    } else if (args[0] === 'rclear') {
+        db.prepare(`DELETE FROM rolemenu where guildid=${message.guild.id}`).run();
+        let succEmbed = new Discord.RichEmbed()
+            .setColor('#2ed573')
+            .setDescription(`\:white_check_mark: All roles have successfully been cleared from the rolemenu!`);
+        message.channel.send(succEmbed);
+        return;
+    } else {
+        let incorrectUsageMessage = language["autorole"].incorrectUsage;
+        const incorrectUsage = incorrectUsageMessage.replace(
+            "${prefix}",
+            prefix
+        );
+        let incorrectUsageembed = new Discord.RichEmbed()
+            .setColor(`36393F`)
+            .setDescription(`${incorrectUsage}`)
+        message.channel.send(incorrectUsageembed);
+        return;
+    };
 
     // adsprot
     if (args[0] === "adsprot") {
@@ -229,30 +332,30 @@ module.exports.run = async (client, message, args, color) => {
         };
     };
 
-        // ticket cat and log
+    // ticket cat and log
 
-        if (args[0] === "ticket") {
+    if (args[0] === "ticket") {
 
-            if (args[1] === "cat") {
+        if (args[1] === "cat") {
 
             if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
                 return message.channel.send(`${language["tickets"].noPermission}`);
-    
+
             client.getTable = db.prepare("SELECT * FROM ticket WHERE guildid = ?");
-    
+
 
             const category = message.guild.channels.find(c => c.name == args.slice(2).join(" ") && c.type == "category");
-    
+
             let status;
             if (message.guild.id) {
                 status = client.getTable.get(message.guild.id);
-    
-    
+
+
                 if (args[2] === undefined) {
                     message.channel.send(":x: | **Please type the name of the category!**");
                     return;
                 };
-    
+
                 if (args[2] === 'off') { // to turn logging off
                     if (!status) {
                         message.channel.send(":x: | **Ticket Category is already disabled!**");
@@ -287,22 +390,22 @@ module.exports.run = async (client, message, args, color) => {
 
             if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
                 return message.channel.send(`${language["tickets"].noPermission}`);
-    
+
             client.getTable = db.prepare("SELECT * FROM ticketlog WHERE guildid = ?");
-    
+
 
             const lchan = message.mentions.channels.first();
-    
+
             let status;
             if (message.guild.id) {
                 status = client.getTable.get(message.guild.id);
-    
-    
+
+
                 if (args[2] === undefined) {
                     message.channel.send(":x: | **Please mention a channel!**");
                     return;
                 };
-    
+
                 if (args[2] === 'off') { // to turn logging off
                     if (!status) {
                         message.channel.send(":x: | **Ticket Logging is already disabled!**");

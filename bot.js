@@ -101,6 +101,15 @@ client.on("ready", () => {
     type: "WATCHING"
   });
 
+  // RoleMenu Table 
+  const rolemenu = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'rolemenu';").get();
+  if (!rolemenu['count(*)']) {
+    console.log('rolemenu table created!')
+    db.prepare("CREATE TABLE rolemenu (guildid TEXT PRIMARY KEY, activeRoleMenuID TEXT, roleList BLOB);").run();
+    db.prepare("CREATE UNIQUE INDEX idx_rolemenu_id ON rolemenu (guildid);").run();
+    db.pragma("synchronous = 1");
+    db.pragma("journal_mode = wal");
+  };
   // setprefix table
   const setprefix = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'setprefix';").get();
   if (!setprefix['count(*)']) {
@@ -168,7 +177,7 @@ client.on("ready", () => {
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   };
-    // ticket table
+  // ticket table
   const tickettable = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'ticket';").get();
   if (!tickettable['count(*)']) {
     console.log('ticket table created!')
@@ -177,7 +186,7 @@ client.on("ready", () => {
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   };
-    // ticket log table
+  // ticket log table
   const ticketlogtable = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'ticketlog';").get();
   if (!ticketlogtable['count(*)']) {
     console.log('ticket log table created!')
@@ -188,9 +197,62 @@ client.on("ready", () => {
   };
 });
 
+// RAW EVENT LISTENER
+client.on('raw', event => {
+  const eventType = event.t;
+  const data = event.d;
+  if (eventType == 'MESSAGE_DELETE') {
+      if (data.user_id == client.user.id) return;
+      const getRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${data.guild_id}`).get();
+      if (!getRoleMenu || !getRoleMenu.activeRoleMenuID) {
+          return;
+      } else if(getRoleMenu.activeRoleMenuID === data.id) {
+          db.prepare(`UPDATE rolemenu SET activeRoleMenuID = '' WHERE guildid = ${data.guild_id}`).run();
+      }
+  }
+  if(eventType === 'MESSAGE_REACTION_ADD') {
+      if (data.user_id == client.user.id) return;
+      let guild = client.guilds.find(guild => guild.id === data.guild_id);
+      let member = guild.members.find(member => member.id === data.user_id);
+      const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${data.guild_id}`).get();
+      if (foundRoleMenu.activeRoleMenuID === data.message_id) {
+          let channel = guild.channels.find(channel => channel.id === data.channel_id);
+          channel.fetchMessage(foundRoleMenu.activeRoleMenuID).then(msg => {
+              let roleArray = JSON.parse(foundRoleMenu.roleList);
+              let reaction = msg.reactions.get(data.emoji.name) || msg.reactions.get(data.emoji.name + ':' + data.emoji.id);
+              if (member.id !== client.user.id) {
+                  if (alphaEmoji.includes(data.emoji.name)) {
+                      let roleIndex = alphaEmoji.indexOf(data.emoji.name);
+                      let addedRole = msg.guild.roles.find(r => r.id === roleArray[roleIndex]);
+                      let memberRole = member.roles.map(role => role.id);
+
+                      if (!member.hasPermission('MANAGE_MESSAGES') && addedRole.hasPermission('MANAGE_MESSAGES')) {
+                          let getReactUser = reaction.users.map(react => react.id);
+                          if (getReactUser.includes(member.id)) {
+                              reaction.remove(member.id);
+                          }
+                          return;
+                      } else if (eventType === 'MESSAGE_REACTION_ADD') {
+                          if (memberRole.includes(roleArray[roleIndex])) {
+                              member.removeRole(roleArray[roleIndex]);
+                              reaction.remove(member.id);
+                          } else {
+                              member.addRole(roleArray[roleIndex]);
+                              reaction.remove(member.id);
+                          }
+                      }
+                  } else {
+                      reaction.remove(member.id);
+                  }
+              }
+          });
+      }
+  }
+});
+
 // logging
 client.on('messageDelete', async (message) => {
-  if(message.author.bot) return;
+  if (message.author.bot) return;
   const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
   if (!id) return;
   const logs = id.channel
@@ -226,12 +288,12 @@ client.on('guildBanAdd', async (guild, user) => {
   }).then(audit => audit.entries.first())
   let mod = entry.executor.id
   const logembed = new Discord.RichEmbed()
-  .setAuthor(guild, guild.iconURL)
-  .setDescription(`**User Banned: \`${user.tag}\`.**\nModerator: <@${mod}>`)
-  .setColor(color)
-  .setFooter(`ID: ${mod}`)
-  .setTimestamp()
-client.channels.get(logs).send(logembed);
+    .setAuthor(guild, guild.iconURL)
+    .setDescription(`**User Banned: \`${user.tag}\`.**\nModerator: <@${mod}>`)
+    .setColor(color)
+    .setFooter(`ID: ${mod}`)
+    .setTimestamp()
+  client.channels.get(logs).send(logembed);
 });
 
 client.on('guildBanRemove', async (guild, user) => {
@@ -244,12 +306,12 @@ client.on('guildBanRemove', async (guild, user) => {
   }).then(audit => audit.entries.first())
   let mod = entry.executor.id
   const logembed = new Discord.RichEmbed()
-  .setAuthor(guild, guild.iconURL)
-  .setDescription(`**User Unbanned: \`${user.tag}\`.**\nModerator: <@${mod}>`)
-  .setColor(color)
-  .setFooter(`ID: ${mod}`)
-  .setTimestamp()
-client.channels.get(logs).send(logembed);
+    .setAuthor(guild, guild.iconURL)
+    .setDescription(`**User Unbanned: \`${user.tag}\`.**\nModerator: <@${mod}>`)
+    .setColor(color)
+    .setFooter(`ID: ${mod}`)
+    .setTimestamp()
+  client.channels.get(logs).send(logembed);
 });
 
 client.on('roleDelete', role => {
@@ -258,11 +320,11 @@ client.on('roleDelete', role => {
   const logs = id.channel
   if (!logs) return;
   const logembed = new Discord.RichEmbed()
-  .setAuthor(role.guild, role.guild.iconURL)
-  .setDescription(`**Role Deleted: \`${role.name}\`.**`)
-  .setColor(color)
-  .setTimestamp()
-client.channels.get(logs).send(logembed);
+    .setAuthor(role.guild, role.guild.iconURL)
+    .setDescription(`**Role Deleted: \`${role.name}\`.**`)
+    .setColor(color)
+    .setTimestamp()
+  client.channels.get(logs).send(logembed);
 });
 
 client.on('roleCreate', role => {
@@ -271,11 +333,11 @@ client.on('roleCreate', role => {
   const logs = id.channel
   if (!logs) return;
   const logembed = new Discord.RichEmbed()
-  .setAuthor(role.guild, role.guild.iconURL)
-  .setDescription(`**Role Created: \`${role.name}\`.**`)
-  .setColor(color)
-  .setTimestamp()
-client.channels.get(logs).send(logembed);
+    .setAuthor(role.guild, role.guild.iconURL)
+    .setDescription(`**Role Created: \`${role.name}\`.**`)
+    .setColor(color)
+    .setTimestamp()
+  client.channels.get(logs).send(logembed);
 });
 
 client.on('messageDeleteBulk', messages => {
@@ -284,11 +346,11 @@ client.on('messageDeleteBulk', messages => {
   const logs = id.channel
   if (!logs) return;
   const logembed = new Discord.RichEmbed()
-  .setAuthor(messages.first().guild, messages.first().guild.iconURL)
-  .setDescription(`**Bulk delete in: <#${messages.first().channel.id}>, ${messages.size} deleted.**`)
-  .setColor(color)
-  .setTimestamp()
-client.channels.get(logs).send(logembed);
+    .setAuthor(messages.first().guild, messages.first().guild.iconURL)
+    .setDescription(`**Bulk delete in: <#${messages.first().channel.id}>, ${messages.size} deleted.**`)
+    .setColor(color)
+    .setTimestamp()
+  client.channels.get(logs).send(logembed);
 });
 
 client.on('channelCreate', channel => {
@@ -298,12 +360,12 @@ client.on('channelCreate', channel => {
   if (!logs) return;
   if (channel.type === "voice" || channel.type === "category") return;
   const logembed = new Discord.RichEmbed()
-  .setAuthor(channel.guild, channel.guild.iconURL)
-  .setDescription(`**Channel Created: <#${channel.id}>**`)
-  .setColor(color)
-  .setFooter(`ID: ${channel.id}`)
-  .setTimestamp()
-client.channels.get(logs).send(logembed);
+    .setAuthor(channel.guild, channel.guild.iconURL)
+    .setDescription(`**Channel Created: <#${channel.id}>**`)
+    .setColor(color)
+    .setFooter(`ID: ${channel.id}`)
+    .setTimestamp()
+  client.channels.get(logs).send(logembed);
 });
 
 client.on('channelDelete', channel => {
@@ -313,12 +375,12 @@ client.on('channelDelete', channel => {
   if (!logs) return;
   if (channel.type === "voice" || channel.type === "category") return;
   const logembed = new Discord.RichEmbed()
-  .setAuthor(channel.guild, channel.guild.iconURL)
-  .setDescription(`**Channel Deleted:** #${channel.name}`)
-  .setColor(color)
-  .setFooter(`ID: ${channel.id}`)
-  .setTimestamp()
-client.channels.get(logs).send(logembed);
+    .setAuthor(channel.guild, channel.guild.iconURL)
+    .setDescription(`**Channel Deleted:** #${channel.name}`)
+    .setColor(color)
+    .setFooter(`ID: ${channel.id}`)
+    .setTimestamp()
+  client.channels.get(logs).send(logembed);
 });
 
 client.on("guildDelete", guild => {
@@ -351,7 +413,7 @@ client.on("guildDelete", guild => {
   const dellog = db.prepare("SELECT count(*) FROM logging WHERE guildid = ?;").get(guild.id);
   if (dellog['count(*)']) {
     db.prepare("DELETE FROM logging WHERE guildid = ?").run(guild.id);
-  };  // ticket table
+  }; // ticket table
   const deltic = db.prepare("SELECT count(*) FROM ticket WHERE guildid = ?;").get(guild.id);
   if (deltic['count(*)']) {
     db.prepare("DELETE FROM ticket WHERE guildid = ?").run(guild.id);
@@ -377,12 +439,12 @@ client.on("guildMemberRemove", member => {
   const logs = id.channel
   if (!logs) return;
   const logembed = new Discord.RichEmbed()
-  .setAuthor('Member Left', member.user.avatarURL)
-  .setDescription(`<@${member.user.id}> - ${member.user.tag}`)
-  .setColor(color)
-  .setFooter(`ID: ${member.user.id}`)
-  .setTimestamp()
-client.channels.get(logs).send(logembed);
+    .setAuthor('Member Left', member.user.avatarURL)
+    .setDescription(`<@${member.user.id}> - ${member.user.tag}`)
+    .setColor(color)
+    .setFooter(`ID: ${member.user.id}`)
+    .setTimestamp()
+  client.channels.get(logs).send(logembed);
 });
 
 // update status
@@ -405,39 +467,41 @@ client.on("guildMemberAdd", member => {
   const logs = id.channel
   if (!logs) return;
   const logembed = new Discord.RichEmbed()
-  .setAuthor('Member Joined', member.user.avatarURL)
-  .setDescription(`<@${member.user.id}> - ${member.user.tag}`)
-  .setColor(color)
-  .setFooter(`ID: ${member.user.id}`)
-  .setTimestamp()
-client.channels.get(logs).send(logembed);
+    .setAuthor('Member Joined', member.user.avatarURL)
+    .setDescription(`<@${member.user.id}> - ${member.user.tag}`)
+    .setColor(color)
+    .setFooter(`ID: ${member.user.id}`)
+    .setTimestamp()
+  client.channels.get(logs).send(logembed);
 })
 
 // welcome
 client.on("guildMemberAdd", member => {
   const setwelcome = db.prepare(`SELECT * FROM setwelcome WHERE guildid = ${member.guild.id};`).get();
   if (!setwelcome) return;
-    var title = setwelcome.title;
-    var author = setwelcome.author;
-    var description = setwelcome.description;
-    if (!description) {
-      db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(member.guild.id);
-      return;
-    } else {
+  var title = setwelcome.title;
+  var author = setwelcome.author;
+  var description = setwelcome.description;
+  if (!description) {
+    db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(member.guild.id);
+    return;
+  } else {
     var sendchannel = setwelcome.channel;
-    var chnsen = member.guild.channels.find(channel => channel.id === sendchannel)     
+    var chnsen = member.guild.channels.find(channel => channel.id === sendchannel)
     if (!chnsen) {
       db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(member.guild.id);
       return;
-  };
+    };
     let embed = new Discord.RichEmbed()
       .setTitle(`${title}`)
       .setAuthor(`${author}`, member.user.avatarURL)
       .setColor(3447003)
       .setDescription(`${description} ${member.user}`)
       .setThumbnail(member.user.avatarURL);
-    client.channels.get(sendchannel).send({ embed });
-};
+    client.channels.get(sendchannel).send({
+      embed
+    });
+  };
 });
 
 // autorole
@@ -513,10 +577,10 @@ client.on("message", message => {
 
   let prefixcommand = prefixgrab.prefix;
 
-  if(command === prefixgen + 'prefix') {
+  if (command === prefixgen + 'prefix') {
     let embed = new Discord.RichEmbed()
-    .setColor(color)
-    .setDescription(`This server's prefix is: \`${prefixcommand}\``);
+      .setColor(color)
+      .setDescription(`This server's prefix is: \`${prefixcommand}\``);
     message.channel.send(embed);
   };
 
@@ -619,14 +683,16 @@ client.on("message", message => {
     let curBal = balance.balance
     let coinAmt = Math.floor(Math.random() * 1) + 10;
     let baseAmt = Math.floor(Math.random() * 1) + 10;
-    if(coinAmt === baseAmt){
-    if(!coinCooldown.has(message.author.id)) {balance.balance = curBal + coinAmt;
-    client.setBalance.run(balance);
-    coinCooldown.add(message.author.id);
-    setTimeout(function(){
-    coinCooldown.delete(message.author.id);
-    }, coinCooldownSeconds*1000)
-    }}
+    if (coinAmt === baseAmt) {
+      if (!coinCooldown.has(message.author.id)) {
+        balance.balance = curBal + coinAmt;
+        client.setBalance.run(balance);
+        coinCooldown.add(message.author.id);
+        setTimeout(function () {
+          coinCooldown.delete(message.author.id);
+        }, coinCooldownSeconds * 1000)
+      }
+    }
   };
 
 
@@ -701,16 +767,16 @@ client.on("message", message => {
       console.log(LoggingArgs);
     }
   }
-    // logging command exectuion
+  // logging command exectuion
   const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
   if (!id) return;
   const logs = id.channel
   if (!logs) return;
   const logembed = new Discord.RichEmbed()
-  .setAuthor(message.author.tag, message.guild.iconURL)
-  .setDescription(`**Used** ${cmd} **command in ${message.channel}**\n${cmd} ${argresult}`)
-  .setColor(color)
-  .setFooter(`ID: ${message.channel.id}`)
-  .setTimestamp()
-client.channels.get(logs).send(logembed);
+    .setAuthor(message.author.tag, message.guild.iconURL)
+    .setDescription(`**Used** ${cmd} **command in ${message.channel}**\n${cmd} ${argresult}`)
+    .setColor(color)
+    .setFooter(`ID: ${message.channel.id}`)
+    .setTimestamp()
+  client.channels.get(logs).send(logembed);
 });
