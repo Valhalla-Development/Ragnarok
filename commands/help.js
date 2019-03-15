@@ -685,7 +685,7 @@ module.exports.run = async (client, message, args, color) => {
         .setTimestamp()
         .addField(":gear: Administration Commands",
         `\`adsprot\` \`autorole\` \`logging\` \`prefix\`
-        \`welcome\``, true)
+        \`welcome\` \`rset\` \`rremove\` \`rclear\``, true)
         .addField("🔨 Moderation Commands", 
         `\`${prefix}ban\` \`${prefix}esay\` \`${prefix}kick\` \`${prefix}mute\` 
         \`${prefix}poll\` \`${prefix}purge\` \`${prefix}unmute\``, true)

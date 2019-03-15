@@ -575,6 +575,17 @@ client.on("message", message => {
   let argresult = args.join(" ");
   const evalargs = message.content.split(" ").slice(1);
 
+  // custom prefixes
+  const prefixes = db.prepare("SELECT count(*) FROM setprefix WHERE guildid = ?").get(message.guild.id);
+  if (!prefixes['count(*)']) {
+    const insert = db.prepare("INSERT INTO setprefix (guildid, prefix) VALUES (@guildid, @prefix);");
+    insert.run({
+      guildid: `${message.guild.id}`,
+      prefix: '-'
+    });
+    return;
+  }
+
   // prefix command
   let prefixgrab = db.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
 
@@ -730,17 +741,6 @@ client.on("message", message => {
     }
     client.setScore.run(score);
   };
-  // custom prefixes
-  const prefixes = db.prepare("SELECT count(*) FROM setprefix WHERE guildid = ?").get(message.guild.id);
-  if (!prefixes['count(*)']) {
-    const insert = db.prepare("INSERT INTO setprefix (guildid, prefix) VALUES (@guildid, @prefix);");
-    insert.run({
-      guildid: `${message.guild.id}`,
-      prefix: '-'
-    });
-    return;
-  }
-
 
   let prefix = prefixgrab.prefix;
 

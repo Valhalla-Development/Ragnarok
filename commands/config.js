@@ -19,12 +19,15 @@ module.exports.run = async (client, message, args, color) => {
     if (args[0] === undefined) {
         const undeembed = new Discord.RichEmbed()
             .setColor(0xCF40FA)
-            .addField(`Ragnarok - Config`, `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Seys the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config welcome]() : Sets the welcome message\n[${prefix}config rset]() : Sets the role menu roles\n[${prefix}config rremove]() : Removes a role from rolemenu\n[${prefix}config rclear]() : Removes all roles from rolemenu`)
+            .addField(`Ragnarok - Config`, `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Seys the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config welcome]() : Sets the welcome message\n[${prefix}config rolemenu add]() : Sets the role menu roles\n[${prefix}config rolemenu remove]() : Removes a role from rolemenu\n[${prefix}config rolemenu clear]() : Removes all roles from rolemenu`)
         message.channel.send({
             embed: undeembed
         });
         return;
     };
+
+    // Rolemenu Command
+    if (args[0] === "rolemenu") {
 
     // Rolemenu Config
     if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
@@ -35,7 +38,7 @@ module.exports.run = async (client, message, args, color) => {
         return;
     };
 
-    if (args[0] === 'rset') {
+    if (args[1] === 'add') {
         let roleList = [];
 
         if (message.mentions.roles.size <= 0) {
@@ -78,7 +81,7 @@ module.exports.run = async (client, message, args, color) => {
             message.channel.send(succEmbed);
         }
         return;
-    } else if (args[0] === 'rremove') {
+    } else if (args[1] === 'remove') {
         if (message.mentions.roles.size <= 0) {
             let errEmbed = new Discord.RichEmbed()
                 .setColor('#ff4757')
@@ -110,7 +113,7 @@ module.exports.run = async (client, message, args, color) => {
             .setDescription(`\:white_check_mark: Specified roles have successfully been cleared from the rolemenu!`);
         message.channel.send(succEmbed);
         return;
-    } else if (args[0] === 'rclear') {
+    } else if (args[1] === 'clear') {
         db.prepare(`DELETE FROM rolemenu where guildid=${message.guild.id}`).run();
         let succEmbed = new Discord.RichEmbed()
             .setColor('#2ed573')
@@ -128,6 +131,7 @@ module.exports.run = async (client, message, args, color) => {
             .setDescription(`${incorrectUsage}`)
         message.channel.send(incorrectUsageembed);
         return;
+        };
     };
 
     // adsprot

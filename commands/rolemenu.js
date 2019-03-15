@@ -1,6 +1,10 @@
 const { RichEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3')
 const db = new SQLite('./Storage/db/db.sqlite');
+const fs = require("fs");
+const config = JSON.parse(
+    fs.readFileSync("./Storage/config.json", "utf8")
+);
 let alphaEmoji = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬', '🇭', '🇮', '🇯', '🇰', '🇱', '🇲', '🇳', '🇴', '🇵', '🇶', '🇷', '🇸', '🇹', '🇺', '🇻', '🇼', '🇽', '🇾', '🇿'];
 
 module.exports.run = (client, message, args) => {
