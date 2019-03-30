@@ -8,14 +8,14 @@ const config = JSON.parse(
 module.exports.run = async (client, message, args, color) => {
 
   if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
-    message.channel.send(`${language["esay"].noPermission}`);
+    message.channel.send(`${language.esay.noPermission}`);
     return;
   }
 
   if(args[0] === undefined) {
     let noinEmb = new Discord.RichEmbed()
     .setColor('36393F')
-    .setDescription(`${language["esay"].noInput}`)
+    .setDescription(`${language.esay.noInput}`);
     message.channel.send(noinEmb);
     return;
   }
@@ -24,13 +24,13 @@ module.exports.run = async (client, message, args, color) => {
 
   let esayEmbed = new Discord.RichEmbed()
     .setColor(color)
-    .setDescription(`${sayMessage}`)
+    .setDescription(`${sayMessage}`);
 
   const esayMessage = args.join(" ");
   message.delete().catch(O_o => {});
 
   message.channel.send(esayEmbed);
-}
+};
 module.exports.help = {
   name: "esay"
 };

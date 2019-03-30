@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const SQLite = require('better-sqlite3')
+const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
@@ -13,21 +13,21 @@ module.exports.run = async (client, message, args, color) => {
     if (!message.guild.roles.some(r => ["Support Team"].includes(r.name))) {
         let nomodRole = new Discord.RichEmbed()
             .setColor(`36393F`)
-            .setDescription(`${language["tickets"].nomodRole}`)
+            .setDescription(`${language.tickets.nomodRole}`);
         message.channel.send(nomodRole);
         return;
-    };
+    }
     // Make sure this is the user's only ticket.
-    const nickNameID = message.guild.members.get(message.author.id)
-    const nickName = message.guild.members.get(message.author.id).displayName
+    const nickNameID = message.guild.members.get(message.author.id);
+    const nickName = message.guild.members.get(message.author.id).displayName;
     const userConv = nickName.toLowerCase().replace(/ /g, "-");
     if (message.guild.channels.some(c => [`ticket-${userConv}`].includes(c.name))) {
         let existTM = new Discord.RichEmbed()
             .setColor(`36393F`)
-            .setDescription(`${language["tickets"].existingTicket}`)
+            .setDescription(`${language.tickets.existingTicket}`);
         message.channel.send(existTM);
         return;
-    };
+    }
 
 
     const id = db.prepare(`SELECT category FROM ticket WHERE guildid = ${message.guild.id};`).get();
@@ -52,17 +52,17 @@ module.exports.run = async (client, message, args, color) => {
         // Send a message saying the ticket has been created.
         let newTicketE = new Discord.RichEmbed()
             .setColor(`36393F`)
-            .setDescription(`${language["tickets"].ticketCreated}, <#${c.id}>.`)
+            .setDescription(`${language.tickets.ticketCreated}, <#${c.id}>.`);
         message.channel.send(newTicketE).then(msg => msg.delete(5000));
         message.delete(5000);
-        let ticketMessageMessage = language["tickets"].ticketMessage;
+        let ticketMessageMessage = language.tickets.ticketMessage;
         const ticketm = ticketMessageMessage.replace(
             "${nick}",
             nickName
         );
         const embed = new Discord.RichEmbed()
             .setColor(0xCF40FA)
-            .setDescription(`${ticketm}`)
+            .setDescription(`${ticketm}`);
         c.send({
             embed: embed
         });
@@ -71,7 +71,7 @@ module.exports.run = async (client, message, args, color) => {
         if (!logget) {
             return;
         } else {
-            const logchan = logget.channel
+            const logchan = logget.channel;
             let loggingembed = new Discord.RichEmbed()
                 .setColor(color)
                 .setDescription(`${nickNameID} has opened a new ticket \`#${c.name}\``);
@@ -80,10 +80,10 @@ module.exports.run = async (client, message, args, color) => {
         
     }).catch(console.error);
 } else {
-    const ticategory = id.category
+    const ticategory = id.category;
     // Create the channel with the name "ticket-" then the user's ID.
     message.guild.createChannel(`ticket-${nickName}`, "text").then(c => {
-        c.setParent(ticategory)
+        c.setParent(ticategory);
         // Apply the appropriate permissions so that only the user and the support team can see it.
         let role = message.guild.roles.find(x => x.name === "Support Team");
         let role2 = message.guild.roles.find(x => x.name === "@everyone");
@@ -102,17 +102,17 @@ module.exports.run = async (client, message, args, color) => {
         // Send a message saying the ticket has been created.
         let newTicketE = new Discord.RichEmbed()
             .setColor(`36393F`)
-            .setDescription(`${language["tickets"].ticketCreated}, <#${c.id}>.`)
+            .setDescription(`${language.tickets.ticketCreated}, <#${c.id}>.`);
         message.channel.send(newTicketE).then(msg => msg.delete(5000));
         message.delete(5000);
-        let ticketMessageMessage = language["tickets"].ticketMessage;
+        let ticketMessageMessage = language.tickets.ticketMessage;
         const ticketm = ticketMessageMessage.replace(
             "${nick}",
             nickName
         );
         const embed = new Discord.RichEmbed()
             .setColor(0xCF40FA)
-            .setDescription(`${ticketm}`)
+            .setDescription(`${ticketm}`);
         c.send({
             embed: embed
         });
@@ -121,7 +121,7 @@ module.exports.run = async (client, message, args, color) => {
         if (!logget) {
             return;
         } else {
-            const logchan = logget.channel
+            const logchan = logget.channel;
             let loggingembed = new Discord.RichEmbed()
                 .setColor(color)
                 .setDescription(`${nickNameID} has opened a new ticket \`#${c.name}\``);

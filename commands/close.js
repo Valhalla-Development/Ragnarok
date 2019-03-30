@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const SQLite = require('better-sqlite3')
+const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
@@ -15,19 +15,19 @@ module.exports.run = async (client, message, args, color) => {
     if (!message.channel.name.startsWith(`ticket-`)) {
         let badChannel = new Discord.RichEmbed()
             .setColor(`36393F`)
-            .setDescription(`${language["tickets"].wrongChannelClose}`)
+            .setDescription(`${language.tickets.wrongChannelClose}`);
         message.channel.send(badChannel);
         return;
-    };
+    }
     // Ask for confirmation within 10 seconds.
-    let confirmCloseMessage = language["tickets"].closeConfirm;
+    let confirmCloseMessage = language.tickets.closeConfirm;
     const confirmClose = confirmCloseMessage.replace(
         "${prefix}",
         prefix
     );
     let confirmEmbed = new Discord.RichEmbed()
         .setColor(`36393F`)
-        .setDescription(`${confirmClose}`)
+        .setDescription(`${confirmClose}`);
     message.channel.send(confirmEmbed)
         .then((m) => {
             message.channel.awaitMessages(response => response.content === prefix + 'confirm', {
@@ -41,7 +41,7 @@ module.exports.run = async (client, message, args, color) => {
                     if (!logget) {
                         return;
                     } else {
-                        const logchan = logget.channel
+                        const logchan = logget.channel;
                         let loggingembed = new Discord.RichEmbed()
                             .setColor(color)
                             .setDescription(`<@${message.author.id}> has closed ticket \`#${message.channel.name}\``);
@@ -49,10 +49,10 @@ module.exports.run = async (client, message, args, color) => {
                         }            
                 })
                 .catch(() => {
-                    m.delete()
+                    m.delete();
                 });
         });
-}
+};
 
 
 module.exports.help = {

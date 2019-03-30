@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const ms = require("ms");
-const SQLite = require('better-sqlite3')
+const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
@@ -11,7 +11,7 @@ module.exports.run = async (client, message, args, color) => {
   let prefix = prefixgrab.prefix;
 
 
-  let incorrectUsageMessage = language["remindme"].incorrectUsage;
+  let incorrectUsageMessage = language.remindme.incorrectUsage;
   const incorrectUsage = incorrectUsageMessage.replace(
     "${prefix}",
     prefix
@@ -24,13 +24,13 @@ module.exports.run = async (client, message, args, color) => {
   let reminder = args.slice(1).join(" ");
 
   if (message.content.includes('@everyone')) {
-    message.reply('NO!')
+    message.reply('NO!');
     return;
-  };
+  }
   if (message.content.includes('@here')) {
-    message.reply('NO!')
+    message.reply('NO!');
     return;
-  };
+  }
 
 
   message.channel.send(

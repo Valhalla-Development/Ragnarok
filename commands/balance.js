@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const SQLite = require('better-sqlite3')
+const SQLite = require('better-sqlite3');
 const db= new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
@@ -12,14 +12,14 @@ module.exports.run = async (client, message, args, color) => {
     let balance;
     if (message.guild) {
         balance = client.getBalance.get(message.author.id, message.guild.id);
-    };
+    }
 
     if(!args[0]) {
     let embed = new Discord.RichEmbed()
     .setAuthor(`${message.author.username}'s Balance`)
     .setColor(color)
     .setThumbnail(message.author.displayAvatarURL)
-    .addField("Balance", balance.balance)
+    .addField("Balance", balance.balance);
   
     message.channel.send(embed);
       } else {
@@ -27,19 +27,19 @@ module.exports.run = async (client, message, args, color) => {
         if (!user) {
             let noUserEmbed = new Discord.RichEmbed()
             .setColor(`36393F`)
-            .setDescription(`${language["balance"].noUser}`)
-            message.channel.send(noUserEmbed)
+            .setDescription(`${language.balance.noUser}`);
+            message.channel.send(noUserEmbed);
             return;
-        };
+        }
         let otherbalance;
         if (message.guild) {
-            otherbalance = client.getBalance.get(user.id, message.guild.id)
-        };
+            otherbalance = client.getBalance.get(user.id, message.guild.id);
+        }
         let otherembed = new Discord.RichEmbed()
         .setAuthor(`${user.username}'s Balance`)
         .setColor(color)
         .setThumbnail(user.displayAvatarURL)
-        .addField("Balance", otherbalance.balance)
+        .addField("Balance", otherbalance.balance);
       
         message.channel.send(otherembed);    
       }
@@ -47,4 +47,4 @@ module.exports.run = async (client, message, args, color) => {
 
 module.exports.help = {
     name: "balance",
-}
+};

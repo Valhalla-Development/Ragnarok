@@ -9,7 +9,7 @@ module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
 
   if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
-    return message.channel.send(`${language["userinfo"].noPermission}`);
+    return message.channel.send(`${language.userinfo.noPermission}`);
 
   const user = message.mentions.users.first() || message.author;
   const member = message.mentions.members.first() || message.member;

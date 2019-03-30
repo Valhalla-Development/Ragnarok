@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const SQLite = require('better-sqlite3')
+const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {

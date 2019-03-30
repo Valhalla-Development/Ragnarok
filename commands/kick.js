@@ -10,12 +10,12 @@ module.exports.run = async (client, message, args, color) => {
   // no perms check
 
   if((!message.member.hasPermission("KICK_MEMBERS") && (message.author.id !== config.ownerID)))
-    return message.channel.send(`${language["kick"].noAuthorPermission}`);
+    return message.channel.send(`${language.kick.noAuthorPermission}`);
 
   // no mention check
 
   if (message.mentions.users.size < 1)
-    return message.channel.send(`${language["kick"].noMention}`);
+    return message.channel.send(`${language.kick.noMention}`);
 
   let user = message.mentions.users.first();
 
@@ -26,7 +26,7 @@ module.exports.run = async (client, message, args, color) => {
     message.mentions.members.first().hasPermission("ADMINISTRATOR") ||
     !message.mentions.members.first().kickable
   ) {
-    let cannotKickMessage = language["kick"].cannotKick;
+    let cannotKickMessage = language.kick.cannotKick;
     const cannotKick = cannotKickMessage.replace("${user}", user.id);
 
     message.channel.send(`${cannotKick}`);
@@ -36,13 +36,13 @@ module.exports.run = async (client, message, args, color) => {
   // other checks
 
   if (user.id === client.user.id)
-    return message.channel.send(`${language["kick"].cannotKickBot}`);
+    return message.channel.send(`${language.kick.cannotKickBot}`);
   if (user.id === message.author.id)
-    return message.channel.send(`${language["kick"].cannotKickAuthor}`);
+    return message.channel.send(`${language.kick.cannotKickAuthor}`);
 
   // message sending (await message)
 
-  let kickingUserMessage = language["kick"].kickingUser;
+  let kickingUserMessage = language.kick.kickingUser;
   const kickingUser = kickingUserMessage.replace("${user}", user.id);
 
   message.channel.send(`${kickingUser}`).then(() => {
@@ -60,7 +60,7 @@ module.exports.run = async (client, message, args, color) => {
           .first()
           .kick({ reason: collected.first().content })
           .then(() => {
-            let kickedUserLine1Message = language["kick"].kickedUserLine1;
+            let kickedUserLine1Message = language.kick.kickedUserLine1;
             let kickedUser1U = kickedUserLine1Message.replace(
               "${user}",
               user.id
@@ -70,13 +70,13 @@ module.exports.run = async (client, message, args, color) => {
               message.guild.name
             );
 
-            let kickedUserLine2Message = language["kick"].kickedUserLine2;
+            let kickedUserLine2Message = language.kick.kickedUserLine2;
             let kickedUser2 = kickedUserLine2Message.replace(
               "${reason}",
               collected.first().content
             );
 
-            let kickedUserLine3Message = language["kick"].kickedUserLine3;
+            let kickedUserLine3Message = language.kick.kickedUserLine3;
             let kickedUser3 = kickedUserLine3Message.replace(
               "${moderator}",
               message.author.tag
@@ -90,7 +90,7 @@ module.exports.run = async (client, message, args, color) => {
 
       // error catching
       .catch(() => {
-        message.channel.send(`${language["kick"].canceled}`);
+        message.channel.send(`${language.kick.canceled}`);
       });
   });
 };

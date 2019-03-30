@@ -25,7 +25,7 @@ module.exports.run = async (client, message, args) => {
         } else {
             return num;
         }
-    }
+    };
 
     const getTrakt = (query, type) => {
         return trakt.search.text({
@@ -33,7 +33,7 @@ module.exports.run = async (client, message, args) => {
             type: type,
             extended: 'full'
         });
-    }
+    };
 
     let getTraktEmbed = (title, desc, image, link, searchQuery, rating, votes) => {
         return new RichEmbed()
@@ -43,7 +43,7 @@ module.exports.run = async (client, message, args) => {
             .setImage(image)
             .setFooter('Trakt.TV', 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png')
             .setTimestamp();
-    }
+    };
 
     const notFound = (searchQuery) => {
         let embed = new RichEmbed()
@@ -51,7 +51,7 @@ module.exports.run = async (client, message, args) => {
             .setDescription(`**Couldn't find the movie/show you were looking for.**\nTry again or try on Trakt.TV here: https://trakt.tv/search?query=${searchQuery}`);
 
         message.channel.send(embed);
-    }
+    };
 
     if (args[0] == 'movie') {
         args = args.slice(1).join(' ');
@@ -178,8 +178,8 @@ module.exports.run = async (client, message, args) => {
             });
         }
     }
-}
+};
 
 module.exports.help = {
     name: 'trakt'
-}
+};

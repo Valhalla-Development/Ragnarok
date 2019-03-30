@@ -4,13 +4,13 @@ const math = require("mathjs");
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
 
-  if (!args[0]) return message.channel.send(`${language["calc"].noInput}`);
+  if (!args[0]) return message.channel.send(`${language.calc.noInput}`);
 
   let resp;
   try {
     resp = math.eval(args.join(" "));
   } catch (e) {
-    return message.channel.send(`${language["calc"].invalidInput}`);
+    return message.channel.send(`${language.calc.invalidInput}`);
   }
 
   const embed = new Discord.RichEmbed()

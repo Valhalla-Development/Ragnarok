@@ -1,4 +1,4 @@
-const SQLite = require('better-sqlite3')
+const SQLite = require('better-sqlite3');
 const db= new SQLite('./Storage/db/db.sqlite');
 const Discord = require("discord.js");
 
@@ -21,7 +21,7 @@ module.exports.run = async (client, message, args, color) => {
   return message.channel.send({
     embed
   });
-}
+};
 module.exports.help = {
   name: "pleader"
 };

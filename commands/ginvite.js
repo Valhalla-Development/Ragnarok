@@ -7,14 +7,14 @@ const config = JSON.parse(
 module.exports.run = async (client, message, args, color) => {
 
   if ((!message.member.hasPermission("CREATE_INSTANT_INVITE") && (message.author.id !== config.ownerID))) {
-    message.channel.send(`${language["invite"].noPermission}`);
+    message.channel.send(`${language.invite.noPermission}`);
     return;
   }
 
-  let cnt = message.content
+  let cnt = message.content;
   if (cnt !== " ") {
-    message.delete(10) // ?
-  };
+    message.delete(10); // ?
+  }
 
   message.channel.createInvite({
     maxAge: 0
@@ -24,7 +24,7 @@ module.exports.run = async (client, message, args, color) => {
       .setDescription(`:white_check_mark: **Permanent Invite Link**: ${invite}`);
     message.channel.send(embed);
   });
-}
+};
 
 module.exports.help = {
   name: "ginvite"

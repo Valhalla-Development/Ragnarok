@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const SQLite = require('better-sqlite3')
+const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
@@ -14,30 +14,30 @@ module.exports.run = async (client, message, args, color) => {
     if (!message.channel.name.startsWith(`ticket-`)) {
         let badChannel = new Discord.RichEmbed()
             .setColor(`36393F`)
-            .setDescription(`${language["tickets"].wrongChannelRename}`)
+            .setDescription(`${language.tickets.wrongChannelRename}`);
         message.channel.send(badChannel);
         return;
-    };
+    }
 
-    const modRole = message.guild.roles.find(r => ["Support Team"].includes(r.name))
+    const modRole = message.guild.roles.find(r => ["Support Team"].includes(r.name));
 
     if (!message.member.roles.has(modRole.id)) {
-        let donthaveroleMessage = language["tickets"].donthaveRole;
+        let donthaveroleMessage = language.tickets.donthaveRole;
         const role = donthaveroleMessage.replace(
           "${role}",
           modRole
         );
         let donthaveRole = new Discord.RichEmbed()
           .setColor(`36393F`)
-          .setDescription(`${role}`)
+          .setDescription(`${role}`);
         message.channel.send(donthaveRole);
         return;
-      };
+      }
 
       if (args[0] === undefined) {
           let noinp = new Discord.RichEmbed()
           .setColor(`36393F`)
-          .setDescription(`${language["tickets"].noinp}`)
+          .setDescription(`${language.tickets.noinp}`);
       }
 
       let argresult = args.join("-");
@@ -46,12 +46,12 @@ module.exports.run = async (client, message, args, color) => {
         .setColor(`36393F`)
         .setDescription(`Channel Renamed!`);
     message.channel.send(renamem);
-    message.channel.setName(`ticket-${argresult}`)
+    message.channel.setName(`ticket-${argresult}`);
     const logget = db.prepare(`SELECT channel FROM ticketlog WHERE guildid = ${message.guild.id};`).get();
     if (!logget) {
         return;
     } else {
-        const logchan = logget.channel
+        const logchan = logget.channel;
         let loggingembed = new Discord.RichEmbed()
             .setColor(color)
             .setDescription(`<@${message.author.id}> renamed ticket from \`#${message.channel.name}\` to <#${message.channel.id}>`);

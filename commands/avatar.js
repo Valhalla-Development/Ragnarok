@@ -7,9 +7,9 @@ module.exports.run = async (client, message, args, color) => {
     let embed = new Discord.RichEmbed()
         .setAuthor(`${user.username}'s Avatar`)
         .setImage(user.displayAvatarURL)
-        .setColor('36393F')
+        .setColor('36393F');
 
-    message.channel.send(embed)
+    message.channel.send(embed);
 };
 
 module.exports.help = {

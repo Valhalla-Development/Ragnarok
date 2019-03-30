@@ -1,32 +1,32 @@
 const Discord = require("discord.js");
-const SQLite = require('better-sqlite3')
+const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
 
-  const modRole = message.guild.roles.find(r => ["Support Team"].includes(r.name))
+  const modRole = message.guild.roles.find(r => ["Support Team"].includes(r.name));
 
   if (!modRole) {
     let nomodRole = new Discord.RichEmbed()
       .setColor(`36393F`)
-      .setDescription(`${language["tickets"].nomodRole}`)
+      .setDescription(`${language.tickets.nomodRole}`);
     message.channel.send(nomodRole);
     return;
   }
 
   if (!message.member.roles.has(modRole.id)) {
-    let donthaveroleMessage = language["tickets"].donthaveRole;
+    let donthaveroleMessage = language.tickets.donthaveRole;
     const role = donthaveroleMessage.replace(
       "${role}",
       modRole
     );
     let donthaveRole = new Discord.RichEmbed()
       .setColor(`36393F`)
-      .setDescription(`${role}`)
+      .setDescription(`${role}`);
     message.channel.send(donthaveRole);
     return;
-  };
+  }
 
 
 
@@ -34,16 +34,16 @@ module.exports.run = async (client, message, args, color) => {
   if (!rUser) {
     let nouser = new Discord.RichEmbed()
       .setColor(`36393F`)
-      .setDescription(`${language["tickets"].cantfindUser}`)
+      .setDescription(`${language.tickets.cantfindUser}`);
     message.channel.send(nouser);
     return;
-  };
+  }
   let rreason = args.join(" ").slice(22);
 
   if (!message.channel.name.startsWith(`ticket-`)) {
     let badChannel = new Discord.RichEmbed()
       .setColor(`36393F`)
-      .setDescription(`${language["tickets"].wrongChannel}`)
+      .setDescription(`${language.tickets.wrongChannel}`);
     message.channel.send(badChannel);
     return;
   }
@@ -55,7 +55,7 @@ module.exports.run = async (client, message, args, color) => {
     SEND_MESSAGES: true
   });
 
-  let addedMessage = language["tickets"].added;
+  let addedMessage = language.tickets.added;
   const theuser = addedMessage.replace(
     "${user}",
     rUser
@@ -65,14 +65,14 @@ module.exports.run = async (client, message, args, color) => {
   if (!logget) {
       return;
   } else {
-      const logchan = logget.channel
+      const logchan = logget.channel;
       let loggingembed = new Discord.RichEmbed()
           .setColor(color)
           .setDescription(`<@${message.author.id}> added ${rUser} to ticket <#${message.channel.id}>`);
       client.channels.get(logchan).send(loggingembed);
       }
-}
+};
 
 module.exports.help = {
   name: "add"
-}
+};

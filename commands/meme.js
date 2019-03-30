@@ -11,7 +11,7 @@ module.exports.run = async (client, message, args, color) => {
       .setImage(data.url[0]);
 
     if (!message.channel.permissionsFor(message.guild.me).has("EMBED_LINKS")) {
-      message.channel.send(`${language["meme"].noEmbedPermission}`);
+      message.channel.send(`${language.meme.noEmbedPermission}`);
       return;
     }
 

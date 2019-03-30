@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const SQLite = require('better-sqlite3')
+const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/db/db.sqlite');
 const fs = require("fs");
 
@@ -677,7 +677,7 @@ module.exports.run = async (client, message, args, color) => {
         break;
 
       default:
-      const helpEmbed = new Discord.RichEmbed()
+      const mhelpEmbed = new Discord.RichEmbed()
         .setAuthor(client.user.username, client.user.avatarURL)
         .setColor(color)
         .setDescription(`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!\nRun \`${prefix}help <command>\` to see command specific instructions!\n'Administration Commands' must be preceded by \`${prefix}config\` e.g. \`${prefix}config adsprot\``)
@@ -702,11 +702,11 @@ module.exports.run = async (client, message, args, color) => {
         \`${prefix}gamble\` \`${prefix}lmgtfy\` \`${prefix}meme\` \`${prefix}pleader\`
         \`${prefix}points\` \`${prefix}remindme\` \`${prefix}trakt\``, true);
       
-        message.channel.send({ embed: helpEmbed});
+        message.channel.send({ embed: mhelpEmbed});
           //message.channel.send(
           //  `:white_check_mark: **| Check your DMs.**`
           //);
-          //message.author.send({ embed: helpEmbed });
+          //message.author.send({ embed: mhelpEmbed });
           break;
         }
   }, 1000);

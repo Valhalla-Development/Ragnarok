@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const moment = require("moment");
-const SQLite = require('better-sqlite3')
+const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/db/db.sqlite');
 
 function convertMS(ms) {

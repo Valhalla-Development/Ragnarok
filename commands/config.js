@@ -1,4 +1,4 @@
-const SQLite = require('better-sqlite3')
+const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/db/db.sqlite');
 const fs = require("fs");
 const config = JSON.parse(
@@ -19,12 +19,12 @@ module.exports.run = async (client, message, args, color) => {
     if (args[0] === undefined) {
         const undeembed = new Discord.RichEmbed()
             .setColor(0xCF40FA)
-            .addField(`Ragnarok - Config`, `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Seys the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config welcome]() : Sets the welcome message\n[${prefix}config rolemenu add]() : Sets the role menu roles\n[${prefix}config rolemenu remove]() : Removes a role from rolemenu\n[${prefix}config rolemenu clear]() : Removes all roles from rolemenu`)
+            .addField(`Ragnarok - Config`, `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Seys the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config welcome]() : Sets the welcome message\n[${prefix}config rolemenu add]() : Sets the role menu roles\n[${prefix}config rolemenu remove]() : Removes a role from rolemenu\n[${prefix}config rolemenu clear]() : Removes all roles from rolemenu`);
         message.channel.send({
             embed: undeembed
         });
         return;
-    };
+    }
 
     // Rolemenu Command
     if (args[0] === "rolemenu") {
@@ -33,10 +33,10 @@ module.exports.run = async (client, message, args, color) => {
     if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
         let invalidpermsembed = new Discord.RichEmbed()
             .setColor(`36393F`)
-            .setDescription(`${language["autorole"].noPermission}`)
+            .setDescription(`${language.autorole.noPermission}`);
         message.channel.send(invalidpermsembed);
         return;
-    };
+    }
 
     if (args[1] === 'add') {
         let roleList = [];
@@ -121,18 +121,18 @@ module.exports.run = async (client, message, args, color) => {
         message.channel.send(succEmbed);
         return;
     } else {
-        let incorrectUsageMessage = language["autorole"].incorrectUsage;
+        let incorrectUsageMessage = language.autorole.incorrectUsage;
         const incorrectUsage = incorrectUsageMessage.replace(
             "${prefix}",
             prefix
         );
         let incorrectUsageembed = new Discord.RichEmbed()
             .setColor(`36393F`)
-            .setDescription(`${incorrectUsage}`)
+            .setDescription(`${incorrectUsage}`);
         message.channel.send(incorrectUsageembed);
         return;
-        };
-    };
+        }
+    }
 
     // adsprot
     if (args[0] === "adsprot") {
@@ -141,10 +141,10 @@ module.exports.run = async (client, message, args, color) => {
         if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
             let invalidpermsembed = new Discord.RichEmbed()
                 .setColor(`36393F`)
-                .setDescription(`${language["adsprot"].noPermission}`)
+                .setDescription(`${language.adsprot.noPermission}`);
             message.channel.send(invalidpermsembed);
             return;
-        };
+        }
 
         // preparing count
 
@@ -156,14 +156,14 @@ module.exports.run = async (client, message, args, color) => {
             if (args[1] === "on") {
                 // if already on
                 if (status) {
-                    let alreadyOnMessage = language["adsprot"].alreadyOn;
+                    let alreadyOnMessage = language.adsprot.alreadyOn;
                     const alreadyOn = alreadyOnMessage.replace(
                         "${prefix}",
                         prefix
                     );
                     let alreadyonembed = new Discord.RichEmbed()
                         .setColor(`36393F`)
-                        .setDescription(`${alreadyOn}`)
+                        .setDescription(`${alreadyOn}`);
                     message.channel.send(alreadyonembed);
                     return;
                 } else {
@@ -174,47 +174,47 @@ module.exports.run = async (client, message, args, color) => {
                     });
                     let turnonembed = new Discord.RichEmbed()
                         .setColor(`36393F`)
-                        .setDescription(`${language["adsprot"].turnedOn}`);
+                        .setDescription(`${language.adsprot.turnedOn}`);
                     message.channel.send(turnonembed);
-                };
+                }
 
                 // if args = off
             } else if (args[1] === "off") {
                 // if already off
                 if (!status) {
-                    let alreadyOffMessage = language["adsprot"].alreadyOff;
+                    let alreadyOffMessage = language.adsprot.alreadyOff;
                     const alreadyOff = alreadyOffMessage.replace(
                         "${prefix}",
                         prefix
                     );
                     let alreadyoffembed = new Discord.RichEmbed()
                         .setColor(`36393F`)
-                        .setDescription(`${alreadyOff}`)
+                        .setDescription(`${alreadyOff}`);
                     message.channel.send(alreadyoffembed);
                     return;
                 } else {
                     db.prepare("DELETE FROM adsprot WHERE guildid = ?").run(message.guild.id);
                     let turnedoffembed = new Discord.RichEmbed()
                         .setColor(`36393F`)
-                        .setDescription(`${language["adsprot"].turnedOff}`)
+                        .setDescription(`${language.adsprot.turnedOff}`);
                     message.channel.send(turnedoffembed);
                     return;
                 }
 
             } else if (args[1] !== "off" || args[1] !== "on") {
-                let incorrectUsageMessage = language["adsprot"].incorrectUsage;
+                let incorrectUsageMessage = language.adsprot.incorrectUsage;
                 const incorrectUsage = incorrectUsageMessage.replace(
                     "${prefix}",
                     prefix
                 );
                 let incorrectembed = new Discord.RichEmbed()
                     .setColor(`36393F`)
-                    .setDescription(`${incorrectUsage}`)
+                    .setDescription(`${incorrectUsage}`);
                 message.channel.send(incorrectembed);
                 return;
             }
-        };
-    };
+        }
+    }
 
     // autorole
     if (args[0] === "autorole") {
@@ -222,10 +222,10 @@ module.exports.run = async (client, message, args, color) => {
         if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
             let invalidpermsembed = new Discord.RichEmbed()
                 .setColor(`36393F`)
-                .setDescription(`${language["autorole"].noPermission}`)
+                .setDescription(`${language.autorole.noPermission}`);
             message.channel.send(invalidpermsembed);
             return;
-        };
+        }
 
         client.getTable = db.prepare("SELECT * FROM autorole WHERE guildid = ?");
         let role;
@@ -233,21 +233,21 @@ module.exports.run = async (client, message, args, color) => {
             role = client.getTable.get(message.guild.id);
 
             if (!args[1]) {
-                let incorrectUsageMessage = language["autorole"].incorrectUsage;
+                let incorrectUsageMessage = language.autorole.incorrectUsage;
                 const incorrectUsage = incorrectUsageMessage.replace(
                     "${prefix}",
                     prefix
                 );
                 let incorrectUsageembed = new Discord.RichEmbed()
                     .setColor(`36393F`)
-                    .setDescription(`${incorrectUsage}`)
+                    .setDescription(`${incorrectUsage}`);
                 message.channel.send(incorrectUsageembed);
                 return;
             } else if (args[1] === 'off') {
                 db.prepare("DELETE FROM autorole WHERE guildid = ?").run(message.guild.id);
                 let turnoffembed = new Discord.RichEmbed()
                     .setColor(`36393F`)
-                    .setDescription(`${language["autorole"].turnedOff}`)
+                    .setDescription(`${language.autorole.turnedOff}`);
                 message.channel.send(turnoffembed);
                 return;
             }
@@ -258,11 +258,11 @@ module.exports.run = async (client, message, args, color) => {
                     guildid: `${message.guild.id}`,
                     role: `${args[1]}`
                 });
-                let autoroleUpdateMessage = language["autorole"].updateRole;
+                let autoroleUpdateMessage = language.autorole.updateRole;
                 const roleupdate = autoroleUpdateMessage.replace("${autorole}", args[1]);
                 let updatedembed = new Discord.RichEmbed()
                     .setColor(`36393F`)
-                    .setDescription(`${roleupdate}`)
+                    .setDescription(`${roleupdate}`);
                 message.channel.send(updatedembed);
                 return;
             } else {
@@ -271,23 +271,23 @@ module.exports.run = async (client, message, args, color) => {
                     guildid: `${message.guild.id}`,
                     role: `${args[1]}`
                 });
-                let autoroleSetMessage = language["autorole"].roleSet;
+                let autoroleSetMessage = language.autorole.roleSet;
                 const roleSet = autoroleSetMessage.replace("${autorole}", args[1]);
                 let setembed = new Discord.RichEmbed()
                     .setColor(`36393F`)
-                    .setDescription(`${roleSet}`)
+                    .setDescription(`${roleSet}`);
                 message.channel.send(setembed);
                 return;
-            };
-        };
-    };
+            }
+        }
+    }
 
     // logging
 
     if (args[0] === "logging") {
 
         if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
-            return message.channel.send(`${language["logging"].noPermission}`);
+            return message.channel.send(`${language.logging.noPermission}`);
 
         client.getTable = db.prepare("SELECT * FROM logging WHERE guildid = ?");
 
@@ -301,7 +301,7 @@ module.exports.run = async (client, message, args, color) => {
             if (args[1] === undefined) {
                 message.channel.send(":x: | **Please mention a channel!**");
                 return;
-            };
+            }
 
             if (args[1] === 'off') { // to turn logging off
                 if (!status) {
@@ -311,12 +311,12 @@ module.exports.run = async (client, message, args, color) => {
                     message.channel.send(":white_check_mark: | **Logging disabled!**");
                     db.prepare("DELETE FROM logging WHERE guildid = ?").run(message.guild.id);
                     return;
-                };
+                }
             } else if (!lchan) {
-                message.channel.send(`${language["logging"].invalidChannel}`);
+                message.channel.send(`${language.logging.invalidChannel}`);
                 return;
             } else if (lchan.type === "voice" || lchan.type === "category") {
-                message.channel.send(`${language["logging"].invalidTextChannel}`);
+                message.channel.send(`${language.logging.invalidTextChannel}`);
                 return;
             } else if (!status) {
                 const insert = db.prepare("INSERT INTO logging (guildid, channel) VALUES (@guildid, @channel);");
@@ -334,9 +334,9 @@ module.exports.run = async (client, message, args, color) => {
                 });
                 message.channel.send(`:white_check_mark: | ** Logging updated to ${lchan}**`);
                 return;
-            };
-        };
-    };
+            }
+        }
+    }
 
     // ticket cat and log
 
@@ -345,7 +345,7 @@ module.exports.run = async (client, message, args, color) => {
         if (args[1] === "cat") {
 
             if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
-                return message.channel.send(`${language["tickets"].noPermission}`);
+                return message.channel.send(`${language.tickets.noPermission}`);
 
             client.getTable = db.prepare("SELECT * FROM ticket WHERE guildid = ?");
 
@@ -360,7 +360,7 @@ module.exports.run = async (client, message, args, color) => {
                 if (args[2] === undefined) {
                     message.channel.send(":x: | **Please type the name of the category!**");
                     return;
-                };
+                }
 
                 if (args[2] === 'off') { // to turn logging off
                     if (!status) {
@@ -370,9 +370,9 @@ module.exports.run = async (client, message, args, color) => {
                         message.channel.send(":white_check_mark: | **Ticket Category disabled!**");
                         db.prepare("DELETE FROM ticket WHERE guildid = ?").run(message.guild.id);
                         return;
-                    };
+                    }
                 } else if (!category) {
-                    message.channel.send(`${language["tickets"].invalidCategory}`);
+                    message.channel.send(`${language.tickets.invalidCategory}`);
                     return;
                 } else if (!status) {
                     const insert = db.prepare("INSERT INTO ticket (guildid, category) VALUES (@guildid, @category);");
@@ -390,12 +390,12 @@ module.exports.run = async (client, message, args, color) => {
                     });
                     message.channel.send(`:white_check_mark: | ** Ticket Category updated to \`${category.name}\`**`);
                     return;
-                };
-            };
+                }
+            }
         } else if (args[1] === "log") {
 
             if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
-                return message.channel.send(`${language["tickets"].noPermission}`);
+                return message.channel.send(`${language.tickets.noPermission}`);
 
             client.getTable = db.prepare("SELECT * FROM ticketlog WHERE guildid = ?");
 
@@ -410,7 +410,7 @@ module.exports.run = async (client, message, args, color) => {
                 if (args[2] === undefined) {
                     message.channel.send(":x: | **Please mention a channel!**");
                     return;
-                };
+                }
 
                 if (args[2] === 'off') { // to turn logging off
                     if (!status) {
@@ -420,9 +420,9 @@ module.exports.run = async (client, message, args, color) => {
                         message.channel.send(":white_check_mark: | **Ticket Logging disabled!**");
                         db.prepare("DELETE FROM ticketlog WHERE guildid = ?").run(message.guild.id);
                         return;
-                    };
+                    }
                 } else if (!lchan) {
-                    message.channel.send(`${language["tickets"].invalidCategory}`);
+                    message.channel.send(`${language.tickets.invalidCategory}`);
                     return;
                 } else if (!status) {
                     const insert = db.prepare("INSERT INTO ticketlog (guildid, channel) VALUES (@guildid, @channel);");
@@ -440,10 +440,10 @@ module.exports.run = async (client, message, args, color) => {
                     });
                     message.channel.send(`:white_check_mark: | ** Ticket Logging updated to ${lchan}**`);
                     return;
-                };
-            };
+                }
+            }
         }
-    };
+    }
 
 
     // setprefix
@@ -466,20 +466,20 @@ module.exports.run = async (client, message, args, color) => {
         let language = require(`../messages/messages_en-US.json`);
 
         if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
-            return message.channel.send(`${language["setprefix"].noPermission}`);
+            return message.channel.send(`${language.setprefix.noPermission}`);
 
         client.getTable = db.prepare("SELECT * FROM setprefix WHERE guildid = ?");
         let prefix;
         if (message.guild.id) {
             prefix = client.getTable.get(message.guild.id);
-        };
+        }
 
         if (args[1] === "off") {
-            const off = db.prepare("UPDATE setprefix SET prefix = ('-') WHERE guildid = (@guildid);")
+            const off = db.prepare("UPDATE setprefix SET prefix = ('-') WHERE guildid = (@guildid);");
             off.run({
                 guildid: `${message.guild.id}`,
             });
-            message.channel.send(':white_check_mark: | **Custom prefix disabled!**')
+            message.channel.send(':white_check_mark: | **Custom prefix disabled!**');
             return;
         }
         if (
@@ -489,12 +489,12 @@ module.exports.run = async (client, message, args, color) => {
             args[1] === "}" ||
             args[1] === ":"
         ) {
-            message.channel.send(`${language["setprefix"].blacklistedPrefix}`);
+            message.channel.send(`${language.setprefix.blacklistedPrefix}`);
             return;
         }
 
         if (!args[1])
-            return message.channel.send(`${language["setprefix"].incorrectUsage}`);
+            return message.channel.send(`${language.setprefix.incorrectUsage}`);
 
         if (prefix) {
             const update = db.prepare("UPDATE setprefix SET prefix = (@prefix) WHERE guildid = (@guildid);");
@@ -512,8 +512,8 @@ module.exports.run = async (client, message, args, color) => {
             });
             message.channel.send(':white_check_mark: | **Prefix set!**');
             return;
-        };
-    };
+        }
+    }
 
     // setwelcome
 
@@ -524,14 +524,14 @@ module.exports.run = async (client, message, args, color) => {
         let prefix = prefixgrab.prefix;
 
         let language = require(`../messages/messages_en-US.json`);
-        let step1 = language["setwelcome"].step1;
+        let step1 = language.setwelcome.step1;
         const step1r = step1.replace(
             "${prefix}",
             prefix
         );
 
         if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
-            return message.channel.send(`${language["setwelcome"].noPermission}`);
+            return message.channel.send(`${language.setwelcome.noPermission}`);
 
         client.getTable = db.prepare("SELECT * FROM setwelcome WHERE guildid = ?");
         let status;
@@ -543,7 +543,7 @@ module.exports.run = async (client, message, args, color) => {
                 db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
                 message.channel.send(':white_check_mark: | **Welcome message disabled!**');
                 return;
-            };
+            }
             message.channel.send(`${step1r}`).then(() => {
                     message.channel
                         .awaitMessages(response => response.author.id === message.author.id, {
@@ -554,26 +554,26 @@ module.exports.run = async (client, message, args, color) => {
 
                         .then(collected => {
                             if (collected.first().content === "cancel") {
-                                message.channel.send(`${language["setwelcome"].canceled}`);
+                                message.channel.send(`${language.setwelcome.canceled}`);
                                 return;
                             }
 
                             const wchan = message.guild.channels.find("name", collected.first().content);
                             if (!wchan || wchan === undefined) {
-                                message.channel.send(`${language["setwelcome"].invalidChannel}`);
+                                message.channel.send(`${language.setwelcome.invalidChannel}`);
                                 return;
                             }
 
                             if (wchan.type === "voice" || wchan.type === "category") {
                                 message.channel.send(
-                                    `${language["setwelcome"].invalidTextChannel}`
+                                    `${language.setwelcome.invalidTextChannel}`
                                 );
                                 return;
                             }
 
                             if (!wchan.permissionsFor(message.guild.me).has("SEND_MESSAGES")) {
                                 message.channel.send(
-                                    `${language["setwelcome"].noMessagePermission}`
+                                    `${language.setwelcome.noMessagePermission}`
                                 );
                                 return;
                             }
@@ -584,14 +584,14 @@ module.exports.run = async (client, message, args, color) => {
                                 status = client.getTable.get(message.guild.id);
 
                                 if (!status) {
-                                    const chid = message.guild.channels.find("name", collected.first().content).id
+                                    const chid = message.guild.channels.find("name", collected.first().content).id;
                                     const insertch = db.prepare("INSERT INTO setwelcome (guildid, channel) VALUES (@guildid, @channel);");
                                     insertch.run({
                                         guildid: `${message.guild.id}`,
                                         channel: `${chid}`
                                     });
                                 } else {
-                                    const chid = message.guild.channels.find("name", collected.first().content).id
+                                    const chid = message.guild.channels.find("name", collected.first().content).id;
                                     const updatech = db.prepare("UPDATE setwelcome SET channel = (@channel) WHERE guildid = (@guildid);");
                                     updatech.run({
                                         guildid: `${message.guild.id}`,
@@ -603,7 +603,7 @@ module.exports.run = async (client, message, args, color) => {
                             setTimeout(() => {
 
                                 message.channel
-                                    .send(`${language["setwelcome"].step2}`)
+                                    .send(`${language.setwelcome.step2}`)
                                     .then(() => {
                                         message.channel
                                             .awaitMessages(
@@ -618,7 +618,7 @@ module.exports.run = async (client, message, args, color) => {
                                                 if (collected.first().content === "cancel") {
                                                     db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
                                                     message.channel.send(
-                                                        `${language["setwelcome"].canceled}`
+                                                        `${language.setwelcome.canceled}`
                                                     );
                                                     return;
                                                 }
@@ -631,7 +631,7 @@ module.exports.run = async (client, message, args, color) => {
                                                 });
 
                                                 message.channel
-                                                    .send(`${language["setwelcome"].step3}`)
+                                                    .send(`${language.setwelcome.step3}`)
                                                     .then(() => {
                                                         message.channel
                                                             .awaitMessages(
@@ -646,7 +646,7 @@ module.exports.run = async (client, message, args, color) => {
                                                                 if (collected.first().content === "cancel") {
                                                                     db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
                                                                     message.channel.send(
-                                                                        `${language["setwelcome"].canceled}`
+                                                                        `${language.setwelcome.canceled}`
                                                                     );
                                                                     return;
                                                                 }
@@ -659,7 +659,7 @@ module.exports.run = async (client, message, args, color) => {
                                                                 });
 
                                                                 message.channel
-                                                                    .send(`${language["setwelcome"].step4}`)
+                                                                    .send(`${language.setwelcome.step4}`)
                                                                     .then(() => {
                                                                         message.channel
                                                                             .awaitMessages(
@@ -674,7 +674,7 @@ module.exports.run = async (client, message, args, color) => {
                                                                                 if (collected.first().content === "cancel") {
                                                                                     db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
                                                                                     message.channel.send(
-                                                                                        `${language["setwelcome"].canceled}`
+                                                                                        `${language.setwelcome.canceled}`
                                                                                     );
                                                                                     return;
                                                                                 }
@@ -686,16 +686,16 @@ module.exports.run = async (client, message, args, color) => {
                                                                                     description: `${description}`
                                                                                 });
 
-                                                                                message.channel.send(`${language["setwelcome"].finished}`);
+                                                                                message.channel.send(`${language.setwelcome.finished}`);
 
-                                                                            })
-                                                                    })
-                                                            })
-                                                    })
+                                                                            });
+                                                                    });
+                                                            });
+                                                    });
                                             });
                                     })
                                     .catch(() => {
-                                        message.channel.send(`${language["setwelcome"].canceled}`);
+                                        message.channel.send(`${language.setwelcome.canceled}`);
                                         db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
                                     });
                             }, 1000);
@@ -706,8 +706,8 @@ module.exports.run = async (client, message, args, color) => {
                     db.prepare("DELETE FROM setwelcome WHERE guildid = ?").run(message.guild.id);
                     message.channel.send("**:x: | Setup canceled.**");
                 });
-        };
-    };
+        }
+    }
 };
 
 module.exports.help = {

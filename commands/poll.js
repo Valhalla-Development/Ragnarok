@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const SQLite = require('better-sqlite3')
+const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/db/db.sqlite');
 const fs = require("fs");
 const config = JSON.parse(
@@ -14,13 +14,13 @@ module.exports.run = async (client, message, args, color) => {
   let prefix = prefixgrab.prefix;
 
   if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID))) {
-    message.channel.send(`${language["poll"].noPermission}`);
+    message.channel.send(`${language.poll.noPermission}`);
     return;
   }
 
   // Check for input
   if (!args[0]) {
-    let incorrectUsageMessage = language["poll"].incorrectUsage;
+    let incorrectUsageMessage = language.poll.incorrectUsage;
     const incorrectUsage = incorrectUsageMessage.replace(
       "${prefix}",
       prefix

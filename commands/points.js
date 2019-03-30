@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const SQLite = require('better-sqlite3')
+const SQLite = require('better-sqlite3');
 const db= new SQLite('./Storage/db/db.sqlite');
 
 module.exports.run = async (client, message, args, color) => {
@@ -12,7 +12,7 @@ module.exports.run = async (client, message, args, color) => {
     let score;
     if (message.guild) {
         score = client.getScore.get(message.author.id, message.guild.id);
-    };
+    }
 
   if(!args[0]) {
   let nxtLvlXp = score.level * 5000;
@@ -31,14 +31,14 @@ module.exports.run = async (client, message, args, color) => {
     if (!user) {
         let noUserEmbed = new Discord.RichEmbed()
         .setColor(`36393F`)
-        .setDescription(`${language["points"].noUser}`)
-        message.channel.send(noUserEmbed)
+        .setDescription(`${language.points.noUser}`);
+        message.channel.send(noUserEmbed);
         return;
-    };
+    }
     let otherbalance;
     if (message.guild) {
-        otherbalance = client.getScore.get(user.id, message.guild.id)
-    };
+        otherbalance = client.getScore.get(user.id, message.guild.id);
+    }
     let nxtLvlXp = otherbalance.level * 5000;
     let difference = nxtLvlXp - otherbalance.points;  
     let otherembed = new Discord.RichEmbed()
@@ -52,8 +52,8 @@ module.exports.run = async (client, message, args, color) => {
   
     message.channel.send(otherembed);    
   }
-}
+};
 
 module.exports.help = {
   name: "points"
-}
+};
