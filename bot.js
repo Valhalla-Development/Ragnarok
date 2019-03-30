@@ -738,7 +738,7 @@ client.on("message", message => {
         .setThumbnail("https://i.imgur.com/lXeBiMs.png")
         .setColor(color)
         .addField("New Level", curlvl + 1);
-      message.channel.send(lvlup);
+      message.channel.send(lvlup).then(msg => {msg.delete(10000);});
     }
     client.setScore.run(score);
   }
