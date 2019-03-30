@@ -1,4 +1,2 @@
 # Ragnarok-Discord
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/28694546259447edbdeccaab12fa7e75)](https://app.codacy.com/app/hudsonjd/Ragnarok-Discord?utm_source=github.com&utm_medium=referral&utm_content=RagnarLothbrok-Odin/Ragnarok-Discord&utm_campaign=Badge_Grade_Dashboard)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c96d429d91cd4f1f89723946b6ea32c3)](https://app.codacy.com/app/hudsonjd/Ragnarok-Discord?utm_source=github.com&utm_medium=referral&utm_content=RagnarLothbrok-Odin/Ragnarok-Discord&utm_campaign=Badge_Grade_Dashboard)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/eb7cdc8c703f49fcbd8a7dbf9371d4f9)](https://app.codacy.com/app/hudsonjd/Ragnarok-Discord?utm_source=github.com&utm_medium=referral&utm_content=RagnarLothbrok-Odin/Ragnarok-Discord&utm_campaign=Badge_Grade_Dashboard)
