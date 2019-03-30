@@ -82,6 +82,7 @@ module.exports.run = async (client, message, args, color) => {
         .addField('Moderator', `${mod}`)
         .setColor("#ff0000")
     client.channels.get(dblogs).send(muteembed);
+    message.channel.send(muteembed).then(msg => {msg.delete(5000)});
 
     setTimeout(function () {
         (user.removeRole(muterole.id));
@@ -92,6 +93,7 @@ module.exports.run = async (client, message, args, color) => {
             .setColor("#ff0000")
             
         client.channels.get(dblogs).send(unmuteembed);
+        message.channel.send(unmuteembed).then(msg => {msg.delete(5000)});
     }, ms(mutetime));
 }
 };
