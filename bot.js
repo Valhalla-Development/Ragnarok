@@ -13,13 +13,6 @@ const coinCooldownSeconds = 5;
 
 client.commands = new Discord.Collection();
 
-function clean(text) {
-  if (typeof (text) === "string")
-    return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
-  else
-    return text;
-}
-
 fs.readdir("./commands/", (err, files) => {
   if (err) console.log(err);
   let jsfile = files.filter(f => f.split(".").pop() === "js");
@@ -635,26 +628,6 @@ client.on("message", message => {
     message.reply("What are you doing in mah SWAMP!", {
       file: "https://media1.tenor.com/images/7d3f352b46140c04db37c92f71d4e157/tenor.gif"
     });
-  }
-
-  // eval command
-
-  if (message.content.startsWith(config.prefix + "eval")) {
-    if (message.author.id !== config.ownerID) return;
-    try {
-      const code = evalargs.join(" ");
-      const e = eval;
-      let evaled = e(code);
-
-      if (typeof evaled !== "string")
-        evaled = require("util").inspect(evaled);
-
-      message.channel.send(clean(evaled), {
-        code: "xl"
-      });
-    } catch (err) {
-      message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
-    }
   }
 
   // ads protection checks
