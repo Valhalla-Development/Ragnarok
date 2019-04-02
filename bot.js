@@ -13,13 +13,6 @@ const coinCooldownSeconds = 5;
 
 client.commands = new Discord.Collection();
 
-function clean(text) {
-  if (typeof (text) === "string")
-    return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
-  else
-    return text;
-}
-
 fs.readdir("./commands/", (err, files) => {
   if (err) console.log(err);
   let jsfile = files.filter(f => f.split(".").pop() === "js");
@@ -637,26 +630,6 @@ client.on("message", message => {
     });
   }
 
-  // eval command
-
-  if (message.content.startsWith(config.prefix + "eval")) {
-    if (message.author.id !== config.ownerID) return;
-    try {
-      const code = evalargs.join(" ");
-      const e = eval;
-      let evaled = e(code);
-
-      if (typeof evaled !== "string")
-        evaled = require("util").inspect(evaled);
-
-      message.channel.send(clean(evaled), {
-        code: "xl"
-      });
-    } catch (err) {
-      message.channel.send(`\`ERROR\` \`\`\`xl\n${clean(err)}\n\`\`\``);
-    }
-  }
-
   // ads protection checks
 
   if (
@@ -738,7 +711,7 @@ client.on("message", message => {
         .setThumbnail("https://i.imgur.com/lXeBiMs.png")
         .setColor(color)
         .addField("New Level", curlvl + 1);
-      message.channel.send(lvlup);
+      message.channel.send(lvlup).then(msg => {msg.delete(10000);});
     }
     client.setScore.run(score);
   }

@@ -38,7 +38,7 @@ module.exports.run = async (client, message, args) => {
     let getTraktEmbed = (title, desc, image, link, searchQuery, rating, votes) => {
         return new RichEmbed()
             .setColor('#EA2027')
-            .setTitle(`${title} - Trakt`)
+            .setTitle(`${decode(title)} - Trakt`)
             .setDescription(`${decode(desc, 'all')}\n**Rating: ${rating}%** - ${votes} votes\n\n${link}\n\n**Not the content you were looking for?**\nTry: https://trakt.tv/search?query=${searchQuery}`)
             .setImage(image)
             .setFooter('Trakt.TV', 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png')
