@@ -1,20 +1,8 @@
 {
   "name": "ragnarok-discord",
   "version": "1.0.0",
-  "description": "",
-  "main": "blank_template.js",
-  "dependencies": {
-    "better-sqlite3": "^5.4.0",
-    "discord.js": "^11.4.2",
-    "memejs": "^1.0.7",
-    "ms": "^2.1.1",
-    "moment": "^2.24.0",
-    "strict-uri-encode": "^2.0.0",
-    "trakt.tv": "^7.1.0",
-    "unescape": "^1.0.1",
-    "mathjs": "^5.5.0"
-  },
-  "devDependencies": {},
+  "description": "A multi-purpose Discord bot",
+  "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,10 +10,21 @@
     "type": "git",
     "url": "git+https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git"
   },
-  "author": "",
+  "author": "Ragnar Lothbrok#1948",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord/issues"
   },
-  "homepage": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord#readme"
+  "homepage": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord",
+  "dependencies": {
+    "better-sqlite3": "^5.4.0",
+    "discord.js": "^11.4.2",
+    "mathjs": "^5.9.0",
+    "memejs": "^1.0.7",
+    "moment": "^2.24.0",
+    "ms": "^2.1.1",
+    "strict-uri-encode": "^2.0.0",
+    "trakt.tv": "^7.1.0",
+    "unescape": "^1.0.1"
+  }
 }
