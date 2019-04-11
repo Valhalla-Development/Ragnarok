@@ -1,3 +1,4 @@
+/*jshint -W061 */
 const Discord = require("discord.js");
 const fs = require("fs");
 const config = JSON.parse(
@@ -26,8 +27,7 @@ module.exports.run = async (client, message, args) => {
   
         try {
           
-          const e = eval;
-          var evaled = e(argresult);
+          var evaled = eval(argresult);
   
           if (typeof evaled !== "string")
          evaled = require("util").inspect(evaled);

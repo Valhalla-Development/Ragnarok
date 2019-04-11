@@ -13,6 +13,8 @@ module.exports.run = async (client, message, args, color) => {
         "https://media1.tenor.com/images/aea31e086df4cc8b31bb2afa99d33124/tenor.gif?itemid=8600754",
         "https://media1.tenor.com/images/baaa8d9726e596c83a2c2eaa7da2d012/tenor.gif?itemid=5106865",
         "https://media1.tenor.com/images/e9be2b47534f1b6478bfbfb568529aa1/tenor.gif?itemid=7674709",
+        "https://media1.tenor.com/images/e7240cfd3b00d219056296e21e3b8633/tenor.gif?itemid=5543928",
+        "https://media1.tenor.com/images/54e97e0cdeefea2ee6fb2e76d141f448/tenor.gif?itemid=11378437",
     ];
 
     let hugresult = Math.floor((Math.random() * hug.length));
