@@ -502,7 +502,7 @@ module.exports.run = async (client, message, args, color) => {
                 guildid: `${message.guild.id}`,
                 prefix: `${args[1]}`
             });
-            message.channel.send(':white_check_mark: | **Prefix updated!**');
+            message.channel.send(`:white_check_mark: | **Prefix updated to \`${args[1]}\`**`);
             return;
         } else {
             const insert = db.prepare("INSERT INTO setprefix (guildid, prefix) VALUES (@guildid, @prefix);");
@@ -510,7 +510,7 @@ module.exports.run = async (client, message, args, color) => {
                 guildid: `${message.guild.id}`,
                 prefix: `${args[1]}`
             });
-            message.channel.send(':white_check_mark: | **Prefix set!**');
+            message.channel.send(`:white_check_mark: | **Prefix set to \`${args[1]}\`**`);
             return;
         }
     }
