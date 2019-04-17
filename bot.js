@@ -525,7 +525,9 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
     const adsprot = db.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?").get(newMessage.guild.id);
     if (!adsprot['count(*)']) {
       return;
-    } else if (newMessage.member.hasPermission("MANAGE_GUILD")) return;
+    } else if (newMessage.member.hasPermission("MANAGE_GUILD")) {
+      return;
+    } else if (newMessage.channel.name.includes("ticket-")) return;
     newMessage.delete();
     newMessage.channel
       .send(
@@ -641,7 +643,9 @@ client.on("message", message => {
     const adsprot = db.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?").get(message.guild.id);
     if (!adsprot['count(*)']) {
       return;
-    } else if (message.member.hasPermission("MANAGE_GUILD")) return;
+    } else if (message.member.hasPermission("MANAGE_GUILD")) {
+      return;
+    } else if (message.channel.name.includes("ticket-")) return;
     message.delete();
     message.channel
       .send(
