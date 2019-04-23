@@ -594,7 +594,7 @@ client.on("message", message => {
 
   // dad bot
 
-  if (message.content.toLowerCase().startsWith('im') || message.content.toLowerCase().startsWith('i\'m')) {
+  if (message.content.toLowerCase().startsWith('im ') || message.content.toLowerCase().startsWith('i\'m ')) {
     if (args.length > 5) {
       return;
     }
