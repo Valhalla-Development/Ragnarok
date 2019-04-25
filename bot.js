@@ -170,21 +170,21 @@ client.on("ready", () => {
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   }
-  // ticket table
-  const tickettable = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'ticket';").get();
-  if (!tickettable['count(*)']) {
-    console.log('ticket table created!');
-    db.prepare("CREATE TABLE ticket (guildid TEXT PRIMARY KEY, category TEXT);").run();
-    db.prepare("CREATE UNIQUE INDEX idx_ticket_id ON ticket (guildid);").run();
+  // Ticket Config Table
+  const ticketConfigTable = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'ticketConfig';").get();
+  if (!ticketConfigTable['count(*)']) {
+    console.log('ticketConfig table created!');
+    db.prepare("CREATE TABLE ticketConfig (guildid TEXT PRIMARY KEY, category TEXT, log TEXT, role TEXT);").run();
+    db.prepare("CREATE UNIQUE INDEX idx_ticketConfig_id ON ticketConfig (guildid);").run();
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   }
-  // ticket log table
-  const ticketlogtable = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'ticketlog';").get();
-  if (!ticketlogtable['count(*)']) {
-    console.log('ticket log table created!');
-    db.prepare("CREATE TABLE ticketlog (guildid TEXT PRIMARY KEY, channel TEXT);").run();
-    db.prepare("CREATE UNIQUE INDEX idx_ticketlog_id ON ticketlog (guildid);").run();
+  // Stored Tickets Table
+  const ticketsTable = db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = 'tickets';").get();
+  if (!ticketsTable['count(*)']) {
+    console.log('tickets table created!');
+    db.prepare("CREATE TABLE tickets (guildid TEXT, ticketid TEXT, authorid TEXT, reason TEXT, chanid TEXT);").run();
+    db.prepare("CREATE UNIQUE INDEX idx_tickets_id ON tickets (ticketid);").run();
     db.pragma("synchronous = 1");
     db.pragma("journal_mode = wal");
   }
@@ -409,15 +409,15 @@ client.on("guildDelete", guild => {
   const dellog = db.prepare("SELECT count(*) FROM logging WHERE guildid = ?;").get(guild.id);
   if (dellog['count(*)']) {
     db.prepare("DELETE FROM logging WHERE guildid = ?").run(guild.id);
-  } // ticket table
-  const deltic = db.prepare("SELECT count(*) FROM ticket WHERE guildid = ?;").get(guild.id);
+  } // ticketConfig table
+  const deltic = db.prepare("SELECT count(*) FROM ticketConfig WHERE guildid = ?;").get(guild.id);
   if (deltic['count(*)']) {
-    db.prepare("DELETE FROM ticket WHERE guildid = ?").run(guild.id);
+    db.prepare("DELETE FROM ticketConfig WHERE guildid = ?").run(guild.id);
   }
-  // ticket log table
-  const delticlog = db.prepare("SELECT count(*) FROM ticketlog WHERE guildid = ?;").get(guild.id);
+  // tickets table
+  const delticlog = db.prepare("SELECT count(*) FROM tickets WHERE guildid = ?;").get(guild.id);
   if (delticlog['count(*)']) {
-    db.prepare("DELETE FROM ticketlog WHERE guildid = ?").run(guild.id);
+    db.prepare("DELETE FROM tickets WHERE guildid = ?").run(guild.id);
   }
 });
 
@@ -525,9 +525,7 @@ client.on("messageUpdate", (oldMessage, newMessage) => {
     const adsprot = db.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?").get(newMessage.guild.id);
     if (!adsprot['count(*)']) {
       return;
-    } else if (newMessage.member.hasPermission("MANAGE_GUILD")) {
-      return;
-    } else if (newMessage.channel.name.includes("ticket-")) return;
+    } else if (newMessage.member.hasPermission("MANAGE_GUILD")) return;
     newMessage.delete();
     newMessage.channel
       .send(
@@ -568,6 +566,7 @@ client.on("message", message => {
   let command = messageArray[0].toLowerCase();
   let args = messageArray.slice(1);
   let argresult = args.join(" ");
+  const evalargs = message.content.split(" ").slice(1);
 
   // custom prefixes
   const prefixes = db.prepare("SELECT count(*) FROM setprefix WHERE guildid = ?").get(message.guild.id);
@@ -643,9 +642,7 @@ client.on("message", message => {
     const adsprot = db.prepare("SELECT count(*) FROM adsprot WHERE guildid = ?").get(message.guild.id);
     if (!adsprot['count(*)']) {
       return;
-    } else if (message.member.hasPermission("MANAGE_GUILD")) {
-      return;
-    } else if (message.channel.name.includes("ticket-")) return;
+    } else if (message.member.hasPermission("MANAGE_GUILD")) return;
     message.delete();
     message.channel
       .send(
