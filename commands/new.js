@@ -10,7 +10,7 @@ module.exports.run = async (client, message, args, color) => {
     const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
 
     // "Support" role
-    if (!message.guild.roles.find(r => ["Support Team"].includes(r.name)) && !message.guild.roles.find(r => r.id === suppRole.role)) {
+    if (!message.guild.roles.find(r => r.name === 'Support Team') && !suppRole) {
         let nomodRole = new Discord.RichEmbed()
             .setColor(`36393F`)
             .setDescription(`${language.tickets.nomodRole}`);
