@@ -457,6 +457,14 @@ module.exports.run = async (client, message, args, color) => {
                 });
                 message.channel.send(":white_check_mark: | **Custom Support Role disabled!**");
                 return;
+            } else if (!status) {
+                const update = db.prepare("INSERT INTO ticketConfig SET role = (@role) WHERE guildid = (@guildid);");
+                update.run({
+                    guildid: `${message.guild.id}`,
+                    role: `${suppRole.id}`
+                });
+                message.channel.send(`:white_check_mark: | **Support Role updated to ${suppRole}**`);
+                return;
             } else {
                 const update = db.prepare("UPDATE ticketConfig SET role = (@role) WHERE guildid = (@guildid);");
                 update.run({
