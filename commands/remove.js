@@ -5,7 +5,8 @@ const db = new SQLite('./Storage/db/db.sqlite');
 module.exports.run = async (client, message, args, color) => {
   let language = require(`../messages/messages_en-US.json`);
 
-  const modRole = message.guild.roles.find(r => ["Support Team"].includes(r.name));
+  const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
+  const modRole = message.guild.roles.find(x => x.name === "Support Team") || message.guild.roles.find(r => r.id === suppRole.role);
   if (!modRole) {
     let nomodRole = new Discord.RichEmbed()
       .setColor(`36393F`)
@@ -14,7 +15,7 @@ module.exports.run = async (client, message, args, color) => {
     return;
   }
 
-  if (!message.member.roles.has(modRole.id)) {
+  if (!message.member.roles.has(modRole.id) && message.author.id !== message.guild.ownerID) {
     let donthaveroleMessage = language.tickets.donthaveRole;
     const role = donthaveroleMessage.replace(
       "${role}",
@@ -27,9 +28,7 @@ module.exports.run = async (client, message, args, color) => {
     return;
   }
 
-
-
-  let rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+  let rUser = message.mentions.users.first();
   if (!rUser) {
     let nouser = new Discord.RichEmbed()
       .setColor(`36393F`)
@@ -37,40 +36,34 @@ module.exports.run = async (client, message, args, color) => {
     message.channel.send(nouser);
     return;
   }
-  let rreason = args.join(" ").slice(22);
 
-  if (!message.channel.name.startsWith(`ticket-`)) {
-    let badChannel = new Discord.RichEmbed()
-      .setColor(`36393F`)
-      .setDescription(`${language.tickets.wrongChannel}`);
-    message.channel.send(badChannel);
-    return;
-  }
-  message.delete().catch(O_o => {});
-
-
-  message.channel.overwritePermissions(rUser, {
-    READ_MESSAGES: false,
-    SEND_MESSAGES: false
-  });
-
-  let removedMessage = language.tickets.removed;
-  const theuser = removedMessage.replace(
-    "${user}",
-    rUser
-  );
-  message.channel.send(`${theuser}`);
-  const logget = db.prepare(`SELECT channel FROM ticketlog WHERE guildid = ${message.guild.id};`).get();
-  if (!logget) {
-      return;
+  let channelArgs = message.channel.name.split('-');
+  let foundTicket = db.prepare(`SELECT * FROM tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`).get({ticketid: args[1] || channelArgs[channelArgs.length - 1]});
+  if (foundTicket) {
+    const getChan = message.guild.channels.find(chan => chan.id === foundTicket.chanid);
+    getChan.overwritePermissions(rUser, {
+      READ_MESSAGES: false,
+      SEND_MESSAGES: false
+    });
+    let removedMessage = language.tickets.removed;
+    const theuser = removedMessage.replace(
+      "${user}",
+      rUser.tag
+    );
+    getChan.send(`${theuser}`);
+    const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
+    const logchan = message.guild.channels.find(chan => chan.id === logget.log);
+    if (!logchan) return;
+    let loggingembed = new Discord.RichEmbed()
+      .setColor(color)
+      .setDescription(`<@${message.author.id}> removed ${rUser} from ticket <#${getChan.id}>`);
+    logchan.send(loggingembed);
   } else {
-      const logchan = logget.channel;
-      let loggingembed = new Discord.RichEmbed()
-          .setColor(color)
-          .setDescription(`<@${message.author.id}> removed ${rUser} from ticket <#${message.channel.id}>`);
-      client.channels.get(logchan).send(loggingembed);
-      }
-
+    let errEmbed = new Discord.RichEmbed()
+      .setColor(`#36393F`)
+      .setDescription('This ticket could not be found.')
+    message.channel.send(errEmbed);
+  }
 };
 
 module.exports.help = {
