@@ -61,7 +61,7 @@ module.exports.run = async (client, message, args, color) => {
   } else {
     let errEmbed = new Discord.RichEmbed()
       .setColor(`#36393F`)
-      .setDescription('This ticket could not be found.')
+      .setDescription('This ticket could not be found.');
     message.channel.send(errEmbed);
   }
 };
