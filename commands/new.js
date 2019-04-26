@@ -43,9 +43,10 @@ module.exports.run = async (client, message, args, color) => {
         });
         // Create the channel with the name "ticket-" then the user's ID.
         message.guild.createChannel(`ticket-${nickName}-${randomString}`, "text").then(c => {
-            const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${message.guild.id} AND ticketid = ${randomString}`);
+            const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`);
             updateTicketChannel.run({
-                chanid: c.id
+                chanid: c.id,
+                ticketid: randomString
             });
             // Apply the appropriate permissions so that only the user and the support team can see it.
             let role = message.guild.roles.find(x => x.name === "Support Team") || message.guild.roles.find(r => r.id === suppRole.role);
