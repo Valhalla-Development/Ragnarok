@@ -341,21 +341,17 @@ module.exports.run = async (client, message, args, color) => {
     // ticket cat and log
 
     if (args[0] === "ticket") {
-
         if (args[1] === "cat") {
-
             if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
                 return message.channel.send(`${language.tickets.noPermission}`);
-
-            client.getTable = db.prepare("SELECT * FROM ticket WHERE guildid = ?");
-
+            
+            client.getTable = db.prepare("SELECT category FROM ticketConfig WHERE guildid = ?");
 
             const category = message.guild.channels.find(c => c.name == args.slice(2).join(" ") && c.type == "category");
 
             let status;
             if (message.guild.id) {
                 status = client.getTable.get(message.guild.id);
-
 
                 if (args[2] === undefined) {
                     message.channel.send(":x: | **Please type the name of the category!**");
@@ -368,14 +364,14 @@ module.exports.run = async (client, message, args, color) => {
                         return;
                     } else {
                         message.channel.send(":white_check_mark: | **Ticket Category disabled!**");
-                        db.prepare("DELETE FROM ticket WHERE guildid = ?").run(message.guild.id);
+                        db.prepare("DELETE category FROM ticketConfig WHERE guildid = ?").run(message.guild.id);
                         return;
                     }
                 } else if (!category) {
                     message.channel.send(`${language.tickets.invalidCategory}`);
                     return;
                 } else if (!status) {
-                    const insert = db.prepare("INSERT INTO ticket (guildid, category) VALUES (@guildid, @category);");
+                    const insert = db.prepare("INSERT INTO ticketConfig (guildid, category) VALUES (@guildid, @category);");
                     insert.run({
                         guildid: `${message.guild.id}`,
                         category: `${category.id}`
@@ -383,7 +379,7 @@ module.exports.run = async (client, message, args, color) => {
                     message.channel.send(`:white_check_mark: | **Ticket Category set to \`${category.name}\`**`);
                     return;
                 } else {
-                    const update = db.prepare("UPDATE ticket SET category = (@category) WHERE guildid = (@guildid);");
+                    const update = db.prepare("UPDATE ticketConfig SET category = (@category) WHERE guildid = (@guildid);");
                     update.run({
                         guildid: `${message.guild.id}`,
                         category: `${category.id}`
@@ -397,7 +393,7 @@ module.exports.run = async (client, message, args, color) => {
             if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
                 return message.channel.send(`${language.tickets.noPermission}`);
 
-            client.getTable = db.prepare("SELECT * FROM ticketlog WHERE guildid = ?");
+            client.getTable = db.prepare("SELECT log FROM ticketConfig WHERE guildid = ?");
 
 
             const lchan = message.mentions.channels.first();
@@ -405,7 +401,6 @@ module.exports.run = async (client, message, args, color) => {
             let status;
             if (message.guild.id) {
                 status = client.getTable.get(message.guild.id);
-
 
                 if (args[2] === undefined) {
                     message.channel.send(":x: | **Please mention a channel!**");
@@ -418,14 +413,14 @@ module.exports.run = async (client, message, args, color) => {
                         return;
                     } else {
                         message.channel.send(":white_check_mark: | **Ticket Logging disabled!**");
-                        db.prepare("DELETE FROM ticketlog WHERE guildid = ?").run(message.guild.id);
+                        db.prepare("DELETE FROM ticketConfig WHERE guildid = ?").run(message.guild.id);
                         return;
                     }
                 } else if (!lchan) {
                     message.channel.send(`${language.tickets.invalidCategory}`);
                     return;
                 } else if (!status) {
-                    const insert = db.prepare("INSERT INTO ticketlog (guildid, channel) VALUES (@guildid, @channel);");
+                    const insert = db.prepare("INSERT INTO ticketConfig (guildid, log) VALUES (@guildid, @log);");
                     insert.run({
                         guildid: `${message.guild.id}`,
                         channel: `${lchan.id}`
@@ -433,14 +428,43 @@ module.exports.run = async (client, message, args, color) => {
                     message.channel.send(`:white_check_mark: | **Ticket Logging set to ${lchan}**`);
                     return;
                 } else {
-                    const update = db.prepare("UPDATE ticketlog SET channel = (@channel) WHERE guildid = (@guildid);");
+                    const update = db.prepare("UPDATE ticketConfig SET log = (@log) WHERE guildid = (@guildid);");
                     update.run({
                         guildid: `${message.guild.id}`,
-                        channel: `${lchan.id}`
+                        log: `${lchan.id}`
                     });
                     message.channel.send(`:white_check_mark: | ** Ticket Logging updated to ${lchan}**`);
                     return;
                 }
+            }
+        } else if (args[1] === "role") {
+
+            if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== config.ownerID)))
+                return message.channel.send(`${language.tickets.noPermission}`);
+
+            client.getTable = db.prepare("SELECT role FROM ticketConfig WHERE guildid = ?");
+            let status = client.getTable.get(message.guild.id);
+
+            const suppRole = message.mentions.roles.first();
+
+            if (message.mentions.roles.size <= 0) {
+                return message.channel.send(":x: | A role must be mentioned");
+            } else if (!status) {
+                const insert = db.prepare("INSERT INTO ticketConfig (guildid, role) VALUES (@guildid, @role);");
+                insert.run({
+                    guildid: `${message.guild.id}`,
+                    role: `${suppRole.id}`
+                });
+                message.channel.send(`:white_check_mark: | **Support Role set to ${suppRole}**`);
+                return;
+            } else {
+                const update = db.prepare("UPDATE ticketConfig SET role = (@role) WHERE guildid = (@guildid);");
+                update.run({
+                    guildid: `${message.guild.id}`,
+                    role: `${suppRole.id}`
+                });
+                message.channel.send(`:white_check_mark: | **Support Role updated to ${suppRole}**`);
+                return;
             }
         }
     }
@@ -502,7 +526,7 @@ module.exports.run = async (client, message, args, color) => {
                 guildid: `${message.guild.id}`,
                 prefix: `${args[1]}`
             });
-            message.channel.send(`:white_check_mark: | **Prefix updated to \`${args[1]}\`**`);
+            message.channel.send(':white_check_mark: | **Prefix updated!**');
             return;
         } else {
             const insert = db.prepare("INSERT INTO setprefix (guildid, prefix) VALUES (@guildid, @prefix);");
@@ -510,7 +534,7 @@ module.exports.run = async (client, message, args, color) => {
                 guildid: `${message.guild.id}`,
                 prefix: `${args[1]}`
             });
-            message.channel.send(`:white_check_mark: | **Prefix set to \`${args[1]}\`**`);
+            message.channel.send(':white_check_mark: | **Prefix set!**');
             return;
         }
     }
