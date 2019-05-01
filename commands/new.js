@@ -9,6 +9,14 @@ module.exports.run = async (client, message, args, color) => {
 
     const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
 
+    if (!message.member.guild.me.hasPermission("ADMINISTRATOR")) {
+        let botPerm = new Discord.RichEmbed()
+        .setColor(`36393F`)
+        .setDescription("Uh oh! It seems you have removed the \`ADMINISTRATOR\` permission from me. I cannot function properly without it :cry:");
+    message.channel.send(botPerm);
+    return;
+    }
+
     // "Support" role
     if (!message.guild.roles.find(r => r.name === 'Support Team') && !suppRole) {
         let nomodRole = new Discord.RichEmbed()
