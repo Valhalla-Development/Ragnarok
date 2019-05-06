@@ -121,7 +121,7 @@ module.exports.run = async (client, message, args, color) => {
         message.channel.send(succEmbed);
         return;
     } else {
-        let incorrectUsageMessage = language.autorole.incorrectUsage;
+        let incorrectUsageMessage = language.tickets.incorrectUsage;
         const incorrectUsage = incorrectUsageMessage.replace(
             "${prefix}",
             prefix
