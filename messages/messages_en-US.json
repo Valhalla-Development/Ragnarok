@@ -163,7 +163,8 @@
     "closeTimer": "**This ticket will automatically close in 10 seconds.**",
     "noinp": ":x: **You did not input any text!**",
     "noPermission": ":x: **Only users with `MANAGE_GUILD` can use this command!**",
-    "invalidCategory": ":x: **Invalid category name! Check if the entered categories name is correct and then type the command again. (The name is case sensitive!**"
+    "invalidCategory": ":x: **Invalid category name! Check if the entered categories name is correct and then type the command again. (The name is case sensitive!**",
+    "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}config` to see available commands!**"
   },
   "remindme": {
     "incorrectUsage": ":x: **Specify a time for me to remind you. | Example: ${prefix}remindme 15min example**"

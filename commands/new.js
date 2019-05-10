@@ -9,8 +9,16 @@ module.exports.run = async (client, message, args, color) => {
 
     const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
 
+    if (!message.member.guild.me.hasPermission("ADMINISTRATOR")) {
+        let botPerm = new Discord.RichEmbed()
+        .setColor(`36393F`)
+        .setDescription("Uh oh! It seems you have removed the \`ADMINISTRATOR\` permission from me. I cannot function properly without it :cry:");
+    message.channel.send(botPerm);
+    return;
+    }
+
     // "Support" role
-    if (!message.guild.roles.find(r => ["Support Team"].includes(r.name)) && !message.guild.roles.find(r => r.id === suppRole.role)) {
+    if (!message.guild.roles.find(r => r.name === 'Support Team') && !suppRole) {
         let nomodRole = new Discord.RichEmbed()
             .setColor(`36393F`)
             .setDescription(`${language.tickets.nomodRole}`);
@@ -43,9 +51,10 @@ module.exports.run = async (client, message, args, color) => {
         });
         // Create the channel with the name "ticket-" then the user's ID.
         message.guild.createChannel(`ticket-${nickName}-${randomString}`, "text").then(c => {
-            const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${message.guild.id} AND ticketid = ${randomString}`);
+            const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`);
             updateTicketChannel.run({
-                chanid: c.id
+                chanid: c.id,
+                ticketid: randomString
             });
             // Apply the appropriate permissions so that only the user and the support team can see it.
             let role = message.guild.roles.find(x => x.name === "Support Team") || message.guild.roles.find(r => r.id === suppRole.role);

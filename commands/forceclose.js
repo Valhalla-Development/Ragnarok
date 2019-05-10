@@ -53,6 +53,7 @@ module.exports.run = async (client, message, args, color) => {
         getChan.delete();
         db.prepare(`DELETE FROM tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`).run({ticketid: foundTicket.ticketid});
         const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
+        if (!logget) return;
         const logchan = message.guild.channels.find(chan => chan.id === logget.log);
         if (!logchan) return;
         let loggingembed = new Discord.RichEmbed()
@@ -64,7 +65,7 @@ module.exports.run = async (client, message, args, color) => {
   } else {
     let errEmbed = new Discord.RichEmbed()
       .setColor(`#36393F`)
-      .setDescription('This ticket could not be found.')
+      .setDescription('This ticket could not be found.');
     message.channel.send(errEmbed);
   }
 };

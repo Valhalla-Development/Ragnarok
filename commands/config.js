@@ -19,7 +19,7 @@ module.exports.run = async (client, message, args, color) => {
     if (args[0] === undefined) {
         const undeembed = new Discord.RichEmbed()
             .setColor(0xCF40FA)
-            .addField(`Ragnarok - Config`, `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Seys the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config welcome]() : Sets the welcome message\n[${prefix}config rolemenu add]() : Sets the role menu roles\n[${prefix}config rolemenu remove]() : Removes a role from rolemenu\n[${prefix}config rolemenu clear]() : Removes all roles from rolemenu`);
+            .addField(`Ragnarok - Config`, `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Sets the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config ticket role](): Sets custom support role for ticket system\n[${prefix}config welcome]() : Sets the welcome message\n[${prefix}config rolemenu add]() : Sets the role menu roles\n[${prefix}config rolemenu remove]() : Removes a role from rolemenu\n[${prefix}config rolemenu clear]() : Removes all roles from rolemenu`);
         message.channel.send({
             embed: undeembed
         });
@@ -121,7 +121,7 @@ module.exports.run = async (client, message, args, color) => {
         message.channel.send(succEmbed);
         return;
     } else {
-        let incorrectUsageMessage = language.autorole.incorrectUsage;
+        let incorrectUsageMessage = language.tickets.incorrectUsage;
         const incorrectUsage = incorrectUsageMessage.replace(
             "${prefix}",
             prefix
@@ -413,7 +413,7 @@ module.exports.run = async (client, message, args, color) => {
                         return;
                     } else {
                         message.channel.send(":white_check_mark: | **Ticket Logging disabled!**");
-                        db.prepare("DELETE FROM ticketConfig WHERE guildid = ?").run(message.guild.id);
+                        db.prepare("UPDATE ticketConfig SET log = (@log) WHERE guildid = (@guildid)").run({guildid: message.guild.id, log: null});
                         return;
                     }
                 } else if (!lchan) {
@@ -447,15 +447,23 @@ module.exports.run = async (client, message, args, color) => {
 
             const suppRole = message.mentions.roles.first();
 
-            if (message.mentions.roles.size <= 0) {
+            if (message.mentions.roles.size <= 0 && args[2] !== "off") {
                 return message.channel.send(":x: | A role must be mentioned");
+            } else if (args[2] === "off") {
+                const update = db.prepare("UPDATE ticketConfig SET role = (@role) WHERE guildid = (@guildid)");
+                update.run({
+                    guildid: `${message.guild.id}`,
+                    role: null
+                });
+                message.channel.send(":white_check_mark: | **Custom Support Role disabled!**");
+                return;
             } else if (!status) {
-                const insert = db.prepare("INSERT INTO ticketConfig (guildid, role) VALUES (@guildid, @role);");
-                insert.run({
+                const update = db.prepare("INSERT INTO ticketConfig SET role = (@role) WHERE guildid = (@guildid);");
+                update.run({
                     guildid: `${message.guild.id}`,
                     role: `${suppRole.id}`
                 });
-                message.channel.send(`:white_check_mark: | **Support Role set to ${suppRole}**`);
+                message.channel.send(`:white_check_mark: | **Support Role updated to ${suppRole}**`);
                 return;
             } else {
                 const update = db.prepare("UPDATE ticketConfig SET role = (@role) WHERE guildid = (@guildid);");
