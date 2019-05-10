@@ -30,7 +30,6 @@ module.exports.run = async (client, message, args, color) => {
             return;
         }
         const ticketGrab = db.prepare("SELECT count(*) FROM tickets WHERE guildid = ?").get(message.guild.id);
-        console.log(ticketGrab)
         if (!ticketGrab['count(*)']) {
             const noTickets = new Discord.RichEmbed()
                 .setColor(0xCF40FA)
@@ -40,7 +39,7 @@ module.exports.run = async (client, message, args, color) => {
         } else {
             const ticketList = new Discord.RichEmbed()
                 .setColor(0xCF40FA)
-                .addField(`There are currently ${ticketGrab['count(*)']} tickets open, ID: ${ticketGrab.something} USERID: ${ticketGrab.something}`); // and somehow display them in a collection type deal :D
+                .addField(`There are currently ${ticketGrab['count(*)']} tickets open`, `? something here you absolute melon`); // and somehow display them in a collection type deal :D
             message.channel.send(ticketList);
             return;
         }
