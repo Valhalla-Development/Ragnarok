@@ -1,0 +1,165 @@
+const {
+    MessageEmbed
+} = require("discord.js");
+const SQLite = require('better-sqlite3');
+const db = new SQLite('./storage/db/db.sqlite');
+const generate = require('nanoid/generate');
+const custAlpha = '0123456789abcdefghijklmnopqrstuvwxyz';
+
+module.exports = {
+    config: {
+        name: "new",
+        usage: "${prefix}new",
+        category: "ticket",
+        description: "Creates a ticket",
+        accessableby: "Everyone"
+    },
+    run: async (bot, message, args, color) => {
+        let language = require('../../storage/messages.json');
+
+        const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
+
+        if (!message.member.guild.me.hasPermission("ADMINISTRATOR")) {
+            let botPerm = new MessageEmbed()
+                .setColor(`36393F`)
+                .setDescription("Uh oh! It seems you have removed the \`ADMINISTRATOR\` permission from me. I cannot function properly without it :cry:");
+            message.channel.send(botPerm);
+            return;
+        }
+
+        // "Support" role
+        if (!message.guild.roles.find(r => r.name === 'Support Team') && !suppRole) {
+            let nomodRole = new MessageEmbed()
+                .setColor(`36393F`)
+                .setDescription(`${language.tickets.nomodRole}`);
+            message.channel.send(nomodRole);
+            return;
+        }
+        // Make sure this is the user's only ticket.
+        const foundTicket = db.prepare(`SELECT authorid FROM tickets WHERE guildid = ${message.guild.id} AND authorid = (@authorid)`);
+        if (foundTicket.get({
+                authorid: message.author.id
+            })) {
+            let existTM = new MessageEmbed()
+                .setColor(`36393F`)
+                .setDescription(`${language.tickets.existingTicket}`);
+            message.channel.send(existTM);
+            return;
+        }
+
+        const nickName = message.guild.members.get(message.author.id).displayName;
+
+        // Make Ticket
+        const id = db.prepare(`SELECT category FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
+        let reason = args.slice(0).join(' ') || 'No reason provided.';
+        let randomString = generate(custAlpha, 7);
+        if (!id) {
+            let newTicket = db.prepare(`INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);`);
+            newTicket.run({
+                guildid: message.guild.id,
+                ticketid: randomString,
+                authorid: message.author.id,
+                reason: reason
+            });
+            // Create the channel with the name "ticket-" then the user's ID.
+            let role = message.guild.roles.find(x => x.name === "Support Team") || message.guild.roles.find(r => r.id === suppRole.role);
+            let role2 = message.channel.guild.defaultRole;
+            message.guild.channels.create(`ticket-${nickName}-${randomString}`, {
+                permissionOverwrites: [{
+                    id: role.id,
+                    allow: 'VIEW_CHANNEL'
+                }, {
+                    id: role2.id,
+                    deny: 'VIEW_CHANNEL'
+                }, {
+                    id: message.author.id,
+                    allow: 'VIEW_CHANNEL'
+                }]
+            }).then(c => {
+                const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`);
+                updateTicketChannel.run({
+                    chanid: c.id,
+                    ticketid: randomString
+                });
+                // Send a message saying the ticket has been created.
+                let newTicketE = new MessageEmbed()
+                    .setColor(`36393F`)
+                    .setDescription(`${language.tickets.ticketCreated}, <#${c.id}>.`);
+                message.channel.send(newTicketE).then(msg => msg.delete(5000));
+                message.delete(5000);
+                const embed = new MessageEmbed()
+                    .setColor(0xCF40FA)
+                    .setTitle('New Ticket')
+                    .setDescription(`Hello \`${message.author.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
+                c.send(embed);
+                // And display any errors in the console.
+                const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
+                if (!logget) {
+                    return;
+                } else {
+                    const logchan = message.guild.channels.find(chan => chan.id === logget.log);
+                    if (!logchan) return;
+                    let loggingembed = new MessageEmbed()
+                        .setColor(color)
+                        .setDescription(`${message.author} has opened a new ticket \`#${c.name}\``);
+                    logchan.send(loggingembed);
+                }
+            }).catch(console.error);
+        } else {
+            let newTicket = db.prepare(`INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);`);
+            newTicket.run({
+                guildid: message.guild.id,
+                ticketid: randomString,
+                authorid: message.author.id,
+                reason: reason
+            });
+            const ticategory = id.category;
+
+            let role = message.guild.roles.find(x => x.name === "Support Team") || message.guild.roles.find(r => r.id === suppRole.role);
+            let role2 = message.channel.guild.defaultRole;
+            // Create the channel with the name "ticket-" then the user's ID.
+            message.guild.channels.create(`ticket-${nickName}-${randomString}`, {
+                permissionOverwrites: [{
+                    id: role.id,
+                    allow: 'VIEW_CHANNEL'
+                }, {
+                    id: role2.id,
+                    deny: 'VIEW_CHANNEL'
+                }, {
+                    id: message.author.id,
+                    allow: 'VIEW_CHANNEL'
+                }]
+            }).then(async c => {
+                const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`);
+                updateTicketChannel.run({
+                    chanid: c.id,
+                    ticketid: randomString
+                });
+                await c.setParent(ticategory);
+                // Send a message saying the ticket has been created.
+                let newTicketE = new MessageEmbed()
+                    .setColor(`36393F`)
+                    .setDescription(`${language.tickets.ticketCreated}, <#${c.id}>.`);
+                message.channel.send(newTicketE).then(msg => msg.delete(5000));
+                message.delete(5000);
+                const embed = new MessageEmbed()
+                    .setColor(0xCF40FA)
+                    .setTitle('New Ticket')
+                    .setDescription(`Hello \`${message.author.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. \n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
+                c.send(embed);
+                // And display any errors in the console.
+                const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
+                if (!logget) {
+                    return;
+                } else {
+                    const logchan = message.guild.channels.find(chan => chan.id === logget.log);
+                    if (!logchan) return;
+                    let loggingembed = new MessageEmbed()
+                        .setColor(color)
+                        .setDescription(`${message.author} has opened a new ticket \`#${c.name}\``);
+                    logchan.send(loggingembed);
+                }
+            }).catch(console.error);
+        }
+    }
+};
