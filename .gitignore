@@ -1,4 +1,4 @@
 node_modules/
-Storage/
-blank_template.js
+storage/db/db.sqlite
+storage/config.json
 .jshintrc

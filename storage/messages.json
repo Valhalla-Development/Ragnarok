@@ -1,0 +1,172 @@
+{
+    "8ball": {
+      "yes": "Yes",
+      "no": "No",
+      "probably": "Probably",
+      "i_dont_know": "I don't know",
+      "most_likely": "Most likely",
+      "not_really": "Not really",
+      "ask_again": "Concentrate and ask me again",
+      "no_response": "I'd rather not respond to this question",
+      "noArguments": ":x: **Incorrect usage! Please use `${prefix}8ball <question>`**"
+    },
+    "adsprot": {
+      "noPermission": ":x: **Only guild managers can use this command!**",
+      "alreadyOn": ":x: **Advert protection is already enabled on this guild! To disable it, please use `${prefix}config adsprot <off>`**",
+      "turnedOn": ":white_check_mark: **Advert protection was enabled**",
+      "alreadyOff": ":x: **Advert protection is not enabled on this guild! To activate it, please use `${prefix}config adsprot <on>`**",
+      "turnedOff": ":white_check_mark: **Advert protection was turned off!**",
+      "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}config adsprot <on/off>`**"
+    },
+    "autorole": {
+      "noPermission": ":x: **Only users with the `MANAGE_GUILD` permission can use this command!**",
+      "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}config autorole <role>` __the role is case sensitive!__**",
+      "roleSet": ":white_check_mark: **Autorole set to `${autorole}`!**",
+      "turnedOff": ":white_check_mark: **Autorole disabled!**",
+      "updateRole": ":white_check_mark: **Autorole updated to `${autorole}`!**",
+      "invalidRole": ":x: **That role does not exist! Roles are case sensitive.**"
+    },
+    "slot": {
+      "noArgs": ":x: **Please provide an amount of coins to gamble!**",
+      "naN": ":x: **That is not a valid integer!**",
+      "invalidAmount": ":x: **You must gamble at least 10 coins!**",
+      "invalidBalance": ":x: **You do not have that many coins! You only have** `${balance}` **coins!**"
+    },
+    "autortoggle": {
+      "noPermission": ":x: **Only users with `MANAGE_GUILD` can use this command!**",
+      "alreadyOn": ":x: **Autorole is already turned on!**",
+      "notOn": ":x: **To turn on autorole run the command `${prefix}autorole <role>` __the role is case sensitive!__**",
+      "alreadyOff": ":x: **Autorole is not enabled on this guild! To activate it, please use  `${prefix}autorole <role>` __the role is case sensitive!__**",
+      "turnedOff": ":white_check_mark: **Autorole was turned off!**",
+      "incorrectUsage": ":x: **Incorrect command usage! Please use `${prefix}autortoggle <off>` to turn the autorole off.**"
+    },
+    "balance": {
+      "noUser": ":x: **You must tag a user!**"
+    },
+    "points": {
+      "noUser": ":x: **You must tag a user!**"
+    },
+    "calc": {
+      "noInput": ":x: **Please input a calculation!**",
+      "invalidInput": ":x: **Please input a valid calculation!**"
+    },
+    "esay": {
+      "noPermission": ":x: **Only the server's managers can use this command!**",
+      "noInput": ":x: **You need to input text!**"
+    },
+    "invite": {
+      "noPermission": ":x: **You must have the `CREATE_INSTANT_INVITE` permission to use this command!**"
+    },
+    "kick": {
+      "noAuthorPermission": ":x: **You need to have the `KICK_MEMBERS` permission to use this command.**",
+      "noMention": ":x: **You must mention someone!**",
+      "cannotKick": ":x: **You cannot kick <@${user}>.**",
+      "cannotKickBot": ":x: **You cannot kick me.**",
+      "cannotKickAuthor": ":x: **You can't kick yourself!**",
+      "kickingUser": "**You have 30 seconds to reply to this message with a reason for kicking <@${user}>**",
+      "kickedUserLine1": ":white_check_mark: **<@${user}> got successfully kicked from the *${guild}* guild!**",
+      "kickedUserLine2": "**Reason: ${reason}**",
+      "kickedUserLine3": "**Moderator: ${moderator}**",
+      "canceled": ":x: **Kick command canceled.**"
+    },
+    "logging": {
+      "noPermission": ":x: **Only users with `MANAGE_GUILD` can use this command!**",
+      "invalidChannel": ":x: **Invalid channel name! Check if the entered channel's name is correct and then type the command again.**",
+      "invalidTextChannel": ":x: **Invalid text channel! Check if the entered text channel's name is correct and then type the command again.**"
+    },
+    "meme": {
+      "noEmbedPermission": ":x: **I need the `EMBED_LINKS` permission to this command to work.**"
+    },
+    "ping": {
+      "ping": ":ping_pong: **| Pong! My ping is: ${ping} ms**"
+    },
+    "poll": {
+      "incorrectUsage": ":x: **Incorrect usage! The command is `${prefix}poll <question>`**",
+      "noPermission": ":x: **Only the server's managers can use this command!**"
+    },
+    "profanity": {
+      "noPermission": ":x: **Only the server's managers can use this command!**",
+      "alreadyOn": ":x: **Profanity is already enabled on this guild! To disable it, please use `${prefix}profanity <off>`**",
+      "turnedOn": ":white_check_mark: **Profanity protection was turned on!**",
+      "alreadyOff": ":x: **Profanity protection is not enabled on this guild! To activate it, please use `${prefix}profanity <on>`**",
+      "turnedOff": ":white_check_mark: **Profanity protection was turned off!**",
+      "incorrectUsage": ":x: **Incorrect command usage! Please use `${prefix}profanity <on/off>`**"
+    },
+    "purge": {
+      "invalidNumber": ":x: **The provided argument is not a valid number.**",
+      "noPermission": ":x: **You need to have the `MANAGE_MESSAGES` permission to use this command.**",
+      "purged": ":white_check_mark: **Successfully deleted ${messages} messages!**",
+      "notSpecified": ":x: **You need to specify the amount of messages to purge!**",
+      "limitNumber": ":x: **The value can not be higher than 100**"
+    },
+    "report": {
+      "notarget": ":x: **You must specify a user to report!**",
+      "noreason": ":x: **You must specify a reason!**",
+      "nochannel": ":x: **Reports are disabled on this server! If you are an administrator, create the channel and name it `reports`**"
+    },
+    "ban": {
+      "notarget": ":x: **You must specify a user to ban!**",
+      "channelcreated": ":white_check_mark: **I could not find a channel named `logs`, so I made it for you :smiley: You must re-submit the ban.**",
+      "noAuthorPermission": ":x: **You need to have the `BAN_MEMBERS` permission to use this command.**"
+    },
+    "setprefix": {
+      "noPermission": ":x: **You need to have the `MANAGE_GUILD` permission to use this command.**",
+      "incorrectUsage": ":x: **Incorrect usage!**",
+      "prefixSet": "**:white_check_mark: | The prefix was set to ${prefix}!**",
+      "blacklistedPrefix": ":x: **Blacklisted prefix! Please choose another prefix.**",
+      "cooldown": ":x: | **Wait 1 minute before changing the prefix again.**"
+    },
+    "setwelcome": {
+      "noPermission": ":x: **You need to have the `MANAGE_GUILD` permission to use this command.**",
+      "step1": ":white_check_mark: **Alright, let's start the setup. First, which channel do you want the welcome messages to be in?\nTo see an example, run ${prefix}exwelcome \nYou can type `cancel` to stop the setup.\n\n`Type the name of the channel the welcome messages you want to be in.`**",
+      "canceled": "**:x: | Setup canceled.**",
+      "invalidChannel": ":x: **Invalid channel name! Check if the entered channel's name is correct and then type the command again.**",
+      "invalidTextChannel": ":x: **Invalid text channel! Check if the entered text channel's name is correct and then type the command again.**",
+      "noMessagePermission": ":x: **I can't send messages in that channel! Please make sure that I have the `SEND_MESSAGES` permission in that channel and then type the command again.**",
+      "step2": ":white_check_mark: **Channel set. What should the title be?**",
+      "step3": ":white_check_mark: **Title set. What should the author be?**",
+      "step4": ":white_check_mark: **Author set. What should the description be?**",
+      "finished": ":white_check_mark: **Alright, I set the welcome message for this guild!**"
+    },
+    "mute": {
+      "noUser": ":x: **Incorrect usage! Do `>help mute` If you are unsure.**",
+      "noAuthorPermission": ":x: **You need to have the `KICK_MEMBERS` permission to use this command.**",
+      "noReason": ":x: **You must specify a reason for the mute!**",
+      "noTime": ":x: **You must specify an amount of time to apply the `Muted` role!**",
+      "createdChannel": ":white_check_mark: **I could not find a channel named `logs`, so I made it for you :smiley: You must re-submit the mute.**"
+    },
+    "unmute": {
+      "noMention": ":x: **You must mention someone to unmute them!**",
+      "noAuthorPermission": ":x: **You need to have the `KICK_MEMBERS` permission to use this command.**",
+      "noRoleAsigned": ":x: **This user is not muted!**"
+    },
+    "userinfo": {
+      "noPermission": ":x: **You need to have the `MANAGE_GUILD` permission to use this command.**"
+    },
+    "bugreport": {
+      "noInput": ":x: **You did not specify a suggestion!**",
+      "bugLogged": ":white_check_mark: **Suggestion successfully logged!**"
+    },
+    "tickets": {
+      "nomodRole": ":x: This server doesn't have a `Support Team` role made, so the ticket won't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.",
+      "donthaveRole": ":x: Sorry! You do not have the **${role}** role.",
+      "cantfindUser": ":x: Couldn't find user.",
+      "wrongChannel": ":x: You can't use the add command outside of a ticket channel.",
+      "wrongChannelRename": ":x: **You can't use the rename command outside of a ticket channel!**",
+      "wrongChannelClose": ":x: You can't use the close command outside of a ticket channel.",
+      "closeConfirm": "Are you sure? Once confirmed, you cannot reverse this action!\nTo confirm, type `${prefix}confirm`. This will time out in 20 seconds and be cancelled.",
+      "added": "${user} has been added to the ticket!",
+      "removed": "${user} has been removed from the ticket!",
+      "existingTicket": ":x: You already have a ticket open!",
+      "ticketCreated": ":white_check_mark: Your ticket has been created, ",
+      "ticketMessage": "**Hey there, ${nick}!, A member from the Support Team will be with you soon!**\nPlease try to explain your issue while you are waiting.",
+      "closeTimer": "**This ticket will automatically close in 10 seconds.**",
+      "noinp": ":x: **You did not input any text!**",
+      "noPermission": ":x: **Only users with `MANAGE_GUILD` can use this command!**",
+      "invalidCategory": ":x: **Invalid category name! Check if the entered categories name is correct and then type the command again. (The name is case sensitive!**",
+      "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}config` to see available commands!**"
+    },
+    "remindme": {
+      "incorrectUsage": ":x: **Specify a time for me to remind you. | Example: ${prefix}remindme 15min example**"
+    }
+  }
