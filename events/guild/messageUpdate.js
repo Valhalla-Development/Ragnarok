@@ -22,7 +22,7 @@ module.exports = async (bot, oldMessage, newMessage) => {
             }>**`
             )
             .then(msg => {
-                msg.delete(10000);
+                msg.delete({ timeout: 10000 });
             });
     }
 };

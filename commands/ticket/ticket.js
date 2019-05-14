@@ -3,7 +3,7 @@ const {
 } = require("discord.js");
 const {
     ownerID
-} = require("../../storage/config.json")
+} = require("../../storage/config.json");
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
 
@@ -34,7 +34,7 @@ module.exports = {
         } else if (args[0] == "list") {
             if ((!message.member.hasPermission("ADMINISTRATOR") && (message.author.id !== ownerID))) {
                 message.channel.send(`You need to have the \`ADMINISTRATOR\` permission to use this command!`).then(msg => {
-                    msg.delete(10000);
+                    msg.delete({ timeout: 10000 });
                 });
                 return;
             }
@@ -55,7 +55,7 @@ module.exports = {
         } else if (args[0] == "clear") {
             if ((!message.member.hasPermission("ADMINISTRATOR") && (message.author.id !== ownerID))) {
                 message.channel.send(`You need to have the \`ADMINISTRATOR\` permission to use this command!`).then(msg => {
-                    msg.delete(10000);
+                    msg.delete({ timeout: 10000 });
                 });
                 return;
             }

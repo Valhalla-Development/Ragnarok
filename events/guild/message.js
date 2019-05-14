@@ -97,7 +97,7 @@ module.exports = async (bot, message) => {
             }>**`
             )
             .then(msg => {
-                msg.delete(10000);
+                msg.delete({ timeout: 10000 });
             });
     }
 
@@ -157,7 +157,7 @@ module.exports = async (bot, message) => {
                 .setColor(color)
                 .addField("New Level", curlvl + 1);
             message.channel.send(lvlup).then(msg => {
-                msg.delete(10000);
+                msg.delete({ timeout: 10000 });
             });
         }
         bot.setScore.run(score);

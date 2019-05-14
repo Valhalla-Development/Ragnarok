@@ -59,7 +59,7 @@ module.exports = {
                         .setColor(`#36393F`)
                         .setDescription('Canceling Ticket Close');
                     timerMsg.edit(cancelTimer).then(cancelMsg => {
-                        cancelMsg.delete(3500);
+                        cancelMsg.delete({ timeout: 5000 });
                     });
                 }).catch(() => {
                     getChan.delete();

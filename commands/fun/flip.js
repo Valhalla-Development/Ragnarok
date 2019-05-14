@@ -13,7 +13,7 @@ module.exports = {
         accessableby: "Everyone"
     },
     run: async (bot, message, args, color) => {
-        message.delete(0);
+        message.delete();
         const mapping = '¡"#$%⅋,)(*+\'-˙/0ƖᄅƐㄣϛ9ㄥ86:;<=>¿@∀qƆpƎℲפHIſʞ˥WNOԀQɹS┴∩ΛMX⅄Z[/]^_`ɐqɔpǝɟƃɥᴉɾʞlɯuodbɹsʇnʌʍxʎz{|}~';
         const OFFSET = '!'.charCodeAt(0);
 

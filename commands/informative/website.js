@@ -12,7 +12,7 @@ module.exports = {
     },
     run: async (bot, message, args, color) => {
 
-        message.delete(0);
+        message.delete();
 
         let embed = new MessageEmbed()
             .setColor('36393F')

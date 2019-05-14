@@ -15,7 +15,7 @@ module.exports = {
     },
     run: async (bot, message, args, color) => {
 
-        message.delete(0);
+        message.delete();
         let question = encode(args.join(" "));
         let link = `https://www.lmgtfy.com/?q=${question}`;
 
