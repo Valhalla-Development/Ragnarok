@@ -1,0 +1,40 @@
+const {
+    MessageEmbed
+} = require("discord.js");
+
+module.exports = {
+    config: {
+        name: "report",
+        usage: "${prefix}report <@user>",
+        category: "informative",
+        description: "Reports a user",
+        accessableby: "Everyone"
+    },
+    run: async (bot, message, args, color) => {
+
+        message.delete();
+
+        let language = require('../../storage/messages.json');
+        let target = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+        let reports = message.guild.channels.find(x => x.name === "reports");
+        let reason = args.slice(1).join(' ');
+
+        if (!target) return message.channel.send(`${language.report.notarget}`).then(message => message.delete({ timeout: 5000 }));
+        if (!reason) return message.channel.send(`${language.report.noreason}`).then(message => message.delete({ timeout: 5000 }));
+        if (!reports) return message.channel.send(`${language.report.nochannel}`).then(message => message.delete({ timeout: 5000 }));
+
+        let reportembed = new MessageEmbed()
+            .setThumbnail(target.user.avatarURL)
+            .setAuthor('Report', 'https://cdn.discordapp.com/emojis/465245981613621259.png?v=1')
+            .setDescription(`New report by ${message.author.username}`)
+            .addField('⚠ - Reported Member', `${target.user.tag}\n(${target.user.id})`, true)
+            .addField('⚠ - Reported by', `${message.author.tag}\n(${message.author.id})`, true)
+            .addField('⚙ - Channel', `${message.channel}`)
+            .addField('🔨 - Reason', `${reason}`)
+            .setColor('0xfc4f35')
+            .setTimestamp();
+        reports.send(reportembed);
+
+        message.channel.send(`**${target}** was reported by **${message.author}**`).then(message => message.delete({ timeout: 5000 }));
+    }
+};

@@ -1,0 +1,46 @@
+const {
+    MessageEmbed
+} = require("discord.js");
+const {
+    ownerID
+} = require('../../storage/config.json');
+
+module.exports = {
+    config: {
+        name: "esay",
+        usage: "${prefix}esay <text>",
+        category: "informative",
+        description: "Embeds a message of your choice",
+        accessableby: "Staff"
+    },
+    run: async (bot, message, args, color) => {
+
+        let language = require('../../storage/messages.json');
+
+        message.delete();
+
+        if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== ownerID))) {
+            message.channel.send(`${language.esay.noPermission}`);
+            return;
+        }
+
+        if (args[0] === undefined) {
+            let noinEmb = new MessageEmbed()
+                .setColor('36393F')
+                .setDescription(`${language.esay.noInput}`);
+            message.channel.send(noinEmb);
+            return;
+        }
+
+        const sayMessage = args.join(" ");
+
+        let esayEmbed = new MessageEmbed()
+            .setColor(color)
+            .setDescription(`${sayMessage}`);
+
+        const esayMessage = args.join(" ");
+        message.delete().catch(O_o => {});
+
+        message.channel.send(esayEmbed);
+    }
+};

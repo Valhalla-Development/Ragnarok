@@ -1,0 +1,59 @@
+const {
+    ownerID
+} = require('../../storage/config.json');
+
+module.exports = {
+    config: {
+        name: "purge",
+        usage: "${prefix}purge <amount>",
+        category: "informative",
+        description: "Deletes X amoune of message",
+        accessableby: "Staff"
+    },
+    run: async (bot, message, args, color) => {
+        let language = require('../../storage/messages.json');
+
+        message.delete();
+
+        if ((!message.member.hasPermission("MANAGE_MESSAGES") && (message.author.id !== ownerID))) {
+            message.channel.send(`${language.purge.noPermission}`).then(message => message.delete({
+                timeout: 5000
+            }));
+            return;
+        }
+
+        const argresult = args.join(" ");
+        if (!argresult) {
+            message.channel.send(`${language.purge.notSpecified}`).then(message => message.delete({
+                timeout: 5000
+            }));
+            return;
+        }
+        if (isNaN(argresult)) {
+            message.channel.send(`${language.purge.invalidNumber}`).then(message => message.delete({
+                timeout: 5000
+            }));
+            return;
+        }
+        if (args[0] > 100) {
+            message.channel.send(`${language.purge.limitNumber}`).then(message => message.delete({
+                timeout: 5000
+            }));
+            return;
+        }
+
+        let messagecount = parseInt(args.join(" "));
+        message.channel.bulkDelete(messagecount).then(() => {
+            setTimeout(() => {
+                let purgedMessage = language.purge.purged;
+                const purged = purgedMessage.replace("${messages}", messagecount);
+
+                message.channel.send(`${purged}`).then(m => {
+                    setTimeout(() => {
+                        m.delete();
+                    }, 5000);
+                });
+            }, 2000);
+        });
+    }
+};
