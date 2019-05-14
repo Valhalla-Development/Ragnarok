@@ -23,7 +23,9 @@ module.exports = {
 
         if ((!message.member.hasPermission("BAN_MEMBERS") && (message.author.id !== ownerID))) {
             message.channel.send(`${language.ban.noAuthorPermission}`).then(msg => {
-                msg.delete({ timeout: 10000 });
+                msg.delete({
+                    timeout: 10000
+                });
             });
             return;
         }
@@ -31,7 +33,9 @@ module.exports = {
         const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
         if (!id) {
             let user = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-            if (!user) return message.reply(`${language.ban.notarget}`).then(msg => msg.delete({ timeout: 5000 }));
+            if (!user) return message.reply(`${language.ban.notarget}`).then(msg => msg.delete({
+                timeout: 5000
+            }));
 
             let reason = args.slice(1).join(' ');
             if (!reason) reason = "No reason given";
@@ -56,13 +60,17 @@ module.exports = {
             let logsch = bot.channels.get(logch);
 
             let chuser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-            if (!chuser) return message.reply(`${language.ban.notarget}`).then(message => message.delete({ timeout: 5000 }));
+            if (!chuser) return message.reply(`${language.ban.notarget}`).then(message => message.delete({
+                timeout: 5000
+            }));
 
             let chreason = args.slice(1).join(' ');
             if (!chreason) reasonch = "No reason given";
 
             message.guild.member(chuser).ban(chreason);
-            message.channel.send(`${chuser}, was banned by ${message.author}\nCheck <#${logsch}> for more information!`).then(message.delete({ timeout: 5000 }));
+            message.channel.send(`${chuser}, was banned by ${message.author}\nCheck <#${logsch}> for more information!`).then(message.delete({
+                timeout: 5000
+            }));
 
             let logsEmbedD = new MessageEmbed()
                 .setTitle("User Banned")

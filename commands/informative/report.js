@@ -19,9 +19,15 @@ module.exports = {
         let reports = message.guild.channels.find(x => x.name === "reports");
         let reason = args.slice(1).join(' ');
 
-        if (!target) return message.channel.send(`${language.report.notarget}`).then(message => message.delete({ timeout: 5000 }));
-        if (!reason) return message.channel.send(`${language.report.noreason}`).then(message => message.delete({ timeout: 5000 }));
-        if (!reports) return message.channel.send(`${language.report.nochannel}`).then(message => message.delete({ timeout: 5000 }));
+        if (!target) return message.channel.send(`${language.report.notarget}`).then(message => message.delete({
+            timeout: 5000
+        }));
+        if (!reason) return message.channel.send(`${language.report.noreason}`).then(message => message.delete({
+            timeout: 5000
+        }));
+        if (!reports) return message.channel.send(`${language.report.nochannel}`).then(message => message.delete({
+            timeout: 5000
+        }));
 
         let reportembed = new MessageEmbed()
             .setThumbnail(target.user.avatarURL)
@@ -35,6 +41,8 @@ module.exports = {
             .setTimestamp();
         reports.send(reportembed);
 
-        message.channel.send(`**${target}** was reported by **${message.author}**`).then(message => message.delete({ timeout: 5000 }));
+        message.channel.send(`**${target}** was reported by **${message.author}**`).then(message => message.delete({
+            timeout: 5000
+        }));
     }
 };

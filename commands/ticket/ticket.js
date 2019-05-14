@@ -34,7 +34,9 @@ module.exports = {
         } else if (args[0] == "list") {
             if ((!message.member.hasPermission("ADMINISTRATOR") && (message.author.id !== ownerID))) {
                 message.channel.send(`You need to have the \`ADMINISTRATOR\` permission to use this command!`).then(msg => {
-                    msg.delete({ timeout: 10000 });
+                    msg.delete({
+                        timeout: 10000
+                    });
                 });
                 return;
             }
@@ -55,7 +57,9 @@ module.exports = {
         } else if (args[0] == "clear") {
             if ((!message.member.hasPermission("ADMINISTRATOR") && (message.author.id !== ownerID))) {
                 message.channel.send(`You need to have the \`ADMINISTRATOR\` permission to use this command!`).then(msg => {
-                    msg.delete({ timeout: 10000 });
+                    msg.delete({
+                        timeout: 10000
+                    });
                 });
                 return;
             }

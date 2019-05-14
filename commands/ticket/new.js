@@ -85,8 +85,12 @@ module.exports = {
                 let newTicketE = new MessageEmbed()
                     .setColor(`36393F`)
                     .setDescription(`${language.tickets.ticketCreated}, <#${c.id}>.`);
-                message.channel.send(newTicketE).then(msg => msg.delete({ timeout: 5000 }));
-                message.delete({ timeout: 5000 });
+                message.channel.send(newTicketE).then(msg => msg.delete({
+                    timeout: 5000
+                }));
+                message.delete({
+                    timeout: 5000
+                });
                 const embed = new MessageEmbed()
                     .setColor(0xCF40FA)
                     .setTitle('New Ticket')
@@ -140,8 +144,12 @@ module.exports = {
                 let newTicketE = new MessageEmbed()
                     .setColor(`36393F`)
                     .setDescription(`${language.tickets.ticketCreated}, <#${c.id}>.`);
-                message.channel.send(newTicketE).then(msg => msg.delete({ timeout: 5000 }));
-                message.delete({ timeout: 5000 });
+                message.channel.send(newTicketE).then(msg => msg.delete({
+                    timeout: 5000
+                }));
+                message.delete({
+                    timeout: 5000
+                });
                 const embed = new MessageEmbed()
                     .setColor(0xCF40FA)
                     .setTitle('New Ticket')

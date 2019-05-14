@@ -97,7 +97,9 @@ module.exports = async (bot, message) => {
             }>**`
             )
             .then(msg => {
-                msg.delete({ timeout: 10000 });
+                msg.delete({
+                    timeout: 10000
+                });
             });
     }
 
@@ -157,7 +159,9 @@ module.exports = async (bot, message) => {
                 .setColor(color)
                 .addField("New Level", curlvl + 1);
             message.channel.send(lvlup).then(msg => {
-                msg.delete({ timeout: 10000 });
+                msg.delete({
+                    timeout: 10000
+                });
             });
         }
         bot.setScore.run(score);
@@ -169,16 +173,16 @@ module.exports = async (bot, message) => {
         if (!oargresult || oargresult === "") {
             const LoggingNoArgs = `[\x1b[36m${moment().format(
             "LLLL"
-          )}\x1b[0m] Command ${prefix}${cmd} was executed by \x1b[36m${
+          )}\x1b[0m] Command \`${cmd}\` was executed by \x1b[36m${
             message.author.tag
-          }\x1b[0m (ID: \x1b[36m${message.author.id}\x1b[0m)`;
+          }\x1b[0m (Guild: \x1b[36m${message.guild.name}\x1b[0m)`;
             console.log(LoggingNoArgs);
         } else {
             const LoggingArgs = `[\x1b[36m${moment().format(
             "LLLL"
-          )}\x1b[0m] Command ${prefix}${cmd} ${oargresult} was executed by \x1b[36m${
+          )}\x1b[0m] Command \`${cmd} ${oargresult}\` was executed by \x1b[36m${
             message.author.tag
-          }\x1b[0m (ID: \x1b[36m${message.author.id}\x1b[0m)`;
+          }\x1b[0m (Guild: \x1b[36m${message.guild.name}\x1b[0m)`;
             console.log(LoggingArgs);
         }
     }

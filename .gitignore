@@ -1,4 +1,6 @@
 node_modules/
 storage/db/db.sqlite
+storage/db/db.sqlite-shm
+storage/db/db.sqlite-wal
 storage/config.json
 .jshintrc
