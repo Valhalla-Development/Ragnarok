@@ -19,7 +19,7 @@ module.exports = {
         const prefix = prefixgrab.prefix;
 
         let arr = [];
-        let types = ["Moderation", "Miscellaneous", "Fun"];
+        let types = ["Administrative", "Moderation", "Informative", "Fun", "Ticket"];
         let embed = new MessageEmbed();
 
         if (!args[0]) {
