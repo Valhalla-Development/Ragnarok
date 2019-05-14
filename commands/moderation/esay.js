@@ -1,46 +1,44 @@
-const {
-    MessageEmbed
-} = require("discord.js");
-const {
-    ownerID
-} = require('../../storage/config.json');
+/* eslint-disable no-unused-vars, no-empty-function */
+const { MessageEmbed } = require('discord.js');
+const { ownerID } = require('../../storage/config.json');
 
 module.exports = {
-    config: {
-        name: "esay",
-        usage: "${prefix}esay <text>",
-        category: "informative",
-        description: "Embeds a message of your choice",
-        accessableby: "Staff"
-    },
-    run: async (bot, message, args, color) => {
+	config: {
+		name: 'esay',
+		usage: '${prefix}esay <text>',
+		category: 'informative',
+		description: 'Embeds a message of your choice',
+		accessableby: 'Staff',
+	},
+	run: async (bot, message, args, color) => {
+		const language = require('../../storage/messages.json');
 
-        let language = require('../../storage/messages.json');
+		message.delete();
 
-        message.delete();
+		if (
+			!message.member.hasPermission('MANAGE_GUILD') &&
+			message.author.id !== ownerID
+		) {
+			message.channel.send(`${language.esay.noPermission}`);
+			return;
+		}
 
-        if ((!message.member.hasPermission("MANAGE_GUILD") && (message.author.id !== ownerID))) {
-            message.channel.send(`${language.esay.noPermission}`);
-            return;
-        }
+		if (args[0] === undefined) {
+			const noinEmb = new MessageEmbed()
+				.setColor('36393F')
+				.setDescription(`${language.esay.noInput}`);
+			message.channel.send(noinEmb);
+			return;
+		}
 
-        if (args[0] === undefined) {
-            let noinEmb = new MessageEmbed()
-                .setColor('36393F')
-                .setDescription(`${language.esay.noInput}`);
-            message.channel.send(noinEmb);
-            return;
-        }
+		const sayMessage = args.join(' ');
 
-        const sayMessage = args.join(" ");
+		const esayEmbed = new MessageEmbed()
+			.setColor(color)
+			.setDescription(`${sayMessage}`);
 
-        let esayEmbed = new MessageEmbed()
-            .setColor(color)
-            .setDescription(`${sayMessage}`);
+		message.delete().catch(O_o => {});
 
-        const esayMessage = args.join(" ");
-        message.delete().catch(O_o => {});
-
-        message.channel.send(esayEmbed);
-    }
+		message.channel.send(esayEmbed);
+	},
 };

@@ -1,35 +1,33 @@
-const {
-    MessageEmbed
-} = require("discord.js");
-const math = require("mathjs");
+const { MessageEmbed } = require('discord.js');
+const math = require('mathjs');
 
 module.exports = {
-    config: {
-        name: "calc",
-        usage: "${prefix}calc <args>",
-        category: "fun",
-        description: "Calculates a mathematical equation",
-        accessableby: "Everyone"
-    },
-    run: async (bot, message, args, color) => {
+	config: {
+		name: 'calc',
+		usage: '${prefix}calc <args>',
+		category: 'fun',
+		description: 'Calculates a mathematical equation',
+		accessableby: 'Everyone',
+	},
+	run: async (bot, message, args) => {
+		const language = require('../../storage/messages.json');
 
-        let language = require('../../storage/messages.json');
+		if (!args[0]) return message.channel.send(`${language.calc.noInput}`);
 
-        if (!args[0]) return message.channel.send(`${language.calc.noInput}`);
+		let resp;
+		try {
+			resp = math.eval(args.join(' '));
+		}
+		catch (e) {
+			return message.channel.send(`${language.calc.invalidInput}`);
+		}
 
-        let resp;
-        try {
-            resp = math.eval(args.join(" "));
-        } catch (e) {
-            return message.channel.send(`${language.calc.invalidInput}`);
-        }
+		const embed = new MessageEmbed()
+			.setColor(0xffffff)
+			.setTitle('Math Calculation')
+			.addField('Input', `\`\`\`js\n${args.join('')}\`\`\``)
+			.addField('Output', `\`\`\`js\n${resp}\`\`\``);
 
-        const embed = new MessageEmbed()
-            .setColor(0xffffff)
-            .setTitle("Math Calculation")
-            .addField("Input", `\`\`\`js\n${args.join("")}\`\`\``)
-            .addField("Output", `\`\`\`js\n${resp}\`\`\``);
-
-        message.channel.send(embed);
-    }
+		message.channel.send(embed);
+	},
 };
