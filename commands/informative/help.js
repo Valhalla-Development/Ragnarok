@@ -44,6 +44,9 @@ module.exports = {
                 "${prefix}",
                 prefix
             );
+            if (command.name == 'eval' || command.name == 'exwelcome') {
+                return;
+            }
 
             embed.setColor(`RANDOM`)
                 .setAuthor(bot.user.username, bot.user.avatarURL)
