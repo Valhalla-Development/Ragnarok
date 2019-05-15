@@ -63,7 +63,7 @@ module.exports = async (bot, event) => {
 			const channel = guild.channels.find(
 				channel => channel.id === data.channel_id
 			);
-			channel.fetchMessage(foundRoleMenu.activeRoleMenuID).then(msg => {
+			channel.messages.fetch(foundRoleMenu.activeRoleMenuID).then(msg => {
 				const roleArray = JSON.parse(foundRoleMenu.roleList);
 				const reaction =
 					msg.reactions.get(data.emoji.name) ||
@@ -82,23 +82,23 @@ module.exports = async (bot, event) => {
 						) {
 							const getReactUser = reaction.users.map(react => react.id);
 							if (getReactUser.includes(member.id)) {
-								reaction.remove(member.id);
+								reaction.users.remove(member.id);
 							}
 							return;
 						}
 						else if (eventType === 'MESSAGE_REACTION_ADD') {
 							if (memberRole.includes(roleArray[roleIndex])) {
-								member.removeRole(roleArray[roleIndex]);
-								reaction.remove(member.id);
+								member.roles.remove(roleArray[roleIndex]);
+								reaction.users.remove(member.id);
 							}
 							else {
-								member.addRole(roleArray[roleIndex]);
-								reaction.remove(member.id);
+								member.roles.add(roleArray[roleIndex]);
+								reaction.users.remove(member.id);
 							}
 						}
 					}
 					else {
-						reaction.remove(member.id);
+						reaction.users.remove(member.id);
 					}
 				}
 			});
