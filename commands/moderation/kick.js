@@ -4,7 +4,7 @@ module.exports = {
 	config: {
 		name: 'kick',
 		usage: '${prefix}kick <@user>',
-		category: 'informative',
+		category: 'moderation',
 		description: 'Kicks a user from the guild',
 		accessableby: 'Staff',
 	},

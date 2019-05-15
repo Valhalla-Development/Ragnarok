@@ -8,7 +8,7 @@ module.exports = {
 	config: {
 		name: 'poll',
 		usage: '${prefix}poll <question>',
-		category: 'informative',
+		category: 'moderation',
 		description: 'Mutes a user in the guild',
 		accessableby: 'Staff',
 	},

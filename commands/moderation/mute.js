@@ -9,7 +9,7 @@ module.exports = {
 	config: {
 		name: 'mute',
 		usage: '${prefix}mute <@user> <time> <reason>',
-		category: 'informative',
+		category: 'moderation',
 		description: 'Mutes a user in the guild',
 		accessableby: 'Staff',
 	},

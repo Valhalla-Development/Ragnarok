@@ -5,8 +5,9 @@ const { ownerID } = require('../../storage/config.json');
 module.exports = {
 	config: {
 		name: 'esay',
+		aliases: ['say'],
 		usage: '${prefix}esay <text>',
-		category: 'informative',
+		category: 'moderation',
 		description: 'Embeds a message of your choice',
 		accessableby: 'Staff',
 	},

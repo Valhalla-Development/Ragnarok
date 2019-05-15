@@ -5,7 +5,7 @@ module.exports = {
 	config: {
 		name: 'purge',
 		usage: '${prefix}purge <amount>',
-		category: 'informative',
+		category: 'moderation',
 		description: 'Deletes X amoune of message',
 		accessableby: 'Staff',
 	},

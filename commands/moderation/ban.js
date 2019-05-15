@@ -8,7 +8,7 @@ module.exports = {
 	config: {
 		name: 'ban',
 		usage: '${prefix}ban',
-		category: 'informative',
+		category: 'moderation',
 		description: 'Bans a user from the guild',
 		accessableby: 'Staff',
 	},

@@ -8,7 +8,7 @@ module.exports = {
 	config: {
 		name: 'unmute',
 		usage: '${prefix}unmute <@user>',
-		category: 'informative',
+		category: 'moderation',
 		description: 'Unutes a user in the guild',
 		accessableby: 'Staff',
 	},
