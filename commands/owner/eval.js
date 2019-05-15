@@ -22,14 +22,11 @@ module.exports = {
 					.replace(/'/g, '`' + String.fromCharCode(8203))
 					.replace(/@/g, '@' + String.fromCharCode(8203));
 			}
-			else {return text;}
+			else {
+				return text;
+			}
 		}
 
-		console.log(
-			`\n${message.author.username}#${
-				message.author.discriminator
-			} Used .Eval Command On ${message.guild.name}`
-		);
 		const argresult = args.join(' ');
 		if (!argresult) {
 			return message.channel.send('Please Specify a Code To Run!');
