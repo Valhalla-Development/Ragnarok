@@ -1,7 +1,7 @@
 /* eslint-disable no-shadow, no-unused-vars, max-nested-callbacks */
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
-const db = new SQLite('./Storage/db/db.sqlite');
+const db = new SQLite('./storage/db/db.sqlite');
 const { ownerID } = require('../../storage/config.json');
 
 module.exports = {

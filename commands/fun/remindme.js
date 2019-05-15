@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const ms = require('ms');
 const SQLite = require('better-sqlite3');
-const db = new SQLite('./Storage/db/db.sqlite');
+const db = new SQLite('./storage/db/db.sqlite');
 
 module.exports = {
 	config: {
