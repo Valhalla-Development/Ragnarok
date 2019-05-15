@@ -77,7 +77,7 @@ if (logging !== true && logging !== false) {
 
 if (logging === true) {
 	console.log(
-		'[Ragnarok] Logging enabled! When someone will execute a command, I will log that in here.'
+		'[Ragnarok] Logging enabled! When someone executes a command, I will log that here.'
 	);
 }
 

@@ -4,16 +4,16 @@ const db = new SQLite('./storage/db/db.sqlite');
 
 module.exports = async bot => {
 	console.log(
-		`\n \n \n \nSuccessfully connected into discord's gateway(v6)\nScanning for guilds...\n\x1b[36m[-]\x1b[0m ${bot.guilds
+		`Scanning for guilds...\n\x1b[36m[-]\x1b[0m ${bot.guilds
 			.map(n => n.name + ` (ID: \x1b[36m${n.id}\x1b[0m)`)
 			.join('\x1b[36m\n[-]\x1b[0m ')}`
 	);
 
 	setTimeout(() => {
 		console.log(
-			`Scan completed!\nAll commands are loaded. We are ready to go!\nInvite link: https://discordapp.com/oauth2/authorize?client_id=${
+			`Invite link: https://discordapp.com/oauth2/authorize?client_id=${
 				bot.user.id
-			}&scope=bot&permissions=8\nType ${prefix}help to get a list of commands to use!`
+			}&scope=bot&permissions=8\n`
 		);
 	}, 1000);
 
