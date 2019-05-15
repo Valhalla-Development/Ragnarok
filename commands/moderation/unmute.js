@@ -69,6 +69,7 @@ module.exports = {
 				.addField('Staff Member', `${mod}`)
 				.setColor('#ff0000');
 			bot.channels.get(dblogs).send(unmuteembed);
+			message.channel.send(unmuteembed);
 		}
 	},
 };
