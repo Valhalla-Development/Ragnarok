@@ -36,6 +36,16 @@ module.exports = async (bot, message) => {
 	const dadArgs = messageArray.slice(1);
 	const oargresult = dadArgs.join(' ');
 	const command = messageArray[0].toLowerCase();
+
+	// Prefix command
+
+	if (command === prefix + 'prefix') {
+		const embed = new MessageEmbed()
+			.setColor(color)
+			.setDescription(`This server's prefix is: \`${prefixcommand}\``);
+		message.channel.send(embed);
+	}
+
 	const cmd = args.shift().toLowerCase();
 	if (!message.content.startsWith(prefixcommand)) return;
 	const commandfile =
@@ -86,15 +96,6 @@ module.exports = async (bot, message) => {
 		else {
 			message.channel.send(`Hi ${oargresult}, I'm Dad!`);
 		}
-	}
-
-	// Prefix command
-
-	if (command === prefix + 'prefix') {
-		const embed = new MessageEmbed()
-			.setColor(color)
-			.setDescription(`This server's prefix is: \`${prefixcommand}\``);
-		message.channel.send(embed);
 	}
 
 	// Ads protection checks
