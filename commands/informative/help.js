@@ -20,7 +20,6 @@ module.exports = {
 
 		const arr = [];
 		const types = [
-			'Administrative',
 			'Moderation',
 			'Informative',
 			'Fun',
@@ -49,7 +48,7 @@ module.exports = {
 				.setAuthor(bot.user.username, bot.user.avatarURL)
 				.setTimestamp()
 				.setDescription(
-					`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!\nRun \`${prefix}help <command>\` to see command specific instructions!\n'Administration Commands' must be preceded by \`${prefix}config\` e.g. \`${prefix}config adsprot\``
+					`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!\nRun \`${prefix}help <command>\` to see command specific instructions!\nAll commands must be preceded by \`${prefix}\``
 				)
 				.setFooter(`This guild's prefix is ${prefix}`, bot.user.avatarURL);
 			message.channel.send(embed);
@@ -59,7 +58,7 @@ module.exports = {
 				? bot.commands.get(args[0].toLowerCase()).config
 				: bot.commands.get(bot.aliases.get(args[0].toLowerCase())).config;
 			const cUsagePrefix = command.usage.replace('${prefix}', prefix);
-			if (command.name == 'eval' || command.name == 'exwelcome') {
+			if (command.accessableby == 'Owner') {
 				return;
 			}
 
