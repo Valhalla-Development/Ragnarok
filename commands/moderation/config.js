@@ -351,7 +351,9 @@ module.exports = {
 			if (
 				!message.member.hasPermission('MANAGE_GUILD') &&
 				message.author.id !== ownerID
-			) {return message.channel.send(`${language.logging.noPermission}`);}
+			) {
+				return message.channel.send(`${language.logging.noPermission}`);
+			}
 
 			bot.getTable = db.prepare('SELECT * FROM logging WHERE guildid = ?');
 
@@ -417,14 +419,16 @@ module.exports = {
 			}
 		}
 
-		// ticket cat and log
+		// ticket cat and log and role
 
 		if (args[0] === 'ticket') {
 			if (args[1] === 'cat') {
 				if (
 					!message.member.hasPermission('MANAGE_GUILD') &&
 					message.author.id !== ownerID
-				) {return message.channel.send(`${language.tickets.noPermission}`);}
+				) {
+					return message.channel.send(`${language.tickets.noPermission}`);
+				}
 
 				bot.getTable = db.prepare(
 					'SELECT category FROM ticketConfig WHERE guildid = ?'
@@ -503,7 +507,9 @@ module.exports = {
 				if (
 					!message.member.hasPermission('MANAGE_GUILD') &&
 					message.author.id !== ownerID
-				) {return message.channel.send(`${language.tickets.noPermission}`);}
+				) {
+					return message.channel.send(`${language.tickets.noPermission}`);
+				}
 
 				bot.getTable = db.prepare(
 					'SELECT log FROM ticketConfig WHERE guildid = ?'
@@ -577,7 +583,9 @@ module.exports = {
 				if (
 					!message.member.hasPermission('MANAGE_GUILD') &&
 					message.author.id !== ownerID
-				) {return message.channel.send(`${language.tickets.noPermission}`);}
+				) {
+					return message.channel.send(`${language.tickets.noPermission}`);
+				}
 
 				bot.getTable = db.prepare(
 					'SELECT role FROM ticketConfig WHERE guildid = ?'
@@ -648,12 +656,14 @@ module.exports = {
 				}, 60000);
 			}
 
-			const language = require('../messages/messages_en-US.json');
+			const language = require('../../storage/messages.json');
 
 			if (
 				!message.member.hasPermission('MANAGE_GUILD') &&
 				message.author.id !== ownerID
-			) {return message.channel.send(`${language.setprefix.noPermission}`);}
+			) {
+				return message.channel.send(`${language.setprefix.noPermission}`);
+			}
 
 			bot.getTable = db.prepare('SELECT * FROM setprefix WHERE guildid = ?');
 			let prefix;
@@ -684,7 +694,9 @@ module.exports = {
 				return;
 			}
 
-			if (!args[1]) {return message.channel.send(`${language.setprefix.incorrectUsage}`);}
+			if (!args[1]) {
+				return message.channel.send(`${language.setprefix.incorrectUsage}`);
+			}
 
 			if (prefix) {
 				const update = db.prepare(
@@ -719,14 +731,16 @@ module.exports = {
 
 			const prefix = prefixgrab.prefix;
 
-			const language = require('../messages/messages_en-US.json');
+			const language = require('../../storage/messages.json');
 			const step1 = language.setwelcome.step1;
 			const step1r = step1.replace('${prefix}', prefix);
 
 			if (
 				!message.member.hasPermission('MANAGE_GUILD') &&
 				message.author.id !== ownerID
-			) {return message.channel.send(`${language.setwelcome.noPermission}`);}
+			) {
+				return message.channel.send(`${language.setwelcome.noPermission}`);
+			}
 
 			bot.getTable = db.prepare('SELECT * FROM setwelcome WHERE guildid = ?');
 			let status;
