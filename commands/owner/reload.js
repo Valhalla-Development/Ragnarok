@@ -1,0 +1,60 @@
+/* eslint-disable no-unused-vars */
+/* jshint -W061 */
+const { MessageEmbed } = require('discord.js');
+const SQLite = require('better-sqlite3');
+const db = new SQLite('./storage/db/db.sqlite');
+const { ownerID } = require('../../storage/config.json');
+const { readdirSync } = require('fs');
+const { join } = require('path');
+
+module.exports = {
+	config: {
+		name: 'reload',
+		usage: '${prefix}reload <plugin>',
+		category: 'owner',
+		description: ' ',
+		accessableby: 'Owner',
+	},
+	run: async (bot, message, args, color) => {
+		if (message.author.id !== ownerID) return;
+
+		if (!args[0]) {
+			const noArgs = new MessageEmbed()
+				.setColor(color)
+				.setDescription('Please provide a command to reload!');
+			message.channel.send(noArgs);
+			return;
+		}
+		const commandName = args[0].toLowerCase();
+		if (!bot.commands.get(commandName)) {
+			const notaCommand = new MessageEmbed()
+				.setColor(color)
+				.setDescription(':x: That command does not exist! Try again.');
+			message.channel.send(notaCommand);
+			return;
+		}
+		readdirSync(join(__dirname, '..')).forEach(f => {
+			const files = readdirSync(join(__dirname, '..', f));
+			if (files.includes(commandName + '.js')) {
+				try {
+					delete require.cache[
+						require.resolve(join(__dirname, '..', f, `${commandName}.js`))
+					];
+					bot.commands.delete(commandName);
+					const pull = require(`../${f}/${commandName}.js`);
+					bot.commands.set(commandName, pull);
+					const success = new MessageEmbed()
+						.setColor('RANDOM')
+						.setDescription(`Successfully reloaded \`${commandName}\``);
+					return message.channel.send(success);
+				}
+				catch (e) {
+					const errorCatch = new MessageEmbed()
+						.setColor('RANDOM')
+						.setDescription(`Could not reload: \`${args[0].toUpperCase()}\``);
+					return message.channel.send(errorCatch);
+				}
+			}
+		});
+	},
+};

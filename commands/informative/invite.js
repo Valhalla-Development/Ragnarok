@@ -2,10 +2,10 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	config: {
-		name: 'support',
-		usage: '${prefix}support',
+		name: 'invite',
+		usage: '${prefix}invite',
 		category: 'informative',
-		description: 'Posts a link to the bots support server',
+		description: 'Posts a bot invite link',
 		accessableby: 'Everyone',
 	},
 	run: async (bot, message) => {
@@ -14,7 +14,7 @@ module.exports = {
 		const embed = new MessageEmbed()
 			.setColor('36393F')
 			.setDescription(
-				':white_check_mark: **Support Server Invite**: https://discord.gg/Q3ZhdRJ'
+				':white_check_mark: **Bot Invite Link**: https://invite.ragnarokbot.tk'
 			);
 		message.channel.send(embed);
 	},

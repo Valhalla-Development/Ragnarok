@@ -1,63 +1,59 @@
-const {
-    MessageEmbed
-} = require("discord.js");
-const ms = require("ms");
+const { MessageEmbed } = require('discord.js');
+const ms = require('ms');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/db/db.sqlite');
 
 module.exports = {
-    config: {
-        name: "remindme",
-        usage: "${prefix}remindme <time> <message>",
-        category: "fun",
-        description: "Reminds you of a specifed message",
-        accessableby: "Everyone"
-    },
-    run: async (bot, message, args, color) => {
+	config: {
+		name: 'remindme',
+		usage: '${prefix}remindme <time> <message>',
+		category: 'fun',
+		description: 'Reminds you of a specifed message',
+		accessableby: 'Everyone',
+	},
+	run: async (bot, message, args) => {
+		const language = require('../../storage/messages.json');
 
-        let language = require('../../storage/messages.json');
+		const prefixgrab = db
+			.prepare('SELECT prefix FROM setprefix WHERE guildid = ?')
+			.get(message.guild.id);
 
-        const prefixgrab = db.prepare("SELECT prefix FROM setprefix WHERE guildid = ?").get(message.guild.id);
+		const prefix = prefixgrab.prefix;
 
-        let prefix = prefixgrab.prefix;
+		const incorrectUsageMessage = language.remindme.incorrectUsage;
+		const incorrectUsage = incorrectUsageMessage.replace('${prefix}', prefix);
 
+		const reminderTime = args[0];
+		if (!reminderTime) return message.channel.send(`${incorrectUsage}`);
 
-        let incorrectUsageMessage = language.remindme.incorrectUsage;
-        const incorrectUsage = incorrectUsageMessage.replace(
-            "${prefix}",
-            prefix
-        );
+		const reminder = args.slice(1).join(' ');
 
-        let reminderTime = args[0];
-        if (!reminderTime)
-            return message.channel.send(`${incorrectUsage}`);
+		if (message.content.includes('@everyone')) {
+			message.reply('NO!');
+			return;
+		}
+		if (message.content.includes('@here')) {
+			message.reply('NO!');
+			return;
+		}
 
-        let reminder = args.slice(1).join(" ");
+		message.channel.send(
+			':white_check_mark: ** I will remind you in ' +
+				`${reminderTime}` +
+				' :heart:**'
+		);
 
-        if (message.content.includes('@everyone')) {
-            message.reply('NO!');
-            return;
-        }
-        if (message.content.includes('@here')) {
-            message.reply('NO!');
-            return;
-        }
+		setTimeout(function() {
+			const remindEmbed = new MessageEmbed()
+				.setColor('RANDOM')
+				.setAuthor(
+					`${message.author.username}`,
+					message.author.displayAvatarURL
+				)
+				.addField('Reminder', `\`\`\`${reminder}\`\`\``);
 
-
-        message.channel.send(
-            ":white_check_mark: ** I will remind you in " +
-            `${reminderTime}` +
-            " :heart:**"
-        );
-
-        setTimeout(function () {
-            let remindEmbed = new MessageEmbed()
-                .setColor(`RANDOM`)
-                .setAuthor(`${message.author.username}`, message.author.displayAvatarURL)
-                .addField("Reminder", `\`\`\`${reminder}\`\`\``);
-
-            message.channel.send(remindEmbed);
-            message.channel.send(`${message.author}`)
-        }, ms(reminderTime));
-    }
+			message.channel.send(remindEmbed);
+			message.channel.send(`${message.author}`);
+		}, ms(reminderTime));
+	},
 };

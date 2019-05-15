@@ -129,7 +129,7 @@
       "finished": ":white_check_mark: **Alright, I set the welcome message for this guild!**"
     },
     "mute": {
-      "noUser": ":x: **Incorrect usage! Do `>help mute` If you are unsure.**",
+      "noUser": ":x: **Incorrect usage! Do `${prefix}help mute` If you are unsure.**",
       "noAuthorPermission": ":x: **You need to have the `KICK_MEMBERS` permission to use this command.**",
       "noReason": ":x: **You must specify a reason for the mute!**",
       "noTime": ":x: **You must specify an amount of time to apply the `Muted` role!**",
