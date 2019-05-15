@@ -8,7 +8,7 @@ module.exports = {
 	config: {
 		name: 'config',
 		usage: '${prefix}config',
-		category: 'administrative',
+		category: 'moderation',
 		description: 'Displays available config commands',
 		accessableby: 'Everyone',
 	},

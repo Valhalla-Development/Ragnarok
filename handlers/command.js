@@ -13,7 +13,6 @@ module.exports = bot => {
 		}
 	};
 	[
-		'administrative',
 		'fun',
 		'informative',
 		'moderation',
