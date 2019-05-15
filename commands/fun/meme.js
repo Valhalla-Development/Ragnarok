@@ -12,6 +12,8 @@ module.exports = {
 	run: async (bot, message, args, color) => {
 		const language = require('../../storage/messages.json');
 
+		const msg = await message.channel.send('Generating...');
+
 		meme(function(data) {
 			const embed = new MessageEmbed()
 				.setTitle(data.title[0])
@@ -24,6 +26,7 @@ module.exports = {
 				message.channel.send(`${language.meme.noEmbedPermission}`);
 				return;
 			}
+			msg.delete();
 
 			message.channel.send({
 				embed,

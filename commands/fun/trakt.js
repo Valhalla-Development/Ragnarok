@@ -18,6 +18,8 @@ module.exports = {
 		accessableby: 'Everyone',
 	},
 	run: async (bot, message, args) => {
+		const msg = await message.channel.send('Fetching data...');
+
 		const trakt = new Trakt({
 			client_id: traktKey,
 			client_secret: traktSecret,
@@ -83,6 +85,7 @@ module.exports = {
 				);
 
 			message.channel.send(embed);
+			msg.delete();
 		};
 
 		if (args[0] == 'movie') {
@@ -132,6 +135,7 @@ module.exports = {
 									reqVotes
 								)
 							);
+							msg.delete();
 						}
 					);
 				})
@@ -185,6 +189,7 @@ module.exports = {
 									reqVotes
 								)
 							);
+							msg.delete();
 						}
 					);
 				})
@@ -201,6 +206,7 @@ module.exports = {
 				);
 
 			message.channel.send(errEmbed);
+			msg.delete();
 		}
 		else {
 			args = args.join(' ');
@@ -233,9 +239,7 @@ module.exports = {
 								}
 								reqTitle = info[0].movie.title;
 								reqDesc = info[0].movie.overview;
-								reqLink = `https://trakt.tv/movies/${
-									info[0].movie.ids.slug
-								}`;
+								reqLink = `https://trakt.tv/movies/${info[0].movie.ids.slug}`;
 								reqSearch = args.split(' ').join('+');
 								reqRating = Math.round(info[0].movie.rating * 10);
 								reqVotes = toThousand(info[0].movie.votes);
@@ -251,6 +255,7 @@ module.exports = {
 										reqVotes
 									)
 								);
+								msg.delete();
 							}
 						);
 						break;
@@ -297,6 +302,7 @@ module.exports = {
 										reqVotes
 									)
 								);
+								msg.delete();
 							}
 						);
 						break;
