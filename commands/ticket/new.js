@@ -13,6 +13,11 @@ module.exports = {
 		accessableby: 'Everyone',
 	},
 	run: async (bot, message, args, color) => {
+		const prefixgrab = db
+			.prepare('SELECT prefix FROM setprefix WHERE guildid = ?')
+			.get(message.guild.id);
+		const prefix = prefixgrab.prefix;
+
 		const language = require('../../storage/messages.json');
 
 		const suppRole = db
@@ -48,6 +53,38 @@ module.exports = {
 				message.guild.id
 			} AND authorid = (@authorid)`
 		);
+		const checkTicketEx = db
+			.prepare(`SELECT chanid FROM tickets WHERE guildid = ${message.guild.id} AND authorid = ${message.author.id}`)
+			.get();
+		const roleCheckEx = db
+			.prepare(
+				`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`
+			)
+			.get();
+		if (checkTicketEx) {
+			if (checkTicketEx.chanid == null) {
+				db.prepare(`DELETE FROM tickets WHERE guildid = ${message.guild.id} AND authorid = ${message.author.id}`).run();
+			}
+			if (
+				!message.guild.channels.find(
+					channel => channel.id === checkTicketEx.chanid
+				)
+			) {
+				db.prepare(`DELETE FROM tickets WHERE guildid = ${message.guild.id} AND authorid = ${message.author.id}`).run();
+			}
+		}
+		if (roleCheckEx) {
+			if (!message.guild.roles.find(role => role.id === roleCheckEx.role)) {
+				const updateRole = db.prepare(
+					`UPDATE ticketConfig SET role = (@role) WHERE guildid = ${
+						message.guild.id
+					}`
+				);
+				updateRole.run({
+					role: null,
+				});
+			}
+		}
 		if (
 			foundTicket.get({
 				authorid: message.author.id,
@@ -84,6 +121,12 @@ module.exports = {
 			const role =
 				message.guild.roles.find(x => x.name === 'Support Team') ||
 				message.guild.roles.find(r => r.id === suppRole.role);
+			if (!role) {
+				message.channel.send(
+					`I could not find the \`Support Team\` role!\nIf you use a custom role, I recommend running the command again \`${prefix}config ticket role <@role>\``
+				);
+				return;
+			}
 			const role2 = message.channel.guild.defaultRole;
 			message.guild.channels
 				.create(`ticket-${nickName}-${randomString}`, {
@@ -174,6 +217,12 @@ module.exports = {
 			const role =
 				message.guild.roles.find(x => x.name === 'Support Team') ||
 				message.guild.roles.find(r => r.id === suppRole.role);
+			if (!role) {
+				message.channel.send(
+					`I could not find the \`Support Team\` role!\nIf you use a custom role, I recommend running the command again \`${prefix}config ticket role <@role>\``
+				);
+				return;
+			}
 			const role2 = message.channel.guild.defaultRole;
 			// Create the channel with the name "ticket-" then the user's ID.
 			message.guild.channels
