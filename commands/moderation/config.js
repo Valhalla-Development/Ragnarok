@@ -612,7 +612,7 @@ module.exports = {
 				}
 				else if (!status) {
 					const update = db.prepare(
-						'INSERT INTO ticketConfig SET role = (@role) WHERE guildid = (@guildid);'
+						'INSERT INTO ticketConfig (role, guildid) VALUES (@role, @guildid);'
 					);
 					update.run({
 						guildid: `${message.guild.id}`,
