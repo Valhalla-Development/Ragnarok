@@ -13,6 +13,7 @@ module.exports = {
 		const language = require('../../storage/messages.json');
 
 		const msg = await message.channel.send('Generating...');
+		message.channel.startTyping();
 
 		meme(function(data) {
 			const embed = new MessageEmbed()
@@ -27,6 +28,7 @@ module.exports = {
 				return;
 			}
 			msg.delete();
+			message.channel.stopTyping();
 
 			message.channel.send({
 				embed,

@@ -19,6 +19,7 @@ module.exports = {
 	},
 	run: async (bot, message, args) => {
 		const msg = await message.channel.send('Fetching data...');
+		message.channel.startTyping();
 
 		const trakt = new Trakt({
 			client_id: traktKey,
@@ -86,6 +87,7 @@ module.exports = {
 
 			message.channel.send(embed);
 			msg.delete();
+			message.channel.stopTyping();
 		};
 
 		if (args[0] == 'movie') {
@@ -136,6 +138,7 @@ module.exports = {
 								)
 							);
 							msg.delete();
+							message.channel.stopTyping();
 						}
 					);
 				})
@@ -190,6 +193,7 @@ module.exports = {
 								)
 							);
 							msg.delete();
+							message.channel.stopTyping();
 						}
 					);
 				})
@@ -207,6 +211,7 @@ module.exports = {
 
 			message.channel.send(errEmbed);
 			msg.delete();
+			message.channel.stopTyping();
 		}
 		else {
 			args = args.join(' ');
@@ -256,6 +261,7 @@ module.exports = {
 									)
 								);
 								msg.delete();
+								message.channel.stopTyping();
 							}
 						);
 						break;
@@ -303,6 +309,7 @@ module.exports = {
 									)
 								);
 								msg.delete();
+								message.channel.stopTyping();
 							}
 						);
 						break;
