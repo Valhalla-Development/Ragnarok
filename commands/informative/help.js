@@ -45,12 +45,12 @@ module.exports = {
 
 			embed
 				.setColor('RANDOM')
-				.setAuthor(bot.user.username, bot.user.avatarURL)
+				.setAuthor(bot.user.username, bot.user.avatarURL())
 				.setTimestamp()
 				.setDescription(
 					`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!\nRun \`${prefix}help <command>\` to see command specific instructions!\nAll commands must be preceded by \`${prefix}\``
 				)
-				.setFooter(`This guild's prefix is ${prefix}`, bot.user.avatarURL);
+				.setFooter(`This guild's prefix is ${prefix}`, bot.user.avatarURL());
 			message.channel.send(embed);
 		}
 		else {
@@ -64,7 +64,7 @@ module.exports = {
 
 			embed
 				.setColor('RANDOM')
-				.setAuthor(bot.user.username, bot.user.avatarURL)
+				.setAuthor(bot.user.username, bot.user.avatarURL())
 				.setDescription(
 					`The bot prefix is: ${prefix}\n\n**Command:** \`${
 						command.name

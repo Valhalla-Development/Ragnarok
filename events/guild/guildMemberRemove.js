@@ -18,7 +18,7 @@ module.exports = async (bot, member) => {
 	const logs = id.channel;
 	if (!logs) return;
 	const logembed = new MessageEmbed()
-		.setAuthor('Member Left', member.user.avatarURL)
+		.setAuthor('Member Left', member.user.avatarURL())
 		.setDescription(`<@${member.user.id}> - ${member.user.tag}`)
 		.setColor(color)
 		.setFooter(`ID: ${member.user.id}`)

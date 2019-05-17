@@ -28,7 +28,7 @@ module.exports = async (bot, message) => {
 		user = message.author.username;
 	}
 	const logembed = new MessageEmbed()
-		.setAuthor(user, message.author.displayAvatarURL)
+		.setAuthor(user, message.author.displayAvatarURL())
 		.setDescription(
 			`**Message sent by <@${message.author.id}> deleted in <#${
 				message.channel.id

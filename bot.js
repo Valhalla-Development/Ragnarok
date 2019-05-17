@@ -33,10 +33,10 @@ bot.on('guildMemberAdd', member => {
 		}
 		const embed = new MessageEmbed()
 			.setTitle(`${title}`)
-			.setAuthor(`${author}`, member.user.avatarURL)
+			.setAuthor(`${author}`, member.user.avatarURL())
 			.setColor(3447003)
 			.setDescription(`${description} ${member.user}`)
-			.setThumbnail(member.user.avatarURL);
+			.setThumbnail(member.user.avatarURL());
 		bot.channels.get(sendchannel).send({
 			embed,
 		});

@@ -48,7 +48,7 @@ module.exports = {
 				.setColor('RANDOM')
 				.setAuthor(
 					`${message.author.username}`,
-					message.author.displayAvatarURL
+					message.author.displayAvatarURL()
 				)
 				.addField('Reminder', `\`\`\`${reminder}\`\`\``);
 

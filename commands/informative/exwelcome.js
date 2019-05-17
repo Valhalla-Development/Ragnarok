@@ -25,7 +25,7 @@ module.exports = {
 			.setAuthor('Author')
 			.setColor(3447003)
 			.setDescription('Description')
-			.setThumbnail(message.author.avatarURL);
+			.setThumbnail(message.author.avatarURL());
 
 		message.channel.send(exwelcome);
 	},

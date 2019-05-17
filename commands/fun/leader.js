@@ -26,7 +26,7 @@ module.exports = {
 
 		const embed = new MessageEmbed()
 			.setTitle('Leaderboard')
-			.setAuthor(bot.user.username, bot.user.avatarURL)
+			.setAuthor(bot.user.username, bot.user.avatarURL())
 			.setDescription('Top 10 Points!')
 			.setColor(0x00ae86);
 

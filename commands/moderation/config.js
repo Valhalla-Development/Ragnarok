@@ -776,8 +776,7 @@ module.exports = {
 								}
 
 								const wchan = message.guild.channels.find(
-									'name',
-									collected.first().content
+									channel => channel.name === collected.first().content
 								);
 								if (!wchan || wchan === undefined) {
 									message.channel.send(`${language.setwelcome.invalidChannel}`);
@@ -809,8 +808,7 @@ module.exports = {
 
 									if (!status) {
 										const chid = message.guild.channels.find(
-											'name',
-											collected.first().content
+											channel => channel.name === collected.first().content
 										).id;
 										const insertch = db.prepare(
 											'INSERT INTO setwelcome (guildid, channel) VALUES (@guildid, @channel);'
@@ -822,8 +820,7 @@ module.exports = {
 									}
 									else {
 										const chid = message.guild.channels.find(
-											'name',
-											collected.first().content
+											channel => channel.name === collected.first().content
 										).id;
 										const updatech = db.prepare(
 											'UPDATE setwelcome SET channel = (@channel) WHERE guildid = (@guildid);'

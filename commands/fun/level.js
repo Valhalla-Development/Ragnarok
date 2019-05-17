@@ -31,12 +31,12 @@ module.exports = {
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.username}'s Level`)
 				.setColor(color)
-				.setThumbnail(message.author.displayAvatarURL)
+				.setThumbnail(message.author.displayAvatarURL())
 				.addField('XP', score.points, true)
 				.addField('Level', score.level, true)
 				.setFooter(
 					`${difference} XP required to level up!`,
-					message.author.displayAvatarURL
+					message.author.displayAvatarURL()
 				);
 
 			message.channel.send(embed);
@@ -62,12 +62,12 @@ module.exports = {
 			const otherembed = new MessageEmbed()
 				.setAuthor(`${user.username}'s Level`)
 				.setColor(color)
-				.setThumbnail(user.displayAvatarURL)
+				.setThumbnail(user.displayAvatarURL())
 				.addField('XP', otherbalance.points, true)
 				.addField('Level', otherbalance.level, true)
 				.setFooter(
 					`${difference} XP required to level up!`,
-					message.author.displayAvatarURL
+					message.author.displayAvatarURL()
 				);
 
 			message.channel.send(otherembed);

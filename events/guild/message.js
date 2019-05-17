@@ -181,7 +181,7 @@ module.exports = async (bot, message) => {
 			const lvlup = new MessageEmbed()
 				.setAuthor(
 					`Congrats ${message.author.username}`,
-					message.author.displayAvatarURL
+					message.author.displayAvatarURL()
 				)
 				.setTitle('You have leveled up!')
 				.setThumbnail('https://i.imgur.com/lXeBiMs.png')

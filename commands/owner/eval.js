@@ -58,7 +58,7 @@ module.exports = {
 				.addField(':inbox_tray: **INPUT**', '```' + args.join(' ') + '```')
 				.addField(':outbox_tray: **OUTPUT**', '```' + clean(evaled) + '```')
 				.setColor(0xff5733)
-				.setFooter(message.createdAt, message.author.avatarURL);
+				.setFooter(message.createdAt, message.author.avatarURL());
 			message.channel.send({
 				embed,
 			});
@@ -73,7 +73,7 @@ module.exports = {
 						)
 						.addField(':no_entry: ERROR', '```' + clean(err) + '```')
 						.setColor(0xff5733)
-						.setFooter(message.createdAt, message.author.avatarURL)
+						.setFooter(message.createdAt, message.author.avatarURL())
 				)
 
 				.catch(error => message.channel.send(`**ERROR:** ${error.message}`));

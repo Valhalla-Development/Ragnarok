@@ -21,7 +21,7 @@ module.exports = {
 		const user = message.mentions.users.first() || message.author;
 		const member = message.mentions.members.first() || message.member;
 		const embed = new MessageEmbed()
-			.setAuthor(user.tag, user.avatarURL)
+			.setAuthor(user.tag, user.avatarURL())
 			.setDescription('<@' + user.id + '>')
 			.addField('Nickname', member.nickname ? member.nickname : 'None', true)
 			.addField('Username', user.username, true)
@@ -39,9 +39,9 @@ module.exports = {
 				member.roles.map(r => r.name).join(', '),
 				true
 			)
-			.setThumbnail(user.avatarURL)
+			.setThumbnail(user.avatarURL())
 			.setTimestamp()
-			.setFooter('ID: ' + user.id, user.avatarURL)
+			.setFooter('ID: ' + user.id, user.avatarURL())
 			.setColor(color);
 
 		if (!message.channel.permissionsFor(message.guild.me).has('EMBED_LINKS')) {

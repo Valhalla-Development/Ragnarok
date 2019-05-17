@@ -30,7 +30,7 @@ module.exports = {
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.username}'s Balance`)
 				.setColor(color)
-				.setThumbnail(message.author.displayAvatarURL)
+				.setThumbnail(message.author.displayAvatarURL())
 				.addField('Balance', balance.balance);
 
 			message.channel.send(embed);
@@ -51,7 +51,7 @@ module.exports = {
 			const otherembed = new MessageEmbed()
 				.setAuthor(`${user.username}'s Balance`)
 				.setColor(color)
-				.setThumbnail(user.displayAvatarURL)
+				.setThumbnail(user.displayAvatarURL())
 				.addField('Balance', otherbalance.balance);
 
 			message.channel.send(otherembed);

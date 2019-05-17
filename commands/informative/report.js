@@ -44,7 +44,7 @@ module.exports = {
 		}
 
 		const reportembed = new MessageEmbed()
-			.setThumbnail(target.user.avatarURL)
+			.setThumbnail(target.user.avatarURL())
 			.setAuthor(
 				'Report',
 				'https://cdn.discordapp.com/emojis/465245981613621259.png?v=1'
