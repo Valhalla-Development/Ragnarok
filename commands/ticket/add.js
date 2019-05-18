@@ -71,7 +71,7 @@ module.exports = {
 				})
 				.catch(console.error);
 			const addedMessage = language.tickets.added;
-			const theuser = addedMessage.replace('${user}', rUser.tag);
+			const theuser = addedMessage.replace('${user}', rUser);
 			getChan.send(`${theuser}`);
 			const logget = db
 				.prepare(
@@ -86,7 +86,7 @@ module.exports = {
 			const loggingembed = new MessageEmbed()
 				.setColor(color)
 				.setDescription(
-					`<@${message.author.id}> added <@${rUser}> to ticket <#${getChan.id}>`
+					`<@${message.author.id}> added ${rUser} to ticket <#${getChan.id}>`
 				);
 			logchan.send(loggingembed);
 		}
