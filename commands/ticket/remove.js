@@ -71,7 +71,7 @@ module.exports = {
 				})
 				.catch(console.error);
 			const removedMessage = language.tickets.removed;
-			const theuser = removedMessage.replace('${user}', rUser.tag);
+			const theuser = removedMessage.replace('${user}', rUser);
 			getChan.send(`${theuser}`);
 			const logget = db
 				.prepare(
