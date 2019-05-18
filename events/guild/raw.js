@@ -88,10 +88,30 @@ module.exports = async (bot, event) => {
 						}
 						else if (eventType === 'MESSAGE_REACTION_ADD') {
 							if (memberRole.includes(roleArray[roleIndex])) {
+								if (!msg.guild.roles.find(r => r.id === roleArray[roleIndex])) {
+									msg.channel
+										.send('Uh oh! The role you tried to add, no longer exists!')
+										.then(m =>
+											m.delete({
+												timeout: 10000,
+											})
+										);
+									return;
+								}
 								member.roles.remove(roleArray[roleIndex]);
 								reaction.users.remove(member.id);
 							}
 							else {
+								if (!msg.guild.roles.find(r => r.id === roleArray[roleIndex])) {
+									msg.channel
+										.send('Uh oh! The role you tried to add, no longer exists!')
+										.then(m =>
+											m.delete({
+												timeout: 10000,
+											})
+										);
+									return;
+								}
 								member.roles.add(roleArray[roleIndex]);
 								reaction.users.remove(member.id);
 							}
