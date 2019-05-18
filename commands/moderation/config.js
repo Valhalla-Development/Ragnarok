@@ -553,7 +553,7 @@ module.exports = {
 					}
 					else if (!status) {
 						const insert = db.prepare(
-							'INSERT INTO ticketConfig (guildid, log) VALUES (@guildid, @log);'
+							'INSERT INTO ticketConfig (guildid, log) VALUES (@guildid, @channel);'
 						);
 						insert.run({
 							guildid: `${message.guild.id}`,
