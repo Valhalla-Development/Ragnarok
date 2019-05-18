@@ -78,7 +78,7 @@ module.exports = async (bot, event) => {
 
 						if (
 							!member.hasPermission('MANAGE_MESSAGES') &&
-							addedRole.hasPermission('MANAGE_MESSAGES')
+							addedRole.permissions.has('MANAGE_MESSAGES')
 						) {
 							const getReactUser = reaction.users.map(react => react.id);
 							if (getReactUser.includes(member.id)) {
