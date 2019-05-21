@@ -18,6 +18,7 @@
   "homepage": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord#readme",
   "dependencies": {
     "better-sqlite3": "^5.4.0",
+    "canvas": "^2.5.0",
     "discord.js": "github:discordjs/discord.js",
     "mathjs": "^5.10.0",
     "memejs": "^1.0.7",
