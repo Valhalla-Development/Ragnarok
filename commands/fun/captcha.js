@@ -23,22 +23,36 @@ module.exports = {
 			return;
 		}
 
-		let messagetoAdd;
+		const messagetoAdd = message.content
+			.split(' ')
+			.splice(1)
+			.join(' ');
+
 		const user = message.guild.member(message.mentions.users.first());
+		if (user) return;
+		/* (SCRAP THIS FOR NOW: This only works for the first tag, not the second etc.)
 		if (!user) {
 			messagetoAdd = message.content
 				.split(' ')
 				.splice(1)
 				.join(' ');
 		}
-		else {
+		else if (!user.nickname) {
 			messagetoAdd =
-				`${user.nickname } ` +
+				`${user.user.username} ` +
 				message.content
 					.split(' ')
 					.splice(2)
 					.join(' ');
 		}
+		else {
+			messagetoAdd =
+				`${user.nickname} ` +
+				message.content
+					.split(' ')
+					.splice(2)
+					.join(' ');
+		}*/
 
 		const canvas = Canvas.createCanvas(789, 199);
 		const ctx = canvas.getContext('2d');
