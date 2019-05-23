@@ -65,7 +65,6 @@ module.exports = {
 		}
 		else {
 			const logch = id.channel;
-
 			const logsch = bot.channels.get(logch);
 
 			const chuser = message.guild.member(
@@ -89,7 +88,7 @@ module.exports = {
 				.send(
 					`${chuser}, was banned by ${
 						message.author
-					}\nCheck <#${logsch}> for more information!`
+					}\nCheck ${logsch} for more information!`
 				)
 				.then(
 					message.delete({
