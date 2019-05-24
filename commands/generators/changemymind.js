@@ -25,7 +25,7 @@ module.exports = {
 					message.author.displayAvatarURL({ format: 'png', size: 128 }),
 					args.join(' ')
 				),
-				'beautiful.png'
+				'changemymind.png'
 			)
 		);
 	},
