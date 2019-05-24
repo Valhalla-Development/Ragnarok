@@ -20,9 +20,10 @@ module.exports = {
 
 		const arr = [];
 		const types = [
-			'Moderation',
-			'Informative',
 			'Fun',
+			'Generators',
+			'Informative',
+			'Moderation',
 			'Ticket',
 		];
 		const embed = new MessageEmbed();
