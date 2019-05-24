@@ -3,10 +3,11 @@ const { supportGuild, supportChannel } = require('../../storage/config.json');
 
 module.exports = {
 	config: {
-		name: 'suggest',
-		usage: '${prefix}suggest <text>',
+		name: 'bugreport',
+		usage: '${prefix}bugreport <text>',
 		category: 'informative',
 		description: 'Sends a message to the bot owner',
+		aliases: ['br'],
 		accessableby: 'Everyone',
 	},
 	run: async (bot, message, args) => {
