@@ -1,0 +1,26 @@
+const { MessageAttachment } = require('discord.js');
+const { idiotToken } = require('../../storage/config.json');
+
+module.exports = {
+	config: {
+		name: 'triggered',
+		usage: '${prefix}triggered',
+		category: 'fun',
+		description: 'Generates Triggered meme',
+		accessableby: 'Everyone',
+	},
+	run: async (bot, message) => {
+		const Idiot = require('idiotic-api');
+		bot.API = new Idiot.Client(idiotToken, { dev: true });
+
+		message.delete();
+		await message.channel.send(
+			new MessageAttachment(
+				await bot.API.triggered(
+					message.author.displayAvatarURL({ format: 'png', size: 128 })
+				),
+				'triggered.gif'
+			)
+		);
+	},
+};
