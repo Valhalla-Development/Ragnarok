@@ -6,7 +6,7 @@ module.exports = {
 		name: 'beautiful',
 		usage: '${prefix}beautiful <@user>',
 		category: 'fun',
-		description: 'Slaps a user',
+		description: 'Generates a beautiful image',
 		aliases: ['beauty', 'adore'],
 		accessableby: 'Everyone',
 	},
