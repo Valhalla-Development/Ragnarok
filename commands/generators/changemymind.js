@@ -5,7 +5,7 @@ module.exports = {
 	config: {
 		name: 'changemymind',
 		usage: '${prefix}changemymind <text>',
-		category: 'fun',
+		category: 'generators',
 		description: 'Generates Change My Mind meme',
 		aliases: ['cmm'],
 		accessableby: 'Everyone',

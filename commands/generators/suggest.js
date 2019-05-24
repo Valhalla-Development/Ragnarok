@@ -5,7 +5,7 @@ module.exports = {
 	config: {
 		name: 'suggest',
 		usage: '${prefix}suggest <text>',
-		category: 'fun',
+		category: 'generators',
 		description: 'Generates Suggest meme',
 		accessableby: 'Everyone',
 	},

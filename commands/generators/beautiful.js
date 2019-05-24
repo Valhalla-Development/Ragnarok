@@ -5,7 +5,7 @@ module.exports = {
 	config: {
 		name: 'beautiful',
 		usage: '${prefix}beautiful <@user>',
-		category: 'fun',
+		category: 'generators',
 		description: 'Generates a beautiful image',
 		aliases: ['beauty', 'adore'],
 		accessableby: 'Everyone',

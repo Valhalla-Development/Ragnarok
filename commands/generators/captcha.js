@@ -8,7 +8,7 @@ module.exports = {
 	config: {
 		name: 'captcha',
 		usage: '${prefix}captcha <text>',
-		category: 'fun',
+		category: 'generators',
 		description: 'Inputs text into captcha',
 		accessableby: 'Everyone',
 	},

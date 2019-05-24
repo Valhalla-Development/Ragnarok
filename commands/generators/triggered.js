@@ -5,7 +5,7 @@ module.exports = {
 	config: {
 		name: 'triggered',
 		usage: '${prefix}triggered',
-		category: 'fun',
+		category: 'generators',
 		description: 'Generates Triggered meme',
 		accessableby: 'Everyone',
 	},

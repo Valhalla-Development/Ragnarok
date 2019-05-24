@@ -5,7 +5,7 @@ module.exports = {
 	config: {
 		name: 'slap',
 		usage: '${prefix}slap <@user>',
-		category: 'fun',
+		category: 'generators',
 		description: 'Slaps a user',
 		accessableby: 'Everyone',
 	},
