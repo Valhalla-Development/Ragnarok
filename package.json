@@ -20,6 +20,7 @@
     "better-sqlite3": "^5.4.0",
     "canvas": "^2.5.0",
     "discord.js": "github:discordjs/discord.js",
+    "idiotic-api": "^0.2.11",
     "mathjs": "^5.10.0",
     "memejs": "^1.0.7",
     "moment": "^2.24.0",
