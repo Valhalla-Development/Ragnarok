@@ -1,0 +1,31 @@
+const { MessageAttachment } = require('discord.js');
+const { idiotToken } = require('../../storage/config.json');
+
+module.exports = {
+	config: {
+		name: 'suggest',
+		usage: '${prefix}suggest <text>',
+		category: 'fun',
+		description: 'Generates Suggest meme',
+		accessableby: 'Everyone',
+	},
+	run: async (bot, message, args) => {
+		const Idiot = require('idiotic-api');
+		bot.API = new Idiot.Client(idiotToken, { dev: true });
+
+		message.delete();
+		if (args[0] == undefined) {
+			message.channel.send('You must supply some text!');
+			return;
+		}
+		await message.channel.send(
+			new MessageAttachment(
+				await bot.API.suggestion(
+					message.author.displayAvatarURL({ format: 'png', size: 128 }),
+					args.join(' ')
+				),
+				'suggest.png'
+			)
+		);
+	},
+};
