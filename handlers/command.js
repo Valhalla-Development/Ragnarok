@@ -14,9 +14,10 @@ module.exports = bot => {
 	};
 	[
 		'fun',
+		'generators',
 		'informative',
 		'moderation',
-		'ticket',
 		'owner',
+		'ticket',
 	].forEach(x => load(x));
 };
