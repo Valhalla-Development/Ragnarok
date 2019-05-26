@@ -28,7 +28,7 @@ module.exports = {
 				.setColor(0xcf40fa)
 				.addField(
 					'Ragnarok - Config',
-					`[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Sets the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config ticket role](): Sets custom support role for ticket system\n[${prefix}config welcome]() : Sets the welcome message\n[${prefix}config rolemenu add]() : Sets the role menu roles\n[${prefix}config rolemenu remove]() : Removes a role from rolemenu\n[${prefix}config rolemenu clear]() : Removes all roles from rolemenu`
+					`[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Sets the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config ticket role](): Sets custom support role for ticket system\n[${prefix}config welcome]() : Sets the welcome channel\n[${prefix}config rolemenu add]() : Sets the role menu roles\n[${prefix}config rolemenu remove]() : Removes a role from rolemenu\n[${prefix}config rolemenu clear]() : Removes all roles from rolemenu`
 				);
 			message.channel.send({
 				embed: undeembed,
@@ -725,245 +725,87 @@ module.exports = {
 		// setwelcome
 
 		if (args[0] === 'welcome') {
-			const prefixgrab = db
-				.prepare('SELECT prefix FROM setprefix WHERE guildid = ?')
-				.get(message.guild.id);
-
-			const prefix = prefixgrab.prefix;
-
-			const language = require('../../storage/messages.json');
-			const step1 = language.setwelcome.step1;
-			const step1r = step1.replace('${prefix}', prefix);
-
-			if (
-				!message.member.hasPermission('MANAGE_GUILD') &&
-				message.author.id !== ownerID
-			) {
-				return message.channel.send(`${language.setwelcome.noPermission}`);
+			if (!args[1] === undefined) {
+				const usage = new MessageEmbed()
+					.setColor('RANDOM')
+					.setDescription(
+						`**USAGE:**\n\nTo set the welcome channel, the command is \`${prefix}config welcome channel <#channel>\``
+					);
+				message.channel.send(usage);
+				return;
 			}
-
-			bot.getTable = db.prepare('SELECT * FROM setwelcome WHERE guildid = ?');
-			let status;
-			if (message.guild.id) {
-				status = bot.getTable.get(message.guild.id);
-
-				if (args[1] === 'off') {
-					db.prepare('DELETE FROM setwelcome WHERE guildid = ?').run(
-						message.guild.id
-					);
-					message.channel.send(
-						':white_check_mark: | **Welcome message disabled!**'
-					);
-					return;
+			if (args[1] === 'channel') {
+				if (
+					!message.member.hasPermission('MANAGE_GUILD') &&
+					message.author.id !== ownerID
+				) {
+					return message.channel.send(`${language.tickets.noPermission}`);
 				}
-				message.channel
-					.send(`${step1r}`)
-					.then(() => {
-						message.channel
-							.awaitMessages(
-								response => response.author.id === message.author.id,
-								{
-									max: 1,
-									time: 30000,
-									errors: ['time'],
-								}
-							)
 
-							.then(collected => {
-								if (collected.first().content === 'cancel') {
-									message.channel.send(`${language.setwelcome.canceled}`);
-									return;
-								}
+				bot.getTable = db.prepare('SELECT * FROM setwelcome WHERE guildid = ?');
 
-								const wchan = message.guild.channels.find(
-									channel => channel.name === collected.first().content
-								);
-								if (!wchan || wchan === undefined) {
-									message.channel.send(`${language.setwelcome.invalidChannel}`);
-									return;
-								}
+				const lchan = message.mentions.channels.first();
 
-								if (wchan.type === 'voice' || wchan.type === 'category') {
-									message.channel.send(
-										`${language.setwelcome.invalidTextChannel}`
-									);
-									return;
-								}
+				let status;
+				if (message.guild.id) {
+					status = bot.getTable.get(message.guild.id);
 
-								if (
-									!wchan.permissionsFor(message.guild.me).has('SEND_MESSAGES')
-								) {
-									message.channel.send(
-										`${language.setwelcome.noMessagePermission}`
-									);
-									return;
-								}
+					if (args[2] === undefined) {
+						message.channel.send(':x: | **Please mention a channel!**');
+						return;
+					}
 
-								bot.getTable = db.prepare(
-									'SELECT * FROM setwelcome WHERE guildid = ?'
-								);
-								let status;
-								if (message.guild.id) {
-									status = bot.getTable.get(message.guild.id);
-
-									if (!status) {
-										const chid = message.guild.channels.find(
-											channel => channel.name === collected.first().content
-										).id;
-										const insertch = db.prepare(
-											'INSERT INTO setwelcome (guildid, channel) VALUES (@guildid, @channel);'
-										);
-										insertch.run({
-											guildid: `${message.guild.id}`,
-											channel: `${chid}`,
-										});
-									}
-									else {
-										const chid = message.guild.channels.find(
-											channel => channel.name === collected.first().content
-										).id;
-										const updatech = db.prepare(
-											'UPDATE setwelcome SET channel = (@channel) WHERE guildid = (@guildid);'
-										);
-										updatech.run({
-											guildid: `${message.guild.id}`,
-											channel: `${chid}`,
-										});
-									}
-								}
-
-								setTimeout(() => {
-									message.channel
-										.send(`${language.setwelcome.step2}`)
-										.then(() => {
-											message.channel
-												.awaitMessages(
-													response => response.author.id === message.author.id,
-													{
-														max: 1,
-														time: 30000,
-														errors: ['time'],
-													}
-												)
-
-												.then(collected => {
-													if (collected.first().content === 'cancel') {
-														db.prepare(
-															'DELETE FROM setwelcome WHERE guildid = ?'
-														).run(message.guild.id);
-														message.channel.send(
-															`${language.setwelcome.canceled}`
-														);
-														return;
-													}
-
-													const title = collected.first().content;
-													const updateit = db.prepare(
-														'UPDATE setwelcome SET title = (@title) WHERE guildid = (@guildid);'
-													);
-													updateit.run({
-														guildid: `${message.guild.id}`,
-														title: `${title}`,
-													});
-
-													message.channel
-														.send(`${language.setwelcome.step3}`)
-														.then(() => {
-															message.channel
-																.awaitMessages(
-																	response =>
-																		response.author.id === message.author.id,
-																	{
-																		max: 1,
-																		time: 30000,
-																		errors: ['time'],
-																	}
-																)
-
-																.then(collected => {
-																	if (collected.first().content === 'cancel') {
-																		db.prepare(
-																			'DELETE FROM setwelcome WHERE guildid = ?'
-																		).run(message.guild.id);
-																		message.channel.send(
-																			`${language.setwelcome.canceled}`
-																		);
-																		return;
-																	}
-
-																	const author = collected.first().content;
-																	const updateaut = db.prepare(
-																		'UPDATE setwelcome SET author = (@author) WHERE guildid = (@guildid);'
-																	);
-																	updateaut.run({
-																		guildid: `${message.guild.id}`,
-																		author: `${author}`,
-																	});
-
-																	message.channel
-																		.send(`${language.setwelcome.step4}`)
-																		.then(() => {
-																			message.channel
-																				.awaitMessages(
-																					response =>
-																						response.author.id ===
-																						message.author.id,
-																					{
-																						max: 1,
-																						time: 30000,
-																						errors: ['time'],
-																					}
-																				)
-
-																				.then(collected => {
-																					if (
-																						collected.first().content ===
-																						'cancel'
-																					) {
-																						db.prepare(
-																							'DELETE FROM setwelcome WHERE guildid = ?'
-																						).run(message.guild.id);
-																						message.channel.send(
-																							`${language.setwelcome.canceled}`
-																						);
-																						return;
-																					}
-
-																					const description = collected.first()
-																						.content;
-																					const updatedes = db.prepare(
-																						'UPDATE setwelcome SET description = (@description) WHERE guildid = (@guildid);'
-																					);
-																					updatedes.run({
-																						guildid: `${message.guild.id}`,
-																						description: `${description}`,
-																					});
-
-																					message.channel.send(
-																						`${language.setwelcome.finished}`
-																					);
-																				});
-																		});
-																});
-														});
-												});
-										})
-										.catch(() => {
-											message.channel.send(`${language.setwelcome.canceled}`);
-											db.prepare(
-												'DELETE FROM setwelcome WHERE guildid = ?'
-											).run(message.guild.id);
-										});
-								}, 1000);
+					if (args[2] === 'off') {
+						// to turn logging off
+						if (!status) {
+							message.channel.send(
+								':x: | **Welcome channel is already disabled!**'
+							);
+							return;
+						}
+						else {
+							message.channel.send(
+								':white_check_mark: | **Welcome channel disabled!**'
+							);
+							db.prepare(
+								'DELETE FROM setwelcome WHERE guildid = (@guildid)'
+							).run({
+								guildid: message.guild.id,
 							});
-					})
-					.catch(e => {
-						console.log(e);
-						db.prepare('DELETE FROM setwelcome WHERE guildid = ?').run(
-							message.guild.id
+							return;
+						}
+					}
+					else if (!lchan) {
+						message.channel.send(`${language.tickets.invalidCategory}`);
+						return;
+					}
+					else if (!status) {
+						const insert = db.prepare(
+							'INSERT INTO setwelcome (guildid, channel) VALUES (@guildid, @channel);'
 						);
-						message.channel.send('**:x: | Setup canceled.**');
-					});
+						insert.run({
+							guildid: `${message.guild.id}`,
+							channel: `${lchan.id}`,
+						});
+						message.channel.send(
+							`:white_check_mark: | **Welcome channel is now set to ${lchan}**`
+						);
+						return;
+					}
+					else {
+						const update = db.prepare(
+							'UPDATE setwelcome SET channel = (@channel) WHERE guildid = (@guildid);'
+						);
+						update.run({
+							guildid: `${message.guild.id}`,
+							channel: `${lchan.id}`,
+						});
+						message.channel.send(
+							`:white_check_mark: | **Welcome channel updated to ${lchan}**`
+						);
+						return;
+					}
+				}
 			}
 		}
 	},
