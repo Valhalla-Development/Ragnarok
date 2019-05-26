@@ -70,7 +70,7 @@ module.exports = async bot => {
 	if (!setwelcome['count(*)']) {
 		console.log('setwelcome table created!');
 		db.prepare(
-			'CREATE TABLE setwelcome (guildid TEXT PRIMARY KEY, channel TEXT, title TEXT, author TEXT, description TEXT);'
+			'CREATE TABLE setwelcome (guildid TEXT PRIMARY KEY, channel TEXT);'
 		).run();
 		db.prepare(
 			'CREATE UNIQUE INDEX idx_setwelcome_id ON setwelcome (guildid);'
