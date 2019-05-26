@@ -36,7 +36,7 @@ module.exports = {
 		).then(response => response.json());
 
 		if (body.list.length < 1) {
-			message.channel.send(`No results found for **${args.join(' ')}**.`);
+			message.channel.send(`No results found for **${args.join(' ')}**.`).then(m => m.delete({ timeout: 5000 }));
 			message.channel.stopTyping();
 			msg.delete();
 			return;
