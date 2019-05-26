@@ -62,9 +62,6 @@ module.exports = {
 		);
 		ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-		ctx.strokeStyle = '#74037b';
-		ctx.strokeRect(0, 0, canvas.width, canvas.height);
-
 		ctx.font = '40px "Roboto"';
 		ctx.fillStyle = '#000000';
 		ctx.fillText(`${messagetoAdd}`, canvas.width / 5.5, canvas.height / 1.82);
