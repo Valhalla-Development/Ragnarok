@@ -4,7 +4,7 @@ const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
 const bot = new Client();
 const Canvas = require('canvas');
-Canvas.registerFont('./storage/canvas/fonts/Note this.ttf', {
+Canvas.registerFont('./storage/canvas/fonts/Notethis.ttf', {
 	family: 'Note',
 });
 
@@ -64,7 +64,7 @@ bot.on('guildMemberAdd', async member => {
 
 		const attachment = new MessageAttachment(canvas.toBuffer(), 'welcome.jpg');
 
-		bot.channels.get(sendchannel).send(`Welcome, ${member}!`, attachment);
+		bot.channels.get(sendchannel).send(`Welcome, ${member}!`, attachment).catch(err => console.log(err));
 	}
 });
 
