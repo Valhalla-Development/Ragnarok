@@ -1,23 +1,22 @@
-const { Client, Collection, MessageEmbed } = require('discord.js');
+const { Client, Collection, MessageAttachment } = require('discord.js');
 const { token, logging } = require('./storage/config.json');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
 const bot = new Client();
+const Canvas = require('canvas');
+Canvas.registerFont('./storage/canvas/fonts/Note this.ttf', {
+	family: 'Note',
+});
 
 ['aliases', 'commands'].forEach(x => (bot[x] = new Collection()));
 ['console', 'command', 'event'].forEach(x => require(`./handlers/${x}`)(bot));
 
 // welcome
-bot.on('guildMemberAdd', member => {
+bot.on('guildMemberAdd', async member => {
 	const setwelcome = db
 		.prepare(`SELECT * FROM setwelcome WHERE guildid = ${member.guild.id};`)
 		.get();
-	if (!setwelcome) return;
-	const title = setwelcome.title;
-	const author = setwelcome.author;
-	const description = setwelcome.description;
-	if (!description) {
-		db.prepare('DELETE FROM setwelcome WHERE guildid = ?').run(member.guild.id);
+	if (!setwelcome) {
 		return;
 	}
 	else {
@@ -31,15 +30,41 @@ bot.on('guildMemberAdd', member => {
 			);
 			return;
 		}
-		const embed = new MessageEmbed()
-			.setTitle(`${title}`)
-			.setAuthor(`${author}`, member.user.avatarURL())
-			.setColor(3447003)
-			.setDescription(`${description} ${member.user}`)
-			.setThumbnail(member.user.avatarURL());
-		bot.channels.get(sendchannel).send({
-			embed,
-		});
+
+		const canvas = Canvas.createCanvas(700, 300);
+		const ctx = canvas.getContext('2d');
+
+		const background = await Canvas.loadImage(
+			'./storage/canvas/images/welcome.jpg'
+		);
+
+		ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+		ctx.font = '42px Note';
+		ctx.fillStyle = '#ffffff';
+		ctx.textAlign = 'center';
+		ctx.fillText('Welcome to the server', canvas.width / 2, 45);
+
+		ctx.font = '42px Note';
+		ctx.fillStyle = '#ffffff';
+		ctx.textAlign = 'center';
+		ctx.fillText(`${member.user.username}`, canvas.width / 2, 280);
+
+		ctx.beginPath();
+		ctx.arc(350, 150, 85, 0, Math.PI * 2, true);
+		ctx.closePath();
+		ctx.clip();
+
+		const avatar = await Canvas.loadImage(
+			member.user.displayAvatarURL({ format: 'png' })
+		);
+		ctx.strokeStyle = '#ffffff';
+		ctx.strokeRect(0, 0, canvas.width, canvas.height);
+		ctx.drawImage(avatar, 257.5, 57.5, 180, 180);
+
+		const attachment = new MessageAttachment(canvas.toBuffer(), 'welcome.jpg');
+
+		bot.channels.get(sendchannel).send(`Welcome, ${member}!`, attachment);
 	}
 });
 
