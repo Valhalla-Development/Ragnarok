@@ -27,6 +27,11 @@ module.exports = {
 					.addField('Hastebin Link: ', `${r}`);
 				message.channel.send(hastEmb);
 			})
-			.catch(console.error);
+			.catch(
+				message.channel
+					.send(':cry: An error occured, please try again later.')
+					.then(m => m.delete({ timeout: 5000 }))
+			)
+			.then(console.error);
 	},
 };
