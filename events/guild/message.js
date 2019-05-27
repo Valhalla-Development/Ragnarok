@@ -5,6 +5,8 @@ const db = new SQLite('./storage/db/db.sqlite');
 const { MessageEmbed } = require('discord.js');
 const coinCooldown = new Set();
 const coinCooldownSeconds = 5;
+const xpCooldown = new Set();
+const xpCooldownSeconds = 60;
 
 module.exports = async (bot, message) => {
 	if (message.author.bot || message.channel.type === 'dm') return;
@@ -47,12 +49,12 @@ module.exports = async (bot, message) => {
 	}
 
 	const cmd = args.shift().toLowerCase();
-	if (!message.content.startsWith(prefixcommand)) return;
 	const commandfile =
 		bot.commands.get(cmd) || bot.commands.get(bot.aliases.get(cmd));
 	if (commandfile) commandfile.run(bot, message, args, color);
 
-	// Dad Bot
+	// Dad Bot (This is placed after line 50, therefore it does not work, this is on purpose, create a command that lets people enable or disable this module, default being OFF)
+	/*
 	if (
 		message.content.toLowerCase().startsWith('im ') ||
 		message.content.toLowerCase().startsWith('i\'m ')
@@ -97,6 +99,7 @@ module.exports = async (bot, message) => {
 			message.channel.send(`Hi ${oargresult}, I'm Dad!`);
 		}
 	}
+	*/
 
 	// Ads protection checks
 	if (
@@ -129,7 +132,7 @@ module.exports = async (bot, message) => {
 			});
 	}
 
-	// Balance
+	// Balance (balance)
 	if (message.author.bot) return;
 	let balance;
 	if (message.guild) {
@@ -157,8 +160,7 @@ module.exports = async (bot, message) => {
 		}
 	}
 
-	// Scores
-	if (message.author.bot) return;
+	// Scores (level)
 	let score;
 	if (message.guild) {
 		score = bot.getScore.get(message.author.id, message.guild.id);
@@ -171,10 +173,11 @@ module.exports = async (bot, message) => {
 				level: 1,
 			};
 		}
-		const xpAdd = Math.floor(Math.random() * 10) + 50;
+		const xpAdd = Math.floor(Math.random() * 25) + 1;
 		const curxp = score.points;
 		const curlvl = score.level;
-		const nxtLvl = score.level * 5000;
+		const nxtLvl = score.points * 5000;
+		console.log(score.points * 5000);
 		score.points = curxp + xpAdd;
 		if (nxtLvl <= score.points) {
 			score.level = curlvl + 1;
@@ -193,8 +196,16 @@ module.exports = async (bot, message) => {
 				});
 			});
 		}
-		bot.setScore.run(score);
 	}
+	if (!xpCooldown.has(message.author.id)) {
+		xpCooldown.add(message.author.id);
+		bot.setScore.run(score);
+		setTimeout(function() {
+			xpCooldown.delete(message.author.id);
+		}, xpCooldownSeconds * 1000);
+	}
+
+	if (!message.content.startsWith(prefixcommand)) return;
 
 	// Logging
 	if (logging === true) {
