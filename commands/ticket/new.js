@@ -127,7 +127,7 @@ module.exports = {
 				);
 				return;
 			}
-			const role2 = message.channel.guild.defaultRole;
+			const role2 = message.channel.guild.roles.everyone;
 			message.guild.channels
 				.create(`ticket-${nickName}-${randomString}`, {
 					permissionOverwrites: [
@@ -223,7 +223,7 @@ module.exports = {
 				);
 				return;
 			}
-			const role2 = message.channel.guild.defaultRole;
+			const role2 = message.channel.guild.roles.everyone;
 			// Create the channel with the name "ticket-" then the user's ID.
 			message.guild.channels
 				.create(`ticket-${nickName}-${randomString}`, {
