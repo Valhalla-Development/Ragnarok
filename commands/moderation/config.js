@@ -725,7 +725,7 @@ module.exports = {
 		// setwelcome
 
 		if (args[0] === 'welcome') {
-			if (!args[1] === undefined) {
+			if (args[1] == undefined) {
 				const usage = new MessageEmbed()
 					.setColor('RANDOM')
 					.setDescription(
