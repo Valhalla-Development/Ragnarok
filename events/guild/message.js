@@ -177,7 +177,6 @@ module.exports = async (bot, message) => {
 		const curxp = score.points;
 		const curlvl = score.level;
 		const nxtLvl = score.points * 5000;
-		console.log(score.points * 5000);
 		score.points = curxp + xpAdd;
 		if (nxtLvl <= score.points) {
 			score.level = curlvl + 1;
