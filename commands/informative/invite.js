@@ -14,7 +14,7 @@ module.exports = {
 		const embed = new MessageEmbed()
 			.setColor('36393F')
 			.setDescription(
-				':white_check_mark: **Bot Invite Link**: https://invite.ragnarokbot.tk'
+				`:white_check_mark: **Bot Invite Link**: [Click Me](https://discordapp.com/oauth2/authorize?client_id=508756879564865539&scope=bot&permissions=8)`
 			);
 		message.channel.send(embed);
 	},
