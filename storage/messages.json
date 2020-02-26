@@ -10,6 +10,12 @@
       "no_response": "I'd rather not respond to this question",
       "noArguments": ":x: **Incorrect usage! Please use `${prefix}8ball <question>`**"
     },
+    "steam": {
+      "noArguments": ":x: **Incorrect usage! Please use `${prefix}steam <username>`**"
+    },
+    "fortnite": {
+      "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}fortnite <username> <gametype>`\nGameTypes: Lifetime, Solo, Duo, Squad**"
+    },
     "adsprot": {
       "noPermission": ":x: **Only guild managers can use this command!**",
       "alreadyOn": ":x: **Advert protection is already enabled on this guild! To disable it, please use `${prefix}config adsprot <off>`**",
