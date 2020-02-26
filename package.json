@@ -19,6 +19,8 @@
   "dependencies": {
     "better-sqlite3": "^5.4.0",
     "canvas": "^2.5.0",
+    "common-tags": "^1.8.0",
+    "dateformat": "^3.0.3",
     "discord.js": "github:discordjs/discord.js",
     "hastebin-gen": "^2.0.4",
     "idiotic-api": "^0.2.11",
@@ -27,6 +29,8 @@
     "moment": "^2.24.0",
     "ms": "^2.1.1",
     "nanoid": "^2.0.1",
+    "node-fetch": "^2.6.0",
+    "simple-fortnite-api": "^0.1.9",
     "strict-uri-encode": "^2.0.0",
     "trakt.tv": "^7.1.0",
     "unescape": "^1.0.1"
