@@ -16,6 +16,9 @@
     "fortnite": {
       "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}fortnite <username> <gametype>`\nGameTypes: Lifetime, Solo, Duo, Squad**"
     },
+    "apex": {
+      "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}apex <username> <platform>`\nPlatforms: PC, Xbox, PS4**"
+    },
     "adsprot": {
       "noPermission": ":x: **Only guild managers can use this command!**",
       "alreadyOn": ":x: **Advert protection is already enabled on this guild! To disable it, please use `${prefix}config adsprot <off>`**",
