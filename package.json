@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord#readme",
   "dependencies": {
+    "apextab-api": "^1.0.5",
     "better-sqlite3": "^5.4.0",
     "canvas": "^2.5.0",
     "common-tags": "^1.8.0",
