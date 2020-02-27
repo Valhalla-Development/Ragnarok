@@ -12,7 +12,7 @@ module.exports = async (bot, channel) => {
 	if (!logs) return;
 	if (channel.type === 'voice' || channel.type === 'category') return;
 	const logembed = new MessageEmbed()
-		.setAuthor(channel.guild, channel.guild.iconURL)
+		.setAuthor(channel.guild, channel.guild.iconURL())
 		.setDescription(`**Channel Deleted:** #${channel.name}`)
 		.setColor(color)
 		.setFooter(`ID: ${channel.id}`)

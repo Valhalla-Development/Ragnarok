@@ -11,7 +11,7 @@ module.exports = async (bot, role) => {
 	const logs = id.channel;
 	if (!logs) return;
 	const logembed = new MessageEmbed()
-		.setAuthor(role.guild, role.guild.iconURL)
+		.setAuthor(role.guild, role.guild.iconURL())
 		.setDescription(`**Role Created: \`${role.name}\`.**`)
 		.setColor(color)
 		.setTimestamp();

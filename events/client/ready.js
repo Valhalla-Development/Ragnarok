@@ -5,7 +5,7 @@ const db = new SQLite('./storage/db/db.sqlite');
 module.exports = async bot => {
 	console.log(
 		`Scanning for guilds...\n\x1b[36m[-]\x1b[0m ${bot.guilds
-			.map(n => n.name + ` (ID: \x1b[36m${n.id}\x1b[0m)`)
+			.cache.map(n => n.name + ` (ID: \x1b[36m${n.id}\x1b[0m)`)
 			.join('\x1b[36m\n[-]\x1b[0m ')}`
 	);
 
@@ -20,7 +20,7 @@ module.exports = async bot => {
 	// activity
 
 	bot.user.setActivity(
-		`${prefix}help | ${bot.guilds.size} Guilds ${bot.users.size} Users`,
+		`${prefix}help | ${bot.guilds.cache.size} Guilds ${bot.users.cache.size} Users`,
 		{
 			type: 'WATCHING',
 		}

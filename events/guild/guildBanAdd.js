@@ -17,7 +17,7 @@ module.exports = async (bot, guild, user) => {
 		.then(audit => audit.entries.first());
 	const mod = entry.executor.id;
 	const logembed = new MessageEmbed()
-		.setAuthor(guild, guild.iconURL)
+		.setAuthor(guild, guild.iconURL())
 		.setDescription(`**User Banned: \`${user.tag}\`.**\nModerator: <@${mod}>`)
 		.setColor(color)
 		.setFooter(`ID: ${mod}`)
