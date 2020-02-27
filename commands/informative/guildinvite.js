@@ -13,7 +13,6 @@ module.exports = {
 	run: async (bot, message) => {
 		const language = require('../../storage/messages.json');
 
-		message.delete();
 
 		if (
 			!message.member.hasPermission('CREATE_INSTANT_INVITE') &&

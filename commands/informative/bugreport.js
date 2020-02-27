@@ -11,7 +11,6 @@ module.exports = {
 		accessableby: 'Everyone',
 	},
 	run: async (bot, message, args) => {
-		message.delete();
 		const language = require('../../storage/messages.json');
 
 		if (!args[0]) {
@@ -34,8 +33,8 @@ module.exports = {
 			)
 			.setFooter(`${message.guild.name} - ${message.guild.id}`);
 		bot.guilds
-			.get(supportGuild)
-			.channels.get(supportChannel)
+			.cache.get(supportGuild)
+			.channels.cache.get(supportChannel)
 			.send(embed);
 
 		const loggedEmbed = new MessageEmbed()

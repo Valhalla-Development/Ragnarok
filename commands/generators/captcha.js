@@ -13,7 +13,6 @@ module.exports = {
 		accessableby: 'Everyone',
 	},
 	run: async (bot, message, args) => {
-		message.delete();
 		if (args[0] == undefined) {
 			message.channel.send('You must supply some text!');
 			return;

@@ -12,7 +12,6 @@ module.exports = {
 	run: async (bot, message, args) => {
 		const language = require('../../storage/messages.json');
 
-		message.delete();
 
 		if (
 			!message.member.hasPermission('MANAGE_MESSAGES') &&

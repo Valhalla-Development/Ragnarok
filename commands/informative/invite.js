@@ -9,7 +9,6 @@ module.exports = {
 		accessableby: 'Everyone',
 	},
 	run: async (bot, message) => {
-		message.delete();
 
 		const embed = new MessageEmbed()
 			.setColor('36393F')

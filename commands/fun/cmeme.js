@@ -11,7 +11,6 @@ module.exports = {
 		accessableby: 'Everyone',
 	},
 	run: async (bot, message) => {
-		message.delete();
 		const msg = await message.channel.send('Generating...');
 		message.channel.startTyping();
 

@@ -10,13 +10,12 @@ module.exports = {
 		accessableby: 'Everyone',
 	},
 	run: async (bot, message, args) => {
-		message.delete();
 
 		const language = require('../../storage/messages.json');
 		const target = message.guild.member(
-			message.mentions.users.first() || message.guild.members.get(args[0])
+			message.mentions.users.first() || message.guild.members.cache.get(args[0])
 		);
-		const reports = message.guild.channels.find(x => x.name === 'reports');
+		const reports = message.guild.channels.cache.find(x => x.name === 'reports');
 		const reason = args.slice(1).join(' ');
 
 		if (!target) {
@@ -50,18 +49,10 @@ module.exports = {
 				'https://cdn.discordapp.com/emojis/465245981613621259.png?v=1'
 			)
 			.setDescription(`New report by ${message.author.username}`)
-			.addField(
-				'⚠ - Reported Member',
-				`${target.user.tag}\n(${target.user.id})`,
-				true
-			)
-			.addField(
-				'⚠ - Reported by',
-				`${message.author.tag}\n(${message.author.id})`,
-				true
-			)
-			.addField('⚙ - Channel', `${message.channel}`)
-			.addField('🔨 - Reason', `${reason}`)
+			.addFields({ name: '⚠ - Reported Member', value: `${target.user.tag}\n(${target.user.id})`, inline: true },
+			{ name: '⚠ - Reported by', value: `${message.author.tag}\n(${message.author.id})`, inline: true},
+			{ name: '⚙ - Channel', value: message.channel },
+			{ name: '🔨 - Reason', value: reason })
 			.setColor('0xfc4f35')
 			.setTimestamp();
 		reports.send(reportembed);

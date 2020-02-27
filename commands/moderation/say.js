@@ -13,8 +13,6 @@ module.exports = {
 	run: async (bot, message, args, color) => {
 		const language = require('../../storage/messages.json');
 
-		message.delete();
-
 		if (
 			!message.member.hasPermission('MANAGE_GUILD') &&
 			message.author.id !== ownerID
