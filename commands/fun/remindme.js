@@ -36,6 +36,9 @@ module.exports = {
 			message.reply('NO!');
 			return;
 		}
+		if (!/^\d/.test(args[0])) {
+			return message.channel.send('Your first input must be how long you wish the reminder to be!')
+		}
 
 		message.channel.send(
 			':white_check_mark: ** I will remind you in ' +
@@ -50,7 +53,7 @@ module.exports = {
 					`${message.author.username}`,
 					message.author.displayAvatarURL()
 				)
-				.addField('Reminder', `\`\`\`${reminder}\`\`\``);
+				.addFields({ name: 'Reminder', value: `\`\`\`${reminder}\`\`\``})
 
 			message.channel.send(remindEmbed);
 			message.channel.send(`${message.author}`);
