@@ -9,7 +9,9 @@ module.exports = {
 		accessableby: 'Everyone',
 	},
 	run: async (bot, message, args) => {
-		message.delete();
+		if (!args[0]) {
+			return;
+		}
 		const question = encode(args.join(' '));
 		const link = `https://www.lmgtfy.com/?q=${question}`;
 
