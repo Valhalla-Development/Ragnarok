@@ -69,7 +69,7 @@ module.exports = {
 
                     const embed = new MessageEmbed()
                         .setColor('RANDOM')
-                        .setAuthor(`${personaname}`, avatarfull)
+                        .setAuthor(`(Steam) | ${personaname}`, avatarfull)
                         .setThumbnail(avatarfull)
                         .setDescription(stripIndents `**Real Name:** ${realname || "Unknown"}
             **Status:** ${state[personastate]}
