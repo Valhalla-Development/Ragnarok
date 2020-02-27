@@ -29,7 +29,7 @@ module.exports = {
 			const noinput = new MessageEmbed()
 				.setColor('36393F')
 				.setDescription(`${language.slot.noArgs}`)
-				.addField('Current Balance', balance.balance);
+				.addFields({ name: 'Current Balance', value: balance.balance });
 			message.channel.send(noinput);
 			return;
 		}
@@ -111,16 +111,13 @@ module.exports = {
 		// send the message
 		const slotembed = new MessageEmbed()
 			.setColor('#098aed')
-			.addField(
-				'**SLOTS**',
-				`${randEmojis[0]} | ${randEmojis[1]} | ${randEmojis[2]}\n${
-					randEmojis[3]
-				} | ${randEmojis[4]} | ${randEmojis[5]}\n${randEmojis[6]} | ${
-					randEmojis[7]
-				} | ${randEmojis[8]}\n${
-					message.member
-				} you gambled **${gambledCoins}** coins and recieved back **${amt}** coins!\nYour balance is now **${newbal}**`
-			);
+			.addFields({ name: '**SLOTS**', value: `${randEmojis[0]} | ${randEmojis[1]} | ${randEmojis[2]}\n${
+				randEmojis[3]
+			} | ${randEmojis[4]} | ${randEmojis[5]}\n${randEmojis[6]} | ${
+				randEmojis[7]
+			} | ${randEmojis[8]}\n${
+				message.member
+			} you gambled **${gambledCoins}** coins and recieved back **${amt}** coins!\nYour balance is now **${newbal}**`})
 		message.channel.send(slotembed);
 
 		// set the coins for the user

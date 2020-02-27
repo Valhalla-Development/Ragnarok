@@ -19,7 +19,7 @@ module.exports = {
 		const prefix = prefixgrab.prefix;
 
 		if (args[0] == undefined) {
-			const embed = new MessageEmbed().setColor(0xcf40fa).addField(
+			const embed = new MessageEmbed().setColor(0xcf40fa).addFields(
 				'Ragnarok - Tickets',
 				`[${prefix}new]() (reason) : Opens up a new ticket\n[${prefix}close]() : Closes a ticket that has been resolved
                 \n**Admin Commands:** (Run Inside of a Ticket Channel)\n[${prefix}add]() : Adds a user to a ticket (mention a user)\n[${prefix}remove]() : Removes a user from a ticket (mention a user)\n[${prefix}rename]() : Renames the ticket\n[${prefix}forceclose]() : Force closes a ticket
@@ -59,7 +59,7 @@ module.exports = {
 			else {
 				const ticketList = new MessageEmbed()
 					.setColor(0xcf40fa)
-					.addField(
+					.addFields(
 						`There are currently ${ticketGrab['count(*)']} tickets open`,
 						'LIST OF IDS COMING SOON'
 					);

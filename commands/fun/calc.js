@@ -25,8 +25,8 @@ module.exports = {
 		const embed = new MessageEmbed()
 			.setColor(0xffffff)
 			.setTitle('Math Calculation')
-			.addField('Input', `\`\`\`js\n${args.join('')}\`\`\``)
-			.addField('Output', `\`\`\`js\n${resp}\`\`\``);
+			.addFields({ name: 'Input', value: `\`\`\`js\n${args.join('')}\`\`\`` },
+			{ name: 'Output', value: `\`\`\`js\n${resp}\`\`\`` });
 
 		message.channel.send(embed);
 	},

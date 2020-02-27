@@ -26,7 +26,7 @@ module.exports = {
 		if (args[0] === undefined) {
 			const undeembed = new MessageEmbed()
 				.setColor(0xcf40fa)
-				.addField(
+				.addFields(
 					'Ragnarok - Config',
 					`[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Sets the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config ticket role](): Sets custom support role for ticket system\n[${prefix}config welcome]() : Sets the welcome channel\n[${prefix}config rolemenu add]() : Sets the role menu roles\n[${prefix}config rolemenu remove]() : Removes a role from rolemenu\n[${prefix}config rolemenu clear]() : Removes all roles from rolemenu`
 				);

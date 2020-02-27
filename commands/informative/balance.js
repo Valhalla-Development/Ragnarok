@@ -31,7 +31,7 @@ module.exports = {
 				.setAuthor(`${message.author.username}'s Balance`)
 				.setColor(color)
 				.setThumbnail(message.author.displayAvatarURL())
-				.addField('Balance', balance.balance);
+				.addFields({ name: 'Balance', value: balance.balance });
 
 			message.channel.send(embed);
 		}
@@ -45,6 +45,9 @@ module.exports = {
 				return;
 			}
 			let otherbalance;
+			if (!otherbalance) {
+				return;
+			}
 			if (message.guild) {
 				otherbalance = bot.getBalance.get(user.id, message.guild.id);
 			}
@@ -52,7 +55,7 @@ module.exports = {
 				.setAuthor(`${user.username}'s Balance`)
 				.setColor(color)
 				.setThumbnail(user.displayAvatarURL())
-				.addField('Balance', otherbalance.balance);
+				.addFields({ name: 'Balance', value: otherbalance.balance });
 
 			message.channel.send(otherembed);
 		}

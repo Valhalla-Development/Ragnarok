@@ -15,7 +15,6 @@ module.exports = {
 	run: async (bot, message, args, color) => {
 		const language = require('../../storage/messages.json');
 
-		message.delete();
 
 		if (
 			!message.member.hasPermission('BAN_MEMBERS') &&
@@ -36,7 +35,7 @@ module.exports = {
 			.get();
 		if (!id) {
 			const user = message.guild.member(
-				message.mentions.users.first() || message.guild.members.get(args[0])
+				message.mentions.users.first() || message.guild.members.cache.get(args[0])
 			);
 			if (!user) {
 				return message.reply(`${language.ban.notarget}`).then(msg =>
@@ -56,10 +55,10 @@ module.exports = {
 				.setFooter('User Ban Logs')
 				.setColor(color)
 				.setTimestamp()
-				.addField('Banned User:', `${user}, ID: ${user.id}`)
-				.addField('Reason:', reason)
-				.addField('Moderator:', `${message.author}, ID: ${message.author.id}`)
-				.addField('Time:', message.createdAt);
+				.addFields({ name: 'Banned User:', value: `${user}, ID: ${user.id}` },
+				{ name: 'Reason:', value: reason },
+				{ name: 'Moderator:', value: `${message.author}, ID: ${message.author.id}` },
+				{ name: 'Time:', value: message.createdAt });
 
 			message.channel.send(logsEmbed);
 		}
@@ -101,10 +100,10 @@ module.exports = {
 				.setFooter('User Ban Logs')
 				.setColor('#ff0000')
 				.setTimestamp()
-				.addField('Banned User:', `${chuser}, ID: ${chuser.id}`)
-				.addField('Reason:', chreason)
-				.addField('Moderator:', `${message.author}, ID: ${message.author.id}`)
-				.addField('Time:', message.createdAt);
+				.addFields({ name: 'Banned User:', value: `${chuser}, ID: ${chuser.id}` },
+				{ name: 'Reason:', value: chreason },
+				{ name: 'Moderator:', value: `${message.author}, ID: ${message.author.id}` },
+				{ name: 'Time:', value: message.createdAt })
 
 			bot.channels.get(logsch).send(logsEmbedD);
 		}

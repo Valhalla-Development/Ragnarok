@@ -55,8 +55,8 @@ module.exports = {
 			await user.roles.remove(muterole.id);
 			const unmuteembed = new MessageEmbed()
 				.setAuthor(' Action | Un-Mute', 'http://odinrepo.tk/speaker.png')
-				.addField('User', `<@${user.id}>`)
-				.addField('Staff Member', `${mod}`)
+				.addFields('User', `<@${user.id}>`)
+				.addFields('Staff Member', `${mod}`)
 				.setColor('#ff0000');
 			message.channel.send(unmuteembed);
 		}
@@ -65,8 +65,8 @@ module.exports = {
 			await user.roles.remove(muterole.id);
 			const unmuteembed = new MessageEmbed()
 				.setAuthor(' Action | Un-Mute', 'http://odinrepo.tk/speaker.png')
-				.addField('User', `<@${user.id}>`)
-				.addField('Staff Member', `${mod}`)
+				.addFields('User', `<@${user.id}>`)
+				.addFields('Staff Member', `${mod}`)
 				.setColor('#ff0000');
 			bot.channels.get(dblogs).send(unmuteembed);
 			message.channel.send(unmuteembed);

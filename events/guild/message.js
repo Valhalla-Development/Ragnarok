@@ -188,7 +188,7 @@ module.exports = async (bot, message) => {
 				.setTitle('You have leveled up!')
 				.setThumbnail('https://i.imgur.com/lXeBiMs.png')
 				.setColor(color)
-				.addField('New Level', curlvl + 1);
+				.addFields('New Level', curlvl + 1);
 			message.channel.send(lvlup).then(msg => {
 				msg.delete({
 					timeout: 10000,
@@ -233,7 +233,7 @@ module.exports = async (bot, message) => {
 	const logs = id.channel;
 	if (!logs) return;
 	const logembed = new MessageEmbed()
-		.setAuthor(message.author.tag, message.guild.iconURL)
+		.setAuthor(message.author.tag, message.guild.iconURL())
 		.setDescription(
 			`**Used** ${cmd} **command in ${message.channel}**\n${cmd} ${oargresult}`
 		)

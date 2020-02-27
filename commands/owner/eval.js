@@ -54,9 +54,9 @@ module.exports = {
 			}
 
 			const embed = new MessageEmbed()
-				.addField(`${bot.user.username} - JavaScript Eval Success:`, '** **')
-				.addField(':inbox_tray: **INPUT**', '```' + args.join(' ') + '```')
-				.addField(':outbox_tray: **OUTPUT**', '```' + clean(evaled) + '```')
+				.addFields({ name: `${bot.user.username} - JavaScript Eval Success:`, value: '** **' },
+				{ name: ':inbox_tray: **INPUT**', value: '```' + args.join(' ') + '```' },
+				{ name: ':outbox_tray: **OUTPUT**', value: '```' + clean(evaled) + '```' })
 				.setColor(0xff5733)
 				.setFooter(message.createdAt, message.author.avatarURL());
 			message.channel.send({
@@ -67,11 +67,8 @@ module.exports = {
 			message.channel
 				.send(
 					new MessageEmbed()
-						.addField(
-							`${bot.user.username} - JavaScript Eval Error:`,
-							'There Was a Problem With The Code That You Are Trying To Run!'
-						)
-						.addField(':no_entry: ERROR', '```' + clean(err) + '```')
+						.addFields({ name: `${bot.user.username} - JavaScript Eval Error:`, value: 'There Was a Problem With The Code That You Are Trying To Run!' },
+						{ name: ':no_entry: ERROR', value: '```' + clean(err) + '```' })
 						.setColor(0xff5733)
 						.setFooter(message.createdAt, message.author.avatarURL())
 				)

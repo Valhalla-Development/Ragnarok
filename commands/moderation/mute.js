@@ -102,10 +102,10 @@ module.exports = {
 					' Action | Mute',
 					'https://images-ext-2.discordapp.net/external/Wms63jAyNOxNHtfUpS1EpRAQer2UT0nOsFaWlnDdR3M/https/image.flaticon.com/icons/png/128/148/148757.png'
 				)
-				.addField('User', `<@${user.id}>`)
-				.addField('Reason', `${reason}`)
-				.addField('Time', `${mutetime}`)
-				.addField('Moderator', `${mod}`)
+				.addFields('User', `<@${user.id}>`)
+				.addFields('Reason', `${reason}`)
+				.addFields('Time', `${mutetime}`)
+				.addFields('Moderator', `${mod}`)
 				.setColor('#ff0000');
 			message.channel.send(muteembed);
 
@@ -113,8 +113,8 @@ module.exports = {
 				user.roles.remove(muterole.id);
 				const unmuteembed = new MessageEmbed()
 					.setAuthor(' Action | Un-Mute', 'http://odinrepo.tk/speaker.png')
-					.addField('User', `<@${user.id}>`)
-					.addField('Reason', 'Mute time ended')
+					.addFields('User', `<@${user.id}>`)
+					.addFields('Reason', 'Mute time ended')
 					.setColor('#ff0000');
 
 				message.channel.send(unmuteembed);
@@ -128,10 +128,10 @@ module.exports = {
 					' Action | Mute',
 					'https://images-ext-2.discordapp.net/external/Wms63jAyNOxNHtfUpS1EpRAQer2UT0nOsFaWlnDdR3M/https/image.flaticon.com/icons/png/128/148/148757.png'
 				)
-				.addField('User', `<@${user.id}>`)
-				.addField('Reason', `${reason}`)
-				.addField('Time', `${mutetime}`)
-				.addField('Moderator', `${mod}`)
+				.addFields('User', `<@${user.id}>`)
+				.addFields('Reason', `${reason}`)
+				.addFields('Time', `${mutetime}`)
+				.addFields('Moderator', `${mod}`)
 				.setColor('#ff0000');
 			bot.channels.get(dblogs).send(muteembed);
 			message.channel.send(muteembed);
@@ -140,8 +140,8 @@ module.exports = {
 				user.roles.remove(muterole.id);
 				const unmuteembed = new MessageEmbed()
 					.setAuthor(' Action | Un-Mute', 'http://odinrepo.tk/speaker.png')
-					.addField('User', `<@${user.id}>`)
-					.addField('Reason', 'Mute time ended')
+					.addFields('User', `<@${user.id}>`)
+					.addFields('Reason', 'Mute time ended')
 					.setColor('#ff0000');
 
 				bot.channels.get(dblogs).send(unmuteembed);

@@ -23,22 +23,14 @@ module.exports = {
 		const embed = new MessageEmbed()
 			.setAuthor(user.tag, user.avatarURL())
 			.setDescription('<@' + user.id + '>')
-			.addField('Nickname', member.nickname ? member.nickname : 'None', true)
-			.addField('Username', user.username, true)
-			.addField('Registered', `${moment(user.createdAt).format('LLLL')}`, true)
-			.addField('Is a bot account?', user.bot ? 'Yes' : 'No', true)
-			.addField('Status', user.presence.status, true)
-			.addField(
-				'Game',
-				user.presence.game ? user.presence.game.name : 'None',
-				true
-			)
-			.addField('Joined', `${moment(member.joinedAt).format('LLLL')}`, true)
-			.addField(
-				'Roles [' + member.roles.size + ']',
-				member.roles.map(r => r.name).join(', '),
-				true
-			)
+			.addFields({ name: 'Nickname', value: member.nickname ? member.nickname : 'None', inline: true },
+			{ name: 'Username', value: user.username, inline: true},
+			{ name: 'Registered', value: `${moment(user.createdAt).format('LLLL')}`, inline: true },
+			{ name: 'Is a bot account?', value: user.bot ? 'Yes' : 'No', inline: true},
+			{ name: 'Status', value: user.presence.status, inline: true},
+			{ name: 'Game', value: user.presence.game ? user.presence.game.name : 'None', inline: true },
+			{ name: 'Joined', value: `${moment(member.joinedAt).format('LLLL')}`, inline: true},
+			{ name: 'Roles [' + member.roles.size + ']', value: member.roles.cache.map(r => r.name).join(', '), inline: true })
 			.setThumbnail(user.avatarURL())
 			.setTimestamp()
 			.setFooter('ID: ' + user.id, user.avatarURL())

@@ -12,11 +12,11 @@ module.exports = {
 		const rolled = Math.floor(Math.random() * 2) + 1;
 		const headembed = new MessageEmbed()
 			.setAuthor('Coin Flip')
-			.addField('Result', 'You flipped a: **Heads**!')
+			.addFields({ name: 'Result', value: 'You flipped a: **Heads**!' })
 			.setColor('0xff1053');
 		const tailembed = new MessageEmbed()
 			.setAuthor('Coin Flip')
-			.addField('Result', 'You flipped a: **Tails**!')
+			.addFields({ name: 'Result', value: 'You flipped a: **Tails**!' })
 			.setColor('0x00bee8');
 		if (rolled == '1') {
 			message.channel.send(tailembed);

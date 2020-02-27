@@ -32,8 +32,8 @@ module.exports = {
 				.setAuthor(`${message.author.username}'s Level`)
 				.setColor(color)
 				.setThumbnail(message.author.displayAvatarURL())
-				.addField('XP', score.points, true)
-				.addField('Level', score.level, true)
+				.addFields({ name: 'XP', value: score.points, inline: true },
+				{ name: 'Level', value: score.level, inline: true })
 				.setFooter(
 					`${difference} XP required to level up!`,
 					message.author.displayAvatarURL()
@@ -57,14 +57,19 @@ module.exports = {
 			if (user.bot) {
 				return;
 			}
+			if (!otherbalance) {
+				return;
+			}
 			const nxtLvlXp = otherbalance.level * 5000;
 			const difference = nxtLvlXp - otherbalance.points;
+
+			
 			const otherembed = new MessageEmbed()
 				.setAuthor(`${user.username}'s Level`)
 				.setColor(color)
 				.setThumbnail(user.displayAvatarURL())
-				.addField('XP', otherbalance.points, true)
-				.addField('Level', otherbalance.level, true)
+				.addFields({ name: 'XP', value: otherbalance.points, inline: true },
+				{ name: 'Level', value: otherbalance.level, inline: true })
 				.setFooter(
 					`${difference} XP required to level up!`,
 					message.author.displayAvatarURL()

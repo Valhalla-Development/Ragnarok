@@ -37,7 +37,7 @@ module.exports = {
 						.join(' ')
 				);
 				try {
-					embed.addField(types[i], arr[i]);
+					embed.addFields({ name: types[i], value: arr[i] });
 				}
 				catch (e) {
 					embed.addBlankField();
