@@ -10,7 +10,7 @@ module.exports = {
     config: {
         name: "fortnite",
         usage: "<user> <gametype>",
-        category: "miscellaneous",
+        category: "fun",
         description: "Displays a user's fortnite stats!",
         accessableby: "Everyone",
     },
@@ -54,7 +54,7 @@ module.exports = {
 
         const embed = new MessageEmbed()
             .setColor('RANDOM')
-            .setAuthor(`${username}`, image)
+            .setAuthor(`(Fortnite} | ${username}`, image)
             .setThumbnail(image)
             .setDescription(stripIndents `**Gamemode:** ${gametype.slice(0, 1).toUpperCase() + gametype.slice(1)}
                     **Kills:** ${kills || 0}
