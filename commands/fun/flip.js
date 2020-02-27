@@ -7,13 +7,12 @@ module.exports = {
 		accessableby: 'Everyone',
 	},
 	run: async (bot, message, args) => {
-		message.delete();
 		const mapping =
 			'¡"#$%⅋,)(*+\'-˙/0ƖᄅƐㄣϛ9ㄥ86:;<=>¿@∀qƆpƎℲפHIſʞ˥WNOԀQɹS┴∩ΛMX⅄Z[/]^_`ɐqɔpǝɟƃɥᴉɾʞlɯuodbɹsʇnʌʍxʎz{|}~';
 		const OFFSET = '!'.charCodeAt(0);
 
 		if (args.length < 1) {
-			message.channel.send('You must provide text to flip.');
+			return message.channel.send('You must provide text to flip.');
 		}
 
 		message.channel.send(
