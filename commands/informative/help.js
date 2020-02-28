@@ -40,7 +40,7 @@ module.exports = {
 					embed.addFields({ name: types[i], value: arr[i] });
 				}
 				catch (e) {
-					embed.addBlankField();
+					embed.addFields({ name: '\u200b', value: '\u200b'});
 				}
 			}
 
