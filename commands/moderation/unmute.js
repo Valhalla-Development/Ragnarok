@@ -34,7 +34,7 @@ module.exports = {
 
 		const mod = message.author;
 		const user = message.guild.member(
-			message.mentions.users.first() || message.guild.members.get(args[0])
+			message.mentions.users.first() || message.guild.members.cache.get(args[0])
 		);
 		if (!user) {
 			return message.reply(`${language.unmute.noMention}`).then(message =>
@@ -43,8 +43,8 @@ module.exports = {
 				})
 			);
 		}
-		const muterole = message.guild.roles.find(x => x.name === 'Muted');
-		if (!user.roles.find(x => x.id === muterole.id)) {return message.channel.send(`${language.unmute.noRoleAsigned}`);}
+		const muterole = message.guild.roles.cache.find(x => x.name === 'Muted');
+		if (!user.roles.cache.find(x => x.id === muterole.id)) {return message.channel.send(`${language.unmute.noRoleAsigned}`);}
 
 		const dbid = db
 			.prepare(
@@ -54,9 +54,9 @@ module.exports = {
 		if (!dbid) {
 			await user.roles.remove(muterole.id);
 			const unmuteembed = new MessageEmbed()
-				.setAuthor(' Action | Un-Mute', 'http://odinrepo.tk/speaker.png')
-				.addFields('User', `<@${user.id}>`)
-				.addFields('Staff Member', `${mod}`)
+				.setAuthor(' Action | Un-Mute', message.guild.iconURL())
+				.addFields({ name: 'User', value: `<@${user.id}>` },
+				{ name: 'Staff Member', value: `${mod}` })
 				.setColor('#ff0000');
 			message.channel.send(unmuteembed);
 		}
@@ -64,11 +64,11 @@ module.exports = {
 			const dblogs = dbid.channel;
 			await user.roles.remove(muterole.id);
 			const unmuteembed = new MessageEmbed()
-				.setAuthor(' Action | Un-Mute', 'http://odinrepo.tk/speaker.png')
-				.addFields('User', `<@${user.id}>`)
-				.addFields('Staff Member', `${mod}`)
+				.setAuthor(' Action | Un-Mute', message.guild.iconURL())
+				.addFields({ name: 'User', value: `<@${user.id}>` },
+				{ name: 'Staff Member', value: `${mod}` })
 				.setColor('#ff0000');
-			bot.channels.get(dblogs).send(unmuteembed);
+			bot.channels.cache.get(dblogs).send(unmuteembed);
 			message.channel.send(unmuteembed);
 		}
 	},

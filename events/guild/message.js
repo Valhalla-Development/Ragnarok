@@ -39,6 +39,7 @@ module.exports = async (bot, message) => {
 	const oargresult = dadArgs.join(' ');
 	const command = messageArray[0].toLowerCase();
 
+
 	// Prefix command
 
 	if (command === prefix + 'prefix') {
@@ -48,9 +49,113 @@ module.exports = async (bot, message) => {
 		message.channel.send(embed);
 	}
 
+		// Ads protection checks
+		if (
+			message.content.includes('https://') ||
+			message.content.includes('http://') ||
+			message.content.includes('discord.gg') ||
+			message.content.includes('discord.me') ||
+			message.content.includes('discord.io')
+		) {
+			const adsprot = db
+				.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?')
+				.get(message.guild.id);
+			if (!adsprot['count(*)']) {
+				return;
+			}
+			else if (message.member.hasPermission('MANAGE_GUILD')) {
+				return;
+			}
+			message.delete();
+			message.channel
+				.send(
+					`**Your message contained a link and it was deleted, <@${
+						message.author.id
+					}>**`
+				)
+				.then(msg => {
+					msg.delete({
+						timeout: 10000,
+					});
+				});
+		}
+	
+		// Balance (balance)
+		if (message.author.bot) return;
+		let balance;
+		if (message.guild) {
+			balance = bot.getBalance.get(message.author.id, message.guild.id);
+			if (!balance) {
+				balance = {
+					id: `${message.guild.id}-${message.author.id}`,
+					user: message.author.id,
+					guild: message.guild.id,
+					balance: 1000,
+				};
+			}
+			const curBal = balance.balance;
+			const coinAmt = Math.floor(Math.random() * 100) + 10;
+			if (coinAmt) {
+				if (!coinCooldown.has(message.author.id)) {
+					balance.balance = curBal + coinAmt;
+					bot.setBalance.run(balance);
+					coinCooldown.add(message.author.id);
+					setTimeout(function() {
+						coinCooldown.delete(message.author.id);
+					}, coinCooldownSeconds * 1000);
+				}
+			}
+		}
+	
+		// Scores (level)
+		let score;
+		if (message.guild) {
+			score = bot.getScore.get(message.author.id, message.guild.id);
+			if (!score) {
+				score = {
+					id: `${message.guild.id}-${message.author.id}`,
+					user: message.author.id,
+					guild: message.guild.id,
+					points: 0,
+					level: 1,
+				};
+			}
+			const xpAdd = Math.floor(Math.random() * 25) + 1;
+			const curxp = score.points;
+			const curlvl = score.level;
+			const nxtLvl = score.points * 5000;
+			score.points = curxp + xpAdd;
+			if (nxtLvl <= score.points) {
+				score.level = curlvl + 1;
+				const lvlup = new MessageEmbed()
+					.setAuthor(
+						`Congrats ${message.author.username}`,
+						message.author.displayAvatarURL()
+					)
+					.setTitle('You have leveled up!')
+					.setThumbnail('https://i.imgur.com/lXeBiMs.png')
+					.setColor(color)
+					.addFields('New Level', curlvl + 1);
+				message.channel.send(lvlup).then(msg => {
+					msg.delete({
+						timeout: 10000,
+					});
+				});
+			}
+		}
+		if (!xpCooldown.has(message.author.id)) {
+			xpCooldown.add(message.author.id);
+			bot.setScore.run(score);
+			setTimeout(function() {
+				xpCooldown.delete(message.author.id);
+			}, xpCooldownSeconds * 1000);
+		}
+	
+
 	const cmd = args.shift().toLowerCase();
 	const commandfile =
 		bot.commands.get(cmd) || bot.commands.get(bot.aliases.get(cmd));
+	if (!message.content.startsWith(prefixcommand)) return;
 	if (commandfile) commandfile.run(bot, message, args, color);
 
 	// Dad Bot (This is placed after line 50, therefore it does not work, this is on purpose, create a command that lets people enable or disable this module, default being OFF)
@@ -101,111 +206,6 @@ module.exports = async (bot, message) => {
 	}
 	*/
 
-	// Ads protection checks
-	if (
-		message.content.includes('https://') ||
-		message.content.includes('http://') ||
-		message.content.includes('discord.gg') ||
-		message.content.includes('discord.me') ||
-		message.content.includes('discord.io')
-	) {
-		const adsprot = db
-			.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?')
-			.get(message.guild.id);
-		if (!adsprot['count(*)']) {
-			return;
-		}
-		else if (message.member.hasPermission('MANAGE_GUILD')) {
-			return;
-		}
-		message.delete();
-		message.channel
-			.send(
-				`**Your message contained a link and it was deleted, <@${
-					message.author.id
-				}>**`
-			)
-			.then(msg => {
-				msg.delete({
-					timeout: 10000,
-				});
-			});
-	}
-
-	// Balance (balance)
-	if (message.author.bot) return;
-	let balance;
-	if (message.guild) {
-		balance = bot.getBalance.get(message.author.id, message.guild.id);
-		if (!balance) {
-			balance = {
-				id: `${message.guild.id}-${message.author.id}`,
-				user: message.author.id,
-				guild: message.guild.id,
-				balance: 100,
-			};
-		}
-		const curBal = balance.balance;
-		const coinAmt = Math.floor(Math.random() * 1) + 10;
-		const baseAmt = Math.floor(Math.random() * 1) + 10;
-		if (coinAmt === baseAmt) {
-			if (!coinCooldown.has(message.author.id)) {
-				balance.balance = curBal + coinAmt;
-				bot.setBalance.run(balance);
-				coinCooldown.add(message.author.id);
-				setTimeout(function() {
-					coinCooldown.delete(message.author.id);
-				}, coinCooldownSeconds * 1000);
-			}
-		}
-	}
-
-	// Scores (level)
-	let score;
-	if (message.guild) {
-		score = bot.getScore.get(message.author.id, message.guild.id);
-		if (!score) {
-			score = {
-				id: `${message.guild.id}-${message.author.id}`,
-				user: message.author.id,
-				guild: message.guild.id,
-				points: 0,
-				level: 1,
-			};
-		}
-		const xpAdd = Math.floor(Math.random() * 25) + 1;
-		const curxp = score.points;
-		const curlvl = score.level;
-		const nxtLvl = score.points * 5000;
-		score.points = curxp + xpAdd;
-		if (nxtLvl <= score.points) {
-			score.level = curlvl + 1;
-			const lvlup = new MessageEmbed()
-				.setAuthor(
-					`Congrats ${message.author.username}`,
-					message.author.displayAvatarURL()
-				)
-				.setTitle('You have leveled up!')
-				.setThumbnail('https://i.imgur.com/lXeBiMs.png')
-				.setColor(color)
-				.addFields('New Level', curlvl + 1);
-			message.channel.send(lvlup).then(msg => {
-				msg.delete({
-					timeout: 10000,
-				});
-			});
-		}
-	}
-	if (!xpCooldown.has(message.author.id)) {
-		xpCooldown.add(message.author.id);
-		bot.setScore.run(score);
-		setTimeout(function() {
-			xpCooldown.delete(message.author.id);
-		}, xpCooldownSeconds * 1000);
-	}
-
-	if (!message.content.startsWith(prefixcommand)) return;
-
 	// Logging
 	if (logging === true) {
 		if (!oargresult || oargresult === '') {
@@ -240,5 +240,5 @@ module.exports = async (bot, message) => {
 		.setColor(color)
 		.setFooter(`ID: ${message.channel.id}`)
 		.setTimestamp();
-	bot.channels.get(logs).send(logembed);
+	bot.channels.cache.get(logs).send(logembed);
 };

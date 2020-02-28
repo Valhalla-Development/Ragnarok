@@ -41,7 +41,6 @@ module.exports = {
 		accessableby: 'Staff',
 	},
 	run: async (bot, message) => {
-		message.delete();
 		if (
 			!message.member.hasPermission('MANAGE_GUILD') &&
 			message.author.id !== ownerID

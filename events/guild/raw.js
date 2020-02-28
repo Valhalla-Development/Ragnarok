@@ -51,8 +51,8 @@ module.exports = async (bot, event) => {
 			'🇿',
 		];
 		if (data.user_id == bot.user.id) return;
-		const guild = bot.guilds.find(guild => guild.id === data.guild_id);
-		const member = guild.members.find(member => member.id === data.user_id);
+		const guild = bot.guilds.cache.find(guild => guild.id === data.guild_id);
+		const member = guild.members.cache.find(member => member.id === data.user_id);
 		const foundRoleMenu = db
 			.prepare(`SELECT * FROM rolemenu WHERE guildid=${data.guild_id}`)
 			.get();
@@ -60,21 +60,21 @@ module.exports = async (bot, event) => {
 			return;
 		}
 		else if (foundRoleMenu.activeRoleMenuID === data.message_id) {
-			const channel = guild.channels.find(
+			const channel = guild.channels.cache.find(
 				channel => channel.id === data.channel_id
 			);
 			channel.messages.fetch(foundRoleMenu.activeRoleMenuID).then(msg => {
 				const roleArray = JSON.parse(foundRoleMenu.roleList);
 				const reaction =
-					msg.reactions.get(data.emoji.name) ||
-					msg.reactions.get(data.emoji.name + ':' + data.emoji.id);
+					msg.reactions.cache.get(data.emoji.name) ||
+					msg.reactions.cache.get(data.emoji.name + ':' + data.emoji.id);
 				if (member.id !== bot.user.id) {
 					if (alphaEmoji.includes(data.emoji.name)) {
 						const roleIndex = alphaEmoji.indexOf(data.emoji.name);
-						const addedRole = msg.guild.roles.find(
+						const addedRole = msg.guild.roles.cache.find(
 							r => r.id === roleArray[roleIndex]
 						);
-						const memberRole = member.roles.map(role => role.id);
+						const memberRole = member.roles.cache.map(role => role.id);
 
 						if (
 							!member.hasPermission('MANAGE_MESSAGES') &&
@@ -88,7 +88,7 @@ module.exports = async (bot, event) => {
 						}
 						else if (eventType === 'MESSAGE_REACTION_ADD') {
 							if (memberRole.includes(roleArray[roleIndex])) {
-								if (!msg.guild.roles.find(r => r.id === roleArray[roleIndex])) {
+								if (!msg.guild.roles.cache.find(r => r.id === roleArray[roleIndex])) {
 									msg.channel
 										.send('Uh oh! The role you tried to add, no longer exists!')
 										.then(m =>
@@ -102,7 +102,7 @@ module.exports = async (bot, event) => {
 								reaction.users.remove(member.id);
 							}
 							else {
-								if (!msg.guild.roles.find(r => r.id === roleArray[roleIndex])) {
+								if (!msg.guild.roles.cache.find(r => r.id === roleArray[roleIndex])) {
 									msg.channel
 										.send('Uh oh! The role you tried to add, no longer exists!')
 										.then(m =>

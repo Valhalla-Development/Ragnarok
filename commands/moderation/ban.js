@@ -64,10 +64,10 @@ module.exports = {
 		}
 		else {
 			const logch = id.channel;
-			const logsch = bot.channels.get(logch);
+			const logsch = bot.channels.cache.get(logch);
 
 			const chuser = message.guild.member(
-				message.mentions.users.first() || message.guild.members.get(args[0])
+				message.mentions.users.first() || message.guild.members.cache.get(args[0])
 			);
 			if (!chuser) {
 				return message.reply(`${language.ban.notarget}`).then(message =>
@@ -79,7 +79,7 @@ module.exports = {
 
 			let chreason = args.slice(1).join(' ');
 			if (!chreason) {
-				chreason = 'no';
+				chreason = 'None given';
 			}
 
 			message.guild.member(chuser).ban(chreason);
@@ -103,9 +103,9 @@ module.exports = {
 				.addFields({ name: 'Banned User:', value: `${chuser}, ID: ${chuser.id}` },
 				{ name: 'Reason:', value: chreason },
 				{ name: 'Moderator:', value: `${message.author}, ID: ${message.author.id}` },
-				{ name: 'Time:', value: message.createdAt })
+				{ name: 'Time:', value: message.createdAt });
 
-			bot.channels.get(logsch).send(logsEmbedD);
+			logsch.send(logsEmbedD);
 		}
 	},
 };

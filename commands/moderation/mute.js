@@ -39,7 +39,7 @@ module.exports = {
 
 		const mod = message.author;
 		const user = message.guild.member(
-			message.mentions.users.first() || message.guild.members.get(args[0])
+			message.mentions.users.first() || message.guild.members.cache.get(args[0])
 		);
 		const noUserMessage = language.mute.noUser;
 		const noUserConvert = noUserMessage.replace('${prefix}', prefix);
@@ -61,7 +61,7 @@ module.exports = {
 				})
 			);
 		}
-		let muterole = message.guild.roles.find(x => x.name === 'Muted');
+		let muterole = message.guild.roles.cache.find(x => x.name === 'Muted');
 		if (!muterole) {
 			try {
 				muterole = await message.guild.createRole({
@@ -102,19 +102,19 @@ module.exports = {
 					' Action | Mute',
 					'https://images-ext-2.discordapp.net/external/Wms63jAyNOxNHtfUpS1EpRAQer2UT0nOsFaWlnDdR3M/https/image.flaticon.com/icons/png/128/148/148757.png'
 				)
-				.addFields('User', `<@${user.id}>`)
-				.addFields('Reason', `${reason}`)
-				.addFields('Time', `${mutetime}`)
-				.addFields('Moderator', `${mod}`)
+				.addFields({ name: 'User', value: `<@${user.id}>` },
+				{ name: 'Reason', value: `${reason}` },
+				{ name: 'Time', value: `${mutetime}` },
+				{ name: 'Moderator', value: `${mod}` })
 				.setColor('#ff0000');
 			message.channel.send(muteembed);
 
 			setTimeout(function() {
 				user.roles.remove(muterole.id);
 				const unmuteembed = new MessageEmbed()
-					.setAuthor(' Action | Un-Mute', 'http://odinrepo.tk/speaker.png')
-					.addFields('User', `<@${user.id}>`)
-					.addFields('Reason', 'Mute time ended')
+					.setAuthor(' Action | Un-Mute', message.guild.iconURL())
+					.addFields({ name: 'User', value: `<@${user.id}>` },
+					{ name: 'Reason', value: 'Mute time ended' })
 					.setColor('#ff0000');
 
 				message.channel.send(unmuteembed);
@@ -128,23 +128,23 @@ module.exports = {
 					' Action | Mute',
 					'https://images-ext-2.discordapp.net/external/Wms63jAyNOxNHtfUpS1EpRAQer2UT0nOsFaWlnDdR3M/https/image.flaticon.com/icons/png/128/148/148757.png'
 				)
-				.addFields('User', `<@${user.id}>`)
-				.addFields('Reason', `${reason}`)
-				.addFields('Time', `${mutetime}`)
-				.addFields('Moderator', `${mod}`)
+				.addFields({ name: 'User', value: `<@${user.id}>` },
+				{ name: 'Reason', value: `${reason}` },
+				{ name: 'Time', value: `${mutetime}` },
+				{ name: 'Moderator', value: `${mod}` })
 				.setColor('#ff0000');
-			bot.channels.get(dblogs).send(muteembed);
+			bot.channels.cache.get(dblogs).send(muteembed);
 			message.channel.send(muteembed);
 
 			setTimeout(function() {
 				user.roles.remove(muterole.id);
 				const unmuteembed = new MessageEmbed()
-					.setAuthor(' Action | Un-Mute', 'http://odinrepo.tk/speaker.png')
-					.addFields('User', `<@${user.id}>`)
-					.addFields('Reason', 'Mute time ended')
+					.setAuthor(' Action | Un-Mute', message.guild.iconURL())
+					.addFields({ name: 'User', value: `<@${user.id}>` },
+					{ name: 'Reason', value: 'Mute time ended' })
 					.setColor('#ff0000');
 
-				bot.channels.get(dblogs).send(unmuteembed);
+				bot.channels.cache.get(dblogs).send(unmuteembed);
 				message.channel.send(unmuteembed);
 			}, ms(mutetime));
 		}

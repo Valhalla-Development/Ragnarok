@@ -6,7 +6,7 @@ module.exports = async (bot, guild) => {
 	// when the bot is removed from a guild.
 	console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
 	bot.user.setActivity(
-		`${prefix}help | ${bot.guilds.size} Guilds ${bot.users.size} Users`,
+		`${prefix}help | ${bot.guilds.cache.size} Guilds ${bot.users.cache.size} Users`,
 		{
 			type: 'WATCHING',
 		}

@@ -20,8 +20,8 @@ module.exports = {
 			)
 			.get();
 		const modRole =
-			message.guild.roles.find(x => x.name === 'Support Team') ||
-			message.guild.roles.find(r => r.id === suppRole.role);
+			message.guild.roles.cache.find(x => x.name === 'Support Team') ||
+			message.guild.roles.cache.find(r => r.id === suppRole.role);
 		if (!modRole) {
 			const nomodRole = new MessageEmbed()
 				.setColor('36393F')
@@ -31,7 +31,7 @@ module.exports = {
 		}
 
 		if (
-			!message.member.roles.has(modRole.id) &&
+			!message.member.roles.cache.has(modRole.id) &&
 			message.author.id !== message.guild.ownerID
 		) {
 			const donthaveroleMessage = language.tickets.donthaveRole;
@@ -54,7 +54,7 @@ module.exports = {
 				ticketid: args[0] || channelArgs[channelArgs.length - 1],
 			});
 		if (foundTicket) {
-			const getChan = message.guild.channels.find(
+			const getChan = message.guild.channels.cache.find(
 				chan => chan.id === foundTicket.chanid
 			);
 			const forceclosetimer = new MessageEmbed()
@@ -99,7 +99,7 @@ module.exports = {
 							)
 							.get();
 						if (!logget) return;
-						const logchan = message.guild.channels.find(
+						const logchan = message.guild.channels.cache.find(
 							chan => chan.id === logget.log
 						);
 						if (!logchan) return;

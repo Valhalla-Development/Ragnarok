@@ -8,8 +8,8 @@ module.exports = async (bot, guild) => {
 		} members!`
 	);
 	bot.user.setActivity(
-		`${prefix}help | ${bot.guilds.size} Guilds ${
-			bot.users.size
+		`${prefix}help | ${bot.guilds.cache.size} Guilds ${
+			bot.users.cache.size
 		} Users`,
 		{
 			type: 'WATCHING',
@@ -17,7 +17,7 @@ module.exports = async (bot, guild) => {
 	);
 
 	let defaultChannel = '';
-	guild.channels.forEach(channel => {
+	guild.channels.cache.forEach(channel => {
 		if (channel.type == 'text' && defaultChannel == '') {
 			if (channel.permissionsFor(guild.me).has('SEND_MESSAGES')) {
 				defaultChannel = channel;
@@ -26,7 +26,7 @@ module.exports = async (bot, guild) => {
 	});
 	const embed = new MessageEmbed()
 		.setTitle('Hello, I\'m **Ragnarok**! Thanks for inviting me!')
-		.setDescription('The prefix for all my commands is `-`, e.g: `-help`.\nIf you find any bugs, report them with `-suggest <bug>`');
+		.setDescription('The prefix for all my commands is `-`, e.g: `-help`.\nIf you find any bugs, report them with `-bugreport <bug>`');
 	defaultChannel.send({
 		embed,
 	});

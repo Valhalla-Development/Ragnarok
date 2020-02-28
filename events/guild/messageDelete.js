@@ -37,5 +37,5 @@ module.exports = async (bot, message) => {
 		.setColor(message.guild.member(bot.user).displayHexColor)
 		.setFooter(`ID: ${message.channel.id}`)
 		.setTimestamp();
-	bot.channels.get(logs).send(logembed);
+	bot.channels.cache.get(logs).send(logembed);
 };

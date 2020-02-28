@@ -38,7 +38,7 @@ module.exports = {
 
 		// "Support" role
 		if (
-			!message.guild.roles.find(r => r.name === 'Support Team') &&
+			!message.guild.roles.cache.find(r => r.name === 'Support Team') &&
 			!suppRole
 		) {
 			const nomodRole = new MessageEmbed()
@@ -66,7 +66,7 @@ module.exports = {
 				db.prepare(`DELETE FROM tickets WHERE guildid = ${message.guild.id} AND authorid = ${message.author.id}`).run();
 			}
 			if (
-				!message.guild.channels.find(
+				!message.guild.channels.cache.find(
 					channel => channel.id === checkTicketEx.chanid
 				)
 			) {
@@ -74,7 +74,7 @@ module.exports = {
 			}
 		}
 		if (roleCheckEx) {
-			if (!message.guild.roles.find(role => role.id === roleCheckEx.role)) {
+			if (!message.guild.roles.cache.find(role => role.id === roleCheckEx.role)) {
 				const updateRole = db.prepare(
 					`UPDATE ticketConfig SET role = (@role) WHERE guildid = ${
 						message.guild.id
@@ -97,7 +97,7 @@ module.exports = {
 			return;
 		}
 
-		const nickName = message.guild.members.get(message.author.id).displayName;
+		const nickName = message.guild.members.cache.get(message.author.id).displayName;
 
 		// Make Ticket
 		const id = db
@@ -119,8 +119,8 @@ module.exports = {
 			});
 			// Create the channel with the name "ticket-" then the user's ID.
 			const role =
-				message.guild.roles.find(x => x.name === 'Support Team') ||
-				message.guild.roles.find(r => r.id === suppRole.role);
+				message.guild.roles.cache.find(x => x.name === 'Support Team') ||
+				message.guild.roles.cache.find(r => r.id === suppRole.role);
 			if (!role) {
 				message.channel.send(
 					`I could not find the \`Support Team\` role!\nIf you use a custom role, I recommend running the command again \`${prefix}config ticket role <@role>\``
@@ -133,7 +133,7 @@ module.exports = {
 					permissionOverwrites: [
 						{
 							id: role.id,
-							allow: 'VIEW_CHANNEL',
+							allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
 						},
 						{
 							id: role2.id,
@@ -141,7 +141,7 @@ module.exports = {
 						},
 						{
 							id: message.author.id,
-							allow: 'VIEW_CHANNEL',
+							allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
 						},
 					],
 				})
@@ -188,7 +188,7 @@ module.exports = {
 						return;
 					}
 					else {
-						const logchan = message.guild.channels.find(
+						const logchan = message.guild.channels.cache.find(
 							chan => chan.id === logget.log
 						);
 						if (!logchan) return;
@@ -215,8 +215,8 @@ module.exports = {
 			const ticategory = id.category;
 
 			const role =
-				message.guild.roles.find(x => x.name === 'Support Team') ||
-				message.guild.roles.find(r => r.id === suppRole.role);
+				message.guild.roles.cache.find(x => x.name === 'Support Team') ||
+				message.guild.roles.cache.find(r => r.id === suppRole.role);
 			if (!role) {
 				message.channel.send(
 					`I could not find the \`Support Team\` role!\nIf you use a custom role, I recommend running the command again \`${prefix}config ticket role <@role>\``
@@ -230,7 +230,7 @@ module.exports = {
 					permissionOverwrites: [
 						{
 							id: role.id,
-							allow: 'VIEW_CHANNEL',
+							allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
 						},
 						{
 							id: role2.id,
@@ -238,7 +238,7 @@ module.exports = {
 						},
 						{
 							id: message.author.id,
-							allow: 'VIEW_CHANNEL',
+							allow: ['VIEW_CHANNEL', 'SEND_MESSAGES'],
 						},
 					],
 				})
@@ -286,7 +286,7 @@ module.exports = {
 						return;
 					}
 					else {
-						const logchan = message.guild.channels.find(
+						const logchan = message.guild.channels.cache.find(
 							chan => chan.id === logget.log
 						);
 						if (!logchan) return;

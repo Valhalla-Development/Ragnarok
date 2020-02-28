@@ -15,5 +15,5 @@ module.exports = async (bot, role) => {
 		.setDescription(`**Role Created: \`${role.name}\`.**`)
 		.setColor(color)
 		.setTimestamp();
-	bot.channels.get(logs).send(logembed);
+	bot.channels.cache.get(logs).send(logembed);
 };

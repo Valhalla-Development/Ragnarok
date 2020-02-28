@@ -26,10 +26,7 @@ module.exports = {
 		if (args[0] === undefined) {
 			const undeembed = new MessageEmbed()
 				.setColor(0xcf40fa)
-				.addFields(
-					'Ragnarok - Config',
-					`[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Sets the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config ticket role](): Sets custom support role for ticket system\n[${prefix}config welcome]() : Sets the welcome channel\n[${prefix}config rolemenu add]() : Sets the role menu roles\n[${prefix}config rolemenu remove]() : Removes a role from rolemenu\n[${prefix}config rolemenu clear]() : Removes all roles from rolemenu`
-				);
+				.addFields({ name: 'Ragnarok - Config', value: `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Sets the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config ticket role](): Sets custom support role for ticket system\n[${prefix}config welcome]() : Sets the welcome channel\n[${prefix}config rolemenu add]() : Sets the role menu roles\n[${prefix}config rolemenu remove]() : Removes a role from rolemenu\n[${prefix}config rolemenu clear]() : Removes all roles from rolemenu` });
 			message.channel.send({
 				embed: undeembed,
 			});
@@ -302,9 +299,9 @@ module.exports = {
 					message.channel.send(turnoffembed);
 					return;
 				}
-				if (!message.guild.roles.some(r => [`${args[1]}`].includes(r.name))) {
+				if (!message.guild.roles.cache.JSONsome(r => [`${args[1]}`].includes(r.name))) {
 					return message.channel.send(
-						':x: **That role does not exist! Roles are case sensitive.**'
+						':x: **That role does not exist! Roles are case sensitive. (You do not tag the role, simply write the name of the role)**'
 					);
 				}
 				if (role) {
@@ -434,7 +431,7 @@ module.exports = {
 					'SELECT category FROM ticketConfig WHERE guildid = ?'
 				);
 
-				const category = message.guild.channels.find(
+				const category = message.guild.channels.cache.find(
 					c => c.name == args.slice(2).join(' ') && c.type == 'category'
 				);
 
@@ -729,7 +726,7 @@ module.exports = {
 				const usage = new MessageEmbed()
 					.setColor('RANDOM')
 					.setDescription(
-						`**USAGE:**\n\nTo set the welcome channel, the command is \`${prefix}config welcome channel <#channel>\``
+						`**USAGE:**\n\nTo set the welcome channel, the command is \`${prefix}config welcome channel <#channel>\`\nTo disable the welcome, use \`${prefix}config welcome channel off\``
 					);
 				message.channel.send(usage);
 				return;

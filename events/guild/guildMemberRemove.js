@@ -23,5 +23,5 @@ module.exports = async (bot, member) => {
 		.setColor(color)
 		.setFooter(`ID: ${member.user.id}`)
 		.setTimestamp();
-	bot.channels.get(logs).send(logembed);
+	bot.channels.cache.get(logs).send(logembed);
 };

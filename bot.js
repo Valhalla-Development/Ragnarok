@@ -21,7 +21,7 @@ bot.on('guildMemberAdd', async member => {
 	}
 	else {
 		const sendchannel = setwelcome.channel;
-		const chnsen = member.guild.channels.find(
+		const chnsen = member.guild.channels.cache.find(
 			channel => channel.id === sendchannel
 		);
 		if (!chnsen) {
@@ -64,7 +64,7 @@ bot.on('guildMemberAdd', async member => {
 
 		const attachment = new MessageAttachment(canvas.toBuffer(), 'welcome.jpg');
 
-		bot.channels.get(sendchannel).send(`Welcome, ${member}!`, attachment).catch(err => console.log(err));
+		bot.channels.cache.get(sendchannel).send(`Welcome, ${member}!`, attachment).catch(err => console.log(err));
 	}
 });
 
@@ -79,7 +79,7 @@ bot.on('guildMemberAdd', member => {
 		return;
 	}
 	else {
-		const myRole = member.guild.roles.find(role => role.name === autorole);
+		const myRole = member.guild.roles.cache.find(role => role.name === autorole);
 		member.roles.add(myRole);
 	}
 });

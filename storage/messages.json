@@ -169,7 +169,7 @@
       "existingTicket": ":x: You already have a ticket open!",
       "ticketCreated": ":white_check_mark: Your ticket has been created, ",
       "ticketMessage": "**Hey there, ${nick}!, A member from the Support Team will be with you soon!**\nPlease try to explain your issue while you are waiting.",
-      "closeTimer": "**This ticket will automatically close in 10 seconds.**",
+      "closeTimer": "**This ticket will automatically close in 10 seconds.**\nType a message to cancel the timer.",
       "noinp": ":x: **You did not input any text!**",
       "noPermission": ":x: **Only users with `MANAGE_GUILD` can use this command!**",
       "invalidCategory": ":x: **Invalid category name! Check if the entered categories name is correct and then type the command again. (The name is case sensitive!**",
