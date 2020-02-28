@@ -84,10 +84,10 @@ bot.on('guildMemberAdd', member => {
 	}
 });
 
-if (process.version.slice(1).split('.')[0] < 8) {
+if (process.version.slice(1).split('.')[0] < 11) {
 	console.log(
 		new Error(
-			'[Ragnarok] You must have NodeJS 8 or higher installed on your PC.'
+			'[Ragnarok] You must have NodeJS 11 or higher installed on your PC.'
 		)
 	);
 	process.exit(1);
