@@ -55,10 +55,7 @@ module.exports = {
 			else {
 				const ticketList = new MessageEmbed()
 					.setColor(0xcf40fa)
-					.addFields(
-						`There are currently ${ticketGrab['count(*)']} tickets open`,
-						'LIST OF IDS COMING SOON'
-					);
+					.addFields({ name: 'Tickets', value: `There are currently ${ticketGrab['count(*)']} tickets open\nList of IDs coming soon`});
 				// and somehow display them in a collection type deal :D
 				message.channel.send(ticketList);
 				return;
