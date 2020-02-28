@@ -37,7 +37,7 @@ module.exports = {
 			return;
 		}
 		if (!/^\d/.test(args[0])) {
-			return message.channel.send('Your first input must be how long you wish the reminder to be!')
+			return message.channel.send(`Input a valid time! Examples:\n12s/12m/12h/12d`)
 		}
 
 		message.channel.send(
