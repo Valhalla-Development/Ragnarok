@@ -117,7 +117,7 @@ module.exports = async (bot, message) => {
 					user: message.author.id,
 					guild: message.guild.id,
 					points: 0,
-					level: 1,
+					level: 0,
 				};
 			}
 			const xpAdd = Math.floor(Math.random() * 25) + 1;
@@ -135,7 +135,7 @@ module.exports = async (bot, message) => {
 					.setTitle('You have leveled up!')
 					.setThumbnail('https://i.imgur.com/lXeBiMs.png')
 					.setColor(color)
-					.addFields('New Level', curlvl + 1);
+					.addFields({ name: 'New Level', value: curlvl + 1 });
 				message.channel.send(lvlup).then(msg => {
 					msg.delete({
 						timeout: 10000,
