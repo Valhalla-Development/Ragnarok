@@ -1,8 +1,7 @@
 /* jshint -W069 */
 const { MessageEmbed } = require("discord.js");
 const { stripIndents } = require("common-tags");
-const API = require("apextab-api"),
-    ApexTab = API.Apextab_API;
+const API = require("apextab-api"), ApexTab = API.Apextab_API;
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
 
