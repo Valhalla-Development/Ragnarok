@@ -39,57 +39,62 @@ module.exports = {
             u.s +
             ' seconds';
 
+        const msg = await message.channel.send('Generating...');
+        message.channel.startTyping();
         let ping = Math.round(bot.ws.ping);
-        si.mem().then(data => totalMemory  = Math.floor(data.total / 1024 / 1024));
-        si.mem().then(data => swapMem = Math.floor(data.swapused / 1024 / 1024));
-        si.mem().then(data => cachedMem = Math.floor(data.cached / 1024 / 1024));
-        si.mem().then(data => memoryUsed = Math.floor(data.used / 1024 / 1024));
-        let realMemUsed = Math.floor(memoryUsed - cachedMem - swapMem);
+        await si.mem().then(data => totalMemory = Math.floor(data.total / 1024 / 1024));
+        await si.mem().then(data => swapMem = Math.floor(data.swapused / 1024 / 1024));
+        await si.mem().then(data => cachedMem = Math.floor(data.cached / 1024 / 1024));
+        await si.mem().then(data => memoryUsed = Math.floor(data.used / 1024 / 1024));
+        let realMemUsed = Math.floor(cachedMem - swapMem + memoryUsed);
         let memPercent = Math.floor(realMemUsed / totalMemory * 100);
-        si.currentLoad().then(data => cpuUsage = Math.floor(data.currentload_user));
-        si.osInfo().then(data => osVersion = data.distro);
-        si.versions().then(data => nodeVersion = data.node);
+        await si.currentLoad().then(data => cpuUsage = Math.floor(data.currentload_user));
+        await si.osInfo().then(data => osVersion = data.distro);
+        await si.versions().then(data => nodeVersion = data.node);
 
-            const serverembed = new MessageEmbed()
-                .setAuthor('Ragnarok Info', bot.user.avatarURL())
-                .setFooter(`Bot Created • November 4, 2018`)
-                .setColor('#7289DA')
-                .setThumbnail(bot.user.avatarURL())
-                .addFields({
-                    name: 'Owner',
-                    value: 'Ragnar Lothbrok#1948',
-                    inline: true
-                }, {
-                    name: 'Uptime',
-                    value: uptime
-                }, {
-                    name: 'Memory Usage',
-                    value: `${realMemUsed} / ${totalMemory} - ${memPercent}%`,
-                    inline: true
-                }, {
-                    name: 'CPU Usage',
-                    value: `${cpuUsage}%`,
-                    inline: true
-                }, {
-                    name: 'Ping',
-                    value: `${ping}ms`,
-                    inline: true
-                }, {
-                    name: 'Users',
-                    value: bot.users.cache.size,
-                    inline: true
-                }, {
-                    name: 'Versions',
-                    value: `OS: ${osVersion}\nNode.js: ${nodeVersion}\nDiscord.js: v12`,
-                    inline: true
-                }, {
-                    name: 'Guilds',
-                    value: bot.guilds.cache.size,
-                    inline: true
-                }, {
-                    name: 'Announcements',
-                    value: '```Port to Discord.js v12 is complete, if you find any bugs please report them to my owner.```',
-                });
-            message.channel.send(serverembed);
+        msg.delete();
+        const serverembed = new MessageEmbed()
+            .setAuthor('Ragnarok Info', bot.user.avatarURL())
+            .setFooter(`Bot Created • November 4, 2018`)
+            .setColor('#7289DA')
+            .setThumbnail(bot.user.avatarURL())
+            .addFields({
+                name: 'Owner',
+                value: 'Ragnar Lothbrok#1948',
+                inline: true
+            }, {
+                name: 'Uptime',
+                value: uptime
+            }, {
+                name: 'Memory Usage',
+                value: `${realMemUsed} / ${totalMemory} - ${memPercent}%`,
+                inline: true
+            }, {
+                name: 'CPU Usage',
+                value: `${cpuUsage}%`,
+                inline: true
+            }, {
+                name: 'Ping',
+                value: `${ping}ms`,
+                inline: true
+            }, {
+                name: 'Users',
+                value: bot.users.cache.size,
+                inline: true
+            }, {
+                name: 'Versions',
+                value: `OS: ${osVersion}\nNode.js: ${nodeVersion}\nDiscord.js: v12`,
+                inline: true
+            }, {
+                name: 'Guilds',
+                value: bot.guilds.cache.size,
+                inline: true
+            }, {
+                name: 'Announcements',
+                value: '```Port to Discord.js v12 is complete, if you find any bugs please report them to my owner.```',
+            });
+        message.channel.send(serverembed);
+        message.channel.stopTyping();
+
     },
 };
