@@ -33,6 +33,7 @@
     "node-fetch": "^2.6.0",
     "simple-fortnite-api": "^0.1.9",
     "strict-uri-encode": "^2.0.0",
+    "systeminformation": "^4.22.3",
     "trakt.tv": "^7.1.0",
     "unescape": "^1.0.1"
   },
