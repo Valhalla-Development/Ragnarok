@@ -120,10 +120,11 @@ module.exports = async (bot, message) => {
 					level: 0,
 				};
 			}
-			const xpAdd = Math.floor(Math.random() * 25) + 1;
-			const curxp = score.points;
-			const curlvl = score.level;
-			const nxtLvl = score.points * 5000;
+			const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
+			const curxp = score.points; // Current points
+			const curlvl = score.level; // Current level
+			//const nxtLvl = Math.floor(234 * Math.sqrt(score.points));
+			const nxtLvl = score.points * 5000; // How much xp until level
 			score.points = curxp + xpAdd;
 			if (nxtLvl <= score.points) {
 				score.level = curlvl + 1;
