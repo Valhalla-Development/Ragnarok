@@ -39,7 +39,7 @@ module.exports = {
             u.s +
             ' seconds';
 
-        let ping = Math.round(bot.ws.ping)
+        let ping = Math.round(bot.ws.ping);
         si.mem().then(data => totalMemory  = Math.floor(data.total / 1024 / 1024));
         si.mem().then(data => swapMem = Math.floor(data.swapused / 1024 / 1024));
         si.mem().then(data => cachedMem = Math.floor(data.cached / 1024 / 1024));
