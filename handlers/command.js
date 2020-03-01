@@ -15,6 +15,7 @@ module.exports = bot => {
 	[
 		'fun',
 		'generators',
+		'hidden',
 		'informative',
 		'moderation',
 		'owner',
