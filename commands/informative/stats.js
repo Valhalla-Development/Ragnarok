@@ -11,6 +11,7 @@ module.exports = {
     },
     run: async (bot, message) => {
 
+        console.time();
         function convertMS(ms) {
             let d, h, m, s;
             s = Math.floor(ms / 1000);
@@ -42,10 +43,11 @@ module.exports = {
         const msg = await message.channel.send('Generating...');
         message.channel.startTyping();
         let ping = Math.round(bot.ws.ping);
-        await si.mem().then(data => totalMemory = Math.floor(data.total / 1024 / 1024));
-        await si.mem().then(data => swapMem = Math.floor(data.swapused / 1024 / 1024));
-        await si.mem().then(data => cachedMem = Math.floor(data.cached / 1024 / 1024));
-        await si.mem().then(data => memoryUsed = Math.floor(data.used / 1024 / 1024));
+        const memory = await si.mem();
+        const totalMemory = Math.floor(memory.total / 1024 / 1024);
+        const swapMem = Math.floor(memory.swapused / 1024 / 1024);
+        const cachedMem = Math.floor(memory.cached / 1024 / 1024);
+        const memoryUsed = Math.floor(memory.used / 1024 / 1024);
         let realMemUsed = Math.floor(cachedMem - swapMem + memoryUsed);
         let memPercent = Math.floor(realMemUsed / totalMemory * 100);
         await si.currentLoad().then(data => cpuUsage = Math.floor(data.currentload_user));
@@ -79,7 +81,7 @@ module.exports = {
                 inline: true
             }, {
                 name: 'Users',
-                value: bot.users.cache.size,
+                value: `${(bot.users.cache.size).toLocaleString('en')}`,
                 inline: true
             }, {
                 name: 'Versions',
@@ -87,7 +89,7 @@ module.exports = {
                 inline: true
             }, {
                 name: 'Guilds',
-                value: bot.guilds.cache.size,
+                value: `${(bot.guilds.cache.size).toLocaleString('en')}`,
                 inline: true
             }, {
                 name: 'Announcements',
@@ -95,6 +97,8 @@ module.exports = {
             });
         message.channel.send(serverembed);
         message.channel.stopTyping();
+        // currently takes 6 seconds to send the embed, no idea how to fix lmao
+        console.timeEnd();
 
     },
 };
