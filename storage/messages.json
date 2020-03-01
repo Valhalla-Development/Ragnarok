@@ -10,6 +10,9 @@
       "no_response": "I'd rather not respond to this question",
       "noArguments": ":x: **Incorrect usage! Please use `${prefix}8ball <question>`**"
     },
+    "a4k": {
+      "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}a4k <search>`**"
+    },
     "steam": {
       "noArguments": ":x: **Incorrect usage! Please use `${prefix}steam <username>`**"
     },
