@@ -8,9 +8,7 @@ module.exports = async (bot, guild) => {
 		} members!`
 	);
 	bot.user.setActivity(
-		`${prefix}help | ${bot.guilds.cache.size} Guilds ${
-			bot.users.cache.size
-		} Users`,
+		`${prefix}help | ${(bot.guilds.cache.size).toLocaleString('en')} Guilds ${(bot.users.cache.size).toLocaleString('en')} Users`,
 		{
 			type: 'WATCHING',
 		}

@@ -26,10 +26,10 @@ module.exports = {
 				{ name: 'Owner', value: message.guild.owner.user.tag, inline: true },
 				{ name: 'Region', value: message.guild.region, inline: true },
 				{ name: 'Channels', value: message.guild.channels.cache.size, inline: true },
-				{ name: 'Members', value: message.guild.memberCount, inline: true },
-				{ name: 'Humans', value: message.guild.memberCount - message.guild.members.cache.filter(m => m.user.bot).size, inline: true },
+				{ name: 'Members', value: `${(message.guild.memberCount).toLocaleString('en')}`, inline: true},
+				{ name: 'Humans', value: `${(message.guild.memberCount - message.guild.members.cache.filter(m => m.user.bot).size).toLocaleString('en')}`, inline: true },
 				{ name: 'Bots', value: message.guild.members.cache.filter(m => m.user.bot).size, inline: true },
-				{ name: 'Online', value: online.size, inline: true },
+				{ name: 'Online', value: `${(online.size).toLocaleString('en')}`, inline: true },
 				{ name: 'Roles', value: message.guild.roles.cache.size, inline: true });
 		message.channel.send(serverembed);
 	},
