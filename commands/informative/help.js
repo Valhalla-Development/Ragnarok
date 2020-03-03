@@ -33,7 +33,7 @@ module.exports = {
         arr.push(
           bot.commands
             .filter((c) => c.config.category === types[i].toLowerCase())
-            .map((c) => `\`${c.config.name}\``)
+            .map((c) => `\`${c.config.name.charAt(0).toUpperCase() + c.config.name.substring(1)}\``)
             .join(' '),
         );
         try {
@@ -60,13 +60,15 @@ module.exports = {
       if (command.accessableby === 'Owner') {
         return;
       }
+      const lower = command.name;
+      const upper = lower.charAt(0).toUpperCase() + lower.substring(1);
 
       embed
         .setColor('RANDOM')
         .setAuthor(bot.user.username, bot.user.avatarURL())
         .setDescription(
           `The bot prefix is: ${prefix}\n\n**Command:** \`${
-            command.name
+            upper
           }\`\n**Description:** \`${command.description || 'No Description'}\`\n**Usage:** \`${cUsagePrefix || 'No Usage'}\`\n**Accessable by:** \`${command.accessableby || 'Members'}\`\n**Aliases:** \`${
             command.aliases ? command.aliases.join(', ') : 'None'
           }\``,
