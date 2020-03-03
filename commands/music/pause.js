@@ -1,11 +1,10 @@
 module.exports = {
   config: {
     name: 'pause',
-    usage: '${prefix}pause/resume',
+    usage: '${prefix}pause',
     category: 'music',
-    description: 'Pauses/resume the bot playback.',
+    description: 'Pauses the bot playback.',
     accessableby: 'Everyone',
-    aliases: ['resume'],
   },
   run: (bot, message) => {
     const player = bot.music.players.get(message.guild.id);
@@ -16,6 +15,6 @@ module.exports = {
 
 
     player.pause(player.playing);
-    return message.channel.send(`Player is now ${player.playing ? 'resumed' : 'paused'}.`);
+    return message.channel.send('Player is now paused.');
   },
 };
