@@ -1,8 +1,8 @@
-const { prefix, color, logging } = require('../../storage/config.json');
+const { MessageEmbed } = require('discord.js');
 const moment = require('moment');
 const SQLite = require('better-sqlite3');
+const { prefix, color, logging } = require('../../storage/config.json');
 const db = new SQLite('./storage/db/db.sqlite');
-const { MessageEmbed } = require('discord.js');
 const coinCooldown = new Set();
 const coinCooldownSeconds = 5;
 const xpCooldown = new Set();
@@ -123,34 +123,29 @@ module.exports = async (bot, message) => {
 
   // Ads protection checks
   if (
-    message.content.includes('https://')
-		|| message.content.includes('http://')
-	   || message.content.includes('discord.gg')
-	   || message.content.includes('discord.me')
-	   || message.content.includes('discord.io')
-	 ) {
-	   const adsprot = db
-		 .prepare('SELECT count(*) FROM adsprot WHERE guildid = ?')
-		 .get(message.guild.id);
-	   if (!adsprot['count(*)']) {
-		 return;
-	   }
-	   if (message.member.hasPermission('MANAGE_GUILD')) {
-		 return;
-	   }
-	   message.delete();
-	   message.channel
-		 .send(
-		   `**Your message contained a link and it was deleted, <@${
-			 message.author.id
-		   }>**`,
-		 )
-		 .then((msg) => {
-		   msg.delete({
-			 timeout: 10000,
-		   });
-		 });
-	 }
+    message.content.includes('https://') || message.content.includes('http://') || message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')
+  ) {
+    const adsprot = db
+      .prepare('SELECT count(*) FROM adsprot WHERE guildid = ?')
+      .get(message.guild.id);
+    if (!adsprot['count(*)']) {
+      return;
+    }
+    if (message.member.hasPermission('MANAGE_GUILD')) {
+      return;
+    }
+    message.delete();
+    message.channel.send(
+      `**Your message contained a link and it was deleted, <@${
+        message.author.id
+      }>**`,
+    )
+      .then((msg) => {
+        msg.delete({
+          timeout: 10000,
+        });
+      });
+  }
 
 
   const cmd = args.shift().toLowerCase();
@@ -159,52 +154,39 @@ module.exports = async (bot, message) => {
   if (commandfile) commandfile.run(bot, message, args, color);
 
   // Dad Bot (This is placed after line 50, therefore it does not work, this is on purpose, create a command that lets people enable or disable this module, default being OFF)
-  /*
-	if (
-		message.content.toLowerCase().startsWith('im ') ||
-		message.content.toLowerCase().startsWith('i\'m ')
-	) {
-		if (args.length > 5) {
-			return;
-		}
-		if (args[0] === undefined) {
-			return;
-		}
-		else if (message.content.includes('https://')) {
-			message.channel.send('Hi unloved virgin, I\'m Dad!');
-		}
-		else if (message.content.includes('http://')) {
-			message.channel.send('Hi unloved virgin, I\'m Dad!');
-		}
-		else if (message.content.includes('discord.gg')) {
-			message.channel.send('Hi unloved virgin, I\'m Dad!');
-		}
-		else if (message.content.includes('discord.me')) {
-			message.channel.send('Hi unloved virgin, I\'m Dad!');
-		}
-		else if (message.content.includes('discord.io')) {
-			message.channel.send('Hi unloved virgin, I\'m Dad!');
-		}
-		else if (message.content.includes('@everyone')) {
-			message.channel.send('Hi unloved virgin, I\'m Dad!');
-		}
-		else if (message.content.includes('@here')) {
-			message.channel.send('Hi unloved virgin, I\'m Dad!');
-		}
-		else if (message.content.toLowerCase().includes('`')) {
-			message.channel.send('Hi unloved virgin, I\'m Dad!');
-		}
-		else if (
-			message.content.toLowerCase().startsWith('im dad') ||
-			message.content.toLowerCase().startsWith('i\'m dad')
-		) {
-			message.channel.send('No, I\'m Dad!');
-		}
-		else {
-			message.channel.send(`Hi ${oargresult}, I'm Dad!`);
-		}
-	}
-	*/
+
+  /* if (
+    message.content.toLowerCase().startsWith('im ') || message.content.toLowerCase().startsWith('i\'m ')) {
+    if (args.length > 5) {
+      return;
+    }
+    if (args[0] === undefined) {
+      return;
+    }
+    if (message.content.includes('https://')) {
+      message.channel.send('Hi unloved virgin, I\'m Dad!');
+    } else if (message.content.includes('http://')) {
+      message.channel.send('Hi unloved virgin, I\'m Dad!');
+    } else if (message.content.includes('discord.gg')) {
+      message.channel.send('Hi unloved virgin, I\'m Dad!');
+    } else if (message.content.includes('discord.me')) {
+      message.channel.send('Hi unloved virgin, I\'m Dad!');
+    } else if (message.content.includes('discord.io')) {
+      message.channel.send('Hi unloved virgin, I\'m Dad!');
+    } else if (message.content.includes('@everyone')) {
+      message.channel.send('Hi unloved virgin, I\'m Dad!');
+    } else if (message.content.includes('@here')) {
+      message.channel.send('Hi unloved virgin, I\'m Dad!');
+    } else if (message.content.toLowerCase().includes('`')) {
+      message.channel.send('Hi unloved virgin, I\'m Dad!');
+    } else if (
+      message.content.toLowerCase().startsWith('im dad') || message.content.toLowerCase().startsWith('i\'m dad')) {
+      message.channel.send('No, I\'m Dad!');
+    } else {
+      message.channel.send(`Hi ${oargresult}, I'm Dad!`);
+    }
+  } */
+
 
   // Logging
   if (logging === true) {

@@ -30,11 +30,11 @@ module.exports = async (bot) => {
   // Music
 
   class LavalinkClient extends ErelaClient {
-	sendWS(data) {
-	const guild = this.client.guilds.cache.get(data.d.guild_id);
-	  if (guild) return this.client.ws.shards.get(guild.shardID).send(data);
-	}
-  };
+    sendWS(data) {
+      const guild = this.client.guilds.cache.get(data.d.guild_id);
+      if (guild) return this.client.ws.shards.get(guild.shardID).send(data);
+    }
+  }
 
   bot.music = new LavalinkClient(bot, nodes)
     .on('nodeError', console.log)
@@ -46,10 +46,10 @@ module.exports = async (bot) => {
     .on('trackStart', ({ textChannel }, { title, duration }) => textChannel.send(`Now playing: **${title}** \`${Utils.formatTime(duration, true)}\``).then((m) => m.delete({ timeout: 15000 })));
 
   bot.levels = new Map()
-	    .set('none', 0.0)
-	    .set('low', 0.10)
-	    .set('medium', 0.15)
-	    .set('high', 0.25);
+    .set('none', 0.0)
+    .set('low', 0.10)
+    .set('medium', 0.15)
+    .set('high', 0.25);
 
   // Database Creation
   // RoleMenu Table
