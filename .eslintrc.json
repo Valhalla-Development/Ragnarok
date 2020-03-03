@@ -19,6 +19,14 @@
         "import/newline-after-import": "off",
         "consistent-return": "off",
         "default-case": "off",
-        "no-plusplus": "off"
+        "no-plusplus": "off",
+        "no-bitwise": "off",
+        "no-param-reassign": "off",
+        "radix": "off",
+        "max-len": "off",
+        "no-restricted-syntax": "off",
+        "no-useless-return": "off",
+        "no-shadow": "off",
+        "no-console": "off"
     }
 }
