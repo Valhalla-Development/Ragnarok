@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 
@@ -8,6 +9,7 @@ module.exports = {
     category: 'fun',
     description: 'Fetches a random Doctor Who meme!',
     accessableby: 'Everyone',
+    aliases: ['drwho'],
   },
   run: async (bot, message) => {
     const msg = await message.channel.send('Generating...');
