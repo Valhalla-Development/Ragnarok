@@ -9,5 +9,8 @@
   "prefix": "-",
   "logging": true,
   "color": "RED",
-  "idiotToken": "REDACTED"
+  "idiotToken": "REDACTED",
+  "nodes": [
+    { "host": "localhost", "port": "2333", "password": "youshallnotpass" }
+  ]
 }
