@@ -1,4 +1,3 @@
-/* jshint -W083 */
 const { readdirSync } = require('fs');
 
 module.exports = bot => {
@@ -18,6 +17,7 @@ module.exports = bot => {
 		'hidden',
 		'informative',
 		'moderation',
+		'music',
 		'owner',
 		'ticket',
 	].forEach(x => load(x));
