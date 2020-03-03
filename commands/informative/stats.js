@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 const { MessageEmbed } = require('discord.js');
 const si = require('systeminformation');
 const { version } = require('discord.js');
@@ -44,10 +45,9 @@ module.exports = {
     const ping = Math.round(bot.ws.ping);
     const memory = await si.mem();
     const totalMemory = Math.floor(memory.total / 1024 / 1024);
-    const swapMem = Math.floor(memory.swapused / 1024 / 1024);
-    const cachedMem = Math.floor(memory.cached / 1024 / 1024);
+    const cachedMem = Math.floor(memory.buffcache / 1024 / 1024);
     const memoryUsed = Math.floor(memory.used / 1024 / 1024);
-    const realMemUsed = Math.floor(cachedMem - swapMem + memoryUsed);
+    const realMemUsed = Math.floor(memoryUsed - cachedMem);
     const memPercent = Math.floor((realMemUsed / totalMemory) * 100);
     const load = await si.currentLoad();
     const cpuUsage = Math.floor(load.currentload_user);
