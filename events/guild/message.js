@@ -150,6 +150,7 @@ module.exports = async (bot, message) => {
 
   const cmd = args.shift().toLowerCase();
   const commandfile = bot.commands.get(cmd) || bot.commands.get(bot.aliases.get(cmd));
+  if (!commandfile) return;
   if (!message.content.startsWith(prefixcommand)) return;
   if (commandfile) commandfile.run(bot, message, args, color);
 
