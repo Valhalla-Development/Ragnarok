@@ -76,7 +76,7 @@ module.exports = async (bot, message) => {
     }
   }
 
-  // Scores (level)
+  /* // Scores (level)
   let score;
   if (message.guild) {
     score = bot.getScore.get(message.author.id, message.guild.id);
@@ -120,6 +120,7 @@ module.exports = async (bot, message) => {
       xpCooldown.delete(message.author.id);
     }, xpCooldownSeconds * 1000);
   }
+  */
 
   // Ads protection checks
   if (
