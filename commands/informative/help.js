@@ -24,6 +24,7 @@ module.exports = {
       'Generators',
       'Informative',
       'Moderation',
+      'Music',
       'Ticket',
     ];
     const embed = new MessageEmbed();
