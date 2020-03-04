@@ -9,6 +9,8 @@ const xpCooldown = new Set();
 const xpCooldownSeconds = 60;
 
 module.exports = async (bot, message) => {
+  if (bot.guilds.cache.get('343572980351107077')) return; // REMOVE, this is for bug testing
+
   if (message.author.bot || message.channel.type === 'dm') return;
 
   // Custom prefixes
@@ -123,8 +125,10 @@ module.exports = async (bot, message) => {
   */
 
   // Ads protection checks
+  // message.content.includes('https://') || message.content.includes('http://') || 
+  // above is removed because it blocks because it returs bruh
   if (
-    message.content.includes('https://') || message.content.includes('http://') || message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')
+    message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')
   ) {
     const adsprot = db
       .prepare('SELECT count(*) FROM adsprot WHERE guildid = ?')
