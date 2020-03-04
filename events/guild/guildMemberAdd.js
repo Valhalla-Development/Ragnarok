@@ -4,6 +4,8 @@ const { color, prefix } = require('../../storage/config.json');
 const db = new SQLite('./storage/db/db.sqlite');
 
 module.exports = async (bot, member) => {
+  if (bot.guilds.cache.get('343572980351107077')) return; // REMOVE, this is for bug testing
+
   bot.user.setActivity(
     `${prefix}help | ${(bot.guilds.cache.size).toLocaleString('en')} Guilds ${(bot.users.cache.size).toLocaleString('en')} Users`,
     {
