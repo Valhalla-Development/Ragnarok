@@ -2,6 +2,8 @@ const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
 
 module.exports = async (bot, oldMessage, newMessage) => {
+  if (bot.guilds.cache.get('343572980351107077')) return; // REMOVE, this is for bug testing
+
   if (
     newMessage.content.includes('https://') || newMessage.content.includes('http://') || newMessage.content.includes('discord.gg') || newMessage.content.includes('discord.me') || newMessage.content.includes('discord.io')
   ) {

@@ -3,6 +3,8 @@ const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
 
 module.exports = async (bot, message) => {
+  if (bot.guilds.cache.get('343572980351107077')) return; // REMOVE, this is for bug testing
+
   if (message.author.bot) return;
   const id = db
     .prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`)
