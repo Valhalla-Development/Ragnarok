@@ -1,4 +1,7 @@
 const { MessageEmbed } = require('discord.js');
+const SQLite = require('better-sqlite3');
+const db = new SQLite('./storage/db/db.sqlite');
+const language = require('../../storage/messages.json');
 
 module.exports = {
   config: {
@@ -11,6 +14,34 @@ module.exports = {
   },
 
   run: async (bot, message, args) => {
+    const prefixgrab = db
+      .prepare('SELECT prefix FROM setprefix WHERE guildid = ?')
+      .get(message.guild.id);
+    const { prefix } = prefixgrab;
+
+    const dlRoleGrab = db
+      .prepare(
+        `SELECT role FROM music WHERE guildid = ${message.guild.id}`,
+      )
+      .get();
+
+    let role;
+    if (dlRoleGrab) {
+      role = message.guild.roles.cache.find((r) => r.id === dlRoleGrab.role);
+    } else {
+      role = message.guild.roles.cache.find((x) => x.name === 'DJ');
+    }
+
+    if (!role) {
+      const noRoleMessage = language.music.noRole;
+      const noRolePrefix = noRoleMessage.replace('${prefix}', prefix);
+      const noRoleF = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(`${noRolePrefix}`);
+      message.channel.send(noRoleF);
+      return;
+    }
+
     const player = bot.music.players.get(message.guild.id);
     if (!player) {
       return message.channel.send({
@@ -20,11 +51,19 @@ module.exports = {
         },
       }).catch((err) => message.channel.send(err.message));
     }
+
+    if (player.queue.length < 1) return message.channel.send('**:x: There is no queue**');
+
     const { title, requester, uri } = player.queue[0];
 
     const { queue } = player;
 
-    if (player.queue.length < 1) return message.channel.send('**:x: Nothing playing in this server**');
+    if (args[0] === 'clear') {
+      if (player.queue.length < 1) return message.channel.send('**:x: Nothing playing in this server**');
+      player.queue.clear()
+      message.channel.send('Queue cleared')
+      return;
+    }
 
     if (!player.queue[1]) {
       return message.channel.send('', {

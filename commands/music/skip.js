@@ -1,3 +1,8 @@
+const { MessageEmbed } = require('discord.js');
+const SQLite = require('better-sqlite3');
+const db = new SQLite('./storage/db/db.sqlite');
+const language = require('../../storage/messages.json');
+
 module.exports = {
   config: {
     name: 'skip',
@@ -8,13 +13,90 @@ module.exports = {
     aliases: ['next'],
   },
   run: (bot, message) => {
-    const player = bot.music.players.get(message.guild.id);
-    if (!player) return message.channel.send('No song/s currently playing in this guild.');
+    const prefixgrab = db
+      .prepare('SELECT prefix FROM setprefix WHERE guildid = ?')
+      .get(message.guild.id);
+    const { prefix } = prefixgrab;
 
+    const dlRoleGrab = db
+      .prepare(
+        `SELECT role FROM music WHERE guildid = ${message.guild.id}`,
+      )
+      .get();
+
+    let role;
+    if (dlRoleGrab) {
+      role = message.guild.roles.cache.find((r) => r.id === dlRoleGrab.role);
+    } else {
+      role = message.guild.roles.cache.find((x) => x.name === 'DJ');
+    }
+
+    if (!role) {
+      const noRoleMessage = language.music.noRole;
+      const noRolePrefix = noRoleMessage.replace('${prefix}', prefix);
+      const noRoleF = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(`${noRolePrefix}`);
+      message.channel.send(noRoleF).then((msg) => msg.delete({
+        timeout: 15000,
+      }));
+      message.delete({
+        timeout: 15000,
+      });
+      return;
+    }
+
+    if (
+      !message.member.roles.cache.has(role.id) && message.author.id !== message.guild.ownerID) {
+      const donthaveroleMessage = language.music.donthaveRole;
+      const donthaverolerole = donthaveroleMessage.replace('${role}', role);
+      const donthaveRole = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(`${donthaverolerole}`);
+      message.channel.send(donthaveRole);
+      return;
+    }
+
+    const player = bot.music.players.get(message.guild.id);
     const { channel } = message.member.voice;
-    if (!channel || channel.id !== player.voiceChannel.id) return message.channel.send('You need to be in a voice channel to use the skip command.');
+
+    if (!player) {
+      const notplaying = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(`${language.music.noPlaying}`);
+      message.channel.send(notplaying).then((msg) => msg.delete({
+        timeout: 15000,
+      }));
+      message.delete({
+        timeout: 15000,
+      });
+      return;
+    }
+
+    if (!channel || channel.id !== player.voiceChannel.id) {
+      const novoice = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(`${language.music.notinVoice}`);
+      message.channel.send(novoice).then((msg) => msg.delete({
+        timeout: 15000,
+      }));
+      message.delete({
+        timeout: 15000,
+      });
+      return;
+    }
 
     player.stop();
-    return message.channel.send('Skipped the current song!');
+    if (player.queue.length < 1) return bot.music.players.destroy(message.guild.id);
+    const stop = new MessageEmbed()
+      .setColor('36393F')
+      .setDescription(`${language.music.skip}`);
+    message.channel.send(stop).then((msg) => msg.delete({
+      timeout: 15000,
+    }));
+    message.delete({
+      timeout: 15000,
+    });
+    return;
   },
 };

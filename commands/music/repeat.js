@@ -1,4 +1,8 @@
 const { MessageEmbed } = require('discord.js');
+const SQLite = require('better-sqlite3');
+const db = new SQLite('./storage/db/db.sqlite');
+const language = require('../../storage/messages.json');
+
 module.exports = {
   config: {
     name: 'repeat',
@@ -9,6 +13,32 @@ module.exports = {
   },
 
   run: async (client, message, args) => {
+    const dlRoleGrab = db
+      .prepare(
+        `SELECT role FROM music WHERE guildid = ${message.guild.id}`,
+      )
+      .get();
+
+    const dlRole = message.guild.roles.cache.find((x) => x.name === 'DJ') || message.guild.roles.cache.find((r) => r.id === dlRoleGrab.role);
+    if (!dlRole) {
+      const noRoleF = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(`${language.music.nodjRole}`);
+      message.channel.send(noRoleF);
+      return;
+    }
+
+    if (
+      !message.member.roles.cache.has(dlRole.id) && message.author.id !== message.guild.ownerID) {
+      const donthaveroleMessage = language.music.donthaveRole;
+      const role = donthaveroleMessage.replace('${role}', dlRole);
+      const donthaveRole = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(`${role}`);
+      message.channel.send(donthaveRole);
+      return;
+    }
+
     if (!args[0]) {
       const player = client.music.players.get(message.guild.id);
       const { channel } = message.member.voice;
