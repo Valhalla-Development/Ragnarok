@@ -3,6 +3,8 @@ const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
 
 module.exports = async (bot, event) => {
+  if (bot.guilds.cache.get('343572980351107077')) return; // REMOVE, this is for bug testing
+
   const eventType = event.t;
   const data = event.d;
   if (eventType === 'MESSAGE_DELETE') {
