@@ -24,7 +24,7 @@ module.exports = {
     if (args[0] === undefined) {
       const undeembed = new MessageEmbed()
         .setColor(0xcf40fa)
-        .addFields({ name: 'Ragnarok - Config', value: `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Sets the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config ticket role](): Sets custom support role for ticket system\n[${prefix}config welcome]() : Sets the welcome channel\n[${prefix}config rolemenu add]() : Sets the role menu roles\n[${prefix}config rolemenu remove]() : Removes a role from rolemenu\n[${prefix}config rolemenu clear]() : Removes all roles from rolemenu` });
+        .addFields({ name: 'Ragnarok - Config', value: `[${prefix}config adsprot]() : Enables/Disabled advert protection\n[${prefix}config autorole]() : Sets the role users are given when they join the guild\n[${prefix}config logging]() : Sets the logging channel\n[${prefix}config prefix]() : Sets the guild prefix\n[${prefix}config ticket cat]() : Sets the ticket category\n[${prefix}config ticket log](): Enables ticket logging\n[${prefix}config ticket role](): Sets custom support role for ticket system\n[${prefix}config welcome]() : Sets the welcome channel\n[${prefix}config rolemenu add]() : Sets the role menu roles\n[${prefix}config rolemenu remove]() : Removes a role from rolemenu\n[${prefix}config rolemenu clear]() : Removes all roles from rolemenu\n[${prefix}config music role <@role>]() : Sets the DJ role\n[${prefix}config music role off]() : Disabled the DJ role` });
       message.channel.send({
         embed: undeembed,
       });
@@ -751,6 +751,76 @@ module.exports = {
               `:white_check_mark: | **Welcome channel updated to ${lchan}**`,
             );
           }
+        }
+      }
+    }
+    // Music
+    if (args[0] === 'music') {
+      if (args[1] === undefined) {
+        const usage = new MessageEmbed()
+          .setColor('RANDOM')
+          .setDescription(
+            `**USAGE:**\n\nTo set the music role, the command is \`${prefix}config music role <@role>\`\nTo disable the role, use \`${prefix}config music role off\``,
+          );
+        message.channel.send(usage);
+        return;
+      }
+      if (args[1] === 'role') {
+        if (
+          !message.member.hasPermission('MANAGE_GUILD') && message.author.id !== ownerID) {
+          return message.channel.send(`${language.music.noPermission}`);
+        }
+
+        bot.getTable = db.prepare('SELECT * FROM music WHERE guildid = ?');
+
+        let status;
+        if (message.guild.id) {
+          status = bot.getTable.get(message.guild.id);
+
+          const djRole = message.mentions.roles.first();
+
+          if (message.mentions.roles.size <= 0 && args[2] !== 'off') {
+            return message.channel.send(':x: | A role must be mentioned');
+          }
+          if (args[2] === 'off') {
+            const update = db.prepare(
+              'UPDATE music SET role = (@role) WHERE guildid = (@guildid)',
+            );
+            update.run({
+              guildid: `${message.guild.id}`,
+              role: null,
+            });
+            message.channel.send(
+              ':white_check_mark: | **Custom DJ Role disabled!**',
+            );
+            return;
+          }
+
+          if (!status) {
+            const update = db.prepare(
+              'INSERT INTO music (role, guildid) VALUES (@role, @guildid);',
+            );
+            update.run({
+              guildid: `${message.guild.id}`,
+              role: `${djRole.id}`,
+            });
+            message.channel.send(
+              `:white_check_mark: | **DJ Role updated to ${djRole}**`,
+            );
+            return;
+          }
+
+          const update = db.prepare(
+            'UPDATE music SET role = (@role) WHERE guildid = (@guildid);',
+          );
+          update.run({
+            guildid: `${message.guild.id}`,
+            role: `${djRole.id}`,
+          });
+          message.channel.send(
+            `:white_check_mark: | **DJ Role updated to ${djRole}**`,
+          );
+          return;
         }
       }
     }
