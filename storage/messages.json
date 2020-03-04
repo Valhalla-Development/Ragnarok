@@ -159,6 +159,21 @@
       "noInput": ":x: **You did not specify a suggestion!**",
       "bugLogged": ":white_check_mark: **Suggestion successfully logged!**"
     },
+    "music": {
+      "noRole": ":x: Sorry, I could not find a role name `DJ`, if you would prefer you could set a custom role as the DJ, check the command command `${prefix}config` for more information.",
+      "donthaveRole": ":x: Sorry! You do not have the **${role}** role.",
+      "noPermission": ":x: **Only users with `MANAGE_GUILD` can use this command!**",
+      "pausing": "<:MusicLogo:684822003110117466> Pausing playback.",
+      "alreadypaused": "<:MusicLogo:684822003110117466> Player is already paused!.",
+      "noPlaying": "<:MusicLogo:684822003110117466> No song is currently playing.",
+      "notinVoice": ":x: You need to be in a voice channel to use this command!",
+      "lefttheChannel": "<:MusicLogo:684822003110117466> Music playback has been stopped.",
+      "nobotPerms": ":x: I cannot connect to your voice channel, make sure I have permissions!",
+      "noArgs": ":x: Please provide an URL or a search term.",
+      "skip": "<:MusicLogo:684822003110117466> Skipped the current song.",
+      "talkedRecently": ":x: Slow down! There is a 30 second cooldown for this command!\nDJ's are exempt from the cooldown.",
+      "talkedRecentlyRemove": ":slight_smile: You can now use the play command again."
+    },
     "tickets": {
       "nomodRole": ":x: This server doesn't have a `Support Team` role made, so the ticket won't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.",
       "donthaveRole": ":x: Sorry! You do not have the **${role}** role.",
