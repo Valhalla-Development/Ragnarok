@@ -1,3 +1,4 @@
+const { MessageEmbed } = require('discord.js');
 const { ErelaClient, Utils } = require('erela.js');
 const SQLite = require('better-sqlite3');
 const { prefix, nodes } = require('../../storage/config.json');
@@ -43,7 +44,13 @@ module.exports = async (bot) => {
       player.textChannel.send('Queue has ended.');
       return bot.music.players.destroy(player.guild.id);
     })
-    .on('trackStart', ({ textChannel }, { title, duration }) => textChannel.send(`Now playing: **${title}** \`${Utils.formatTime(duration, true)}\``).then((m) => m.delete({ timeout: 15000 })));
+    .on('trackStart', ({ textChannel }, { title, duration }) => {
+      const embed = new MessageEmbed()
+        .setAuthor('Now Playing:', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
+        .setColor('36393F')
+        .setDescription(`Now playing: \`${title}\`\nDuration: \`${Utils.formatTime(duration, true)}\``);
+      textChannel.send(embed);
+    });
 
   bot.levels = new Map()
     .set('none', 0.0)
@@ -52,6 +59,23 @@ module.exports = async (bot) => {
     .set('high', 0.25);
 
   // Database Creation
+  // Music Table
+  const music = db
+    .prepare(
+      'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'music\';',
+    )
+    .get();
+  if (!music['count(*)']) {
+    console.log('music table created!');
+    db.prepare(
+      'CREATE TABLE music (guildid TEXT PRIMARY KEY, role TEXT, channel BLOB);',
+    ).run();
+    db.prepare(
+      'CREATE UNIQUE INDEX idx_music_id ON music (guildid);',
+    ).run();
+    db.pragma('synchronous = 1');
+    db.pragma('journal_mode = wal');
+  }
   // RoleMenu Table
   const rolemenu = db
     .prepare(
