@@ -87,24 +87,22 @@ module.exports = async (bot, message) => {
         user: message.author.id,
         guild: message.guild.id,
         points: 0,
-        level: 1,
+        level: 0,
       };
     }
     const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
     const curxp = score.points; // Current points
     const curlvl = score.level; // Current level
-    const nxtLvl = (5 / 6 * score.level * (2 * score.level * score.level + 27 * score.level + 91));
+    const levelNoMinus = score.level + 1;
+    const nxtLvl = (5 / 6 * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91));
     score.points = curxp + xpAdd;
     if (nxtLvl <= score.points) {
       score.level = curlvl + 1;
       const lvlup = new MessageEmbed()
-        .setAuthor(
-          `Congrats ${message.author.username}`,
-          message.author.displayAvatarURL(),
-        )
-        .setTitle('You have leveled up!')
-        .setColor(color)
-        .addFields({ name: 'New Level', value: curlvl });
+        .setAuthor(`Congratulations ${message.author.username}`)
+        .setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
+        .setColor('36393F')
+        .setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
       message.channel.send(lvlup).then((msg) => {
         msg.delete({
           timeout: 10000,
@@ -119,7 +117,6 @@ module.exports = async (bot, message) => {
       xpCooldown.delete(message.author.id);
     }, xpCooldownSeconds * 1000);
   }
-
 
   // Ads protection checks
   // message.content.includes('https://') || message.content.includes('http://') ||
