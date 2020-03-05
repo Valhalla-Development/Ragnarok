@@ -54,15 +54,54 @@ module.exports = {
     }
 
     const player = bot.music.players.get(message.guild.id);
-    if (!player) return message.channel.send('No song/s currently playing within this guild.');
-
     const { channel } = message.member.voice;
-    if (!channel || channel.id !== player.voiceChannel.id) return message.channel.send('You need to be in a voice channel to adjust the volume.');
 
-    if (!args[0]) return message.channel.send(`Current Volume: ${player.volume}`);
-    if (Number(args[0]) <= 0 || Number(args[0]) > 100) return message.channel.send('You may only set the volume to 1-100');
+    if (!player) {
+      const notplaying = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(`${language.music.noPlaying}`);
+      message.channel.send(notplaying).then((msg) => msg.delete({
+        timeout: 15000,
+      }));
+      message.delete({
+        timeout: 15000,
+      });
+      return;
+    }
+
+    if (!channel || channel.id !== player.voiceChannel.id) {
+      const novoice = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(`${language.music.notinVoice}`);
+      message.channel.send(novoice).then((msg) => msg.delete({
+        timeout: 15000,
+      }));
+      message.delete({
+        timeout: 15000,
+      });
+      return;
+    }
+
+    if (!args[0]) {
+      const volume = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(`${language.music.currentVol} \`${player.volume}\``);
+      message.channel.send(volume);
+      return;
+    }
+    if (Number(args[0]) <= 0 || Number(args[0]) > 100) {
+      const badVol = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(`${language.music.volLim}`);
+      message.channel.send(badVol);
+      return;
+    }
 
     player.setVolume(Number(args[0]));
-    return message.channel.send(`Successfully set the volume to: ${args[0]}`);
+    const newVol = new MessageEmbed()
+      .setColor('36393F')
+      .setDescription(`${language.music.newVol} \`${args[0]}\``);
+    message.channel.send(newVol);
+    return;
   },
 };

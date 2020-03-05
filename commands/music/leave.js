@@ -10,7 +10,7 @@ module.exports = {
     category: 'music',
     description: 'Makes the bot leave the voice channel.',
     accessableby: 'Everyone',
-    aliases: ['stop', 'fuckoff'],
+    aliases: ['stop', 'fuckoff', 'stop'],
   },
   run: async (bot, message) => {
     const prefixgrab = db

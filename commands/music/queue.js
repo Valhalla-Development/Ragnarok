@@ -38,30 +38,57 @@ module.exports = {
       const noRoleF = new MessageEmbed()
         .setColor('36393F')
         .setDescription(`${noRolePrefix}`);
-      message.channel.send(noRoleF);
+      message.channel.send(noRoleF).then((msg) => msg.delete({
+        timeout: 15000,
+      }));
+      message.delete({
+        timeout: 15000,
+      });
       return;
     }
 
     const player = bot.music.players.get(message.guild.id);
     if (!player) {
-      return message.channel.send({
-        embed: {
-          description: 'No song is currently playing in this guild.',
-
-        },
-      }).catch((err) => message.channel.send(err.message));
+      const notplaying = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(`${language.music.noPlaying}`);
+      message.channel.send(notplaying).then((msg) => msg.delete({
+        timeout: 15000,
+      }));
+      message.delete({
+        timeout: 15000,
+      }).catch((err) => message.channel.send(`\`${err.message}\``));
+      return;
     }
 
-    if (player.queue.length < 1) return message.channel.send('**:x: There is no queue**');
+    if (player.queue.length < 1) {
+      const noQueueE = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(language.music.noQueue);
+      message.channel.send(noQueueE);
+      return;
+    }
 
     const { title, requester, uri } = player.queue[0];
 
     const { queue } = player;
 
+    const noQueueE = new MessageEmbed()
+      .setColor('36393F')
+      .setDescription(`${language.music.noQueue}`);
+
+    const clearedE = new MessageEmbed()
+      .setColor('36393F')
+      .setDescription(`${language.music.cleared}`);
+
+
     if (args[0] === 'clear') {
-      if (player.queue.length < 1) return message.channel.send('**:x: Nothing playing in this server**');
-      player.queue.clear()
-      message.channel.send('Queue cleared')
+      if (player.queue.length < 1) {
+        message.channel.send(noQueueE);
+        return;
+      }
+      player.queue.clear();
+      message.channel.send(clearedE);
       return;
     }
 
@@ -69,11 +96,11 @@ module.exports = {
       return message.channel.send('', {
         embed: {
           description: `🎧 Now Playing:\n[${title}](${uri}) [<@${requester.id}>]`,
+          color: '36393F',
           author: {
             name: `${message.guild.name}'s Queue.`,
-            icon_url: message.guild.iconURL,
+            icon_url: 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png',
           },
-          color: 3447003,
         },
       });
     }
@@ -97,6 +124,7 @@ module.exports = {
     embed.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png');
     embed.setAuthor(`${message.guild.name}'s Queue (${Math.floor(x / 10)} / ${Math.floor((player.queue.slice(1).length + 10) / 10)})`);
     embed.setFooter(`Total items in queue: ${player.queue.length}`);
+    embed.setColor('36393F');
     message.channel.send(embed).then(async (msg) => {
       if (Math.floor((player.queue.slice(1).length + 10) / 10) > 1) {
         await msg.react('⏪');

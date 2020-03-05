@@ -42,34 +42,104 @@ module.exports = {
     if (!args[0]) {
       const player = client.music.players.get(message.guild.id);
       const { channel } = message.member.voice;
-      if (!channel) return message.channel.send('Please join a voice channel');
-      if (channel.id !== player.voiceChannel.id) return message.channel.send('You need to be in a voice channel to use the queuerepeat command.');
-      if (!player) return message.channel.send('No songs currently playing');
+      if (!player) {
+        const notplaying = new MessageEmbed()
+          .setColor('36393F')
+          .setDescription(`${language.music.noPlaying}`);
+        message.channel.send(notplaying).then((msg) => msg.delete({
+          timeout: 15000,
+        }));
+        message.delete({
+          timeout: 15000,
+        });
+        return;
+      }
+
+      if (!channel || channel.id !== player.voiceChannel.id) {
+        const novoice = new MessageEmbed()
+          .setColor('36393F')
+          .setDescription(`${language.music.notinVoice}`);
+        message.channel.send(novoice).then((msg) => msg.delete({
+          timeout: 15000,
+        }));
+        message.delete({
+          timeout: 15000,
+        });
+        return;
+      }
+
+      if (!player) {
+        const notplaying = new MessageEmbed()
+          .setColor('36393F')
+          .setDescription(`${language.music.noPlaying}`);
+        message.channel.send(notplaying).then((msg) => msg.delete({
+          timeout: 15000,
+        }));
+        message.delete({
+          timeout: 15000,
+        });
+        return;
+      }
+
       const previousState = player.trackRepeat;
 
       player.setTrackRepeat(!previousState);
       if (!previousState) {
-        message.channel.send('Repeat Mode ON!');
+        player.setTrackRepeat(true);
+        const on = new MessageEmbed()
+          .setDescription(`${language.music.enabled}`)
+          .setColor('36393F');
+        message.channel.send(on);
       } else {
-        message.channel.send('Repeat Mode OFF!');
+        player.setQueueRepeat(false);
+        const off = new MessageEmbed()
+          .setDescription(`${language.music.disabled}`)
+          .setColor('36393F');
+        message.channel.send(off);
       }
     } else if (args[0] === 'queue') {
       const player = client.music.players.get(message.guild.id);
       const { channel } = message.member.voice;
-      if (!channel) return message.channel.send('Please join a voice channel');
-      if (channel.id !== player.voiceChannel.id) return message.channel.send('You need to be in a voice channel to use the queuerepeat command.');
-      if (!player || !player.queue[0]) return message.channel.send('There is no song playing.');
+      if (!channel || channel.id !== player.voiceChannel.id) {
+        const novoice = new MessageEmbed()
+          .setColor('36393F')
+          .setDescription(`${language.music.notinVoice}`);
+        message.channel.send(novoice).then((msg) => msg.delete({
+          timeout: 15000,
+        }));
+        message.delete({
+          timeout: 15000,
+        });
+        return;
+      }
+
+      if (!player || !player.queue[0]) {
+        const notplaying = new MessageEmbed()
+          .setColor('36393F')
+          .setDescription(`${language.music.noPlaying}`);
+        message.channel.send(notplaying).then((msg) => msg.delete({
+          timeout: 15000,
+        }));
+        message.delete({
+          timeout: 15000,
+        });
+        return;
+      }
 
       if (player.queueRepeat === false) {
         player.setQueueRepeat(true);
-        const embed = new MessageEmbed()
-          .setAuthor('Repeating The Queue');
-        return message.channel.send(embed);
+        const on = new MessageEmbed()
+          .setDescription(`${language.music.enabled}`)
+          .setColor('36393F');
+        message.channel.send(on);
+        return;
       }
       player.setQueueRepeat(false);
-      const embed = new MessageEmbed()
-        .setAuthor('Stopped Repeating The Queue');
-      return message.channel.send(embed);
+      const off = new MessageEmbed()
+        .setDescription(`${language.music.disabled}`)
+        .setColor('36393F');
+      message.channel.send(off);
+      return;
     }
   },
 };

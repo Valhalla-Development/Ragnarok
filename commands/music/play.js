@@ -92,6 +92,7 @@ module.exports = {
 
     if (talkedRecently.has(message.author.id)) {
       const talkedRec = new MessageEmbed()
+        .setColor('36393F')
         .setDescription(`${language.music.talkedRecently}`);
       message.channel.send(talkedRec);
     } else {
@@ -150,7 +151,6 @@ module.exports = {
               const track = tracks[Number(m.content) - 1];
               player.queue.add(track);
               if (!player.playing) player.play();
-              if (player.playing) return;
               const trackloade = new MessageEmbed()
                 .setAuthor('Enqueuing Track.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
                 .setColor('36393F')
@@ -190,7 +190,7 @@ module.exports = {
           }
         }
       }).catch((err) => message.channel.send(`\`${err.message}\``));
-      if (message.member.roles.cache.has(role.id) && message.author.id !== message.guild.ownerID) {
+      if (message.member.roles.cache.has(role.id)) {
         return;
       }
       talkedRecently.add(message.author.id);

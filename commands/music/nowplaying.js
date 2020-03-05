@@ -63,15 +63,15 @@ module.exports = {
     }
 
     const {
-      title, author, duration, thumbnail,
+      title, author, duration, requester,
     } = player.queue[0];
 
     const embed = new MessageEmbed()
-      .setAuthor('Current Song Playing.', message.author.displayAvatarURL)
-      .setThumbnail(thumbnail)
+      .setAuthor('Current Song Playing', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
+      .setColor('36393F')
+      .setThumbnail('https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
       .setDescription(stripIndents`
-            ${player.playing ? '▶️' : '⏸️'} **${title}** \`${Utils.formatTime(duration, true)}\` by ${author}
-            `);
+            ${player.playing ? '▶️' : '⏸️'} **${title}** \`${Utils.formatTime(duration, true)}\` by ${author} - Requested by: [<@${requester.id}>]`);
 
     return message.channel.send(embed);
   },

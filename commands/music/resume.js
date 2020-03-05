@@ -52,17 +52,49 @@ module.exports = {
     }
 
     const player = bot.music.players.get(message.guild.id);
-    if (!player) return message.channel.send('No song/s currently playing in this guild.');
 
     const { channel } = message.member.voice;
-    if (!channel || channel.id !== player.voiceChannel.id) return message.channel.send('You need to be in a voice channel to pause music.');
+
+    if (!player) {
+      const notplaying = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(`${language.music.noPlaying}`);
+      message.channel.send(notplaying).then((msg) => msg.delete({
+        timeout: 15000,
+      }));
+      message.delete({
+        timeout: 15000,
+      });
+      return;
+    }
+
+    if (!channel || channel.id !== player.voiceChannel.id) {
+      const novoice = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(`${language.music.notinVoice}`);
+      message.channel.send(novoice).then((msg) => msg.delete({
+        timeout: 15000,
+      }));
+      message.delete({
+        timeout: 15000,
+      });
+      return;
+    }
 
     if (player.playing === false) {
+      const resume = new MessageEmbed()
+        .setDescription(`${language.music.resumeP}`)
+        .setColor('36393F');
+      message.channel.send(resume);
       player.pause(player.playing);
-      return message.channel.send('Resuming playback.');
+      return;
     }
     if (player.playing === true) {
-      return message.channel.send('Player is already playing!');
+      const resume = new MessageEmbed()
+        .setDescription(`${language.music.alreadyP}`)
+        .setColor('36393F');
+      message.channel.send(resume);
+      return;
     }
   },
 };
