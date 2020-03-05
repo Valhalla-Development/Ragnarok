@@ -4,3 +4,4 @@ storage/db/db.sqlite-shm
 storage/db/db.sqlite-wal
 storage/config.json
 lavalink/logs
+.DS_Store
