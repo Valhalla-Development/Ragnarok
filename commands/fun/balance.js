@@ -20,6 +20,7 @@ module.exports = {
     );
 
     const user = message.mentions.users.first() || message.author;
+    if (user.bot) return;
 
     let balance;
     if (message.guild) {
