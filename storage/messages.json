@@ -172,7 +172,16 @@
       "noArgs": ":x: Please provide an URL or a search term.",
       "skip": "<:MusicLogo:684822003110117466> Skipped the current song.",
       "talkedRecently": ":x: Slow down! There is a 30 second cooldown for this command!\nDJ's are exempt from the cooldown.",
-      "talkedRecentlyRemove": ":slight_smile: You can now use the play command again."
+      "talkedRecentlyRemove": ":slight_smile: You can now use the play command again.",
+      "noQueue": ":x: There is no queue!",
+      "cleared": "<:MusicLogo:684822003110117466> The queue has been cleared.",
+      "currentVol": "<:MusicLogo:684822003110117466> Current volume:",
+      "volLim": "<:MusicLogo:684822003110117466> You may only set the volume between `1-100`",
+      "newVol": "<:MusicLogo:684822003110117466> Successfully set the volume to:",
+      "resumeP": "<:MusicLogo:684822003110117466> Resuming playback.",
+      "alreadyP": "<:MusicLogo:684822003110117466> Music is already playing!",
+      "enabled": "<:MusicLogo:684822003110117466> Repeat enabled.",
+      "disabled": "<:MusicLogo:684822003110117466> Repeat disabled."
     },
     "tickets": {
       "nomodRole": ":x: This server doesn't have a `Support Team` role made, so the ticket won't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.",
