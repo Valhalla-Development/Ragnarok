@@ -146,7 +146,6 @@ module.exports = {
 
             collector.on('collect', (m) => {
               if (/cancel/i.test(m.content)) return collector.stop('cancelled');
-              if (m.content.includes(RegExp)) return collector.stop('cancelled');
 
               const track = tracks[Number(m.content) - 1];
               player.queue.add(track);
