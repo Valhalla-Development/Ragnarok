@@ -20,34 +20,38 @@ module.exports = {
     );
 
     const user = message.mentions.users.first() || message.author;
+    if (user.bot) return;
 
     let score;
     if (message.guild) {
       score = bot.getScore.get(user.id, message.guild.id);
     }
-    let phrase;
-    if (user.id === message.author.id) {
-      phrase = 'You do not have a rank!';
-    } else {
-      phrase = 'This user is not ranked!';
-    }
+    let level;
+    let points;
+    let difference;
     if (!score) {
-      message.channel.send(phrase);
-      return;
+      level = '0';
+      points = '0';
+      difference = '100';
+    } else {
+      level = score.level;
+      points = score.points;
+      const levelNoMinus = score.level + 1;
+      const nxtLvlXp = (5 / 6 * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91));
+      difference = nxtLvlXp - points;
     }
-    const levelNoMinus = score.level + 1;
 
-
-    const nxtLvlXp = (5 / 6 * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91));
-    const difference = nxtLvlXp - score.points;
     const embed = new MessageEmbed()
       .setAuthor(`${user.username}'s Level`)
       .setColor('36393F')
       .setThumbnail(user.displayAvatarURL())
-      .addFields({ name: 'XP', value: `\`${score.points.toLocaleString('en')}\``, inline: true },
-        { name: 'Level', value: `\`${score.level}\``, inline: true })
+      .addFields({ name: 'XP', value: `\`${points.toLocaleString('en')}\``, inline: true },
+        { name: 'Level', value: `\`${level}\``, inline: true })
       .setFooter(`${difference.toLocaleString('en')} XP required to level up!`);
 
     message.channel.send(embed);
+    if (score) {
+      if (score.points === 69) message.channel.send('https://tenor.com/view/noice-nice-click-gif-8843762');
+    }
   },
 };
