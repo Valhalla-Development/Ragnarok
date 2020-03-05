@@ -98,15 +98,15 @@ module.exports = async (bot, message) => {
     score.points = curxp + xpAdd;
     if (nxtLvl <= score.points) {
       score.level = curlvl + 1;
+      if (score.level === 0) return;
+      if (xpCooldown.has(message.author.id)) return;
       const lvlup = new MessageEmbed()
         .setAuthor(`Congratulations ${message.author.username}`)
         .setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
         .setColor('36393F')
         .setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
       message.channel.send(lvlup).then((msg) => {
-        msg.delete({
-          timeout: 10000,
-        });
+        msg.delete({ timeout: 10000 });
       });
     }
   }
