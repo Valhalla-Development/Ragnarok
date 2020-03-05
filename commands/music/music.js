@@ -20,7 +20,7 @@ module.exports = {
       const embed = new MessageEmbed()
         .setAuthor('Music Commands:', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
         .setColor(0xcf40fa)
-        .addFields({ name: '\u200b', value: `[${prefix}play]() <search term/link> : Plays music\n[${prefix}pause]() : Pauses music playback\n[${prefix}resume]() : Resumes music playback\n[${prefix}nowplaying]() : Displays current song being played\n[${prefix}queue]() : Displays current song\n[${prefix}queue clear]()\n[${prefix}skip]() : Skips current song\n[${prefix}repeat]() : Repeats current song playing\n[${prefix}volume <1-100>]() : Adjusts volume\n[${prefix}leave]() : Makes the bot leave the voice channel` });
+        .addFields({ name: '\u200b', value: `[${prefix}play]() <search term/link> : Plays music\n[${prefix}pause]() : Pauses music playback\n[${prefix}resume]() : Resumes music playback\n[${prefix}nowplaying]() : Displays current song being played\n[${prefix}queue]() : Displays current song queue\n[${prefix}queue clear]() : Clears the song queue\n[${prefix}skip]() : Skips current song\n[${prefix}repeat]() : Repeats current song playing\n[${prefix}repeat queue]() : Repeats the queue list\n[${prefix}volume <1-100>]() : Adjusts volume\n[${prefix}leave]() : Makes the bot leave the voice channel` });
       message.channel.send({
         embed,
       });
