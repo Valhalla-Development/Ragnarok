@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-operators */
 const { MessageEmbed } = require('discord.js');
 const moment = require('moment');
 const SQLite = require('better-sqlite3');
@@ -9,7 +10,6 @@ const xpCooldown = new Set();
 const xpCooldownSeconds = 60;
 
 module.exports = async (bot, message) => {
-
   if (message.author.bot || message.channel.type === 'dm') return;
 
   // Custom prefixes
@@ -77,7 +77,7 @@ module.exports = async (bot, message) => {
     }
   }
 
-  /* // Scores (level)
+  // Scores (level)
   let score;
   if (message.guild) {
     score = bot.getScore.get(message.author.id, message.guild.id);
@@ -87,14 +87,13 @@ module.exports = async (bot, message) => {
         user: message.author.id,
         guild: message.guild.id,
         points: 0,
-        level: 0,
+        level: 1,
       };
     }
     const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
     const curxp = score.points; // Current points
     const curlvl = score.level; // Current level
-    // const nxtLvl = Math.floor(234 * Math.sqrt(score.points));
-    const nxtLvl = score.points * 5000; // How much xp until level
+    const nxtLvl = (5 / 6 * score.level * (2 * score.level * score.level + 27 * score.level + 91));
     score.points = curxp + xpAdd;
     if (nxtLvl <= score.points) {
       score.level = curlvl + 1;
@@ -104,9 +103,8 @@ module.exports = async (bot, message) => {
           message.author.displayAvatarURL(),
         )
         .setTitle('You have leveled up!')
-        .setThumbnail('https://i.imgur.com/lXeBiMs.png')
         .setColor(color)
-        .addFields({ name: 'New Level', value: curlvl + 1 });
+        .addFields({ name: 'New Level', value: curlvl });
       message.channel.send(lvlup).then((msg) => {
         msg.delete({
           timeout: 10000,
@@ -121,10 +119,10 @@ module.exports = async (bot, message) => {
       xpCooldown.delete(message.author.id);
     }, xpCooldownSeconds * 1000);
   }
-  */
+
 
   // Ads protection checks
-  // message.content.includes('https://') || message.content.includes('http://') || 
+  // message.content.includes('https://') || message.content.includes('http://') ||
   // above is removed because it blocks because it returs bruh
   if (
     message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')

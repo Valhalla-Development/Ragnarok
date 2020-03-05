@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-operators */
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
@@ -25,16 +26,16 @@ module.exports = {
     }
 
     if (!args[0]) {
-      const nxtLvlXp = score.level * 5000;
+      const nxtLvlXp = (5 / 6 * score.level * (2 * score.level * score.level + 27 * score.level + 91));
       const difference = nxtLvlXp - score.points;
       const embed = new MessageEmbed()
         .setAuthor(`${message.author.username}'s Level`)
         .setColor(color)
         .setThumbnail(message.author.displayAvatarURL())
-        .addFields({ name: 'XP', value: score.points, inline: true },
-          { name: 'Level', value: score.level, inline: true })
+        .addFields({ name: 'XP', value: score.points.toLocaleString('en'), inline: true },
+          { name: 'Level', value: score.level - 1, inline: true })
         .setFooter(
-          `${difference} XP required to level up!`,
+          `${difference.toLocaleString('en')} XP required to level up!`,
           message.author.displayAvatarURL(),
         );
 
