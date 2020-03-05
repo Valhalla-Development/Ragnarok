@@ -31,7 +31,7 @@ module.exports = {
       .setColor(0x00ae86);
 
     for (const data of top10) {
-      embed.addFields({ name: bot.users.cache.get(data.user).tag, value: `${data.points} points (level ${data.level})` });
+      embed.addFields({ name: bot.users.cache.get(data.user).tag, value: `\`${data.points.toLocaleString('en')}\`XP (Level \`${data.level}\`)` });
     }
     return message.channel.send({
       embed,
