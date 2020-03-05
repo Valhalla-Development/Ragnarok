@@ -44,11 +44,11 @@ module.exports = async (bot) => {
       player.textChannel.send('Queue has ended.');
       return bot.music.players.destroy(player.guild.id);
     })
-    .on('trackStart', ({ textChannel }, { title, duration }) => {
+    .on('trackStart', ({ textChannel }, { title, duration, requester }) => {
       const embed = new MessageEmbed()
         .setAuthor('Now Playing:', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
         .setColor('36393F')
-        .setDescription(`Now playing: \`${title}\`\nDuration: \`${Utils.formatTime(duration, true)}\``);
+        .setDescription(`Now playing: \`${title}\`\nDuration: \`${Utils.formatTime(duration, true)}\`\nRequested by: ${requester}`);
       textChannel.send(embed);
     });
 
