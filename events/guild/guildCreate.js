@@ -2,7 +2,6 @@ const { MessageEmbed } = require('discord.js');
 const { prefix } = require('../../storage/config.json');
 
 module.exports = async (bot, guild) => {
-  if (bot.guilds.cache.get('343572980351107077')) return; // REMOVE, this is for bug testing
 
   console.log(
     `New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${

@@ -4,7 +4,6 @@ const { color } = require('../../storage/config.json');
 const db = new SQLite('./storage/db/db.sqlite');
 
 module.exports = async (bot, channel) => {
-  if (bot.guilds.cache.get('343572980351107077')) return; // REMOVE, this is for bug testing
 
   const id = db
     .prepare(`SELECT channel FROM logging WHERE guildid = ${channel.guild.id};`)

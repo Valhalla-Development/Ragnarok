@@ -9,7 +9,6 @@ const xpCooldown = new Set();
 const xpCooldownSeconds = 60;
 
 module.exports = async (bot, message) => {
-  if (bot.guilds.cache.get('343572980351107077')) return; // REMOVE, this is for bug testing
 
   if (message.author.bot || message.channel.type === 'dm') return;
 

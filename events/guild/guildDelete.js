@@ -3,7 +3,6 @@ const { prefix } = require('../../storage/config.json');
 const db = new SQLite('./storage/db/db.sqlite');
 
 module.exports = async (bot, guild) => {
-  if (bot.guilds.cache.get('343572980351107077')) return; // REMOVE, this is for bug testing
 
   // when the bot is removed from a guild.
   console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
