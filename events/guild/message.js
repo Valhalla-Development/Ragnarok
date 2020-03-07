@@ -44,10 +44,15 @@ module.exports = async (bot, message) => {
   // Prefix command
 
   if (command === `${prefix}prefix`) {
-    const embed = new MessageEmbed()
-      .setColor(color)
-      .setDescription(`This server's prefix is: \`${prefixcommand}\``);
-    message.channel.send(embed);
+    if (message.member.guild.me.hasPermission('EMBED_LINKS')) {
+      const embed = new MessageEmbed()
+        .setColor(color)
+        .setDescription(`This server's prefix is: \`${prefixcommand}\``);
+      message.channel.send(embed);
+      return;
+    }
+    message.channel.send(`This server's prefix is: \`${prefixcommand}\``);
+    return;
   }
 
   // Balance (balance)
@@ -100,14 +105,20 @@ module.exports = async (bot, message) => {
       score.level = curlvl + 1;
       if (score.level === 0) return;
       if (xpCooldown.has(message.author.id)) return;
-      const lvlup = new MessageEmbed()
-        .setAuthor(`Congratulations ${message.author.username}`)
-        .setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
-        .setColor('36393F')
-        .setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
-      message.channel.send(lvlup).then((msg) => {
-        msg.delete({ timeout: 10000 });
-      });
+      if (message.member.guild.me.hasPermission('EMBED_LINKS')) {
+        const lvlup = new MessageEmbed()
+          .setAuthor(`Congratulations ${message.author.username}`)
+          .setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
+          .setColor('36393F')
+          .setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
+        message.channel.send(lvlup).then((msg) => {
+          msg.delete({ timeout: 10000 });
+        });
+      } else {
+        message.channel.send(`Congratulations ${message.author.username}\nYou have leveled up!\nNew Level: \`${curlvl + 1}\``).then((msg) => {
+          msg.delete({ timeout: 10000 });
+        });
+      }
     }
   }
   if (!xpCooldown.has(message.author.id)) {
@@ -133,7 +144,9 @@ module.exports = async (bot, message) => {
     if (message.member.hasPermission('MANAGE_GUILD')) {
       return;
     }
-    message.delete();
+    if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+      message.delete();
+    }
     message.channel.send(
       `**Your message contained a link and it was deleted, <@${
         message.author.id

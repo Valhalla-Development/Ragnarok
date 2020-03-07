@@ -9,7 +9,9 @@ module.exports = {
     accessableby: 'Everyone',
   },
   run: async (bot, message) => {
-    message.delete();
+    if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+      message.delete();
+    }
 
     const pingMessage = language.ping.ping;
     const ping = pingMessage.replace('${ping}', Math.round(bot.ws.ping));

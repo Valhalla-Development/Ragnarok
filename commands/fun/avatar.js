@@ -10,11 +10,17 @@ module.exports = {
     accessableby: 'Everyone',
   },
   run: async (bot, message) => {
+    if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
+      message.channel.send('I need the permission `Embed Links` for this command!');
+      return;
+    }
+
     const user = message.mentions.users.first() || message.author;
+    console.log(user.avatarURL())
 
     const embed = new MessageEmbed()
       .setAuthor(`${user.username}'s Avatar`)
-      .setImage(user.displayAvatarURL())
+      .setImage(user.avatarURL({ dynamic: true, size: 1024 }))
       .setColor('36393F');
 
     message.channel.send(embed);

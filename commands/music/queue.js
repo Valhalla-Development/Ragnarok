@@ -14,6 +14,11 @@ module.exports = {
   },
 
   run: async (bot, message, args) => {
+    if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
+      message.channel.send('I need the permission `Embed Links` for this command!');
+      return;
+    }
+
     const prefixgrab = db
       .prepare('SELECT prefix FROM setprefix WHERE guildid = ?')
       .get(message.guild.id);
@@ -41,9 +46,9 @@ module.exports = {
       message.channel.send(noRoleF).then((msg) => msg.delete({
         timeout: 15000,
       }));
-      message.delete({
-        timeout: 15000,
-      });
+      if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+        message.delete({ timeout: 15000 });
+      }
       return;
     }
 
@@ -55,9 +60,9 @@ module.exports = {
       message.channel.send(notplaying).then((msg) => msg.delete({
         timeout: 15000,
       }));
-      message.delete({
-        timeout: 15000,
-      }).catch((err) => message.channel.send(`\`${err.message}\``));
+      if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+        message.delete({ timeout: 15000 });
+      }
       return;
     }
 

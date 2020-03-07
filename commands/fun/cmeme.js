@@ -11,6 +11,11 @@ module.exports = {
     accessableby: 'Everyone',
   },
   run: async (bot, message) => {
+    if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
+      message.channel.send('I need the permission `Embed Links` for this command!');
+      return;
+    }
+
     const msg = await message.channel.send('Generating...');
     message.channel.startTyping();
 

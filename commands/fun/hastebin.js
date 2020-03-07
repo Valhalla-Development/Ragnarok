@@ -13,6 +13,11 @@ module.exports = {
     accessableby: 'Everyone',
   },
   run: async (bot, message, args) => {
+    if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
+      message.channel.send('I need the permission `Embed Links` for this command!');
+      return;
+    }
+
     const prefixgrab = db
       .prepare('SELECT prefix FROM setprefix WHERE guildid = ?')
       .get(message.guild.id);
@@ -25,11 +30,13 @@ module.exports = {
       );
       const validExtensions = ['bat', 'c', 'cpp', 'css', 'html', 'ini', 'java', 'js', 'jsx', 'json', 'lua', 'md', 'php', 'py', 'pyc', 'scss', 'sql', 'xml', 'yaml', 'txt'];
       if (!validExtensions.includes(fileExtension)) {
-        message.delete();
         const badType = new MessageEmbed()
           .setColor('36393F')
           .setDescription(`\`.${fileExtension}\` is not a valid file type!\nIf this is not true, please report it to my creator with \`${prefix}bugreport <message>\``);
         message.channel.send(badType);
+        if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+          message.delete();
+        }
         return;
       }
       await fetch(file)
@@ -52,7 +59,9 @@ module.exports = {
               message.channel.send(hastEmb);
             });
         }).catch((err) => console.error(err) && message.channel.send(':slight_frown: An error occured!'));
-      message.delete();
+      if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+        message.delete();
+      }
       return;
     } if (message.attachments.size > 1) {
       message.channel.send('You can only post 1 file at a time!');

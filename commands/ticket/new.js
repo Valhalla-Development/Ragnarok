@@ -14,6 +14,11 @@ module.exports = {
     accessableby: 'Everyone',
   },
   run: async (bot, message, args, color) => {
+    if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
+      message.channel.send('I need the permission `Embed Links` for this command!');
+      return;
+    }
+
     const prefixgrab = db
       .prepare('SELECT prefix FROM setprefix WHERE guildid = ?')
       .get(message.guild.id);
@@ -157,9 +162,9 @@ module.exports = {
           message.channel.send(newTicketE).then((msg) => msg.delete({
             timeout: 5000,
           }));
-          message.delete({
-            timeout: 5000,
-          });
+          if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+            message.delete({ timeout: 5000 });
+          }
           const embed = new MessageEmbed()
             .setColor(0xcf40fa)
             .setTitle('New Ticket')
@@ -248,9 +253,9 @@ module.exports = {
           message.channel.send(newTicketE).then((msg) => msg.delete({
             timeout: 5000,
           }));
-          message.delete({
-            timeout: 5000,
-          });
+          if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+            message.delete({ timeout: 5000 });
+          }
           const embed = new MessageEmbed()
             .setColor(0xcf40fa)
             .setTitle('New Ticket')

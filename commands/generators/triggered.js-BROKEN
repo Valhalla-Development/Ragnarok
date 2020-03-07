@@ -13,7 +13,9 @@ module.exports = {
 		const Idiot = require('idiotic-api');
 		bot.API = new Idiot.Client(idiotToken, { dev: true });
 
-		message.delete();
+    if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+      message.delete();
+    }
 		await message.channel.send(
 			new MessageAttachment(
 				await bot.API.triggered(

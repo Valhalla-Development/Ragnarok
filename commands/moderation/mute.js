@@ -14,12 +14,19 @@ module.exports = {
     accessableby: 'Staff',
   },
   run: async (bot, message, args) => {
+    if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
+      message.channel.send('I need the permission `Embed Links` for this command!');
+      return;
+    }
+
     const prefixgrab = db
       .prepare('SELECT prefix FROM setprefix WHERE guildid = ?')
       .get(message.guild.id);
     const { prefix } = prefixgrab;
 
-    message.delete();
+    if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+      message.delete();
+    }
 
     if (
       !message.member.hasPermission('KICK_MEMBERS') && message.author.id !== ownerID) {
