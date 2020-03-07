@@ -46,7 +46,7 @@ module.exports = {
     const embed = new MessageEmbed()
       .setAuthor(`${user.username}'s Balance`)
       .setColor(color)
-      .setThumbnail(user.displayAvatarURL())
+      .setThumbnail(user.avatarURL({ dynamic: true }))
       .addFields({ name: 'Balance', value: `\`${balance.balance.toLocaleString('en')}\`` });
 
     message.channel.send(embed);
