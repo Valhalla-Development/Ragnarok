@@ -16,13 +16,11 @@ module.exports = {
     }
 
     const user = message.mentions.users.first() || message.author;
-    console.log(user.avatarURL())
 
     const embed = new MessageEmbed()
       .setAuthor(`${user.username}'s Avatar`)
       .setImage(user.avatarURL({ dynamic: true, size: 1024 }))
       .setColor('36393F');
-
     message.channel.send(embed);
   },
 };
