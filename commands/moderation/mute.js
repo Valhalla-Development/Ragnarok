@@ -14,8 +14,8 @@ module.exports = {
     accessableby: 'Staff',
   },
   run: async (bot, message, args) => {
-    if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
-      message.channel.send('I need the permission `Embed Links` for this command!');
+    if (!message.member.guild.me.hasPermission('EMBED_LINKS') || (!message.member.guild.me.hasPermission('MANAGE_ROLES'))) {
+      message.channel.send('I need the permissions `Embed Links` and `MANAGE_ROLES` for this command!');
       return;
     }
 
@@ -82,6 +82,14 @@ module.exports = {
       return message.channel.send(`${language.mute.noTime}`).then((message) => message.delete({
         timeout: 5000,
       }));
+    }
+
+    if (user.roles.cache.has(muterole.id)) {
+      const alreadymuted = new MessageEmbed()
+        .setColor('36393F')
+        .setDescription(':x: This user is already muted!');
+      message.channel.send(alreadymuted);
+      return;
     }
 
     const dbid = db
