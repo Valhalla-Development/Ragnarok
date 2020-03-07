@@ -226,6 +226,20 @@ module.exports = async (bot, message) => {
   if (!id) return;
   const logs = id.channel;
   if (!logs) return;
+  if (id) {
+    if (id.channel == null) {
+      db.prepare(`DELETE FROM logging WHERE guildid = ${message.guild.id}`).run();
+      return;
+    }
+    if (
+      !message.guild.channels.cache.find(
+        (channel) => channel.id === id.channel,
+      )
+    ) {
+      db.prepare(`DELETE FROM logging WHERE guildid = ${message.guild.id}`).run();
+      return;
+    }
+  }
   const logembed = new MessageEmbed()
     .setAuthor(message.author.tag, message.guild.iconURL())
     .setDescription(
