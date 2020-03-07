@@ -34,7 +34,7 @@ module.exports = {
         arr.push(
           bot.commands
             .filter((c) => c.config.category === types[i].toLowerCase())
-            .map((c) => `\`${c.config.name.charAt(0).toUpperCase() + c.config.name.substring(1)}\``)
+            .map((c) => `\`${c.config.name.charAt(0).toUpperCase() + c.config.name.substring(1)}\`,`)
             .join(' '),
         );
         try {
