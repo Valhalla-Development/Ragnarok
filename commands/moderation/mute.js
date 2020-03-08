@@ -58,24 +58,8 @@ module.exports = {
         timeout: 5000,
       }));
     }
-    let muterole = message.guild.roles.cache.find((x) => x.name === 'Muted');
-    if (!muterole) {
-      try {
-        muterole = await message.guild.createRole({
-          name: 'Muted',
-          color: '#000000',
-          permissions: [],
-        });
-        message.guild.channels.forEach(async (channel) => {
-          await channel.createOverwrite(muterole, {
-            SEND_MESSAGES: false,
-            ADD_REACTIONS: false,
-          });
-        });
-      } catch (e) {
-        console.log(e.stack);
-      }
-    }
+    const muterole = message.guild.roles.cache.find((x) => x.name === 'Muted');
+    if (!muterole) return message.channel.send('I could not find the mute role! Please create it, it must be named `Muted`');
 
     const mutetime = args[1];
     if (!mutetime) {
