@@ -46,7 +46,6 @@ module.exports = {
 
     const amt = await message.channel.messages.fetch({ limit: parseInt(args[0]) });
 
-
     try {
       await message.channel.bulkDelete(amt);
       message.channel.bulkDelete(args[0]).then(() => {
