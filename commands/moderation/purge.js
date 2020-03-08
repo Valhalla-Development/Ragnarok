@@ -19,14 +19,13 @@ module.exports = {
       return;
     }
 
-    const argresult = args.join(' ');
-    if (!argresult) {
+    if (!args[0]) {
       message.channel.send(`${language.purge.notSpecified}`).then((message) => message.delete({
         timeout: 5000,
       }));
       return;
     }
-    if (isNaN(argresult)) {
+    if (isNaN(args[0])) {
       message.channel.send(`${language.purge.invalidNumber}`).then((message) => message.delete({
         timeout: 5000,
       }));
@@ -38,19 +37,34 @@ module.exports = {
       }));
       return;
     }
+    if (args[0] < 1) {
+      message.channel.send(`${language.purge.notSpecified}`).then((message) => message.delete({
+        timeout: 5000,
+      }));
+      return;
+    }
 
-    const messagecount = parseInt(args.join(' '));
-    message.channel.bulkDelete(messagecount).then(() => {
-      setTimeout(() => {
-        const purgedMessage = language.purge.purged;
-        const purged = purgedMessage.replace('${messages}', messagecount);
+    const amt = await message.channel.messages.fetch({ limit: parseInt(args[0]) });
 
-        message.channel.send(`${purged}`).then((m) => {
-          setTimeout(() => {
-            m.delete();
-          }, 5000);
-        });
-      }, 2000);
-    });
+
+    try {
+      await message.channel.bulkDelete(amt);
+      message.channel.bulkDelete(args[0]).then(() => {
+        setTimeout(() => {
+          const purgedMessage = language.purge.purged;
+          const purged = purgedMessage.replace('${messages}', args[0]);
+
+          message.channel.send(`${purged}`).then((m) => {
+            setTimeout(() => {
+              m.delete();
+            }, 5000);
+          });
+        }, 2000);
+      }).catch((error) => {
+        console.log(error);
+      });
+    } catch (e) {
+      message.channel.send(':x: You can not delete messages older than 14 days.');
+    }
   },
 };
