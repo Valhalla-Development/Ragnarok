@@ -72,6 +72,9 @@ module.exports = {
         .setColor('RANDOM')
         .setDescription(':x: | You must input some text');
       message.channel.send(embed);
+      if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+        message.delete();
+      }
       return;
     }
 
@@ -83,6 +86,9 @@ module.exports = {
           .setDescription(`${r}\nPosted By: ${message.author}`)
           .setURL(r);
         message.channel.send(hastEmb);
+        if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+          message.delete();
+        }
       });
   },
 };
