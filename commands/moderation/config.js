@@ -336,6 +336,10 @@ module.exports = {
     // logging
 
     if (args[0] === 'logging') {
+      if (!message.member.guild.me.hasPermission('EMBED_LINKS') || (!message.member.guild.me.hasPermission('VIEW_AUDIT_LOG'))) {
+        message.channel.send('I need the permissions `Embed Links` and `View Audit Log` for this command!');
+        return;
+      }
       if (
         !message.member.hasPermission('MANAGE_GUILD') && message.author.id !== ownerID) {
         return message.channel.send(`${language.logging.noPermission}`);
