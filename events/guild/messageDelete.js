@@ -3,7 +3,6 @@ const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
 
 module.exports = async (bot, message) => {
-
   if (message.author.bot) return;
   const id = db
     .prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`)
@@ -11,21 +10,26 @@ module.exports = async (bot, message) => {
   if (!id) return;
   const logs = id.channel;
   if (!logs) return;
-  const entry = await message.guild
-    .fetchAuditLogs({
-      type: 'MESSAGE_DELETE',
-    })
-    .then((audit) => audit.entries.first());
-  let user = '';
-  if (
-    entry.extra.channel.id === message.channel.id && entry.target.id === message.author.id && entry.createdTimestamp > Date.now() - 5000 && entry.extra.count >= 1
-  ) {
-    user = entry.executor.username;
-  } else {
-    user = message.author.username;
+
+  const fetchedLogs = await message.guild.fetchAuditLogs({
+    limit: 1,
+    type: 'MESSAGE_DELETE',
+  });
+  const deletionLog = fetchedLogs.entries.first();
+
+  if (!deletionLog) {
+    const noLogE = new MessageEmbed()
+      .setAuthor('Message Deleted')
+      .setDescription(
+        `**A message sent by <@${message.author.id}> was deleted but no content was found.`,
+      )
+      .setTimestamp();
+    bot.channels.cache.get(logs).send(noLogE);
+    return;
   }
+
   const logembed = new MessageEmbed()
-    .setAuthor(user, message.author.displayAvatarURL())
+    .setAuthor('Message Deleted')
     .setDescription(
       `**Message sent by <@${message.author.id}> deleted in <#${
         message.channel.id
