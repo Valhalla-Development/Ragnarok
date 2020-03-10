@@ -22,24 +22,32 @@ module.exports = {
         'SELECT * FROM scores WHERE guild = ? ORDER BY points DESC LIMIT 10;',
       )
       .all(message.guild.id);
-    bot.getScore = db.prepare(
-      'SELECT * FROM scores WHERE user = ? AND guild = ?',
-    );
-    bot.setScore = db.prepare(
-      'INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);',
-    );
+    if (!top10) {
+      return;
+    }
+
+    let userNames = '';
+    let levels = '';
+    let xp = '';
+    for (let i = 0; i < top10.length; i++) {
+      const data = top10[i];
+      let user = bot.users.cache.get(data.user);
+      if (user === undefined) {
+        user = 'User Left Guild.';
+      }
+
+      userNames += `\`${i + 1}\` ${user}\n`;
+      levels += `\`${data.level}\`\n`;
+      xp += `\`${data.points.toLocaleString('en')}\`\n`;
+    }
 
     const embed = new MessageEmbed()
-      .setTitle('Leaderboard')
-      .setAuthor(bot.user.username, bot.user.avatarURL())
-      .setDescription('Top 10 Points!')
-      .setColor(0x00ae86);
-
-    for (const data of top10) {
-      embed.addFields({ name: bot.users.cache.get(data.user).tag, value: `\`${data.points.toLocaleString('en')}\`XP (Level \`${data.level}\`)` });
-    }
-    return message.channel.send({
-      embed,
-    });
+      .setAuthor(`Leaderboard for ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
+      .setColor(0x51267)
+      .addFields({ name: 'Top 10', value: userNames, inline: true },
+        { name: 'Level', value: levels, inline: true },
+        { name: 'XP', value: xp, inline: true });
+    message.channel.send(embed);
+    return;
   },
 };
