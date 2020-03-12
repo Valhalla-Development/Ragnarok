@@ -7,6 +7,9 @@ const db = new SQLite('./storage/db/db.sqlite');
 const bot = new Client();
 const Canvas = require('canvas');
 const { token, logging } = require('./storage/config.json');
+Canvas.registerFont('./storage/canvas/fonts/Shapirit.ttf', {
+  family: 'Shapirit',
+});
 Canvas.registerFont('./storage/canvas/fonts/Notethis.ttf', {
   family: 'Note',
 });
