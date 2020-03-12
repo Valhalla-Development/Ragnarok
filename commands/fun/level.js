@@ -1,7 +1,10 @@
+/* eslint-disable no-undef */
 /* eslint-disable no-mixed-operators */
-const { MessageEmbed } = require('discord.js');
+const { MessageAttachment } = require('discord.js');
+const abbreviate = require('number-abbreviate');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
+const Canvas = require('canvas');
 
 module.exports = {
   config: {
@@ -10,6 +13,7 @@ module.exports = {
     category: 'fun',
     description: 'Displays current level',
     accessableby: 'Everyone',
+    aliases: ['rank'],
   },
   run: async (bot, message) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
@@ -34,6 +38,8 @@ module.exports = {
     let level;
     let points;
     let difference;
+    let levelNoMinus;
+    let nxtLvlXp;
     if (!score) {
       level = '0';
       points = '0';
@@ -41,22 +47,173 @@ module.exports = {
     } else {
       level = score.level;
       points = score.points;
-      const levelNoMinus = score.level + 1;
-      const nxtLvlXp = (5 / 6 * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91));
+      levelNoMinus = score.level + 1;
+      nxtLvlXp = (5 / 6 * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91));
       difference = nxtLvlXp - points;
     }
 
-    const embed = new MessageEmbed()
-      .setAuthor(`${user.username}'s Level`)
-      .setColor('36393F')
-      .setThumbnail(user.displayAvatarURL())
-      .addFields({ name: 'XP', value: `\`${points.toLocaleString('en')}\``, inline: true },
-        { name: 'Level', value: `\`${level}\``, inline: true })
-      .setFooter(`${difference.toLocaleString('en')} XP required to level up!`);
+    const userRank = db.prepare('SELECT count(*) FROM scores WHERE points >= ? AND guild = ? AND user ORDER BY points DESC').all(points, message.guild.id);
+    const canvas = Canvas.createCanvas(934, 282);
+    const ctx = canvas.getContext('2d');
 
-    message.channel.send(embed);
-    if (score) {
-      if (score.points === 69) message.channel.send('https://tenor.com/view/noice-nice-click-gif-8843762');
+    // Presence colors
+    let userStatusColor;
+    if (message.author.presence.status === 'online') {
+      userStatusColor = '#43B581';
+    } else if (message.author.presence.status === 'idle') {
+      userStatusColor = '#FAA61A';
+    } else if (message.author.presence.status === 'dnd') {
+      userStatusColor = '#F04747';
+    } else if (message.author.presence.status === 'offline') {
+      userStatusColor = '#737F8D';
     }
+    const background = await Canvas.loadImage(
+      './storage/canvas/images/level.png',
+    );
+
+    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+    // Levels / Ranks
+    const levelNumber = level;
+    const levelText = 'LEVEL';
+    const rankNumber = `#${userRank[0]['count(*)']}`;
+    const rankText = 'RANK';
+    let usergrab;
+    let discrim;
+    let avatarGrab;
+    if (user) {
+      usergrab = user.username;
+      discrim = `#${user.discriminator}`;
+      avatarGrab = user.displayAvatarURL({ format: 'png' });
+    } else {
+      usergrab = message.author.username;
+      discrim = `#${message.author.discriminator}`;
+      avatarGrab = message.author.displayAvatarURL({ format: 'png' });
+    }
+    const xplevel = `${abbreviate(difference, 2)}/${abbreviate(nxtLvlXp, 2)} XP`;
+    const xpPercent = Math.floor((difference / nxtLvlXp) * 100);
+
+    // Progress Bar
+
+    const rectX = 259;
+    const rectY = 182;
+    const rectWidth = 630 * xpPercent / 100;
+    const rectHeight = 38;
+    const cornerRadius = 37;
+
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = cornerRadius;
+    ctx.strokeStyle = '#FF1700';
+    ctx.fillStyle = '#FF1700';
+
+    ctx.strokeRect(rectX + (cornerRadius / 2), rectY + (cornerRadius / 2), rectWidth - cornerRadius, rectHeight - cornerRadius);
+    ctx.fillRect(rectX + (cornerRadius / 2), rectY + (cornerRadius / 2), rectWidth - cornerRadius, rectHeight - cornerRadius);
+
+    // Draw XP
+    function drawXP(x, y, xp) {
+      ctx.font = '22px Shapirit';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.textAlign = 'right';
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 0.25;
+      ctx.fillText(xp, x, y);
+      ctx.strokeText(xp, x, y);
+    }
+    drawXP(880, 165.4, xplevel);
+
+    // Draw level
+    function drawLevel(x, y, txt, num, style) {
+      ctx.font = '48px Shapirit';
+      ctx.fillStyle = style;
+      ctx.textAlign = 'right';
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 0.5;
+      ctx.fillText(num, x, y);
+      ctx.strokeText(num, x, y);
+      w = ctx.measureText(num).width;
+
+      ctx.font = '22px Shapirit';
+      ctx.fillStyle = style;
+      ctx.textAlign = 'right';
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 0.25;
+      ctx.fillText(txt, x - w - 4, y);
+      ctx.strokeText(txt, x - w - 4, y);
+    }
+
+    drawLevel(880, 96.8, levelText, levelNumber, '#FF1700');
+
+    // Draw rank
+    ctx.font = '22px Shapirit';
+    ctx.fillStyle = '#FFFFFF';
+    ctx.textAlign = 'left';
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 0.25;
+    ctx.fillText(rankText, 522.5, 96.8);
+    ctx.strokeText(rankText, 522.5, 96.8);
+
+    ctx.font = '48px Shapirit';
+    ctx.fillStyle = '#FFFFFF';
+    ctx.textAlign = 'left';
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 0.5;
+    ctx.fillText(rankNumber, 522.5 + 64.5, 96.8);
+    ctx.strokeText(rankNumber, 522.5 + 64.5, 96.8);
+
+
+    // Draw Username
+
+    function drawUsername(x, y, max, use, dis) {
+      ctx.font = '34px Shapirit';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.textAlign = 'left';
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 0.5;
+      while (ctx.measureText(use).width > max) {
+        use = use.substring(0, use.length - 1);
+      }
+      ctx.fillText(use, x, y);
+      ctx.strokeText(use, x, y);
+      w = ctx.measureText(use).width;
+
+      ctx.font = '22px Shapirit';
+      ctx.fillStyle = '#7F8384';
+      ctx.textAlign = 'left';
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 0.25;
+      ctx.fillText(dis, x + w + 4, y);
+      ctx.strokeText(dis, x + w + 4, y);
+    }
+
+    drawUsername(270, 165.4, 364, usergrab, discrim);
+
+    // circle around avatar
+    ctx.beginPath();
+    ctx.arc(122.5, 141.8, 81, 0, Math.PI * 2, true);
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 6;
+    ctx.stroke();
+    ctx.save();
+    ctx.closePath();
+    ctx.clip();
+    const avatar = await Canvas.loadImage(
+      avatarGrab,
+    );
+    ctx.strokeStyle = '#ffffff';
+    ctx.strokeRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(avatar, 41.5, 60.5, 162, 162);
+
+    // presence circle
+    ctx.restore();
+    ctx.beginPath();
+    ctx.arc(184.5, 193.5, 19, 0, Math.PI * 2, true);
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 8;
+    ctx.stroke();
+    ctx.fillStyle = userStatusColor;
+    ctx.fill();
+
+    const attachment = new MessageAttachment(canvas.toBuffer(), 'level.jpg');
+    message.channel.send(attachment).catch((err) => console.log(err));
   },
 };
