@@ -31,6 +31,7 @@
     "ms": "^2.1.2",
     "nanoid": "^2.1.11",
     "node-fetch": "^2.6.0",
+    "number-abbreviate": "^2.0.0",
     "request": "^2.88.2",
     "simple-fortnite-api": "^0.1.9",
     "strict-uri-encode": "^2.0.0",
