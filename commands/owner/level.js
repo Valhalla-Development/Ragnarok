@@ -5,17 +5,24 @@ const abbreviate = require('number-abbreviate');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
 const Canvas = require('canvas');
+Canvas.registerFont('./storage/canvas/fonts/Shapirit.otf', {
+  family: 'Shapirit',
+});
+const { ownerID } = require('../../storage/config.json');
+
 
 module.exports = {
   config: {
     name: 'level',
     usage: '${prefix}level',
-    category: 'fun',
+    category: 'owner',
     description: 'Displays current level',
-    accessableby: 'Everyone',
+    accessableby: 'Owner',
     aliases: ['rank'],
   },
   run: async (bot, message) => {
+    if (message.author.id !== ownerID) return;
+
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -91,12 +98,14 @@ module.exports = {
       avatarGrab = message.author.displayAvatarURL({ format: 'png' });
     }
     const xplevel = `${abbreviate(difference, 2)}/${abbreviate(nxtLvlXp, 2)} XP`;
-    const xpPercent = Math.floor((difference / nxtLvlXp) * 100);
+    const xpPercent = await difference / nxtLvlXp * 100;
+    // difference is wrong so this code is wrong. difference currently says how much xp needed until next level, not how much you have in current level
 
     // Progress Bar
 
     const rectX = 259;
     const rectY = 182;
+    // there is a minimum thickness, if it's 0 it does not dissapear causing it to instead go the other way :()
     const rectWidth = 630 * xpPercent / 100;
     const rectHeight = 38;
     const cornerRadius = 37;
@@ -108,6 +117,7 @@ module.exports = {
 
     ctx.strokeRect(rectX + (cornerRadius / 2), rectY + (cornerRadius / 2), rectWidth - cornerRadius, rectHeight - cornerRadius);
     ctx.fillRect(rectX + (cornerRadius / 2), rectY + (cornerRadius / 2), rectWidth - cornerRadius, rectHeight - cornerRadius);
+    ctx.save();
 
     // Draw XP
     function drawXP(x, y, xp) {
@@ -118,6 +128,7 @@ module.exports = {
       ctx.lineWidth = 0.25;
       ctx.fillText(xp, x, y);
       ctx.strokeText(xp, x, y);
+      ctx.save();
     }
     drawXP(880, 165.4, xplevel);
 
@@ -139,6 +150,7 @@ module.exports = {
       ctx.lineWidth = 0.25;
       ctx.fillText(txt, x - w - 4, y);
       ctx.strokeText(txt, x - w - 4, y);
+      ctx.save();
     }
 
     drawLevel(880, 96.8, levelText, levelNumber, '#FF1700');
@@ -159,7 +171,7 @@ module.exports = {
     ctx.lineWidth = 0.5;
     ctx.fillText(rankNumber, 522.5 + 64.5, 96.8);
     ctx.strokeText(rankNumber, 522.5 + 64.5, 96.8);
-
+    ctx.save();
 
     // Draw Username
 
@@ -183,6 +195,7 @@ module.exports = {
       ctx.lineWidth = 0.25;
       ctx.fillText(dis, x + w + 4, y);
       ctx.strokeText(dis, x + w + 4, y);
+      ctx.save();
     }
 
     drawUsername(270, 165.4, 364, usergrab, discrim);
@@ -212,8 +225,9 @@ module.exports = {
     ctx.stroke();
     ctx.fillStyle = userStatusColor;
     ctx.fill();
+    ctx.save();
 
-    const attachment = new MessageAttachment(canvas.toBuffer(), 'level.jpg');
+    const attachment = await new MessageAttachment(canvas.toBuffer(), 'level.jpg');
     message.channel.send(attachment).catch((err) => console.log(err));
   },
 };
