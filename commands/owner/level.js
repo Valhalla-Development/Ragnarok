@@ -47,6 +47,10 @@ module.exports = {
     let difference;
     let levelNoMinus;
     let nxtLvlXp;
+    let currentxpLvl;
+    let currentLvl;
+    let toLevel;
+    let inlevel;
     if (!score) {
       level = '0';
       points = '0';
@@ -55,8 +59,12 @@ module.exports = {
       level = score.level;
       points = score.points;
       levelNoMinus = score.level + 1;
+      currentLvl = score.level;
       nxtLvlXp = (5 / 6 * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91));
       difference = nxtLvlXp - points;
+      currentxpLvl = (5 / 6 * currentLvl * (2 * currentLvl * currentLvl + 27 * currentLvl + 91));
+      toLevel = nxtLvlXp - currentxpLvl;
+      inlevel = points - currentxpLvl;
     }
 
     const userRank = db.prepare('SELECT count(*) FROM scores WHERE points >= ? AND guild = ? AND user ORDER BY points DESC').all(points, message.guild.id);
@@ -64,6 +72,7 @@ module.exports = {
     const ctx = canvas.getContext('2d');
 
     // Presence colors
+    // this only has presence of author idiot not user
     let userStatusColor;
     if (message.author.presence.status === 'online') {
       userStatusColor = '#43B581';
@@ -89,6 +98,7 @@ module.exports = {
     let discrim;
     let avatarGrab;
     if (user) {
+      // idiot user is defined as mention OR not mention boi you fucktard
       usergrab = user.username;
       discrim = `#${user.discriminator}`;
       avatarGrab = user.displayAvatarURL({ format: 'png' });
@@ -97,7 +107,7 @@ module.exports = {
       discrim = `#${message.author.discriminator}`;
       avatarGrab = message.author.displayAvatarURL({ format: 'png' });
     }
-    const xplevel = `${abbreviate(difference, 2)}/${abbreviate(nxtLvlXp, 2)} XP`;
+    const xplevel = `${abbreviate(inlevel, 2)}/${abbreviate(toLevel, 2)} XP`;
     const xpPercent = await difference / nxtLvlXp * 100;
     // difference is wrong so this code is wrong. difference currently says how much xp needed until next level, not how much you have in current level
 
