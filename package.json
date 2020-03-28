@@ -1,7 +1,7 @@
 {
   "name": "ragnarok-discord",
   "version": "1.0.0",
-  "description": "",
+  "description": "A multi-purpose Discord bot",
   "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git"
   },
-  "author": "",
+  "author": "Ragnar Lothbrok#1948",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord/issues"
