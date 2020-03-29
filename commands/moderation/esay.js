@@ -36,9 +36,6 @@ module.exports = {
       .setColor(color)
       .setDescription(`${sayMessage}`);
 
-    if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-      message.delete();
-    }
 
     message.channel.send(esayEmbed);
   },

@@ -10,10 +10,6 @@ module.exports = {
     accessableby: 'Staff',
   },
   run: async (bot, message) => {
-    if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-      message.delete();
-    }
-
     // no perms check
 
     if (

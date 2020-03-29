@@ -18,10 +18,6 @@ module.exports = {
       return;
     }
 
-    if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-      message.delete();
-    }
-
     if (
       !message.member.hasPermission('KICK_MEMBERS') && message.author.id !== ownerID) {
       message.channel

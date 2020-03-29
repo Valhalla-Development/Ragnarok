@@ -13,9 +13,6 @@ module.exports = {
 		const Idiot = require('idiotic-api');
 		bot.API = new Idiot.Client(idiotToken, { dev: true });
 
-    if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-      message.delete();
-    }
 		const user = message.mentions.users.first();
 		if (!user) {
 			message.channel.send('You must tag a user!');

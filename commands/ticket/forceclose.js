@@ -17,9 +17,6 @@ module.exports = {
       return;
     }
 
-    if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-      await message.delete();
-    }
 
     const suppRole = db
       .prepare(

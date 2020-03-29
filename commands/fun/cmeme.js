@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 
