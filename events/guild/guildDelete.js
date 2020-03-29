@@ -3,7 +3,6 @@ const { prefix } = require('../../storage/config.json');
 const db = new SQLite('./storage/db/db.sqlite');
 
 module.exports = async (bot, guild) => {
-
   // when the bot is removed from a guild.
   console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
   bot.user.setActivity(

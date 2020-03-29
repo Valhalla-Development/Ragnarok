@@ -3,7 +3,6 @@ const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
 
 module.exports = async (bot, event) => {
-
   const eventType = event.t;
   const data = event.d;
   if (eventType === 'MESSAGE_DELETE') {

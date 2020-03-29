@@ -2,7 +2,6 @@ const { MessageEmbed } = require('discord.js');
 const { prefix } = require('../../storage/config.json');
 
 module.exports = async (bot, guild) => {
-
   console.log(
     `New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${
       guild.memberCount

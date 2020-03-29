@@ -144,9 +144,6 @@ module.exports = async (bot, message) => {
     if (message.member.hasPermission('MANAGE_GUILD')) {
       return;
     }
-    if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-      message.delete();
-    }
     message.channel.send(
       `**Your message contained a link and it was deleted, <@${
         message.author.id
@@ -160,17 +157,11 @@ module.exports = async (bot, message) => {
   }
 
 
-  const cmd = args.shift().toLowerCase();
-  const commandfile = bot.commands.get(cmd) || bot.commands.get(bot.aliases.get(cmd));
-  if (!commandfile) return;
-  if (!message.content.startsWith(prefixcommand)) return;
-  if (commandfile) commandfile.run(bot, message, args, color);
-
-  // Dad Bot (This is placed after line 50, therefore it does not work, this is on purpose, create a command that lets people enable or disable this module, default being OFF)
+  // Dad Bot
 
   /* if (
     message.content.toLowerCase().startsWith('im ') || message.content.toLowerCase().startsWith('i\'m ')) {
-    if (args.length > 5) {
+    if (args.length > 10) {
       return;
     }
     if (args[0] === undefined) {
@@ -200,6 +191,13 @@ module.exports = async (bot, message) => {
     }
   } */
 
+  const cmd = args.shift().toLowerCase();
+  const commandfile = bot.commands.get(cmd) || bot.commands.get(bot.aliases.get(cmd));
+  if (!commandfile) return;
+  if (!message.content.startsWith(prefixcommand)) return;
+  if (commandfile) {
+    commandfile.run(bot, message, args, color);
+  }
 
   // Logging
   if (logging === true) {

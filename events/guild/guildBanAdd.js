@@ -4,7 +4,6 @@ const { color } = require('../../storage/config.json');
 const db = new SQLite('./storage/db/db.sqlite');
 
 module.exports = async (bot, guild, user) => {
-
   const id = db
     .prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`)
     .get();
