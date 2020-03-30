@@ -116,7 +116,9 @@ bot.on('warn', (e) => {
 });
 
 process.on('unhandledRejection', (error) => {
-  bot.channels.cache.get('685973401772621843').send(`${error.stack}`, { code: 'js' });
+  if (bot.user.id === '508756879564865539') {
+    bot.channels.cache.get('685973401772621843').send(`${error.stack}`, { code: 'js' });
+  }
   console.error(`Error: \n${error.stack}`);
 });
 
