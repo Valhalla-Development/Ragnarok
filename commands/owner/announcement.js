@@ -1,0 +1,43 @@
+const { MessageEmbed } = require('discord.js');
+const SQLite = require('better-sqlite3');
+const db = new SQLite('./storage/db/db.sqlite');
+const { ownerID } = require('../../storage/config.json');
+
+module.exports = {
+  config: {
+    name: 'announcement',
+    usage: '${prefix}announcement <msg>',
+    category: 'Owner',
+    description: 'Sets the message for stats command',
+    accessableby: 'Owner',
+  },
+  run: async (bot, message, args, color) => {
+    if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
+      message.channel.send('I need the permission `Embed Links` for this command!');
+      return;
+    }
+
+    if (message.author.id !== ownerID) return;
+
+    const prefixgrab = db
+      .prepare('SELECT prefix FROM setprefix WHERE guildid = ?')
+      .get(message.guild.id);
+    const { prefix } = prefixgrab;
+
+    if (args[0] === undefined) {
+      const noArgs = new MessageEmbed()
+        .setColor(color)
+        .setDescription(
+          `**Incorrect Usage! Please use:**:\n\n${prefix}announcement <message>`,
+        );
+      message.channel.send(noArgs);
+      return;
+    }
+
+    db.prepare('UPDATE announcement SET msg = ?').run(args.join(' '));
+    const complete = new MessageEmbed()
+      .setColor(color)
+      .setDescription(`**Success! Announcement message has been set to:**\n\`\`\`${args.join(' ')}\`\`\``);
+    message.channel.send(complete);
+  },
+};
