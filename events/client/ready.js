@@ -39,9 +39,25 @@ module.exports = async (bot, color) => {
 
   bot.music = new LavalinkClient(bot, nodes)
     .on('nodeError', console.log)
-    .on('nodeConnect', () => console.log('Successfully created a new Node.'))
+    .on('nodeConnect', () => console.log('Successfully created a new Erela Node.'))
+    .on('nodeDisconnect', () => console.log('Lost connection to Erela Node.'))
+    .on('nodeReconnect', () => console.log('Connection restored to Erela Node.'))
+    .on('trackStuck', (player) => {
+      player.textChannel.send('An error occured, ending playback.');
+      return bot.music.players.destroy(player.guild.id);
+    })
     .on('queueEnd', (player) => {
-      player.textChannel.send('Queue has ended.');
+      const embed = new MessageEmbed()
+        .setColor(color)
+        .setDescription('Queue has ended.');
+      player.textChannel.send(embed);
+      return bot.music.players.destroy(player.guild.id);
+    })
+    .on('trackEnd', (player) => {
+      const embed = new MessageEmbed()
+        .setColor(color)
+        .setDescription('Queue has ended.');
+      player.textChannel.send(embed);
       return bot.music.players.destroy(player.guild.id);
     })
     .on('trackStart', ({ textChannel }, { title, duration, requester }) => {
@@ -59,6 +75,23 @@ module.exports = async (bot, color) => {
     .set('high', 0.25);
 
   // Database Creation
+  // Announcement Table
+  const announcement = db
+    .prepare(
+      'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'announcement\';',
+    )
+    .get();
+  if (!announcement['count(*)']) {
+    console.log('announcement table created!');
+    db.prepare(
+      'CREATE TABLE announcement (msg TEXT);',
+    ).run();
+    db.prepare(
+      'CREATE UNIQUE INDEX idx_announcement_id ON announcement (msg);',
+    ).run();
+    db.pragma('synchronous = 1');
+    db.pragma('journal_mode = wal');
+  }
   // Music Table
   const music = db
     .prepare(
