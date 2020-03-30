@@ -47,11 +47,11 @@ module.exports = async (bot, message) => {
     if (message.member.guild.me.hasPermission('EMBED_LINKS')) {
       const embed = new MessageEmbed()
         .setColor('36393F')
-        .setDescription(`This server's prefix is: \`${prefixcommand}\``);
+        .setDescription(`This guild's prefix is: \`${prefixcommand}\``);
       message.channel.send(embed);
       return;
     }
-    message.channel.send(`This server's prefix is: \`${prefixcommand}\``);
+    message.channel.send(`This guild's prefix is: \`${prefixcommand}\``);
     return;
   }
 
