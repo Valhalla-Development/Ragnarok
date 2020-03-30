@@ -2,6 +2,8 @@
 const { MessageEmbed } = require('discord.js');
 const si = require('systeminformation');
 const { version } = require('discord.js');
+const SQLite = require('better-sqlite3');
+const db = new SQLite('./storage/db/db.sqlite');
 
 module.exports = {
   config: {
@@ -45,6 +47,8 @@ module.exports = {
       u.s
     } seconds`;
 
+    const dbGrab = db.prepare('SELECT msg FROM announcement').get();
+    const dbMessage = dbGrab.msg;
     const msg = await message.channel.send('Generating...');
     message.channel.startTyping();
     const ping = Math.round(bot.ws.ping);
@@ -100,7 +104,7 @@ module.exports = {
         inline: true,
       }, {
         name: 'Announcements',
-        value: '```Bot is now hosted on a VPS! Expect much higher performance.\nLatest addition: Music commands!```',
+        value: `\`\`\`${dbMessage}\`\`\``,
       });
     message.channel.send(serverembed);
     message.channel.stopTyping();
