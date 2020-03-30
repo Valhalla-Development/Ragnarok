@@ -151,8 +151,17 @@ module.exports = {
 
             collector.on('collect', (m) => {
               if (/cancel/i.test(m.content)) return collector.stop('cancelled');
-
               const track = tracks[Number(m.content) - 1];
+              if (track.duration >= 600000) {
+                const invalidDur = new MessageEmbed()
+                  .setColor(color)
+                  .setDescription('Duration is over 10 minutes! Cancelling playback');
+                message.channel.send(invalidDur);
+                if (player.queue.size <= 0) {
+                  bot.music.players.destroy(message.guild.id);
+                }
+                return;
+              }
               player.queue.add(track);
               if (!player.playing) player.play();
               const trackloade = new MessageEmbed()
@@ -172,6 +181,9 @@ module.exports = {
                 message.channel.send(cancelE).then((msg) => msg.delete({
                   timeout: 15000,
                 }));
+                if (player.queue.size <= 0) {
+                  bot.music.players.destroy(message.guild.id);
+                }
                 return;
               }
             });
