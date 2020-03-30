@@ -14,7 +14,7 @@ module.exports = {
     accessableby: 'Everyone',
     aliases: ['music'],
   },
-  run: async (bot, message) => {
+  run: async (bot, message, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -42,7 +42,7 @@ module.exports = {
       const noRoleMessage = language.music.noRole;
       const noRolePrefix = noRoleMessage.replace('${prefix}', prefix);
       const noRoleF = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${noRolePrefix}`);
       message.channel.send(noRoleF).then((msg) => msg.delete({
         timeout: 15000,
@@ -56,7 +56,7 @@ module.exports = {
     const player = bot.music.players.get(message.guild.id);
     if (!player || !player.queue[0]) {
       const notplaying = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.music.noPlaying}`);
       message.channel.send(notplaying).then((msg) => msg.delete({
         timeout: 15000,
@@ -73,7 +73,7 @@ module.exports = {
 
     const embed = new MessageEmbed()
       .setAuthor('Current Song Playing', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-      .setColor('36393F')
+      .setColor(color)
       .setThumbnail('https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
       .setDescription(stripIndents`
             ${player.playing ? '▶️' : '⏸️'} **${title}** \`${Utils.formatTime(duration, true)}\` by ${author} - Requested by: [<@${requester.id}>]`);

@@ -2,7 +2,7 @@
 const { MessageEmbed } = require('discord.js');
 const moment = require('moment');
 const SQLite = require('better-sqlite3');
-const { prefix, color, logging } = require('../../storage/config.json');
+const { prefix, logging, color } = require('../../storage/config.json');
 const db = new SQLite('./storage/db/db.sqlite');
 const coinCooldown = new Set();
 const coinCooldownSeconds = 5;
@@ -46,7 +46,7 @@ module.exports = async (bot, message) => {
   if (command === `${prefix}prefix`) {
     if (message.member.guild.me.hasPermission('EMBED_LINKS')) {
       const embed = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`This server's prefix is: \`${prefixcommand}\``);
       message.channel.send(embed);
       return;
@@ -243,7 +243,7 @@ module.exports = async (bot, message) => {
     .setDescription(
       `**Used** ${cmd} **command in ${message.channel}**\n${cmd} ${oargresult}`,
     )
-    .setColor(color)
+    .setColor('36393F')
     .setFooter(`ID: ${message.channel.id}`)
     .setTimestamp();
   bot.channels.cache.get(logs).send(logembed);

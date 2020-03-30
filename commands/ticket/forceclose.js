@@ -26,7 +26,7 @@ module.exports = {
     const modRole = message.guild.roles.cache.find((x) => x.name === 'Support Team') || message.guild.roles.cache.find((r) => r.id === suppRole.role);
     if (!modRole) {
       const nomodRole = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.tickets.nomodRole}`);
       message.channel.send(nomodRole);
       return;
@@ -37,7 +37,7 @@ module.exports = {
       const donthaveroleMessage = language.tickets.donthaveRole;
       const role = donthaveroleMessage.replace('${role}', modRole);
       const donthaveRole = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${role}`);
       message.channel.send(donthaveRole);
       return;
@@ -58,7 +58,7 @@ module.exports = {
         (chan) => chan.id === foundTicket.chanid,
       );
       const forceclosetimer = new MessageEmbed()
-        .setColor('#36393F')
+        .setColor(color)
         .setTitle(':x: Closing Ticket! :x:')
         .setDescription(`${language.tickets.closeTimer}`);
       getChan.send(forceclosetimer).then((timerMsg) => {
@@ -73,7 +73,7 @@ module.exports = {
           )
           .then(() => {
             const cancelTimer = new MessageEmbed()
-              .setColor('#36393F')
+              .setColor(color)
               .setDescription('Canceling Ticket Close');
             timerMsg.edit(cancelTimer).then((cancelMsg) => {
               cancelMsg.delete({
@@ -114,7 +114,7 @@ module.exports = {
       });
     } else {
       const errEmbed = new MessageEmbed()
-        .setColor('#36393F')
+        .setColor(color)
         .setDescription('This ticket could not be found.');
       message.channel.send(errEmbed);
     }

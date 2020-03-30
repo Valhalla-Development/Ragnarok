@@ -15,7 +15,7 @@ module.exports = {
     description: "Displays a user's fortnite stats!",
     accessableby: 'Everyone',
   },
-  run: async (bot, message, args) => {
+  run: async (bot, message, args, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -30,7 +30,7 @@ module.exports = {
     const incorrectUsage = incorrectUsageMessage.replace('${prefix}', prefix);
 
     const noUser = new MessageEmbed()
-      .setColor('36393E')
+      .setColor(color)
       .setDescription('Unable to find a user with that username!');
 
     if (!args[0]) return message.channel.send(incorrectUsage);
@@ -57,7 +57,7 @@ module.exports = {
     } = data[gametype];
 
     const embed = new MessageEmbed()
-      .setColor('RANDOM')
+      .setColor(color)
       .setAuthor(`(Fortnite) | ${username}`, image)
       .setThumbnail(image)
       .setDescription(stripIndents`**Gamemode:** ${gametype.slice(0, 1).toUpperCase() + gametype.slice(1)}

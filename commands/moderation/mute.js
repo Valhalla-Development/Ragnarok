@@ -13,7 +13,7 @@ module.exports = {
     description: 'Mutes a user in the guild',
     accessableby: 'Staff',
   },
-  run: async (bot, message, args) => {
+  run: async (bot, message, args, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS') || (!message.member.guild.me.hasPermission('MANAGE_ROLES'))) {
       message.channel.send('I need the permissions `Embed Links` and `MANAGE_ROLES` for this command!');
       return;
@@ -67,7 +67,7 @@ module.exports = {
 
     if (user.roles.cache.has(muterole.id)) {
       const alreadymuted = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(':x: This user is already muted!');
       message.channel.send(alreadymuted);
       return;
@@ -89,7 +89,7 @@ module.exports = {
           { name: 'Reason', value: `${reason}` },
           { name: 'Time', value: `${mutetime}` },
           { name: 'Moderator', value: `${mod}` })
-        .setColor('#ff0000');
+        .setColor(color);
       message.channel.send(muteembed);
 
       setTimeout(() => {
@@ -98,7 +98,7 @@ module.exports = {
           .setAuthor(' Action | Un-Mute', message.guild.iconURL())
           .addFields({ name: 'User', value: `<@${user.id}>` },
             { name: 'Reason', value: 'Mute time ended' })
-          .setColor('#ff0000');
+          .setColor(color);
 
         message.channel.send(unmuteembed);
       }, ms(mutetime));
@@ -114,7 +114,7 @@ module.exports = {
           { name: 'Reason', value: `${reason}` },
           { name: 'Time', value: `${mutetime}` },
           { name: 'Moderator', value: `${mod}` })
-        .setColor('#ff0000');
+        .setColor(color);
       bot.channels.cache.get(dblogs).send(muteembed);
       message.channel.send(muteembed);
 
@@ -124,7 +124,7 @@ module.exports = {
           .setAuthor(' Action | Un-Mute', message.guild.iconURL())
           .addFields({ name: 'User', value: `<@${user.id}>` },
             { name: 'Reason', value: 'Mute time ended' })
-          .setColor('#ff0000');
+          .setColor(color);
 
         bot.channels.cache.get(dblogs).send(unmuteembed);
         message.channel.send(unmuteembed);

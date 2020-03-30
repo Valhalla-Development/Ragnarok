@@ -24,7 +24,7 @@ module.exports = {
 
     if (args[0] === undefined) {
       const noinEmb = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.esay.noInput}`);
       message.channel.send(noinEmb);
       return;

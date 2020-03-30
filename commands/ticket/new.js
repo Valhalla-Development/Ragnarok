@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
-const generate = require('nanoid/generate');
+const generate = require('nanoid-generate');
 const custAlpha = '0123456789abcdefghijklmnopqrstuvwxyz';
 const language = require('../../storage/messages.json');
 
@@ -32,7 +32,7 @@ module.exports = {
 
     if (!message.member.guild.me.hasPermission('ADMINISTRATOR')) {
       const botPerm = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(
           'Uh oh! It seems you have removed the `ADMINISTRATOR` permission from me. I cannot function properly without it :cry:',
         );
@@ -44,7 +44,7 @@ module.exports = {
     if (
       !message.guild.roles.cache.find((r) => r.name === 'Support Team') && !suppRole) {
       const nomodRole = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.tickets.nomodRole}`);
       message.channel.send(nomodRole);
       return;
@@ -93,7 +93,7 @@ module.exports = {
       })
     ) {
       const existTM = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.tickets.existingTicket}`);
       message.channel.send(existTM);
       return;
@@ -157,7 +157,7 @@ module.exports = {
           });
           // Send a message saying the ticket has been created.
           const newTicketE = new MessageEmbed()
-            .setColor('36393F')
+            .setColor(color)
             .setDescription(`${language.tickets.ticketCreated}, <#${c.id}>.`);
           message.channel.send(newTicketE).then((msg) => msg.delete({
             timeout: 5000,
@@ -166,7 +166,7 @@ module.exports = {
             message.delete({ timeout: 5000 });
           }
           const embed = new MessageEmbed()
-            .setColor(0xcf40fa)
+            .setColor(color)
             .setTitle('New Ticket')
             .setDescription(
               `Hello \`${
@@ -248,7 +248,7 @@ module.exports = {
           await c.setParent(ticategory);
           // Send a message saying the ticket has been created.
           const newTicketE = new MessageEmbed()
-            .setColor('36393F')
+            .setColor(color)
             .setDescription(`${language.tickets.ticketCreated}, <#${c.id}>.`);
           message.channel.send(newTicketE).then((msg) => msg.delete({
             timeout: 5000,
@@ -257,7 +257,7 @@ module.exports = {
             message.delete({ timeout: 5000 });
           }
           const embed = new MessageEmbed()
-            .setColor(0xcf40fa)
+            .setColor(color)
             .setTitle('New Ticket')
             .setDescription(
               `Hello \`${

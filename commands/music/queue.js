@@ -13,7 +13,7 @@ module.exports = {
     aliases: ['q'],
   },
 
-  run: async (bot, message, args) => {
+  run: async (bot, message, args, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -41,7 +41,7 @@ module.exports = {
       const noRoleMessage = language.music.noRole;
       const noRolePrefix = noRoleMessage.replace('${prefix}', prefix);
       const noRoleF = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${noRolePrefix}`);
       message.channel.send(noRoleF).then((msg) => msg.delete({
         timeout: 15000,
@@ -55,7 +55,7 @@ module.exports = {
     const player = bot.music.players.get(message.guild.id);
     if (!player) {
       const notplaying = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.music.noPlaying}`);
       message.channel.send(notplaying).then((msg) => msg.delete({
         timeout: 15000,
@@ -68,7 +68,7 @@ module.exports = {
 
     if (player.queue.length < 1) {
       const noQueueE = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(language.music.noQueue);
       message.channel.send(noQueueE);
       return;
@@ -79,11 +79,11 @@ module.exports = {
     const { queue } = player;
 
     const noQueueE = new MessageEmbed()
-      .setColor('36393F')
+      .setColor(color)
       .setDescription(`${language.music.noQueue}`);
 
     const clearedE = new MessageEmbed()
-      .setColor('36393F')
+      .setColor(color)
       .setDescription(`${language.music.cleared}`);
 
 
@@ -129,7 +129,7 @@ module.exports = {
     embed.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png');
     embed.setAuthor(`${message.guild.name}'s Queue (${Math.floor(x / 10)} / ${Math.floor((player.queue.slice(1).length + 10) / 10)})`);
     embed.setFooter(`Total items in queue: ${player.queue.length}`);
-    embed.setColor('36393F');
+    embed.setColor(color);
     message.channel.send(embed).then(async (msg) => {
       if (Math.floor((player.queue.slice(1).length + 10) / 10) > 1) {
         await msg.react('⏪');

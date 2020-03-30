@@ -15,7 +15,7 @@ module.exports = {
     description: 'Fetches Steam profile for specified username',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, args) => {
+  run: async (bot, message, args, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -39,7 +39,7 @@ module.exports = {
     const url = `http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=${token}&vanityurl=${args.join(' ')}`;
 
     const noProfile = new MessageEmbed()
-      .setColor('36393E')
+      .setColor(color)
       .setDescription('I was unable to find a steam profile with that username!');
 
     fetch(url).then((res) => res.json()).then((body) => {
@@ -70,7 +70,7 @@ module.exports = {
           } = body.players[0];
 
           const embed = new MessageEmbed()
-            .setColor('RANDOM')
+            .setColor(color)
             .setAuthor(`(Steam) | ${personaname}`, avatarfull)
             .setThumbnail(avatarfull)
             .setDescription(stripIndents`**Real Name:** ${realname || 'Unknown'}

@@ -11,7 +11,7 @@ module.exports = {
     aliases: ['br'],
     accessableby: 'Everyone',
   },
-  run: async (bot, message, args) => {
+  run: async (bot, message, args, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -19,7 +19,7 @@ module.exports = {
 
     if (!args[0]) {
       const noinEmbed = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.bugreport.noInput}`);
       message.channel.send(noinEmbed);
       return;
@@ -28,7 +28,7 @@ module.exports = {
     const argresult = args.join(' ');
 
     const embed = new MessageEmbed()
-      .setColor('36393F')
+      .setColor(color)
       .setTitle('Bug Report')
       .setDescription(
         `**User: <@${message.author.id}> - **\`${
@@ -42,7 +42,7 @@ module.exports = {
       .send(embed);
 
     const loggedEmbed = new MessageEmbed()
-      .setColor('36393F')
+      .setColor(color)
       .setDescription(`${language.bugreport.bugLogged}`);
     message.channel.send(loggedEmbed);
   },

@@ -51,12 +51,12 @@ module.exports = {
           const pull = require(`../${f}/${commandName}.js`);
           bot.commands.set(commandName, pull);
           const success = new MessageEmbed()
-            .setColor('RANDOM')
+            .setColor(color)
             .setDescription(`Successfully reloaded \`${commandName}\``);
           return message.channel.send(success);
         } catch (e) {
           const errorCatch = new MessageEmbed()
-            .setColor('RANDOM')
+            .setColor(color)
             .setDescription(`Could not reload: \`${args[0].toUpperCase()}\``);
           return message.channel.send(errorCatch);
         }

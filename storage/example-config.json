@@ -8,7 +8,7 @@
   "ownerID": "REDACTED",
   "prefix": "-",
   "logging": true,
-  "color": "RED",
+  "color": "36393F",
   "idiotToken": "REDACTED",
   "nodes": [
     { "host": "localhost", "port": "2333", "password": "youshallnotpass" }

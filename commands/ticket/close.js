@@ -35,14 +35,14 @@ module.exports = {
     // Make sure it's inside the ticket channel.
     if (foundTicket && message.channel.id !== foundTicket.chanid) {
       const badChannel = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.tickets.wrongChannelClose}`);
       message.channel.send(badChannel);
       return;
     }
     if (!foundTicket) {
       const errEmbed = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.tickets.wrongChannelClose}`);
       return message.channel.send(errEmbed);
     }
@@ -51,7 +51,7 @@ module.exports = {
     const confirmCloseMessage = language.tickets.closeConfirm;
     const confirmClose = confirmCloseMessage.replace('${prefix}', prefix);
     const confirmEmbed = new MessageEmbed()
-      .setColor('36393F')
+      .setColor(color)
       .setDescription(`${confirmClose}`);
     message.channel.send(confirmEmbed).then((m) => {
       message.channel

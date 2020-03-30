@@ -12,7 +12,7 @@ module.exports = {
     description: 'Gambles specified amount',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, args) => {
+  run: async (bot, message, args, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -32,7 +32,7 @@ module.exports = {
 
     if (!args[0]) {
       const noinput = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.slot.noArgs}`)
         .addFields({ name: 'Current Balance', value: balance.balance });
       message.channel.send(noinput);
@@ -43,7 +43,7 @@ module.exports = {
 
     if (!gambledCoins) {
       const noan = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.slot.naN}`);
       message.channel.send(noan);
       return;
@@ -51,7 +51,7 @@ module.exports = {
 
     if (gambledCoins < 10) {
       const noan = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.slot.invalidAmount}`);
       message.channel.send(noan);
       return;
@@ -59,7 +59,7 @@ module.exports = {
 
     if (gambledCoins > balance.balance) {
       const noan = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(
           `:x: **You do not have that many coins! You only have \`\`${balance.balance}\`\` coins!**`,
         );
@@ -113,7 +113,7 @@ module.exports = {
     const newbal = balance.balance - gambledCoins + amt;
     // send the message
     const slotembed = new MessageEmbed()
-      .setColor('#098aed')
+      .setColor(color)
       .addFields({
         name: '**SLOTS**',
         value: `${randEmojis[0]} | ${randEmojis[1]} | ${randEmojis[2]}\n${

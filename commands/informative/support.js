@@ -8,14 +8,14 @@ module.exports = {
     description: 'Posts a link to the bots support server',
     accessableby: 'Everyone',
   },
-  run: async (bot, message) => {
+  run: async (bot, message, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
     }
 
     const embed = new MessageEmbed()
-      .setColor('36393F')
+      .setColor(color)
       .setDescription(
         ':white_check_mark: **Support Server Invite**: https://discord.gg/Q3ZhdRJ',
       );

@@ -4,7 +4,7 @@ const SQLite = require('better-sqlite3');
 const { prefix, nodes } = require('../../storage/config.json');
 const db = new SQLite('./storage/db/db.sqlite');
 
-module.exports = async (bot) => {
+module.exports = async (bot, color) => {
   console.log(
     `Scanning for guilds...\n\x1b[36m[-]\x1b[0m ${bot.guilds
       .cache.map((n) => `${n.name} (ID: \x1b[36m${n.id}\x1b[0m)`)
@@ -47,7 +47,7 @@ module.exports = async (bot) => {
     .on('trackStart', ({ textChannel }, { title, duration, requester }) => {
       const embed = new MessageEmbed()
         .setAuthor('Now Playing:', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`Now playing: \`${title}\`\nDuration: \`${Utils.formatTime(duration, true)}\`\nRequested by: ${requester}`);
       textChannel.send(embed);
     });

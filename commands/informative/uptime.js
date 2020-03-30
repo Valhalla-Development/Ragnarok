@@ -29,7 +29,7 @@ module.exports = {
     description: 'Displays how long the bot has been running',
     accessableby: 'Everyone',
   },
-  run: async (bot, message) => {
+  run: async (bot, message, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -48,7 +48,7 @@ module.exports = {
 
     const botembed = new MessageEmbed()
       .setTitle('Uptime')
-      .setColor('RANDOM')
+      .setColor(color)
       .setDescription(`${uptime}`);
 
     message.channel.send(botembed);

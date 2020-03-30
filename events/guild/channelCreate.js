@@ -1,9 +1,8 @@
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
-const { color } = require('../../storage/config.json');
 const db = new SQLite('./storage/db/db.sqlite');
 
-module.exports = async (bot, channel) => {
+module.exports = async (bot, channel, color) => {
   const id = db
     .prepare(`SELECT channel FROM logging WHERE guildid = ${channel.guild.id};`)
     .get();

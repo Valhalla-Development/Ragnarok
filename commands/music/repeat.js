@@ -12,7 +12,7 @@ module.exports = {
     accessableby: 'Everyone',
   },
 
-  run: async (client, message, args) => {
+  run: async (client, message, args, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -27,7 +27,7 @@ module.exports = {
     const dlRole = message.guild.roles.cache.find((x) => x.name === 'DJ') || message.guild.roles.cache.find((r) => r.id === dlRoleGrab.role);
     if (!dlRole) {
       const noRoleF = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.music.nodjRole}`);
       message.channel.send(noRoleF);
       return;
@@ -38,7 +38,7 @@ module.exports = {
       const donthaveroleMessage = language.music.donthaveRole;
       const role = donthaveroleMessage.replace('${role}', dlRole);
       const donthaveRole = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${role}`);
       message.channel.send(donthaveRole);
       return;
@@ -49,7 +49,7 @@ module.exports = {
       const { channel } = message.member.voice;
       if (!player) {
         const notplaying = new MessageEmbed()
-          .setColor('36393F')
+          .setColor(color)
           .setDescription(`${language.music.noPlaying}`);
         message.channel.send(notplaying).then((msg) => msg.delete({
           timeout: 15000,
@@ -62,7 +62,7 @@ module.exports = {
 
       if (!channel || channel.id !== player.voiceChannel.id) {
         const novoice = new MessageEmbed()
-          .setColor('36393F')
+          .setColor(color)
           .setDescription(`${language.music.notinVoice}`);
         message.channel.send(novoice).then((msg) => msg.delete({
           timeout: 15000,
@@ -75,7 +75,7 @@ module.exports = {
 
       if (!player) {
         const notplaying = new MessageEmbed()
-          .setColor('36393F')
+          .setColor(color)
           .setDescription(`${language.music.noPlaying}`);
         message.channel.send(notplaying).then((msg) => msg.delete({
           timeout: 15000,
@@ -93,13 +93,13 @@ module.exports = {
         player.setTrackRepeat(true);
         const on = new MessageEmbed()
           .setDescription(`${language.music.enabled}`)
-          .setColor('36393F');
+          .setColor(color);
         message.channel.send(on);
       } else {
         player.setQueueRepeat(false);
         const off = new MessageEmbed()
           .setDescription(`${language.music.disabled}`)
-          .setColor('36393F');
+          .setColor(color);
         message.channel.send(off);
       }
     } else if (args[0] === 'queue') {
@@ -107,7 +107,7 @@ module.exports = {
       const { channel } = message.member.voice;
       if (!channel || channel.id !== player.voiceChannel.id) {
         const novoice = new MessageEmbed()
-          .setColor('36393F')
+          .setColor(color)
           .setDescription(`${language.music.notinVoice}`);
         message.channel.send(novoice).then((msg) => msg.delete({
           timeout: 15000,
@@ -120,7 +120,7 @@ module.exports = {
 
       if (!player || !player.queue[0]) {
         const notplaying = new MessageEmbed()
-          .setColor('36393F')
+          .setColor(color)
           .setDescription(`${language.music.noPlaying}`);
         message.channel.send(notplaying).then((msg) => msg.delete({
           timeout: 15000,
@@ -135,14 +135,14 @@ module.exports = {
         player.setQueueRepeat(true);
         const on = new MessageEmbed()
           .setDescription(`${language.music.enabled}`)
-          .setColor('36393F');
+          .setColor(color);
         message.channel.send(on);
         return;
       }
       player.setQueueRepeat(false);
       const off = new MessageEmbed()
         .setDescription(`${language.music.disabled}`)
-        .setColor('36393F');
+        .setColor(color);
       message.channel.send(off);
       return;
     }

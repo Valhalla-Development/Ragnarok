@@ -12,7 +12,7 @@ module.exports = {
     description: 'Displays available Ticket commands',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, args) => {
+  run: async (bot, message, args, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -25,7 +25,7 @@ module.exports = {
 
     if (args[0] === undefined) {
       const embed = new MessageEmbed()
-        .setColor(0xcf40fa)
+        .setColor(color)
         .addFields({ name: 'Ragnarok - Tickets', value: `[${prefix}new]() (reason) : Opens up a new ticket\n[${prefix}close]() : Closes a ticket that has been resolved\n**Admin Commands:** (Run Inside of a Ticket Channel)\n[${prefix}add]() : Adds a user to a ticket (mention a user)\n[${prefix}remove]() : Removes a user from a ticket (mention a user)\n[${prefix}rename]() : Renames the ticket\n[${prefix}forceclose]() : Force closes a ticket\n**Global Admin Commands:** (Can Be Run Anywhere in the Server)\n[${prefix}add]() [@user] [ticketid]: Adds a user to a ticket (mention a user)\n[${prefix}remove]() [@user] [ticketid] : Removes a user from a ticket (mention a user)\n[${prefix}rename]() [ticketid] [newname] : Renames the ticket\n[${prefix}forceclose]() [ticketid] : Force closes a ticket\n[${prefix}ticket list]() : Lists all open tickets\n\n**NOTE:** The ticket ID is the last 7 characters of a ticket channel. Also, for those new to reading a command menu, don't run the commands with the parentheses or brackets. They are there ONLY to specify that it needs an input and is not an integral part of the command.` });
       message.channel.send({
         embed,
@@ -49,14 +49,14 @@ module.exports = {
         .get(message.guild.id);
       if (!ticketGrab['count(*)']) {
         const noTickets = new MessageEmbed()
-          .setColor(0xcf40fa)
+          .setColor(color)
           .setDescription('There are currently no tickets open in this guild!');
         message.channel.send(noTickets);
         return;
       }
 
       const ticketList = new MessageEmbed()
-        .setColor(0xcf40fa)
+        .setColor(color)
         .addFields({ name: 'Tickets', value: `There are currently ${ticketGrab['count(*)']} tickets open\nList of IDs coming soon` });
       // and somehow display them in a collection type deal :D
       message.channel.send(ticketList);
@@ -80,14 +80,14 @@ module.exports = {
         .get(message.guild.id);
       if (!ticketGrab) {
         const noTickets = new MessageEmbed()
-          .setColor(0xcf40fa)
+          .setColor(color)
           .setDescription('There are currently no tickets open in this guild!');
         message.channel.send(noTickets);
         return;
       }
 
       const confirmClear = new MessageEmbed()
-        .setColor(0xcf40fa)
+        .setColor(color)
         .setDescription(
           `**WARNING** If you use this command while you have tickets open, you will **lose functionality** of the \`${prefix}close\` & \`${prefix}confirm\` commands for those tickets!\nIf you wish to continue with this command, reply with the message \`${prefix}confirm\`\nYou have 20 seconds to reply.`,
         );
@@ -108,7 +108,7 @@ module.exports = {
                 message.guild.id,
               );
               const clearedMessage = new MessageEmbed()
-                .setColor(0xcf40fa)
+                .setColor(color)
                 .setDescription(
                   'All tickets succesfully cleared from the database!',
                 );

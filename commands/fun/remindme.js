@@ -12,7 +12,7 @@ module.exports = {
     description: 'Reminds you of a specifed message',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, args) => {
+  run: async (bot, message, args, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -50,7 +50,7 @@ module.exports = {
 
     setTimeout(() => {
       const remindEmbed = new MessageEmbed()
-        .setColor('RANDOM')
+        .setColor(color)
         .setAuthor(
           `${message.author.username}`,
           message.author.displayAvatarURL(),

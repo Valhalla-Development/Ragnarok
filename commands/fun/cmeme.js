@@ -11,7 +11,7 @@ module.exports = {
     aliases: ['comicmeme'],
     accessableby: 'Everyone',
   },
-  run: async (bot, message) => {
+  run: async (bot, message, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -32,7 +32,7 @@ module.exports = {
     const render = (post) => {
       const embed = new MessageEmbed()
         .setTitle(post.title)
-        .setColor('RANDOM')
+        .setColor(color)
         .setImage(`${post.link}`);
       message.channel.send(embed);
     };

@@ -14,7 +14,7 @@ module.exports = {
     description: ' ',
     accessableby: 'Owner',
   },
-  run: async (bot, message, args) => {
+  run: async (bot, message, args, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -50,7 +50,7 @@ module.exports = {
         );
         return message.channel.send('', {
           embed: {
-            color: 0xff5733,
+            color: '36393F',
             title: ':exclamation::exclamation: No :exclamation::exclamation:',
             description: 'No Token For You!',
           },
@@ -61,7 +61,7 @@ module.exports = {
         .addFields({ name: `${bot.user.username} - JavaScript Eval Success:`, value: '** **' },
           { name: ':inbox_tray: **INPUT**', value: `\`\`\`${args.join(' ')}\`\`\`` },
           { name: ':outbox_tray: **OUTPUT**', value: `\`\`\`${clean(evaled)}\`\`\`` })
-        .setColor(0xff5733)
+        .setColor(color)
         .setFooter(message.createdAt, message.author.avatarURL());
       message.channel.send({
         embed,
@@ -72,7 +72,7 @@ module.exports = {
           new MessageEmbed()
             .addFields({ name: `${bot.user.username} - JavaScript Eval Error:`, value: 'There Was a Problem With The Code That You Are Trying To Run!' },
               { name: ':no_entry: ERROR', value: `\`\`\`${clean(err)}\`\`\`` })
-            .setColor(0xff5733)
+            .setColor(color)
             .setFooter(message.createdAt, message.author.avatarURL()),
         )
 

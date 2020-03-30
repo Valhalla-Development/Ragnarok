@@ -25,7 +25,7 @@ module.exports = {
     const modRole = message.guild.roles.cache.find((x) => x.name === 'Support Team') || message.guild.roles.cache.find((r) => r.id === suppRole.role);
     if (!modRole) {
       const nomodRole = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.tickets.nomodRole}`);
       message.channel.send(nomodRole);
       return;
@@ -36,7 +36,7 @@ module.exports = {
       const donthaveroleMessage = language.tickets.donthaveRole;
       const role = donthaveroleMessage.replace('${role}', modRole);
       const donthaveRole = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${role}`);
       message.channel.send(donthaveRole);
       return;
@@ -45,7 +45,7 @@ module.exports = {
     const rUser = message.mentions.users.first();
     if (!rUser) {
       const nouser = new MessageEmbed()
-        .setColor('36393F')
+        .setColor(color)
         .setDescription(`${language.tickets.cantfindUser}`);
       message.channel.send(nouser);
       return;
@@ -92,7 +92,7 @@ module.exports = {
       logchan.send(loggingembed);
     } else {
       const errEmbed = new MessageEmbed()
-        .setColor('#36393F')
+        .setColor(color)
         .setDescription('This ticket could not be found.');
       message.channel.send(errEmbed);
     }

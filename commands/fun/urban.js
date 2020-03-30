@@ -10,7 +10,7 @@ module.exports = {
     description: 'Searches Urban Dictionary',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, args) => {
+  run: async (bot, message, args, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -18,14 +18,14 @@ module.exports = {
 
     if (!message.channel.nsfw) {
       const nsfw = new MessageEmbed()
-        .setColor('RANDOM')
+        .setColor(color)
         .setDescription(':x: | You must be in a NSFW channel!');
       message.channel.send(nsfw).then((m) => m.delete({ timeout: 5000 }));
       return;
     }
     if (args[0] === undefined) {
       const undembed = new MessageEmbed()
-        .setColor('RANDOM')
+        .setColor(color)
         .setDescription(':x: | You must supply a search term!');
       message.channel.send(undembed).then((m) => m.delete({ timeout: 5000 }));
       return;
@@ -48,7 +48,7 @@ module.exports = {
     const [answer] = body.list;
 
     const embed = new MessageEmbed()
-      .setColor('RANDOM')
+      .setColor(color)
       .setFooter('Urban Dictionary', 'https://i.lensdump.com/i/88BhFP.png')
       .setTimestamp()
       .setTitle(answer.word)

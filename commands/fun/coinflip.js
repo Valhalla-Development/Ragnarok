@@ -8,7 +8,7 @@ module.exports = {
     description: 'Flips a coin',
     accessableby: 'Everyone',
   },
-  run: async (bot, message) => {
+  run: async (bot, message, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -18,11 +18,11 @@ module.exports = {
     const headembed = new MessageEmbed()
       .setAuthor('Coin Flip')
       .addFields({ name: 'Result', value: 'You flipped a: **Heads**!' })
-      .setColor('0xff1053');
+      .setColor(color);
     const tailembed = new MessageEmbed()
       .setAuthor('Coin Flip')
       .addFields({ name: 'Result', value: 'You flipped a: **Tails**!' })
-      .setColor('0x00bee8');
+      .setColor(color);
     if (rolled === '1') {
       message.channel.send(tailembed);
     }

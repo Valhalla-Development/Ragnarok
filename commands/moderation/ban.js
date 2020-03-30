@@ -93,7 +93,7 @@ module.exports = {
       const logsEmbedD = new MessageEmbed()
         .setTitle('User Banned')
         .setFooter('User Ban Logs')
-        .setColor('#ff0000')
+        .setColor(color)
         .setTimestamp()
         .addFields({ name: 'Banned User:', value: `${chuser}, ID: ${chuser.id}` },
           { name: 'Reason:', value: chreason },
