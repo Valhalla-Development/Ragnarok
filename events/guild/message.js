@@ -40,6 +40,11 @@ module.exports = async (bot, message) => {
   const oargresult = dadArgs.join(' ');
   const command = messageArray[0].toLowerCase();
 
+  // Easter Egg
+
+  if (message.content.includes('(╯°□°）╯︵ ┻━┻')) {
+    message.channel.send('Leave my furniture alone!\n┬─┬ ノ( °  □°ノ)');
+  }
 
   // Prefix command
 
@@ -207,6 +212,9 @@ module.exports = async (bot, message) => {
       )}\x1b[0m] Command \`${cmd}\` was executed by \x1b[36m${
         message.author.tag
       }\x1b[0m (Guild: \x1b[36m${message.guild.name}\x1b[0m)`;
+      if (bot.user.id === '508756879564865539') {
+        bot.channels.cache.get('694680953133596682').send(`${cmd} - was executed by ${message.author.tag} - In guild: ${message.guild.name}`, { code: 'css' });
+      }
       console.log(LoggingNoArgs);
     } else {
       const LoggingArgs = `[\x1b[36m${moment().format(
@@ -214,6 +222,9 @@ module.exports = async (bot, message) => {
       )}\x1b[0m] Command \`${cmd} ${oargresult}\` was executed by \x1b[36m${
         message.author.tag
       }\x1b[0m (Guild: \x1b[36m${message.guild.name}\x1b[0m)`;
+      if (bot.user.id === '508756879564865539') {
+        bot.channels.cache.get('694680953133596682').send(`${cmd} ${oargresult} - was executed by ${message.author.tag} - In guild: ${message.guild.name}`, { code: 'css' });
+      }
       console.log(LoggingArgs);
     }
   }
