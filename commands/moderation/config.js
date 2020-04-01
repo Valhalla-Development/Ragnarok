@@ -30,11 +30,147 @@ module.exports = {
       const undeembed = new MessageEmbed()
         .setAuthor('Ragnarok - Config', message.guild.iconURL())
         .setColor(color)
-        .setDescription(`**Advert Protection**\n[${prefix}config adsprot <on/off>]() : Enables/Disabled advert protection\n**Autorole**\n[${prefix}config autorole <@role>]() : Sets the role users are given when they join the guild\n**Logging**\n[${prefix}config logging <#channel/off>]() : Sets/disables the logging channel\n**Prefix**\n[${prefix}config prefix <prefix>]() : Sets the guild prefix\n**Tickets**\n[${prefix}config ticket cat <cat name>]() : Sets the ticket category\n  [${prefix}config ticket log <#channel>](): Enables ticket logging\n  [${prefix}config ticket role <@role>](): Sets custom support role for ticket system\n**Welcome**\n[${prefix}config welcome channel <#channel>]() : Sets the welcome channel\n[${prefix}config welcome channel off]() : Disables the welcome message\n**Rolemenu**\n[${prefix}config rolemenu add <@role>]() : Sets the role menu roles\n  [${prefix}config rolemenu remove <@role>]() : Removes a role from rolemenu\n  [${prefix}config rolemenu clear]() : Removes all roles from rolemenu\n**Music**\n[${prefix}config music role <@role>]() : Sets the DJ role\n  [${prefix}config music role off]() : Disabled the DJ role`);
+        .setDescription(`**Advert Protection**\n[${prefix}config adsprot <on/off>]() : Enables/Disabled advert protection\n**Autorole**\n[${prefix}config autorole <@role>]() : Sets the role users are given when they join the guild\n**Logging**\n[${prefix}config logging <#channel/off>]() : Sets/disables the logging channel\n**Prefix**\n[${prefix}config prefix <prefix>]() : Sets the guild prefix\n**Tickets**\n[${prefix}config ticket cat <cat name>]() : Sets the ticket category\n  [${prefix}config ticket log <#channel>](): Enables ticket logging\n  [${prefix}config ticket role <@role>](): Sets custom support role for ticket system\n**Welcome**\n[${prefix}config welcome channel <#channel>]() : Sets the welcome channel\n[${prefix}config welcome channel off]() : Disables the welcome message\n**Rolemenu**\n[${prefix}config rolemenu add <@role>]() : Sets the role menu roles\n  [${prefix}config rolemenu remove <@role>]() : Removes a role from rolemenu\n  [${prefix}config rolemenu clear]() : Removes all roles from rolemenu\n**Music**\n[${prefix}config music role <@role>]() : Sets the DJ role\n  [${prefix}config music role off]() : Disabled the DJ role\n**Membercount**\n[${prefix}config membercount <on/off>]() : Enables/Disables the member count module`);
       message.channel.send({
         embed: undeembed,
       });
       return;
+    }
+
+    // Membercount Command
+    if (args[0] === 'membercount') {
+      // perms checking
+
+      if (
+        !message.member.hasPermission('MANAGE_GUILD') && message.author.id !== ownerID) {
+        const invalidpermsembed = new MessageEmbed()
+          .setColor(color)
+          .setDescription(`${language.membercount.noPermission}`);
+        message.channel.send(invalidpermsembed);
+        return;
+      }
+
+      // preparing count
+
+      bot.getTable = db.prepare('SELECT * FROM membercount WHERE guildid = ?');
+      let status;
+      if (message.guild.id) {
+        status = bot.getTable.get(message.guild.id);
+
+        if (args[1] === 'on') {
+          // if already on
+          if (status) {
+            const alreadyOnMessage = language.membercount.alreadyOn;
+            const alreadyOn = alreadyOnMessage.replace('${prefix}', prefix);
+            const alreadyonembed = new MessageEmbed()
+              .setColor(color)
+              .setDescription(`${alreadyOn}`);
+            message.channel.send(alreadyonembed);
+            return;
+          }
+
+          message.guild.channels.create('Member Count', {
+            type: 'category', reason: 'member count category',
+          }).then((a) => {
+            a.setPosition(0);
+
+            message.guild.channels.create(`Users: ${(message.guild.memberCount - message.guild.members.cache.filter((m) => m.user.bot).size).toLocaleString('en')}`, {
+              type: 'voice',
+              permissionOverwrites: [{
+                id: message.channel.guild.roles.everyone.id,
+                deny: 'CONNECT',
+                allow: 'VIEW_CHANNEL',
+              }],
+              reason: 'user count channel',
+            }).then((b) => {
+              b.setParent(a);
+
+              message.guild.channels.create(`Bots: ${message.guild.members.cache.filter((m) => m.user.bot).size}`, {
+                type: 'voice',
+                permissionOverwrites: [{
+                  id: message.channel.guild.roles.everyone.id,
+                  deny: 'CONNECT',
+                  allow: 'VIEW_CHANNEL',
+                }],
+                reason: 'bot count channel',
+              }).then((c) => {
+                c.setParent(a);
+
+                message.guild.channels.create(`Total: ${(message.guild.memberCount).toLocaleString('en')}`, {
+                  type: 'voice',
+                  permissionOverwrites: [{
+                    id: message.channel.guild.roles.everyone.id,
+                    deny: 'CONNECT',
+                    allow: 'VIEW_CHANNEL',
+                  }],
+                  reason: 'total count channel',
+                }).then((d) => {
+                  d.setParent(a);
+
+                  const insert = db.prepare(
+                    'INSERT INTO membercount (guildid, status, channela, channelb, channelc) VALUES (@guildid, @status, @channela, @channelb, @channelc);',
+                  );
+                  insert.run({
+                    guildid: `${message.guild.id}`,
+                    status: 'on',
+                    channela: b.id,
+                    channelb: c.id,
+                    channelc: d.id,
+                  });
+                });
+              });
+            });
+          });
+
+          const turnonembed = new MessageEmbed()
+            .setColor(color)
+            .setDescription(`${language.membercount.turnedOn}`);
+          message.channel.send(turnonembed);
+
+
+          // if args = off
+        } else if (args[1] === 'off') {
+          // if already off
+          if (!status) {
+            const alreadyOffMessage = language.membercount.alreadyOff;
+            const alreadyOff = alreadyOffMessage.replace('${prefix}', prefix);
+            const alreadyoffembed = new MessageEmbed()
+              .setColor(color)
+              .setDescription(`${alreadyOff}`);
+            message.channel.send(alreadyoffembed);
+            return;
+          }
+
+          const channelA = bot.channels.cache.find((a) => a.id === status.channela);
+          const channelB = bot.channels.cache.find((b) => b.id === status.channelb);
+          const channelC = bot.channels.cache.find((c) => c.id === status.channelc);
+
+          const catA = message.guild.channels.cache.find((d) => d.name === 'Member Count');
+          if (channelA) channelA.delete();
+          if (channelB) channelB.delete();
+          if (channelC) channelC.delete();
+          if (catA) catA.delete();
+          db.prepare('DELETE FROM membercount WHERE guildid = ?').run(
+            message.guild.id,
+          );
+          const turnedoffembed = new MessageEmbed()
+            .setColor(color)
+            .setDescription(`${language.membercount.turnedOff}`);
+          message.channel.send(turnedoffembed);
+          return;
+        } else if (args[1] !== 'off' || args[1] !== 'on') {
+          const incorrectUsageMessage = language.membercount.incorrectUsage;
+          const incorrectUsage = incorrectUsageMessage.replace(
+            '${prefix}',
+            prefix,
+          );
+          const incorrectembed = new MessageEmbed()
+            .setColor(color)
+            .setDescription(`${incorrectUsage}`);
+          message.channel.send(incorrectembed);
+          return;
+        }
+      }
     }
 
     // Rolemenu Command
