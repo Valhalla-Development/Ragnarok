@@ -75,6 +75,23 @@ module.exports = async (bot, color) => {
     .set('high', 0.25);
 
   // Database Creation
+  // Membercount Table
+  const memcount = db
+    .prepare(
+      'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'membercount\';',
+    )
+    .get();
+  if (!memcount['count(*)']) {
+    console.log('membercount table created!');
+    db.prepare(
+      'CREATE TABLE membercount (guildid TEXT PRIMARY KEY, status TEXT, channela TEXT, channelb TEXT, channelc TEXT);',
+    ).run();
+    db.prepare(
+      'CREATE UNIQUE INDEX idx_membercount_id ON membercount (guildid);',
+    ).run();
+    db.pragma('synchronous = 1');
+    db.pragma('journal_mode = wal');
+  }
   // Announcement Table
   const announcement = db
     .prepare(
