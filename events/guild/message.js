@@ -202,6 +202,9 @@ module.exports = async (bot, message) => {
   if (!message.content.startsWith(prefixcommand)) return;
   if (commandfile) {
     commandfile.run(bot, message, args, color);
+    if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+      message.delete();
+    }
   }
 
   // Logging
