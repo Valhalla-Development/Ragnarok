@@ -11,6 +11,27 @@ module.exports = async (bot, guild) => {
       type: 'WATCHING',
     },
   );
+  // membercount table
+  const delmem = db
+    .prepare('SELECT count(*) FROM membercount WHERE guildid = ?;')
+    .get(guild.id);
+  if (delmem['count(*)']) {
+    db.prepare('DELETE FROM membercount WHERE guildid = ?').run(guild.id);
+  }
+  // music table
+  const delmus = db
+    .prepare('SELECT count(*) FROM music WHERE guildid = ?;')
+    .get(guild.id);
+  if (delmus['count(*)']) {
+    db.prepare('DELETE FROM music WHERE guildid = ?').run(guild.id);
+  }
+  // rolemenu table
+  const delrol = db
+    .prepare('SELECT count(*) FROM rolemenu WHERE guildid = ?;')
+    .get(guild.id);
+  if (delrol['count(*)']) {
+    db.prepare('DELETE FROM rolemenu WHERE guildid = ?').run(guild.id);
+  }
   // setprefix table
   const delpre = db
     .prepare('SELECT count(*) FROM setprefix WHERE guildid = ?;')
