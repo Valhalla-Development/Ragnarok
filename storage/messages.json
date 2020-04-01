@@ -30,6 +30,14 @@
       "turnedOff": ":white_check_mark: **Advert protection was turned off!**",
       "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}config adsprot <on/off>`**"
     },
+    "membercount": {
+      "noPermission": ":x: **Only guild managers can use this command!**",
+      "alreadyOn": ":x: **Member count module is already enabled on this guild! To disable it, please use `${prefix}config membercount <off>`**",
+      "turnedOn": ":white_check_mark: **Member count was enabled**",
+      "alreadyOff": ":x: **Member protection is not enabled on this guild! To activate it, please use `${prefix}config membercount <on>`**",
+      "turnedOff": ":white_check_mark: **Member count was turned off!**",
+      "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}config membercount <on/off>`**"
+    },
     "autorole": {
       "noPermission": ":x: **Only users with the `MANAGE_GUILD` permission can use this command!**",
       "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}config autorole <role>` __the role is case sensitive!__**",
