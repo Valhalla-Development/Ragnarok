@@ -14,14 +14,40 @@ module.exports = async (bot, member, color) => {
   const id = db
     .prepare(`SELECT channel FROM logging WHERE guildid = ${member.guild.id};`)
     .get();
-  if (!id) return;
-  const logs = id.channel;
-  if (!logs) return;
-  const logembed = new MessageEmbed()
-    .setAuthor('Member Left', member.user.avatarURL())
-    .setDescription(`<@${member.user.id}> - ${member.user.tag}`)
-    .setColor(color)
-    .setFooter(`ID: ${member.user.id}`)
-    .setTimestamp();
-  bot.channels.cache.get(logs).send(logembed);
+  if (id) {
+    const logs = id.channel;
+    if (logs) {
+      const logembed = new MessageEmbed()
+        .setAuthor('Member Left', member.user.avatarURL())
+        .setDescription(`<@${member.user.id}> - ${member.user.tag}`)
+        .setColor(color)
+        .setFooter(`ID: ${member.user.id}`)
+        .setTimestamp();
+      bot.channels.cache.get(logs).send(logembed);
+    }
+  }
+
+  // Member Count
+  const memStat = db.prepare(`SELECT * FROM membercount WHERE guildid = ${member.guild.id};`).get();
+  if (memStat) {
+    const channelA = bot.channels.cache.find((a) => a.id === memStat.channela);
+    const channelB = bot.channels.cache.find((b) => b.id === memStat.channelb);
+    const channelC = bot.channels.cache.find((c) => c.id === memStat.channelc);
+
+    if (channelA) {
+      channelA.setName(`Users: ${(member.guild.memberCount - member.guild.members.cache.filter((m) => m.user.bot).size).toLocaleString('en')}`);
+    } else {
+      db.prepare('DELETE FROM membercount WHERE guildid = ?').run(member.guild.id);
+    }
+    if (channelB) {
+      channelB.setName(`Bots: ${member.guild.members.cache.filter((m) => m.user.bot).size}`);
+    } else {
+      db.prepare('DELETE FROM membercount WHERE guildid = ?').run(member.guild.id);
+    }
+    if (channelC) {
+      channelC.setName(`Total: ${(member.guild.memberCount).toLocaleString('en')}`);
+    } else {
+      db.prepare('DELETE FROM membercount WHERE guildid = ?').run(member.guild.id);
+    }
+  }
 };
