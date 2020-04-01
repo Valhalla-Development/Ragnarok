@@ -28,12 +28,16 @@ module.exports = {
       const noArgs = new MessageEmbed()
         .setColor(color)
         .setDescription(
-          `**Available Commands**:\n\n${prefix}emit guildMemberAdd`,
+          `**Available Commands**:\n\n${prefix}emit guildMemberAdd\n${prefix}emit guildMemberRemove`,
         );
       message.channel.send(noArgs);
     }
     if (args[0] === 'guildMemberAdd') {
       bot.emit('guildMemberAdd', message.member);
+      return;
+    }
+    if (args[0] === 'guildMemberRemove') {
+      bot.emit('guildMemberRemove', message.member);
       return;
     }
   },
