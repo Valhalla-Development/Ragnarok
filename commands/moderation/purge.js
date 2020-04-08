@@ -31,12 +31,6 @@ module.exports = {
       }));
       return;
     }
-    if (args[0] > 100) {
-      message.channel.send(`${language.purge.limitNumber}`).then((message) => message.delete({
-        timeout: 5000,
-      }));
-      return;
-    }
     if (args[0] < 1) {
       message.channel.send(`${language.purge.notSpecified}`).then((message) => message.delete({
         timeout: 5000,
@@ -44,7 +38,12 @@ module.exports = {
       return;
     }
 
-    const amt = await message.channel.messages.fetch({ limit: parseInt(args[0]) });
+    let amt;
+    if (args[0] > 100) {
+      amt = 100;
+    } else {
+      amt = await message.channel.messages.fetch({ limit: parseInt(args[0]) });
+    }
 
     try {
       await message.channel.bulkDelete(amt);
