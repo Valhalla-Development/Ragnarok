@@ -108,7 +108,7 @@ module.exports = {
       )
       .get();
     const reason = args.slice(0).join(' ') || 'No reason provided.';
-    const randomString = generate;
+    const randomString = generate.toLowerCase();
     if (!id) {
       const newTicket = db.prepare(
         'INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);',
@@ -162,9 +162,6 @@ module.exports = {
           message.channel.send(newTicketE).then((msg) => msg.delete({
             timeout: 5000,
           }));
-          if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-            message.delete({ timeout: 5000 });
-          }
           const embed = new MessageEmbed()
             .setColor(color)
             .setTitle('New Ticket')
@@ -253,9 +250,6 @@ module.exports = {
           message.channel.send(newTicketE).then((msg) => msg.delete({
             timeout: 5000,
           }));
-          if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-            message.delete({ timeout: 5000 });
-          }
           const embed = new MessageEmbed()
             .setColor(color)
             .setTitle('New Ticket')
