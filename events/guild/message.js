@@ -136,7 +136,7 @@ module.exports = async (bot, message) => {
 
   // Ads protection checks
   // message.content.includes('https://') || message.content.includes('http://') ||
-  // above is removed because it blocks because it returs bruh
+  // above is removed because it blocks because it returs bruh, try putting after commandfile.run
   if (
     message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')
   ) {
