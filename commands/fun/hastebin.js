@@ -54,8 +54,8 @@ module.exports = {
                 .setDescription(`${r}\nPosted By: ${message.author}`)
                 .setURL(r);
               message.channel.send(hastEmb);
-            });
-        }).catch((err) => console.error(err) && message.channel.send(':slight_frown: An error occured!'));
+            }).catch(() => message.channel.send(':slight_frown: An error occured!'));
+        }).catch(() => message.channel.send(':slight_frown: An error occured!'));
       return;
     } if (message.attachments.size > 1) {
       message.channel.send('You can only post 1 file at a time!');
@@ -77,6 +77,6 @@ module.exports = {
           .setDescription(`${r}\nPosted By: ${message.author}`)
           .setURL(r);
         message.channel.send(hastEmb);
-      });
+      }).catch(() => message.channel.send(':slight_frown: An error occured!'));
   },
 };
