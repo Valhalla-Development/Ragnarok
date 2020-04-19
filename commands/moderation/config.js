@@ -428,7 +428,7 @@ module.exports = {
           message.channel.send(turnoffembed);
           return;
         }
-        if (!message.guild.roles.cache.JSONsome((r) => [`${args[1]}`].includes(r.name))) {
+        if (!message.guild.roles.cache.some((r) => [`${args[1]}`].includes(r.name))) {
           return message.channel.send(
             ':x: **That role does not exist! Roles are case sensitive. (You do not tag the role, simply write the name of the role)**',
           );
