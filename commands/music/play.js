@@ -47,9 +47,6 @@ module.exports = {
       message.channel.send(noRoleF).then((msg) => msg.delete({
         timeout: 15000,
       }));
-      if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-        message.delete({ timeout: 15000 });
-      }
       return;
     }
 
@@ -61,9 +58,6 @@ module.exports = {
       message.channel.send(novoice).then((msg) => msg.delete({
         timeout: 15000,
       }));
-      if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-        message.delete({ timeout: 15000 });
-      }
       return;
     }
 
@@ -76,9 +70,6 @@ module.exports = {
       message.channel.send(noperms1).then((msg) => msg.delete({
         timeout: 15000,
       }));
-      if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-        message.delete({ timeout: 15000 });
-      }
       return;
     }
 
@@ -89,9 +80,6 @@ module.exports = {
       message.channel.send(noperms2).then((msg) => msg.delete({
         timeout: 15000,
       }));
-      if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-        message.delete({ timeout: 15000 });
-      }
       return;
     }
 
@@ -108,9 +96,6 @@ module.exports = {
         message.channel.send(noargs).then((msg) => msg.delete({
           timeout: 15000,
         }));
-        if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-          message.delete({ timeout: 15000 });
-        }
         return;
       }
 
