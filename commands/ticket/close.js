@@ -83,7 +83,7 @@ module.exports = {
             return;
           }
 
-          const logchan = message.guild.channels.find(
+          const logchan = message.guild.channels.cache.find(
             (chan) => chan.id === logget.log,
           );
           if (!logchan) return;
