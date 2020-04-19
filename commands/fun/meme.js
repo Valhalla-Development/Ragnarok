@@ -1,6 +1,6 @@
+/* eslint-disable no-use-before-define */
 const { MessageEmbed } = require('discord.js');
-const meme = require('memejs');
-const language = require('../../storage/messages.json');
+const fetch = require('node-fetch');
 
 module.exports = {
   config: {
@@ -19,24 +19,23 @@ module.exports = {
     const msg = await message.channel.send('Generating...');
     message.channel.startTyping();
 
-    meme((data) => {
+    fetch('https://www.reddit.com/r/dankmemes/random.json')
+      .then((res) => res.json())
+      .then((res) => res[0].data.children)
+      .then((res) => res.map((post) => ({
+        link: post.data.url,
+        title: post.data.title,
+      })))
+      .then((res) => res.map(render));
+
+    const render = (post) => {
       const embed = new MessageEmbed()
-        .setTitle(data.title[0])
+        .setTitle(post.title)
         .setColor(color)
-        .setImage(data.url[0]);
-
-      if (
-        !message.channel.permissionsFor(message.guild.me).has('EMBED_LINKS')
-      ) {
-        message.channel.send(`${language.meme.noEmbedPermission}`);
-        return;
-      }
-      msg.delete();
-      message.channel.stopTyping();
-
-      message.channel.send({
-        embed,
-      });
-    });
+        .setImage(`${post.link}`);
+      message.channel.send(embed);
+    };
+    message.channel.stopTyping();
+    msg.delete();
   },
 };
