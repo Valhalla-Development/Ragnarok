@@ -43,7 +43,7 @@ module.exports = async (bot, message) => {
   // Easter Egg
 
   if (message.content.includes('(╯°□°）╯︵ ┻━┻')) {
-    message.channel.send('Leave my furniture alone!\n┬─┬ ノ( °  □°ノ)');
+    message.channel.send('Leave my table alone!\n┬─┬ ノ( °  □°ノ)');
   }
 
   // Prefix command
