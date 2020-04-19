@@ -21,7 +21,7 @@ module.exports = async (bot, message) => {
     const noLogE = new MessageEmbed()
       .setAuthor('Message Deleted')
       .setDescription(
-        `**A message sent by <@${message.author.id}> was deleted but no content was found.`,
+        `**A message sent by <@${message.author.id}> was deleted but no content was found.**`,
       )
       .setTimestamp();
     bot.channels.cache.get(logs).send(noLogE);
