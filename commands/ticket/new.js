@@ -1,8 +1,8 @@
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
-const nanoid = require('nanoid-generate');
-const generate = nanoid.nolookalikes(7);
+const { customAlphabet } = require('nanoid');
+const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 const language = require('../../storage/messages.json');
 
 module.exports = {
@@ -108,7 +108,7 @@ module.exports = {
       )
       .get();
     const reason = args.slice(0).join(' ') || 'No reason provided.';
-    const randomString = generate.toLowerCase();
+    const randomString = nanoid();
     if (!id) {
       const newTicket = db.prepare(
         'INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);',
