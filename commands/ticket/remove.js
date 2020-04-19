@@ -22,7 +22,14 @@ module.exports = {
         `SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`,
       )
       .get();
-    const modRole = message.guild.roles.cache.find((x) => x.name === 'Support Team') || message.guild.roles.cache.find((r) => r.id === suppRole.role);
+
+    let modRole;
+    if (suppRole) {
+      modRole = message.guild.roles.cache.find((r) => r.id === suppRole.role);
+    } else {
+      modRole = message.guild.roles.cache.find((x) => x.name === 'Support Team');
+    }
+
     if (!modRole) {
       const nomodRole = new MessageEmbed()
         .setColor(color)
