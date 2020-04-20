@@ -13,6 +13,10 @@
     "a4k": {
       "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}a4k <search>`**"
     },
+    "nuke": {
+      "noPermission": ":x: **You need to have the `MANAGE_CHANNELS` permission to use this command.**",
+      "meNoPerms": ":x: **I need the `MANAGE_CHANNELS` permissions to execute this command.**"
+    },
     "steam": {
       "noArguments": ":x: **Incorrect usage! Please use `${prefix}steam <username>`**"
     },
