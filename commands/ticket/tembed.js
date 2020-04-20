@@ -62,6 +62,11 @@ module.exports = {
           message.channel.send(cleared).then((msg) => msg.delete({ timeout: 10000 }));
           return;
         }
+        const danelSucc = new MessageEmbed()
+          .setColor(color)
+          .setDescription('I found no embed data in the database!');
+        message.channel.send(danelSucc).then((msg) => msg.delete({ timeout: 10000, reason: 'Danel succ' }));
+        return;
       }
 
       if (checkEmbedEx.ticketembed === null) {
