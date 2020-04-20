@@ -279,7 +279,7 @@ module.exports = async (bot, color) => {
   if (!ticketConfigTable['count(*)']) {
     console.log('ticketConfig table created!');
     db.prepare(
-      'CREATE TABLE ticketConfig (guildid TEXT PRIMARY KEY, category TEXT, log TEXT, role TEXT);',
+      'CREATE TABLE ticketConfig (guildid TEXT PRIMARY KEY, category TEXT, log TEXT, role TEXT, ticketembed TEXT, ticketembedchan TEXT);',
     ).run();
     db.prepare(
       'CREATE UNIQUE INDEX idx_ticketConfig_id ON ticketConfig (guildid);',
