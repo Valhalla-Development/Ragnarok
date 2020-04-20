@@ -135,30 +135,31 @@ module.exports = async (bot, message) => {
   }
 
   // Ads protection checks
-  // message.content.includes('https://') || message.content.includes('http://') ||
-  // above is removed because it blocks because it returs bruh, try putting after commandfile.run
-  if (
-    message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')
-  ) {
-    const adsprot = db
-      .prepare('SELECT count(*) FROM adsprot WHERE guildid = ?')
-      .get(message.guild.id);
-    if (!adsprot['count(*)']) {
-      return;
-    }
-    if (message.member.hasPermission('MANAGE_GUILD')) {
-      return;
-    }
-    message.channel.send(
-      `**Your message contained a link and it was deleted, <@${
-        message.author.id
-      }>**`,
-    )
-      .then((msg) => {
-        msg.delete({
-          timeout: 10000,
+  if (!message.content.startsWith(`${prefixcommand}play`)) {
+    if (message.content.includes('https://') || message.content.includes('http://') || message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')) {
+      const adsprot = db
+        .prepare('SELECT count(*) FROM adsprot WHERE guildid = ?')
+        .get(message.guild.id);
+      if (!adsprot['count(*)']) {
+        return;
+      }
+      if (message.member.hasPermission('MANAGE_GUILD')) {
+        return;
+      }
+      if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+        message.delete(); // This says unknown message if the message no longere exists obviously, problem if other server has bots that remove it aswell
+      }
+      message.channel.send(
+        `**Your message contained a link and it was deleted, <@${
+          message.author.id
+        }>**`,
+      )
+        .then((msg) => {
+          msg.delete({
+            timeout: 10000,
+          });
         });
-      });
+    }
   }
 
 
