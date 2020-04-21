@@ -165,8 +165,11 @@ module.exports = async (bot, message) => {
 
   // Dad Bot
 
-  /* if (
-    message.content.toLowerCase().startsWith('im ') || message.content.toLowerCase().startsWith('i\'m ')) {
+  if (message.content.toLowerCase().startsWith('im ') || message.content.toLowerCase().startsWith('i\'m ')) {
+    const dadbot = db.prepare(`SELECT * FROM dadbot WHERE guildid = ${message.guild.id};`).get();
+    if (!dadbot) {
+      return;
+    }
     if (args.length > 10) {
       return;
     }
@@ -195,7 +198,7 @@ module.exports = async (bot, message) => {
     } else {
       message.channel.send(`Hi ${oargresult}, I'm Dad!`);
     }
-  } */
+  }
 
   const cmd = args.shift().toLowerCase();
   const commandfile = bot.commands.get(cmd) || bot.commands.get(bot.aliases.get(cmd));
