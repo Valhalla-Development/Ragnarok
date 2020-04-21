@@ -75,6 +75,23 @@ module.exports = async (bot, color) => {
     .set('high', 0.25);
 
   // Database Creation
+  // Dad Bot Table
+  const dadbot = db
+    .prepare(
+      'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'dadbot\';',
+    )
+    .get();
+  if (!dadbot['count(*)']) {
+    console.log('dadbot table created!');
+    db.prepare(
+      'CREATE TABLE dadbot (guildid TEXT PRIMARY KEY, status TEXT);',
+    ).run();
+    db.prepare(
+      'CREATE UNIQUE INDEX idx_dadbot_id ON dadbot (guildid);',
+    ).run();
+    db.pragma('synchronous = 1');
+    db.pragma('journal_mode = wal');
+  }
   // Membercount Table
   const memcount = db
     .prepare(
