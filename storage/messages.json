@@ -34,6 +34,14 @@
       "turnedOff": ":white_check_mark: **Advert protection was turned off!**",
       "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}config adsprot <on/off>`**"
     },
+    "dadbot": {
+      "noPermission": ":x: **Only guild managers can use this command!**",
+      "alreadyOn": ":x: **Dad bot is already enabled on this guild! To disable it, please use `${prefix}config dadbot <off>`**",
+      "turnedOn": ":white_check_mark: **Dad bot was enabled**",
+      "alreadyOff": ":x: **Dad bot is not enabled on this guild! To activate it, please use `${prefix}config dadbot <on>`**",
+      "turnedOff": ":white_check_mark: **Dad bot was turned off!**",
+      "incorrectUsage": ":x: **Incorrect usage! Please use `${prefix}config dadbot <on/off>`**"
+    },
     "membercount": {
       "noPermission": ":x: **Only guild managers can use this command!**",
       "alreadyOn": ":x: **Member count module is already enabled on this guild! To disable it, please use `${prefix}config membercount <off>`**",
