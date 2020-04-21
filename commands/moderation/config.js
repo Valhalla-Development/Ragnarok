@@ -30,7 +30,7 @@ module.exports = {
       const undeembed = new MessageEmbed()
         .setAuthor('Ragnarok - Config', message.guild.iconURL())
         .setColor(color)
-        .setDescription(`**Advert Protection**\n[${prefix}config adsprot <on/off>]() : Enables/Disabled advert protection\n**Autorole**\n[${prefix}config autorole <@role>]() : Sets the role users are given when they join the guild\n**Logging**\n[${prefix}config logging <#channel/off>]() : Sets/disables the logging channel\n**Prefix**\n[${prefix}config prefix <prefix>]() : Sets the guild prefix\n**Tickets**\n[${prefix}config ticket cat <cat name>]() : Sets the ticket category\n  [${prefix}config ticket log <#channel>](): Enables ticket logging\n  [${prefix}config ticket role <@role>](): Sets custom support role for ticket system\n**Welcome**\n[${prefix}config welcome channel <#channel>]() : Sets the welcome channel\n[${prefix}config welcome channel off]() : Disables the welcome message\n**Rolemenu**\n[${prefix}config rolemenu add <@role>]() : Sets the role menu roles\n  [${prefix}config rolemenu remove <@role>]() : Removes a role from rolemenu\n  [${prefix}config rolemenu clear]() : Removes all roles from rolemenu\n**Music**\n[${prefix}config music role <@role>]() : Sets the DJ role\n  [${prefix}config music role off]() : Disabled the DJ role\n**Membercount**\n[${prefix}config membercount <on/off>]() : Enables/Disables the member count module`);
+        .setDescription(`**Advert Protection**\n[${prefix}config adsprot <on/off>]() : Enables/Disabled advert protection\n**Autorole**\n[${prefix}config autorole <@role>]() : Sets the role users are given when they join the guild\n**Logging**\n[${prefix}config logging <#channel/off>]() : Sets/disables the logging channel\n**Prefix**\n[${prefix}config prefix <prefix>]() : Sets the guild prefix\n**Tickets**\n[${prefix}config ticket cat <cat name>]() : Sets the ticket category\n  [${prefix}config ticket log <#channel>](): Enables ticket logging\n  [${prefix}config ticket role <@role>](): Sets custom support role for ticket system\n**Welcome**\n[${prefix}config welcome channel <#channel>]() : Sets the welcome channel\n[${prefix}config welcome channel off]() : Disables the welcome message\n**Rolemenu**\n[${prefix}config rolemenu add <@role>]() : Sets the role menu roles\n  [${prefix}config rolemenu remove <@role>]() : Removes a role from rolemenu\n  [${prefix}config rolemenu clear]() : Removes all roles from rolemenu\n**Music**\n[${prefix}config music role <@role>]() : Sets the DJ role\n  [${prefix}config music role off]() : Disabled the DJ role\n**Membercount**\n[${prefix}config membercount <on/off>]() : Enables/Disables the member count module\n**Dad Bot**\n[${prefix}config dadbot <on/off>]() : Enables/Disables the Dad bot module`);
       message.channel.send({
         embed: undeembed,
       });
@@ -307,6 +307,86 @@ module.exports = {
         .setDescription(`${incorrectUsage}`);
       message.channel.send(incorrectUsageembed);
       return;
+    }
+
+    // dadbot
+    if (args[0] === 'dadbot') {
+      // perms checking
+
+      if (
+        !message.member.hasPermission('MANAGE_GUILD') && message.author.id !== ownerID) {
+        const invalidpermsembed = new MessageEmbed()
+          .setColor(color)
+          .setDescription(`${language.dadbot.noPermission}`);
+        message.channel.send(invalidpermsembed);
+        return;
+      }
+
+      // preparing count
+
+      bot.getTable = db.prepare('SELECT * FROM dadbot WHERE guildid = ?');
+      let status;
+      if (message.guild.id) {
+        status = bot.getTable.get(message.guild.id);
+
+        if (args[1] === 'on') {
+          // if already on
+          if (status) {
+            const alreadyOnMessage = language.dadbot.alreadyOn;
+            const alreadyOn = alreadyOnMessage.replace('${prefix}', prefix);
+            const alreadyonembed = new MessageEmbed()
+              .setColor(color)
+              .setDescription(`${alreadyOn}`);
+            message.channel.send(alreadyonembed);
+            return;
+          }
+          const insert = db.prepare(
+            'INSERT INTO dadbot (guildid, status) VALUES (@guildid, @status);',
+          );
+          insert.run({
+            guildid: `${message.guild.id}`,
+            status: 'on',
+          });
+          const turnonembed = new MessageEmbed()
+            .setColor(color)
+            .setDescription(`${language.dadbot.turnedOn}`);
+          message.channel.send(turnonembed);
+
+
+          // if args = off
+        } else if (args[1] === 'off') {
+          // if already off
+          if (!status) {
+            const alreadyOffMessage = language.dadbot.alreadyOff;
+            const alreadyOff = alreadyOffMessage.replace('${prefix}', prefix);
+            const alreadyoffembed = new MessageEmbed()
+              .setColor(color)
+              .setDescription(`${alreadyOff}`);
+            message.channel.send(alreadyoffembed);
+            return;
+          }
+
+          db.prepare('DELETE FROM dadbot WHERE guildid = ?').run(
+            message.guild.id,
+          );
+          const turnedoffembed = new MessageEmbed()
+            .setColor(color)
+            .setDescription(`${language.dadbot.turnedOff}`);
+          message.channel.send(turnedoffembed);
+          return;
+        } else if (args[1] !== 'off' || args[1] !== 'on') {
+          const incorrectUsageMessage = language.dadbot.incorrectUsage;
+          const incorrectUsage = incorrectUsageMessage.replace(
+            '${prefix}',
+            prefix,
+          );
+          const incorrectembed = new MessageEmbed()
+            .setColor(color)
+            .setDescription(`${incorrectUsage}`);
+          message.channel.send(incorrectembed);
+          return;
+        }
+      }
     }
 
     // adsprot
