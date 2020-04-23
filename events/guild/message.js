@@ -134,35 +134,6 @@ module.exports = async (bot, message) => {
     }, xpCooldownSeconds * 1000);
   }
 
-  // Ads protection checks
-  if (!message.content.startsWith(`${prefixcommand}play`)) {
-    if (message.content.includes('https://') || message.content.includes('http://') || message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')) {
-      const adsprot = db
-        .prepare('SELECT count(*) FROM adsprot WHERE guildid = ?')
-        .get(message.guild.id);
-      if (!adsprot['count(*)']) {
-        return;
-      }
-      if (message.member.hasPermission('MANAGE_GUILD')) {
-        return;
-      }
-      if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-        message.delete(); // This says unknown message if the message no longere exists obviously, problem if other server has bots that remove it aswell
-      }
-      message.channel.send(
-        `**Your message contained a link and it was deleted, <@${
-          message.author.id
-        }>**`,
-      )
-        .then((msg) => {
-          msg.delete({
-            timeout: 10000,
-          });
-        });
-    }
-  }
-
-
   // Dad Bot
 
   if (message.content.toLowerCase().startsWith('im ') || message.content.toLowerCase().startsWith('i\'m ')) {
@@ -197,6 +168,32 @@ module.exports = async (bot, message) => {
       message.channel.send('No, I\'m Dad!');
     } else {
       message.channel.send(`Hi ${oargresult}, I'm Dad!`);
+    }
+  }
+
+  // Ads protection checks
+  if (!message.content.startsWith(`${prefixcommand}play`)) {
+    const adsprot = db
+      .prepare('SELECT count(*) FROM adsprot WHERE guildid = ?')
+      .get(message.guild.id);
+    if (adsprot['count(*)']) {
+      if (!message.member.hasPermission('MANAGE_GUILD')) {
+        if (message.content.includes('https://') || message.content.includes('http://') || message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')) {
+          if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+            message.delete(); // This says unknown message if the message no longere exists obviously, problem if other server has bots that remove it aswell
+          }
+          message.channel.send(
+            `**Your message contained a link and it was deleted, <@${
+              message.author.id
+            }>**`,
+          )
+            .then((msg) => {
+              msg.delete({
+                timeout: 10000,
+              });
+            });
+        }
+      }
     }
   }
 
