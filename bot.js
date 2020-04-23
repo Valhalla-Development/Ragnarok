@@ -115,6 +115,10 @@ bot.on('warn', (e) => {
   console.warn(e);
 });
 
+/* bot.on('debug', (info) => { // Debug event, only for testing!
+  console.log(`debug -> ${info}`);
+}); */
+
 process.on('unhandledRejection', (error) => {
   if (bot.user.id === '508756879564865539') {
     bot.channels.cache.get('685973401772621843').send(`${error.stack}`, { code: 'js' });
