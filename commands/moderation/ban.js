@@ -77,7 +77,7 @@ module.exports = {
         chreason = 'None given';
       }
 
-      message.guild.member(chuser).ban(chreason);
+      message.guild.members.ban(chuser, { reason: `${chreason}` });
       message.channel
         .send(
           `${chuser}, was banned by ${
