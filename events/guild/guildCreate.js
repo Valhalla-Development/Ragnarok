@@ -24,7 +24,7 @@ module.exports = async (bot, guild) => {
   });
   const embed = new MessageEmbed()
     .setTitle('Hello, I\'m **Ragnarok**! Thanks for inviting me!')
-    .setDescription('The prefix for all my commands is `-`, e.g: `-help`.\nIf you find any bugs, report them with `-bugreport <bug>`');
+    .setDescription('The prefix for all my commands is `-`, e.g: `-help`.\nIf you find any bugs, report them with `-bugreport <bug>`\nCheck `-stats` to see the latest announcements!');
   defaultChannel.send({
     embed,
   });
