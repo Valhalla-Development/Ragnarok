@@ -9,12 +9,33 @@ module.exports = async (bot, channel, color) => {
   if (!id) return;
   const logs = id.channel;
   if (!logs) return;
-  if (channel.type === 'voice' || channel.type === 'category') return;
+
   const logembed = new MessageEmbed()
     .setAuthor(channel.guild, channel.guild.iconURL())
-    .setDescription(`**Channel Created: <#${channel.id}>**`)
     .setColor(color)
     .setFooter(`ID: ${channel.id}`)
     .setTimestamp();
-  bot.channels.cache.get(logs).send(logembed);
+
+  let updateM;
+
+  if (channel.type === 'text') {
+    updateM = `**Text Channel Created:**\n<#${channel.id}>`;
+    logembed
+      .setDescription(updateM);
+    bot.channels.cache.get(logs).send(logembed);
+  }
+
+  if (channel.type === 'voice') {
+    updateM = `**Voice Channel Created:**\n\`${channel.name}\``;
+    logembed
+      .setDescription(updateM);
+    bot.channels.cache.get(logs).send(logembed);
+  }
+
+  if (channel.type === 'category') {
+    updateM = `**Category Created:**\n\`${channel.name}\``;
+    logembed
+      .setDescription(updateM);
+    bot.channels.cache.get(logs).send(logembed);
+  }
 };

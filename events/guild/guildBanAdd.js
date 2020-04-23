@@ -14,10 +14,17 @@ module.exports = async (bot, guild, user, color) => {
       type: 'MEMBER_BAN_ADD',
     })
     .then((audit) => audit.entries.first());
+
   const mod = entry.executor.id;
+  let { reason } = entry;
+  if (reason === 'None given') {
+    reason = 'None given.';
+  } else {
+    reason = entry.reason;
+  }
   const logembed = new MessageEmbed()
     .setAuthor(guild, guild.iconURL())
-    .setDescription(`**User Banned: \`${user.tag}\`.**\nModerator: <@${mod}>`)
+    .setDescription(`**User Banned:** \`${user.tag}\`**\nModerator**: <@${mod}>\n**Reason**: \`${reason}\``)
     .setColor(color)
     .setFooter(`ID: ${mod}`)
     .setTimestamp();
