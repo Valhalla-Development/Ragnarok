@@ -13,6 +13,26 @@ module.exports = async (bot, oldChannel, newChannel, color) => {
   let oldTopic;
   let newTopic;
 
+  // Check if member count is on, if it is, grab the id of said channels and return if it matches
+
+  // Member Count
+  const memStat = db.prepare(`SELECT * FROM membercount WHERE guildid = ${oldChannel.guild.id};`).get();
+  if (memStat) {
+    const channelA = bot.channels.cache.find((a) => a.id === memStat.channela);
+    const channelB = bot.channels.cache.find((b) => b.id === memStat.channelb);
+    const channelC = bot.channels.cache.find((c) => c.id === memStat.channelc);
+
+    if (oldChannel.id === channelA.id) {
+      return;
+    }
+    if (oldChannel.id === channelB.id) {
+      return;
+    }
+    if (oldChannel.id === channelC.id) {
+      return;
+    }
+  }
+
   const logembed = new MessageEmbed()
     .setAuthor(oldChannel.guild, oldChannel.guild.iconURL())
     .setColor(color)
@@ -21,7 +41,7 @@ module.exports = async (bot, oldChannel, newChannel, color) => {
 
   if (oldChannel.type === 'category') {
     if (oldChannel.name !== newChannel.name) {
-      updateM = `**Category Name Updated:**\n\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.id}\``;
+      updateM = `**Category Name Updated:**\n\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
       logembed
         .setDescription(updateM);
       bot.channels.cache.get(logs).send(logembed);
@@ -30,7 +50,7 @@ module.exports = async (bot, oldChannel, newChannel, color) => {
 
   if (oldChannel.type === 'voice') {
     if (oldChannel.name !== newChannel.name) {
-      updateM = `**Voice Channel Name Updated:**\n\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.id}\``;
+      updateM = `**Voice Channel Name Updated:**\n\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
       logembed
         .setDescription(updateM);
       bot.channels.cache.get(logs).send(logembed);
