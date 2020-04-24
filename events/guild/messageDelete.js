@@ -17,6 +17,15 @@ module.exports = async (bot, message) => {
   });
   const deletionLog = fetchedLogs.entries.first();
 
+  // Check if message deleted was a command, return if it was
+
+  const cmdGrab = message.content.substring(1);
+  const cmd = cmdGrab.replace(/ .*/, '');
+  const commandfile = bot.commands.get(cmd) || bot.commands.get(bot.aliases.get(cmd));
+  if (commandfile) {
+    return;
+  }
+
   if (!deletionLog) {
     const noLogE = new MessageEmbed()
       .setAuthor('Message Deleted')
