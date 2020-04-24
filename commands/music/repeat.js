@@ -12,7 +12,7 @@ module.exports = {
     accessableby: 'Everyone',
   },
 
-  run: async (client, message, args, color) => {
+  run: async (bot, message, args, color) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -45,7 +45,7 @@ module.exports = {
     }
 
     if (!args[0]) {
-      const player = client.music.players.get(message.guild.id);
+      const player = bot.music.players.get(message.guild.id);
       const { channel } = message.member.voice;
       if (!player) {
         const notplaying = new MessageEmbed()
@@ -94,7 +94,7 @@ module.exports = {
         message.channel.send(off);
       }
     } else if (args[0] === 'queue') {
-      const player = client.music.players.get(message.guild.id);
+      const player = bot.music.players.get(message.guild.id);
       const { channel } = message.member.voice;
       if (!channel || channel.id !== player.voiceChannel.id) {
         const novoice = new MessageEmbed()
