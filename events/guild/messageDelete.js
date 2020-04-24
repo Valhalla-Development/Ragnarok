@@ -19,7 +19,7 @@ module.exports = async (bot, message) => {
 
   // Check if message deleted was a command, return if it was
 
-  const cmd = message.content.substring(1).replace(/ .*/, '');
+  const cmd = message.content.substring(1).replace(/ .*/, '').toLowerCase();
   const commandfile = bot.commands.get(cmd) || bot.commands.get(bot.aliases.get(cmd));
   if (commandfile) {
     return;
