@@ -1,5 +1,6 @@
 const { MessageEmbed } = require('discord.js');
-const hastebin = require('hastebin-gen');
+const Hastebin = require('hastebin.js');
+const haste = new Hastebin({ url: 'https://pastie.io' });
 const fetch = require('node-fetch');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
@@ -28,7 +29,7 @@ module.exports = {
       const fileExtension = file.substring(
         file.lastIndexOf('.') + 1,
       );
-      const validExtensions = ['bat', 'c', 'cpp', 'css', 'html', 'ini', 'java', 'js', 'jsx', 'json', 'lua', 'md', 'php', 'py', 'pyc', 'scss', 'sql', 'xml', 'yaml', 'txt'];
+      const validExtensions = ['bat', 'c', 'cpp', 'css', 'html', 'ini', 'java', 'js', 'jsx', 'json', 'lua', 'md', 'php', 'py', 'pyc', 'scss', 'sql', 'xml', 'yaml'];
       if (!validExtensions.includes(fileExtension)) {
         const badType = new MessageEmbed()
           .setColor(color)
@@ -46,8 +47,9 @@ module.exports = {
             message.channel.send(emptyFile);
             return;
           }
-          hastebin(body, { extension: fileExtension })
+          haste.post(body, fileExtension)
             .then((r) => {
+              console.log(body);
               const hastEmb = new MessageEmbed()
                 .setColor(color)
                 .setAuthor('Hastebin Link:')
@@ -69,13 +71,13 @@ module.exports = {
       return;
     }
 
-    hastebin(args.join(' '), { extension: 'txt' })
-      .then((r) => {
+    await haste.post(args.join(' '), 'js')
+      .then((link) => {
         const hastEmb = new MessageEmbed()
           .setColor(color)
           .setAuthor('Hastebin Link:')
-          .setDescription(`${r}\nPosted By: ${message.author}`)
-          .setURL(r);
+          .setDescription(`${link}\nPosted By: ${message.author}`)
+          .setURL(link);
         message.channel.send(hastEmb);
       }).catch(() => message.channel.send(':slight_frown: An error occured!'));
   },
