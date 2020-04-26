@@ -2,7 +2,7 @@ const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
 
-module.exports = async (bot, oldChannel, newChannel, color) => {
+module.exports = async (bot, oldChannel, newChannel) => {
   const id = db
     .prepare(`SELECT channel FROM logging WHERE guildid = ${oldChannel.guild.id};`)
     .get();
@@ -35,7 +35,7 @@ module.exports = async (bot, oldChannel, newChannel, color) => {
 
   const logembed = new MessageEmbed()
     .setAuthor(oldChannel.guild, oldChannel.guild.iconURL())
-    .setColor(color)
+    .setColor('990000')
     .setFooter(`Channel ID: ${newChannel.id}`)
     .setTimestamp();
 

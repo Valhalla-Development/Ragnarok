@@ -2,7 +2,7 @@ const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
 
-module.exports = async (bot, guild, user, color) => {
+module.exports = async (bot, guild, user) => {
   const id = db
     .prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`)
     .get();
@@ -25,7 +25,7 @@ module.exports = async (bot, guild, user, color) => {
   const logembed = new MessageEmbed()
     .setAuthor(guild, guild.iconURL())
     .setDescription(`**User Banned:** \`${user.tag}\`**\nModerator**: <@${mod}>\n**Reason**: \`${reason}\``)
-    .setColor(color)
+    .setColor('990000')
     .setFooter(`ID: ${mod}`)
     .setTimestamp();
   bot.channels.cache.get(logs).send(logembed);

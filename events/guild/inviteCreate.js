@@ -2,7 +2,7 @@ const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
 
-module.exports = async (bot, invite, color) => {
+module.exports = async (bot, invite) => {
   const id = db
     .prepare(`SELECT channel FROM logging WHERE guildid = ${invite.guild.id};`)
     .get();
@@ -32,7 +32,7 @@ module.exports = async (bot, invite, color) => {
   const logembed = new MessageEmbed()
     .setAuthor(invite.guild, invite.guild.iconURL())
     .setDescription(`**Invite Created:**\n**Created By:** ${invite.inviter}\n**Expires:** \`${expiry}\`\n**Location:** ${invite.channel}\n**Invite:** [https://discord.gg/${invite.code}](https://discord.gg/${invite.code}${invite.code})`)
-    .setColor(color)
+    .setColor('990000')
     .setTimestamp();
   bot.channels.cache.get(logs).send(logembed);
 };

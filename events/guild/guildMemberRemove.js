@@ -3,7 +3,7 @@ const SQLite = require('better-sqlite3');
 const { prefix } = require('../../storage/config.json');
 const db = new SQLite('./storage/db/db.sqlite');
 
-module.exports = async (bot, member, color) => {
+module.exports = async (bot, member) => {
   bot.user.setActivity(
     `${prefix}help | ${(bot.guilds.cache.size).toLocaleString('en')} Guilds ${(bot.users.cache.size).toLocaleString('en')} Users`,
     {
@@ -20,7 +20,7 @@ module.exports = async (bot, member, color) => {
       const logembed = new MessageEmbed()
         .setAuthor('Member Left', member.user.avatarURL())
         .setDescription(`<@${member.user.id}> - ${member.user.tag}`)
-        .setColor(color)
+        .setColor('990000')
         .setFooter(`ID: ${member.user.id}`)
         .setTimestamp();
       bot.channels.cache.get(logs).send(logembed);
