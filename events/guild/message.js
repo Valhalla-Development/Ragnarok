@@ -177,7 +177,7 @@ module.exports = async (bot, message) => {
       .prepare('SELECT count(*) FROM adsprot WHERE guildid = ?')
       .get(message.guild.id);
     if (adsprot['count(*)']) {
-      if (!message.member.hasPermission('MANAGE_GUILD')) {
+      if (!message.member.hasPermission('MANAGE_MESSAGES')) {
         if (message.content.includes('https://') || message.content.includes('http://') || message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')) {
           if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
             message.delete(); // This says unknown message if the message no longere exists obviously, problem if other server has bots that remove it aswell
