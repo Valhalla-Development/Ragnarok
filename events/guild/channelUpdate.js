@@ -12,6 +12,8 @@ module.exports = async (bot, oldChannel, newChannel) => {
   let updateM;
   let oldTopic;
   let newTopic;
+  let oldNs;
+  let newNs;
 
   // Check if member count is on, if it is, grab the id of said channels and return if it matches
 
@@ -66,14 +68,31 @@ module.exports = async (bot, oldChannel, newChannel) => {
     }
   }
 
+  if (oldChannel.nsfw !== newChannel.nsfw) {
+    if (oldChannel.nsfw === true) {
+      oldNs = 'Enabled';
+    } else {
+      oldNs = 'Disabled';
+    }
+    if (newChannel.nsfw === true) {
+      newNs = 'Enabled';
+    } else {
+      newNs = 'Disabled';
+    }
+    updateM = `**NSFW Status Updated:**\n\nOld:\n\`${oldNs}\`\nNew:\n\`${newNs}\``;
+    logembed
+      .setDescription(updateM);
+    bot.channels.cache.get(logs).send(logembed);
+  }
+
   if (oldChannel.topic !== newChannel.topic) {
     if (oldChannel.topic === '') {
-      oldTopic = '';
+      oldTopic = 'None';
     } else {
       oldTopic = `${oldChannel.topic}`;
     }
     if (newChannel.topic === '') {
-      newTopic = '';
+      newTopic = 'None';
     } else {
       newTopic = `${newChannel.topic}`;
     }
