@@ -36,8 +36,10 @@ module.exports = async (bot, oldMessage, newMessage) => {
   const embed = new MessageEmbed()
     .setAuthor(`${oldMessage.author.username}#${oldMessage.author.discriminator}`, oldMessage.author.avatarURL())
     .setColor('#990000')
-    .setDescription(`Message edited in ${oldMessage.channel} [Jump to Message](https://discordapp.com/channels/${newMessage.guild.id}/${newMessage.channel.id}/${oldMessage.id})`)
+    .setDescription(`**Message edited in** ${oldMessage.channel} [Jump to Message](https://discordapp.com/channels/${newMessage.guild.id}/${newMessage.channel.id}/${oldMessage.id})`)
     .addFields({ name: 'Before', value: `${oldMessage.content}` },
-      { name: 'After', value: `${newMessage.content}` });
+      { name: 'After', value: `${newMessage.content}` })
+    .setFooter(`User ID: ${oldMessage.author.id}`)
+    .setTimestamp();
   bot.channels.cache.get(logs).send(embed);
 };
