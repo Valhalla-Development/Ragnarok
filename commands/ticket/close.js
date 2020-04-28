@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
@@ -17,21 +18,15 @@ module.exports = {
       return;
     }
 
-    const prefixgrab = db
-      .prepare('SELECT prefix FROM setprefix WHERE guildid = ?')
-      .get(message.guild.id);
+    const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
     const { prefix } = prefixgrab;
 
     const channelArgs = message.channel.name.split('-');
-    const foundTicket = db
-      .prepare(
-        `SELECT * FROM tickets WHERE guildid = ${
-          message.guild.id
-        } AND ticketid = (@ticketid)`,
-      )
-      .get({
-        ticketid: channelArgs[channelArgs.length - 1],
-      });
+    const foundTicket = db.prepare(`SELECT * FROM tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`).get({
+      ticketid: channelArgs[channelArgs.length - 1],
+    });
+    const reason = args.slice(0).join(' ');
+
     // Make sure it's inside the ticket channel.
     if (foundTicket && message.channel.id !== foundTicket.chanid) {
       const badChannel = new MessageEmbed()
@@ -50,55 +45,51 @@ module.exports = {
     // Ask for confirmation within 10 seconds.
     const confirmCloseMessage = language.tickets.closeConfirm;
     const confirmClose = confirmCloseMessage.replace('${prefix}', prefix);
+    const user = bot.users.cache.find((a) => a.id === foundTicket.authorid);
     const confirmEmbed = new MessageEmbed()
       .setColor(color)
       .setDescription(`${confirmClose}`);
     message.channel.send(confirmEmbed).then((m) => {
-      message.channel
-        .awaitMessages((response) => response.content === `${prefix}confirm`, {
-          max: 1,
-          time: 20000,
-          errors: ['time'],
-        })
-        .then(() => {
-          message.channel.delete();
+      message.channel.awaitMessages((response) => response.content === `${prefix}confirm`, {
+        max: 1,
+        time: 20000,
+        errors: ['time'],
+      }).then(() => {
+        message.channel.delete();
 
-          const deleteTicket = db.prepare(
-            `DELETE FROM tickets WHERE guildid = ${
-              message.guild.id
-            } AND ticketid = (@ticketid)`,
-          );
-          deleteTicket.run({
-            ticketid: channelArgs[channelArgs.length - 1],
-          });
-
-          const logget = db
-            .prepare(
-              `SELECT log FROM ticketConfig WHERE guildid = ${
-                message.guild.id
-              };`,
-            )
-            .get();
-          if (!logget) {
-            return;
-          }
-
-          const logchan = message.guild.channels.cache.find(
-            (chan) => chan.id === logget.log,
-          );
-          if (!logchan) return;
-          const loggingembed = new MessageEmbed()
-            .setColor(color)
-            .setDescription(
-              `<@${message.author.id}> has closed ticket \`#${
-                message.channel.name
-              }\``,
-            );
-          logchan.send(loggingembed);
-        })
-        .catch(() => {
-          m.delete();
+        const deleteTicket = db.prepare(`DELETE FROM tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`);
+        deleteTicket.run({
+          ticketid: channelArgs[channelArgs.length - 1],
         });
+
+        const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
+        if (!logget) {
+          return;
+        }
+
+        const logchan = message.guild.channels.cache.find((chan) => chan.id === logget.log);
+        if (!logchan) return;
+
+        const loggingembed = new MessageEmbed()
+          .setColor(color);
+
+        if (!reason) {
+          loggingembed
+            .setDescription(`<@${message.author.id}> has closed ticket \`#${message.channel.name}\``);
+          logchan.send(loggingembed);
+        } else {
+          loggingembed
+            .setDescription(`<@${message.author.id}> has closed ticket \`#${message.channel.name}\`\nReason: \`${reason}\``);
+          logchan.send(loggingembed);
+
+          user.send(`Your ticket in guild: \`${message.guild.name}\` was closed for the following reason:\n\`${reason}\``).then(() => {
+          }).catch(() => {
+            return;
+          });
+        }
+      }).catch(() => {
+        m.delete();
+      });
     });
   },
 };
