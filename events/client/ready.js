@@ -54,6 +54,9 @@ module.exports = async (bot, color) => {
       return bot.music.players.destroy(player.guild.id);
     })
     .on('trackEnd', (player) => {
+      if (player.setTrackRepeat(true)) { // Need to test this, bot is being a prick atm
+        return;
+      }
       const embed = new MessageEmbed()
         .setColor(color)
         .setDescription('Queue has ended.');
