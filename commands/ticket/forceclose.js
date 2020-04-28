@@ -17,12 +17,7 @@ module.exports = {
       return;
     }
 
-
-    const suppRole = db
-      .prepare(
-        `SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`,
-      )
-      .get();
+    const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
 
     let modRole;
     if (suppRole) {
@@ -39,8 +34,7 @@ module.exports = {
       return;
     }
 
-    if (
-      !message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
+    if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
       const donthaveroleMessage = language.tickets.donthaveRole;
       const role = donthaveroleMessage.replace('${role}', modRole);
       const donthaveRole = new MessageEmbed()
@@ -51,73 +45,46 @@ module.exports = {
     }
 
     const channelArgs = message.channel.name.split('-');
-    const foundTicket = db
-      .prepare(
-        `SELECT * FROM tickets WHERE guildid = ${
-          message.guild.id
-        } AND ticketid = (@ticketid)`,
-      )
-      .get({
-        ticketid: args[0] || channelArgs[channelArgs.length - 1],
-      });
+    const foundTicket = db.prepare(`SELECT * FROM tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`).get({
+      ticketid: args[0] || channelArgs[channelArgs.length - 1],
+    });
     if (foundTicket) {
-      const getChan = message.guild.channels.cache.find(
-        (chan) => chan.id === foundTicket.chanid,
-      );
+      const getChan = message.guild.channels.cache.find((chan) => chan.id === foundTicket.chanid);
       const forceclosetimer = new MessageEmbed()
         .setColor(color)
         .setTitle(':x: Closing Ticket! :x:')
         .setDescription(`${language.tickets.closeTimer}`);
       getChan.send(forceclosetimer).then((timerMsg) => {
-        getChan
-          .awaitMessages(
-            (resp) => resp.author.id === message.author.id || foundTicket.authorid,
-            {
-              max: 1,
-              time: 10000,
-              errors: ['time'],
-            },
-          )
-          .then(() => {
-            const cancelTimer = new MessageEmbed()
-              .setColor(color)
-              .setDescription('Canceling Ticket Close');
-            timerMsg.edit(cancelTimer).then((cancelMsg) => {
-              cancelMsg.delete({
-                timeout: 5000,
-              });
+        getChan.awaitMessages(
+          (resp) => resp.author.id === message.author.id || foundTicket.authorid,
+          {
+            max: 1,
+            time: 10000,
+            errors: ['time'],
+          },
+        ).then(() => {
+          const cancelTimer = new MessageEmbed()
+            .setColor(color)
+            .setDescription('Canceling Ticket Close');
+          timerMsg.edit(cancelTimer).then((cancelMsg) => {
+            cancelMsg.delete({
+              timeout: 5000,
             });
-          })
-          .catch(() => {
-            getChan.delete();
-            db.prepare(
-              `DELETE FROM tickets WHERE guildid = ${
-                message.guild.id
-              } AND ticketid = (@ticketid)`,
-            ).run({
-              ticketid: foundTicket.ticketid,
-            });
-            const logget = db
-              .prepare(
-                `SELECT log FROM ticketConfig WHERE guildid = ${
-                  message.guild.id
-                };`,
-              )
-              .get();
-            if (!logget) return;
-            const logchan = message.guild.channels.cache.find(
-              (chan) => chan.id === logget.log,
-            );
-            if (!logchan) return;
-            const loggingembed = new MessageEmbed()
-              .setColor(color)
-              .setDescription(
-                `<@${message.author.id}> has closed ticket \`#${
-                  message.channel.name
-                }\``,
-              );
-            logchan.send(loggingembed);
           });
+        }).catch(() => {
+          getChan.delete();
+          db.prepare(`DELETE FROM tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`).run({
+            ticketid: foundTicket.ticketid,
+          });
+          const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
+          if (!logget) return;
+          const logchan = message.guild.channels.cache.find((chan) => chan.id === logget.log);
+          if (!logchan) return;
+          const loggingembed = new MessageEmbed()
+            .setColor(color)
+            .setDescription(`<@${message.author.id}> has forcefully closed ticket \`#${message.channel.name}\``);
+          logchan.send(loggingembed);
+        });
       });
     } else {
       const errEmbed = new MessageEmbed()
