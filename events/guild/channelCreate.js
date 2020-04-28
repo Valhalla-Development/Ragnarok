@@ -3,6 +3,7 @@ const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
 
 module.exports = async (bot, channel) => {
+  if (channel.type === 'dm') return;
   const id = db
     .prepare(`SELECT channel FROM logging WHERE guildid = ${channel.guild.id};`)
     .get();
