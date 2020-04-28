@@ -189,7 +189,7 @@ module.exports = {
           const loggingembed = new MessageEmbed()
             .setColor(color)
             .setDescription(
-              `${message.author} has opened a new ticket \`#${c.name}\``,
+              `${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``,
             );
           logchan.send(loggingembed);
         })
@@ -278,7 +278,7 @@ module.exports = {
           const loggingembed = new MessageEmbed()
             .setColor(color)
             .setDescription(
-              `${message.author} has opened a new ticket \`#${c.name}\``,
+              `${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``,
             );
           logchan.send(loggingembed);
         })
