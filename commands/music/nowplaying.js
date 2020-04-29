@@ -12,7 +12,7 @@ module.exports = {
     category: 'music',
     description: 'Displays what song the bot is currently playing.',
     accessableby: 'Everyone',
-    aliases: ['music'],
+    aliases: ['np'],
   },
   run: async (bot, message) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
@@ -62,7 +62,7 @@ module.exports = {
     }
 
     const {
-      title, author, duration, requester,
+      title, duration, requester,
     } = player.queue[0];
 
     const embed = new MessageEmbed()
@@ -70,7 +70,7 @@ module.exports = {
       .setColor('36393F')
       .setThumbnail('https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
       .setDescription(stripIndents`
-            ${player.playing ? '▶️' : '⏸️'} **${title}** \`${Utils.formatTime(duration, true)}\` by ${author} - Requested by: [<@${requester.id}>]`);
+            ${player.playing ? '▶️' : '⏸️'} **${title}** \`${Utils.formatTime(duration, true)}\` Requested by: [<@${requester.id}>]`);
 
     return message.channel.send(embed);
   },
