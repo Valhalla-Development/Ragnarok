@@ -13,7 +13,7 @@ module.exports = {
     description: 'Posts args to hastebin',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -32,7 +32,7 @@ module.exports = {
       const validExtensions = ['bat', 'c', 'cpp', 'css', 'html', 'ini', 'java', 'js', 'jsx', 'json', 'lua', 'md', 'php', 'py', 'pyc', 'scss', 'sql', 'xml', 'yaml'];
       if (!validExtensions.includes(fileExtension)) {
         const badType = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription(`\`.${fileExtension}\` is not a valid file type!\nIf this is not true, please report it to my creator with \`${prefix}bugreport <message>\``);
         message.channel.send(badType);
         return;
@@ -42,7 +42,7 @@ module.exports = {
         .then((body) => {
           if (!body) {
             const emptyFile = new MessageEmbed()
-              .setColor(color)
+              .setColor('36393F')
               .setDescription(':x: You can not upload an empty file!');
             message.channel.send(emptyFile);
             return;
@@ -51,7 +51,7 @@ module.exports = {
             .then((r) => {
               console.log(body);
               const hastEmb = new MessageEmbed()
-                .setColor(color)
+                .setColor('36393F')
                 .setAuthor('Hastebin Link:')
                 .setDescription(`${r}\nPosted By: ${message.author}`)
                 .setURL(r);
@@ -65,7 +65,7 @@ module.exports = {
     }
     if (args[0] === undefined) {
       const embed = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(':x: | You must input some text');
       message.channel.send(embed);
       return;
@@ -74,7 +74,7 @@ module.exports = {
     await haste.post(args.join(' '), 'js')
       .then((link) => {
         const hastEmb = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setAuthor('Hastebin Link:')
           .setDescription(`${link}\nPosted By: ${message.author}`)
           .setURL(link);

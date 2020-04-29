@@ -14,7 +14,7 @@ module.exports = {
     accessableby: 'Everyone',
     aliases: ['p', 'pplay'],
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -42,7 +42,7 @@ module.exports = {
       const noRoleMessage = language.music.noRole;
       const noRolePrefix = noRoleMessage.replace('${prefix}', prefix);
       const noRoleF = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${noRolePrefix}`);
       message.channel.send(noRoleF).then((msg) => msg.delete({
         timeout: 15000,
@@ -53,7 +53,7 @@ module.exports = {
     const { channel } = message.member.voice;
     if (!channel) {
       const novoice = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${language.music.notinVoice}`);
       message.channel.send(novoice).then((msg) => msg.delete({
         timeout: 15000,
@@ -65,7 +65,7 @@ module.exports = {
     const permissions = channel.permissionsFor(bot.user);
     if (!permissions.has('CONNECT')) {
       const noperms1 = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${language.music.nobotPerms}`);
       message.channel.send(noperms1).then((msg) => msg.delete({
         timeout: 15000,
@@ -75,7 +75,7 @@ module.exports = {
 
     if (!permissions.has('SPEAK')) {
       const noperms2 = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${language.music.nobotPerms}`);
       message.channel.send(noperms2).then((msg) => msg.delete({
         timeout: 15000,
@@ -85,13 +85,13 @@ module.exports = {
 
     if (talkedRecently.has(message.author.id)) {
       const talkedRec = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${language.music.talkedRecently}`);
       message.channel.send(talkedRec);
     } else {
       if (!args[0]) {
         const noargs = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription(`${language.music.noArgs}`);
         message.channel.send(noargs).then((msg) => msg.delete({
           timeout: 15000,
@@ -111,7 +111,7 @@ module.exports = {
             player.queue.add(res.tracks[0]);
             const trackloade = new MessageEmbed()
               .setAuthor('Enqueueing.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-              .setColor(color)
+              .setColor('36393F')
               .setDescription(`\`${res.tracks[0].title}\`\nDuration: \`${Utils.formatTime(res.tracks[0].duration, true)}\`\nRequested by: ${message.author}`);
             message.channel.send(trackloade);
             if (!player.playing) player.play();
@@ -139,7 +139,7 @@ module.exports = {
               const track = tracks[Number(m.content) - 1];
               if (track.duration >= 600000) {
                 const invalidDur = new MessageEmbed()
-                  .setColor(color)
+                  .setColor('36393F')
                   .setDescription('Duration is over 10 minutes! Cancelling playback');
                 message.channel.send(invalidDur);
                 if (player.queue.size <= 0) {
@@ -151,7 +151,7 @@ module.exports = {
               if (!player.playing) player.play();
               const trackloade = new MessageEmbed()
                 .setAuthor('Enqueuing Track.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-                .setColor(color)
+                .setColor('36393F')
                 .setDescription(`\`${track.title}\`\nDuration: \`${Utils.formatTime(track.duration, true)}\`\nRequested by: ${message.author}`);
               message.channel.send(trackloade);
             });
@@ -161,7 +161,7 @@ module.exports = {
                 const upperReason = reason.charAt(0).toUpperCase() + reason.substring(1);
                 const cancelE = new MessageEmbed()
                   .setAuthor(' Cancelled', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-                  .setColor(color)
+                  .setColor('36393F')
                   .setDescription(`Search results cancelled.\nReason: \`${upperReason}\``);
                 message.channel.send(cancelE).then((msg) => msg.delete({
                   timeout: 15000,
@@ -184,7 +184,7 @@ module.exports = {
             if (!player.playing) player.play();
             const playlistload = new MessageEmbed()
               .setAuthor('Enqueuing Playlist.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-              .setColor(color)
+              .setColor('36393F')
               .setDescription(`Enqueuing \`${res.playlist.tracks.length}\` \`${duration}\` tracks in playlist \`${res.playlist.info.name}\``);
             message.channel.send(playlistload);
             break;

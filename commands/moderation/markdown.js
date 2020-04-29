@@ -12,7 +12,7 @@ module.exports = {
     description: 'Posts a markdown text',
     accessableby: 'Staff',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (
       !message.member.hasPermission('MANAGE_GUILD') && message.author.id !== ownerID) {
       message.channel.send(`${language.markdown.noPermission}`);
@@ -29,14 +29,14 @@ module.exports = {
 
     if (args[0] === undefined) {
       const noinEmb = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${noArguments}`);
       message.channel.send(noinEmb);
       return;
     }
     if (args[1] === undefined) {
       const noinEmb = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${noArguments}`);
       message.channel.send(noinEmb);
       return;

@@ -11,7 +11,7 @@ module.exports = {
     description: 'Creates a ticket on reaction',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -24,14 +24,14 @@ module.exports = {
 
     if (!message.member.hasPermission('MANAGE_GUILD') && message.author.id !== ownerID) {
       const errEmbed = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(':x: You do not have permission to run this command.');
       message.channel.send(errEmbed);
       return;
     }
 
     const embed = new MessageEmbed()
-      .setColor(color)
+      .setColor('36393F')
       .setTitle('Create a Ticket')
       .setDescription('To create a ticket react with 📩')
       .setFooter('Ragnarok Bot', bot.user.avatarURL());
@@ -39,7 +39,7 @@ module.exports = {
     const foundtEmbed = db.prepare(`SELECT * FROM ticketConfig WHERE guildid=${message.guild.id}`).get();
     if (!foundtEmbed) {
       const disabledTic = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription('Tickets are not enabled on this server!');
       message.channel.send(disabledTic).then((m) => m.delete({ timeout: 10000 }));
       return;
@@ -57,13 +57,13 @@ module.exports = {
             ticketEChan: null,
           });
           const cleared = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription('Ticket embed has been cleared from the database!');
           message.channel.send(cleared).then((msg) => msg.delete({ timeout: 10000 }));
           return;
         }
         const danelSucc = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription('I found no embed data in the database!');
         message.channel.send(danelSucc).then((msg) => msg.delete({ timeout: 10000, reason: 'Danel succ' }));
         return;
@@ -88,7 +88,7 @@ module.exports = {
           await embedChannel.messages.fetch(foundtEmbed.ticketembed).then((res) => {
             if (res) {
               const alreadytick = new MessageEmbed()
-                .setColor(color)
+                .setColor('36393F')
                 .setDescription(`You already have a Ticket embed in this server!\n Please delete the other, or clear it from the database via \`${prefix}tembed clear\``);
               message.channel.send(alreadytick).then((msg) => msg.delete({ timeout: 10000 }));
               return;

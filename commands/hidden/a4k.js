@@ -58,7 +58,7 @@ module.exports = {
 
             const embed = new MessageEmbed()
                 .setAuthor(post.subreddit, 'http://i.imgur.com/sdO8tAw.png')
-                .setColor(color)
+                .setColor('36393F')
                 .setDescription(`Search Results: [Click Me!](https://www.reddit.com/r/Addons4Kodi/search/?q=${searchTerm}&restrict_sr=1)\n\n`)
             message.channel.send(embed);
         }; */

@@ -11,7 +11,7 @@ module.exports = {
     description: 'Displays informations about the mentioned user',
     accessableby: 'Staff',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -36,7 +36,7 @@ module.exports = {
       .setThumbnail(user.avatarURL())
       .setTimestamp()
       .setFooter(`ID: ${user.id}`, user.avatarURL())
-      .setColor(color);
+      .setColor('36393F');
 
     if (!message.channel.permissionsFor(message.guild.me).has('EMBED_LINKS')) {
       message.channel.send(

@@ -11,7 +11,7 @@ module.exports = {
     description: 'Removes a user from a ticket',
     accessableby: 'Staff',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -32,7 +32,7 @@ module.exports = {
 
     if (!modRole) {
       const nomodRole = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${language.tickets.nomodRole}`);
       message.channel.send(nomodRole);
       return;
@@ -43,7 +43,7 @@ module.exports = {
       const donthaveroleMessage = language.tickets.donthaveRole;
       const role = donthaveroleMessage.replace('${role}', modRole);
       const donthaveRole = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${role}`);
       message.channel.send(donthaveRole);
       return;
@@ -52,7 +52,7 @@ module.exports = {
     const rUser = message.mentions.users.first();
     if (!rUser) {
       const nouser = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${language.tickets.cantfindUser}`);
       message.channel.send(nouser);
       return;
@@ -90,7 +90,7 @@ module.exports = {
       );
       if (!logchan) return;
       const loggingembed = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(
           `<@${message.author.id}> removed ${rUser} from ticket <#${
             getChan.id
@@ -99,7 +99,7 @@ module.exports = {
       logchan.send(loggingembed);
     } else {
       const errEmbed = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription('This ticket could not be found.');
       message.channel.send(errEmbed);
     }

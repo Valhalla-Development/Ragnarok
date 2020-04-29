@@ -17,7 +17,7 @@ module.exports = {
     description: ' ',
     accessableby: 'Owner',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -27,7 +27,7 @@ module.exports = {
 
     if (!args[0]) {
       const noArgs = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription('Please provide a command to reload!');
       message.channel.send(noArgs);
       return;
@@ -35,7 +35,7 @@ module.exports = {
     const commandName = args[0].toLowerCase();
     if (!bot.commands.get(commandName)) {
       const notaCommand = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(':x: That command does not exist! Try again.');
       message.channel.send(notaCommand);
       return;
@@ -51,12 +51,12 @@ module.exports = {
           const pull = require(`../${f}/${commandName}.js`);
           bot.commands.set(commandName, pull);
           const success = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`Successfully reloaded \`${commandName}\``);
           return message.channel.send(success);
         } catch (e) {
           const errorCatch = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`Could not reload: \`${args[0].toUpperCase()}\``);
           return message.channel.send(errorCatch);
         }

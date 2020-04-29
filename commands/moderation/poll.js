@@ -12,7 +12,7 @@ module.exports = {
     description: 'Mutes a user in the guild',
     accessableby: 'Staff',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -40,7 +40,7 @@ module.exports = {
 
     // Create Embed
     const embed = new MessageEmbed()
-      .setColor(color)
+      .setColor('36393F')
       .setFooter('React to Vote.')
       .setDescription(args.join(' '))
       .setTitle(`Poll Created By ${message.author.username}`);

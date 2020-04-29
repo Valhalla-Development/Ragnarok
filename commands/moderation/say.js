@@ -10,7 +10,7 @@ module.exports = {
     description: 'Sends message of your choice',
     accessableby: 'Staff',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -24,7 +24,7 @@ module.exports = {
 
     if (args[0] === undefined) {
       const noinEmb = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${language.esay.noInput}`);
       message.channel.send(noinEmb);
       return;

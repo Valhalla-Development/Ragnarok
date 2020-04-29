@@ -12,7 +12,7 @@ module.exports = {
     description: 'Displays available config commands',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -29,7 +29,7 @@ module.exports = {
     if (args[0] === undefined) {
       const undeembed = new MessageEmbed()
         .setAuthor('Ragnarok - Config', message.guild.iconURL())
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`**Advert Protection**\n[${prefix}config adsprot <on/off>]() : Enables/Disabled advert protection\n**Autorole**\n[${prefix}config autorole <@role>]() : Sets the role users are given when they join the guild\n**Logging**\n[${prefix}config logging <#channel/off>]() : Sets/disables the logging channel\n**Prefix**\n[${prefix}config prefix <prefix>]() : Sets the guild prefix\n**Tickets**\n[${prefix}config ticket cat <cat name>]() : Sets the ticket category\n  [${prefix}config ticket log <#channel>](): Enables ticket logging\n  [${prefix}config ticket role <@role>](): Sets custom support role for ticket system\n**Welcome**\n[${prefix}config welcome channel <#channel>]() : Sets the welcome channel\n[${prefix}config welcome channel off]() : Disables the welcome message\n**Rolemenu**\n[${prefix}config rolemenu add <@role>]() : Sets the role menu roles\n  [${prefix}config rolemenu remove <@role>]() : Removes a role from rolemenu\n  [${prefix}config rolemenu clear]() : Removes all roles from rolemenu\n**Music**\n[${prefix}config music role <@role>]() : Sets the DJ role\n  [${prefix}config music role off]() : Disabled the DJ role\n**Membercount**\n[${prefix}config membercount <on/off>]() : Enables/Disables the member count module\n**Dad Bot**\n[${prefix}config dadbot <on/off>]() : Enables/Disables the Dad bot module`);
       message.channel.send({
         embed: undeembed,
@@ -44,7 +44,7 @@ module.exports = {
       if (
         !message.member.hasPermission('MANAGE_GUILD') && message.author.id !== ownerID) {
         const invalidpermsembed = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription(`${language.membercount.noPermission}`);
         message.channel.send(invalidpermsembed);
         return;
@@ -63,7 +63,7 @@ module.exports = {
             const alreadyOnMessage = language.membercount.alreadyOn;
             const alreadyOn = alreadyOnMessage.replace('${prefix}', prefix);
             const alreadyonembed = new MessageEmbed()
-              .setColor(color)
+              .setColor('36393F')
               .setDescription(`${alreadyOn}`);
             message.channel.send(alreadyonembed);
             return;
@@ -123,7 +123,7 @@ module.exports = {
           });
 
           const turnonembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`${language.membercount.turnedOn}`);
           message.channel.send(turnonembed);
 
@@ -135,7 +135,7 @@ module.exports = {
             const alreadyOffMessage = language.membercount.alreadyOff;
             const alreadyOff = alreadyOffMessage.replace('${prefix}', prefix);
             const alreadyoffembed = new MessageEmbed()
-              .setColor(color)
+              .setColor('36393F')
               .setDescription(`${alreadyOff}`);
             message.channel.send(alreadyoffembed);
             return;
@@ -154,7 +154,7 @@ module.exports = {
             message.guild.id,
           );
           const turnedoffembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`${language.membercount.turnedOff}`);
           message.channel.send(turnedoffembed);
           return;
@@ -165,7 +165,7 @@ module.exports = {
             prefix,
           );
           const incorrectembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`${incorrectUsage}`);
           message.channel.send(incorrectembed);
           return;
@@ -179,7 +179,7 @@ module.exports = {
       if (
         !message.member.hasPermission('MANAGE_GUILD') && message.author.id !== ownerID) {
         const invalidpermsembed = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription(`${language.autorole.noPermission}`);
         message.channel.send(invalidpermsembed);
         return;
@@ -190,7 +190,7 @@ module.exports = {
 
         if (message.mentions.roles.size <= 0) {
           const errEmbed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(
               ':x: You must mention a role to remove from the menu.',
             );
@@ -214,7 +214,7 @@ module.exports = {
             roleList: JSON.stringify(roleList),
           });
           const succEmbed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(
               ':white_check_mark: Roles successfully set in the assignable role menu!',
             );
@@ -235,7 +235,7 @@ module.exports = {
             roleList: JSON.stringify(foundRoleList),
           });
           const succEmbed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(
               ':white_check_mark: Roles successfully set in the assignable role menu!',
             );
@@ -246,7 +246,7 @@ module.exports = {
       if (args[1] === 'remove') {
         if (message.mentions.roles.size <= 0) {
           const errEmbed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(
               ':x: You must mention a role to remove from the menu.',
             );
@@ -277,7 +277,7 @@ module.exports = {
         }
 
         const succEmbed = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription(
             ':white_check_mark: Specified roles have successfully been cleared from the rolemenu!',
           );
@@ -289,7 +289,7 @@ module.exports = {
           `DELETE FROM rolemenu where guildid=${message.guild.id}`,
         ).run();
         const succEmbed = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription(
             ':white_check_mark: All roles have successfully been cleared from the rolemenu!',
           );
@@ -303,7 +303,7 @@ module.exports = {
         prefix,
       );
       const incorrectUsageembed = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${incorrectUsage}`);
       message.channel.send(incorrectUsageembed);
       return;
@@ -316,7 +316,7 @@ module.exports = {
       if (
         !message.member.hasPermission('MANAGE_GUILD') && message.author.id !== ownerID) {
         const invalidpermsembed = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription(`${language.dadbot.noPermission}`);
         message.channel.send(invalidpermsembed);
         return;
@@ -335,7 +335,7 @@ module.exports = {
             const alreadyOnMessage = language.dadbot.alreadyOn;
             const alreadyOn = alreadyOnMessage.replace('${prefix}', prefix);
             const alreadyonembed = new MessageEmbed()
-              .setColor(color)
+              .setColor('36393F')
               .setDescription(`${alreadyOn}`);
             message.channel.send(alreadyonembed);
             return;
@@ -348,7 +348,7 @@ module.exports = {
             status: 'on',
           });
           const turnonembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`${language.dadbot.turnedOn}`);
           message.channel.send(turnonembed);
 
@@ -360,7 +360,7 @@ module.exports = {
             const alreadyOffMessage = language.dadbot.alreadyOff;
             const alreadyOff = alreadyOffMessage.replace('${prefix}', prefix);
             const alreadyoffembed = new MessageEmbed()
-              .setColor(color)
+              .setColor('36393F')
               .setDescription(`${alreadyOff}`);
             message.channel.send(alreadyoffembed);
             return;
@@ -370,7 +370,7 @@ module.exports = {
             message.guild.id,
           );
           const turnedoffembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`${language.dadbot.turnedOff}`);
           message.channel.send(turnedoffembed);
           return;
@@ -381,7 +381,7 @@ module.exports = {
             prefix,
           );
           const incorrectembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`${incorrectUsage}`);
           message.channel.send(incorrectembed);
           return;
@@ -396,7 +396,7 @@ module.exports = {
       if (
         !message.member.hasPermission('MANAGE_GUILD') && message.author.id !== ownerID) {
         const invalidpermsembed = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription(`${language.adsprot.noPermission}`);
         message.channel.send(invalidpermsembed);
         return;
@@ -415,7 +415,7 @@ module.exports = {
             const alreadyOnMessage = language.adsprot.alreadyOn;
             const alreadyOn = alreadyOnMessage.replace('${prefix}', prefix);
             const alreadyonembed = new MessageEmbed()
-              .setColor(color)
+              .setColor('36393F')
               .setDescription(`${alreadyOn}`);
             message.channel.send(alreadyonembed);
             return;
@@ -429,7 +429,7 @@ module.exports = {
             status: 'on',
           });
           const turnonembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`${language.adsprot.turnedOn}`);
           message.channel.send(turnonembed);
 
@@ -441,7 +441,7 @@ module.exports = {
             const alreadyOffMessage = language.adsprot.alreadyOff;
             const alreadyOff = alreadyOffMessage.replace('${prefix}', prefix);
             const alreadyoffembed = new MessageEmbed()
-              .setColor(color)
+              .setColor('36393F')
               .setDescription(`${alreadyOff}`);
             message.channel.send(alreadyoffembed);
             return;
@@ -451,7 +451,7 @@ module.exports = {
             message.guild.id,
           );
           const turnedoffembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`${language.adsprot.turnedOff}`);
           message.channel.send(turnedoffembed);
           return;
@@ -462,7 +462,7 @@ module.exports = {
             prefix,
           );
           const incorrectembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`${incorrectUsage}`);
           message.channel.send(incorrectembed);
           return;
@@ -475,7 +475,7 @@ module.exports = {
       if (
         !message.member.hasPermission('MANAGE_GUILD') && message.author.id !== ownerID) {
         const invalidpermsembed = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription(`${language.autorole.noPermission}`);
         message.channel.send(invalidpermsembed);
         return;
@@ -493,7 +493,7 @@ module.exports = {
             prefix,
           );
           const incorrectUsageembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`${incorrectUsage}`);
           message.channel.send(incorrectUsageembed);
           return;
@@ -503,7 +503,7 @@ module.exports = {
             message.guild.id,
           );
           const turnoffembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`${language.autorole.turnedOff}`);
           message.channel.send(turnoffembed);
           return;
@@ -527,7 +527,7 @@ module.exports = {
             args[1],
           );
           const updatedembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`${roleupdate}`);
           message.channel.send(updatedembed);
           return;
@@ -543,7 +543,7 @@ module.exports = {
         const autoroleSetMessage = language.autorole.roleSet;
         const roleSet = autoroleSetMessage.replace('${autorole}', args[1]);
         const setembed = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription(`${roleSet}`);
         message.channel.send(setembed);
         return;
@@ -910,7 +910,7 @@ module.exports = {
     if (args[0] === 'welcome') {
       if (args[1] === undefined) {
         const usage = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription(
             `**USAGE:**\n\nTo set the welcome channel, the command is \`${prefix}config welcome channel <#channel>\`\nTo disable the welcome, use \`${prefix}config welcome channel off\``,
           );
@@ -984,7 +984,7 @@ module.exports = {
     if (args[0] === 'music') {
       if (args[1] === undefined) {
         const usage = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription(
             `**USAGE:**\n\nTo set the music role, the command is \`${prefix}config music role <@role>\`\nTo disable the role, use \`${prefix}config music role off\``,
           );

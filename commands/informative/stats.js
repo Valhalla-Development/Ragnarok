@@ -13,7 +13,7 @@ module.exports = {
     description: 'Displays stats about the bot',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, color) => {
+  run: async (bot, message) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -69,7 +69,7 @@ module.exports = {
     const serverembed = new MessageEmbed()
       .setAuthor('Ragnarok Info', bot.user.avatarURL())
       .setFooter('Bot Created • November 4, 2018')
-      .setColor(color)
+      .setColor('36393F')
       .setThumbnail(bot.user.avatarURL())
       .addFields({
         name: 'Owner',

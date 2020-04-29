@@ -12,7 +12,7 @@ module.exports = {
     description: 'Bans a user from the guild',
     accessableby: 'Staff',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -51,7 +51,7 @@ module.exports = {
       const logsEmbed = new MessageEmbed()
         .setTitle('User Banned')
         .setFooter('User Ban Logs')
-        .setColor(color)
+        .setColor('36393F')
         .setTimestamp()
         .addFields({ name: 'Banned User:', value: `${user}, ID: ${user.id}` },
           { name: 'Reason:', value: reason },
@@ -93,7 +93,7 @@ module.exports = {
       const logsEmbedD = new MessageEmbed()
         .setTitle('User Banned')
         .setFooter('User Ban Logs')
-        .setColor(color)
+        .setColor('36393F')
         .setTimestamp()
         .addFields({ name: 'Banned User:', value: `${chuser}, ID: ${chuser.id}` },
           { name: 'Reason:', value: chreason },

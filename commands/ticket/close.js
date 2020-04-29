@@ -12,7 +12,7 @@ module.exports = {
     description: 'Closes a ticket',
     accessableby: 'Staff',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -30,14 +30,14 @@ module.exports = {
     // Make sure it's inside the ticket channel.
     if (foundTicket && message.channel.id !== foundTicket.chanid) {
       const badChannel = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${language.tickets.wrongChannelClose}`);
       message.channel.send(badChannel);
       return;
     }
     if (!foundTicket) {
       const errEmbed = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${language.tickets.wrongChannelClose}`);
       return message.channel.send(errEmbed);
     }
@@ -47,7 +47,7 @@ module.exports = {
     const confirmClose = confirmCloseMessage.replace('${prefix}', prefix);
     const user = bot.users.cache.find((a) => a.id === foundTicket.authorid);
     const confirmEmbed = new MessageEmbed()
-      .setColor(color)
+      .setColor('36393F')
       .setDescription(`${confirmClose}`);
     message.channel.send(confirmEmbed).then((m) => {
       message.channel.awaitMessages((response) => response.content === `${prefix}confirm`, {
@@ -71,7 +71,7 @@ module.exports = {
         if (!logchan) return;
 
         const loggingembed = new MessageEmbed()
-          .setColor(color);
+          .setColor('36393F');
 
         if (!reason) {
           loggingembed

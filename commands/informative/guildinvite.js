@@ -11,7 +11,7 @@ module.exports = {
     description: 'Posts an invite link to current Discord',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, color) => {
+  run: async (bot, message) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -29,7 +29,7 @@ module.exports = {
       })
       .then((invite) => {
         const embed = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription(
             `:white_check_mark: **Permanent Invite Link**: ${invite}`,
           );

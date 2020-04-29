@@ -11,7 +11,7 @@ module.exports = {
     description: 'Question the mighty 8Ball!',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -56,7 +56,7 @@ module.exports = {
 
     // embed
     const embed = new MessageEmbed()
-      .setColor(color)
+      .setColor('36393F')
       .setTitle(
         `:8ball: | ${
           responses[Math.floor(Math.random() * responses.length)]

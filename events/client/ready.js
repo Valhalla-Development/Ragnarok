@@ -4,7 +4,7 @@ const SQLite = require('better-sqlite3');
 const { prefix, nodes } = require('../../storage/config.json');
 const db = new SQLite('./storage/db/db.sqlite');
 
-module.exports = async (bot, color) => {
+module.exports = async (bot) => {
   console.log(
     `Scanning for guilds...\n\x1b[36m[-]\x1b[0m ${bot.guilds
       .cache.map((n) => `${n.name} (ID: \x1b[36m${n.id}\x1b[0m)`)
@@ -51,7 +51,7 @@ module.exports = async (bot, color) => {
         return;
       }
       const embed = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription('<:MusicLogo:684822003110117466> Queue has ended.');
       player.textChannel.send(embed);
       return bot.music.players.destroy(player.guild.id);
@@ -61,7 +61,7 @@ module.exports = async (bot, color) => {
         return;
       }
       const embed = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription('<:MusicLogo:684822003110117466> Track has ended.');
       player.textChannel.send(embed);
       return bot.music.players.destroy(player.guild.id);
@@ -69,7 +69,7 @@ module.exports = async (bot, color) => {
     .on('trackStart', ({ textChannel }, { title, duration, requester }) => {
       const embed = new MessageEmbed()
         .setAuthor('Now Playing:', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`Now playing: \`${title}\`\nDuration: \`${Utils.formatTime(duration, true)}\`\nRequested by: ${requester}`);
       textChannel.send(embed);
     });

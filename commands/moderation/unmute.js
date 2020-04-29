@@ -12,7 +12,7 @@ module.exports = {
     description: 'Unutes a user in the guild',
     accessableby: 'Staff',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -51,7 +51,7 @@ module.exports = {
         .setAuthor(' Action | Un-Mute', message.guild.iconURL())
         .addFields({ name: 'User', value: `<@${user.id}>` },
           { name: 'Staff Member', value: `${mod}` })
-        .setColor(color);
+        .setColor('36393F');
       message.channel.send(unmuteembed);
     } else {
       const dblogs = dbid.channel;
@@ -60,7 +60,7 @@ module.exports = {
         .setAuthor(' Action | Un-Mute', message.guild.iconURL())
         .addFields({ name: 'User', value: `<@${user.id}>` },
           { name: 'Staff Member', value: `${mod}` })
-        .setColor(color);
+        .setColor('36393F');
       bot.channels.cache.get(dblogs).send(unmuteembed);
       message.channel.send(unmuteembed);
     }

@@ -11,7 +11,7 @@ module.exports = {
     accessableby: 'Everyone',
     aliases: ['drwho'],
   },
-  run: async (bot, message, color) => {
+  run: async (bot, message) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -32,7 +32,7 @@ module.exports = {
     const render = (post) => {
       const embed = new MessageEmbed()
         .setTitle(post.title)
-        .setColor(color)
+        .setColor('36393F')
         .setImage(`${post.link}`);
       message.channel.send(embed);
     };

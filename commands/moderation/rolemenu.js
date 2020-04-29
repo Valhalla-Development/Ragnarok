@@ -41,7 +41,7 @@ module.exports = {
     description: 'Displays the rolemenu',
     accessableby: 'Staff',
   },
-  run: async (bot, message, color) => {
+  run: async (bot, message) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -50,7 +50,7 @@ module.exports = {
     if (
       !message.member.hasPermission('MANAGE_GUILD') && message.author.id !== ownerID) {
       const errEmbed = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(':x: You do not have permission to run this command.');
 
       message.channel.send(errEmbed);
@@ -60,7 +60,7 @@ module.exports = {
         .get();
       if (!foundRoleMenu || JSON.parse(foundRoleMenu.roleList).length <= 0) {
         const errEmbed = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setDescription(
             ':x: The roles for the menu have not been set yet. Please try again later.',
           );
@@ -75,7 +75,7 @@ module.exports = {
         }
 
         const roleMenuEmbed = new MessageEmbed()
-          .setColor(color)
+          .setColor('36393F')
           .setTitle('Assign a Role')
           .setDescription(
             `React below to assign one of the following roles:\n\n${embedRoleList}`,

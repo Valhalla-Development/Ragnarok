@@ -8,7 +8,7 @@ module.exports = {
     description: 'Displays informations about the server',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, color) => {
+  run: async (bot, message) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -24,7 +24,7 @@ module.exports = {
     const serverembed = new MessageEmbed()
       .setAuthor(message.guild.name, sicon)
       .setFooter(`Server Created • ${day}.${month}.${year}`)
-      .setColor(color)
+      .setColor('36393F')
       .setThumbnail(sicon)
       .addFields(
         { name: 'Name', value: message.guild.name, inline: true },

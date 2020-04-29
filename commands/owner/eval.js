@@ -14,7 +14,7 @@ module.exports = {
     description: ' ',
     accessableby: 'Owner',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -61,7 +61,7 @@ module.exports = {
         .addFields({ name: `${bot.user.username} - JavaScript Eval Success:`, value: '** **' },
           { name: ':inbox_tray: **INPUT**', value: `\`\`\`${args.join(' ')}\`\`\`` },
           { name: ':outbox_tray: **OUTPUT**', value: `\`\`\`${clean(evaled)}\`\`\`` })
-        .setColor(color)
+        .setColor('36393F')
         .setFooter(message.createdAt, message.author.avatarURL());
       message.channel.send({
         embed,
@@ -72,7 +72,7 @@ module.exports = {
           new MessageEmbed()
             .addFields({ name: `${bot.user.username} - JavaScript Eval Error:`, value: 'There Was a Problem With The Code That You Are Trying To Run!' },
               { name: ':no_entry: ERROR', value: `\`\`\`${clean(err)}\`\`\`` })
-            .setColor(color)
+            .setColor('36393F')
             .setFooter(message.createdAt, message.author.avatarURL()),
         )
 

@@ -2,7 +2,7 @@
 const { MessageEmbed } = require('discord.js');
 const moment = require('moment');
 const SQLite = require('better-sqlite3');
-const { prefix, logging, color } = require('../../storage/config.json');
+const { prefix, logging } = require('../../storage/config.json');
 const db = new SQLite('./storage/db/db.sqlite');
 const coinCooldown = new Set();
 const coinCooldownSeconds = 5;
@@ -202,7 +202,7 @@ module.exports = async (bot, message) => {
   if (!commandfile) return;
   if (!message.content.startsWith(prefixcommand)) return;
   if (commandfile) {
-    commandfile.run(bot, message, args, color);
+    commandfile.run(bot, message, args);
     if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
       message.delete();
     }

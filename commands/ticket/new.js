@@ -13,7 +13,7 @@ module.exports = {
     description: 'Creates a ticket',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -32,7 +32,7 @@ module.exports = {
 
     if (!message.member.guild.me.hasPermission('ADMINISTRATOR')) {
       const botPerm = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(
           'Uh oh! It seems you have removed the `ADMINISTRATOR` permission from me. I cannot function properly without it :cry:',
         );
@@ -44,7 +44,7 @@ module.exports = {
     if (
       !message.guild.roles.cache.find((r) => r.name === 'Support Team') && !suppRole) {
       const nomodRole = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${language.tickets.nomodRole}`);
       message.channel.send(nomodRole);
       return;
@@ -93,7 +93,7 @@ module.exports = {
       })
     ) {
       const existTM = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${language.tickets.existingTicket}`);
       message.channel.send(existTM);
       return;
@@ -157,13 +157,13 @@ module.exports = {
           });
           // Send a message saying the ticket has been created.
           const newTicketE = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`${language.tickets.ticketCreated}, <#${c.id}>.`);
           message.channel.send(newTicketE).then((msg) => msg.delete({
             timeout: 5000,
           }));
           const embed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setTitle('New Ticket')
             .setDescription(
               `Hello \`${
@@ -187,7 +187,7 @@ module.exports = {
           );
           if (!logchan) return;
           const loggingembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(
               `${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``,
             );
@@ -245,13 +245,13 @@ module.exports = {
           await c.setParent(ticategory);
           // Send a message saying the ticket has been created.
           const newTicketE = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`${language.tickets.ticketCreated}, <#${c.id}>.`);
           message.channel.send(newTicketE).then((msg) => msg.delete({
             timeout: 5000,
           }));
           const embed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setTitle('New Ticket')
             .setDescription(
               `Hello \`${
@@ -276,7 +276,7 @@ module.exports = {
           );
           if (!logchan) return;
           const loggingembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(
               `${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``,
             );

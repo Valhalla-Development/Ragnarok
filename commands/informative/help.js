@@ -12,7 +12,7 @@ module.exports = {
     description: 'Shows a list of commands',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -50,7 +50,7 @@ module.exports = {
       }
 
       embed
-        .setColor(color)
+        .setColor('36393F')
         .setAuthor(bot.user.username, bot.user.avatarURL())
         .setTimestamp()
         .setDescription(
@@ -70,7 +70,7 @@ module.exports = {
       const upper = lower.charAt(0).toUpperCase() + lower.substring(1);
 
       embed
-        .setColor(color)
+        .setColor('36393F')
         .setAuthor(bot.user.username, bot.user.avatarURL())
         .setDescription(
           `The bot prefix is: ${prefix}\n\n**Command:** \`${

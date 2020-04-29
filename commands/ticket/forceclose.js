@@ -11,7 +11,7 @@ module.exports = {
     description: 'Forcefully closes a ticket',
     accessableby: 'Staff',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -28,7 +28,7 @@ module.exports = {
 
     if (!modRole) {
       const nomodRole = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${language.tickets.nomodRole}`);
       message.channel.send(nomodRole);
       return;
@@ -38,7 +38,7 @@ module.exports = {
       const donthaveroleMessage = language.tickets.donthaveRole;
       const role = donthaveroleMessage.replace('${role}', modRole);
       const donthaveRole = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription(`${role}`);
       message.channel.send(donthaveRole);
       return;
@@ -51,7 +51,7 @@ module.exports = {
     if (foundTicket) {
       const getChan = message.guild.channels.cache.find((chan) => chan.id === foundTicket.chanid);
       const forceclosetimer = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setTitle(':x: Closing Ticket! :x:')
         .setDescription(`${language.tickets.closeTimer}`);
       getChan.send(forceclosetimer).then((timerMsg) => {
@@ -64,7 +64,7 @@ module.exports = {
           },
         ).then(() => {
           const cancelTimer = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription('Canceling Ticket Close');
           timerMsg.edit(cancelTimer).then((cancelMsg) => {
             cancelMsg.delete({
@@ -81,14 +81,14 @@ module.exports = {
           const logchan = message.guild.channels.cache.find((chan) => chan.id === logget.log);
           if (!logchan) return;
           const loggingembed = new MessageEmbed()
-            .setColor(color)
+            .setColor('36393F')
             .setDescription(`<@${message.author.id}> has forcefully closed ticket \`#${message.channel.name}\``);
           logchan.send(loggingembed);
         });
       });
     } else {
       const errEmbed = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setDescription('This ticket could not be found.');
       message.channel.send(errEmbed);
     }

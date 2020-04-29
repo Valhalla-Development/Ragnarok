@@ -8,7 +8,7 @@ module.exports = {
     description: 'Hugs a user',
     accessableby: 'Everyone',
   },
-  run: async (bot, message, args, color) => {
+  run: async (bot, message, args) => {
     if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
       message.channel.send('I need the permission `Embed Links` for this command!');
       return;
@@ -32,7 +32,7 @@ module.exports = {
     const hugresult = Math.floor(Math.random() * hug.length);
     if (!args[0]) {
       const ghembed = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setTitle(`${message.author.username} hugged themself...! (weirdo)`)
         .setImage(
           'https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif',
@@ -46,7 +46,7 @@ module.exports = {
 
     if (!mentionUser) {
       const hembed = new MessageEmbed()
-        .setColor(color)
+        .setColor('36393F')
         .setTitle(
           `${message.author.username} gave ${
             message.mentions.members.first().user.username
@@ -59,7 +59,7 @@ module.exports = {
       return;
     }
     const ghembed = new MessageEmbed()
-      .setColor(color)
+      .setColor('36393F')
       .setTitle(`${message.author.username} hugged themself...! (weirdo)`)
       .setImage(
         'https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif',
