@@ -47,7 +47,7 @@ module.exports = async (bot) => {
       return bot.music.players.destroy(player.guild.id);
     })
     .on('queueEnd', (player) => {
-      if (player.queueRepeat === true) {
+      if (player.queueRepeat) {
         return;
       }
       const embed = new MessageEmbed()
@@ -57,16 +57,21 @@ module.exports = async (bot) => {
       return bot.music.players.destroy(player.guild.id);
     })
     .on('trackEnd', (player) => {
-      if (player.trackRepeat === true) {
+      if (player.trackRepeat) {
         return;
       }
-      const embed = new MessageEmbed()
-        .setColor('36393F')
-        .setDescription('<:MusicLogo:684822003110117466> Track has ended.');
-      player.textChannel.send(embed);
-      return bot.music.players.destroy(player.guild.id);
+      if (player.queue.length < 1) {
+        const embed = new MessageEmbed()
+          .setColor('36393F')
+          .setDescription('<:MusicLogo:684822003110117466> Track has ended.');
+        player.textChannel.send(embed);
+        return bot.music.players.destroy(player.guild.id);
+      }
     })
-    .on('trackStart', ({ textChannel }, { title, duration, requester }) => {
+    .on('trackStart', ({ textChannel, trackRepeat }, { title, duration, requester }) => {
+      if (trackRepeat) {
+        return;
+      }
       const embed = new MessageEmbed()
         .setAuthor('Now Playing:', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
         .setColor('36393F')
