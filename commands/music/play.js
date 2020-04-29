@@ -197,6 +197,7 @@ module.exports = {
       talkedRecently.add(message.author.id);
       setTimeout(() => {
         const talkedRecRemove = new MessageEmbed()
+          .setColor('36393F')
           .setDescription(`${language.music.talkedRecentlyRemove}`);
         message.channel.send(message.author, talkedRecRemove);
         talkedRecently.delete(message.author.id);
