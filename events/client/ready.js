@@ -47,19 +47,22 @@ module.exports = async (bot, color) => {
       return bot.music.players.destroy(player.guild.id);
     })
     .on('queueEnd', (player) => {
-      const embed = new MessageEmbed()
-        .setColor(color)
-        .setDescription('Queue has ended.');
-      player.textChannel.send(embed);
-      return bot.music.players.destroy(player.guild.id);
-    })
-    .on('trackEnd', (player) => {
-      if (player.setTrackRepeat(true)) { // Need to test this, bot is being a prick atm
+      if (player.queueRepeat === true) {
         return;
       }
       const embed = new MessageEmbed()
         .setColor(color)
-        .setDescription('Queue has ended.');
+        .setDescription('<:MusicLogo:684822003110117466> Queue has ended.');
+      player.textChannel.send(embed);
+      return bot.music.players.destroy(player.guild.id);
+    })
+    .on('trackEnd', (player) => {
+      if (player.trackRepeat === true) {
+        return;
+      }
+      const embed = new MessageEmbed()
+        .setColor(color)
+        .setDescription('<:MusicLogo:684822003110117466> Track has ended.');
       player.textChannel.send(embed);
       return bot.music.players.destroy(player.guild.id);
     })
