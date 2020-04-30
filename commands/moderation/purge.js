@@ -62,7 +62,7 @@ module.exports = {
         console.log(error);
       });
     } catch (e) {
-      message.channel.send(':x: You can not delete messages older than 14 days.');
+      message.channel.send(':x: You can not delete messages older than 14 days.').then((m) => m.delete({ timeout: 5000 }));
     }
   },
 };
