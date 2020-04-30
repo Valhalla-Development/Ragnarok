@@ -12,11 +12,7 @@ module.exports = async (bot) => {
   );
 
   setTimeout(() => {
-    console.log(
-      `Invite link: https://discordapp.com/oauth2/authorize?client_id=${
-        bot.user.id
-      }&scope=bot&permissions=8\n`,
-    );
+    console.log(`Invite link: https://discordapp.com/oauth2/authorize?client_id=${bot.user.id}&scope=bot&permissions=2050485471\n`);
   }, 1000);
 
   // activity
