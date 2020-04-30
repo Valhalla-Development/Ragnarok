@@ -46,7 +46,7 @@ module.exports = {
       let reason = args.slice(1).join(' ');
       if (!reason) reason = 'No reason given';
 
-      message.guild.member(user).ban(reason);
+      message.guild.members.ban(user, { reason: `${reason}` });
 
       const logsEmbed = new MessageEmbed()
         .setTitle('User Banned')
