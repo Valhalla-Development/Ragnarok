@@ -227,9 +227,9 @@ module.exports = async (bot) => {
   if (!balancetable['count(*)']) {
     console.log('balance table created!');
     db.prepare(
-      'CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, balance INTEGER);',
+      'CREATE TABLE balance (user TEXT PRIMARY KEY, guild TEXT, boosts TEXT, cash INTEGER, bank INTEGER, total INTEGER);',
     ).run();
-    db.prepare('CREATE UNIQUE INDEX idx_balance_id ON balance (id);').run();
+    db.prepare('CREATE UNIQUE INDEX idx_balance_id ON balance (user);').run();
     db.pragma('synchronous = 1');
     db.pragma('journal_mode = wal');
   }
@@ -237,7 +237,10 @@ module.exports = async (bot) => {
     'SELECT * FROM balance WHERE user = ? AND guild = ?',
   );
   bot.setBalance = db.prepare(
-    'INSERT OR REPLACE INTO balance (id, user, guild, balance) VALUES (@id, @user, @guild, @balance);',
+    'INSERT OR REPLACE INTO balance (user, guild, cash, bank, total) VALUES (@user, @guild, @cash, @bank, @total);',
+  );
+  bot.setUserBalance = db.prepare(
+    'INSERT OR REPLACE INTO balance (user, guild, cash, bank, total) VALUES (@user, @guild, @cash, @bank, @total);',
   );
   // scores table
   const table = db
