@@ -58,7 +58,7 @@ module.exports = async (bot, message) => {
     return;
   }
 
-  /*// Balance (balance)
+  // Balance (balance)
   if (message.author.bot) return;
   let balance;
   if (message.guild) {
@@ -86,7 +86,7 @@ module.exports = async (bot, message) => {
         }, coinCooldownSeconds * 1000);
       }
     }
-  }*/
+  }
 
   // Scores (level)
   let score;
