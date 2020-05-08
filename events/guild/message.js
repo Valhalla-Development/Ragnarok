@@ -1,3 +1,4 @@
+/* eslint-disable arrow-body-style */
 /* eslint-disable no-mixed-operators */
 const { MessageEmbed } = require('discord.js');
 const moment = require('moment');
@@ -5,12 +6,15 @@ const SQLite = require('better-sqlite3');
 const { prefix, logging } = require('../../storage/config.json');
 const db = new SQLite('./storage/db/db.sqlite');
 const coinCooldown = new Set();
-const coinCooldownSeconds = 5;
+const coinCooldownSeconds = 30;
 const xpCooldown = new Set();
 const xpCooldownSeconds = 60;
 
 module.exports = async (bot, message) => {
   if (message.author.bot || message.channel.type === 'dm') return;
+  if (!message.member.guild.me.hasPermission('SEND_MESSAGES')) {
+    return;
+  }
 
   // Custom prefixes
   const prefixes = db
@@ -40,12 +44,6 @@ module.exports = async (bot, message) => {
   const oargresult = dadArgs.join(' ');
   const command = messageArray[0].toLowerCase();
 
-  // Easter Egg
-
-  if (message.content.includes('(╯°□°）╯︵ ┻━┻')) {
-    message.channel.send('Leave my table alone!\n┬─┬ ノ( °  □°ノ)');
-  }
-
   // Prefix command
 
   if (command === `${prefix}prefix`) {
@@ -67,17 +65,20 @@ module.exports = async (bot, message) => {
     balance = bot.getBalance.get(message.author.id, message.guild.id);
     if (!balance) {
       balance = {
-        id: `${message.guild.id}-${message.author.id}`,
         user: message.author.id,
         guild: message.guild.id,
-        balance: 1000,
+        cash: 1000,
+        bank: 0,
+        total: 1000,
       };
     }
-    const curBal = balance.balance;
-    const coinAmt = Math.floor(Math.random() * 100) + 10;
+    const curBal = balance.cash;
+    const curBan = balance.bank;
+    const coinAmt = Math.floor(Math.random() * (60 - 20 + 1) + 20); // * (max - min + 1) + min);
     if (coinAmt) {
       if (!coinCooldown.has(message.author.id)) {
-        balance.balance = curBal + coinAmt;
+        balance.cash = curBal + coinAmt;
+        balance.total = curBal + curBan + coinAmt;
         bot.setBalance.run(balance);
         coinCooldown.add(message.author.id);
         setTimeout(() => {
@@ -180,17 +181,11 @@ module.exports = async (bot, message) => {
       if (!message.member.hasPermission('MANAGE_MESSAGES')) {
         if (message.content.includes('https://') || message.content.includes('http://') || message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')) {
           if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-            message.delete(); // This says unknown message if the message no longere exists obviously, problem if other server has bots that remove it aswell
+            message.delete(); // errors if message no longer exists
           }
-          message.channel.send(
-            `**Your message contained a link and it was deleted, <@${
-              message.author.id
-            }>**`,
-          )
+          message.channel.send(`**Your message contained a link and it was deleted, <@${message.author.id}>**`)
             .then((msg) => {
-              msg.delete({
-                timeout: 10000,
-              });
+              msg.delete({ timeout: 10000 });
             });
         }
       }
