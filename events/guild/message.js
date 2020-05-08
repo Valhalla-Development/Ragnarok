@@ -137,60 +137,67 @@ module.exports = async (bot, message) => {
 
   // Dad Bot
 
-  if (message.content.toLowerCase().startsWith('im ') || message.content.toLowerCase().startsWith('i\'m ')) {
-    const dadbot = db.prepare(`SELECT * FROM dadbot WHERE guildid = ${message.guild.id};`).get();
-    if (!dadbot) {
-      return;
-    }
-    if (args.length > 10) {
-      return;
-    }
-    if (args[0] === undefined) {
-      return;
-    }
-    if (message.content.includes('https://')) {
-      message.channel.send('Hi unloved virgin, I\'m Dad!');
-    } else if (message.content.includes('http://')) {
-      message.channel.send('Hi unloved virgin, I\'m Dad!');
-    } else if (message.content.includes('discord.gg')) {
-      message.channel.send('Hi unloved virgin, I\'m Dad!');
-    } else if (message.content.includes('discord.me')) {
-      message.channel.send('Hi unloved virgin, I\'m Dad!');
-    } else if (message.content.includes('discord.io')) {
-      message.channel.send('Hi unloved virgin, I\'m Dad!');
-    } else if (message.content.includes('@everyone')) {
-      message.channel.send('Hi unloved virgin, I\'m Dad!');
-    } else if (message.content.includes('@here')) {
-      message.channel.send('Hi unloved virgin, I\'m Dad!');
-    } else if (message.content.toLowerCase().includes('`')) {
-      message.channel.send('Hi unloved virgin, I\'m Dad!');
-    } else if (
-      message.content.toLowerCase().startsWith('im dad') || message.content.toLowerCase().startsWith('i\'m dad')) {
-      message.channel.send('No, I\'m Dad!');
-    } else {
-      message.channel.send(`Hi ${oargresult}, I'm Dad!`);
+  function dadBot() {
+    if (message.content.toLowerCase().startsWith('im ') || message.content.toLowerCase().startsWith('i\'m ')) {
+      const dadbot = db.prepare(`SELECT * FROM dadbot WHERE guildid = ${message.guild.id};`).get();
+      if (!dadbot) {
+        return;
+      }
+      if (args.length > 10) {
+        return;
+      }
+      if (args[0] === undefined) {
+        return;
+      }
+      if (message.content.includes('https://')) {
+        message.channel.send('Hi unloved virgin, I\'m Dad!');
+      } else if (message.content.includes('http://')) {
+        message.channel.send('Hi unloved virgin, I\'m Dad!');
+      } else if (message.content.includes('discord.gg')) {
+        message.channel.send('Hi unloved virgin, I\'m Dad!');
+      } else if (message.content.includes('discord.me')) {
+        message.channel.send('Hi unloved virgin, I\'m Dad!');
+      } else if (message.content.includes('discord.io')) {
+        message.channel.send('Hi unloved virgin, I\'m Dad!');
+      } else if (message.content.includes('@everyone')) {
+        message.channel.send('Hi unloved virgin, I\'m Dad!');
+      } else if (message.content.includes('@here')) {
+        message.channel.send('Hi unloved virgin, I\'m Dad!');
+      } else if (message.content.toLowerCase().includes('`')) {
+        message.channel.send('Hi unloved virgin, I\'m Dad!');
+      } else if (
+        message.content.toLowerCase().startsWith('im dad') || message.content.toLowerCase().startsWith('i\'m dad')) {
+        message.channel.send('No, I\'m Dad!');
+      } else {
+        message.channel.send(`Hi ${oargresult}, I'm Dad!`);
+      }
     }
   }
 
+  dadBot();
+
   // Ads protection checks
-  if (!message.content.startsWith(`${prefixcommand}play`)) {
-    const adsprot = db
-      .prepare('SELECT count(*) FROM adsprot WHERE guildid = ?')
-      .get(message.guild.id);
-    if (adsprot['count(*)']) {
-      if (!message.member.hasPermission('MANAGE_MESSAGES')) {
-        if (message.content.includes('https://') || message.content.includes('http://') || message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')) {
-          if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-            message.delete(); // errors if message no longer exists
+  function adsProt() {
+    if (!message.content.startsWith(`${prefixcommand}play`)) {
+      const adsprot = db
+        .prepare('SELECT count(*) FROM adsprot WHERE guildid = ?')
+        .get(message.guild.id);
+      if (adsprot['count(*)']) {
+        if (!message.member.hasPermission('MANAGE_MESSAGES')) {
+          if (message.content.includes('https://') || message.content.includes('http://') || message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')) {
+            if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+              message.delete(); // errors if message no longer exists
+            }
+            message.channel.send(`**Your message contained a link and it was deleted, <@${message.author.id}>**`)
+              .then((msg) => {
+                msg.delete({ timeout: 10000 });
+              });
           }
-          message.channel.send(`**Your message contained a link and it was deleted, <@${message.author.id}>**`)
-            .then((msg) => {
-              msg.delete({ timeout: 10000 });
-            });
         }
       }
     }
   }
+  adsProt();
 
   const cmd = args.shift().toLowerCase();
   const commandfile = bot.commands.get(cmd) || bot.commands.get(bot.aliases.get(cmd));
