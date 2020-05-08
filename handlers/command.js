@@ -12,6 +12,7 @@ module.exports = (bot) => {
     }
   };
   [
+    'economy',
     'fun',
     'generators',
     'hidden',
