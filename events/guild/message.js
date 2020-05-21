@@ -47,14 +47,10 @@ module.exports = async (bot, message) => {
   // Prefix command
 
   if (command === `${prefix}prefix`) {
-    if (message.member.guild.me.hasPermission('EMBED_LINKS')) {
-      const embed = new MessageEmbed()
-        .setColor('36393F')
-        .setDescription(`This guild's prefix is: \`${prefixcommand}\``);
-      message.channel.send(embed);
-      return;
-    }
-    message.channel.send(`This guild's prefix is: \`${prefixcommand}\``);
+    const embed = new MessageEmbed()
+      .setColor('36393F')
+      .setDescription(`This guild's prefix is: \`${prefixcommand}\``);
+    message.channel.send(embed);
     return;
   }
 
@@ -111,20 +107,14 @@ module.exports = async (bot, message) => {
       score.level = curlvl + 1;
       if (score.level === 0) return;
       if (xpCooldown.has(message.author.id)) return;
-      if (message.member.guild.me.hasPermission('EMBED_LINKS')) {
-        const lvlup = new MessageEmbed()
-          .setAuthor(`Congratulations ${message.author.username}`)
-          .setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
-          .setColor('36393F')
-          .setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
-        message.channel.send(lvlup).then((msg) => {
-          msg.delete({ timeout: 10000 });
-        });
-      } else {
-        message.channel.send(`Congratulations ${message.author.username}\nYou have leveled up!\nNew Level: \`${curlvl + 1}\``).then((msg) => {
-          msg.delete({ timeout: 10000 });
-        });
-      }
+      const lvlup = new MessageEmbed()
+        .setAuthor(`Congratulations ${message.author.username}`)
+        .setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
+        .setColor('36393F')
+        .setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
+      message.channel.send(lvlup).then((msg) => {
+        msg.delete({ timeout: 10000 });
+      });
     }
   }
   if (!xpCooldown.has(message.author.id)) {
