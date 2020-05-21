@@ -110,12 +110,6 @@
       "invalidChannel": ":x: **Invalid channel name! Check if the entered channel's name is correct and then type the command again.**",
       "invalidTextChannel": ":x: **Invalid text channel! Check if the entered text channel's name is correct and then type the command again.**"
     },
-    "meme": {
-      "noEmbedPermission": ":x: **I need the `EMBED_LINKS` permission to this command to work.**"
-    },
-    "ping": {
-      "ping": ":ping_pong: **| Pong! My ping is: ${ping} ms**"
-    },
     "poll": {
       "incorrectUsage": ":x: **Incorrect usage! The command is `${prefix}poll <question>`**",
       "noPermission": ":x: **Only the server's managers can use this command!**"
