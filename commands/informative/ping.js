@@ -1,5 +1,3 @@
-const language = require('../../storage/messages.json');
-
 module.exports = {
   config: {
     name: 'ping',
@@ -9,9 +7,8 @@ module.exports = {
     accessableby: 'Everyone',
   },
   run: async (bot, message) => {
-    const pingMessage = language.ping.ping;
-    const ping = pingMessage.replace('${ping}', Math.round(bot.ws.ping));
-
-    message.channel.send(`${ping}`);
+    message.channel.send('Pong!').then((msg) => {
+      msg.edit(`Bot latency: \`${msg.createdTimestamp - message.createdTimestamp}\`ms. API latency: \`${Math.round(bot.ws.ping)}\`ms.`);
+    });
   },
 };
