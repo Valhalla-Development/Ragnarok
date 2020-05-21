@@ -18,11 +18,6 @@ module.exports = {
     accessableby: 'Owner',
   },
   run: async (bot, message, args) => {
-    if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
-      message.channel.send('I need the permission `Embed Links` for this command!');
-      return;
-    }
-
     if (message.author.id !== ownerID) return;
 
     if (!args[0]) {

@@ -9,11 +9,6 @@ module.exports = {
     accessableby: 'Everyone',
   },
   run: async (bot, message, args) => {
-    if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
-      message.channel.send('I need the permission `Embed Links` for this command!');
-      return;
-    }
-
     const hug = [
       'https://media1.tenor.com/images/78b4745385a1b810501be693d2111a16/tenor.gif?itemid=10592461',
       'https://media1.tenor.com/images/d7529f6003b20f3b21f1c992dffb8617/tenor.gif?itemid=4782499',

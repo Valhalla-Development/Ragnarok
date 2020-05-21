@@ -12,11 +12,6 @@ module.exports = {
     accessableby: 'Staff',
   },
   run: async (bot, message, args) => {
-    if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
-      message.channel.send('I need the permission `Embed Links` for this command!');
-      return;
-    }
-
     if (
       !message.member.hasPermission('MANAGE_GUILD') && message.author.id !== ownerID) { return message.channel.send(`${language.userinfo.noPermission}`); }
 
@@ -37,13 +32,6 @@ module.exports = {
       .setTimestamp()
       .setFooter(`ID: ${user.id}`, user.avatarURL())
       .setColor('36393F');
-
-    if (!message.channel.permissionsFor(message.guild.me).has('EMBED_LINKS')) {
-      message.channel.send(
-        ':x: **| I need the `EMBED_LINKS` permission to this command to work.**',
-      );
-      return;
-    }
 
     message.channel.send({
       embed,

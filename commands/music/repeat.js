@@ -13,11 +13,6 @@ module.exports = {
   },
 
   run: async (bot, message, args) => {
-    if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
-      message.channel.send('I need the permission `Embed Links` for this command!');
-      return;
-    }
-
     const dlRoleGrab = db
       .prepare(
         `SELECT role FROM music WHERE guildid = ${message.guild.id}`,

@@ -12,11 +12,6 @@ module.exports = {
     accessableby: 'Everyone',
   },
   run: async (bot, message) => {
-    if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
-      message.channel.send('I need the permission `Embed Links` for this command!');
-      return;
-    }
-
     if (
       !message.member.hasPermission('CREATE_INSTANT_INVITE') && message.author.id !== ownerID) {
       message.channel.send(`${language.invite.noPermission}`);

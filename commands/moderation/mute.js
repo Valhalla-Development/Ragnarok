@@ -14,11 +14,6 @@ module.exports = {
     accessableby: 'Staff',
   },
   run: async (bot, message, args) => {
-    if (!message.member.guild.me.hasPermission('EMBED_LINKS') || (!message.member.guild.me.hasPermission('MANAGE_ROLES'))) {
-      message.channel.send('I need the permissions `Embed Links` and `MANAGE_ROLES` for this command!');
-      return;
-    }
-
     const prefixgrab = db
       .prepare('SELECT prefix FROM setprefix WHERE guildid = ?')
       .get(message.guild.id);

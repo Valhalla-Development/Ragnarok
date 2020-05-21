@@ -13,11 +13,6 @@ module.exports = {
     accessableby: 'Staff',
   },
   run: async (bot, message, args) => {
-    if (!message.member.guild.me.hasPermission('EMBED_LINKS')) {
-      message.channel.send('I need the permission `Embed Links` for this command!');
-      return;
-    }
-
     if (
       !message.member.hasPermission('BAN_MEMBERS') && message.author.id !== ownerID) {
       message.channel.send(`${language.ban.noAuthorPermission}`).then((msg) => {
