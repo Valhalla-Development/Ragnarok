@@ -49,9 +49,12 @@ module.exports = {
       otherB = bot.getBalance.get(user.id, message.guild.id);
     }
 
-    const noBal = 'You have no balance';
     if (!balance) {
-      message.channel.send(noBal);
+      message.channel.send('You have no balance');
+      return;
+    }
+    if (!otherB) {
+      message.channel.send('This user has no balance');
       return;
     }
 
