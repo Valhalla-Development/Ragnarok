@@ -62,6 +62,8 @@ module.exports = {
         total: 1000,
       };
       bot.setUserBalance.run(noBalSet);
+      message.channel.send('An error occurred, please try again');
+      return;
     }
 
 
