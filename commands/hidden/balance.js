@@ -8,7 +8,7 @@ module.exports = {
     name: 'balance',
     aliases: ['bal', 'coins'],
     usage: '${prefix}balance',
-    category: 'economy',
+    category: 'hidden',
     description: 'Displays your balance',
     accessableby: 'Everyone',
   },

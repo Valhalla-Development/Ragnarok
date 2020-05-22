@@ -9,7 +9,7 @@ module.exports = {
     name: 'give',
     aliases: ['pay'],
     usage: '${prefix}give <@user> <amount>/<all>',
-    category: 'economy',
+    category: 'hidden',
     description: 'Gives specified user a specified amount of money',
     accessableby: 'Everyone',
   },
@@ -54,9 +54,16 @@ module.exports = {
       return;
     }
     if (!otherB) {
-      message.channel.send('This user has no balance');
-      return;
+      const noBalSet = {
+        user: user.id,
+        guild: message.guild.id,
+        cash: 0,
+        bank: 1000,
+        total: 1000,
+      };
+      bot.setUserBalance.run(noBalSet);
     }
+
 
     if (balance.bank === 0) {
       const noBal = new MessageEmbed()

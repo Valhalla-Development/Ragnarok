@@ -8,7 +8,7 @@ module.exports = {
   config: {
     name: 'gamble',
     usage: '${prefix}gamble <amount>',
-    category: 'fun',
+    category: 'hidden',
     description: 'Gambles specified amount',
     accessableby: 'Everyone',
   },

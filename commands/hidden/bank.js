@@ -9,7 +9,7 @@ module.exports = {
     name: 'bank',
     aliases: ['dep', 'deposit'],
     usage: '${prefix}bank <amount/all>',
-    category: 'economy',
+    category: 'hidden',
     description: 'Banks specified amount of money',
     accessableby: 'Everyone',
   },

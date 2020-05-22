@@ -8,7 +8,7 @@ module.exports = {
     name: 'withdraw',
     aliases: ['draw'],
     usage: '${prefix}withdraw <amount>/<all>',
-    category: 'economy',
+    category: 'hidden',
     description: 'Withdraws specified amount of money',
     accessableby: 'Everyone',
   },
