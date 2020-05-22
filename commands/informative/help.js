@@ -21,7 +21,6 @@ module.exports = {
     const arr = [];
     const types = [
       'Fun',
-      'Economy',
       'Generators',
       'Informative',
       'Moderation',
