@@ -176,12 +176,16 @@ module.exports = async (bot, message) => {
         if (!message.member.hasPermission('MANAGE_MESSAGES')) {
           if (message.content.includes('https://') || message.content.includes('http://') || message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')) {
             if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-              message.delete(); // errors if message no longer exists
+              try {
+                message.delete();
+                message.channel.send(`**Your message contained a link and it was deleted, <@${message.author.id}>**`)
+                  .then((msg) => {
+                    msg.delete({ timeout: 10000 });
+                  });
+              } catch (e) {
+                return;
+              }
             }
-            message.channel.send(`**Your message contained a link and it was deleted, <@${message.author.id}>**`)
-              .then((msg) => {
-                msg.delete({ timeout: 10000 });
-              });
           }
         }
       }
@@ -196,7 +200,11 @@ module.exports = async (bot, message) => {
   if (commandfile) {
     commandfile.run(bot, message, args);
     if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-      message.delete();
+      try {
+        message.delete();
+      } catch (e) {
+        return;
+      }
     }
   }
 
