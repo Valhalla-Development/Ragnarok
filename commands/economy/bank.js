@@ -2,6 +2,7 @@
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./storage/db/db.sqlite');
+const bankLimit = Number(500000);
 
 module.exports = {
   config: {
@@ -37,7 +38,6 @@ module.exports = {
       return;
     }
 
-    const bankLimit = Number(500000);
     const numberCov = Number(args[0]);
     const remainDepA = bankLimit - balance.bank;
 
