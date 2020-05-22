@@ -63,8 +63,8 @@ module.exports = async (bot, message) => {
       balance = {
         user: message.author.id,
         guild: message.guild.id,
-        cash: 1000,
-        bank: 0,
+        cash: 0,
+        bank: 1000,
         total: 1000,
       };
     }
