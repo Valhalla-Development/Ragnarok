@@ -1,7 +1,7 @@
 const { Client, Collection } = require('discord.js');
 const Util = require('./Util.js');
 const Canvas = require('canvas');
-Canvas.registerFont('./storage/canvas/fonts/Notethis.ttf', {
+Canvas.registerFont('./Storage/Canvas/Fonts/Notethis.ttf', {
 	family: 'Note'
 });
 
@@ -25,14 +25,12 @@ module.exports = class RagnarokClient extends Client {
 
 		this.on('message', async (message) => {
 			const mentionRegex = RegExp(`^<@!${this.user.id}>$`);
-			const mentionRegexPrefix = RegExp(`^<@!${this.user.id}> `);
 
 			if (!message.guild || message.author.bot) return;
 
 			if (message.content.match(mentionRegex)) message.channel.send(`My prefix for ${message.guild.name} is \`${this.prefix}\`.`);
 
-			const prefix = message.content.match(mentionRegexPrefix) ?
-				message.content.match(mentionRegexPrefix)[0] : this.prefix;
+			const prefix = this.prefix;
 
 			// eslint-disable-next-line no-unused-vars
 			const [cmd, ...args] = message.content.slice(prefix.length).trim().split(/ +/g);
@@ -50,6 +48,18 @@ module.exports = class RagnarokClient extends Client {
 
 		this.on('warn', (err) => {
 			console.warn(err);
+		});
+
+		if (process.version.slice(1).split('.')[0] < 12) {
+			console.log(new Error('[Ragnarok] You must have NodeJS 12 or higher installed on your PC.'));
+			process.exit(1);
+		}
+
+		process.on('unhandledRejection', (error) => {
+			if (this.id === '508756879564865539') {
+				this.channels.cache.get('685973401772621843').send(`${error.stack}`, { code: 'js' });
+			}
+			console.error(`Error: \n${error.stack}`);
 		});
 	}
 
@@ -73,15 +83,3 @@ module.exports = class RagnarokClient extends Client {
 	}
 
 };
-
-if (process.version.slice(1).split('.')[0] < 12) {
-	console.log(new Error('[Ragnarok] You must have NodeJS 12 or higher installed on your PC.'));
-	process.exit(1);
-}
-
-process.on('unhandledRejection', (error) => {
-	if (this.id === '508756879564865539') {
-		this.channels.cache.get('685973401772621843').send(`${error.stack}`, { code: 'js' });
-	}
-	console.error(`Error: \n${error.stack}`);
-});
