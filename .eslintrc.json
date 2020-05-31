@@ -1,32 +1,3 @@
 {
-    "env": {
-        "commonjs": true,
-        "es6": true,
-        "node": true
-    },
-    "extends": [
-        "airbnb-base"
-    ],
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
-    "parserOptions": {
-        "ecmaVersion": 2018
-    },
-    "rules": {
-        "no-template-curly-in-string": "off",
-        "import/newline-after-import": "off",
-        "consistent-return": "off",
-        "default-case": "off",
-        "no-plusplus": "off",
-        "no-bitwise": "off",
-        "no-param-reassign": "off",
-        "radix": "off",
-        "max-len": "off",
-        "no-restricted-syntax": "off",
-        "no-useless-return": "off",
-        "no-shadow": "off",
-        "no-console": "off"
-    }
+    "extends": "tesseract"
 }

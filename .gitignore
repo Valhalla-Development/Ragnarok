@@ -1,7 +1,16 @@
+# Node FIles
 node_modules/
-storage/db/db.sqlite
-storage/db/db.sqlite-shm
-storage/db/db.sqlite-wal
-storage/config.json
-lavalink/logs
+
+# Database files
+Storage/db/db.sqlite
+Storage/db/db.sqlite-shm
+Storage/db/db.sqlite-wal
+
+# Lavalink Logs
+Storage/lavalink/logs
+
+# Config File
+config.json
+
+#Irritating file create by Mac
 .DS_Store

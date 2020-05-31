@@ -1,47 +1,27 @@
 {
-  "name": "ragnarok-discord",
-  "version": "2.1.0",
-  "description": "A multi-purpose Discord bot",
-  "main": "bot.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "name": "ragnarok",
+  "version": "3.0",
+  "description": "A multi-purpose Discord bot.",
+  "main": "src/index",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git"
   },
   "author": "Ragnar Lothbrok#1948",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord/issues"
   },
   "homepage": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord#readme",
-  "dependencies": {
-    "better-sqlite3": "^6.0.1",
-    "canvas": "^2.6.1",
-    "common-tags": "^1.8.0",
-    "dateformat": "^3.0.3",
-    "discord.js": "^12.2.0",
-    "erela.js": "^1.1.8",
-    "hastebin-gen": "^2.0.5",
-    "hastebin.js": "^1.3.2",
-    "mathjs": "^6.6.5",
-    "moment": "^2.26.0",
-    "ms": "^2.1.2",
-    "nanoid": "^3.1.9",
-    "node-fetch": "^2.6.0",
-    "number-abbreviate": "^2.0.0",
-    "number-to-words-en": "^1.2.5",
-    "request": "^2.88.2",
-    "simple-fortnite-api": "^0.1.9",
-    "strict-uri-encode": "^2.0.0",
-    "systeminformation": "^4.26.4",
-    "trakt.tv": "^8.0.0",
-    "unescape": "^1.0.1"
-  },
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb-base": "^14.1.0",
-    "eslint-plugin-import": "^2.20.2"
+    "eslint": "^7.1.0",
+    "eslint-config-tesseract": "^0.0.2"
+  },
+  "dependencies": {
+    "canvas": "^2.6.1",
+    "discord.js": "^12.2.0",
+    "glob": "^7.1.6",
+    "path": "^0.12.7",
+    "util": "^0.12.3"
   }
 }
