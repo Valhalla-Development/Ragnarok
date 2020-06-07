@@ -32,6 +32,8 @@ module.exports = class RagnarokClient extends Client {
 
 			const prefix = this.prefix;
 
+			if (!message.content.startsWith(prefix)) return;
+
 			// eslint-disable-next-line no-unused-vars
 			const [cmd, ...args] = message.content.slice(prefix.length).trim().split(/ +/g);
 
