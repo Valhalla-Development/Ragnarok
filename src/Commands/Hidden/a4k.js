@@ -21,7 +21,7 @@ module.exports = class extends Command {
 
 		const searchTerm = args.join('%20');
 
-		fetch(`https://www.reddit.com/r/Addons4Kodi/search.json?q=${searchTerm}&restrict_sr=1`)
+		fetch(`https://www.reddit.com/r/Addons4Kodi/search.json?q=${searchTerm}&restrict_sr=1&limit=5`)
 			.then(res => res.json())
 			.then(res => res.data.children)
 			.then(res => {
@@ -35,7 +35,7 @@ module.exports = class extends Command {
 					\`5:\` ${res[4].data.title} [Link](${res[4].data.url})\n
 					Search Results: [Link](https://www.reddit.com/r/Addons4Kodi/search/?q=${searchTerm}&restrict_sr=1)`);
 				message.channel.send(embed);
-			});
+			}).catch(() => message.channel.send('No results found.'));
 	}
 
 };
