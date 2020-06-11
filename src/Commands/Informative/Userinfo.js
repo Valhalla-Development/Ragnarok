@@ -24,6 +24,7 @@ const status = {
 	dnd: 'Do not disturb.',
 	offline: 'Offline.'
 };
+
 module.exports = class extends Command {
 
 	constructor(...args) {
@@ -53,7 +54,7 @@ module.exports = class extends Command {
 				`**◎ Avatar:** [Link to avatar](${member.user.displayAvatarURL({ dynamic: true })})`,
 				`**◎ Time Created:** ${moment(member.user.createdTimestamp).format('LT')} ${moment(member.user.createdTimestamp).format('LL')} -    ${moment(member.user.createdTimestamp).fromNow()}`,
 				`**◎ Status:** ${status[member.user.presence.status]}`,
-				`**◎ Game:** ${member.user.presence.activities[0].name || 'Not playing a game.'}`,
+				`**◎ Game:** ${member.user.presence.activities[0] ? member.user.presence.activities[0].name : 'Not playing a game.'}`,
 				`\u200b`
 			])
 			.addField('Member', [
