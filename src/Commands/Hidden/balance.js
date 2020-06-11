@@ -6,6 +6,15 @@ const converter = require('number-to-words-en');
 
 module.exports = class extends Command {
 
+	constructor(...args) {
+		super(...args, {
+			aliases: ['bal', 'coins', 'money'],
+			description: 'Displays balance of specified user.',
+			category: 'Hidden',
+			usage: 'Balance (@tag)'
+		});
+	}
+
 	async run(message) {
 		this.client.getBalance = db.prepare('SELECT * FROM balance WHERE user = ? AND guild = ?');
 

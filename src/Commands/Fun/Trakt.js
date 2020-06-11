@@ -14,6 +14,14 @@ const {
 
 module.exports = class extends Command {
 
+	constructor(...args) {
+		super(...args, {
+			description: 'Displays Trakt information for specified movie/show.',
+			category: 'Fun',
+			usage: 'Trakt (input)'
+		});
+	}
+
 	async run(message, args) {
 		const msg = await message.channel.send('Fetching data...');
 		message.channel.startTyping();

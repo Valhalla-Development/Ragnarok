@@ -4,6 +4,15 @@ const fetch = require('node-fetch');
 
 module.exports = class extends Command {
 
+	constructor(...args) {
+		super(...args, {
+			aliases: ['drwho'],
+			description: 'Fetches a random post from r/DoctorWhumour',
+			category: 'Fun',
+			usage: 'DoctorWho'
+		});
+	}
+
 	async run(message) {
 		const msg = await message.channel.send('Generating...');
 		message.channel.startTyping();

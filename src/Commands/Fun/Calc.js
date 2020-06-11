@@ -5,6 +5,15 @@ const language = require('../../../Storage/messages.json');
 
 module.exports = class extends Command {
 
+	constructor(...args) {
+		super(...args, {
+			aliases: ['math'],
+			description: 'Calculates given input.',
+			category: 'Fun',
+			usage: 'Calc (input)'
+		});
+	}
+
 	async run(message, args) {
 		if (!args[0]) {
 			message.channel.send(`${language.calc.noInput}`);

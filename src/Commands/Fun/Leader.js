@@ -5,6 +5,15 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 
 module.exports = class extends Command {
 
+	constructor(...args) {
+		super(...args, {
+			aliases: ['leaderboard'],
+			description: 'Displays the leaderboard for the level system.',
+			category: 'Fun',
+			usage: 'Level (@tag)'
+		});
+	}
+
 	async run(message) {
 		const top10 = db.prepare('SELECT * FROM scores WHERE guild = ? ORDER BY points DESC LIMIT 10;').all(message.guild.id);
 		if (!top10) {

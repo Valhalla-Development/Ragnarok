@@ -7,6 +7,14 @@ Canvas.registerFont('./Storage/Canvas/Fonts/Roboto-Thin.ttf', {
 
 module.exports = class extends Command {
 
+	constructor(...args) {
+		super(...args, {
+			description: 'Inputs text into a captcha image.',
+			category: 'Fun',
+			usage: 'Captcha (input)'
+		});
+	}
+
 	async run(message, args) {
 		if (!args[0]) {
 			message.channel.send('You must supply some text!');

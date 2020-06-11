@@ -3,6 +3,14 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
+	constructor(...args) {
+		super(...args, {
+			description: 'Hugs a specified user.',
+			category: 'Fun',
+			usage: 'Hug (@tag)'
+		});
+	}
+
 	async run(message, args) {
 		const hug = [
 			'https://media1.tenor.com/images/78b4745385a1b810501be693d2111a16/tenor.gif?itemid=10592461',

@@ -5,8 +5,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: '',
-			aliases: ['server', 'guild', 'guildinfo'],
+			aliases: ['pfp'],
 			description: 'Displays avatar of specified user.',
 			category: 'Fun',
 			usage: 'Avatar (@tag)'

@@ -15,6 +15,15 @@ Canvas.registerFont('./storage/canvas/fonts/Shapirit.otf', {
 
 module.exports = class extends Command {
 
+	constructor(...args) {
+		super(...args, {
+			aliases: ['rank'],
+			description: 'Displays level of specified user.',
+			category: 'Fun',
+			usage: 'Level (@tag)'
+		});
+	}
+
 	async run(message) {
 		this.client.getScore = db.prepare('SELECT * FROM scores WHERE user = ? AND guild = ?');
 		this.client.setScore = db.prepare('INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);');

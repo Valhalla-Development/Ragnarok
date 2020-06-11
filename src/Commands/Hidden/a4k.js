@@ -7,6 +7,14 @@ const fetch = require('node-fetch');
 
 module.exports = class extends Command {
 
+	constructor(...args) {
+		super(...args, {
+			description: 'Displays search results from r/Addons4Kodi',
+			category: 'Hidden',
+			usage: 'A4k (@input)'
+		});
+	}
+
 	async run(message, args) {
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
@@ -18,6 +26,7 @@ module.exports = class extends Command {
 			message.channel.send(incorrectUsage);
 			return;
 		}
+		message.channel.send(this.category);
 
 		const searchTerm = args.join('%20');
 

@@ -6,6 +6,15 @@ const fetch = require('node-fetch');
 
 module.exports = class extends Command {
 
+	constructor(...args) {
+		super(...args, {
+			aliases: ['haste'],
+			description: 'Posts text/file to paste.io',
+			category: 'Fun',
+			usage: 'Hastebin (text/file)'
+		});
+	}
+
 	async run(message, args) {
 		if (message.attachments.size === 1) {
 			const file = message.attachments.first().url;
