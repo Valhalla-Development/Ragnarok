@@ -36,8 +36,8 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(message, [target]) {
-		const member = message.mentions.members.first() || message.guild.members.cache.get(target) || message.member;
+	async run(message, args) {
+		const member = message.mentions.members.first() || message.guild.members.cache.find((a) => a.id === args[0]) || message.member;
 		const roles = member.roles.cache
 			.sort((a, b) => b.position - a.position)
 			.map(role => role.toString())
@@ -52,7 +52,7 @@ module.exports = class extends Command {
 				`**◎ ID:** ${member.id}`,
 				`**◎ Flags:** ${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}`,
 				`**◎ Avatar:** [Link to avatar](${member.user.displayAvatarURL({ dynamic: true })})`,
-				`**◎ Time Created:** ${moment(member.user.createdTimestamp).format('LT')} ${moment(member.user.createdTimestamp).format('LL')} -    ${moment(member.user.createdTimestamp).fromNow()}`,
+				`**◎ Time Created:** ${moment(member.user.createdTimestamp).format('LT')} ${moment(member.user.createdTimestamp).format('LL')} - ${moment(member.user.createdTimestamp).fromNow()}`,
 				`**◎ Status:** ${status[member.user.presence.status]}`,
 				`**◎ Game:** ${member.user.presence.activities[0] ? member.user.presence.activities[0].name : 'Not playing a game.'}`,
 				`\u200b`
