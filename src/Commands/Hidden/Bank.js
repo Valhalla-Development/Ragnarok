@@ -6,6 +6,15 @@ const bankLimit = Number(500000);
 
 module.exports = class extends Command {
 
+	constructor(...args) {
+		super(...args, {
+			aliases: ['dep', 'deposit'],
+			description: 'Banks specified amount of money.',
+			category: 'Hidden',
+			usage: 'Bank <amount/all>'
+		});
+	}
+
 	async run(message, args) {
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;

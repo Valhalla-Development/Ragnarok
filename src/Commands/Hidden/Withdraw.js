@@ -5,6 +5,14 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 
 module.exports = class extends Command {
 
+	constructor(...args) {
+		super(...args, {
+			description: 'Withdraws specified amount from your bank.',
+			category: 'Hidden',
+			usage: 'Withdraw <amount/all>'
+		});
+	}
+
 	async run(message, args) {
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
