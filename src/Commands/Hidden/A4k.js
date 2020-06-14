@@ -11,7 +11,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Displays search results from r/Addons4Kodi',
 			category: 'Hidden',
-			usage: 'A4k (@input)'
+			usage: 'A4k <input>'
 		});
 	}
 

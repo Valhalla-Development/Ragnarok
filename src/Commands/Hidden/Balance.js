@@ -11,7 +11,7 @@ module.exports = class extends Command {
 			aliases: ['bal', 'coins', 'money'],
 			description: 'Displays balance of specified user.',
 			category: 'Hidden',
-			usage: 'Balance (@tag)'
+			usage: 'Balance <@tag>'
 		});
 	}
 

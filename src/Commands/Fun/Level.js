@@ -20,7 +20,7 @@ module.exports = class extends Command {
 			aliases: ['rank'],
 			description: 'Displays level of specified user.',
 			category: 'Fun',
-			usage: 'Level (@tag)'
+			usage: 'Level <@tag>'
 		});
 	}
 

@@ -8,7 +8,7 @@ module.exports = class extends Command {
 			aliases: ['pfp'],
 			description: 'Displays avatar of specified user.',
 			category: 'Fun',
-			usage: 'Avatar (@tag)'
+			usage: 'Avatar <@tag>'
 		});
 	}
 

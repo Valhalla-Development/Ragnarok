@@ -11,7 +11,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Inputs text into a captcha image.',
 			category: 'Fun',
-			usage: 'Captcha (input)'
+			usage: 'Captcha <input>'
 		});
 	}
 

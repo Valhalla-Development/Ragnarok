@@ -18,7 +18,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Displays Trakt information for specified movie/show.',
 			category: 'Fun',
-			usage: 'Trakt (input)'
+			usage: 'Trakt <input>'
 		});
 	}
 

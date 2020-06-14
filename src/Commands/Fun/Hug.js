@@ -7,7 +7,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Hugs a specified user.',
 			category: 'Fun',
-			usage: 'Hug (@tag)'
+			usage: 'Hug <@tag>'
 		});
 	}
 

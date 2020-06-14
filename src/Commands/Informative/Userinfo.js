@@ -32,7 +32,7 @@ module.exports = class extends Command {
 			aliases: ['whois'],
 			description: 'Displays information on specified user.',
 			category: 'Informative',
-			usage: 'Userinfo (@tag)'
+			usage: 'Userinfo <@tag>'
 		});
 	}
 

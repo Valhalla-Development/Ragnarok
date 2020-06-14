@@ -11,7 +11,7 @@ module.exports = class extends Command {
 			aliases: ['haste'],
 			description: 'Posts text/file to paste.io',
 			category: 'Fun',
-			usage: 'Hastebin (text/file)'
+			usage: 'Hastebin <text/file>'
 		});
 	}
 
