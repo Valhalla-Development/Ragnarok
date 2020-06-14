@@ -29,6 +29,7 @@
     "number-to-words-en": "^1.2.5",
     "path": "^0.12.7",
     "request": "^2.88.2",
+    "systeminformation": "^4.26.9",
     "trakt.tv": "^8.0.0",
     "unescape": "^1.0.1",
     "util": "^0.12.3"
