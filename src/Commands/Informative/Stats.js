@@ -1,14 +1,18 @@
+const { MessageEmbed, version: djsversion } = require('discord.js');
+const { version } = require('../../../package.json');
 const Command = require('../../Structures/Command');
-const { MessageEmbed, version } = require('discord.js');
+const { utc } = require('moment');
+const os = require('os');
+const ms = require('ms');
 const si = require('systeminformation');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const ms = require('ms');
 
 module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
+			aliases: ['botinfo', 'info'],
 			description: 'Lists statistics on the bot.',
 			category: 'Informative',
 			usage: 'Stats'
@@ -20,7 +24,6 @@ module.exports = class extends Command {
 		const dbMessage = dbGrab.msg;
 		const msg = await message.channel.send('Generating...');
 		message.channel.startTyping();
-		const ping = Math.round(this.client.ws.ping);
 		const memory = await si.mem();
 		const totalMemory = Math.floor(memory.total / 1024 / 1024);
 		const cachedMem = Math.floor(memory.buffcache / 1024 / 1024);
@@ -29,53 +32,42 @@ module.exports = class extends Command {
 		const memPercent = Math.floor((realMemUsed / totalMemory) * 100);
 		const load = await si.currentLoad();
 		const cpuUsage = Math.floor(load.currentload_user);
-		const os = await si.osInfo();
-		const osVersion = os.distro;
-		const vers = await si.versions();
-		const nodeVersion = vers.node;
+		const platform = await si.osInfo();
+		const osVersion = platform.distro;
+		const core = os.cpus()[0];
 
 		msg.delete();
-		const serverembed = new MessageEmbed()
-			.setAuthor('Ragnarok Info', this.client.user.avatarURL())
-			.setFooter('Bot Created • November 4, 2018')
-			.setColor('36393F')
-			.setThumbnail(this.client.user.avatarURL())
-			.addFields({
-				name: 'Owner',
-				value: 'Ragnar Lothbrok#1948',
-				inline: true
-			}, {
-				name: 'Uptime',
-				value: ms(this.client.uptime, { long: true })
-			}, {
-				name: 'Memory Usage',
-				value: `${realMemUsed} / ${totalMemory} - ${memPercent}%`,
-				inline: true
-			}, {
-				name: 'CPU Usage',
-				value: `${cpuUsage}%`,
-				inline: true
-			}, {
-				name: 'Ping',
-				value: `${ping}ms`,
-				inline: true
-			}, {
-				name: 'Users',
-				value: `${this.client.users.cache.size.toLocaleString('en')}`,
-				inline: true
-			}, {
-				name: 'Versions',
-				value: `OS: ${osVersion}\nNode.js: ${nodeVersion}\nDiscord.js: ${version}`,
-				inline: true
-			}, {
-				name: 'Guilds',
-				value: `${this.client.guilds.cache.size.toLocaleString('en')}`,
-				inline: true
-			}, {
-				name: 'Announcements',
-				value: `\`\`\`${dbMessage}\`\`\``
-			});
-		message.channel.send(serverembed);
+
+		const embed = new MessageEmbed()
+			.setThumbnail(this.client.user.displayAvatarURL())
+			.setColor(message.guild.me.displayHexColor || 'BLUE')
+			.addField('General', [
+				`**◎ Client:** ${this.client.user.tag}`,
+				`**◎ Uptime:** ${ms(this.client.uptime, { long: true })}`,
+				`**◎ Commands:** ${this.client.commands.size}`,
+				`**◎ Servers:** ${this.client.guilds.cache.size.toLocaleString()}`,
+				`**◎ Users:** ${message.guild.members.cache.size.toLocaleString()}`,
+				`**◎ Channels:** ${this.client.channels.cache.size.toLocaleString()}`,
+				`**◎ Creation Date:** ${utc(this.client.user.createdTimestamp).format('Do MMMM YYYY')}`,
+				`**◎ Node.js:** ${process.version}`,
+				`**◎ Bot Version:** v${version}`,
+				`**◎ Discord.js:** v${djsversion}`,
+				'\u200b'
+			])
+			.addField('System', [
+				`**◎ OS:** ${osVersion}`,
+				`**◎ Uptime:** ${ms(os.uptime() * 1000, { long: true })}`,
+				`**◎ Memory Usage:** ${realMemUsed} / ${totalMemory}MB - ${memPercent}%`,
+				`**◎ CPU:**`,
+				`\u3000 Cores: ${os.cpus().length}`,
+				`\u3000 Model: ${core.model}`,
+				`\u3000 Speed: ${core.speed}MHz`,
+				`\u3000 Usage: ${cpuUsage}%`
+			])
+			.addField('Announcement',
+				`\`\`\`${dbMessage}\`\`\``)
+			.setTimestamp();
+		message.channel.send(embed);
 		message.channel.stopTyping();
 	}
 
