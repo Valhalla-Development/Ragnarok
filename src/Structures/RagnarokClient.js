@@ -19,6 +19,8 @@ module.exports = class RagnarokClient extends Client {
 
 		this.utils = new Util(this);
 
+		this.owners = options.ownerID;
+
 		this.once('ready', () => {
 			console.log(`Logged in as ${this.user.username}!`);
 		});
@@ -30,7 +32,7 @@ module.exports = class RagnarokClient extends Client {
 
 			if (message.content.match(mentionRegex)) message.channel.send(`My prefix for ${message.guild.name} is \`${this.prefix}\`.`);
 
-			const prefix = this.prefix;
+			const { prefix } = this;
 
 			if (!message.content.startsWith(prefix)) return;
 
