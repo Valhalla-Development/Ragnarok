@@ -4,6 +4,13 @@ const ms = require('ms');
 
 module.exports = class extends Command {
 
+	constructor(...args) {
+		super(...args, {
+			description: 'Displays bot uptime',
+			category: 'Informative'
+		});
+	}
+
 	async run(message) {
 		const botembed = new MessageEmbed()
 			.setTitle('Uptime')

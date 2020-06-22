@@ -4,7 +4,9 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			aliases: ['pong']
+			aliases: ['pong'],
+			description: 'Displays bot and api ping.',
+			category: 'Informative'
 		});
 	}
 
