@@ -28,21 +28,18 @@ module.exports = class RagnarokClient extends Client {
 			this.invites = guildInvites;
 
 			this.guilds.cache.forEach(guild => {
-				guild.fetchInvites()
-					.then(invite => this.invites.set(guild.id, invite) // erros atm, fix bub
-						.catch(error => console.log(error)));
+				guild.fetchInvites().then(invite => this.invites.set(guild.id, invite));
 			});
 		});
 
-		this.once('invite', async (invite) => {
-			this.invites.set(invite.guild.id, await invite.guild.fetchInvites());
+		this.once('guildCreate', async (guild) => {
+			this.invites.set(guild.id, await guild.fetchInvites());
 		});
 
-		this.once('guildMemberUpdate', async (member) => {
+		this.once('guildMemberAdd', async (member) => {
 			if (member.user.bot) return;
 
 			const cachedInvites = this.invites.get(member.guild.id);
-
 			const newInvites = await member.guild.fetchInvites();
 			this.invites.set(member.guild.id, newInvites);
 
@@ -50,7 +47,7 @@ module.exports = class RagnarokClient extends Client {
 
 			const { MessageEmbed } = require('discord.js');
 
-			const logChannel = member.guild.channels.cache.find(channel => channel.name === 'owner-testing');
+			const logChannel = member.guild.channels.cache.find(channel => channel.name === 'general');
 
 			if (!logChannel) return;
 
