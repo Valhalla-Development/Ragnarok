@@ -23,6 +23,46 @@ module.exports = class RagnarokClient extends Client {
 
 		this.once('ready', () => {
 			console.log(`Logged in as ${this.user.username}!`);
+
+			const guildInvites = new Map();
+			this.invites = guildInvites;
+
+			this.guilds.cache.forEach(guild => {
+				guild.fetchInvites()
+					.then(invite => this.invites.set(guild.id, invite) // erros atm, fix bub
+						.catch(error => console.log(error)));
+			});
+		});
+
+		this.once('invite', async (invite) => {
+			this.invites.set(invite.guild.id, await invite.guild.fetchInvites());
+		});
+
+		this.once('guildMemberUpdate', async (member) => {
+			if (member.user.bot) return;
+
+			const cachedInvites = this.invites.get(member.guild.id);
+
+			const newInvites = await member.guild.fetchInvites();
+			this.invites.set(member.guild.id, newInvites);
+
+			const usedInvite = newInvites.find(invite => cachedInvites.get(invite.code).uses < invite.uses);
+
+			const { MessageEmbed } = require('discord.js');
+
+			const logChannel = member.guild.channels.cache.find(channel => channel.name === 'owner-testing');
+
+			if (!logChannel) return;
+
+			const { inviter } = usedInvite;
+			const inviteUses = usedInvite.uses;
+
+			const embed = new MessageEmbed()
+				.setAuthor('Invite Manager', member.user.displayAvatarURL())
+				.setDescription(`${member.user} **joined**; Invited by ${inviter.username} (${inviteUses} invites)`)
+				.setColor('36393F');
+
+			logChannel.send(embed);
 		});
 
 		this.on('message', async (message) => {
