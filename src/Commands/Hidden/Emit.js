@@ -37,11 +37,6 @@ module.exports = class extends Command {
 			this.client.emit('guildMemberRemove', message.member);
 			return;
 		}
-		if (args[0] === 'guildMemberUpdate') {
-			this.client.emit('guildMemberUpdate', message.member);
-			message.channel.send('success');
-			return;
-		}
 	}
 
 };
