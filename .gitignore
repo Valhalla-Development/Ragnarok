@@ -14,3 +14,6 @@ config.json
 
 # Irritating file create by Mac
 .DS_Store
+
+# Giveaway database
+json.sqlite
