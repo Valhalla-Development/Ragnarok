@@ -44,7 +44,7 @@ module.exports = class extends Command {
 				{ name: '⚠ - Reported by', value: `${message.author.tag}\n(${message.author.id})`, inline: true },
 				{ name: '⚙ - Channel', value: message.channel },
 				{ name: '🔨 - Reason', value: reason })
-			.setColor('36393F')
+			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setTimestamp();
 		reports.send(reportembed);
 

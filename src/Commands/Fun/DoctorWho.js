@@ -23,7 +23,7 @@ module.exports = class extends Command {
 		const safe = message.channel.nsfw ? data.children : data.children.filter((post) => !post.data.over_18);
 		if (!safe.length) {
 			const noPost = new MessageEmbed()
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setDescription(`Couldn't get the post.`);
 			message.channel.send(noPost);
 			return;
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 			postURL = post.data.url;
 		}
 		const embed = new MessageEmbed()
-			.setColor('36393F')
+			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setAuthor(
 				`${post.data.title}`,
 				message.author.displayAvatarURL({ dynamic: true }),

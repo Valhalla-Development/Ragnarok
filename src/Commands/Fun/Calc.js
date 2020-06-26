@@ -29,7 +29,7 @@ module.exports = class extends Command {
 		}
 
 		const embed = new MessageEmbed()
-			.setColor('36393F')
+			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setTitle('Calculation')
 			.addFields({ name: 'Input', value: `\`\`\`js\n${args.join('')}\`\`\`` },
 				{ name: 'Output', value: `\`\`\`js\n${resp}\`\`\`` });

@@ -37,7 +37,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setAuthor(`Leaderboard for ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
-			.setColor('36393F')
+			.setColor(message.guild.me.displayHexColor || '36393F')
 			.addFields({ name: 'Top 10', value: userNames, inline: true },
 				{ name: 'Level', value: levels, inline: true },
 				{ name: 'XP', value: xp, inline: true });

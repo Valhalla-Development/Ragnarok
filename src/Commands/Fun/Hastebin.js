@@ -28,7 +28,7 @@ module.exports = class extends Command {
 			const validExtensions = ['bat', 'c', 'cpp', 'css', 'html', 'ini', 'java', 'js', 'jsx', 'json', 'lua', 'md', 'php', 'py', 'pyc', 'scss', 'sql', 'txt', 'xml', 'yaml'];
 			if (!validExtensions.includes(fileExtension)) {
 				const badType = new MessageEmbed()
-					.setColor('36393F')
+					.setColor(message.guild.me.displayHexColor || '36393F')
 					.setDescription(`\`.${fileExtension}\` is not a valid file type!\n\nAcceptable files:\n\`${validExtensions.join(', ')}\``);
 				message.channel.send(badType);
 				return;
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 				.then((body) => {
 					if (!body) {
 						const emptyFile = new MessageEmbed()
-							.setColor('36393F')
+							.setColor(message.guild.me.displayHexColor || '36393F')
 							.setDescription(':x: You can not upload an empty file!');
 						message.channel.send(emptyFile);
 						return;
@@ -46,7 +46,7 @@ module.exports = class extends Command {
 					haste.post(body, extension)
 						.then((res) => {
 							const hastEmb = new MessageEmbed()
-								.setColor('36393F')
+								.setColor(message.guild.me.displayHexColor || '36393F')
 								.setAuthor('Hastebin Link:')
 								.setDescription(`${res}\nPosted By: ${message.author}`)
 								.setURL(res);
@@ -60,7 +60,7 @@ module.exports = class extends Command {
 		}
 		if (args[0] === undefined) {
 			const embed = new MessageEmbed()
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setDescription(':x: | You must input some text');
 			message.channel.send(embed);
 			return;
@@ -69,7 +69,7 @@ module.exports = class extends Command {
 		await haste.post(args.join(' '), 'js')
 			.then((link) => {
 				const hastEmb = new MessageEmbed()
-					.setColor('36393F')
+					.setColor(message.guild.me.displayHexColor || '36393F')
 					.setAuthor('Hastebin Link:')
 					.setDescription(`${link}\nPosted By: ${message.author}`)
 					.setURL(link);

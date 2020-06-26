@@ -23,7 +23,7 @@ module.exports = class extends Command {
 
 		if (args[0] === undefined) {
 			const noArgs = new MessageEmbed()
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setDescription(
 					`**Available Commands**:\n\n${prefix}emit guildMemberAdd\n${prefix}emit guildMemberRemove`
 				);

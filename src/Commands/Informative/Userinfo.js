@@ -46,7 +46,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 512 }))
-			.setColor(member.displayHexColor || '36393F')
+			.setColor(member.displayHexColor || message.guild.me.displayHexColor || '36393F')
 			.addField('User', [
 				`**◎ Username:** ${member.user.username}#${member.user.discriminator}`,
 				`**◎ ID:** ${member.id}`,

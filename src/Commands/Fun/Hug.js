@@ -30,7 +30,7 @@ module.exports = class extends Command {
 		const hugresult = Math.floor(Math.random() * hug.length);
 		if (!args[0]) {
 			const ghembed = new MessageEmbed()
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setTitle(`${message.author.username} hugged themself...! (weirdo)`)
 				.setImage(
 					'https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif'
@@ -42,14 +42,14 @@ module.exports = class extends Command {
 
 		if (!mentionUser) {
 			const hembed = new MessageEmbed()
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setTitle(`${message.author.username} gave ${message.mentions.members.first().user.username} a hug! How sweet!`)
 				.setImage(hug[hugresult]);
 			message.channel.send({ embed: hembed });
 			return;
 		}
 		const ghembed = new MessageEmbed()
-			.setColor('36393F')
+			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setTitle(`${message.author.username} hugged themself...! (weirdo)`)
 			.setImage(
 				'https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif'

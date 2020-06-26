@@ -17,7 +17,7 @@ module.exports = class extends Command {
 	async run(message, args) {
 		if (!args[0]) {
 			const noinEmbed = new MessageEmbed()
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setDescription(`${language.bugreport.noInput}`);
 			message.channel.send(noinEmbed);
 			return;
@@ -26,7 +26,7 @@ module.exports = class extends Command {
 		const argresult = args.join(' ');
 
 		const embed = new MessageEmbed()
-			.setColor('36393F')
+			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setTitle('Bug Report')
 			.setDescription(`**User: <@${message.author.id}> - **\`${message.author.tag}\`\n**Bug:** ${argresult}`)
 			.setFooter(`${message.guild.name} - ${message.guild.id}`);
@@ -36,7 +36,7 @@ module.exports = class extends Command {
 			.send(embed);
 
 		const loggedEmbed = new MessageEmbed()
-			.setColor('36393F')
+			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setDescription(`${language.bugreport.bugLogged}`);
 		message.channel.send(loggedEmbed);
 	}

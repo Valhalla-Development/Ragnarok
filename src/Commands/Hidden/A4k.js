@@ -36,7 +36,7 @@ module.exports = class extends Command {
 			.then(res => {
 				const embed = new MessageEmbed()
 					.setAuthor(`${res[0].data.subreddit} - Top 3 results for: ${args.join(' ')}`, 'http://i.imgur.com/sdO8tAw.png')
-					.setColor('36393F')
+					.setColor(message.guild.me.displayHexColor || '36393F')
 					.setDescription(`[**${res[0].data.title}**](${res[0].data.url})\n \`\`\`${res[0].data.selftext.substring(0, 250)}...\`\`\`\n
 					[**${res[1].data.title}**](${res[1].data.url})\n  \`\`\`${res[1].data.selftext.substring(0, 250)}...\`\`\`\n
 					[**${res[2].data.title}**](${res[2].data.url})\n  \`\`\`${res[2].data.selftext.substring(0, 250)}...\`\`\`\n

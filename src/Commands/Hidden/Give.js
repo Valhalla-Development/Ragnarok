@@ -35,7 +35,7 @@ module.exports = class extends Command {
 		if (!user) {
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setDescription(`:x: Incorrect usage! An example of this command is: \`${prefix}give @user 100\`\nAlternatively, you can run \`${prefix}give @user all\``);
 			message.channel.send(wrongUsage);
 			return;
@@ -71,7 +71,7 @@ module.exports = class extends Command {
 		if (balance.bank === 0) {
 			const noBal = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setDescription(':x: Uh oh! You currently have no money in your bank!');
 			message.channel.send(noBal);
 			return;
@@ -107,7 +107,7 @@ module.exports = class extends Command {
 
 			const depAll = new MessageEmbed()
 				.setAuthor(`${message.author.username}`, message.author.avatarURL())
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setDescription(`:white_check_mark: Success!\n You have paid ${user} the sum of: <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}.`);
 			message.channel.send(depAll);
 			return;
@@ -116,7 +116,7 @@ module.exports = class extends Command {
 		if (isNaN(args[1]) || args.length > 2) {
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setDescription(`:x: Incorrect usage! An example of this command is: \`${prefix}give @user 100\`\nAlternatively, you can run \`${prefix}give @user all\``);
 			message.channel.send(wrongUsage);
 			return;
@@ -125,7 +125,7 @@ module.exports = class extends Command {
 		if (args[1] > balance.bank) {
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setDescription(`:x: Uh oh! You only have <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}. Please try again with a valid amount.`);
 			message.channel.send(wrongUsage);
 			return;
@@ -157,7 +157,7 @@ module.exports = class extends Command {
 
 		const depArg = new MessageEmbed()
 			.setAuthor(`${message.author.username}`, message.author.avatarURL())
-			.setColor('36393F')
+			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setDescription(`:white_check_mark: Success!\n You have paid ${user} the sum of: <:coin:706659001164628008> ${numberCov.toLocaleString('en')}.`);
 		message.channel.send(depArg);
 	}

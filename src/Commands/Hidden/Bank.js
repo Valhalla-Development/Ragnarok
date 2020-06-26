@@ -45,7 +45,7 @@ module.exports = class extends Command {
 			if (balance.cash + balance.bank > bankLimit) {
 				const limitE = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-					.setColor('36393F')
+					.setColor(message.guild.me.displayHexColor || '36393F')
 					// eslint-disable-next-line max-len
 					.setDescription(`:x: Uh oh! There is a bank limit of <:coin:706659001164628008> ${bankLimit.toLocaleString('en')}.\n Your current bank balance is <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}.\nYou may deposit <:coin:706659001164628008> ${remainDepA.toLocaleString('en')} more.`);
 				message.channel.send(limitE);
@@ -64,7 +64,7 @@ module.exports = class extends Command {
 			this.client.setBalance.run(addAll);
 			const depAll = new MessageEmbed()
 				.setAuthor(`${message.author.username}`, message.author.avatarURL())
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setDescription(`:white_check_mark: Success!\n You have deposited <:coin:706659001164628008> ${balance.cash.toLocaleString('en')} to your bank.`);
 			message.channel.send(depAll);
 			return;
@@ -73,7 +73,7 @@ module.exports = class extends Command {
 		if (isNaN(args[0]) || args.length > 1) {
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setDescription(`:x: Incorrect usage! An example of this command is: \`${prefix}bank 100\`\nAlternatively, you can run \`${prefix}bank all\``);
 			message.channel.send(wrongUsage);
 			return;
@@ -82,7 +82,7 @@ module.exports = class extends Command {
 		if (args[0] > balance.cash) {
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setDescription(`:x: Uh oh! You only have <:coin:706659001164628008> ${balance.cash.toLocaleString('en')}. Please try again with a valid amount.`);
 			message.channel.send(wrongUsage);
 			return;
@@ -91,7 +91,7 @@ module.exports = class extends Command {
 		if (numberCov + balance.bank > bankLimit) {
 			const limitE = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				// eslint-disable-next-line max-len
 				.setDescription(`:x: Uh oh! There is a bank limit of <:coin:706659001164628008> ${bankLimit.toLocaleString('en')}.\n Your current bank balance is <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}.\nYou may deposit <:coin:706659001164628008> ${remainDepA.toLocaleString('en')} more.`);
 			message.channel.send(limitE);
@@ -113,7 +113,7 @@ module.exports = class extends Command {
 
 		const depAll = new MessageEmbed()
 			.setAuthor(`${message.author.username}`, message.author.avatarURL())
-			.setColor('36393F')
+			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setDescription(`:white_check_mark: Success!\n You have deposited <:coin:706659001164628008> ${numberCov.toLocaleString('en')} to your bank.`);
 		message.channel.send(depAll);
 	}

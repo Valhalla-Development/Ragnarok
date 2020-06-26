@@ -52,7 +52,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setDescription(`**Guild information for __${message.guild.name}__**`)
-			.setColor('36393F')
+			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setThumbnail(message.guild.iconURL({ dynamic: true }))
 			.addField('General', [
 				`**◎ Name:** ${message.guild.name}`,

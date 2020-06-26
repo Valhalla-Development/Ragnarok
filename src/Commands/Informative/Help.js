@@ -13,7 +13,7 @@ module.exports = class extends Command {
 
 	async run(message, [command]) {
 		const embed = new MessageEmbed()
-			.setColor('36393F')
+			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setAuthor(`${message.guild.name} Help`, message.guild.iconURL({ dynamic: true }))
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setFooter(`This guild's prefix is ${this.client.prefix}`, this.client.user.avatarURL({ dynamic: true }))

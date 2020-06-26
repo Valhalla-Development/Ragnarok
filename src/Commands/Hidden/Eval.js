@@ -49,7 +49,7 @@ module.exports = class extends Command {
 				.addFields({ name: `${message.author.username} - JavaScript Eval Success:`, value: '** **' },
 					{ name: ':inbox_tray: **INPUT**', value: `\`\`\`${args.join(' ')}\`\`\`` },
 					{ name: ':outbox_tray: **OUTPUT**', value: `\`\`\`${clean(evaled)}\`\`\`` })
-				.setColor('36393F')
+				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setTimestamp();
 			message.channel.send({
 				embed
@@ -61,7 +61,7 @@ module.exports = class extends Command {
 						.setAuthor(`Ragnarok - Eval Error`, this.client.user.displayAvatarURL({ dynamic: true }))
 						.addFields({ name: `${message.author.username} - JavaScript Eval Error:`, value: 'There was a problem with the code you tried to run!' },
 							{ name: ':no_entry: ERROR', value: `\`\`\`${clean(err)}\`\`\`` })
-						.setColor('36393F')
+						.setColor(message.guild.me.displayHexColor || '36393F')
 						.setFooter(message.createdAt, message.author.avatarURL())
 				)
 
