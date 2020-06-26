@@ -1,3 +1,7 @@
 {
-    "extends": "tesseract"
+    "extends": "tesseract",
+    "rules": {
+        "id-length": "off",
+        "max-len": "off"
+    }
 }
