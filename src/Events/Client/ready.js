@@ -1,8 +1,8 @@
-const Event = require('../Structures/Event');
+const Event = require('../../Structures/Event');
 const { MessageEmbed } = require('discord.js');
 const { ErelaClient, Utils } = require('erela.js');
 const SQLite = require('better-sqlite3');
-const { nodes } = require('../../config.json');
+const { nodes } = require('../../../config.json');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
 module.exports = class extends Event {
