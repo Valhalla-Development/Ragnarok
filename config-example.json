@@ -1,0 +1,17 @@
+{
+  "token": "REDACTED.Xu_SSQ.PCE2KmsIPJjm1WUsLUXBo3VhDXs",
+  "traktKey": "REDACTED",
+  "traktSecret": "REDACTED",
+  "fanartKey": "REDACTED",
+  "supportGuild": "REDACTED",
+  "supportChannel": "REDACTED",
+  "ownerID": "REDACTED",
+  "prefix": "-",
+  "logging": true,
+  "trackClient": "REDACTED",
+  "trackSecret": "REDACTED",
+  "nodes": [
+    { "host": "localhost", "port": "2333", "password": "youshallnotpass" }
+  ],
+  "filterList" : ["example1", "example2", "example3", "example4"]
+}
