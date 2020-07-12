@@ -1,0 +1,354 @@
+const Event = require('../Structures/Event');
+const { MessageEmbed } = require('discord.js');
+const { ErelaClient, Utils } = require('erela.js');
+const SQLite = require('better-sqlite3');
+const { nodes } = require('../../config.json');
+const db = new SQLite('./Storage/DB/db.sqlite');
+
+module.exports = class extends Event {
+
+	constructor(...args) {
+		super(...args, {
+			once: true
+		});
+	}
+
+	run() {
+		console.log([
+			`Logged in as ${this.client.user.tag}`,
+			`Loaded ${this.client.commands.size} commands!`,
+			`Loaded ${this.client.events.size} events!`,
+			`Scanning for guilds...\n\x1b[36m[-]\x1b[0m ${this.client.guilds.cache.map((n) => `${n.name} (ID: \x1b[36m${n.id}\x1b[0m)`).join('\x1b[36m\n[-]\x1b[0m ')}`
+		].join('\n'));
+
+		setTimeout(() => {
+			console.log(`Invite link: https://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot&permissions=2050485471\n`);
+		}, 1000);
+
+		this.client.user.setActivity(`${this.client.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.users.cache.size.toLocaleString('en')} Users`,
+			{
+				type: 'WATCHING'
+			}
+		);
+
+		// Music
+
+		class LavalinkClient extends ErelaClient {
+
+			sendWS(data) {
+				const guild = this.client.guilds.cache.get(data.d.guild_id);
+				if (guild) return this.client.ws.shards.get(guild.shardID).send(data);
+			}
+
+		}
+
+		this.client.music = new LavalinkClient(this.client, nodes)
+			.on('nodeError', console.log)
+			.on('nodeConnect', () => console.log('Successfully created a new Erela Node.'))
+			.on('nodeDisconnect', () => console.log('Lost connection to Erela Node.'))
+			.on('nodeReconnect', () => console.log('Connection restored to Erela Node.'))
+			.on('trackStuck', (player) => {
+				player.textChannel.send('An error occured, ending playback.');
+				return this.client.music.players.destroy(player.guild.id);
+			})
+			.on('queueEnd', (player) => {
+				if (player.queueRepeat) {
+					return;
+				}
+				const embed = new MessageEmbed()
+					.setColor('36393F')
+					.setDescription('<:MusicLogo:684822003110117466> Queue has ended.');
+				player.textChannel.send(embed);
+				this.client.music.players.destroy(player.guild.id);
+				return;
+			})
+			.on('trackEnd', (player) => {
+				if (player.trackRepeat) {
+					return;
+				}
+				if (player.queue.length < 1) {
+					const embed = new MessageEmbed()
+						.setColor('36393F')
+						.setDescription('<:MusicLogo:684822003110117466> Track has ended.');
+					player.textChannel.send(embed);
+					this.client.music.players.destroy(player.guild.id);
+					return;
+				}
+			})
+			.on('trackStart', ({ textChannel, trackRepeat }, { title, duration, requester }) => {
+				if (trackRepeat) {
+					return;
+				}
+				const embed = new MessageEmbed()
+					.setAuthor('Now Playing:', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
+					.setColor('36393F')
+					.setDescription(`Now playing: \`${title}\`\nDuration: \`${Utils.formatTime(duration, true)}\`\nRequested by: ${requester}`);
+				textChannel.send(embed);
+			});
+
+		this.client.levels = new Map()
+			.set('none', 0.0)
+			.set('low', 0.10)
+			.set('medium', 0.15)
+			.set('high', 0.25);
+
+
+		const guildInvites = new Map();
+		this.invites = guildInvites;
+		this.client.guilds.cache.forEach(guild => {
+			guild.fetchInvites().then(invite => this.invites.set(guild.id, invite));
+		});
+
+		// Database Creation
+		// Dad Bot Table
+		const dadbot = db
+			.prepare(
+				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'dadbot\';'
+			)
+			.get();
+		if (!dadbot['count(*)']) {
+			console.log('dadbot table created!');
+			db.prepare(
+				'CREATE TABLE dadbot (guildid TEXT PRIMARY KEY, status TEXT);'
+			).run();
+			db.prepare(
+				'CREATE UNIQUE INDEX idx_dadbot_id ON dadbot (guildid);'
+			).run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+		// Membercount Table
+		const memcount = db
+			.prepare(
+				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'membercount\';'
+			)
+			.get();
+		if (!memcount['count(*)']) {
+			console.log('membercount table created!');
+			db.prepare(
+				'CREATE TABLE membercount (guildid TEXT PRIMARY KEY, status TEXT, channela TEXT, channelb TEXT, channelc TEXT);'
+			).run();
+			db.prepare(
+				'CREATE UNIQUE INDEX idx_membercount_id ON membercount (guildid);'
+			).run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+		// Announcement Table
+		const announcement = db
+			.prepare(
+				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'announcement\';'
+			)
+			.get();
+		if (!announcement['count(*)']) {
+			console.log('announcement table created!');
+			db.prepare(
+				'CREATE TABLE announcement (msg TEXT);'
+			).run();
+			db.prepare(
+				'CREATE UNIQUE INDEX idx_announcement_id ON announcement (msg);'
+			).run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+		// Music Table
+		const music = db
+			.prepare(
+				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'music\';'
+			)
+			.get();
+		if (!music['count(*)']) {
+			console.log('music table created!');
+			db.prepare(
+				'CREATE TABLE music (guildid TEXT PRIMARY KEY, role TEXT, channel BLOB);'
+			).run();
+			db.prepare(
+				'CREATE UNIQUE INDEX idx_music_id ON music (guildid);'
+			).run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+		// RoleMenu Table
+		const rolemenu = db
+			.prepare(
+				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'rolemenu\';'
+			)
+			.get();
+		if (!rolemenu['count(*)']) {
+			console.log('rolemenu table created!');
+			db.prepare(
+				'CREATE TABLE rolemenu (guildid TEXT PRIMARY KEY, activeRoleMenuID TEXT, roleList BLOB);'
+			).run();
+			db.prepare(
+				'CREATE UNIQUE INDEX idx_rolemenu_id ON rolemenu (guildid);'
+			).run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+		// setprefix table
+		const setprefix = db
+			.prepare(
+				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'setprefix\';'
+			)
+			.get();
+		if (!setprefix['count(*)']) {
+			console.log('setprefix table created!');
+			db.prepare(
+				'CREATE TABLE setprefix (guildid TEXT PRIMARY KEY, prefix TEXT);'
+			).run();
+			db.prepare(
+				'CREATE UNIQUE INDEX idx_setprefix_id ON setprefix (guildid);'
+			).run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+		// setwelcome table
+		const setwelcome = db
+			.prepare(
+				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'setwelcome\';'
+			)
+			.get();
+		if (!setwelcome['count(*)']) {
+			console.log('setwelcome table created!');
+			db.prepare(
+				'CREATE TABLE setwelcome (guildid TEXT PRIMARY KEY, channel TEXT);'
+			).run();
+			db.prepare(
+				'CREATE UNIQUE INDEX idx_setwelcome_id ON setwelcome (guildid);'
+			).run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+		// autorole table
+		const autorole = db
+			.prepare(
+				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'autorole\';'
+			)
+			.get();
+		if (!autorole['count(*)']) {
+			console.log('autorole table created!');
+			db.prepare(
+				'CREATE TABLE autorole (guildid TEXT PRIMARY KEY, role TEXT);'
+			).run();
+			db.prepare(
+				'CREATE UNIQUE INDEX idx_autorole_id ON autorole (guildid);'
+			).run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+		// balance table
+		const balancetable = db
+			.prepare(
+				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'balance\';'
+			)
+			.get();
+		if (!balancetable['count(*)']) {
+			console.log('balance table created!');
+			db.prepare(
+				'CREATE TABLE balance (user TEXT PRIMARY KEY, guild TEXT, boosts TEXT, cash INTEGER, bank INTEGER, total INTEGER);'
+			).run();
+			db.prepare('CREATE UNIQUE INDEX idx_balance_id ON balance (user);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+		this.client.getBalance = db.prepare(
+			'SELECT * FROM balance WHERE user = ? AND guild = ?'
+		);
+		this.client.setBalance = db.prepare(
+			'INSERT OR REPLACE INTO balance (user, guild, cash, bank, total) VALUES (@user, @guild, @cash, @bank, @total);'
+		);
+		this.client.setUserBalance = db.prepare(
+			'INSERT OR REPLACE INTO balance (user, guild, cash, bank, total) VALUES (@user, @guild, @cash, @bank, @total);'
+		);
+		// scores table
+		const table = db
+			.prepare(
+				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'scores\';'
+			)
+			.get();
+		if (!table['count(*)']) {
+			console.log('scores table created!');
+			db.prepare(
+				'CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER);'
+			).run();
+			db.prepare('CREATE UNIQUE INDEX idx_scores_id ON scores (id);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+		this.client.getScore = db.prepare(
+			'SELECT * FROM scores WHERE user = ? AND guild = ?'
+		);
+		this.client.setScore = db.prepare(
+			'INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);'
+		);
+		// adsprot table
+		const adsprottable = db
+			.prepare(
+				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'adsprot\';'
+			)
+			.get();
+		if (!adsprottable['count(*)']) {
+			console.log('adsprot table created!');
+			db.prepare(
+				'CREATE TABLE adsprot (guildid TEXT PRIMARY KEY, status TEXT);'
+			).run();
+			db.prepare(
+				'CREATE UNIQUE INDEX idx_adsprot_id ON adsprot (guildid);'
+			).run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+		// logging table
+		const loggingtable = db
+			.prepare(
+				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'logging\';'
+			)
+			.get();
+		if (!loggingtable['count(*)']) {
+			console.log('logging table created!');
+			db.prepare(
+				'CREATE TABLE logging (guildid TEXT PRIMARY KEY, channel TEXT);'
+			).run();
+			db.prepare(
+				'CREATE UNIQUE INDEX idx_logging_id ON logging (guildid);'
+			).run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+		// Ticket Config Table
+		const ticketConfigTable = db
+			.prepare(
+				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'ticketConfig\';'
+			)
+			.get();
+		if (!ticketConfigTable['count(*)']) {
+			console.log('ticketConfig table created!');
+			db.prepare(
+				'CREATE TABLE ticketConfig (guildid TEXT PRIMARY KEY, category TEXT, log TEXT, role TEXT, ticketembed TEXT, ticketembedchan TEXT);'
+			).run();
+			db.prepare(
+				'CREATE UNIQUE INDEX idx_ticketConfig_id ON ticketConfig (guildid);'
+			).run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+		// Stored Tickets Table
+		const ticketsTable = db
+			.prepare(
+				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'tickets\';'
+			)
+			.get();
+		if (!ticketsTable['count(*)']) {
+			console.log('tickets table created!');
+			db.prepare(
+				'CREATE TABLE tickets (guildid TEXT, ticketid TEXT, authorid TEXT, reason TEXT, chanid TEXT);'
+			).run();
+			db.prepare(
+				'CREATE UNIQUE INDEX idx_tickets_id ON tickets (ticketid);'
+			).run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+	}
+
+};
