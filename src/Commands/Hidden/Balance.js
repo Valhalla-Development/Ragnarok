@@ -43,7 +43,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setAuthor(`${user.username}'s Balance`, user.avatarURL())
-			.setDescription(`Leaderboard Rank: ${rankPos}`)
+			.setDescription(`Leaderboard Rank: \`${rankPos}\``)
 			.setColor(message.guild.me.displayHexColor || '36393F')
 			.addFields({ name: 'Cash', value: `<:coin:706659001164628008> ${balance.cash.toLocaleString('en')}`, inline: true },
 				{ name: 'Bank', value: `<:coin:706659001164628008> ${balance.bank.toLocaleString('en')}`, inline: true },

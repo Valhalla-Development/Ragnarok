@@ -27,10 +27,11 @@ module.exports = class extends Command {
 			}
 			const validExtensions = ['bat', 'c', 'cpp', 'css', 'html', 'ini', 'java', 'js', 'jsx', 'json', 'lua', 'md', 'php', 'py', 'pyc', 'scss', 'sql', 'txt', 'xml', 'yaml'];
 			if (!validExtensions.includes(fileExtension)) {
-				const badType = new MessageEmbed()
+				const invalidExt = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.setDescription(`\`.${fileExtension}\` is not a valid file type!\n\nAcceptable files:\n\`${validExtensions.join(', ')}\``);
-				message.channel.send(badType);
+					.addField('**Invalid File**',
+						`**◎ Error:** \`.${fileExtension}\` is not a valid file type!\n\n**Acceptable files:**\n\`${validExtensions.join(', ')}\``);
+				message.channel.send(invalidExt).then((m) => m.delete({ timeout: 15000 }));
 				return;
 			}
 			await fetch(file)
@@ -39,8 +40,9 @@ module.exports = class extends Command {
 					if (!body) {
 						const emptyFile = new MessageEmbed()
 							.setColor(message.guild.me.displayHexColor || '36393F')
-							.setDescription(':x: You can not upload an empty file!');
-						message.channel.send(emptyFile);
+							.addField('**Invalid File**',
+								`**◎ Error:** You can not upload an empty file!`);
+						message.channel.send(emptyFile).then((m) => m.delete({ timeout: 15000 }));
 						return;
 					}
 					haste.post(body, extension)
@@ -51,18 +53,35 @@ module.exports = class extends Command {
 								.setDescription(`${res}\nPosted By: ${message.author}`)
 								.setURL(res);
 							message.channel.send(hastEmb);
-						}).catch(() => message.channel.send(':slight_frown: An error occured!'));
-				}).catch(() => message.channel.send(':slight_frown: An error occured!'));
+						}).catch(() => {
+							const error = new MessageEmbed()
+								.setColor(message.guild.me.displayHexColor || '36393F')
+								.addField('**Error**',
+									`**◎ Error:** An error occured!`);
+							message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
+						});
+				}).catch(() => {
+					const error = new MessageEmbed()
+						.setColor(message.guild.me.displayHexColor || '36393F')
+						.addField('**Error**',
+							`**◎ Error:** An error occured!`);
+					message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
+				});
 			return;
 		} if (message.attachments.size > 1) {
-			message.channel.send('You can only post 1 file at a time!');
+			const fileCount = new MessageEmbed()
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.addField('**Error**',
+					`**◎ Error:** You can only post 1 file at a time!`);
+			message.channel.send(fileCount).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 		if (args[0] === undefined) {
-			const embed = new MessageEmbed()
+			const error = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(':x: | You must input some text');
-			message.channel.send(embed);
+				.addField('**Error**',
+					`**◎ Error:** You must input some text!`);
+			message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -74,7 +93,13 @@ module.exports = class extends Command {
 					.setDescription(`${link}\nPosted By: ${message.author}`)
 					.setURL(link);
 				message.channel.send(hastEmb);
-			}).catch(() => message.channel.send(':slight_frown: An error occured!'));
+			}).catch(() => {
+				const error = new MessageEmbed()
+					.setColor(message.guild.me.displayHexColor || '36393F')
+					.addField('**Error**',
+						`**◎ Error:** An error occured!`);
+				message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
+			});
 	}
 
 };

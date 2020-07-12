@@ -30,7 +30,7 @@ module.exports = class extends Command {
 				user = 'User Left Guild.';
 			}
 
-			userNames += `\`${i + 1}\` ${user}\n`;
+			userNames += `◎ \`${i + 1}\` ${user}\n`;
 			levels += `\`${data.level}\`\n`;
 			xp += `\`${data.points.toLocaleString('en')}\`\n`;
 		}

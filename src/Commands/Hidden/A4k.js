@@ -2,7 +2,6 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const language = require('../../../Storage/messages.json');
 const fetch = require('node-fetch');
 
 module.exports = class extends Command {
@@ -19,11 +18,12 @@ module.exports = class extends Command {
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 
-		const incorrectUsageMessage = language.a4k.incorrectUsage;
-		const incorrectUsage = incorrectUsageMessage.replace('${prefix}', prefix);
-
 		if (!args[0]) {
-			message.channel.send(incorrectUsage);
+			const incorrectFormat = new MessageEmbed()
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.addField('**Incorrect Usage**',
+					`**◎ Error:** Incorrect usage! Please use \`${prefix}a4k <search>\``);
+			message.channel.send(incorrectFormat).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 		message.channel.send(this.category);
@@ -37,9 +37,9 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${res[0].data.subreddit} - Top 3 results for: ${args.join(' ')}`, 'http://i.imgur.com/sdO8tAw.png')
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.setDescription(`[**${res[0].data.title}**](${res[0].data.url})\n \`\`\`${res[0].data.selftext.substring(0, 250)}...\`\`\`\n
-					[**${res[1].data.title}**](${res[1].data.url})\n  \`\`\`${res[1].data.selftext.substring(0, 250)}...\`\`\`\n
-					[**${res[2].data.title}**](${res[2].data.url})\n  \`\`\`${res[2].data.selftext.substring(0, 250)}...\`\`\`\n
+					.setDescription(`[**◎ ${res[0].data.title}**](${res[0].data.url})\n \`\`\`${res[0].data.selftext.substring(0, 250)}...\`\`\`\n
+					[**◎ ${res[1].data.title}**](${res[1].data.url})\n  \`\`\`${res[1].data.selftext.substring(0, 250)}...\`\`\`\n
+					[**◎ ${res[2].data.title}**](${res[2].data.url})\n  \`\`\`${res[2].data.selftext.substring(0, 250)}...\`\`\`\n
 					[**__Search Results...__**](https://www.reddit.com/r/Addons4Kodi/search/?q=${searchTerm}&restrict_sr=1)`);
 				message.channel.send(embed);
 			}).catch(() => message.channel.send('No results found.'));

@@ -36,8 +36,9 @@ module.exports = class extends Command {
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(`:x: Incorrect usage! An example of this command is: \`${prefix}give @user 100\`\nAlternatively, you can run \`${prefix}give @user all\``);
-			message.channel.send(wrongUsage);
+				.addField('**Incorrect Usage**',
+					`**◎ Error** An example of this command is: \`${prefix}give @user 100\`\nAlternatively, you can run \`${prefix}give @user all\``);
+			message.channel.send(wrongUsage).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -51,7 +52,12 @@ module.exports = class extends Command {
 		}
 
 		if (!balance) {
-			message.channel.send('You have no balance');
+			const wrongUsage = new MessageEmbed()
+				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.addField('**Invalid Balance**',
+					`**◎ Error** You have no balance!`);
+			message.channel.send(wrongUsage).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 		if (!otherB) {
@@ -63,7 +69,12 @@ module.exports = class extends Command {
 				total: 1000
 			};
 			this.client.setUserBalance.run(noBalSet);
-			message.channel.send('An error occurred, please try again');
+			const errorE = new MessageEmbed()
+				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.addField('**Invalid Balance**',
+					`**◎ Error** An error occurred, please try again.`);
+			message.channel.send(errorE).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -72,14 +83,20 @@ module.exports = class extends Command {
 			const noBal = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(':x: Uh oh! You currently have no money in your bank!');
-			message.channel.send(noBal);
+				.addField('**Invalid Balance**',
+					`**◎ Error** Uh oh! You currently have no money in your bank!`);
+			message.channel.send(noBal).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
 		if (args[1] === 'all') {
 			if (otherB.bank + balance.bank > bankLimit) {
-				message.channel.send(`Transferring your entire bank would exceed the target users bank limit! They have <:coin:706659001164628008> \`${bankLimit - otherB.balance}\` available space!`);
+				const youViolatedTheLaw = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(message.guild.me.displayHexColor || '36393F')
+					.addField('**Invalid Balance**',
+						`**◎ Error** Transferring your entire bank would exceed the target users bank limit! They have <:coin:706659001164628008> \`${bankLimit - otherB.balance}\` available space!`);
+				message.channel.send(youViolatedTheLaw).then((m) => m.delete({ timeout: 15000 }));
 				return;
 			}
 
@@ -106,10 +123,11 @@ module.exports = class extends Command {
 			this.client.setBalance.run(addAut);
 
 			const depAll = new MessageEmbed()
-				.setAuthor(`${message.author.username}`, message.author.avatarURL())
+				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(`:white_check_mark: Success!\n You have paid ${user} the sum of: <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}.`);
-			message.channel.send(depAll);
+				.addField('**Success**',
+					`**◎ Success** You have paid ${user} the sum of: <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}.`);
+			message.channel.send(depAll).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 

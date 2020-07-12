@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageAttachment } = require('discord.js');
+const { MessageAttachment, MessageEmbed } = require('discord.js');
 const Canvas = require('canvas');
 Canvas.registerFont('./Storage/Canvas/Fonts/Roboto-Thin.ttf', {
 	family: 'Roboto'
@@ -17,11 +17,19 @@ module.exports = class extends Command {
 
 	async run(message, args) {
 		if (!args[0]) {
-			message.channel.send('You must supply some text!');
+			const invalidInput = new MessageEmbed()
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.addField('**Incorrect Usage**',
+					`**◎ Error:** You must supply some text!`);
+			message.channel.send(invalidInput).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 		if (args.length > 5) {
-			message.channel.send('You can only have 5 words!');
+			const tooLong = new MessageEmbed()
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.addField('**Incorrect Usage**',
+					`**◎ Error:** You can only have 5 words!`);
+			message.channel.send(tooLong).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 

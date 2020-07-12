@@ -1,5 +1,6 @@
 const Command = require('../../Structures/Command');
 const fetch = require('node-fetch');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -12,6 +13,15 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
+		if (!args[0]) {
+			const noInput = new MessageEmbed()
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.addField('**Incorrect Usage**',
+					`**◎ Error:** You must input a search term!`);
+			message.channel.send(noInput).then((m) => m.delete({ timeout: 15000 }));
+			return;
+		}
+
 		const query = args.join(' ');
 		const url = `https://djsdocs.sorta.moe/v2/embed?src=stable&q=${encodeURIComponent(query)}`;
 		fetch(url)
@@ -20,12 +30,20 @@ module.exports = class extends Command {
 				if (embed && !embed.error) {
 					message.channel.send({ embed });
 				} else {
-					message.reply(`I found no results for ${query}.`);
+					const noResult = new MessageEmbed()
+						.setColor(message.guild.me.displayHexColor || '36393F')
+						.addField('**Incorrect Usage**',
+							`**◎ Error:** I found no results for\n\`${query}\``);
+					message.channel.send(noResult).then((m) => m.delete({ timeout: 15000 }));
 				}
 			})
 			.catch(err => {
 				console.error(err);
-				message.reply('An error occured :slight_frown:');
+				const error = new MessageEmbed()
+					.setColor(message.guild.me.displayHexColor || '36393F')
+					.addField('**Error**',
+						`**◎ Error:** An error occured :slight_frown:`);
+				message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
 			});
 	}
 

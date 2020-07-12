@@ -1,7 +1,6 @@
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const math = require('mathjs');
-const language = require('../../../Storage/messages.json');
 
 module.exports = class extends Command {
 
@@ -16,7 +15,11 @@ module.exports = class extends Command {
 
 	async run(message, args) {
 		if (!args[0]) {
-			message.channel.send(`${language.calc.noInput}`);
+			const incorrectFormat = new MessageEmbed()
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.addField('**Incorrect Usage!**',
+					`**◎ Error:** Please input a calculation!`);
+			message.channel.send(incorrectFormat).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -24,16 +27,21 @@ module.exports = class extends Command {
 		try {
 			resp = math.evaluate(args.join(' '));
 		} catch (err) {
-			message.channel.send(`${language.calc.invalidInput}`);
+			const invalidInput = new MessageEmbed()
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.addField('**Incorrect Usage!**',
+					`**◎ Error:** Please input a valid calculation!`);
+			message.channel.send(invalidInput).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
 		const embed = new MessageEmbed()
 			.setColor(message.guild.me.displayHexColor || '36393F')
-			.setTitle('Calculation')
-			.addFields({ name: 'Input', value: `\`\`\`js\n${args.join('')}\`\`\`` },
-				{ name: 'Output', value: `\`\`\`js\n${resp}\`\`\`` });
-
+			.addField('**Calculation:**', [
+				`**◎ Input:** \`\`\`js\n${args.join('')}\`\`\``,
+				`**◎ Output:** \`\`\`js\n${resp}\`\`\``
+			])
+			.setTimestamp();
 		message.channel.send(embed);
 	}
 

@@ -23,8 +23,9 @@ module.exports = class extends Command {
 		if (!safe.length) {
 			const noPost = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(`Couldn't get the post.`);
-			message.channel.send(noPost);
+				.addField('**No Post!**',
+					`**◎ Error:** I could not find a psot.`);
+			message.channel.send(noPost).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -38,11 +39,7 @@ module.exports = class extends Command {
 		}
 		const embed = new MessageEmbed()
 			.setColor(message.guild.me.displayHexColor || '36393F')
-			.setAuthor(
-				`${post.data.title}`,
-				message.author.displayAvatarURL({ dynamic: true }),
-				`https://reddit.com${post.data.permalink}`
-			)
+			.setAuthor(`[${post.data.title}](${post.data.permalink})`, message.author.displayAvatarURL({ dynamic: true }), `https://reddit.com${post.data.permalink}`)
 			.setImage(postURL)
 			.setFooter(`👍 ${post.data.ups} | 💬 ${post.data.num_comments}`);
 		message.channel.send(embed);
