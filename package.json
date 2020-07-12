@@ -1,6 +1,6 @@
 {
   "name": "ragnarok",
-  "version": "3.1.68",
+  "version": "3.2.01",
   "description": "A multi-purpose Discord bot.",
   "main": "src/index",
   "repository": {
@@ -22,6 +22,7 @@
     "canvas": "^2.6.1",
     "discord-giveaways": "^4.1.8",
     "discord.js": "^12.2.0",
+    "erela.js": "^1.1.8",
     "glob": "^7.1.6",
     "hastebin.js": "^1.3.2",
     "mathjs": "^7.0.1",
