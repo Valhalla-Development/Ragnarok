@@ -1,4 +1,4 @@
-const { Client, Collection } = require('discord.js');
+const { Client, Collection, MessageEmbed } = require('discord.js');
 const Util = require('./Util.js');
 const Canvas = require('canvas');
 Canvas.registerFont('./Storage/Canvas/Fonts/Notethis.ttf', {
@@ -20,41 +20,33 @@ module.exports = class RagnarokClient extends Client {
 
 		this.aliases = new Collection();
 
+		this.events = new Collection();
+
 		this.utils = new Util(this);
 
 		this.owners = options.ownerID;
 
 		const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
 
-			// This function is called when the manager needs to get all the giveaway stored in the database.
 			async getAllGiveaways() {
-				// Get all the giveaway in the database
 				return db.get('giveaways');
 			}
 
-			// This function is called when a giveaway needs to be saved in the database (when a giveaway is created or when a giveaway is edited).
 			async saveGiveaway(messageID, giveawayData) {
-				// Add the new one
 				db.push('giveaways', giveawayData);
 				return true;
 			}
 
 			async editGiveaway(messageID, giveawayData) {
-				// Gets all the current giveaways
 				const giveaways = db.get('giveaways');
-				// Remove the old giveaway from the current giveaways ID
 				const newGiveawaysArray = giveaways.filter((giveaway) => giveaway.messageID !== messageID);
-				// Push the new giveaway to the array
 				newGiveawaysArray.push(giveawayData);
-				// Save the updated array
 				db.set('giveaways', newGiveawaysArray);
 				return true;
 			}
 
 			async deleteGiveaway(messageID) {
-				// Remove the giveaway from the array
 				const newGiveawaysArray = db.get('giveaways').filter((giveaway) => giveaway.messageID !== messageID);
-				// Save the updated array
 				db.set('giveaways', newGiveawaysArray);
 				return true;
 			}
@@ -68,22 +60,11 @@ module.exports = class RagnarokClient extends Client {
 			default: {
 				botsCanWin: false,
 				exemptPermissions: ['MANAGE_MESSAGES', 'ADMINISTRATOR'],
-				embedColor: message.guild.me.displayHexColor || '36393F',
+				embedColor: '36393F',
 				reaction: '🎉'
 			}
 		});
 		this.giveawaysManager = manager;
-
-		this.once('ready', () => {
-			console.log(`Logged in as ${this.user.username}!`);
-
-			const guildInvites = new Map();
-			this.invites = guildInvites;
-
-			this.guilds.cache.forEach(guild => {
-				guild.fetchInvites().then(invite => this.invites.set(guild.id, invite));
-			});
-		});
 
 		this.once('guildCreate', async (guild) => {
 			this.invites.set(guild.id, await guild.fetchInvites());
@@ -98,8 +79,6 @@ module.exports = class RagnarokClient extends Client {
 
 			const usedInvite = newInvites.find(invite => cachedInvites.get(invite.code).uses < invite.uses);
 
-			const { MessageEmbed } = require('discord.js');
-
 			const logChannel = member.guild.channels.cache.find(channel => channel.name === 'general');
 
 			if (!logChannel) return;
@@ -110,33 +89,9 @@ module.exports = class RagnarokClient extends Client {
 			const embed = new MessageEmbed()
 				.setAuthor('Invite Manager', member.user.displayAvatarURL())
 				.setDescription(`${member.user} **joined**; Invited by ${inviter.username} (${inviteUses} invites)`)
-				.setColor(message.guild.me.displayHexColor || '36393F');
+				.setColor(member.guild.me.displayHexColor || '36393F');
 
 			logChannel.send(embed);
-		});
-
-		this.on('message', async (message) => {
-			if (this.filterList.some(word => message.content.toLowerCase().includes(` ${word} `))) {
-				message.delete();
-				message.channel.send('BOI THAT"S A BLOCKED WORD!');
-			}
-			const mentionRegex = RegExp(`^<@!${this.user.id}>$`);
-
-			if (!message.guild || message.author.bot) return;
-
-			if (message.content.match(mentionRegex)) message.channel.send(`My prefix for ${message.guild.name} is \`${this.prefix}\`.`);
-
-			const { prefix } = this;
-
-			if (!message.content.startsWith(prefix)) return;
-
-			// eslint-disable-next-line no-unused-vars
-			const [cmd, ...args] = message.content.slice(prefix.length).trim().split(/ +/g);
-
-			const command = this.commands.get(cmd.toLowerCase()) || this.commands.get(this.aliases.get(cmd.toLowerCase()));
-			if (command) {
-				command.run(message, args);
-			}
 		});
 
 		// error notifiers
@@ -179,6 +134,7 @@ module.exports = class RagnarokClient extends Client {
 
 	async start(token = this.token) {
 		this.utils.loadCommands();
+		this.utils.loadEvents();
 		super.login(token);
 	}
 
