@@ -18,7 +18,7 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setAuthor(`${user.username}'s Avatar`)
 			.setImage(user.avatarURL({ dynamic: true, size: 1024 }))
-			.setColor(message.guild.me.displayHexColor || message.guild.me.displayHexColor || '36393F');
+			.setColor(message.guild.me.displayHexColor || '36393F');
 		message.channel.send(embed);
 	}
 
