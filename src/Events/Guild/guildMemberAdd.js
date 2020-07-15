@@ -73,15 +73,14 @@ module.exports = class extends Event {
 
 		// autorole
 		function autoRole() {
-			const autoroletable = db
-				.prepare(`SELECT role FROM autorole WHERE guildid = ${member.guild.id};`)
-				.get();
+			const autoroletable = db.prepare(`SELECT role FROM autorole WHERE guildid = ${member.guild.id};`).get();
 			if (!autoroletable) return;
 			const autorole = autoroletable.role;
 			if (!autorole) {
 				return;
 			}
 			const myRole = member.guild.roles.cache.find((role) => role.name === autorole);
+			if (!myRole) return;
 			member.roles.add(myRole);
 		}
 		autoRole();

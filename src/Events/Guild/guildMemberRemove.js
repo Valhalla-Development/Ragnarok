@@ -51,6 +51,29 @@ module.exports = class extends Event {
 				db.prepare('DELETE FROM membercount WHERE guildid = ?').run(member.guild.id);
 			}
 		}
+
+		// Invite Manager
+		if (member.user.bot) return;
+
+		const cachedInvites = this.invites.get(member.guild.id);
+		const newInvites = await member.guild.fetchInvites();
+		this.invites.set(member.guild.id, newInvites);
+
+		const usedInvite = newInvites.find(invite => cachedInvites.get(invite.code).uses < invite.uses);
+
+		const logChannel = member.guild.channels.cache.find(channel => channel.name === 'general');
+
+		if (!logChannel) return;
+
+		const { inviter } = usedInvite;
+		const inviteUses = usedInvite.uses;
+
+		const embed = new MessageEmbed()
+			.setAuthor('Invite Manager', member.user.displayAvatarURL())
+			.setDescription(`${member.user} **joined**; Invited by ${inviter.username} (${inviteUses} invites)`)
+			.setColor(member.guild.me.displayHexColor || '36393F');
+
+		logChannel.send(embed);
 	}
 
 };

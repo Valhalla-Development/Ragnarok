@@ -1,4 +1,4 @@
-const { Client, Collection, MessageEmbed } = require('discord.js');
+const { Client, Collection } = require('discord.js');
 const Util = require('./Util.js');
 const Canvas = require('canvas');
 Canvas.registerFont('./Storage/Canvas/Fonts/Notethis.ttf', {
@@ -65,34 +65,6 @@ module.exports = class RagnarokClient extends Client {
 			}
 		});
 		this.giveawaysManager = manager;
-
-		this.once('guildCreate', async (guild) => {
-			this.invites.set(guild.id, await guild.fetchInvites());
-		});
-
-		this.once('guildMemberAdd', async (member) => {
-			if (member.user.bot) return;
-
-			const cachedInvites = this.invites.get(member.guild.id);
-			const newInvites = await member.guild.fetchInvites();
-			this.invites.set(member.guild.id, newInvites);
-
-			const usedInvite = newInvites.find(invite => cachedInvites.get(invite.code).uses < invite.uses);
-
-			const logChannel = member.guild.channels.cache.find(channel => channel.name === 'general');
-
-			if (!logChannel) return;
-
-			const { inviter } = usedInvite;
-			const inviteUses = usedInvite.uses;
-
-			const embed = new MessageEmbed()
-				.setAuthor('Invite Manager', member.user.displayAvatarURL())
-				.setDescription(`${member.user} **joined**; Invited by ${inviter.username} (${inviteUses} invites)`)
-				.setColor(member.guild.me.displayHexColor || '36393F');
-
-			logChannel.send(embed);
-		});
 
 		// error notifiers
 		this.on('error', (err) => {
