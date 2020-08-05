@@ -1,6 +1,5 @@
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
-const language = require('../../../Storage/messages.json');
 
 module.exports = class extends Command {
 
@@ -18,21 +17,30 @@ module.exports = class extends Command {
 		const reason = args.slice(1).join(' ');
 
 		if (!target) {
-			message.channel.send(`${language.report.notarget}`).then((mes) => mes.delete({
-				timeout: 5000
-			}));
+			const noTarget = new MessageEmbed()
+				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.addField('**Incorrect Usage!**',
+					`**◎ Error:** You must specify a user to report!`);
+			message.channel.send(noTarget).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 		if (!reason) {
-			message.channel.send(`${language.report.noreason}`).then((mes) => mes.delete({
-				timeout: 5000
-			}));
+			const noReason = new MessageEmbed()
+				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.addField('**Incorrect Usage!**',
+					`**◎ Error:** You must specify a reason!`);
+			message.channel.send(noReason).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 		if (!reports) {
-			message.channel.send(`${language.report.nochannel}`).then((mes) => mes.delete({
-				timeout: 5000
-			}));
+			const noReason = new MessageEmbed()
+				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.addField('**Incorrect Usage!**',
+					`**◎ Error:** Reports are disabled on this server! If you are an administrator, create the channel and name it \`reports\``);
+			message.channel.send(noReason).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -48,9 +56,12 @@ module.exports = class extends Command {
 			.setTimestamp();
 		reports.send(reportembed);
 
-		message.channel.send(`**${target}** was reported by **${message.author}**`).then((mes) => mes.delete({
-			timeout: 5000
-		}));
+		const success = new MessageEmbed()
+			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+			.setColor(message.guild.me.displayHexColor || '36393F')
+			.addField('**Success!**',
+				`**◎ Success:** ${target}** was reported by **${message.author}`);
+		message.channel.send(success).then((m) => m.delete({ timeout: 15000 }));
 	}
 
 };

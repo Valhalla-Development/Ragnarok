@@ -32,9 +32,7 @@ module.exports = class extends Command {
 			const ghembed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setTitle(`${message.author.username} hugged themself...! (weirdo)`)
-				.setImage(
-					'https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif'
-				);
+				.setImage('https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif');
 			message.channel.send({ embed: ghembed });
 			return;
 		}
@@ -51,9 +49,7 @@ module.exports = class extends Command {
 		const ghembed = new MessageEmbed()
 			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setTitle(`${message.author.username} hugged themself...! (weirdo)`)
-			.setImage(
-				'https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif'
-			);
+			.setImage('https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif');
 		message.channel.send({ embed: ghembed });
 	}
 

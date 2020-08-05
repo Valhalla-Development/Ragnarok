@@ -71,7 +71,7 @@ module.exports = class extends Command {
 		} if (message.attachments.size > 1) {
 			const fileCount = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Error**',
+				.addField('**File Limit**',
 					`**◎ Error:** You can only post 1 file at a time!`);
 			message.channel.send(fileCount).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -79,7 +79,7 @@ module.exports = class extends Command {
 		if (args[0] === undefined) {
 			const error = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Error**',
+				.addField('**No Input**',
 					`**◎ Error:** You must input some text!`);
 			message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
 			return;

@@ -76,7 +76,7 @@ module.exports = class extends Command {
 				const valueLow = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
 					.addField('**Value Too Low**',
-						`**◎ Time Limit:** Please input a value higher than 1 minute!`);
+						`**◎ Error:** Please input a value higher than 1 minute!`);
 				message.channel.send(valueLow).then((m) => m.delete({ timeout: 15000 }));
 				return;
 			}
@@ -139,7 +139,7 @@ module.exports = class extends Command {
 				const noGiveaway = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
 					.addField('**Invalid ID**',
-						`**◎ Invalid ID:** Unable to find a giveaway with ID: \`${args.slice(1).join(' ')}\`.`);
+						`**◎ Error:** Unable to find a giveaway with ID: \`${args.slice(1).join(' ')}\`.`);
 				message.channel.send(noGiveaway).then((m) => m.delete({ timeout: 15000 }));
 				return;
 			}
@@ -155,7 +155,7 @@ module.exports = class extends Command {
 					if (e.startsWith(`Giveaway with message ID ${giveaway.messageID} is not ended.`)) {
 						const notEnded = new MessageEmbed()
 							.setColor(message.guild.me.displayHexColor || '36393F')
-							.addField('**Error!**',
+							.addField('**Not Ended!**',
 								`**◎ Error:** This giveaway has not ended!`);
 						message.channel.send(notEnded).then((m) => m.delete({ timeout: 15000 }));
 					} else {
@@ -175,7 +175,7 @@ module.exports = class extends Command {
 				const incorrectStop = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
 					.addField('**Incorrect Usage**',
-						`**◎ Correct usage:** \`${prefix}giveaway stop <message id>\``);
+						`**◎ Error:** \`${prefix}giveaway stop <message id>\``);
 				message.channel.send(incorrectStop).then((m) => m.delete({ timeout: 15000 }));
 				return;
 			}
@@ -184,7 +184,7 @@ module.exports = class extends Command {
 				const noGiveaway = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
 					.addField('**Invalid ID**',
-						`**◎ Invalid ID:** Unable to find a giveaway with ID: \`${args.slice(1).join(' ')}\`.`);
+						`**◎ Error:** Unable to find a giveaway with ID: \`${args.slice(1).join(' ')}\`.`);
 				message.channel.send(noGiveaway).then((m) => m.delete({ timeout: 15000 }));
 				return;
 			}
@@ -200,7 +200,7 @@ module.exports = class extends Command {
 				if (e.startsWith(`Giveaway with message ID ${giveaway.messageID} is already ended.`)) {
 					const alreadyEnded = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
-						.addField('**Error!**',
+						.addField('**Already Ended!**',
 							`**◎ Error:** This giveaway has already ended!`);
 					message.channel.send(alreadyEnded).then((m) => m.delete({ timeout: 15000 }));
 				} else {

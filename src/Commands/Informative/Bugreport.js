@@ -1,7 +1,6 @@
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const { supportGuild, supportChannel } = require('../../../config.json');
-const language = require('../../../Storage/messages.json');
 
 module.exports = class extends Command {
 
@@ -17,9 +16,11 @@ module.exports = class extends Command {
 	async run(message, args) {
 		if (!args[0]) {
 			const noinEmbed = new MessageEmbed()
+				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(`${language.bugreport.noInput}`);
-			message.channel.send(noinEmbed);
+				.addField('**Incorrect Usage!**',
+					`**◎ Error:** Please input some text!`);
+			message.channel.send(noinEmbed).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -30,15 +31,14 @@ module.exports = class extends Command {
 			.setTitle('Bug Report')
 			.setDescription(`**User: <@${message.author.id}> - **\`${message.author.tag}\`\n**Bug:** ${argresult}`)
 			.setFooter(`${message.guild.name} - ${message.guild.id}`);
-		this.client.guilds
-			.cache.get(supportGuild)
-			.channels.cache.get(supportChannel)
-			.send(embed);
+		this.client.guilds.cache.get(supportGuild).channels.cache.get(supportChannel).send(embed);
 
 		const loggedEmbed = new MessageEmbed()
+			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(message.guild.me.displayHexColor || '36393F')
-			.setDescription(`${language.bugreport.bugLogged}`);
-		message.channel.send(loggedEmbed);
+			.addField('**Success**',
+				`**◎ Success:** Bug has been successfully reported!`);
+		message.channel.send(loggedEmbed).then((m) => m.delete({ timeout: 15000 }));
 	}
 
 };
