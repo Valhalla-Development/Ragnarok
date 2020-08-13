@@ -1,6 +1,6 @@
 {
   "name": "ragnarok",
-  "version": "3.2.45",
+  "version": "3.2.46",
   "description": "A multi-purpose Discord bot.",
   "main": "src/index",
   "repository": {
