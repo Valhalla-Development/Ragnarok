@@ -25,7 +25,7 @@ module.exports = class extends Event {
 			console.log(`Invite link: https://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot&permissions=2050485471\n`);
 		}, 1000);
 
-		this.client.user.setActivity(`${this.client.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.users.cache.size.toLocaleString('en')} Users`,
+		this.client.user.setActivity(`${this.client.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
 			{
 				type: 'WATCHING'
 			}
