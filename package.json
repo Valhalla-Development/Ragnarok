@@ -1,6 +1,6 @@
 {
   "name": "ragnarok",
-  "version": "3.2.461",
+  "version": "3.2.502",
   "description": "A multi-purpose Discord bot.",
   "main": "src/index",
   "repository": {
@@ -20,6 +20,7 @@
   "dependencies": {
     "better-sqlite3": "^7.0.1",
     "canvas": "^2.6.1",
+    "diff": "^4.0.2",
     "discord-giveaways": "^4.1.8",
     "discord.js": "^12.2.0",
     "erela.js": "^1.1.8",
