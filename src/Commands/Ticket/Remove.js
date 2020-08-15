@@ -26,18 +26,18 @@ module.exports = class extends Command {
 		if (!modRole) {
 			const nomodRole = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(`${language.tickets.nomodRole}`);
-			message.channel.send(nomodRole);
+				.addField('**No Mod Role**',
+					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
+			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
 		if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
-			const donthaveroleMessage = language.tickets.donthaveRole;
-			const role = donthaveroleMessage.replace('${role}', modRole);
 			const donthaveRole = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(`${role}`);
-			message.channel.send(donthaveRole);
+				.addField('**Invalid Perms**',
+					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
+			message.channel.send(donthaveRole).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -45,8 +45,9 @@ module.exports = class extends Command {
 		if (!rUser) {
 			const nouser = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(`${language.tickets.cantfindUser}`);
-			message.channel.send(nouser);
+				.addField('**Invalid Perms**',
+					`**◎ Error:** Sorry! I could not find the specified user!`);
+			message.channel.send(nouser).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -59,9 +60,11 @@ module.exports = class extends Command {
 			getChan.createOverwrite(rUser, {
 				VIEW_CHANNEL: false
 			}).catch(console.error);
-			const removedMessage = language.tickets.removed;
-			const theuser = removedMessage.replace('${user}', rUser);
-			getChan.send(`${theuser}`);
+			const removed = new MessageEmbed()
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.addField('**Success**',
+					`**◎ Success:** ${rUser} has been removed from the ticket!`);
+			getChan.send(removed);
 			const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
 			const logchan = message.guild.channels.cache.find((chan) => chan.id === logget.log);
 			if (!logchan) return;
@@ -72,8 +75,9 @@ module.exports = class extends Command {
 		} else {
 			const errEmbed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription('This ticket could not be found.');
-			message.channel.send(errEmbed);
+				.addField('**No Ticket**',
+					`**◎ Error:** This ticket could not be found.`);
+			message.channel.send(errEmbed).then((m) => m.delete({ timeout: 15000 }));
 		}
 	}
 

@@ -26,25 +26,26 @@ module.exports = class extends Command {
 		if (foundTicket && message.channel.id !== foundTicket.chanid) {
 			const badChannel = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(`${language.tickets.wrongChannelClose}`);
-			message.channel.send(badChannel);
+				.addField('**Wrong Channel**',
+					`**◎ Error:** You can't use the close command outside of a ticket channel.`);
+			message.channel.send(badChannel).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 		if (!foundTicket) {
 			const errEmbed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(`${language.tickets.wrongChannelClose}`);
-			message.channel.send(errEmbed);
+				.addField('**Wrong Channel**',
+					`**◎ Error:** You can't use the close command outside of a ticket channel.`);
+			message.channel.send(errEmbed).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
 		// Ask for confirmation within 10 seconds.
-		const confirmCloseMessage = language.tickets.closeConfirm;
-		const confirmClose = confirmCloseMessage.replace('${prefix}', prefix);
 		const user = this.client.users.cache.find((a) => a.id === foundTicket.authorid);
 		const confirmEmbed = new MessageEmbed()
 			.setColor(message.guild.me.displayHexColor || '36393F')
-			.setDescription(`${confirmClose}`);
+			.addField('**Confirmation**',
+				`**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!\nTo confirm, type \`${prefix}confirm\`. This will time out in 20 seconds and be cancelled.`);
 		message.channel.send(confirmEmbed).then((msg) => {
 			message.channel.awaitMessages((response) => response.content === `${prefix}confirm`, {
 				max: 1,
@@ -71,14 +72,15 @@ module.exports = class extends Command {
 
 				if (!reason) {
 					loggingembed
-						.setDescription(`<@${message.author.id}> has closed ticket \`#${message.channel.name}\``);
+						.addField('**Success**',
+							`**◎ Success:** <@${message.author.id}> has closed ticket \`#${message.channel.name}\``);
 					logchan.send(loggingembed);
 				} else {
 					loggingembed
-						.setDescription(`<@${message.author.id}> has closed ticket \`#${message.channel.name}\`\nReason: \`${reason}\``);
+						.addField('**Success**',
+							`**◎ Success:** <@${message.author.id}> has closed ticket \`#${message.channel.name}\`\nReason: \`${reason}\``);
 					logchan.send(loggingembed);
 
-					// eslint-disable-next-line no-empty-function
 					user.send(`Your ticket in guild: \`${message.guild.name}\` was closed for the following reason:\n\`${reason}\``).then(() => {
 					// eslint-disable-next-line arrow-body-style
 					}).catch(() => {

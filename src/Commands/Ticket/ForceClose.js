@@ -27,18 +27,18 @@ module.exports = class extends Command {
 		if (!modRole) {
 			const nomodRole = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(`${language.tickets.nomodRole}`);
-			message.channel.send(nomodRole);
+				.addField('**No Mod Role**',
+					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
+			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
 		if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
-			const donthaveroleMessage = language.tickets.donthaveRole;
-			const role = donthaveroleMessage.replace('${role}', modRole);
 			const donthaveRole = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(`${role}`);
-			message.channel.send(donthaveRole);
+				.addField('**Invalid Perms**',
+					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
+			message.channel.send(donthaveRole).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -51,7 +51,7 @@ module.exports = class extends Command {
 			const forceclosetimer = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
 				.setTitle(':x: Closing Ticket! :x:')
-				.setDescription(`${language.tickets.closeTimer}`);
+				.setDescription(`This ticket will automatically close in 10 seconds.**\nType a message to cancel the timer.`);
 			getChan.send(forceclosetimer).then((timerMsg) => {
 				getChan.awaitMessages((resp) => resp.author.id === message.author.id || foundTicket.authorid, {
 					max: 1,
@@ -63,7 +63,7 @@ module.exports = class extends Command {
 						.setDescription('Canceling Ticket Close');
 					timerMsg.edit(cancelTimer).then((cancelMsg) => {
 						cancelMsg.delete({
-							timeout: 5000
+							timeout: 15000
 						});
 					});
 				}).catch(() => {
@@ -77,14 +77,16 @@ module.exports = class extends Command {
 					if (!logchan) return;
 					const loggingembed = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
-						.setDescription(`<@${message.author.id}> has forcefully closed ticket \`#${message.channel.name}\``);
+						.addField('**Success**',
+							`**◎ Success:** <@${message.author.id}> has forcefully closed ticket \`#${message.channel.name}\``);
 					logchan.send(loggingembed);
 				});
 			});
 		} else {
 			const errEmbed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription('This ticket could not be found.');
+				.addField('**Error**',
+					`**◎ Error:** I could not find the ticket!`);
 			message.channel.send(errEmbed);
 		}
 	}

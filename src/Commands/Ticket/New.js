@@ -21,11 +21,12 @@ module.exports = class extends Command {
 
 		const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
 
-		if (!message.member.guild.me.hasPermission('ADMINISTRATOR')) {
+		if (!message.member.guild.me.hasPermission('MANAGE_CHANNELS')) {
 			const botPerm = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription('Uh oh! It seems you have removed the `ADMINISTRATOR` permission from me. I cannot function properly without it :cry:');
-			message.channel.send(botPerm);
+				.addField('**Missing Bot Perms**',
+					`**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:`);
+			message.channel.send(botPerm).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -33,8 +34,9 @@ module.exports = class extends Command {
 		if (!message.guild.roles.cache.find((r) => r.name === 'Support Team') && !suppRole) {
 			const nomodRole = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(`${language.tickets.nomodRole}`);
-			message.channel.send(nomodRole);
+				.addField('**No Mod Role**',
+					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
+			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 		// Make sure this is the user's only ticket.
@@ -63,8 +65,9 @@ module.exports = class extends Command {
 		) {
 			const existTM = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.setDescription(`${language.tickets.existingTicket}`);
-			message.channel.send(existTM);
+				.addField('**Already Have Tickets**',
+					`**◎ Error:** You already have a ticket open!`);
+			message.channel.send(existTM).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -114,10 +117,9 @@ module.exports = class extends Command {
 					// Send a message saying the ticket has been created.
 					const newTicketE = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
-						.setDescription(`${language.tickets.ticketCreated}, <#${c.id}>.`);
-					message.channel.send(newTicketE).then((msg) => msg.delete({
-						timeout: 5000
-					}));
+						.addField('**Success**',
+							`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
+					message.channel.send(newTicketE).then((m) => m.delete({ timeout: 15000 }));
 					const embed = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
 						.setTitle('New Ticket')
@@ -132,7 +134,8 @@ module.exports = class extends Command {
 					if (!logchan) return;
 					const loggingembed = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
-						.setDescription(`${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
+						.addField('**Ticket Created**',
+							`**◎ Ticket Created:** ${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
 					logchan.send(loggingembed);
 				}).catch(console.error);
 		} else {
@@ -147,7 +150,11 @@ module.exports = class extends Command {
 
 			const role = message.guild.roles.cache.find((x) => x.name === 'Support Team') || message.guild.roles.cache.find((r) => r.id === suppRole.role);
 			if (!role) {
-				message.channel.send(`I could not find the \`Support Team\` role!\nIf you use a custom role, I recommend running the command again \`${prefix}config ticket role <@role>\``);
+				const nomodRole = new MessageEmbed()
+					.setColor(message.guild.me.displayHexColor || '36393F')
+					.addField('**No Mod Role**',
+						`**◎ Error:** I could not find the \`Support Team\` role!\nIf you use a custom role, I recommend running the command again \`${prefix}config ticket role <@role>\``);
+				message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
 				return;
 			}
 			const role2 = message.channel.guild.roles.everyone;
@@ -178,10 +185,9 @@ module.exports = class extends Command {
 					// Send a message saying the ticket has been created.
 					const newTicketE = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
-						.setDescription(`${language.tickets.ticketCreated}, <#${c.id}>.`);
-					message.channel.send(newTicketE).then((msg) => msg.delete({
-						timeout: 5000
-					}));
+						.addField('**Success**',
+							`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
+					message.channel.send(newTicketE).then((m) => m.delete({ timeout: 15000 }));
 					const embed = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
 						.setTitle('New Ticket')
@@ -197,7 +203,8 @@ module.exports = class extends Command {
 					if (!logchan) return;
 					const loggingembed = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
-						.setDescription(`${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
+						.addField('**Ticket Created**',
+							`**◎ Ticket Created:** ${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
 					logchan.send(loggingembed);
 				}).catch(console.error);
 		}
