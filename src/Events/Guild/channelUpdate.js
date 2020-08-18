@@ -84,6 +84,8 @@ module.exports = class extends Event {
 			logembed
 				.setDescription(updateM);
 			this.client.channels.cache.get(logs).send(logembed);
+		} else {
+			return;
 		}
 
 		if (oldChannel.topic !== newChannel.topic) {
@@ -101,6 +103,8 @@ module.exports = class extends Event {
 			logembed
 				.setDescription(updateM);
 			this.client.channels.cache.get(logs).send(logembed);
+		} else {
+			return;
 		}
 	}
 
