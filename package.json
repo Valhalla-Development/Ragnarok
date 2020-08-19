@@ -1,12 +1,13 @@
 {
   "name": "ragnarok",
-  "version": "3.2.560",
+  "version": "3.2.561",
   "description": "A multi-purpose Discord bot.",
   "main": "src/index",
   "repository": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git",
   "author": "Ragnar Lothbrok <30740511+RagnarLothbrok-Odin@users.noreply.github.com>",
   "license": "MIT",
   "dependencies": {
+    "@discordjs/opus": "^0.3.2",
     "canvas": "^2.6.1",
     "common-tags": "^1.8.0",
     "diff": "^4.0.2",
