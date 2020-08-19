@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-mixed-operators */
 /* eslint-disable camelcase */
 const Command = require('../../Structures/Command');
