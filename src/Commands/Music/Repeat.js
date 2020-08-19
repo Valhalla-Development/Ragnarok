@@ -16,6 +16,9 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
+		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
+		const { prefix } = prefixgrab;
+
 		const dlRoleGrab = db.prepare(`SELECT role FROM music WHERE guildid = ${message.guild.id}`).get();
 
 		const dlRole = message.guild.roles.cache.find((x) => x.name === 'DJ') || message.guild.roles.cache.find((r) => r.id === dlRoleGrab.role);
@@ -32,7 +35,7 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
 				.addField(`**${this.client.user.username} - Repeat**`,
-					`**◎ Error:** Sorry! You do not have the **${role}** role.`);
+					`**◎ Error:** Sorry! You do not have the **${dlRole}** role.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
