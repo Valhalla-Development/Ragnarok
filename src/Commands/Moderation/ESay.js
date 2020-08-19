@@ -35,7 +35,7 @@ module.exports = class extends Command {
 		const sayMessage = args.join(' ');
 
 		const embed = new MessageEmbed()
-			.setColor('36393F')
+			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setDescription(`${sayMessage}`);
 		message.channel.send(embed);
 	}

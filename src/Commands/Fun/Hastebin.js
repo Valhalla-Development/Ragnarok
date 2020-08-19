@@ -49,8 +49,8 @@ module.exports = class extends Command {
 						.then((res) => {
 							const hastEmb = new MessageEmbed()
 								.setColor(message.guild.me.displayHexColor || '36393F')
-								.setAuthor('Hastebin Link:')
-								.setDescription(`${res}\nPosted By: ${message.author}`)
+								.addField(`**${this.client.user.username} - HasteBin**`,
+									`**◎ Link:** ${res}\nPosted By: ${message.author}`)
 								.setURL(res);
 							message.channel.send(hastEmb);
 						}).catch(() => {
@@ -89,8 +89,8 @@ module.exports = class extends Command {
 			.then((link) => {
 				const hastEmb = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.setAuthor('Hastebin Link:')
-					.setDescription(`${link}\nPosted By: ${message.author}`)
+					.addField(`**${this.client.user.username} - HasteBin**`,
+						`**◎ Link:** ${link}\nPosted By: ${message.author}`)
 					.setURL(link);
 				message.channel.send(hastEmb);
 			}).catch(() => {

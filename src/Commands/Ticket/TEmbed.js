@@ -29,7 +29,7 @@ module.exports = class extends Command {
 		}
 
 		const embed = new MessageEmbed()
-			.setColor('36393F')
+			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setTitle('Create a Ticket')
 			.setDescription('To create a ticket react with 📩')
 			.setFooter('Ragnarok Bot', this.client.user.avatarURL());

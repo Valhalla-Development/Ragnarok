@@ -68,7 +68,7 @@ module.exports = class extends Command {
 				}
 
 				const roleMenuEmbed = new MessageEmbed()
-					.setColor('36393F')
+					.setColor(message.guild.me.displayHexColor || '36393F')
 					.setTitle('Assign a Role')
 					.setDescription(`React below to assign one of the following roles:\n\n${embedRoleList}`);
 				message.channel.send(roleMenuEmbed).then(async (reactEmbed) => {

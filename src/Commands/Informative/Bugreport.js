@@ -29,7 +29,7 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setTitle('Bug Report')
-			.setDescription(`**User: <@${message.author.id}> - **\`${message.author.tag}\`\n**Bug:** ${argresult}`)
+			.setDescription(`**◎ User: <@${message.author.id}> - **\`${message.author.tag}\`\n**Bug:** ${argresult}`)
 			.setFooter(`${message.guild.name} - ${message.guild.id}`);
 		this.client.guilds.cache.get(supportGuild).channels.cache.get(supportChannel).send(embed);
 

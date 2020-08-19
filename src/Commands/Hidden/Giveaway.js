@@ -75,7 +75,7 @@ module.exports = class extends Command {
 			if (ms(args[1]) < '60000') {
 				const valueLow = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.addField`**${this.client.user.username} - Giveaway**`,
+					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Please input a value higher than 1 minute!`);
 				message.channel.send(valueLow).then((m) => m.delete({ timeout: 15000 }));
 				return;
