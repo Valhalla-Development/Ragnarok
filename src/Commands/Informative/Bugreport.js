@@ -18,7 +18,7 @@ module.exports = class extends Command {
 			const noinEmbed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage!**',
+				.addField(`**${this.client.user.username} - BugReport**`,
 					`**◎ Error:** Please input some text!`);
 			message.channel.send(noinEmbed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -36,7 +36,7 @@ module.exports = class extends Command {
 		const loggedEmbed = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(message.guild.me.displayHexColor || '36393F')
-			.addField('**Success**',
+			.addField(`**${this.client.user.username} - BugReport**`,
 				`**◎ Success:** Bug has been successfully reported!`);
 		message.channel.send(loggedEmbed).then((m) => m.delete({ timeout: 15000 }));
 	}

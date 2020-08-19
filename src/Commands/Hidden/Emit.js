@@ -24,7 +24,7 @@ module.exports = class extends Command {
 		if (args[0] === undefined) {
 			const noArgs = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Emit**',
+				.addField(`**${this.client.user.username} - Emit**`,
 					`**◎ Available Commands:**\n\`${prefix}emit guildMemberAdd\`\n\`${prefix}emit guildMemberRemove\``);
 			message.channel.send(noArgs).then((m) => m.delete({ timeout: 15000 }));
 			return;

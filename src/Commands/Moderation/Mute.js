@@ -24,7 +24,7 @@ module.exports = class extends Command {
 		if (!message.member.hasPermission('KICK_MEMBERS') && !this.client.owners.includes(message.author.id)) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid Perms**',
+				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** You need to have the \`KICK_MEMBERS\` permission to use this command.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -35,7 +35,7 @@ module.exports = class extends Command {
 		if (!user) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage**',
+				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** Run \`${prefix}help mute\` If you are unsure.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -47,7 +47,7 @@ module.exports = class extends Command {
 		if (!reason) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage**',
+				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** You must specify a reason for the mute!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -56,7 +56,7 @@ module.exports = class extends Command {
 		if (!muterole) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage**',
+				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** I could not find the mute role! Please create it, it **must** be named \`Muted\``);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -66,7 +66,7 @@ module.exports = class extends Command {
 		if (!mutetime) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage**',
+				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** You must specify a mute time!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -75,7 +75,7 @@ module.exports = class extends Command {
 		if (user.roles.cache.has(muterole.id)) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Already Muted**',
+				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** This user is already muted!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;

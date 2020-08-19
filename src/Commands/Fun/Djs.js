@@ -16,7 +16,7 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			const noInput = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage**',
+				.addField(`**${this.client.user.username} - Discord.js**`,
 					`**◎ Error:** You must input a search term!`);
 			message.channel.send(noInput).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -32,7 +32,7 @@ module.exports = class extends Command {
 				} else {
 					const noResult = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
-						.addField('**Incorrect Usage**',
+						.addField(`**${this.client.user.username} - Discord.js**`,
 							`**◎ Error:** I found no results for\n\`${query}\``);
 					message.channel.send(noResult).then((m) => m.delete({ timeout: 15000 }));
 				}
@@ -41,7 +41,7 @@ module.exports = class extends Command {
 				console.error(err);
 				const error = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.addField('**Error**',
+					.addField(`**${this.client.user.username} - Discord.js**`,
 						`**◎ Error:** An error occured :slight_frown:`);
 				message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
 			});

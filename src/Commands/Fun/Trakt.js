@@ -80,7 +80,7 @@ module.exports = class extends Command {
 		const notFound = (searchQuery) => {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**No Results**',
+				.addField(`**${this.client.user.username} - Trakt.tv**`,
 					`**◎ Error:** Couldn't find the movie/show you were looking for.**\nTry again or try on Trakt.TV here: https://trakt.tv/search?query=${searchQuery}`);
 			message.channel.send(embed);
 			msg.delete();
@@ -196,7 +196,7 @@ module.exports = class extends Command {
 		} else if (args.length === 0) {
 			const errEmbed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage**',
+				.addField(`**${this.client.user.username} - Trakt.tv**`,
 					`**◎ Error:** Please specify what movie/show you are trying to find.`);
 			message.channel.send(errEmbed).then((m) => m.delete({ timeout: 15000 }));
 			msg.delete();

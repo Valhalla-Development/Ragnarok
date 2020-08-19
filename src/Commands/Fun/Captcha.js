@@ -19,7 +19,7 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			const invalidInput = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage**',
+				.addField(`**${this.client.user.username} - Captcha**`,
 					`**◎ Error:** You must supply some text!`);
 			message.channel.send(invalidInput).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -27,7 +27,7 @@ module.exports = class extends Command {
 		if (args.length > 5) {
 			const tooLong = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage**',
+				.addField(`**${this.client.user.username} - Captcha**`,
 					`**◎ Error:** You can only have 5 words!`);
 			message.channel.send(tooLong).then((m) => m.delete({ timeout: 15000 }));
 			return;

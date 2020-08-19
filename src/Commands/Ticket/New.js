@@ -24,7 +24,7 @@ module.exports = class extends Command {
 		if (!message.member.guild.me.hasPermission('MANAGE_CHANNELS')) {
 			const botPerm = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Missing Bot Perms**',
+				.addField(`**${this.client.user.username} - New**`,
 					`**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:`);
 			message.channel.send(botPerm).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -34,7 +34,7 @@ module.exports = class extends Command {
 		if (!message.guild.roles.cache.find((r) => r.name === 'Support Team') && !suppRole) {
 			const nomodRole = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**No Mod Role**',
+				.addField(`**${this.client.user.username} - New**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
 			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -65,7 +65,7 @@ module.exports = class extends Command {
 		) {
 			const existTM = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Already Have Tickets**',
+				.addField(`**${this.client.user.username} - New**`,
 					`**◎ Error:** You already have a ticket open!`);
 			message.channel.send(existTM).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -117,7 +117,7 @@ module.exports = class extends Command {
 					// Send a message saying the ticket has been created.
 					const newTicketE = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
-						.addField('**Success**',
+						.addField(`**${this.client.user.username} - New**`,
 							`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
 					message.channel.send(newTicketE).then((m) => m.delete({ timeout: 15000 }));
 					const embed = new MessageEmbed()
@@ -134,7 +134,7 @@ module.exports = class extends Command {
 					if (!logchan) return;
 					const loggingembed = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
-						.addField('**Ticket Created**',
+						.addField(`**${this.client.user.username} - New**`,
 							`**◎ Ticket Created:** ${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
 					logchan.send(loggingembed);
 				}).catch(console.error);
@@ -152,7 +152,7 @@ module.exports = class extends Command {
 			if (!role) {
 				const nomodRole = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.addField('**No Mod Role**',
+					.addField(`**${this.client.user.username} - New**`,
 						`**◎ Error:** I could not find the \`Support Team\` role!\nIf you use a custom role, I recommend running the command again \`${prefix}config ticket role <@role>\``);
 				message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
 				return;
@@ -185,7 +185,7 @@ module.exports = class extends Command {
 					// Send a message saying the ticket has been created.
 					const newTicketE = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
-						.addField('**Success**',
+						.addField(`**${this.client.user.username} - New**`,
 							`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
 					message.channel.send(newTicketE).then((m) => m.delete({ timeout: 15000 }));
 					const embed = new MessageEmbed()
@@ -203,7 +203,7 @@ module.exports = class extends Command {
 					if (!logchan) return;
 					const loggingembed = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
-						.addField('**Ticket Created**',
+						.addField(`**${this.client.user.username} - New**`,
 							`**◎ Ticket Created:** ${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
 					logchan.send(loggingembed);
 				}).catch(console.error);

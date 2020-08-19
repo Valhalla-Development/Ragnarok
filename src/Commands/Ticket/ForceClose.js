@@ -27,7 +27,7 @@ module.exports = class extends Command {
 		if (!modRole) {
 			const nomodRole = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**No Mod Role**',
+				.addField(`**${this.client.user.username} - ForceClose**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
 			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -36,7 +36,7 @@ module.exports = class extends Command {
 		if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
 			const donthaveRole = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid Perms**',
+				.addField(`**${this.client.user.username} - ForceClose**`,
 					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
 			message.channel.send(donthaveRole).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -77,7 +77,7 @@ module.exports = class extends Command {
 					if (!logchan) return;
 					const loggingembed = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
-						.addField('**Success**',
+						.addField(`**${this.client.user.username} - ForceClose**`,
 							`**◎ Success:** <@${message.author.id}> has forcefully closed ticket \`#${message.channel.name}\``);
 					logchan.send(loggingembed);
 				});
@@ -85,7 +85,7 @@ module.exports = class extends Command {
 		} else {
 			const errEmbed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Error**',
+				.addField(`**${this.client.user.username} - ForceClose**`,
 					`**◎ Error:** I could not find the ticket!`);
 			message.channel.send(errEmbed);
 		}

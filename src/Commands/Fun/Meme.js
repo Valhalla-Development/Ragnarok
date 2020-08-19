@@ -23,7 +23,7 @@ module.exports = class extends Command {
 		if (!safe.length) {
 			const noPost = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**No Post!**',
+				.addField(`**${this.client.user.username} - Meme**`,
 					`**◎ Error:** I could not find a psot.`);
 			message.channel.send(noPost).then((m) => m.delete({ timeout: 15000 }));
 			return;

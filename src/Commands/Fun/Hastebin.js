@@ -29,7 +29,7 @@ module.exports = class extends Command {
 			if (!validExtensions.includes(fileExtension)) {
 				const invalidExt = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.addField('**Invalid File**',
+					.addField(`**${this.client.user.username} - Hastebin**`,
 						`**◎ Error:** \`.${fileExtension}\` is not a valid file type!\n\n**Acceptable files:**\n\`${validExtensions.join(', ')}\``);
 				message.channel.send(invalidExt).then((m) => m.delete({ timeout: 15000 }));
 				return;
@@ -40,7 +40,7 @@ module.exports = class extends Command {
 					if (!body) {
 						const emptyFile = new MessageEmbed()
 							.setColor(message.guild.me.displayHexColor || '36393F')
-							.addField('**Invalid File**',
+							.addField(`**${this.client.user.username} - Hastebin**`,
 								`**◎ Error:** You can not upload an empty file!`);
 						message.channel.send(emptyFile).then((m) => m.delete({ timeout: 15000 }));
 						return;
@@ -56,14 +56,14 @@ module.exports = class extends Command {
 						}).catch(() => {
 							const error = new MessageEmbed()
 								.setColor(message.guild.me.displayHexColor || '36393F')
-								.addField('**Error**',
+								.addField(`**${this.client.user.username} - HasteBin**`,
 									`**◎ Error:** An error occured!`);
 							message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
 						});
 				}).catch(() => {
 					const error = new MessageEmbed()
 						.setColor(message.guild.me.displayHexColor || '36393F')
-						.addField('**Error**',
+						.addField(`**${this.client.user.username} - HasteBin**`,
 							`**◎ Error:** An error occured!`);
 					message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
 				});
@@ -71,7 +71,7 @@ module.exports = class extends Command {
 		} if (message.attachments.size > 1) {
 			const fileCount = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**File Limit**',
+				.addField(`**${this.client.user.username} - Hastebin**`,
 					`**◎ Error:** You can only post 1 file at a time!`);
 			message.channel.send(fileCount).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -79,7 +79,7 @@ module.exports = class extends Command {
 		if (args[0] === undefined) {
 			const error = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**No Input**',
+				.addField(`**${this.client.user.username} - Hastebin**`,
 					`**◎ Error:** You must input some text!`);
 			message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -96,7 +96,7 @@ module.exports = class extends Command {
 			}).catch(() => {
 				const error = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.addField('**Error**',
+					.addField(`**${this.client.user.username} - HasteBin**`,
 						`**◎ Error:** An error occured!`);
 				message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
 			});

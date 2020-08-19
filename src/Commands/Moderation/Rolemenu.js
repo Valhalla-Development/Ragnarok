@@ -48,7 +48,7 @@ module.exports = class extends Command {
 		if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid Perms**',
+				.addField(`**${this.client.user.username} - RoleMenu**`,
 					`**◎ Error:** You do not have permission to run this command.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 		} else {
@@ -56,7 +56,7 @@ module.exports = class extends Command {
 			if (!foundRoleMenu || JSON.parse(foundRoleMenu.roleList).length <= 0) {
 				const embed = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.addField('**No RoleMenu**',
+					.addField(`**${this.client.user.username} - RoleMenu**`,
 						`**◎ Error:** The roles for the menu have not been set yet. Please try again later.`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			} else {

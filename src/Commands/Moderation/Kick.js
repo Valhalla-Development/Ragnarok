@@ -16,7 +16,7 @@ module.exports = class extends Command {
 		if (!message.member.hasPermission('KICK_MEMBERS') && !this.client.owners.includes(message.author.id)) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid Perms**',
+				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You need to have the \`KICK_MEMBERS\` permission to use this command.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -27,7 +27,7 @@ module.exports = class extends Command {
 		if (message.mentions.users.size < 1) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage**',
+				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You must mention someone!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 		if (user.id === message.author.id) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid User**',
+				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You can't kick yourself <:wut:745408596233289839>`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -49,7 +49,7 @@ module.exports = class extends Command {
 		if (message.mentions.members.first().hasPermission('MANAGE_GUILD') || message.mentions.members.first().hasPermission('ADMINISTRATOR') || !message.mentions.members.first().kickable) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid User**',
+				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You cannot kick <@${user.id}>`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -60,7 +60,7 @@ module.exports = class extends Command {
 		if (user.id === this.client.user.id) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid User**',
+				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You cannot kick me. :slight_frown:`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -70,7 +70,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setColor(message.guild.me.displayHexColor || '36393F')
-			.addField('**Success**',
+			.addField(`**${this.client.user.username} - Kick**`,
 				`**◎ Success:** You have 30 seconds to reply to this message with a reason for kicking <@${user.id}`);
 		message.channel.send(embed).then(() => {
 			message.channel.awaitMessages((response) => response.author.id === message.author.id, {
@@ -95,7 +95,7 @@ module.exports = class extends Command {
 			}).catch(() => {
 				const embed2 = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.addField('**Cancelled**',
+					.addField(`**${this.client.user.username} - Kick**`,
 						`**◎ Cancelled:** Kick command canceled.`);
 				message.channel.send(embed2).then((m) => m.delete({ timeout: 15000 }));
 			});

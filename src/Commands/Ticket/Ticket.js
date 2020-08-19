@@ -40,7 +40,7 @@ module.exports = class extends Command {
 			if (!ticketGrab['count(*)']) {
 				const noTickets = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.addField('**No Tickets**',
+					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Error:** There are currently no tickets open in this guild!`);
 				message.channel.send(noTickets).then((m) => m.delete({ timeout: 15000 }));
 				return;

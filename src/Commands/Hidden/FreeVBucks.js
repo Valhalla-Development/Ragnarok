@@ -14,7 +14,7 @@ module.exports = class extends Command {
 	async run(message) {
 		const embed = new MessageEmbed()
 			.setColor(message.guild.me.displayHexColor || '36393F')
-			.addField('**Free V-Bucks!**',
+			.addField(`**${this.client.user.username} - VBucks**`,
 				`**◎ Free V-Bucks:** React with ✅ for free V-Bucks!`);
 		message.channel.send(embed).then(async (a) => {
 			a.react('✅');

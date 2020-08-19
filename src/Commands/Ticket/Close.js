@@ -26,7 +26,7 @@ module.exports = class extends Command {
 		if (foundTicket && message.channel.id !== foundTicket.chanid) {
 			const badChannel = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Wrong Channel**',
+				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Error:** You can't use the close command outside of a ticket channel.`);
 			message.channel.send(badChannel).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -34,7 +34,7 @@ module.exports = class extends Command {
 		if (!foundTicket) {
 			const errEmbed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Wrong Channel**',
+				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Error:** You can't use the close command outside of a ticket channel.`);
 			message.channel.send(errEmbed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -44,7 +44,7 @@ module.exports = class extends Command {
 		const user = this.client.users.cache.find((a) => a.id === foundTicket.authorid);
 		const confirmEmbed = new MessageEmbed()
 			.setColor(message.guild.me.displayHexColor || '36393F')
-			.addField('**Confirmation**',
+			.addField(`**${this.client.user.username} - Close**`,
 				`**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!\nTo confirm, type \`${prefix}confirm\`. This will time out in 20 seconds and be cancelled.`);
 		message.channel.send(confirmEmbed).then((msg) => {
 			message.channel.awaitMessages((response) => response.content === `${prefix}confirm`, {
@@ -72,12 +72,12 @@ module.exports = class extends Command {
 
 				if (!reason) {
 					loggingembed
-						.addField('**Success**',
+						.addField(`**${this.client.user.username} - Close**`,
 							`**◎ Success:** <@${message.author.id}> has closed ticket \`#${message.channel.name}\``);
 					logchan.send(loggingembed);
 				} else {
 					loggingembed
-						.addField('**Success**',
+						.addField(`**${this.client.user.username} - Close**`,
 							`**◎ Success:** <@${message.author.id}> has closed ticket \`#${message.channel.name}\`\nReason: \`${reason}\``);
 					logchan.send(loggingembed);
 

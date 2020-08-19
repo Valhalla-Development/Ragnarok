@@ -46,7 +46,7 @@ module.exports = class extends Command {
 				const limitE = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.addField('**Invalid Amount**',
+					.addField(`**${this.client.user.username} - Bank**`,
 						`**◎ Error:** Uh oh! There is a bank limit of <:coin:706659001164628008> ${bankLimit.toLocaleString('en')}.\n Your current bank balance is <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}.\nYou may deposit <:coin:706659001164628008> ${remainDepA.toLocaleString('en')} more.`);
 				message.channel.send(limitE).then((m) => m.delete({ timeout: 15000 }));
 				return;
@@ -65,7 +65,7 @@ module.exports = class extends Command {
 			const depAll = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Success**',
+				.addField(`**${this.client.user.username} - Bank**`,
 					`**◎ Success:** You have deposited <:coin:706659001164628008> ${balance.cash.toLocaleString('en')} to your bank.`);
 			message.channel.send(depAll).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -75,7 +75,7 @@ module.exports = class extends Command {
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage**',
+				.addField(`**${this.client.user.username} - Bank**`,
 					`**◎ Error:** An example of this command is: \`${prefix}bank 100\`\nAlternatively, you can run \`${prefix}bank all\``);
 			message.channel.send(wrongUsage).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -85,7 +85,7 @@ module.exports = class extends Command {
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid Amount**',
+				.addField(`**${this.client.user.username} - Bank**`,
 					`**◎ Error:** Uh oh! You only have <:coin:706659001164628008> ${balance.cash.toLocaleString('en')}. Please try again with a valid amount.`);
 			message.channel.send(wrongUsage).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -95,7 +95,7 @@ module.exports = class extends Command {
 			const limitE = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid Amount**',
+				.addField(`**${this.client.user.username} - Bank**`,
 					`**◎ Error:** Uh oh! There is a bank limit of <:coin:706659001164628008> ${bankLimit.toLocaleString('en')}.\n Your current bank balance is <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}.\nYou may deposit <:coin:706659001164628008> ${remainDepA.toLocaleString('en')} more.`);
 			message.channel.send(limitE).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -117,7 +117,7 @@ module.exports = class extends Command {
 		const depAll = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(message.guild.me.displayHexColor || '36393F')
-			.addField('**Success**',
+			.addField(`**${this.client.user.username} - Bank**`,
 				`**◎ Success:** Success!\n You have deposited <:coin:706659001164628008> ${numberCov.toLocaleString('en')} to your bank.`);
 		message.channel.send(depAll).then((m) => m.delete({ timeout: 15000 }));
 	}

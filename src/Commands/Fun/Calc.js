@@ -17,7 +17,7 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			const incorrectFormat = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage!**',
+				.addField(`**${this.client.user.username} - Calculation**`,
 					`**◎ Error:** Please input a calculation!`);
 			message.channel.send(incorrectFormat).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -29,7 +29,7 @@ module.exports = class extends Command {
 		} catch (err) {
 			const invalidInput = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage!**',
+				.addField(`**${this.client.user.username} - Calculation**`,
 					`**◎ Error:** Please input a valid calculation!`);
 			message.channel.send(invalidInput).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -37,7 +37,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setColor(message.guild.me.displayHexColor || '36393F')
-			.addField('**Calculation:**', [
+			.addField(`**${this.client.user.username} - Calculation**`, [
 				`**◎ Input:** \`\`\`js\n${args.join('')}\`\`\``,
 				`**◎ Output:** \`\`\`js\n${resp}\`\`\``
 			])

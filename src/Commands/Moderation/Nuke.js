@@ -18,7 +18,7 @@ module.exports = class extends Command {
 		if (message.guild.id === '657235952116170794') {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Command Disabled**',
+				.addField(`**${this.client.user.username} - Nuke**`,
 					`**◎ Error:** This command has been disabled for this server!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -26,7 +26,7 @@ module.exports = class extends Command {
 		if (!message.member.hasPermission('ADMINISTRATOR') && !this.client.owners.includes(message.author.id)) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid Perms**',
+				.addField(`**${this.client.user.username} - Nuke**`,
 					`**◎ Error:** You need to have the \`ADMINISTRATOR\` permission to use this command.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -34,7 +34,7 @@ module.exports = class extends Command {
 		if (!message.guild.member(this.client.user).hasPermission('MANAGE_CHANNELS')) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid Perms**',
+				.addField(`**${this.client.user.username} - Nuke**`,
 					`**◎ Error:** I need the \`MANAGE_CHANNELS\` permissions to execute this command.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;

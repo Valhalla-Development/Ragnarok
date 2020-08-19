@@ -26,7 +26,7 @@ module.exports = class extends Command {
 		if (!modRole) {
 			const nomodRole = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**No Mod Role**',
+				.addField(`**${this.client.user.username} - Add**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
 			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -35,7 +35,7 @@ module.exports = class extends Command {
 		if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
 			const donthaveRole = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid Perms**',
+				.addField(`**${this.client.user.username} - Add**`,
 					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
 			message.channel.send(donthaveRole).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -45,7 +45,7 @@ module.exports = class extends Command {
 		if (!rUser) {
 			const nouser = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid Perms**',
+				.addField(`**${this.client.user.username} - Add**`,
 					`**◎ Error:** Sorry! I could not find the specified user!`);
 			message.channel.send(nouser).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -64,7 +64,7 @@ module.exports = class extends Command {
 				}).catch(console.error);
 			const nouser = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Success**',
+				.addField(`**${this.client.user.username} - Add**`,
 					`**◎ Success:** ${rUser} has been added to the ticket!`);
 			getChan.send(nouser);
 
@@ -74,13 +74,13 @@ module.exports = class extends Command {
 			if (!logchan) return;
 			const loggingembed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Success**',
+				.addField(`**${this.client.user.username} - Add**`,
 					`**◎ Success:** <@${message.author.id}> added ${rUser} to ticket <#${getChan.id}>`);
 			logchan.send(loggingembed);
 		} else {
 			const errEmbed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**No Ticket**',
+				.addField(`**${this.client.user.username} - Add**`,
 					`**◎ Error:** This ticket could not be found.`);
 			message.channel.send(errEmbed).then((m) => m.delete({ timeout: 15000 }));
 		}

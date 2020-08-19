@@ -20,7 +20,7 @@ module.exports = class extends Command {
 			const noTarget = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage!**',
+				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** You must specify a user to report!`);
 			message.channel.send(noTarget).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -29,7 +29,7 @@ module.exports = class extends Command {
 			const noReason = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage!**',
+				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** You must specify a reason!`);
 			message.channel.send(noReason).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 			const noReason = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage!**',
+				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** Reports are disabled on this server! If you are an administrator, create the channel and name it \`reports\``);
 			message.channel.send(noReason).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -59,7 +59,7 @@ module.exports = class extends Command {
 		const success = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(message.guild.me.displayHexColor || '36393F')
-			.addField('**Success!**',
+			.addField(`**${this.client.user.username} - Report**`,
 				`**◎ Success:** ${target}** was reported by **${message.author}`);
 		message.channel.send(success).then((m) => m.delete({ timeout: 15000 }));
 	}

@@ -16,7 +16,7 @@ module.exports = class extends Command {
 		if (args.length < 1) {
 			const incorrectFormat = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage!**',
+				.addField(`**${this.client.user.username} - Eval**`,
 					`**◎ Error:** Please input some text!`);
 			message.channel.send(incorrectFormat).then((m) => m.delete({ timeout: 15000 }));
 			return;

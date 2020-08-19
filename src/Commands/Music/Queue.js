@@ -33,7 +33,7 @@ module.exports = class extends Command {
 		if (!role) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**No DJ Role**',
+				.addField(`**${this.client.user.username} - Queue**`,
 					`**◎ Error:** Sorry, I could not find a role name \`DJ\`, if you prefer, you could set a custom role as the DJ, check the command command \`${prefix}config\` for more information.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -43,7 +43,7 @@ module.exports = class extends Command {
 		if (!player) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Music**',
+				.addField(`**${this.client.user.username} - Queue**`,
 					`**◎ Error:** <:MusicLogo:684822003110117466> No song is currently playing.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -52,7 +52,7 @@ module.exports = class extends Command {
 		if (player.queue.length < 1) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Music**',
+				.addField(`**${this.client.user.username} - Queue**`,
 					`**◎ Error:** There is no queue!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -64,12 +64,12 @@ module.exports = class extends Command {
 
 		const embed1 = new MessageEmbed()
 			.setColor(message.guild.me.displayHexColor || '36393F')
-			.addField('**Music**',
+			.addField(`**${this.client.user.username} - Queue**`,
 				`**◎ Error:** There is no queue!`);
 
 		const embed2 = new MessageEmbed()
 			.setColor(message.guild.me.displayHexColor || '36393F')
-			.addField('**Music**',
+			.addField(`**${this.client.user.username} - Queue**`,
 				`**◎ Success:** <:MusicLogo:684822003110117466> The queue has been cleared.`);
 
 
@@ -113,7 +113,7 @@ module.exports = class extends Command {
 		if (!queuelist) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Music**',
+				.addField(`**${this.client.user.username} - Queue**`,
 					`**◎ Error:** Page doesn't exist!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;

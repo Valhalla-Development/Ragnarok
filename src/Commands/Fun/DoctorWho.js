@@ -24,7 +24,7 @@ module.exports = class extends Command {
 		if (!safe.length) {
 			const noPost = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Error**',
+				.addField(`**${this.client.user.username} - DoctorWho**`,
 					`**◎ Error:** I could not fetch the post!`);
 			message.channel.send(noPost).then((m) => m.delete({ timeout: 15000 }));
 			return;

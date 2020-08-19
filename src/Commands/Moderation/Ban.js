@@ -19,7 +19,7 @@ module.exports = class extends Command {
 		if (!message.member.hasPermission('BAN_MEMBERS') && !this.client.owners.includes(message.author.id)) {
 			const errEmbed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid Perms**',
+				.addField(`**${this.client.user.username} - Ban**`,
 					`**◎ Error:** You do not have permission to run this command.`);
 			message.channel.send(errEmbed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 			if (!user) {
 				const noUser = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.addField('**Invalid Args**',
+					.addField(`**${this.client.user.username} - Ban**`,
 						`**◎ Error:** You must specify a user to ban!`);
 				message.channel.send(noUser).then((m) => m.delete({ timeout: 15000 }));
 				return;
@@ -62,7 +62,7 @@ module.exports = class extends Command {
 			if (!chuser) {
 				const userEmbed = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.addField('**Invalid Args**',
+					.addField(`**${this.client.user.username} - Ban**`,
 						`**◎ Error:** You must specify a user to ban!`);
 				message.channel.send(userEmbed).then((m) => m.delete({ timeout: 15000 }));
 				return;

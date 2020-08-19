@@ -34,7 +34,7 @@ module.exports = class extends Command {
 		if (!role) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**No DJ Role**',
+				.addField(`**${this.client.user.username} - Play**`,
 					`**◎ Error:** Sorry, I could not find a role name \`DJ\`, if you prefer, you could set a custom role as the DJ, check the command command \`${prefix}config\` for more information.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -44,7 +44,7 @@ module.exports = class extends Command {
 		if (!channel) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Not In Voice**',
+				.addField(`**${this.client.user.username} - Play**`,
 					`**◎ Error:** You need to be in a voice channel to use this command!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -55,7 +55,7 @@ module.exports = class extends Command {
 		if (!permissions.has('CONNECT')) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid Perms**',
+				.addField(`**${this.client.user.username} - Play**`,
 					`**◎ Error:** I cannot connect to your voice channel, make sure I have permissions!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -64,7 +64,7 @@ module.exports = class extends Command {
 		if (!permissions.has('SPEAK')) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Invalid Perms**',
+				.addField(`**${this.client.user.username} - Play**`,
 					`**◎ Error:** I cannot connect to your voice channel, make sure I have permissions!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -73,14 +73,14 @@ module.exports = class extends Command {
 		if (talkedRecently.has(message.author.id)) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Slow Down!**',
+				.addField(`**${this.client.user.username} - Play**`,
 					`**◎ Error:** There is a 30 second cooldown for this command!\nDJ's are exempt from the cooldown.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 		} else {
 			if (!args[0]) {
 				const embed = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.addField('**Incorrect Usage**',
+					.addField(`**${this.client.user.username} - Play**`,
 						`**◎ Error:** Please provide an URL or a search term.`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 				return;
@@ -128,7 +128,7 @@ module.exports = class extends Command {
 							if (track.duration >= 600000) {
 								const embed1 = new MessageEmbed()
 									.setColor(message.guild.me.displayHexColor || '36393F')
-									.addField('**Playback Limit**',
+									.addField(`**${this.client.user.username} - Play**`,
 										`**◎ Error:** Duration is over 10 minutes! Cancelling playback`);
 								message.channel.send(embed1).then((me) => me.delete({ timeout: 15000 }));
 								if (player.queue.size <= 0) {
@@ -185,7 +185,7 @@ module.exports = class extends Command {
 			setTimeout(() => {
 				const embed1 = new MessageEmbed()
 					.setColor(message.guild.me.displayHexColor || '36393F')
-					.addField('**Playback Limit Lifted**',
+					.addField(`**${this.client.user.username} - Play**`,
 						`**◎ Success:** You can now use the play command again.`);
 				message.channel.send(message.author, embed1).then((me) => me.delete({ timeout: 15000 }));
 				talkedRecently.delete(message.author.id);

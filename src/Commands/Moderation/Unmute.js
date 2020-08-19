@@ -19,7 +19,7 @@ module.exports = class extends Command {
 		if (!message.member.hasPermission('KICK_MEMBERS') && !this.client.owners.includes(message.author.id)) {
 			const nomodRole = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**No Mod Role**',
+				.addField(`**${this.client.user.username} - Unmute**`,
 					`**◎ Error:** You need to have the \`KICK_MEMBERS\` permission to use this command.`);
 			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -30,7 +30,7 @@ module.exports = class extends Command {
 		if (!user) {
 			const nomodRole = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage**',
+				.addField(`**${this.client.user.username} - Unmute**`,
 					`**◎ Error:** You must mention someone to unmute them!`);
 			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
 			return;
@@ -39,7 +39,7 @@ module.exports = class extends Command {
 		if (!user.roles.cache.find((x) => x.id === muterole.id)) {
 			const nomodRole = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || '36393F')
-				.addField('**Incorrect Usage**',
+				.addField(`**${this.client.user.username} - Unmute**`,
 					`**◎ Error:** This user is not muted!`);
 			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
 			return;
