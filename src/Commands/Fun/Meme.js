@@ -2,6 +2,17 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const fetch = require('node-fetch');
 
+const subreddits = [
+	'memes',
+	'DeepFriedMemes',
+	'bonehurtingjuice',
+	'surrealmemes',
+	'dankmemes',
+	'meirl',
+	'me_irl',
+	'funny'
+];
+
 module.exports = class extends Command {
 
 	constructor(...args) {
@@ -16,7 +27,7 @@ module.exports = class extends Command {
 		const msg = await message.channel.send('Generating...');
 		message.channel.startTyping();
 
-		const res = await fetch(`https://www.reddit.com/r/dankmemes.json?sort=top&t=week`);
+		const res = await fetch(`https://www.reddit.com/r/${subreddits[Math.floor(Math.random() * subreddits.length)]}/hot.json`);
 		const { data } = await res.json();
 
 		const safe = message.channel.nsfw ? data.children : data.children.filter((post) => !post.data.over_18);
