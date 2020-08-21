@@ -6,6 +6,7 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 module.exports = class extends Event {
 
 	async run(oldMessage, newMessage) {
+		if (!newMessage.guild || oldMessage.content === newMessage.content || newMessage.author.bot) return;
 		const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(newMessage.guild.id);
 		if (adsprot['count(*)']) {
 			if (newMessage.content.includes('https://') || newMessage.content.includes('http://') || newMessage.content.includes('discord.gg') || newMessage.content.includes('discord.me') || newMessage.content.includes('discord.io')) {
@@ -13,7 +14,7 @@ module.exports = class extends Event {
 					newMessage.delete();
 					newMessage.channel.send(`**Your message contained a link and it was deleted, <@${newMessage.author.id}>**`)
 						.then((msg) => {
-							msg.delete({ timeout: 10000 });
+							msg.delete({ timeout: 15000 });
 						});
 				}
 			}
@@ -37,13 +38,15 @@ module.exports = class extends Event {
 			return;
 		}
 		const embed = new MessageEmbed()
-			.setAuthor(`${oldMessage.author.username}#${oldMessage.author.discriminator}`, oldMessage.author.avatarURL())
-			.setColor('#990000')
-			.setDescription(`**Message edited in** ${oldMessage.channel} [Jump to Message](https://discordapp.com/channels/${newMessage.guild.id}/${newMessage.channel.id}/${oldMessage.id})`)
-			.addFields({ name: 'Before', value: `${oldMessage.content}` },
-				{ name: 'After', value: `${newMessage.content}` })
-			.setFooter(`User ID: ${oldMessage.author.id}`)
-			.setTimestamp();
+			.setColor(newMessage.guild.me.displayHexColor || '36393F')
+			.setAuthor(oldMessage.author.tag, this.client.user.displayAvatarURL({ dynamic: true }))
+			.setTitle('Message Updated')
+			.setDescription([
+				`**◎ Before:**\n${oldMessage.content}`,
+				`**◎ After:**\n${newMessage.content}`
+			])
+			.setTimestamp()
+			.setURL(oldMessage.url);
 		this.client.channels.cache.get(logs).send(embed);
 	}
 

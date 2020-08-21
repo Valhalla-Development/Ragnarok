@@ -23,9 +23,9 @@ module.exports = class extends Event {
 			reason = entry.reason;
 		}
 		const logembed = new MessageEmbed()
+			.setColor(guild.me.displayHexColor || '36393F')
 			.setAuthor(guild, guild.iconURL())
-			.setDescription(`**User Banned:** \`${user.tag}\`**\nModerator**: <@${mod}>\n**Reason**: \`${reason}\``)
-			.setColor('990000')
+			.setDescription(`**◎ User Banned:** \`${user.tag}\`\n**◎ Moderator**: <@${mod}>\n**◎ Reason**: \`${reason}\``)
 			.setFooter(`ID: ${mod}`)
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send(logembed);

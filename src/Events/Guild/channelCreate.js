@@ -13,29 +13,30 @@ module.exports = class extends Event {
 		if (!logs) return;
 
 		const logembed = new MessageEmbed()
+			.setColor(channel.guild.me.displayHexColor || '36393F')
 			.setAuthor(channel.guild, channel.guild.iconURL())
-			.setColor('990000')
+			.setTitle('Channel Created')
 			.setFooter(`ID: ${channel.id}`)
 			.setTimestamp();
 
 		let updateM;
 
 		if (channel.type === 'text') {
-			updateM = `**Text Channel Created:**\n<#${channel.id}>`;
+			updateM = `**◎ Text Channel Created:**\n<#${channel.id}>`;
 			logembed
 				.setDescription(updateM);
 			this.client.channels.cache.get(logs).send(logembed);
 		}
 
 		if (channel.type === 'voice') {
-			updateM = `**Voice Channel Created:**\n\`${channel.name}\``;
+			updateM = `**◎ Voice Channel Created:**\n\`${channel.name}\``;
 			logembed
 				.setDescription(updateM);
 			this.client.channels.cache.get(logs).send(logembed);
 		}
 
 		if (channel.type === 'category') {
-			updateM = `**Category Created:**\n\`${channel.name}\``;
+			updateM = `**◎ Category Created:**\n\`${channel.name}\``;
 			logembed
 				.setDescription(updateM);
 			this.client.channels.cache.get(logs).send(logembed);

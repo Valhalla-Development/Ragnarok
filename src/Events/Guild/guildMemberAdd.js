@@ -91,9 +91,9 @@ module.exports = class extends Event {
 			const logs = id.channel;
 			if (logs) {
 				const logembed = new MessageEmbed()
-					.setAuthor('Member Joined', member.user.avatarURL())
-					.setDescription(`<@${member.user.id}> - ${member.user.tag}`)
-					.setColor('990000')
+					.setColor(member.guild.me.displayHexColor || '36393F')
+					.setAuthor(member.guild, member.user.avatarURL())
+					.setDescription(`**◎ Member Joined:** <@${member.user.id}> - ${member.user.tag}`)
 					.setFooter(`ID: ${member.user.id}`)
 					.setTimestamp();
 				this.client.channels.cache.get(logs).send(logembed);

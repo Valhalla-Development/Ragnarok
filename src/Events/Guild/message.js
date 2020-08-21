@@ -42,8 +42,8 @@ module.exports = class extends Event {
 
 		if (command === `${prefixcommand}prefix`) {
 			const embed = new MessageEmbed()
-				.setColor('36393F')
-				.setDescription(`This guild's prefix is: \`${prefixcommand}\``);
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setDescription(`**◎ This guild's prefix is:** \`${prefixcommand}\``);
 			message.channel.send(embed);
 			return;
 		}
@@ -104,10 +104,10 @@ module.exports = class extends Event {
 				const lvlup = new MessageEmbed()
 					.setAuthor(`Congratulations ${message.author.username}`)
 					.setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
-					.setColor('36393F')
+					.setColor(message.guild.me.displayHexColor || '36393F')
 					.setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
 				message.channel.send(lvlup).then((msg) => {
-					msg.delete({ timeout: 10000 });
+					msg.delete({ timeout: 15000 });
 				});
 			}
 		}
@@ -176,9 +176,9 @@ module.exports = class extends Event {
 									return;
 								});
 							}
-							message.channel.send(`**Your message contained a link and it was deleted, <@${message.author.id}>**`)
+							message.channel.send(`**◎ Your message contained a link and it was deleted, <@${message.author.id}>**`)
 								.then((msg) => {
-									msg.delete({ timeout: 10000 });
+									msg.delete({ timeout: 15000 });
 								});
 						}
 					}
@@ -253,7 +253,7 @@ module.exports = class extends Event {
 								if (res.embeds[0].url) {
 									const fileExtension = res.embeds[0].url.substring(res.embeds[0].url.lastIndexOf('.') + 1);
 									if (validExtensions.includes(fileExtension)) {
-										embed.setDescription(`**[Message Link](${message.content}) to** ${res.channel}\n${res.content}`);
+										embed.setDescription(`**◎ [Message Link](${message.content}) to** ${res.channel}\n${res.content}`);
 										embed.setImage(res.embeds[0].url);
 										message.channel.send(embed);
 									}
@@ -268,10 +268,10 @@ module.exports = class extends Event {
 								const attachmentUrl = res.attachments.first().url;
 								const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
 								if (!validExtensions.includes(fileExtension)) {
-									embed.setDescription(`**[Message Link](${message.content}) to** ${res.channel}\n${res.content}`);
+									embed.setDescription(`**◎ [Message Link](${message.content}) to** ${res.channel}\n${res.content}`);
 									return;
 								} else {
-									embed.setDescription(`**[Message Link](${message.content}) to** ${res.channel}\n${res.content}`);
+									embed.setDescription(`**◎ [Message Link](${message.content}) to** ${res.channel}\n${res.content}`);
 									embed.setImage(attachmentUrl);
 									message.channel.send(embed);
 									return;
@@ -283,13 +283,13 @@ module.exports = class extends Event {
 								if (!validExtensions.includes(fileExtension)) {
 									return;
 								} else {
-									embed.setDescription(`**[Message Link](${message.content}) to** ${res.channel}`);
+									embed.setDescription(`**◎ [Message Link](${message.content}) to** ${res.channel}`);
 									embed.setImage(attachmentUrl);
 									message.channel.send(embed);
 									return;
 								}
 							} else {
-								embed.setDescription(`**[Message Link](${message.content}) to** ${res.channel}\n${res.content}`);
+								embed.setDescription(`**◎ [Message Link](${message.content}) to** ${res.channel}\n${res.content}`);
 								message.channel.send(embed);
 								return;
 							}
@@ -312,7 +312,7 @@ module.exports = class extends Event {
 
 		if (!message.guild || message.author.bot) return;
 
-		if (message.content.match(mentionRegex)) message.channel.send(`My prefix for ${message.guild.name} is \`${this.client.prefix}\`.`);
+		if (message.content.match(mentionRegex)) message.channel.send(`**◎ My prefix for ${message.guild.name} is \`${this.client.prefix}\`.**`);
 
 		if (!message.content.startsWith(prefixcommand)) return;
 
@@ -323,13 +323,13 @@ module.exports = class extends Event {
 		// Logging
 		if (this.client.logging === true) {
 			if (!oargresult || oargresult === '') {
-				const LoggingNoArgs = `[\x1b[36m${moment().format('LLLL')}\x1b[0m] Command \`${cmd}\` was executed by \x1b[36m${message.author.tag}\x1b[0m (Guild: \x1b[36m${message.guild.name}\x1b[0m)`;
+				const LoggingNoArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] Command \`${cmd}\` was executed by \x1b[31m${message.author.tag}\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
 				if (this.client.user.id === '508756879564865539') {
 					this.client.channels.cache.get('694680953133596682').send(`${cmd} - was executed by ${message.author.tag} - In guild: ${message.guild.name}`, { code: 'css' });
 				}
 				console.log(LoggingNoArgs);
 			} else {
-				const LoggingArgs = `[\x1b[36m${moment().format('LLLL')}\x1b[0m] Command \`${cmd} ${oargresult}\` was executed by \x1b[36m${message.author.tag}\x1b[0m (Guild: \x1b[36m${message.guild.name}\x1b[0m)`;
+				const LoggingArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] Command \`${cmd} ${oargresult}\` was executed by \x1b[31m${message.author.tag}\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
 				if (this.client.user.id === '508756879564865539') {
 					this.client.channels.cache.get('694680953133596682').send(`${cmd} ${oargresult} - was executed by ${message.author.tag} - In guild: ${message.guild.name}`, { code: 'css' });
 				}
@@ -353,8 +353,8 @@ module.exports = class extends Event {
 		}
 		const logembed = new MessageEmbed()
 			.setAuthor(message.author.tag, message.guild.iconURL())
-			.setDescription(`**Used** ${cmd} **command in ${message.channel}**\n${cmd} ${oargresult}`)
-			.setColor('36393F')
+			.setDescription(`**◎ Used** ${cmd} **command in ${message.channel}**\n${cmd} ${oargresult}`)
+			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setFooter(`ID: ${message.channel.id}`)
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send(logembed);

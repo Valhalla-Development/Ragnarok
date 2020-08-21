@@ -12,9 +12,9 @@ module.exports = class extends Event {
 		if (!logs) return;
 
 		const logembed = new MessageEmbed()
+			.setColor(invite.guild.me.displayHexColor || '36393F')
 			.setAuthor(invite.guild, invite.guild.iconURL())
-			.setDescription(`**Invite Deleted:**\n**Invite Code:** \`${invite.code}\``)
-			.setColor('990000')
+			.setDescription(`**◎ Invite Deleted:**\n**◎ Invite Code:** \`${invite.code}\``)
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send(logembed);
 	}

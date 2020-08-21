@@ -37,14 +37,15 @@ module.exports = class extends Event {
 		}
 
 		const logembed = new MessageEmbed()
+			.setColor(oldChannel.guild.me.displayHexColor || '36393F')
 			.setAuthor(oldChannel.guild, oldChannel.guild.iconURL())
-			.setColor('990000')
-			.setFooter(`Channel ID: ${newChannel.id}`)
+			.setTitle('Channel Updated')
+			.setFooter(`ID: ${newChannel.id}`)
 			.setTimestamp();
 
 		if (oldChannel.type === 'category') {
 			if (oldChannel.name !== newChannel.name) {
-				updateM = `**Category Name Updated:**\n\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
+				updateM = `**◎ Category Name Updated:**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
 				logembed
 					.setDescription(updateM);
 				this.client.channels.cache.get(logs).send(logembed);
@@ -53,7 +54,7 @@ module.exports = class extends Event {
 
 		if (oldChannel.type === 'voice') {
 			if (oldChannel.name !== newChannel.name) {
-				updateM = `**Voice Channel Name Updated:**\n\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
+				updateM = `**◎ *Voice Channel Name Updated:**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
 				logembed
 					.setDescription(updateM);
 				this.client.channels.cache.get(logs).send(logembed);
@@ -62,7 +63,7 @@ module.exports = class extends Event {
 
 		if (oldChannel.type === 'text') {
 			if (oldChannel.name !== newChannel.name) {
-				updateM = `**Channel Name Updated:**\n\nOld:\n\`#${oldChannel.name}\`\nNew:\n<#${newChannel.id}>`;
+				updateM = `**◎ Channel Name Updated:**\nOld:\n\`#${oldChannel.name}\`\nNew:\n<#${newChannel.id}>`;
 				logembed
 					.setDescription(updateM);
 				this.client.channels.cache.get(logs).send(logembed);
@@ -80,7 +81,7 @@ module.exports = class extends Event {
 			} else {
 				newNs = 'Disabled';
 			}
-			updateM = `**NSFW Status Updated:**\n\nOld:\n\`${oldNs}\`\nNew:\n\`${newNs}\``;
+			updateM = `**◎ NSFW Status Updated:**\nOld:\n\`${oldNs}\`\nNew:\n\`${newNs}\``;
 			logembed
 				.setDescription(updateM);
 			this.client.channels.cache.get(logs).send(logembed);
@@ -99,7 +100,7 @@ module.exports = class extends Event {
 			} else {
 				newTopic = `${newChannel.topic}`;
 			}
-			updateM = `**Channel Topic Updated:**\n\nOld:\n\`${oldTopic}\`\nNew:\n\`${newTopic}\``;
+			updateM = `**◎ Channel Topic Updated:**\nOld:\n\`${oldTopic}\`\nNew:\n\`${newTopic}\``;
 			logembed
 				.setDescription(updateM);
 			this.client.channels.cache.get(logs).send(logembed);

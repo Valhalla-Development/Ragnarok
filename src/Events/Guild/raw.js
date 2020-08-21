@@ -91,62 +91,53 @@ module.exports = class extends Event {
 											return;
 										}
 										const role2 = channel.guild.roles.everyone;
-										guild.channels
-											.create(`ticket-${nickName}-${randomString}`, {
-												permissionOverwrites: [
-													{
-														id: role.id,
-														allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
-													},
-													{
-														id: role2.id,
-														deny: 'VIEW_CHANNEL'
-													},
-													{
-														id: member.id,
-														allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
-													}
-												]
-											}).then((c) => {
-												const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${guild.id} AND ticketid = (@ticketid)`);
-												updateTicketChannel.run({
-													chanid: c.id,
-													ticketid: randomString
-												});
-												// Send a message saying the ticket has been created.
-												const embed = new MessageEmbed()
-													.setColor('36393F')
-													.setTitle('New Ticket')
-													.setDescription(
-														`Hello \`${member.user.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`
-													);
-												c.send(embed);
-												// And display any errors in the console.
-												const logget = db
-													.prepare(
-														`SELECT log FROM ticketConfig WHERE guildid = ${
-															guild.id
-														};`
-													)
-													.get();
-												if (!logget) {
-													return;
+										guild.channels.create(`ticket-${nickName}-${randomString}`, {
+											permissionOverwrites: [
+												{
+													id: role.id,
+													allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+												},
+												{
+													id: role2.id,
+													deny: 'VIEW_CHANNEL'
+												},
+												{
+													id: member.id,
+													allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
 												}
-												const logchan = guild.channels.cache.find(
-													(chan) => chan.id === logget.log
-												);
-												if (!logchan) return;
-												const loggingembed = new MessageEmbed()
-													.setColor('36393F')
-													.setDescription(
-														`${member} has opened a new ticket \`#${c.name}\``
-													);
-												logchan.send(loggingembed);
-											}).catch(console.error);
+											]
+										}).then((c) => {
+											const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${guild.id} AND ticketid = (@ticketid)`);
+											updateTicketChannel.run({
+												chanid: c.id,
+												ticketid: randomString
+											});
+											// Send a message saying the ticket has been created.
+											const embed = new MessageEmbed()
+												.setColor(member.guild.me.displayHexColor || '36393F')
+												.setTitle('New Ticket')
+												.setDescription(`Hello \`${member.user.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
+											c.send(embed);
+											// And display any errors in the console.
+											const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${guild.id};`).get();
+											if (!logget) {
+												return;
+											}
+											const logchan = guild.channels.cache.find(
+												(chan) => chan.id === logget.log
+											);
+											if (!logchan) return;
+											const loggingembed = new MessageEmbed()
+												.setAuthor(member.user.tag, grabClient.user.displayAvatarURL({ dynamic: true }))
+												.setTitle('Ticket Opened')
+												.setDescription([
+													`**◎ ${member} has opened a new ticket \`#${c.name}**\``
+												])
+												.setTimestamp();
+											logchan.send(loggingembed);
+										}).catch(console.error);
 									} else {
-										const newTicket = db.prepare(
-											'INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);'
-										);
+										const newTicket = db.prepare('INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);');
 										newTicket.run({
 											guildid: guild.id,
 											ticketid: randomString,
@@ -176,35 +167,20 @@ module.exports = class extends Event {
 														allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
 													}
 												]
-											})
-											.then(async (c) => {
-												const updateTicketChannel = db.prepare(
-													`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${
-														guild.id
-													} AND ticketid = (@ticketid)`
-												);
+											}).then(async (c) => {
+												const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${guild.id} AND ticketid = (@ticketid)`);
 												updateTicketChannel.run({
 													chanid: c.id,
 													ticketid: randomString
 												});
 												await c.setParent(ticategory);
 												const embed = new MessageEmbed()
-													.setColor('36393F')
+													.setColor(member.guild.me.displayHexColor || '36393F')
 													.setTitle('New Ticket')
-													.setDescription(
-														`Hello \`${
-															member.user.tag
-														}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. \n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`
-													);
+													.setDescription(`Hello \`${member.user.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. \n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
 												c.send(embed);
 												// And display any errors in the console.
-												const logget = db
-													.prepare(
-														`SELECT log FROM ticketConfig WHERE guildid = ${
-															guild.id
-														};`
-													)
-													.get();
+												const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${guild.id};`).get();
 												if (!logget) {
 													return;
 												}
@@ -214,13 +190,14 @@ module.exports = class extends Event {
 												);
 												if (!logchan) return;
 												const loggingembed = new MessageEmbed()
-													.setColor('36393F')
-													.setDescription(
-														`${member} has opened a new ticket \`#${c.name}\``
-													);
+													.setAuthor(member.user.tag, grabClient.user.displayAvatarURL({ dynamic: true }))
+													.setTitle('Ticket Opened')
+													.setDescription([
+														`**◎ ${member} has opened a new ticket \`#${c.name}**\``
+													])
+													.setTimestamp();
 												logchan.send(loggingembed);
-											})
-											.catch(console.error);
+											}).catch(console.error);
 									}
 								}
 								reaction.users.remove(member.id);
@@ -237,18 +214,12 @@ module.exports = class extends Event {
 		function roleMenu(grabClient) {
 			if (eventType === 'MESSAGE_DELETE') {
 				if (data.user_id === grabClient.user.id) return;
-				const getRoleMenu = db
-					.prepare(`SELECT * FROM rolemenu WHERE guildid=${data.guild_id}`)
-					.get();
+				const getRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${data.guild_id}`).get();
 				if (!getRoleMenu || !getRoleMenu.activeRoleMenuID) {
 					return;
 				}
 				if (getRoleMenu.activeRoleMenuID === data.id) {
-					db.prepare(
-						`UPDATE rolemenu SET activeRoleMenuID = '' WHERE guildid = ${
-							data.guild_id
-						}`
-					).run();
+					db.prepare(`UPDATE rolemenu SET activeRoleMenuID = '' WHERE guildid = ${data.guild_id}`).run();
 				}
 			}
 			if (eventType === 'MESSAGE_REACTION_ADD') {
@@ -283,9 +254,7 @@ module.exports = class extends Event {
 				if (data.user_id === grabClient.user.id) return;
 				const guild = grabClient.guilds.cache.find((guild) => guild.id === data.guild_id);
 				const member = guild.members.cache.find((member) => member.id === data.user_id);
-				const foundRoleMenu = db
-					.prepare(`SELECT * FROM rolemenu WHERE guildid=${data.guild_id}`)
-					.get();
+				const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${data.guild_id}`).get();
 				if (!foundRoleMenu) {
 					return;
 				}
@@ -299,13 +268,10 @@ module.exports = class extends Event {
 						if (member.id !== grabClient.user.id) {
 							if (alphaEmoji.includes(data.emoji.name)) {
 								const roleIndex = alphaEmoji.indexOf(data.emoji.name);
-								const addedRole = msg.guild.roles.cache.find(
-									(r) => r.id === roleArray[roleIndex]
-								);
+								const addedRole = msg.guild.roles.cache.find((r) => r.id === roleArray[roleIndex]);
 								const memberRole = member.roles.cache.map((role) => role.id);
 
-								if (
-									!member.hasPermission('MANAGE_MESSAGES') && addedRole.permissions.has('MANAGE_MESSAGES')) {
+								if (!member.hasPermission('MANAGE_MESSAGES') && addedRole.permissions.has('MANAGE_MESSAGES')) {
 									const getReactUser = reaction.users.map((react) => react.id);
 									if (getReactUser.includes(member.id)) {
 										reaction.users.remove(member.id);
@@ -314,22 +280,22 @@ module.exports = class extends Event {
 								} if (eventType === 'MESSAGE_REACTION_ADD') {
 									if (memberRole.includes(roleArray[roleIndex])) {
 										if (!msg.guild.roles.cache.find((r) => r.id === roleArray[roleIndex])) {
-											msg.channel
-												.send('Uh oh! The role you tried to add, no longer exists!')
-												.then((m) => m.delete({
-													timeout: 10000
-												}));
+											const embed = new MessageEmbed()
+												.setColor(member.guild.me.displayHexColor || '36393F')
+												.addField(`**${grabClient.user.username} - Volume**`,
+													`**◎ Error:** The role you tried to add, no longer exists!`).then((m) => m.delete({ timeout: 15000 }));
+											msg.channel.send(embed);
 											return;
 										}
 										member.roles.remove(roleArray[roleIndex]);
 										reaction.users.remove(member.id);
 									} else {
 										if (!msg.guild.roles.cache.find((r) => r.id === roleArray[roleIndex])) {
-											msg.channel
-												.send('Uh oh! The role you tried to add, no longer exists!')
-												.then((m) => m.delete({
-													timeout: 10000
-												}));
+											const embed = new MessageEmbed()
+												.setColor(member.guild.me.displayHexColor || '36393F')
+												.addField(`**${grabClient.user.username} - Volume**`,
+													`**◎ Error:** The role you tried to add, no longer exists!`).then((m) => m.delete({ timeout: 15000 }));
+											msg.channel.send(embed);
 											return;
 										}
 										member.roles.add(roleArray[roleIndex]);

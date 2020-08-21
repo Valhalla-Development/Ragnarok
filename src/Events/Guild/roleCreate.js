@@ -12,8 +12,8 @@ module.exports = class extends Event {
 		if (!logs) return;
 		const logembed = new MessageEmbed()
 			.setAuthor(role.guild, role.guild.iconURL())
-			.setDescription(`**Role Created: \`${role.name}\`.**`)
-			.setColor('990000')
+			.setDescription(`**◎ Role Created: \`${role.name}\`.**`)
+			.setColor(role.guild.me.displayHexColor || '36393F')
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send(logembed);
 	}

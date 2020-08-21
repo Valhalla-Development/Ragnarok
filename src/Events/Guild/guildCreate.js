@@ -22,6 +22,8 @@ module.exports = class extends Event {
 			}
 		});
 		const embed = new MessageEmbed()
+			.setAuthor(guild, guild.iconURL())
+			.setColor(guild.me.displayHexColor || '36393F')
 			.setTitle('Hello, I\'m **Ragnarok**! Thanks for inviting me!')
 			.setDescription('The prefix for all my commands is `-`, e.g: `-help`.\nIf you find any bugs, report them with `-bugreport <bug>`\nCheck `-stats` to see the latest announcements!');
 		defaultChannel.send({

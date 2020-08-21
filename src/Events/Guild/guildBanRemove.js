@@ -16,8 +16,8 @@ module.exports = class extends Event {
 		const mod = entry.executor.id;
 		const logembed = new MessageEmbed()
 			.setAuthor(guild, guild.iconURL())
-			.setDescription(`**User Unbanned: \`${user.tag}\`.**\nModerator: <@${mod}>`)
-			.setColor('990000')
+			.setDescription(`**◎ User Unbanned: \`${user.tag}\`.\n**◎ Moderator: <@${mod}>`)
+			.setColor(guild.me.displayHexColor || '36393F')
 			.setFooter(`ID: ${mod}`)
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send(logembed);
