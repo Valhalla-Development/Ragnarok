@@ -48,7 +48,8 @@ module.exports = class extends Command {
 			}
 
 			for (const category of categories) {
-				embed.addField(`**${this.client.utils.capitalise(category)}**`, this.client.commands.filter(cmd =>
+				embed.addField(`**${this.client.utils.capitalise(category)} (${this.client.commands.filter(cmd =>
+					cmd.category === category).size})**`, this.client.commands.filter(cmd =>
 					cmd.category === category).map(cmd => `\`${this.client.utils.capitalise(cmd.name)}\``).join(', '));
 			}
 			return message.channel.send(embed);
