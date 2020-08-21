@@ -13,10 +13,11 @@ const xpCooldownSeconds = 60;
 module.exports = class extends Event {
 
 	async run(message) {
+		if (!message.guild || message.author.bot) return;
+
 		if (!message.guild.me.hasPermission('SEND_MESSAGES')) {
 			return;
 		}
-		console.log(!message.guild.me.hasPermission('SEND_MESSAGES'))
 
 		// Custom prefixes
 		const prefixes = db.prepare('SELECT count(*) FROM setprefix WHERE guildid = ?').get(message.guild.id);
@@ -311,8 +312,6 @@ module.exports = class extends Event {
 
 		const mentionRegex = RegExp(`^<@!${this.client.user.id}>$`);
 
-		if (!message.guild || message.author.bot) return;
-
 		if (message.content.match(mentionRegex)) message.channel.send(`**◎ My prefix for ${message.guild.name} is \`${this.client.prefix}\`.**`);
 
 		if (!message.content.startsWith(prefixcommand)) return;
@@ -354,7 +353,7 @@ module.exports = class extends Event {
 		}
 		const logembed = new MessageEmbed()
 			.setAuthor(message.author.tag, message.guild.iconURL())
-			.setDescription(`**◎ Used** ${cmd} **command in ${message.channel}**\n${cmd} ${oargresult}`)
+			.setDescription(`**◎ Used** \`${cmd}\` **command in ${message.channel}**\n\`-${cmd} ${oargresult}\``)
 			.setColor(message.guild.me.displayHexColor || '36393F')
 			.setFooter(`ID: ${message.channel.id}`)
 			.setTimestamp();
