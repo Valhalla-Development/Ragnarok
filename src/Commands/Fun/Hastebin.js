@@ -8,10 +8,10 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			aliases: ['haste'],
-			description: 'Posts text/file to paste.io',
+			aliases: ['haste', 'paste'],
+			description: 'Posts text/file to paste.io.',
 			category: 'Fun',
-			usage: 'Hastebin <text/file>'
+			usage: '<text/attachment>'
 		});
 	}
 

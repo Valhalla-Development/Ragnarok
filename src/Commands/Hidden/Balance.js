@@ -9,9 +9,9 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			aliases: ['bal', 'coins', 'money'],
-			description: 'Displays balance of specified user.',
+			description: 'Displays balance of message author/tagged user.',
 			category: 'Hidden',
-			usage: 'Balance <@tag>'
+			usage: '[@user]'
 		});
 	}
 

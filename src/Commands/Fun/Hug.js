@@ -5,9 +5,9 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Hugs a specified user.',
+			description: 'Hugs message author/tagged user.',
 			category: 'Fun',
-			usage: 'Hug <@tag>'
+			usage: '[@user]'
 		});
 	}
 

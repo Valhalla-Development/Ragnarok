@@ -5,11 +5,10 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'E',
-			aliases: ['E'],
-			description: 'E',
-			category: 'E',
-			usage: 'E'
+			aliases: ['embed'],
+			description: 'Posts given input in an embed.',
+			category: 'Moderation',
+			usage: '<text>'
 		});
 	}
 

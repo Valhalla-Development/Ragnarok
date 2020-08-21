@@ -5,11 +5,8 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'E',
-			aliases: ['E'],
-			description: 'E',
-			category: 'E',
-			usage: 'E'
+			description: 'Clones the channel and deletes the original.',
+			category: 'Moderation'
 		});
 	}
 

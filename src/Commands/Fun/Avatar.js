@@ -6,9 +6,9 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			aliases: ['pfp'],
-			description: 'Displays avatar of specified user.',
+			description: 'Fetches message author/tagged user profile picture.',
 			category: 'Fun',
-			usage: 'Avatar <@tag>'
+			usage: '[@tag]'
 		});
 	}
 

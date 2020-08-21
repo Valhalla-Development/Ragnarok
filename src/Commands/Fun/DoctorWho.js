@@ -7,9 +7,8 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			aliases: ['drwho'],
-			description: 'Fetches a random post from r/DoctorWhumour',
-			category: 'Fun',
-			usage: 'DoctorWho'
+			description: 'Fetches a random post from r/DoctorWhumour.',
+			category: 'Fun'
 		});
 	}
 

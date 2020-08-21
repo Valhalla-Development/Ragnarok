@@ -7,8 +7,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'music',
-			description: 'E',
+			description: 'Displays available commands.',
 			category: 'Music'
 		});
 	}

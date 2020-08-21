@@ -14,8 +14,7 @@ module.exports = class extends Command {
 		super(...args, {
 			aliases: ['botinfo', 'info'],
 			description: 'Lists statistics on the bot.',
-			category: 'Informative',
-			usage: 'Stats'
+			category: 'Informative'
 		});
 	}
 

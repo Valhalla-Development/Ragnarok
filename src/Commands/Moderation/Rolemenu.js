@@ -36,11 +36,8 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'E',
-			aliases: ['E'],
-			description: 'E',
-			category: 'E',
-			usage: 'E'
+			description: 'Posts the role menu with pre-defiend roles.',
+			category: 'Moderation'
 		});
 	}
 

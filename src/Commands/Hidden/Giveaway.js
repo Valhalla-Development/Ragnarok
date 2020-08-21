@@ -10,7 +10,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			aliases: ['g'],
-			description: 'Starts a giveaway',
+			description: 'Starts a giveaway.',
 			category: 'Hidden',
 			usage: '<start/stop/reroll> <time> <winners amount> <prize>'
 		});

@@ -7,11 +7,9 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'E',
-			aliases: ['E'],
-			description: 'E',
-			category: 'E',
-			usage: 'E'
+			description: 'Basically nothing because I have not finished it lmao',
+			category: 'Hidden',
+			usage: '<command name>'
 		});
 	}
 

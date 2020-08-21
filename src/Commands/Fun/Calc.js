@@ -9,7 +9,7 @@ module.exports = class extends Command {
 			aliases: ['math'],
 			description: 'Calculates given input.',
 			category: 'Fun',
-			usage: 'Calc <input>'
+			usage: '<input>'
 		});
 	}
 

@@ -5,11 +5,10 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'E',
-			aliases: ['E'],
-			description: 'E',
-			category: 'E',
-			usage: 'E'
+			aliases: ['echo'],
+			description: 'Makes the bot post given text.',
+			category: 'Moderation',
+			usage: '<text>'
 		});
 	}
 

@@ -30,9 +30,9 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			aliases: ['whois'],
-			description: 'Displays information on specified user.',
+			description: 'Displays information on tagged user.',
 			category: 'Informative',
-			usage: 'Userinfo <@tag>'
+			usage: '<@user>'
 		});
 	}
 

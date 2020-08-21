@@ -9,11 +9,9 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'E',
-			aliases: ['E'],
-			description: 'E',
-			category: 'E',
-			usage: 'E'
+			aliases: ['np'],
+			description: 'Displays current song playing.',
+			category: 'Music'
 		});
 	}
 

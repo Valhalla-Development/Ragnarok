@@ -18,9 +18,9 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			aliases: ['rank'],
-			description: 'Displays level of specified user.',
+			description: 'Displays level of message author/tagged user.',
 			category: 'Fun',
-			usage: 'Level <@tag>'
+			usage: '[@user]'
 		});
 	}
 

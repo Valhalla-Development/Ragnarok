@@ -6,7 +6,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Displays bot uptime',
+			description: 'Displays bot uptime.',
 			category: 'Informative'
 		});
 	}

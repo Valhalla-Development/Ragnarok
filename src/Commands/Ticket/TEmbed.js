@@ -7,11 +7,8 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'E',
-			aliases: ['E'],
-			description: 'E',
-			category: 'E',
-			usage: 'E'
+			description: 'Posts an embed where users can create a ticket with a reaction.',
+			category: 'Ticket'
 		});
 	}
 

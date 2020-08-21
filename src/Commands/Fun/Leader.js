@@ -10,7 +10,7 @@ module.exports = class extends Command {
 			aliases: ['leaderboard'],
 			description: 'Displays the leaderboard for the level system.',
 			category: 'Fun',
-			usage: 'Level <@tag>'
+			usage: '[@user]'
 		});
 	}
 

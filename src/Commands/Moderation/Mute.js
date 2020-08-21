@@ -8,11 +8,10 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'E',
-			aliases: ['E'],
-			description: 'E',
-			category: 'E',
-			usage: 'E'
+			aliases: ['shh'],
+			description: 'Mutes tagged user.',
+			category: 'Moderation',
+			usage: '<@user>'
 		});
 	}
 

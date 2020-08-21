@@ -16,9 +16,10 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Displays Trakt information for specified movie/show.',
+			aliases: ['movie', 'show'],
+			description: 'Fetches Trakt information for specified movie/show.',
 			category: 'Fun',
-			usage: 'Trakt <input>'
+			usage: '<show/movie>'
 		});
 	}
 

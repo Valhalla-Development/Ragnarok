@@ -5,9 +5,9 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Evaluates given input',
+			description: 'Evaluates given input.',
 			category: 'Hidden',
-			usage: 'Eval <input>'
+			usage: '<input>'
 		});
 	}
 

@@ -11,7 +11,7 @@ module.exports = class extends Command {
 			aliases: ['dep', 'deposit'],
 			description: 'Banks specified amount of money.',
 			category: 'Hidden',
-			usage: 'Bank <amount/all>'
+			usage: '<amount/all>'
 		});
 	}
 

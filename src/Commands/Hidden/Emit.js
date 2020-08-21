@@ -9,7 +9,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Emits a Discord.js event.',
 			category: 'Hidden',
-			usage: 'Emit <event>'
+			usage: '<event>'
 		});
 	}
 

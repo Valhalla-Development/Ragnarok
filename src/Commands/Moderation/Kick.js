@@ -4,8 +4,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'kick',
-			description: 'helo',
+			description: 'Kicks tagged user from the guild.',
 			category: 'Moderation'
 		});
 	}

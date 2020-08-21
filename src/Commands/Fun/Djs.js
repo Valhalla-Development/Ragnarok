@@ -8,7 +8,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Displays search results in the D.js documentation.',
 			category: 'Fun',
-			usage: 'Djs <input>'
+			usage: '<input>'
 		});
 	}
 

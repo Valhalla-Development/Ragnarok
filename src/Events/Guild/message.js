@@ -13,9 +13,10 @@ const xpCooldownSeconds = 60;
 module.exports = class extends Event {
 
 	async run(message) {
-		if (!message.member.guild.me.hasPermission('SEND_MESSAGES')) {
+		if (!message.guild.me.hasPermission('SEND_MESSAGES')) {
 			return;
 		}
+		console.log(!message.guild.me.hasPermission('SEND_MESSAGES'))
 
 		// Custom prefixes
 		const prefixes = db.prepare('SELECT count(*) FROM setprefix WHERE guildid = ?').get(message.guild.id);

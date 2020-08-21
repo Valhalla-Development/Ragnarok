@@ -7,8 +7,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'poll',
-			description: 'E',
+			description: 'Starts a poll.',
 			category: 'Moderation'
 		});
 	}

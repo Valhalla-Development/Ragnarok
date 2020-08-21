@@ -7,11 +7,10 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'E',
-			aliases: ['E'],
-			description: 'E',
-			category: 'E',
-			usage: 'E'
+			aliases: ['begone'],
+			description: 'Bans tagged user from the guild.',
+			category: 'Moderation',
+			usage: '<@user>'
 		});
 	}
 

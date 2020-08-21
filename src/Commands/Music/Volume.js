@@ -7,11 +7,10 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'E',
-			aliases: ['E'],
-			description: 'E',
-			category: 'E',
-			usage: 'E'
+			aliases: ['vol'],
+			description: 'Alters the bot music volume.',
+			category: 'Music',
+			usage: '<0-100>'
 		});
 	}
 

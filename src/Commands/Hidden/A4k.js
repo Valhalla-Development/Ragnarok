@@ -8,9 +8,9 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Displays search results from r/Addons4Kodi',
+			description: 'Fetches search results from r/Addons4Kodi.',
 			category: 'Hidden',
-			usage: 'A4k <input>'
+			usage: '<input>'
 		});
 	}
 
@@ -26,7 +26,6 @@ module.exports = class extends Command {
 			message.channel.send(incorrectFormat).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
-		message.channel.send(this.category);
 
 		const searchTerm = args.join('%20');
 

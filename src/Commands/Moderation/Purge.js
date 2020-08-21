@@ -5,11 +5,9 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'E',
-			aliases: ['E'],
-			description: 'E',
-			category: 'E',
-			usage: 'E'
+			description: 'Deletes specified amount of messages from the channel.',
+			category: 'Moderation',
+			usage: '<amount of messages to delete>'
 		});
 	}
 

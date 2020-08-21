@@ -11,7 +11,7 @@ module.exports = class extends Command {
 			aliases: ['pay'],
 			description: 'Gives money to specified user from your bank.',
 			category: 'Hidden',
-			usage: 'Give <@tag> <amount/all>'
+			usage: '<@user> <amount/all>'
 		});
 	}
 

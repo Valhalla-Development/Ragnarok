@@ -7,11 +7,9 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			name: 'E',
-			aliases: ['E'],
-			description: 'E',
-			category: 'E',
-			usage: 'E'
+			description: 'Repeats song/playlist.',
+			category: 'Music',
+			usage: '[queue]'
 		});
 	}
 

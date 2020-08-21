@@ -9,9 +9,9 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Inputs text into a captcha image.',
+			description: 'Generates a captcha image with given text.',
 			category: 'Fun',
-			usage: 'Captcha <input>'
+			usage: '<input>'
 		});
 	}
 

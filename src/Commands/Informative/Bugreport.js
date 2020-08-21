@@ -9,7 +9,7 @@ module.exports = class extends Command {
 			aliases: ['bug'],
 			description: 'Reports a bug on the bot to the owner.',
 			category: 'Informative',
-			usage: 'Bugreport <bug>'
+			usage: '<text>'
 		});
 	}
 

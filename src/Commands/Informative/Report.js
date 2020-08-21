@@ -7,7 +7,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Reports tagged user.',
 			category: 'Informative',
-			usage: 'Report <@tag>'
+			usage: '<@user>'
 		});
 	}
 

@@ -9,7 +9,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Withdraws specified amount from your bank.',
 			category: 'Hidden',
-			usage: 'Withdraw <amount/all>'
+			usage: '<amount/all>'
 		});
 	}
 
