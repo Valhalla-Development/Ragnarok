@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 const Event = require('../../Structures/Event');
 const { MessageEmbed } = require('discord.js');
 const { ErelaClient, Utils } = require('erela.js');
@@ -18,7 +19,7 @@ module.exports = class extends Event {
 			`Logged in as ${this.client.user.tag}`,
 			`Loaded ${this.client.commands.size} commands!`,
 			`Loaded ${this.client.events.size} events!`,
-			`Scanning for guilds...\n\x1b[36m[-]\x1b[0m ${this.client.guilds.cache.map((n) => `${n.name} (ID: \x1b[36m${n.id}\x1b[0m)`).join('\x1b[36m\n[-]\x1b[0m ')}`
+			`Scanning for guilds...\n\x1b[31m[-]\x1b[0m ${this.client.guilds.cache.map((n) => `${n.name} (ID: \x1b[31m${n.id}\x1b[0m)`).join('\x1b[31m\n[-]\x1b[0m ')}`
 		].join('\n'));
 
 		setTimeout(() => {
@@ -56,8 +57,9 @@ module.exports = class extends Event {
 					return;
 				}
 				const embed = new MessageEmbed()
-					.setColor('36393F')
-					.setDescription('<:MusicLogo:684822003110117466> Queue has ended.');
+					.addField(`**${this.client.user.username} - Music**`,
+						`**◎ Success:** <:MusicLogo:684822003110117466> Queue has ended.`)
+					.setColor(player.textChannel.guild.me.displayHexColor || '36393F');
 				player.textChannel.send(embed);
 				this.client.music.players.destroy(player.guild.id);
 				return;
@@ -68,8 +70,9 @@ module.exports = class extends Event {
 				}
 				if (player.queue.length < 1) {
 					const embed = new MessageEmbed()
-						.setColor('36393F')
-						.setDescription('<:MusicLogo:684822003110117466> Track has ended.');
+						.addField(`**${this.client.user.username} - Music**`,
+							`**◎ Success:** <:MusicLogo:684822003110117466> Track has ended.`)
+						.setColor(player.textChannel.guild.me.displayHexColor || '36393F');
 					player.textChannel.send(embed);
 					this.client.music.players.destroy(player.guild.id);
 					return;
@@ -81,7 +84,7 @@ module.exports = class extends Event {
 				}
 				const embed = new MessageEmbed()
 					.setAuthor('Now Playing:', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-					.setColor('36393F')
+					.setColor(textChannel.guild.me.displayHexColor || '36393F')
 					.setDescription(`Now playing: \`${title}\`\nDuration: \`${Utils.formatTime(duration, true)}\`\nRequested by: ${requester}`);
 				textChannel.send(embed);
 			});
