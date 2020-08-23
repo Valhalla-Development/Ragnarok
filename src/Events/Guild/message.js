@@ -305,10 +305,10 @@ module.exports = class extends Event {
 		linkTag(this.client);
 
 		// Chat Filter
-		if (this.client.filterList.some(word => message.content.toLowerCase().includes(` ${word} `))) {
+		/* if (this.client.filterList.some(word => message.content.toLowerCase().includes(` ${word} `))) {
 			message.delete();
 			message.channel.send('BOI THAT"S A BLOCKED WORD!');
-		}
+		}*/
 
 		const mentionRegex = RegExp(`^<@!${this.client.user.id}>$`);
 

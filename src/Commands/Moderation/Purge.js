@@ -46,6 +46,23 @@ module.exports = class extends Command {
 			return;
 		}
 
+		// test it bub
+		/* let total = 0;
+		function purge(message, count = 2) {
+			if (count > 1000) return 'Nope!';
+			if (count >= 100) {
+				message.channel.bulkDelete(100).then((x) => {
+					total += x.size;
+					return purge(count -= 100);
+				});
+			} else {
+				message.channel.bulkDelete(count).then((x) => {
+					total += x.size;
+					return `Purged ${total}`;
+				});
+			}
+		}*/
+
 		let amt;
 		if (args[0] > 100) {
 			amt = 100;
