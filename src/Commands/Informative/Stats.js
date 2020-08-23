@@ -45,7 +45,7 @@ module.exports = class extends Command {
 				`**◎ Uptime:** ${ms(this.client.uptime, { long: true })}`,
 				`**◎ Commands:** ${this.client.commands.filter(cmd => cmd.category !== 'Hidden').size}`,
 				`**◎ Servers:** ${this.client.guilds.cache.size.toLocaleString()}`,
-				`**◎ Users:** ${message.guild.members.cache.size.toLocaleString()}`,
+				`**◎ Users:** ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')}`,
 				`**◎ Channels:** ${this.client.channels.cache.size.toLocaleString()}`,
 				`**◎ Creation Date:** ${utc(this.client.user.createdTimestamp).format('Do MMMM YYYY')}`,
 				`**◎ Node.js:** ${process.version}`,
