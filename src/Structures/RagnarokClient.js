@@ -76,7 +76,7 @@ module.exports = class RagnarokClient extends Client {
 		});
 
 		if (process.version.slice(1).split('.')[0] < 12) {
-			console.log(new Error('[Ragnarok] You must have NodeJS 12 or higher installed on your PC.'));
+			console.log(new Error(`[${this.user.username}] You must have NodeJS 12 or higher installed on your PC.`));
 			process.exit(1);
 		}
 
