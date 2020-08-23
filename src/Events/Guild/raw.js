@@ -153,6 +153,7 @@ module.exports = class extends Event {
 										// Create the channel with the name "ticket-" then the user's ID.
 										guild.channels
 											.create(`ticket-${nickName}-${randomString}`, {
+												parent: ticategory,
 												permissionOverwrites: [
 													{
 														id: role.id,
@@ -173,7 +174,6 @@ module.exports = class extends Event {
 													chanid: c.id,
 													ticketid: randomString
 												});
-												await c.setParent(ticategory);
 												const embed = new MessageEmbed()
 													.setColor(member.guild.me.displayHexColor || '36393F')
 													.setTitle('New Ticket')

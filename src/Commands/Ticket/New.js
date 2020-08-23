@@ -92,52 +92,51 @@ module.exports = class extends Command {
 				return;
 			}
 			const role2 = message.channel.guild.roles.everyone;
-			message.guild.channels
-				.create(`ticket-${nickName}-${randomString}`, {
-					permissionOverwrites: [
-						{
-							id: role.id,
-							allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
-						},
-						{
-							id: role2.id,
-							deny: 'VIEW_CHANNEL'
-						},
-						{
-							id: message.author.id,
-							allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
-						}
-					]
-				}).then((c) => {
-					const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`);
-					updateTicketChannel.run({
-						chanid: c.id,
-						ticketid: randomString
-					});
-					// Send a message saying the ticket has been created.
-					const newTicketE = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
-						.addField(`**${this.client.user.username} - New**`,
-							`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
-					message.channel.send(newTicketE).then((m) => m.delete({ timeout: 15000 }));
-					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
-						.setTitle('New Ticket')
-						.setDescription(`Hello \`${message.author.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
-					c.send(embed);
-					// And display any errors in the console.
-					const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
-					if (!logget) {
-						return;
+			message.guild.channels.create(`ticket-${nickName}-${randomString}`, {
+				permissionOverwrites: [
+					{
+						id: role.id,
+						allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+					},
+					{
+						id: role2.id,
+						deny: 'VIEW_CHANNEL'
+					},
+					{
+						id: message.author.id,
+						allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
 					}
-					const logchan = message.guild.channels.cache.find((chan) => chan.id === logget.log);
-					if (!logchan) return;
-					const loggingembed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
-						.addField(`**${this.client.user.username} - New**`,
-							`**◎ Ticket Created:** ${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
-					logchan.send(loggingembed);
-				}).catch(console.error);
+				]
+			}).then((c) => {
+				const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`);
+				updateTicketChannel.run({
+					chanid: c.id,
+					ticketid: randomString
+				});
+				// Send a message saying the ticket has been created.
+				const newTicketE = new MessageEmbed()
+					.setColor(message.guild.me.displayHexColor || '36393F')
+					.addField(`**${this.client.user.username} - New**`,
+						`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
+				message.channel.send(newTicketE).then((m) => m.delete({ timeout: 15000 }));
+				const embed = new MessageEmbed()
+					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setTitle('New Ticket')
+					.setDescription(`Hello \`${message.author.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
+				c.send(embed);
+				// And display any errors in the console.
+				const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
+				if (!logget) {
+					return;
+				}
+				const logchan = message.guild.channels.cache.find((chan) => chan.id === logget.log);
+				if (!logchan) return;
+				const loggingembed = new MessageEmbed()
+					.setColor(message.guild.me.displayHexColor || '36393F')
+					.addField(`**${this.client.user.username} - New**`,
+						`**◎ Ticket Created:** ${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
+				logchan.send(loggingembed);
+			}).catch(console.error);
 		} else {
 			const newTicket = db.prepare('INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);');
 			newTicket.run({
@@ -159,54 +158,53 @@ module.exports = class extends Command {
 			}
 			const role2 = message.channel.guild.roles.everyone;
 			// Create the channel with the name "ticket-" then the user's ID.
-			message.guild.channels
-				.create(`ticket-${nickName}-${randomString}`, {
-					permissionOverwrites: [
-						{
-							id: role.id,
-							allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
-						},
-						{
-							id: role2.id,
-							deny: 'VIEW_CHANNEL'
-						},
-						{
-							id: message.author.id,
-							allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
-						}
-					]
-				}).then(async (c) => {
-					const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`);
-					updateTicketChannel.run({
-						chanid: c.id,
-						ticketid: randomString
-					});
-					await c.setParent(ticategory);
-					// Send a message saying the ticket has been created.
-					const newTicketE = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
-						.addField(`**${this.client.user.username} - New**`,
-							`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
-					message.channel.send(newTicketE).then((m) => m.delete({ timeout: 15000 }));
-					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
-						.setTitle('New Ticket')
-						.setDescription(`Hello \`${message.author.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. \n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
-					c.send(embed);
-					// And display any errors in the console.
-					const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
-					if (!logget) {
-						return;
+			message.guild.channels.create(`ticket-${nickName}-${randomString}`, {
+				parent: ticategory,
+				permissionOverwrites: [
+					{
+						id: role.id,
+						allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+					},
+					{
+						id: role2.id,
+						deny: 'VIEW_CHANNEL'
+					},
+					{
+						id: message.author.id,
+						allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
 					}
+				]
+			}).then(async (c) => {
+				const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`);
+				updateTicketChannel.run({
+					chanid: c.id,
+					ticketid: randomString
+				});
+				// Send a message saying the ticket has been created.
+				const newTicketE = new MessageEmbed()
+					.setColor(message.guild.me.displayHexColor || '36393F')
+					.addField(`**${this.client.user.username} - New**`,
+						`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
+				message.channel.send(newTicketE).then((m) => m.delete({ timeout: 15000 }));
+				const embed = new MessageEmbed()
+					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setTitle('New Ticket')
+					.setDescription(`Hello \`${message.author.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. \n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
+				c.send(embed);
+				// And display any errors in the console.
+				const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
+				if (!logget) {
+					return;
+				}
 
-					const logchan = message.guild.channels.cache.find((chan) => chan.id === logget.log);
-					if (!logchan) return;
-					const loggingembed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
-						.addField(`**${this.client.user.username} - New**`,
-							`**◎ Ticket Created:** ${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
-					logchan.send(loggingembed);
-				}).catch(console.error);
+				const logchan = message.guild.channels.cache.find((chan) => chan.id === logget.log);
+				if (!logchan) return;
+				const loggingembed = new MessageEmbed()
+					.setColor(message.guild.me.displayHexColor || '36393F')
+					.addField(`**${this.client.user.username} - New**`,
+						`**◎ Ticket Created:** ${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
+				logchan.send(loggingembed);
+			}).catch(console.error);
 		}
 	}
 
