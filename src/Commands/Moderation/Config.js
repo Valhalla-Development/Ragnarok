@@ -656,7 +656,7 @@ module.exports = class extends Command {
 						const embed = new MessageEmbed()
 							.setColor(message.guild.me.displayHexColor || '36393F')
 							.addField(`**${this.client.user.username} - Config**`,
-								`**◎ Error:** Ticket Category disabled!`);
+								`**◎ Success:** Ticket Category disabled!`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 						db.prepare('UPDATE ticketConfig SET category = (@cat) WHERE guildid = (@guildid);').run({
 							guildid: `${message.guild.id}`,
@@ -681,7 +681,7 @@ module.exports = class extends Command {
 						const embed = new MessageEmbed()
 							.setColor(message.guild.me.displayHexColor || '36393F')
 							.addField(`**${this.client.user.username} - Config**`,
-								`**◎ Error:** Ticket Category set to \`${category.name}\``);
+								`**◎ Success:** Ticket Category set to \`${category.name}\``);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 						return;
 					}
