@@ -43,7 +43,7 @@ module.exports = class extends Command {
 			.addField('General', [
 				`**◎ Client:** ${this.client.user.tag}`,
 				`**◎ Uptime:** ${ms(this.client.uptime, { long: true })}`,
-				`**◎ Commands:** ${this.client.commands.size}`,
+				`**◎ Commands:** ${this.client.commands.filter(cmd => cmd.category !== 'Hidden').size}`,
 				`**◎ Servers:** ${this.client.guilds.cache.size.toLocaleString()}`,
 				`**◎ Users:** ${message.guild.members.cache.size.toLocaleString()}`,
 				`**◎ Channels:** ${this.client.channels.cache.size.toLocaleString()}`,
