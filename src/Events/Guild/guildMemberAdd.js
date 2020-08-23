@@ -38,7 +38,7 @@ module.exports = class extends Event {
 			const ctx = canvas.getContext('2d');
 
 			const background = await Canvas.loadImage(
-				'./storage/canvas/images/welcome.jpg'
+				'./Storage/Canvas/Images/welcome.jpg'
 			);
 
 			ctx.drawImage(background, 0, 0, canvas.width, canvas.height);

@@ -1,7 +1,7 @@
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
-const db = new SQLite('./storage/db/db.sqlite');
+const db = new SQLite('./Storage/DB/db.sqlite');
 const bankLimit = Number(500000);
 
 module.exports = class extends Command {

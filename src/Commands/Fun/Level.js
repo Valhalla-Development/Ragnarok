@@ -7,9 +7,9 @@ const Command = require('../../Structures/Command');
 const { MessageAttachment } = require('discord.js');
 const abbreviate = require('number-abbreviate');
 const SQLite = require('better-sqlite3');
-const db = new SQLite('./storage/db/db.sqlite');
+const db = new SQLite('./Storage/DB/db.sqlite');
 const Canvas = require('canvas');
-Canvas.registerFont('./storage/canvas/fonts/Shapirit.otf', {
+Canvas.registerFont('./Storage/Canvas/Fonts/Shapirit.otf', {
 	family: 'Shapirit'
 });
 

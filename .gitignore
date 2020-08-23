@@ -2,9 +2,9 @@
 node_modules/
 
 # Database files
-Storage/db/db.sqlite
-Storage/db/db.sqlite-shm
-Storage/db/db.sqlite-wal
+Storage/DB/db.sqlite
+Storage/DB/db.sqlite-shm
+Storage/DB/db.sqlite-wal
 
 # Lavalink Logs
 Storage/lavalink/logs

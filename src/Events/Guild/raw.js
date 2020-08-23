@@ -3,7 +3,7 @@
 const Event = require('../../Structures/Event');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
-const db = new SQLite('./storage/db/db.sqlite');
+const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 
