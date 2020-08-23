@@ -96,11 +96,11 @@ module.exports = class extends Event {
 			.set('high', 0.25);
 
 
-		const guildInvites = new Map();
+		/* const guildInvites = new Map();
 		this.invites = guildInvites;
 		this.client.guilds.cache.forEach(guild => {
 			guild.fetchInvites().then(invite => this.invites.set(guild.id, invite));
-		});
+		});*/
 
 		// Database Creation
 		// Dad Bot Table

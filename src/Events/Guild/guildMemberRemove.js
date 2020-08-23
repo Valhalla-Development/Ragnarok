@@ -52,7 +52,7 @@ module.exports = class extends Event {
 			}
 		}
 
-		// Invite Manager
+		/* // Invite Manager
 		if (member.user.bot) return;
 
 		const cachedInvites = this.invites.get(member.guild.id);
@@ -75,7 +75,7 @@ module.exports = class extends Event {
 				`**◎ ${member.user} joined**; Invited by ${inviter.username} (${inviteUses} invites)`)
 			.setFooter(`ID: ${member.user.id}`)
 			.setTimestamp();
-		logChannel.send(embed);
+		logChannel.send(embed);*/
 	}
 
 };

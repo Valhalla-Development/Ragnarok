@@ -4,7 +4,7 @@ const { MessageEmbed } = require('discord.js');
 module.exports = class extends Event {
 
 	async run(guild) {
-		this.client.invites.set(guild.id, await guild.fetchInvites());
+		// this.client.invites.set(guild.id, await guild.fetchInvites());
 
 		console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
 		this.client.user.setActivity(`${this.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
