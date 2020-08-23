@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
@@ -59,6 +58,8 @@ module.exports = class extends Command {
 			} else {
 				const roleArray = JSON.parse(foundRoleMenu.roleList);
 				let embedRoleList = '';
+
+				let i;
 
 				for (i = 0; i < roleArray.length; i++) {
 					embedRoleList += `${alphaEmoji[i]} - <@&${roleArray[i]}>\n\n`;
