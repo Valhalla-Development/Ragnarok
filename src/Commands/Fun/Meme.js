@@ -33,7 +33,7 @@ module.exports = class extends Command {
 		const safe = message.channel.nsfw ? data.children : data.children.filter((post) => !post.data.over_18);
 		if (!safe.length) {
 			const noPost = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Meme**`,
 					`**◎ Error:** I could not find a psot.`);
 			message.channel.send(noPost).then((m) => m.delete({ timeout: 15000 }));
@@ -49,7 +49,7 @@ module.exports = class extends Command {
 			postURL = post.data.url;
 		}
 		const embed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || '36393F')
+			.setColor(message.guild.me.displayHexColor || 'A10000')
 			.setAuthor(`${post.data.title}`, message.author.displayAvatarURL({ dynamic: true }), `https://reddit.com${post.data.permalink}`)
 			.setImage(postURL)
 			.setFooter(`👍 ${post.data.ups} | 💬 ${post.data.num_comments}`);

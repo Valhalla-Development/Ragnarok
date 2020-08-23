@@ -18,7 +18,7 @@ module.exports = class extends Command {
 
 		if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Poll**`,
 					`**◎ Error:** Only the server's managers can use this command!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -28,7 +28,7 @@ module.exports = class extends Command {
 		// Check for input
 		if (!args[0]) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Poll**`,
 					`**◎ Error:** Correct usage: \`${prefix}poll <question>\``);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -37,7 +37,7 @@ module.exports = class extends Command {
 
 		// Create Embed
 		const embed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || '36393F')
+			.setColor(message.guild.me.displayHexColor || 'A10000')
 			.addField(`**Poll Create By ${message.author.username}**`,
 				`${args.join(' ')}`)
 			.setFooter('React to Vote.');

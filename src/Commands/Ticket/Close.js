@@ -25,7 +25,7 @@ module.exports = class extends Command {
 		// Make sure it's inside the ticket channel.
 		if (foundTicket && message.channel.id !== foundTicket.chanid) {
 			const badChannel = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Error:** You can't use the close command outside of a ticket channel.`);
 			message.channel.send(badChannel).then((m) => m.delete({ timeout: 15000 }));
@@ -33,7 +33,7 @@ module.exports = class extends Command {
 		}
 		if (!foundTicket) {
 			const errEmbed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Error:** You can't use the close command outside of a ticket channel.`);
 			message.channel.send(errEmbed).then((m) => m.delete({ timeout: 15000 }));
@@ -43,7 +43,7 @@ module.exports = class extends Command {
 		// Ask for confirmation within 10 seconds.
 		const user = this.client.users.cache.find((a) => a.id === foundTicket.authorid);
 		const confirmEmbed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || '36393F')
+			.setColor(message.guild.me.displayHexColor || 'A10000')
 			.addField(`**${this.client.user.username} - Close**`,
 				`**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!\nTo confirm, type \`${prefix}confirm\`. This will time out in 20 seconds and be cancelled.`);
 		message.channel.send(confirmEmbed).then((msg) => {
@@ -68,7 +68,7 @@ module.exports = class extends Command {
 				if (!logchan) return;
 
 				const loggingembed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F');
+					.setColor(message.guild.me.displayHexColor || 'A10000');
 
 				if (!reason) {
 					loggingembed

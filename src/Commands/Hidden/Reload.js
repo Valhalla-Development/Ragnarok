@@ -18,7 +18,7 @@ module.exports = class extends Command {
 
 		if (!args[0]) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Reload**`,
 					`**◎ Error:** Please provide a command to reload!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -27,7 +27,7 @@ module.exports = class extends Command {
 		const commandName = args[0].toLowerCase();
 		if (!this.client.commands.get(commandName)) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Reload**`,
 					`**◎ Error:** That command does not exist! Try again.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -44,14 +44,14 @@ module.exports = class extends Command {
 					const pull = require(`../${f}/${commandName}.js`);
 					this.client.commands.set(commandName, pull);
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Reload**`,
 							`**◎ Success:** Successfully reloaded \`${commandName}\``);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 					return;
 				} catch (e) {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Reload**`,
 							`**◎ Error:** Could not reload: \`${args[0].toUpperCase()}\``);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));

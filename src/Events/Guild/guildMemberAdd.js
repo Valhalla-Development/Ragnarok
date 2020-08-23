@@ -91,7 +91,7 @@ module.exports = class extends Event {
 			const logs = id.channel;
 			if (logs) {
 				const logembed = new MessageEmbed()
-					.setColor(member.guild.me.displayHexColor || '36393F')
+					.setColor(member.guild.me.displayHexColor || 'A10000')
 					.setAuthor(member.guild, member.user.avatarURL())
 					.setDescription(`**◎ Member Joined:** <@${member.user.id}> - ${member.user.tag}`)
 					.setFooter(`ID: ${member.user.id}`)

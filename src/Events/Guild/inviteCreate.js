@@ -31,7 +31,7 @@ module.exports = class extends Event {
 		}
 
 		const logembed = new MessageEmbed()
-			.setColor(invite.guild.me.displayHexColor || '36393F')
+			.setColor(invite.guild.me.displayHexColor || 'A10000')
 			.setAuthor(invite.guild, invite.guild.iconURL())
 			.setDescription(`**◎ Invite Created:**\n**◎ Created By:** ${invite.inviter}\n**◎ Expires:** \`${expiry}\`\n**◎ Location:** ${invite.channel}\n**◎ Invite:** [https://discord.gg/${invite.code}](https://discord.gg/${invite.code}${invite.code})`)
 			.setFooter(`ID: ${invite.id}`)

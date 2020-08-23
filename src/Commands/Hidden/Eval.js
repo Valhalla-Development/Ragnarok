@@ -15,7 +15,7 @@ module.exports = class extends Command {
 		if (!this.client.owners.includes(message.author.id)) return;
 		if (args.length < 1) {
 			const incorrectFormat = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Eval**`,
 					`**◎ Error:** Please input some text!`);
 			message.channel.send(incorrectFormat).then((m) => m.delete({ timeout: 15000 }));
@@ -47,7 +47,7 @@ module.exports = class extends Command {
 				.addFields({ name: `${message.author.username} - JavaScript Eval Success:`, value: '** **' },
 					{ name: ':inbox_tray: **INPUT**', value: `\`\`\`${args.join(' ')}\`\`\`` },
 					{ name: ':outbox_tray: **OUTPUT**', value: `\`\`\`${clean(evaled)}\`\`\`` })
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.setTimestamp();
 			message.channel.send({
 				embed
@@ -57,7 +57,7 @@ module.exports = class extends Command {
 				.setAuthor(`Ragnarok - Eval Error`, this.client.user.displayAvatarURL({ dynamic: true }))
 				.addFields({ name: `${message.author.username} - JavaScript Eval Error:`, value: 'There was a problem with the code you tried to run!' },
 					{ name: ':no_entry: ERROR', value: `\`\`\`${clean(err)}\`\`\`` })
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.setFooter(message.createdAt, message.author.avatarURL())
 			).catch((error) => message.channel.send(`**ERROR:** ${error.message}`));
 		}

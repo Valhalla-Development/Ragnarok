@@ -19,7 +19,7 @@ module.exports = class extends Command {
 		if (args[0] === undefined) {
 			const embed = new MessageEmbed()
 				.setThumbnail(this.client.user.displayAvatarURL())
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.setAuthor('Ragnarok - Music Commands', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 				.setDescription([
 					`**◎ Play:**`,

@@ -23,7 +23,7 @@ module.exports = class extends Command {
 		if (args[0] === undefined) {
 			const embed = new MessageEmbed()
 				.setThumbnail(this.client.user.displayAvatarURL())
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.setAuthor('Ragnarok - Config')
 				.setDescription([
 					`**◎ Advert Protection:**`,
@@ -73,7 +73,7 @@ module.exports = class extends Command {
 			// perms checking
 			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** You do not have permission to run this command.`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -90,7 +90,7 @@ module.exports = class extends Command {
 					// if already on
 					if (status) {
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Member count module is already enabled on this guild! To disable it, please use \`${prefix}config membercount <off>\``);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -149,7 +149,7 @@ module.exports = class extends Command {
 					});
 
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Member count was enabled`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -159,7 +159,7 @@ module.exports = class extends Command {
 					// if already off
 					if (!status) {
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Member protection is not enabled on this guild! To activate it, please use \`${prefix}config membercount <on>\``);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -177,14 +177,14 @@ module.exports = class extends Command {
 					if (catA) catA.delete();
 					db.prepare('DELETE FROM membercount WHERE guildid = ?').run(message.guild.id);
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Member count was turned off!`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 					return;
 				} else if (args[1] !== 'off' || args[1] !== 'on') {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Correct usage: \`${prefix}config membercount <on/off>\``);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -198,7 +198,7 @@ module.exports = class extends Command {
 			// Rolemenu Config
 			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** Only users with the \`MANAGE_GUILD\` permission can use this command!`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -209,7 +209,7 @@ module.exports = class extends Command {
 				const roleList = [];
 				if (message.mentions.roles.size <= 0) {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** You must mention a role to remove from the menu.`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -227,7 +227,7 @@ module.exports = class extends Command {
 						roleList: JSON.stringify(roleList)
 					});
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Roles successfully set in the assignable role menu!`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -243,7 +243,7 @@ module.exports = class extends Command {
 						roleList: JSON.stringify(foundRoleList)
 					});
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Roles successfully set in the assignable role menu!`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -253,7 +253,7 @@ module.exports = class extends Command {
 			if (args[1] === 'remove') {
 				if (message.mentions.roles.size <= 0) {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** You must mention a role to remove from the menu.`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -278,7 +278,7 @@ module.exports = class extends Command {
 				}
 
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** Specified roles have successfully been cleared from the rolemenu!`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -287,7 +287,7 @@ module.exports = class extends Command {
 			if (args[1] === 'clear') {
 				db.prepare(`DELETE FROM rolemenu where guildid=${message.guild.id}`).run();
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** All roles have successfully been cleared from the rolemenu!`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -295,7 +295,7 @@ module.exports = class extends Command {
 			}
 
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Config**`,
 					`**◎ Error:** Please use \`${prefix}config\` to see available commands!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -307,7 +307,7 @@ module.exports = class extends Command {
 			// perms checking
 			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** Only guild managers can use this command!`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -324,7 +324,7 @@ module.exports = class extends Command {
 					// if already on
 					if (status) {
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Dad bot is already enabled on this guild! To disable it, please use \`${prefix}config dadbot <off>\``);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -336,7 +336,7 @@ module.exports = class extends Command {
 						status: 'on'
 					});
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Dad bot was enabled`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -346,7 +346,7 @@ module.exports = class extends Command {
 					// if already off
 					if (!status) {
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Dad bot is not enabled on this guild! To activate it, please use \`${prefix}config dadbot <on>\``);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -355,14 +355,14 @@ module.exports = class extends Command {
 
 					db.prepare('DELETE FROM dadbot WHERE guildid = ?').run(message.guild.id);
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Dad bot was disabled!`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 					return;
 				} else if (args[1] !== 'off' || args[1] !== 'on') {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Correct usage \`${prefix}config dadbot <on/off>\``);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -376,7 +376,7 @@ module.exports = class extends Command {
 			// perms checking
 			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** Only guild managers can use this command!`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -393,7 +393,7 @@ module.exports = class extends Command {
 					// if already on
 					if (status) {
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Advert protection is already enabled on this guild! To disable it, please use \`${prefix}config adsprot <off>\``);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -406,7 +406,7 @@ module.exports = class extends Command {
 						status: 'on'
 					});
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Advert protection was enabled`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -416,7 +416,7 @@ module.exports = class extends Command {
 					// if already off
 					if (!status) {
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Advert protection is not enabled on this guild! To activate it, please use \${prefix}config adsprot <on>\``);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -425,14 +425,14 @@ module.exports = class extends Command {
 
 					db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(message.guild.id);
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Advert protection was enabled`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 					return;
 				} else if (args[1] !== 'off' || args[1] !== 'on') {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Please use \`${prefix}config adsprot <on/off>\``);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -445,7 +445,7 @@ module.exports = class extends Command {
 		if (args[0] === 'autorole') {
 			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** Only users with the \`MANAGE_GUILD\` permission can use this command!`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -459,7 +459,7 @@ module.exports = class extends Command {
 
 				if (!args[1]) {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Please use \`${prefix}config autorole <role>\` __the role is case sensitive!__`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -468,7 +468,7 @@ module.exports = class extends Command {
 				if (args[1] === 'off') {
 					db.prepare('DELETE FROM autorole WHERE guildid = ?').run(message.guild.id);
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Autorole disabled!`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -476,7 +476,7 @@ module.exports = class extends Command {
 				}
 				if (!message.guild.roles.cache.some((r) => [`${args[1]}`].includes(r.name))) {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** That role does not exist! Roles are case sensitive. (You do not tag the role, simply write the name of the role)`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -489,7 +489,7 @@ module.exports = class extends Command {
 						role: `${args[1]}`
 					});
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Autorole updated to \`${args[1]}\`!`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -502,7 +502,7 @@ module.exports = class extends Command {
 					role: `${args[1]}`
 				});
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** Autorole set to \`${args[1]}\`!`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -515,7 +515,7 @@ module.exports = class extends Command {
 		if (args[0] === 'logging') {
 			if (!message.member.guild.me.hasPermission('VIEW_AUDIT_LOG')) {
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** I need the permission \`View Audit Log\` for this command!`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -523,7 +523,7 @@ module.exports = class extends Command {
 			}
 			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** Only users with \`MANAGE_GUILD\` can use this command!`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -540,7 +540,7 @@ module.exports = class extends Command {
 
 				if (args[1] === undefined) {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Please mention a channel!`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -551,7 +551,7 @@ module.exports = class extends Command {
 					// to turn logging off
 					if (!status) {
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Logging is already disabled!`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -559,7 +559,7 @@ module.exports = class extends Command {
 					}
 
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Logging disabled!`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -568,7 +568,7 @@ module.exports = class extends Command {
 				}
 				if (!lchan) {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Check if the entered channel's name is correct and then type the command again.`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -576,7 +576,7 @@ module.exports = class extends Command {
 				}
 				if (lchan.type === 'voice' || lchan.type === 'category') {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Check if the entered text channel's name is correct and then type the command again.`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -589,7 +589,7 @@ module.exports = class extends Command {
 						channel: `${lchan.id}`
 					});
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Logging set to ${lchan}`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -603,7 +603,7 @@ module.exports = class extends Command {
 					channel: `${lchan.id}`
 				});
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** Logging updated to ${lchan}`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -616,7 +616,7 @@ module.exports = class extends Command {
 			if (args[1] === 'cat') {
 				if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Only users with \`MANAGE_GUILD\` can use this command!`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -635,7 +635,7 @@ module.exports = class extends Command {
 
 					if (args[2] === undefined) {
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Please type the name of the category!`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -646,7 +646,7 @@ module.exports = class extends Command {
 						// to turn logging off
 						if (!status) {
 							const embed = new MessageEmbed()
-								.setColor(message.guild.me.displayHexColor || '36393F')
+								.setColor(message.guild.me.displayHexColor || 'A10000')
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Ticket Category is already disabled!`);
 							message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -654,7 +654,7 @@ module.exports = class extends Command {
 						}
 
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Ticket Category disabled!`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -666,7 +666,7 @@ module.exports = class extends Command {
 					}
 					if (!category) {
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Check if the entered categories name is correct and then type the command again. (The name is case sensitive!`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -679,7 +679,7 @@ module.exports = class extends Command {
 							category: `${category.id}`
 						});
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Ticket Category set to \`${category.name}\``);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -692,7 +692,7 @@ module.exports = class extends Command {
 						category: `${category.id}`
 					});
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Ticket Category updated to \`${category.name}\``);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -701,7 +701,7 @@ module.exports = class extends Command {
 			} else if (args[1] === 'log') {
 				if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Only users with \`MANAGE_GUILD\` can use this command!`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -718,7 +718,7 @@ module.exports = class extends Command {
 
 					if (args[2] === undefined) {
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Please mention a channel!`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -729,7 +729,7 @@ module.exports = class extends Command {
 						// to turn logging off
 						if (!status) {
 							const embed = new MessageEmbed()
-								.setColor(message.guild.me.displayHexColor || '36393F')
+								.setColor(message.guild.me.displayHexColor || 'A10000')
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Ticket Logging is already disabled!`);
 							message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -737,7 +737,7 @@ module.exports = class extends Command {
 						}
 
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Ticket Logging disabled!`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -749,7 +749,7 @@ module.exports = class extends Command {
 					}
 					if (!lchan) {
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Check if the entered categories name is correct and then type the command again. (The name is case sensitive!`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -762,7 +762,7 @@ module.exports = class extends Command {
 							channel: `${lchan.id}`
 						});
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Ticket Logging set to ${lchan}`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -775,7 +775,7 @@ module.exports = class extends Command {
 						log: `${lchan.id}`
 					});
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Ticket Logging updated to ${lchan}`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -784,7 +784,7 @@ module.exports = class extends Command {
 			} else if (args[1] === 'role') {
 				if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Only users with \`MANAGE_GUILD\` can use this command!`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -798,7 +798,7 @@ module.exports = class extends Command {
 
 				if (message.mentions.roles.size <= 0 && args[2] !== 'off') {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** A role must be mentioned`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -811,7 +811,7 @@ module.exports = class extends Command {
 						role: null
 					});
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Custom Support Role disabled!`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -824,7 +824,7 @@ module.exports = class extends Command {
 						role: `${suppRole.id}`
 					});
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Support Role updated to ${suppRole}`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -837,7 +837,7 @@ module.exports = class extends Command {
 					role: `${suppRole.id}`
 				});
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** Support Role updated to ${suppRole}`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -852,7 +852,7 @@ module.exports = class extends Command {
 
 			if (talkedRecently.has(message.author.id)) {
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** Wait 1 minute before changing the prefix again.`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -865,7 +865,7 @@ module.exports = class extends Command {
 
 			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** You need to have the \`MANAGE_GUILD\` permission to use this command.`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -880,7 +880,7 @@ module.exports = class extends Command {
 					guildid: `${message.guild.id}`
 				});
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** Custom prefix disabled!`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -888,7 +888,7 @@ module.exports = class extends Command {
 			}
 			if (args[1] === '[' || args[1] === '{' || args[1] === ']' || args[1] === '}' || args[1] === ':') {
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** Please choose another prefix.`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -897,7 +897,7 @@ module.exports = class extends Command {
 
 			if (!args[1]) {
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** Incorrect usage!`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -911,7 +911,7 @@ module.exports = class extends Command {
 					prefix: `${args[1]}`
 				});
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** Prefix updated!`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -924,7 +924,7 @@ module.exports = class extends Command {
 				prefix: `${args[1]}`
 			});
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Config**`,
 					`**◎ Success:** Prefix set!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -937,7 +937,7 @@ module.exports = class extends Command {
 			if (args[1] === undefined) {
 				const embed = new MessageEmbed()
 					.setThumbnail(this.client.user.displayAvatarURL())
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField('Ragnarok', [
 						`**◎ Set Welcome:** To set the welcome channel, the command is \`${prefix}config welcome channel <#channel>\`\nTo disable the welcome, use \`${prefix}config welcome channel off\``
 					])
@@ -948,7 +948,7 @@ module.exports = class extends Command {
 			if (args[1] === 'channel') {
 				if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Only users with \`MANAGE_GUILD\` can use this command!`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -965,7 +965,7 @@ module.exports = class extends Command {
 
 					if (args[2] === undefined) {
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Please mention a channel!`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -976,13 +976,13 @@ module.exports = class extends Command {
 						// to turn logging off
 						if (!status) {
 							const embed = new MessageEmbed()
-								.setColor(message.guild.me.displayHexColor || '36393F')
+								.setColor(message.guild.me.displayHexColor || 'A10000')
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Welcome channel is already disabled!`);
 							message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 						} else {
 							const embed = new MessageEmbed()
-								.setColor(message.guild.me.displayHexColor || '36393F')
+								.setColor(message.guild.me.displayHexColor || 'A10000')
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Success:** Welcome channel disabled!`);
 							message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -992,7 +992,7 @@ module.exports = class extends Command {
 						}
 					} else if (!lchan) {
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Check if the entered categories name is correct and then type the command again. (The name is case sensitive!`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -1003,7 +1003,7 @@ module.exports = class extends Command {
 							channel: `${lchan.id}`
 						});
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Welcome channel is now set to ${lchan}`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -1014,7 +1014,7 @@ module.exports = class extends Command {
 							channel: `${lchan.id}`
 						});
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Welcome channel updated to ${lchan}`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -1027,7 +1027,7 @@ module.exports = class extends Command {
 			if (args[1] === undefined) {
 				const embed = new MessageEmbed()
 					.setThumbnail(this.client.user.displayAvatarURL())
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField('Ragnarok', [
 						`**◎ Music:** To set the music role, the command is \`${prefix}config music role <@role>\`\nTo disable the role, use \`${prefix}config music role off\``
 					])
@@ -1038,7 +1038,7 @@ module.exports = class extends Command {
 			if (args[1] === 'role') {
 				if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Only users with \`MANAGE_GUILD\` can use this command!`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -1055,7 +1055,7 @@ module.exports = class extends Command {
 
 					if (message.mentions.roles.size <= 0 && args[2] !== 'off') {
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** A role must be mentioned`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -1068,7 +1068,7 @@ module.exports = class extends Command {
 							role: null
 						});
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Custom DJ Role disabled!`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -1082,7 +1082,7 @@ module.exports = class extends Command {
 							role: `${djRole.id}`
 						});
 						const embed = new MessageEmbed()
-							.setColor(message.guild.me.displayHexColor || '36393F')
+							.setColor(message.guild.me.displayHexColor || 'A10000')
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** DJ Role updated to ${djRole}`);
 						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -1095,7 +1095,7 @@ module.exports = class extends Command {
 						role: `${djRole.id}`
 					});
 					const embed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** DJ Role updated to ${djRole}`);
 					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));

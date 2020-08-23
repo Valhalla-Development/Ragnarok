@@ -59,7 +59,7 @@ module.exports = class extends Event {
 				const embed = new MessageEmbed()
 					.addField(`**${this.client.user.username} - Music**`,
 						`**◎ Success:** <:MusicLogo:684822003110117466> Queue has ended.`)
-					.setColor(player.textChannel.guild.me.displayHexColor || '36393F');
+					.setColor(player.textChannel.guild.me.displayHexColor || 'A10000');
 				player.textChannel.send(embed);
 				this.client.music.players.destroy(player.guild.id);
 				return;
@@ -72,7 +72,7 @@ module.exports = class extends Event {
 					const embed = new MessageEmbed()
 						.addField(`**${this.client.user.username} - Music**`,
 							`**◎ Success:** <:MusicLogo:684822003110117466> Track has ended.`)
-						.setColor(player.textChannel.guild.me.displayHexColor || '36393F');
+						.setColor(player.textChannel.guild.me.displayHexColor || 'A10000');
 					player.textChannel.send(embed);
 					this.client.music.players.destroy(player.guild.id);
 					return;
@@ -84,7 +84,7 @@ module.exports = class extends Event {
 				}
 				const embed = new MessageEmbed()
 					.setAuthor('Now Playing:', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-					.setColor(textChannel.guild.me.displayHexColor || '36393F')
+					.setColor(textChannel.guild.me.displayHexColor || 'A10000')
 					.setDescription(`Now playing: \`${title}\`\nDuration: \`${Utils.formatTime(duration, true)}\`\nRequested by: ${requester}`);
 				textChannel.send(embed);
 			});

@@ -24,7 +24,7 @@ module.exports = class extends Command {
 
 		if (!modRole) {
 			const nomodRole = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Rename**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
 			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
@@ -34,7 +34,7 @@ module.exports = class extends Command {
 		if (
 			!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
 			const donthaveRole = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Rename**`,
 					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
 			message.channel.send(donthaveRole).then((m) => m.delete({ timeout: 15000 }));
@@ -56,7 +56,7 @@ module.exports = class extends Command {
 			);
 			if (!logchan) return;
 			const loggingembed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Rename**`,
 					`**◎ Success:** <@${message.author.id}> renamed ticket from \`#${getChan.name}\` to <#${getChan.id}>`);
 			logchan.send(loggingembed);
@@ -73,13 +73,13 @@ module.exports = class extends Command {
 			);
 			if (!logchan) return;
 			const loggingembed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Rename**`,
 					`**◎ Success:** <@${message.author.id}> renamed ticket from \`#${message.channel.name}\` to <#${message.channel.id}>`);
 			logchan.send(loggingembed);
 		} else if (!foundTicket && !message.channel.name.startsWith('ticket-')) {
 			const errEmbed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Rename**`,
 					`**◎ Error:** This ticket could not be found.`);
 			message.channel.send(errEmbed).then((m) => m.delete({ timeout: 15000 }));

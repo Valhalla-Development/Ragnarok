@@ -27,7 +27,7 @@ module.exports = class extends Command {
 
 		if (!role) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Skip**`,
 					`**◎ Error:** Sorry, I could not find a role name \`DJ\`, if you prefer, you could set a custom role as the DJ, check the command command \`${prefix}config\` for more information.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -36,7 +36,7 @@ module.exports = class extends Command {
 
 		if (!message.member.roles.cache.has(role.id) && message.author.id !== message.guild.ownerID) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Skip**`,
 					`**◎ Error:** Sorry! You do not have the **${role}** role.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -48,7 +48,7 @@ module.exports = class extends Command {
 
 		if (!player) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Skip**`,
 					`**◎ Error:** <:MusicLogo:684822003110117466> No song is currently playing.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -57,7 +57,7 @@ module.exports = class extends Command {
 
 		if (!channel || channel.id !== player.voiceChannel.id) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Skip**`,
 					`**◎ Error:** You need to be in a voice channel to use this command!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -70,7 +70,7 @@ module.exports = class extends Command {
 			return;
 		}
 		const embed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || '36393F')
+			.setColor(message.guild.me.displayHexColor || 'A10000')
 			.addField(`**${this.client.user.username} - Skip**`,
 				`**◎ Success:** <:MusicLogo:684822003110117466> Skipped the current song.`);
 		message.channel.send(embed);

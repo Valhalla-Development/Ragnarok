@@ -30,7 +30,7 @@ module.exports = class extends Command {
 
 		if (!role) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Queue**`,
 					`**◎ Error:** Sorry, I could not find a role name \`DJ\`, if you prefer, you could set a custom role as the DJ, check the command command \`${prefix}config\` for more information.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -40,7 +40,7 @@ module.exports = class extends Command {
 		const player = this.client.music.players.get(message.guild.id);
 		if (!player) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Queue**`,
 					`**◎ Error:** <:MusicLogo:684822003110117466> No song is currently playing.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -49,7 +49,7 @@ module.exports = class extends Command {
 
 		if (player.queue.length < 1) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Queue**`,
 					`**◎ Error:** There is no queue!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -61,12 +61,12 @@ module.exports = class extends Command {
 		const { queue } = player;
 
 		const embed1 = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || '36393F')
+			.setColor(message.guild.me.displayHexColor || 'A10000')
 			.addField(`**${this.client.user.username} - Queue**`,
 				`**◎ Error:** There is no queue!`);
 
 		const embed2 = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || '36393F')
+			.setColor(message.guild.me.displayHexColor || 'A10000')
 			.addField(`**${this.client.user.username} - Queue**`,
 				`**◎ Success:** <:MusicLogo:684822003110117466> The queue has been cleared.`);
 
@@ -85,7 +85,7 @@ module.exports = class extends Command {
 			message.channel.send('', {
 				embed: {
 					description: `🎧 Now Playing:\n[${title}](${uri}) [<@${requester.id}>]`,
-					color: message.guild.me.displayHexColor || '36393F',
+					color: message.guild.me.displayHexColor || 'A10000',
 					author: {
 						name: `${message.guild.name}'s Queue.`,
 						icon_url: 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png'
@@ -110,7 +110,7 @@ module.exports = class extends Command {
 		let queuelist = player.queue.slice(x - 10, x).map(() => `**${++i}.** [${queue[i].title}](${queue[i].uri}) [<@${queue[i].requester.id}>]`).join('\n');
 		if (!queuelist) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Queue**`,
 					`**◎ Error:** Page doesn't exist!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -121,7 +121,7 @@ module.exports = class extends Command {
 		embed.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png');
 		embed.setAuthor(`${message.guild.name}'s Queue (${Math.floor(x / 10)} / ${Math.floor((player.queue.slice(1).length + 10) / 10)})`);
 		embed.setFooter(`Total items in queue: ${player.queue.length}`);
-		embed.setColor(message.guild.me.displayHexColor || '36393F');
+		embed.setColor(message.guild.me.displayHexColor || 'A10000');
 		message.channel.send(embed).then(async (msg) => {
 			if (Math.floor((player.queue.slice(1).length + 10) / 10) > 1) {
 				await msg.react('⏪');

@@ -23,7 +23,7 @@ module.exports = class extends Event {
 			reason = entry.reason;
 		}
 		const logembed = new MessageEmbed()
-			.setColor(guild.me.displayHexColor || '36393F')
+			.setColor(guild.me.displayHexColor || 'A10000')
 			.setAuthor(guild, guild.iconURL())
 			.setDescription(`**◎ User Banned:** \`${user.tag}\`\n**◎ Moderator**: <@${mod}>\n**◎ Reason**: \`${reason}\``)
 			.setFooter(`ID: ${mod}`)

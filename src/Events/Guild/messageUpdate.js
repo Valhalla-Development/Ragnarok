@@ -38,7 +38,7 @@ module.exports = class extends Event {
 			return;
 		}
 		const embed = new MessageEmbed()
-			.setColor(newMessage.guild.me.displayHexColor || '36393F')
+			.setColor(newMessage.guild.me.displayHexColor || 'A10000')
 			.setAuthor(oldMessage.author.tag, this.client.user.displayAvatarURL({ dynamic: true }))
 			.setTitle('Message Updated')
 			.setDescription([

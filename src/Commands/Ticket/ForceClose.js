@@ -26,7 +26,7 @@ module.exports = class extends Command {
 
 		if (!modRole) {
 			const nomodRole = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - ForceClose**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
 			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
@@ -35,7 +35,7 @@ module.exports = class extends Command {
 
 		if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
 			const donthaveRole = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - ForceClose**`,
 					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
 			message.channel.send(donthaveRole).then((m) => m.delete({ timeout: 15000 }));
@@ -49,7 +49,7 @@ module.exports = class extends Command {
 		if (foundTicket) {
 			const getChan = message.guild.channels.cache.find((chan) => chan.id === foundTicket.chanid);
 			const forceclosetimer = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.setTitle(':x: Closing Ticket! :x:')
 				.setDescription(`This ticket will automatically close in 10 seconds.**\nType a message to cancel the timer.`);
 			getChan.send(forceclosetimer).then((timerMsg) => {
@@ -59,7 +59,7 @@ module.exports = class extends Command {
 					errors: ['time']
 				}).then(() => {
 					const cancelTimer = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.setDescription('Canceling Ticket Close');
 					timerMsg.edit(cancelTimer).then((cancelMsg) => {
 						cancelMsg.delete({
@@ -76,7 +76,7 @@ module.exports = class extends Command {
 					const logchan = message.guild.channels.cache.find((chan) => chan.id === logget.log);
 					if (!logchan) return;
 					const loggingembed = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || '36393F')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
 						.addField(`**${this.client.user.username} - ForceClose**`,
 							`**◎ Success:** <@${message.author.id}> has forcefully closed ticket \`#${message.channel.name}\``);
 					logchan.send(loggingembed);
@@ -84,7 +84,7 @@ module.exports = class extends Command {
 			});
 		} else {
 			const errEmbed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - ForceClose**`,
 					`**◎ Error:** I could not find the ticket!`);
 			message.channel.send(errEmbed);

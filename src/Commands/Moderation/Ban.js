@@ -17,7 +17,7 @@ module.exports = class extends Command {
 	async run(message, args) {
 		if (!message.member.hasPermission('BAN_MEMBERS') && !this.client.owners.includes(message.author.id)) {
 			const errEmbed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Ban**`,
 					`**◎ Error:** You do not have permission to run this command.`);
 			message.channel.send(errEmbed).then((m) => m.delete({ timeout: 15000 }));
@@ -29,7 +29,7 @@ module.exports = class extends Command {
 			const user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
 			if (!user) {
 				const noUser = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Ban**`,
 						`**◎ Error:** You must specify a user to ban!`);
 				message.channel.send(noUser).then((m) => m.delete({ timeout: 15000 }));
@@ -43,7 +43,7 @@ module.exports = class extends Command {
 
 			const logsEmbed = new MessageEmbed()
 				.setThumbnail(this.client.user.displayAvatarURL())
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField('User Banned', [
 					`**◎ Banned User::** ${user}, ID: ${user.id}`,
 					`**◎ Reason:** ${reason}`,
@@ -60,7 +60,7 @@ module.exports = class extends Command {
 			const chuser = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
 			if (!chuser) {
 				const userEmbed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || '36393F')
+					.setColor(message.guild.me.displayHexColor || 'A10000')
 					.addField(`**${this.client.user.username} - Ban**`,
 						`**◎ Error:** You must specify a user to ban!`);
 				message.channel.send(userEmbed).then((m) => m.delete({ timeout: 15000 }));
@@ -75,7 +75,7 @@ module.exports = class extends Command {
 			message.guild.members.ban(chuser, { reason: `${chreason}` });
 			const embed = new MessageEmbed()
 				.setThumbnail(this.client.user.displayAvatarURL())
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField('User Banned', [
 					`**◎ Banned User::** ${chuser}, ID: ${chuser.id}`,
 					`**◎ Reason:** ${chreason}`,
@@ -87,7 +87,7 @@ module.exports = class extends Command {
 
 			const logsEmbedD = new MessageEmbed()
 				.setThumbnail(this.client.user.displayAvatarURL())
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField('User Banned', [
 					`**◎ Banned User::** ${chuser}, ID: ${chuser.id}`,
 					`**◎ Reason:** ${chreason}`,

@@ -30,7 +30,7 @@ module.exports = class extends Command {
 
 		if (!role) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - NowPlaying**`,
 					`**◎ Error:** Sorry, I could not find a role name \`DJ\`, if you prefer, you could set a custom role as the DJ, check the command command \`${prefix}config\` for more information.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -40,7 +40,7 @@ module.exports = class extends Command {
 		const player = this.client.music.players.get(message.guild.id);
 		if (!player || !player.queue[0]) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - NowPlaying**`,
 					`**◎ Error:** <:MusicLogo:684822003110117466> No song is currently playing.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -51,7 +51,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setAuthor('Current Song Playing', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-			.setColor(message.guild.me.displayHexColor || '36393F')
+			.setColor(message.guild.me.displayHexColor || 'A10000')
 			.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 			.setDescription(stripIndents`
             ${player.playing ? '▶️' : '⏸️'} **${title}** \`${Utils.formatTime(duration, true)}\` Requested by: [<@${requester.id}>]`);

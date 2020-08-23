@@ -14,7 +14,7 @@ module.exports = class extends Command {
 		// Disable for AirReps server
 		if (message.guild.id === '657235952116170794') {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Nuke**`,
 					`**◎ Error:** This command has been disabled for this server!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -22,7 +22,7 @@ module.exports = class extends Command {
 		}
 		if (!message.member.hasPermission('ADMINISTRATOR') && !this.client.owners.includes(message.author.id)) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Nuke**`,
 					`**◎ Error:** You need to have the \`ADMINISTRATOR\` permission to use this command.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -30,7 +30,7 @@ module.exports = class extends Command {
 		}
 		if (!message.guild.member(this.client.user).hasPermission('MANAGE_CHANNELS')) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || '36393F')
+				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.addField(`**${this.client.user.username} - Nuke**`,
 					`**◎ Error:** I need the \`MANAGE_CHANNELS\` permissions to execute this command.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));

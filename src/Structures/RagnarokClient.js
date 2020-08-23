@@ -60,7 +60,7 @@ module.exports = class RagnarokClient extends Client {
 			default: {
 				botsCanWin: false,
 				exemptPermissions: ['MANAGE_MESSAGES', 'ADMINISTRATOR'],
-				embedColor: '36393F',
+				embedColor: 'A10000',
 				reaction: '🎉'
 			}
 		});

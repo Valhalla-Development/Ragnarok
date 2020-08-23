@@ -114,7 +114,7 @@ module.exports = class extends Event {
 											});
 											// Send a message saying the ticket has been created.
 											const embed = new MessageEmbed()
-												.setColor(member.guild.me.displayHexColor || '36393F')
+												.setColor(member.guild.me.displayHexColor || 'A10000')
 												.setTitle('New Ticket')
 												.setDescription(`Hello \`${member.user.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
 											c.send(embed);
@@ -175,7 +175,7 @@ module.exports = class extends Event {
 													ticketid: randomString
 												});
 												const embed = new MessageEmbed()
-													.setColor(member.guild.me.displayHexColor || '36393F')
+													.setColor(member.guild.me.displayHexColor || 'A10000')
 													.setTitle('New Ticket')
 													.setDescription(`Hello \`${member.user.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. \n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
 												c.send(embed);
@@ -281,7 +281,7 @@ module.exports = class extends Event {
 									if (memberRole.includes(roleArray[roleIndex])) {
 										if (!msg.guild.roles.cache.find((r) => r.id === roleArray[roleIndex])) {
 											const embed = new MessageEmbed()
-												.setColor(member.guild.me.displayHexColor || '36393F')
+												.setColor(member.guild.me.displayHexColor || 'A10000')
 												.addField(`**${grabClient.user.username} - Volume**`,
 													`**◎ Error:** The role you tried to add, no longer exists!`).then((m) => m.delete({ timeout: 15000 }));
 											msg.channel.send(embed);
@@ -292,7 +292,7 @@ module.exports = class extends Event {
 									} else {
 										if (!msg.guild.roles.cache.find((r) => r.id === roleArray[roleIndex])) {
 											const embed = new MessageEmbed()
-												.setColor(member.guild.me.displayHexColor || '36393F')
+												.setColor(member.guild.me.displayHexColor || 'A10000')
 												.addField(`**${grabClient.user.username} - Volume**`,
 													`**◎ Error:** The role you tried to add, no longer exists!`).then((m) => m.delete({ timeout: 15000 }));
 											msg.channel.send(embed);

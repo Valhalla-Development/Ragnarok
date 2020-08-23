@@ -17,7 +17,7 @@ module.exports = class extends Command {
 		const { prefix } = prefixgrab;
 
 		const embed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || '36393F')
+			.setColor(message.guild.me.displayHexColor || 'A10000')
 			.addField(`**${this.client.user.username} - Prefix**`,
 				`**◎ My prefix for this guild is: \`${prefix}\``);
 		message.channel.send(embed);
