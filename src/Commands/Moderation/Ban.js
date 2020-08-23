@@ -73,7 +73,17 @@ module.exports = class extends Command {
 			}
 
 			message.guild.members.ban(chuser, { reason: `${chreason}` });
-			message.channel.send(`${chuser}, was banned by ${message.author}\nCheck ${logsch} for more information!`).then(m => m.delete({ timeout: 15000 }));
+			const embed = new MessageEmbed()
+				.setThumbnail(this.client.user.displayAvatarURL())
+				.setColor(message.guild.me.displayHexColor || '36393F')
+				.addField('User Banned', [
+					`**◎ Banned User::** ${chuser}, ID: ${chuser.id}`,
+					`**◎ Reason:** ${chreason}`,
+					`**◎ Moderator:** ${message.author}, ID: ${message.author.id}`,
+					`**◎ Time:** ${message.createdAt}`
+				])
+				.setTimestamp();
+			message.channel.send(embed);
 
 			const logsEmbedD = new MessageEmbed()
 				.setThumbnail(this.client.user.displayAvatarURL())

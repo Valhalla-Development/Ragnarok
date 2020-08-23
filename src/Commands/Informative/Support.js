@@ -1,5 +1,4 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -11,10 +10,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
-		const embed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || '36393F')
-			.setDescription(':white_check_mark: **Support Server Invite**: https://discord.gg/Q3ZhdRJ');
-		message.channel.send(embed);
+		message.channel.send('**◎ Support Server Invite**: https://discord.gg/Q3ZhdRJ');
 	}
 
 };

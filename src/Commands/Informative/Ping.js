@@ -20,7 +20,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setColor(message.guild.me.displayHexColor || '36393F')
-			.addField('Pong!', [
+			.addField(`**${this.client.user.username} - Ping**`, [
 				`**◎ Bot Latency:** \`${latency}ms\``,
 				`**◎ API Latency:** \`${Math.round(this.client.ws.ping)}ms\``
 			]);
