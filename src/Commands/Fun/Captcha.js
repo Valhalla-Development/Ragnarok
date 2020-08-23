@@ -64,7 +64,7 @@ module.exports = class extends Command {
 		const ctx = canvas.getContext('2d');
 
 		const background = await Canvas.loadImage(
-			'./Storage/Canvas/Images/Captcha.jpg'
+			'./Storage/Canvas/Images/captcha.jpg'
 		);
 		ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
