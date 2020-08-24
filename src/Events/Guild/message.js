@@ -42,7 +42,7 @@ module.exports = class extends Event {
 
 		// Prefix command
 
-		if (command === `${prefixcommand}prefix`) {
+		if (message.content.toLowerCase() === `${this.client.prefix}prefix`) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || 'A10000')
 				.setDescription(`**◎ This guild's prefix is:** \`${prefixcommand}\``);
