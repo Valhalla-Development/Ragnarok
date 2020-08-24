@@ -7,7 +7,7 @@ module.exports = class extends Event {
 		// this.client.invites.set(guild.id, await guild.fetchInvites());
 
 		console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-		this.client.user.setActivity(`${this.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
+		this.client.user.setActivity(`${this.client.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
 			{
 				type: 'WATCHING'
 			}
@@ -25,7 +25,7 @@ module.exports = class extends Event {
 			.setAuthor(guild, guild.iconURL())
 			.setColor(guild.me.displayHexColor || 'A10000')
 			.setTitle('Hello, I\'m **Ragnarok**! Thanks for inviting me!')
-			.setDescription('The prefix for all my commands is `-`, e.g: `-help`.\nIf you find any bugs, report them with `-bugreport <bug>`\nCheck `-stats` to see the latest announcements!');
+			.setDescription(`The prefix for all my commands is \`${this.client.prefix}\`, e.g: \`${this.client.prefix}help\`.\nIf you find any bugs, report them with \`${this.client.prefix}bugreport <bug>\`\nCheck \`${this.client.prefix}stats\` to see the latest announcements!`);
 		defaultChannel.send({
 			embed
 		});

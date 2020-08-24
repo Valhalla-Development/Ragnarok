@@ -7,7 +7,7 @@ module.exports = class extends Event {
 	async run(guild) {
 		// when the bot is removed from a guild.
 		console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-		this.client.user.setActivity(`${this.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
+		this.client.user.setActivity(`${this.client.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
 			{
 				type: 'WATCHING'
 			}
