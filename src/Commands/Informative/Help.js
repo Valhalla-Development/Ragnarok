@@ -42,8 +42,8 @@ module.exports = class extends Command {
 		} else {
 			embed.setDescription([
 				`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!`,
-				`Run \`${this.client.prefix}help <command>\` to see command specific instructions`,
-				`All commands must be preceded by \`${this.client.prefix}\``,
+				`Run \`${prefix}help <command>\` to see command specific instructions`,
+				`All commands must be preceded by \`${prefix}\``,
 				`Command Parameters: \`<>\` is strict & \`[]\` is optional`
 			]);
 			const categories = this.client.utils.removeDuplicates(this.client.commands.filter(cmd => cmd.category !== 'Hidden').map(cmd => cmd.category));
