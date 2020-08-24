@@ -1,5 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const Command = require('../../Structures/Command');
+const SQLite = require('better-sqlite3');
+const db = new SQLite('./Storage/DB/db.sqlite');
 
 module.exports = class extends Command {
 
@@ -13,11 +15,14 @@ module.exports = class extends Command {
 	}
 
 	async run(message, [command]) {
+		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
+		const { prefix } = prefixgrab;
+
 		const embed = new MessageEmbed()
 			.setColor(message.guild.me.displayHexColor || 'A10000')
 			.setAuthor(`${message.guild.name} Help`, message.guild.iconURL({ dynamic: true }))
 			.setThumbnail(this.client.user.displayAvatarURL())
-			.setFooter(`This guild's prefix is ${this.client.prefix}`, this.client.user.avatarURL({ dynamic: true }))
+			.setFooter(`This guild's prefix is ${prefix}`, this.client.user.avatarURL({ dynamic: true }))
 			.setTimestamp();
 
 		if (command) {
