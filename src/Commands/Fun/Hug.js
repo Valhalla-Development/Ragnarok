@@ -36,7 +36,16 @@ module.exports = class extends Command {
 			message.channel.send({ embed: ghembed });
 			return;
 		}
-		const mentionUser = message.mentions.members.first().user.username === message.mentions.has(message.author);
+
+		if (!message.mentions.members.first()) {
+			const ghembed = new MessageEmbed()
+				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setTitle(`${message.author.username} hugged themself...! (weirdo)`)
+				.setImage('https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif');
+			message.channel.send({ embed: ghembed });
+			return;
+		}
+		const mentionUser = message.mentions.members.first().user.id === message.author.id;
 
 		if (!mentionUser) {
 			const hembed = new MessageEmbed()
