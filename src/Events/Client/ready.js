@@ -5,6 +5,7 @@ const { ErelaClient, Utils } = require('erela.js');
 const SQLite = require('better-sqlite3');
 const { nodes } = require('../../../config.json');
 const db = new SQLite('./Storage/DB/db.sqlite');
+const chalk = require('chalk');
 
 module.exports = class extends Event {
 
@@ -16,14 +17,17 @@ module.exports = class extends Event {
 
 	run() {
 		console.log([
-			`Logged in as ${this.client.user.tag}`,
-			`Loaded ${this.client.commands.size} commands!`,
-			`Loaded ${this.client.events.size} events!`,
+			`${chalk.whiteBright('Logged in as')} ${chalk.red.bold.underline(`${this.client.user.tag}`)}`,
+			`${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${this.client.commands.size}`)} ${chalk.whiteBright('commands!')}`,
+			`${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${this.client.events.size}`)} ${chalk.whiteBright('events!')}`,
+			`${chalk.whiteBright('I am currently in')} ${chalk.red.bold(`${this.client.guilds.cache.size.toLocaleString('en')}`)} ${chalk.whiteBright('guilds!')}`,
+			`${chalk.whiteBright('I currently serve')} ${chalk.red.bold(`${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')}`)} ${chalk.whiteBright('users!')}`,
+			`\u3000`,
 			`Scanning for guilds...\n\x1b[31m[-]\x1b[0m ${this.client.guilds.cache.map((n) => `${n.name} (ID: \x1b[31m${n.id}\x1b[0m)`).join('\x1b[31m\n[-]\x1b[0m ')}`
 		].join('\n'));
 
 		setTimeout(() => {
-			console.log(`Invite link: https://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot&permissions=2050485471\n`);
+			console.log(`Invite link: ${chalk.blue.bold.underline(`https://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot&permissions=2050485471`)}\n`);
 		}, 1000);
 
 		this.client.user.setActivity(`${this.client.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
