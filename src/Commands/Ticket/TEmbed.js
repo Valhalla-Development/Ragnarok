@@ -13,6 +13,10 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
+		if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+			message.delete();
+		}
+
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 

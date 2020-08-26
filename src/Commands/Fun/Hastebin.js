@@ -16,6 +16,10 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
+		if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+			message.delete();
+		}
+
 		if (message.attachments.size === 1) {
 			const file = message.attachments.first().url;
 			const fileExtension = file.substring(file.lastIndexOf('.') + 1);

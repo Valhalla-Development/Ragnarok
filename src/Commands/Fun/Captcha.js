@@ -16,6 +16,10 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
+		if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+			message.delete();
+		}
+
 		if (!args[0]) {
 			const invalidInput = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || 'A10000')

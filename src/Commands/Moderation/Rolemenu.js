@@ -41,6 +41,10 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
+		if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+			message.delete();
+		}
+
 		if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 			const embed = new MessageEmbed()
 				.setColor(message.guild.me.displayHexColor || 'A10000')
