@@ -9,7 +9,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Fetches search results from r/AirReps',
-			category: 'Hidden',
+			category: 'Fun',
 			usage: '<input>'
 		});
 	}
