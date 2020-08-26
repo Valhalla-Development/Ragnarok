@@ -26,7 +26,7 @@ module.exports = class extends Command {
 			.setTimestamp();
 
 		if (command) {
-			const cmd = this.client.commands.get(command) || this.client.commands.get(this.aliases.get(command));
+			const cmd = this.client.commands.get(command) || this.client.commands.get(this.client.aliases.get(command));
 
 			if (!cmd) {
 				const embed1 = new MessageEmbed()
@@ -34,6 +34,7 @@ module.exports = class extends Command {
 					.addField(`**${this.client.user.username} - Help**`,
 						`**◎ Error:** Invalid command name: \`${command}\``);
 				message.channel.send(embed1).then((m) => m.delete({ timeout: 15000 }));
+				return;
 			}
 
 			embed.setAuthor(`${this.client.utils.capitalise(cmd.name)} Command Help`, this.client.user.displayAvatarURL());
@@ -43,7 +44,8 @@ module.exports = class extends Command {
 				`**◎ Category:** ${cmd.category}`,
 				`**◎ Usage:** ${cmd.usage}`
 			]);
-			return message.channel.send(embed);
+			message.channel.send(embed);
+			return;
 		} else {
 			embed.setDescription([
 				`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!`,
@@ -58,7 +60,8 @@ module.exports = class extends Command {
 					cmd.category === category).size})**`, this.client.commands.filter(cmd =>
 					cmd.category === category).map(cmd => `\`${this.client.utils.capitalise(cmd.name)}\``).join(', '));
 			}
-			return message.channel.send(embed);
+			message.channel.send(embed);
+			return;
 		}
 	}
 
