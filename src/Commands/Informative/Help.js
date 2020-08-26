@@ -28,7 +28,13 @@ module.exports = class extends Command {
 		if (command) {
 			const cmd = this.client.commands.get(command) || this.client.commands.get(this.aliases.get(command));
 
-			if (!cmd) return message.channel.send(`Invalid Command named. \`${command}`);
+			if (!cmd) {
+				const embed1 = new MessageEmbed()
+					.setColor(message.guild.me.displayHexColor || 'A10000')
+					.addField(`**${this.client.user.username} - Help**`,
+						`**◎ Error:** Invalid command name: \`${command}\``);
+				message.channel.send(embed1).then((m) => m.delete({ timeout: 15000 }));
+			}
 
 			embed.setAuthor(`${this.client.utils.capitalise(cmd.name)} Command Help`, this.client.user.displayAvatarURL());
 			embed.setDescription([
@@ -37,7 +43,6 @@ module.exports = class extends Command {
 				`**◎ Category:** ${cmd.category}`,
 				`**◎ Usage:** ${cmd.usage}`
 			]);
-
 			return message.channel.send(embed);
 		} else {
 			embed.setDescription([
