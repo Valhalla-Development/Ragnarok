@@ -67,7 +67,7 @@ module.exports = class extends Event {
 
 			const attachment = new MessageAttachment(canvas.toBuffer(), 'welcome.jpg');
 
-			clientGrab.channels.cache.get(sendchannel).send(`Welcome, ${member}!`, attachment).catch((err) => console.log(err));
+			clientGrab.channels.cache.get(sendchannel).send(attachment).catch((err) => console.log(err));
 		}
 		welcomeMessage(this.client);
 
