@@ -103,14 +103,15 @@ module.exports = class extends Event {
 				score.level = curlvl + 1;
 				if (score.level === 0) return;
 				if (xpCooldown.has(message.author.id)) return;
-				const lvlup = new MessageEmbed()
-					.setAuthor(`Congratulations ${message.author.username}`)
-					.setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
-					.setColor(message.guild.me.displayHexColor || 'A10000')
-					.setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
-				message.channel.send(lvlup).then((msg) => {
-					msg.delete({ timeout: 15000 });
-				});
+				// If guild is not AirReps, send the level message
+				if (message.guild.id !== '657235952116170794') {
+					const lvlup = new MessageEmbed()
+						.setAuthor(`Congratulations ${message.author.username}`)
+						.setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
+						.setColor(message.guild.me.displayHexColor || 'A10000')
+						.setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
+					message.channel.send(lvlup).then((msg) => msg.delete({ timeout: 15000 }));
+				}
 			}
 		}
 		if (!xpCooldown.has(message.author.id)) {
