@@ -11,7 +11,7 @@ module.exports = class extends Command {
 		super(...args, {
 			aliases: ['g'],
 			description: 'Starts a giveaway.',
-			category: 'Hidden',
+			category: 'Moderation',
 			usage: '<start/stop/reroll> <time> <winners amount> <prize>'
 		});
 	}
