@@ -15,10 +15,6 @@ module.exports = class extends Event {
 	async run(message) {
 		if (!message.guild || message.author.bot) return;
 
-		if (!message.guild.me.hasPermission('SEND_MESSAGES')) {
-			return;
-		}
-
 		// Custom prefixes
 		const prefixes = db.prepare('SELECT count(*) FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		if (!prefixes['count(*)']) {
