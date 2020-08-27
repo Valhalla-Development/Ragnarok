@@ -61,11 +61,94 @@ module.exports = class extends Command {
 					`\u3000`,
 					`**◎ Dad Bot:**`,
 					`\u3000 \`${prefix}config dadbot <on/off>\` : Toggles the Dad bot module`,
+					`\u3000`,
+					`**◎ Level System:**`,
+					`\u3000 \`${prefix}config level <enable/disable>\` : Toggles the Level module`,
 					`\u3000`
 				])
 				.setTimestamp();
 			message.channel.send(embed);
 			return;
+		}
+
+		// Level toggle
+
+		if (args[0] === 'level') {
+			if (!message.member.guild.me.hasPermission('VIEW_AUDIT_LOG')) {
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Config**`,
+						`**◎ Error:** I need the permission \`View Audit Log\` for this command!`);
+				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+				return;
+			}
+			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Config**`,
+						`**◎ Error:** Only users with \`MANAGE_GUILD\` can use this command!`);
+				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+				return;
+			}
+
+			this.client.getTable = db.prepare('SELECT * FROM level WHERE guildid = ?');
+
+			let status;
+			if (message.guild.id) {
+				status = this.client.getTable.get(message.guild.id);
+
+				if (args[1] === undefined) {
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Config**`,
+							`**◎ Error:** Available options are: \`${prefix}config level enable\` or \`${prefix}config level disable\``);
+					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+					return;
+				}
+
+				if (args[1] === 'disable') {
+					// to turn logging off
+					if (status) {
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Error:** Level system is already disabled!`);
+						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+						return;
+					}
+
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Config**`,
+							`**◎ Success:** Level system disabled!`);
+					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+					const insert = db.prepare('INSERT INTO level (guildid, status) VALUES (@guildid, @status);');
+					insert.run({
+						guildid: `${message.guild.id}`,
+						status: 'disabled'
+					});
+					return;
+				}
+				if (args[1] === 'enable') {
+					// to turn logging off
+					if (!status) {
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Error:** Level system is already enabled!`);
+						message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+						return;
+					}
+
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Config**`,
+							`**◎ Success:** Level system enabled!`);
+					message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+					db.prepare('DELETE FROM level WHERE guildid = ?').run(message.guild.id);
+					return;
+				}
+			}
 		}
 
 		// Membercount Command
