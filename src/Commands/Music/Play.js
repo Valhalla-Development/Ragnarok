@@ -105,7 +105,7 @@ module.exports = class extends Command {
 
 					case 'SEARCH_RESULT': {
 						let index = 1;
-						const tracks = res.tracks.slice(0, 10);
+						const tracks = res.tracks.slice(0, 5);
 						const embed = new MessageEmbed()
 							.setAuthor('Search Results.')
 							.setColor(message.guild.me.displayHexColor || 'A10000')
@@ -115,7 +115,7 @@ module.exports = class extends Command {
 
 						await message.channel.send(embed);
 
-						const collector = message.channel.createMessageCollector((m) => m.author.id === message.author.id && new RegExp('^([1-9]|10|cancel)$', 'i').test(m.content), {
+						const collector = message.channel.createMessageCollector((m) => m.author.id === message.author.id && new RegExp('^([1-5]|cancel)$', 'i').test(m.content), {
 							time: 30000,
 							max: 1
 						});
