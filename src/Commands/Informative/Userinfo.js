@@ -3,26 +3,26 @@ const { MessageEmbed } = require('discord.js');
 const moment = require('moment');
 
 const flags = {
-	DISCORD_EMPLOYEE: 'Discord Employee',
-	DISCORD_PARTNER: 'Discord Partner',
-	BUGHUNTER_LEVEL_1: 'Bug Hunter (Level 1)',
-	BUGHUNTER_LEVEL_2: 'Bug Hunter (Level 2)',
-	HYPESQUAD_EVENTS: 'HypeSquad Events',
-	HOUSE_BRAVERY: 'House of Bravery',
-	HOUSE_BRILLIANCE: 'House of Brilliance',
-	HOUSE_BALANCE: 'House of Balance',
-	EARLY_SUPPORTER: 'Early Supporter',
+	DISCORD_EMPLOYEE: '<:DiscordStaff:748651259849998377>',
+	DISCORD_PARTNER: '<:DiscordPartner:748651259543683084>',
+	BUGHUNTER_LEVEL_1: '<:DiscordBugHunter1:748651259724300364>',
+	BUGHUNTER_LEVEL_2: '<:DiscordBugHunter2:748651259741077574>',
+	HYPESQUAD_EVENTS: '<:HypeSquadEvents:748651259761786981>',
+	HOUSE_BRAVERY: '<:HypeSquadBravery:748651259845673020>',
+	HOUSE_BRILLIANCE: '<:HypeSquadBrilliance:748651259933753464>',
+	HOUSE_BALANCE: '<:HypeSquadBalance:748651259631894579>',
+	EARLY_SUPPORTER: '<:DiscordNitroEarlySupporter:748651259816312992>',
 	TEAM_USER: 'Team User',
 	SYSTEM: 'System',
 	VERIFIED_BOT: 'Verified Bot',
-	VERIFIED_DEVELOPER: 'Verified Bot Developer'
+	VERIFIED_DEVELOPER: '<:VerifiedBotDeveloper:748651259858255973>'
 };
 
 const status = {
-	online: 'Online.',
-	idle: 'Idle.',
-	dnd: 'Do not disturb.',
-	offline: 'Offline.'
+	online: '<:Online:748655722740580403>',
+	idle: '<:Idle:748655722639917117>',
+	dnd: '<:DND:748655722979393657>',
+	offline: '<:Offline:748655722677403850>'
 };
 
 module.exports = class extends Command {
