@@ -4,7 +4,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-mixed-operators */
 const Command = require('../../Structures/Command');
-const { MessageAttachment } = require('discord.js');
+const { MessageAttachment, MessageEmbed } = require('discord.js');
 const abbreviate = require('number-abbreviate');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -25,6 +25,16 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
+		const levelDb = db.prepare(`SELECT status FROM level WHERE guildid = ${message.guild.id};`).get();
+		if (levelDb) {
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Level**`,
+					`**◎ Error:** Level system is disabled for this guild!`);
+			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			return;
+		}
+
 		this.client.getScore = db.prepare('SELECT * FROM scores WHERE user = ? AND guild = ?');
 		this.client.setScore = db.prepare('INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);');
 

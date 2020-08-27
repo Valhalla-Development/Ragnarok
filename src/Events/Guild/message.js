@@ -77,46 +77,52 @@ module.exports = class extends Event {
 		}
 
 		// Scores (level)
-		let score;
-		if (message.guild) {
-			score = this.client.getScore.get(message.author.id, message.guild.id);
-			if (!score) {
-				score = {
-					id: `${message.guild.id}-${message.author.id}`,
-					user: message.author.id,
-					guild: message.guild.id,
-					points: 0,
-					level: 0
-				};
-			}
-			const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
-			const curxp = score.points; // Current points
-			const curlvl = score.level; // Current level
-			const levelNoMinus = score.level + 1;
-			const nxtLvl = 5 / 6 * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
-			score.points = curxp + xpAdd;
-			if (nxtLvl <= score.points) {
-				score.level = curlvl + 1;
-				if (score.level === 0) return;
-				if (xpCooldown.has(message.author.id)) return;
-				// If guild is not AirReps, send the level message
-				if (message.guild.id !== '657235952116170794') {
-					const lvlup = new MessageEmbed()
-						.setAuthor(`Congratulations ${message.author.username}`)
-						.setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
-					message.channel.send(lvlup).then((msg) => msg.delete({ timeout: 15000 }));
+		function levelSystem(grabClient) {
+		// Level disabled check
+			const levelDb = db.prepare(`SELECT status FROM level WHERE guildid = ${message.guild.id};`).get();
+			if (levelDb) return;
+			let score;
+			if (message.guild) {
+				score = grabClient.getScore.get(message.author.id, message.guild.id);
+				if (!score) {
+					score = {
+						id: `${message.guild.id}-${message.author.id}`,
+						user: message.author.id,
+						guild: message.guild.id,
+						points: 0,
+						level: 0
+					};
+				}
+				const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
+				const curxp = score.points; // Current points
+				const curlvl = score.level; // Current level
+				const levelNoMinus = score.level + 1;
+				const nxtLvl = 5 / 6 * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
+				score.points = curxp + xpAdd;
+				if (nxtLvl <= score.points) {
+					score.level = curlvl + 1;
+					if (score.level === 0) return;
+					if (xpCooldown.has(message.author.id)) return;
+					// If guild is not AirReps, send the level message
+					if (message.guild.id !== '657235952116170794') {
+						const lvlup = new MessageEmbed()
+							.setAuthor(`Congratulations ${message.author.username}`)
+							.setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
+							.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
+							.setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
+						message.channel.send(lvlup).then((msg) => msg.delete({ timeout: 15000 }));
+					}
 				}
 			}
+			if (!xpCooldown.has(message.author.id)) {
+				xpCooldown.add(message.author.id);
+				grabClient.setScore.run(score);
+				setTimeout(() => {
+					xpCooldown.delete(message.author.id);
+				}, xpCooldownSeconds * 1000);
+			}
 		}
-		if (!xpCooldown.has(message.author.id)) {
-			xpCooldown.add(message.author.id);
-			this.client.setScore.run(score);
-			setTimeout(() => {
-				xpCooldown.delete(message.author.id);
-			}, xpCooldownSeconds * 1000);
-		}
+		levelSystem(this.client);
 
 		// Dad Bot
 

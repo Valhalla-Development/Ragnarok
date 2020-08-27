@@ -15,6 +15,16 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
+		const levelDb = db.prepare(`SELECT status FROM level WHERE guildid = ${message.guild.id};`).get();
+		if (levelDb) {
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Leader**`,
+					`**◎ Error:** Level system is disabled for this guild!`);
+			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			return;
+		}
+
 		const top10 = db.prepare('SELECT * FROM scores WHERE guild = ? ORDER BY points DESC LIMIT 10;').all(message.guild.id);
 		if (!top10) {
 			return;
