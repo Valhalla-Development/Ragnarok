@@ -56,6 +56,10 @@ module.exports = class extends Event {
 				player.textChannel.send('An error occured, ending playback.');
 				return this.client.music.players.destroy(player.guild.id);
 			})
+			.on('socketClosed', (player) => {
+				this.client.music.players.destroy(player.guild.id);
+				return;
+			})
 			.on('queueEnd', (player) => {
 				if (player.queueRepeat) {
 					return;
