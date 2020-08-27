@@ -112,7 +112,7 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Repeat**`,
-						`**◎ Success:** <:MusicLogo:684822003110117466> Repeat enabled.`);
+						`**◎ Success:** <:MusicLogo:684822003110117466> Repeat queue enabled.`);
 				message.channel.send(embed);
 				return;
 			}
@@ -120,7 +120,7 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Repeat**`,
-					`**◎ Success:** <:MusicLogo:684822003110117466> Repeat disabled.`);
+					`**◎ Success:** <:MusicLogo:684822003110117466> Repeat queue disabled.`);
 			message.channel.send(embed);
 			return;
 		}
