@@ -107,6 +107,15 @@ module.exports = class extends Event {
 		});*/
 
 		// Database Creation
+		// Level table
+		const levelstatustable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'level\';').get();
+		if (!levelstatustable['count(*)']) {
+			console.log('level table created!');
+			db.prepare('CREATE TABLE level (guildid TEXT PRIMARY KEY, status TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_level_id ON level (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
 		// Dad Bot Table
 		const dadbot = db
 			.prepare(
@@ -306,19 +315,11 @@ module.exports = class extends Event {
 			db.pragma('journal_mode = wal');
 		}
 		// logging table
-		const loggingtable = db
-			.prepare(
-				'SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'logging\';'
-			)
-			.get();
+		const loggingtable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'logging\';').get();
 		if (!loggingtable['count(*)']) {
 			console.log('logging table created!');
-			db.prepare(
-				'CREATE TABLE logging (guildid TEXT PRIMARY KEY, channel TEXT);'
-			).run();
-			db.prepare(
-				'CREATE UNIQUE INDEX idx_logging_id ON logging (guildid);'
-			).run();
+			db.prepare('CREATE TABLE logging (guildid TEXT PRIMARY KEY, channel TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_logging_id ON logging (guildid);').run();
 			db.pragma('synchronous = 1');
 			db.pragma('journal_mode = wal');
 		}
