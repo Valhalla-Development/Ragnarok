@@ -37,6 +37,16 @@ module.exports = class Util {
 		return string.split(' ').map(str => str.slice(0, 1).toUpperCase() + str.slice(1)).join(' ');
 	}
 
+	color(me) {
+		let color;
+		if (me === '#000000') {
+			color = 'A10000';
+		} else {
+			color = me;
+		}
+		return color;
+	}
+
 	async loadCommands() {
 		return glob(`${this.directory}Commands/**/*.js`).then(commands => {
 			for (const commandFile of commands) {
