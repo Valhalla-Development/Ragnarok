@@ -184,8 +184,8 @@ module.exports = class extends Command {
 				const embed1 = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Play**`,
-						`**◎ Success:** You can now use the play command again.`);
-				message.channel.send(message.author, embed1).then((me) => me.delete({ timeout: 15000 }));
+						`**◎ Success:** <@${message.author.id}> You can now use the play command again.`);
+				message.channel.send(embed1).then((me) => me.delete({ timeout: 15000 }));
 				talkedRecently.delete(message.author.id);
 			}, 30000);
 		}
