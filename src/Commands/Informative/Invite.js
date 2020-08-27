@@ -12,7 +12,7 @@ module.exports = class extends Command {
 
 	async run(message) {
 		const embed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Invite**`,
 				`**◎ [Bot Invite Link](https://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot&permissions=1580723711)**`);
 		message.channel.send(embed);

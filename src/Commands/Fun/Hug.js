@@ -30,7 +30,7 @@ module.exports = class extends Command {
 		const hugresult = Math.floor(Math.random() * hug.length);
 		if (!args[0]) {
 			const ghembed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle(`${message.author.username} hugged themself...! (weirdo)`)
 				.setImage('https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif');
 			message.channel.send({ embed: ghembed });
@@ -39,7 +39,7 @@ module.exports = class extends Command {
 
 		if (!message.mentions.members.first()) {
 			const ghembed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle(`${message.author.username} hugged themself...! (weirdo)`)
 				.setImage('https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif');
 			message.channel.send({ embed: ghembed });
@@ -49,14 +49,14 @@ module.exports = class extends Command {
 
 		if (!mentionUser) {
 			const hembed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle(`${message.author.username} gave ${message.mentions.members.first().user.username} a hug! How sweet!`)
 				.setImage(hug[hugresult]);
 			message.channel.send({ embed: hembed });
 			return;
 		}
 		const ghembed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setTitle(`${message.author.username} hugged themself...! (weirdo)`)
 			.setImage('https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif');
 		message.channel.send({ embed: ghembed });

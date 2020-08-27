@@ -19,7 +19,7 @@ module.exports = class extends Command {
 		const { prefix } = prefixgrab;
 
 		const embed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setAuthor(`${message.guild.name} Help`, message.guild.iconURL({ dynamic: true }))
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setFooter(`This guild's prefix is ${prefix}`, this.client.user.avatarURL({ dynamic: true }))
@@ -30,7 +30,7 @@ module.exports = class extends Command {
 
 			if (!cmd) {
 				const embed1 = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || 'A10000')
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Help**`,
 						`**◎ Error:** Invalid command name: \`${command}\``);
 				message.channel.send(embed1).then((m) => m.delete({ timeout: 15000 }));

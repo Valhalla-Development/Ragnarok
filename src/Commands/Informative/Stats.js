@@ -39,7 +39,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setThumbnail(this.client.user.displayAvatarURL())
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField('General', [
 				`**◎ Client:** ${this.client.user.tag}`,
 				`**◎ Uptime:** ${ms(this.client.uptime, { long: true })}`,

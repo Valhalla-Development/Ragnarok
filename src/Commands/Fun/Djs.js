@@ -15,7 +15,7 @@ module.exports = class extends Command {
 	async run(message, args) {
 		if (!args[0]) {
 			const noInput = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Discord.js**`,
 					`**◎ Error:** You must input a search term!`);
 			message.channel.send(noInput).then((m) => m.delete({ timeout: 15000 }));
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 					message.channel.send({ embed });
 				} else {
 					const noResult = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || 'A10000')
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Discord.js**`,
 							`**◎ Error:** I found no results for\n\`${query}\``);
 					message.channel.send(noResult).then((m) => m.delete({ timeout: 15000 }));
@@ -40,7 +40,7 @@ module.exports = class extends Command {
 			.catch(err => {
 				console.error(err);
 				const error = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || 'A10000')
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Discord.js**`,
 						`**◎ Error:** An error occured :slight_frown:`);
 				message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));

@@ -22,7 +22,7 @@ module.exports = class extends Command {
 
 		if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 			const errEmbed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - TEmbed**`,
 					`**◎ Error:** You do not have permission to run this command.`);
 			message.channel.send(errEmbed).then((m) => m.delete({ timeout: 15000 }));
@@ -30,7 +30,7 @@ module.exports = class extends Command {
 		}
 
 		const embed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setTitle('Create a Ticket')
 			.setDescription('To create a ticket react with 📩')
 			.setFooter('Ragnarok Bot', this.client.user.avatarURL());
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 		const foundtEmbed = db.prepare(`SELECT * FROM ticketConfig WHERE guildid=${message.guild.id}`).get();
 		if (!foundtEmbed) {
 			const disabledTic = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - TicketEmbed**`,
 					`**◎ Error:** Tickets are not enabled on this server!`);
 			message.channel.send(disabledTic).then((m) => m.delete({ timeout: 15000 }));
@@ -55,14 +55,14 @@ module.exports = class extends Command {
 						ticketEChan: null
 					});
 					const cleared = new MessageEmbed()
-						.setColor(message.guild.me.displayHexColor || 'A10000')
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - TicketEmbed**`,
 							`**◎ Error:** Tickets embed has been cleared from the database.`);
 					message.channel.send(cleared).then((m) => m.delete({ timeout: 15000 }));
 					return;
 				}
 				const danelSucc = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || 'A10000')
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - TicketEmbed**`,
 						`**◎ Error:** I found no embed data in the database!`);
 				message.channel.send(danelSucc).then((m) => m.delete({ timeout: 15000, reason: 'Danel succ' }));
@@ -88,7 +88,7 @@ module.exports = class extends Command {
 					await embedChannel.messages.fetch(foundtEmbed.ticketembed).then((res) => {
 						if (res) {
 							const alreadytick = new MessageEmbed()
-								.setColor(message.guild.me.displayHexColor || 'A10000')
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - TicketEmbed**`,
 									`**◎ Error:** You already have a Ticket embed in this server!\n Please delete the other, or clear it from the database via \`${prefix}tembed clear\``);
 							message.channel.send(alreadytick).then((m) => m.delete({ timeout: 15000 }));

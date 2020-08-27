@@ -40,7 +40,7 @@ module.exports = class extends Event {
 
 		if (message.content.toLowerCase() === `${this.client.prefix}prefix`) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setDescription(`**◎ This guild's prefix is:** \`${prefixcommand}\``);
 			message.channel.send(embed);
 			return;
@@ -104,7 +104,7 @@ module.exports = class extends Event {
 					const lvlup = new MessageEmbed()
 						.setAuthor(`Congratulations ${message.author.username}`)
 						.setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
-						.setColor(message.guild.me.displayHexColor || 'A10000')
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
 					message.channel.send(lvlup).then((msg) => msg.delete({ timeout: 15000 }));
 				}
@@ -240,7 +240,7 @@ module.exports = class extends Event {
 				}
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
-					.setColor(message.guild.me.displayHexColor || 'A10000')
+					.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
 					.setFooter(`Req. by ${message.author.username}`)
 					.setTimestamp();
 				if (message.guild.id === guildID) {
@@ -352,8 +352,8 @@ module.exports = class extends Event {
 		}
 		const logembed = new MessageEmbed()
 			.setAuthor(message.author.tag, message.guild.iconURL())
-			.setDescription(`**◎ Used** \`${cmd}\` **command in ${message.channel}**\n\`-${cmd} ${oargresult}\``)
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setDescription(`**◎ Used** \`${cmd}\` **command in ${message.channel}**\n\`${prefixcommand}${cmd} ${oargresult}\``)
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setFooter(`ID: ${message.channel.id}`)
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send(logembed);

@@ -22,7 +22,7 @@ module.exports = class extends Command {
 
 		if (!message.member.hasPermission('KICK_MEMBERS') && !this.client.owners.includes(message.author.id)) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** You need to have the \`KICK_MEMBERS\` permission to use this command.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -33,7 +33,7 @@ module.exports = class extends Command {
 		const user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
 		if (!user) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** Run \`${prefix}help mute\` If you are unsure.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -45,7 +45,7 @@ module.exports = class extends Command {
 			.join(' ');
 		if (!reason) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** You must specify a reason for the mute!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -54,7 +54,7 @@ module.exports = class extends Command {
 		const muterole = message.guild.roles.cache.find((x) => x.name === 'Muted');
 		if (!muterole) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** I could not find the mute role! Please create it, it **must** be named \`Muted\``);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -64,7 +64,7 @@ module.exports = class extends Command {
 		const mutetime = args[1];
 		if (!mutetime) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** You must specify a mute time!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -73,7 +73,7 @@ module.exports = class extends Command {
 
 		if (user.roles.cache.has(muterole.id)) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** This user is already muted!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -85,7 +85,7 @@ module.exports = class extends Command {
 			await user.roles.add(muterole.id);
 			const embed = new MessageEmbed()
 				.setThumbnail(this.client.user.displayAvatarURL())
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField('Action | Mute', [
 					`**◎ User:** <@${user.id}>`,
 					`**◎ Reason:** ${reason}`,
@@ -99,7 +99,7 @@ module.exports = class extends Command {
 				user.roles.remove(muterole.id);
 				const embed1 = new MessageEmbed()
 					.setThumbnail(this.client.user.displayAvatarURL())
-					.setColor(message.guild.me.displayHexColor || 'A10000')
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField('Action | Un-Mute', [
 						`**◎ User:** <@${user.id}>`,
 						`**◎ Reason:** Mute time ended.`
@@ -113,7 +113,7 @@ module.exports = class extends Command {
 
 			const embed = new MessageEmbed()
 				.setThumbnail(this.client.user.displayAvatarURL())
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField('Action | Mute', [
 					`**◎ User:** <@${user.id}>`,
 					`**◎ Reason:** ${reason}`,
@@ -129,7 +129,7 @@ module.exports = class extends Command {
 
 				const embed2 = new MessageEmbed()
 					.setThumbnail(this.client.user.displayAvatarURL())
-					.setColor(message.guild.me.displayHexColor || 'A10000')
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField('Action | Un-Mute', [
 						`**◎ User:** <@${user.id}>`,
 						`**◎ Reason:** Mute time ended.`

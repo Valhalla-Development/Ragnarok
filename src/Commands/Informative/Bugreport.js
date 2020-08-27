@@ -17,7 +17,7 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			const noinEmbed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - BugReport**`,
 					`**◎ Error:** Please input some text!`);
 			message.channel.send(noinEmbed).then((m) => m.delete({ timeout: 15000 }));
@@ -27,7 +27,7 @@ module.exports = class extends Command {
 		const argresult = args.join(' ');
 
 		const embed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setTitle('Bug Report')
 			.setDescription(`**◎ User: <@${message.author.id}> - **\`${message.author.tag}\`\n**Bug:** ${argresult}`)
 			.setFooter(`${message.guild.name} - ${message.guild.id}`);
@@ -35,7 +35,7 @@ module.exports = class extends Command {
 
 		const loggedEmbed = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - BugReport**`,
 				`**◎ Success:** Bug has been successfully reported!`);
 		message.channel.send(loggedEmbed).then((m) => m.delete({ timeout: 15000 }));

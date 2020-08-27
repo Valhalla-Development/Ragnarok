@@ -27,7 +27,7 @@ module.exports = class extends Command {
 
 		if (!role) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Resume**`,
 					`**◎ Error:** Sorry, I could not find a role name \`DJ\`, if you prefer, you could set a custom role as the DJ, check the command command \`${prefix}config\` for more information.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -36,7 +36,7 @@ module.exports = class extends Command {
 
 		if (!message.member.roles.cache.has(role.id) && message.author.id !== message.guild.ownerID) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Resume**`,
 					`**◎ Error:** Sorry! You do not have the **${role}** role.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -49,7 +49,7 @@ module.exports = class extends Command {
 
 		if (!player) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Resume**`,
 					`**◎ Error:** <:MusicLogo:684822003110117466> No song is currently playing.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -58,7 +58,7 @@ module.exports = class extends Command {
 
 		if (!channel || channel.id !== player.voiceChannel.id) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Resume**`,
 					`**◎ Error:** You need to be in a voice channel to use this command!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -67,7 +67,7 @@ module.exports = class extends Command {
 
 		if (player.playing === false) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Resume**`,
 					`**◎ Success:** <:MusicLogo:684822003110117466> Resuming playback.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -76,7 +76,7 @@ module.exports = class extends Command {
 		}
 		if (player.playing === true) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Resume**`,
 					`**◎ Success:** <:MusicLogo:684822003110117466> Music is already playing!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));

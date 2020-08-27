@@ -14,7 +14,7 @@ module.exports = class extends Command {
 
 		if (!message.member.hasPermission('KICK_MEMBERS') && !this.client.owners.includes(message.author.id)) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You need to have the \`KICK_MEMBERS\` permission to use this command.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -25,7 +25,7 @@ module.exports = class extends Command {
 
 		if (message.mentions.users.size < 1) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You must mention someone!`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -36,7 +36,7 @@ module.exports = class extends Command {
 
 		if (user.id === message.author.id) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You can't kick yourself <:wut:745408596233289839>`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -47,7 +47,7 @@ module.exports = class extends Command {
 
 		if (message.mentions.members.first().hasPermission('MANAGE_GUILD') || message.mentions.members.first().hasPermission('ADMINISTRATOR') || !message.mentions.members.first().kickable) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You cannot kick <@${user.id}>`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -58,7 +58,7 @@ module.exports = class extends Command {
 
 		if (user.id === this.client.user.id) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You cannot kick me. :slight_frown:`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -68,7 +68,7 @@ module.exports = class extends Command {
 		// message sending (await message)
 
 		const embed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Kick**`,
 				`**◎ Success:** You have 30 seconds to reply to this message with a reason for kicking <@${user.id}`);
 		message.channel.send(embed).then(() => {
@@ -82,7 +82,7 @@ module.exports = class extends Command {
 				}).then(() => {
 					const embed1 = new MessageEmbed()
 						.setThumbnail(this.client.user.displayAvatarURL())
-						.setColor(message.guild.me.displayHexColor || 'A10000')
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField('User Kicked', [
 							`**◎ User:** ${user.name}`,
 							`**◎ Reason:**: ${collected.first().content}`,
@@ -93,7 +93,7 @@ module.exports = class extends Command {
 				});
 			}).catch(() => {
 				const embed2 = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || 'A10000')
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Kick**`,
 						`**◎ Cancelled:** Kick command canceled.`);
 				message.channel.send(embed2).then((m) => m.delete({ timeout: 15000 }));

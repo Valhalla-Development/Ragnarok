@@ -30,7 +30,7 @@ module.exports = class extends Event {
 
 		if (!deletionLog) {
 			const noLogE = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setAuthor(message.author.tag, this.client.user.displayAvatarURL({ dynamic: true }))
 				.setTitle('Message Deleted')
 				.setDescription([
@@ -43,7 +43,7 @@ module.exports = class extends Event {
 
 		const attachments = message.attachments.size ? message.attachments.map(attachment => attachment.proxyURL) : null;
 		const embed = new RagnarokEmbed()
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setAuthor(message.author.tag, this.client.user.displayAvatarURL({ dynamic: true }))
 			.setTitle('Message Deleted')
 			.setDescription([

@@ -47,7 +47,7 @@ module.exports = class extends Command {
 
 		if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 			const embed = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - RoleMenu**`,
 					`**◎ Error:** You do not have permission to run this command.`);
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -55,7 +55,7 @@ module.exports = class extends Command {
 			const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${message.guild.id}`).get();
 			if (!foundRoleMenu || JSON.parse(foundRoleMenu.roleList).length <= 0) {
 				const embed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || 'A10000')
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - RoleMenu**`,
 						`**◎ Error:** The roles for the menu have not been set yet. Please try again later.`);
 				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
@@ -70,7 +70,7 @@ module.exports = class extends Command {
 				}
 
 				const roleMenuEmbed = new MessageEmbed()
-					.setColor(message.guild.me.displayHexColor || 'A10000')
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setTitle('Assign a Role')
 					.setDescription(`React below to assign one of the following roles:\n\n${embedRoleList}`);
 				message.channel.send(roleMenuEmbed).then(async (reactEmbed) => {

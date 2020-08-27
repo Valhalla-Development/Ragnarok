@@ -14,7 +14,7 @@ module.exports = class extends Command {
 	async run(message) {
 		const botembed = new MessageEmbed()
 			.setTitle('Uptime')
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setDescription(`My uptime is \`${ms(this.client.uptime, { long: true })}\``);
 
 		message.channel.send(botembed);

@@ -19,7 +19,7 @@ module.exports = class extends Command {
 		msg.delete();
 
 		const embed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Ping**`, [
 				`**◎ Bot Latency:** \`${latency}ms\``,
 				`**◎ API Latency:** \`${Math.round(this.client.ws.ping)}ms\``

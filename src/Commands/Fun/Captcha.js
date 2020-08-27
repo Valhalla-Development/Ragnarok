@@ -22,7 +22,7 @@ module.exports = class extends Command {
 
 		if (!args[0]) {
 			const invalidInput = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Captcha**`,
 					`**◎ Error:** You must supply some text!`);
 			message.channel.send(invalidInput).then((m) => m.delete({ timeout: 15000 }));
@@ -30,7 +30,7 @@ module.exports = class extends Command {
 		}
 		if (args.length > 5) {
 			const tooLong = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Captcha**`,
 					`**◎ Error:** You can only have 5 words!`);
 			message.channel.send(tooLong).then((m) => m.delete({ timeout: 15000 }));

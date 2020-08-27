@@ -13,7 +13,7 @@ module.exports = class extends Command {
 
 	async run(message) {
 		const embed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - VBucks**`,
 				`**◎ Free V-Bucks:** React with ✅`);
 		message.channel.send(embed).then(async (a) => {

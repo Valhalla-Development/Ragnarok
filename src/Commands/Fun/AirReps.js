@@ -20,7 +20,7 @@ module.exports = class extends Command {
 
 		if (!args[0]) {
 			const incorrectFormat = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - A4K**`,
 					`**◎ Error:** Incorrect usage! Please use \`${prefix}a4k <search>\``);
 			message.channel.send(incorrectFormat).then((m) => m.delete({ timeout: 15000 }));
@@ -35,7 +35,7 @@ module.exports = class extends Command {
 			.then(res => {
 				const embed = new MessageEmbed()
 					.setAuthor(`${res[0].data.subreddit} - Top 3 results for: ${args.join(' ')}`, 'https://styles.redditmedia.com/t5_2oemly/styles/communityIcon_vzp0ymwfksz41.png?width=256&s=96596caa93f51c37505a2cecf33f2abdb8d93d87')
-					.setColor(message.guild.me.displayHexColor || 'A10000')
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setDescription(`[**◎ ${res[0].data.title}**](${res[0].data.url})\n \`\`\`${res[0].data.selftext.substring(0, 250)}...\`\`\`\n
 					[**◎ ${res[1].data.title}**](${res[1].data.url})\n  \`\`\`${res[1].data.selftext.substring(0, 250)}...\`\`\`\n
 					[**◎ ${res[2].data.title}**](${res[2].data.url})\n  \`\`\`${res[2].data.selftext.substring(0, 250)}...\`\`\`\n

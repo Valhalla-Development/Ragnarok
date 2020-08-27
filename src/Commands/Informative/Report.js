@@ -19,7 +19,7 @@ module.exports = class extends Command {
 		if (!target) {
 			const noTarget = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** You must specify a user to report!`);
 			message.channel.send(noTarget).then((m) => m.delete({ timeout: 15000 }));
@@ -28,7 +28,7 @@ module.exports = class extends Command {
 		if (!reason) {
 			const noReason = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** You must specify a reason!`);
 			message.channel.send(noReason).then((m) => m.delete({ timeout: 15000 }));
@@ -37,7 +37,7 @@ module.exports = class extends Command {
 		if (!reports) {
 			const noReason = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** Reports are disabled on this server! If you are an administrator, create the channel and name it \`reports\``);
 			message.channel.send(noReason).then((m) => m.delete({ timeout: 15000 }));
@@ -52,13 +52,13 @@ module.exports = class extends Command {
 				{ name: '⚠ - Reported by', value: `${message.author.tag}\n(${message.author.id})`, inline: true },
 				{ name: '⚙ - Channel', value: message.channel },
 				{ name: '🔨 - Reason', value: reason })
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setTimestamp();
 		reports.send(reportembed);
 
 		const success = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Report**`,
 				`**◎ Success:** ${target}** was reported by **${message.author}`);
 		message.channel.send(success).then((m) => m.delete({ timeout: 15000 }));

@@ -22,7 +22,7 @@ module.exports = class extends Command {
 		const safe = message.channel.nsfw ? data.children : data.children.filter((post) => !post.data.over_18);
 		if (!safe.length) {
 			const noPost = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - DoctorWho**`,
 					`**◎ Error:** I could not fetch the post!`);
 			message.channel.send(noPost).then((m) => m.delete({ timeout: 15000 }));
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 			postURL = post.data.url;
 		}
 		const embed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setAuthor(
 				`${post.data.title}`,
 				message.author.displayAvatarURL({ dynamic: true }),

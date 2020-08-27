@@ -16,7 +16,7 @@ module.exports = class extends Command {
 	async run(message, args) {
 		if (!args[0]) {
 			const incorrectFormat = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Calculation**`,
 					`**◎ Error:** Please input a calculation!`);
 			message.channel.send(incorrectFormat).then((m) => m.delete({ timeout: 15000 }));
@@ -28,7 +28,7 @@ module.exports = class extends Command {
 			resp = math.evaluate(args.join(' '));
 		} catch (err) {
 			const invalidInput = new MessageEmbed()
-				.setColor(message.guild.me.displayHexColor || 'A10000')
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Calculation**`,
 					`**◎ Error:** Please input a valid calculation!`);
 			message.channel.send(invalidInput).then((m) => m.delete({ timeout: 15000 }));
@@ -36,7 +36,7 @@ module.exports = class extends Command {
 		}
 
 		const embed = new MessageEmbed()
-			.setColor(message.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Calculation**`, [
 				`**◎ Input:** \`\`\`js\n${args.join('')}\`\`\``,
 				`**◎ Output:** \`\`\`js\n${resp}\`\`\``
