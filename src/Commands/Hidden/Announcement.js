@@ -32,7 +32,7 @@ module.exports = class extends Command {
 		const complete = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Announcement**`,
-				`**◎ Success:** Announcement message has been set to:**\n\`\`\`${args.join(' ')}\`\`\``);
+				`**◎ Success:** Announcement message has been set to:\n\`\`\`${args.join(' ')}\`\`\``);
 		message.channel.send(complete);
 	}
 
