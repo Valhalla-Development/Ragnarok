@@ -30,14 +30,13 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Markdown**`,
 				`**◎ Error:** Please input text, example: \`${prefix}markdown <language> <text> !\``);
-		message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 
 		if (args[0] === undefined) {
-			message.channel.send(embed);
+			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 		if (args[1] === undefined) {
-			message.channel.send(embed);
+			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
