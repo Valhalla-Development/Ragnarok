@@ -10,8 +10,5 @@
   "logging": true,
   "trackClient": "REDACTED",
   "trackSecret": "REDACTED",
-  "nodes": [
-    { "host": "localhost", "port": "2333", "password": "youshallnotpass" }
-  ],
   "filterList" : ["example1", "example2", "example3", "example4"]
 }
