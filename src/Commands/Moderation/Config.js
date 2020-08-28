@@ -24,7 +24,7 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setThumbnail(this.client.user.displayAvatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.setAuthor('Ragnarok - Config')
+				.setAuthor(`${this.client.user.username} - Config`)
 				.setDescription([
 					`**◎ Advert Protection:**`,
 					`\u3000 \`${prefix}config adsprot <on/off>\` : Toggles advert protection`,
