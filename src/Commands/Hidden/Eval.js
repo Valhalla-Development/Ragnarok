@@ -46,7 +46,7 @@ module.exports = class extends Command {
 			}
 
 			const embed = new MessageEmbed()
-				.setAuthor(`Ragnarok - Eval`, this.client.user.displayAvatarURL({ dynamic: true }))
+				.setAuthor(`${this.client.user.username} - Eval`, this.client.user.displayAvatarURL({ dynamic: true }))
 				.addFields({ name: `${message.author.username} - JavaScript Eval Success:`, value: '** **' },
 					{ name: ':inbox_tray: **INPUT**', value: `\`\`\`${args.join(' ')}\`\`\`` },
 					{ name: ':outbox_tray: **OUTPUT**', value: `\`\`\`${clean(evaled)}\`\`\`` })
@@ -57,7 +57,7 @@ module.exports = class extends Command {
 			});
 		} catch (err) {
 			message.channel.send(new MessageEmbed()
-				.setAuthor(`Ragnarok - Eval Error`, this.client.user.displayAvatarURL({ dynamic: true }))
+				.setAuthor(`${this.client.user.username} - Eval Error`, this.client.user.displayAvatarURL({ dynamic: true }))
 				.addFields({ name: `${message.author.username} - JavaScript Eval Error:`, value: 'There was a problem with the code you tried to run!' },
 					{ name: ':no_entry: ERROR', value: `\`\`\`${clean(err)}\`\`\`` })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
