@@ -4,7 +4,7 @@ const moment = require('moment');
 
 const flags = {
 	DISCORD_EMPLOYEE: '<:DiscordStaff:748651259849998377>',
-	DISCORD_PARTNER: '<:DiscordPartner:748651259543683084>',
+	DISCORD_PARTNER: '<:DiscordPartner:748985364022165694>',
 	BUGHUNTER_LEVEL_1: '<:DiscordBugHunter1:748651259724300364>',
 	BUGHUNTER_LEVEL_2: '<:DiscordBugHunter2:748651259741077574>',
 	HYPESQUAD_EVENTS: '<:HypeSquadEvents:748651259761786981>',
