@@ -36,9 +36,9 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${res[0].data.subreddit} - Top 3 results for: ${args.join(' ')}`, 'https://styles.redditmedia.com/t5_2oemly/styles/communityIcon_vzp0ymwfksz41.png?width=256&s=96596caa93f51c37505a2cecf33f2abdb8d93d87')
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.setDescription(`[**◎ ${res[0].data.title}**](${res[0].data.url})\n \`\`\`${res[0].data.selftext.substring(0, 250)}...\`\`\`\n
-					[**◎ ${res[1].data.title}**](${res[1].data.url})\n  \`\`\`${res[1].data.selftext.substring(0, 250)}...\`\`\`\n
-					[**◎ ${res[2].data.title}**](${res[2].data.url})\n  \`\`\`${res[2].data.selftext.substring(0, 250)}...\`\`\`\n
+					.setDescription(`[**◎ ${res[0].data.title}**](${res[0].data.url})\n \`\`\`${res[0].data.selftext.substring(0, 150)}...\`\`\`\n
+					[**◎ ${res[1].data.title}**](${res[1].data.url})\n  \`\`\`${res[1].data.selftext.substring(0, 150)}...\`\`\`\n
+					[**◎ ${res[2].data.title}**](${res[2].data.url})\n  \`\`\`${res[2].data.selftext.substring(0, 150)}...\`\`\`\n
 					[**__Search Results...__**](https://www.reddit.com/r/AirReps/search/?q=${searchTerm}&restrict_sr=1)`);
 				message.channel.send(embed);
 			}).catch(() => message.channel.send('No results found.'));
