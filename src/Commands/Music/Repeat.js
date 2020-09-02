@@ -38,40 +38,31 @@ module.exports = class extends Command {
 			return;
 		}
 
+		const player = this.client.manager.players.get(message.guild.id);
+		const { channel } = message.member.voice;
+
+		if (!player) {
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Repeat**`,
+					`**◎ Error:** <:MusicLogo:684822003110117466> No song is currently playing.`);
+			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			return;
+		}
+
+		if (!channel || channel.id !== player.voiceChannel) {
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Repeat**`,
+					`**◎ Error:** You need to be in a voice channel to use this command!`);
+			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			return;
+		}
+
 		if (!args[0]) {
-			const player = this.client.music.players.get(message.guild.id);
-			const { channel } = message.member.voice;
-			if (!player) {
-				const embed = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Repeat**`,
-						`**◎ Error:** <:MusicLogo:684822003110117466> No song is currently playing.`);
-				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
-				return;
-			}
-
-			if (!channel || channel.id !== player.voiceChannel.id) {
-				const embed = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Repeat**`,
-						`**◎ Error:** You need to be in a voice channel to use this command!`);
-				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
-				return;
-			}
-
-			if (!player) {
-				const embed = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Repeat**`,
-						`**◎ Error:** <:MusicLogo:684822003110117466> No song is currently playing.`);
-				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
-				return;
-			}
-
 			const previousState = player.trackRepeat;
 
-			player.setTrackRepeat(!previousState);
-			if (!previousState) {
+			if (previousState === false) {
 				player.setTrackRepeat(true);
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -79,7 +70,7 @@ module.exports = class extends Command {
 						`**◎ Success:** <:MusicLogo:684822003110117466> Repeat enabled.`);
 				message.channel.send(embed);
 			} else {
-				player.setQueueRepeat(false);
+				player.setTrackRepeat(false);
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Repeat**`,
@@ -87,18 +78,7 @@ module.exports = class extends Command {
 				message.channel.send(embed);
 			}
 		} else if (args[0] === 'queue') {
-			const player = this.client.music.players.get(message.guild.id);
-			const { channel } = message.member.voice;
-			if (!channel || channel.id !== player.voiceChannel.id) {
-				const embed = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Repeat**`,
-						`**◎ Error:** You need to be in a voice channel to use this command!`);
-				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
-				return;
-			}
-
-			if (!player || !player.queue[0]) {
+			if (!player || player.queue.size === 0) {
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Repeat**`,
