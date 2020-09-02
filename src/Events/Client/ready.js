@@ -1,9 +1,6 @@
 /* eslint-disable consistent-return */
 const Event = require('../../Structures/Event');
-const { MessageEmbed } = require('discord.js');
-const { ErelaClient, Utils } = require('erela.js');
 const SQLite = require('better-sqlite3');
-const { nodes } = require('../../../config.json');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const chalk = require('chalk');
 
@@ -36,79 +33,15 @@ module.exports = class extends Event {
 			}
 		);
 
-		// Music
-
-		class LavalinkClient extends ErelaClient {
-
-			sendWS(data) {
-				const guild = this.client.guilds.cache.get(data.d.guild_id);
-				if (guild) return this.client.ws.shards.get(guild.shardID).send(data);
-			}
-
-		}
-
-		this.client.music = new LavalinkClient(this.client, nodes)
-			.on('nodeError', console.log)
-			.on('nodeConnect', () => console.log('Successfully created a new Erela Node.'))
-			.on('nodeDisconnect', () => console.log('Lost connection to Erela Node.'))
-			.on('nodeReconnect', () => console.log('Connection restored to Erela Node.'))
-			.on('trackStuck', (player) => {
-				player.textChannel.send('An error occured, ending playback.');
-				return this.client.music.players.destroy(player.guild.id);
-			})
-			.on('socketClosed', (player) => {
-				this.client.music.players.destroy(player.guild.id);
-				return;
-			})
-			.on('queueEnd', (player) => {
-				if (player.queueRepeat) {
-					return;
-				}
-				const embed = new MessageEmbed()
-					.addField(`**${this.client.user.username} - Music**`,
-						`**◎ Success:** <:MusicLogo:684822003110117466> Queue has ended.`)
-					.setColor(player.textChannel.guild.me.displayHexColor || 'A10000');
-				player.textChannel.send(embed);
-				this.client.music.players.destroy(player.guild.id);
-				return;
-			})
-			.on('trackEnd', (player) => {
-				if (player.trackRepeat) {
-					return;
-				}
-				if (player.queue.length < 1) {
-					const embed = new MessageEmbed()
-						.addField(`**${this.client.user.username} - Music**`,
-							`**◎ Success:** <:MusicLogo:684822003110117466> Track has ended.`)
-						.setColor(player.textChannel.guild.me.displayHexColor || 'A10000');
-					player.textChannel.send(embed);
-					this.client.music.players.destroy(player.guild.id);
-					return;
-				}
-			})
-			.on('trackStart', ({ textChannel, trackRepeat }, { title, duration, requester }) => {
-				if (trackRepeat) {
-					return;
-				}
-				const embed = new MessageEmbed()
-					.setAuthor('Now Playing:', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-					.setColor(textChannel.guild.me.displayHexColor || 'A10000')
-					.setDescription(`Now playing: \`${title}\`\nDuration: \`${Utils.formatTime(duration, true)}\`\nRequested by: ${requester}`);
-				textChannel.send(embed);
-			});
-
-		this.client.levels = new Map()
-			.set('none', 0.0)
-			.set('low', 0.10)
-			.set('medium', 0.15)
-			.set('high', 0.25);
-
+		// Initiate the Erela manager.
+		this.client.manager.init(this.client.user.id);
 
 		/* const guildInvites = new Map();
 		this.invites = guildInvites;
 		this.client.guilds.cache.forEach(guild => {
 			guild.fetchInvites().then(invite => this.invites.set(guild.id, invite));
 		});*/
+
 
 		// Database Creation
 		// Level table
