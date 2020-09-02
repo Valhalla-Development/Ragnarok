@@ -2,7 +2,7 @@ const { MessageEmbed } = require('discord.js');
 
 const ZWS = '\u200B';
 
-module.exports = class FreedomEmbed extends MessageEmbed {
+module.exports = class RagnarokEmbed extends MessageEmbed {
 
 	splitFields(contentOrTitle, rawContent) {
 		if (typeof contentOrTitle === 'undefined') return this;
