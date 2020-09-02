@@ -5,6 +5,7 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
+const prettyMilliseconds = require('pretty-ms');
 
 module.exports = class extends Command {
 
@@ -37,7 +38,9 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const player = this.client.music.players.get(message.guild.id);
+		const player = this.client.manager.players.get(message.guild.id);
+		const { channel } = message.member.voice;
+
 		if (!player) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -47,7 +50,16 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (player.queue.length < 1) {
+		if (!channel || channel.id !== player.voiceChannel) {
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Queue**`,
+					`**◎ Error:** You need to be in a voice channel to use this command!`);
+			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			return;
+		}
+
+		if (player.queue.size === 0) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Queue**`,
@@ -55,10 +67,6 @@ module.exports = class extends Command {
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
-
-		const { title, requester, uri } = player.queue[0];
-
-		const { queue } = player;
 
 		const embed1 = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -70,9 +78,8 @@ module.exports = class extends Command {
 			.addField(`**${this.client.user.username} - Queue**`,
 				`**◎ Success:** <:MusicLogo:684822003110117466> The queue has been cleared.`);
 
-
 		if (args[0] === 'clear') {
-			if (player.queue.length < 1) {
+			if (player.queue.size === 0) {
 				message.channel.send(embed1).then((m) => m.delete({ timeout: 15000 }));
 				return;
 			}
@@ -81,109 +88,35 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (!player.queue[1]) {
-			message.channel.send('', {
-				embed: {
-					description: `🎧 Now Playing:\n[${title}](${uri}) [<@${requester.id}>]`,
-					color: this.client.utils.color(message.guild.me.displayHexColor),
-					author: {
-						name: `${message.guild.name}'s Queue.`,
-						icon_url: 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png'
-					}
-				}
-			});
+		const { queue } = player;
+
+		const embed = new MessageEmbed();
+		embed.setAuthor(`${message.guild.name}'s Queue (${player.queue.size})`);
+		embed.setColor(this.client.utils.color(message.guild.me.displayHexColor));
+
+		// change for the amount of tracks per page
+		const multiple = 10;
+		const page = args.length && Number(args[0]) ? Number(args[0]) : 1;
+
+		const end = page * multiple;
+		const start = end - multiple;
+
+		const tracks = queue.slice(start, end);
+
+		if (player.queue.size === 1) {
+			embed.setDescription(`🎧 Now Playing:\n [${queue.current.title}](${queue.current.uri}) [<@${queue.current.requester.id}>] - \`${prettyMilliseconds(queue.current.duration, { colonNotation: true })}\``);
+			message.channel.send(embed);
 			return;
 		}
 
-		let x;
-		if (args > 1) {
-			x = Math.floor(args) * 10 + 1;
-		} else {
-			x = Math.floor(11);
-		}
-		let i;
-		if (args > 1) {
-			i = x - 11;
-		} else {
-			i = 0;
-		}
-		let queuelist = player.queue.slice(x - 10, x).map(() => `**${++i}.** [${queue[i].title}](${queue[i].uri}) [<@${queue[i].requester.id}>]`).join('\n');
-		if (!queuelist) {
-			const embed = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Queue**`,
-					`**◎ Error:** Page doesn't exist!`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
-			return;
-		}
-		const embed = new MessageEmbed();
-		embed.setDescription(`🎧 Now Playing:\n [${title}](${uri}) [<@${requester.id}>]\n__Up Next__:\n${queuelist}`);
+		embed.setDescription(`🎧 Now Playing:\n [${queue.current.title}](${queue.current.uri}) [<@${queue.current.requester.id}>] - \`${prettyMilliseconds(queue.current.duration, { colonNotation: true })}\`\n${tracks.map((track, i) => `**◎ ${start + ++i} -** [${track.title}](${track.uri}) [${track.requester}] - \`${prettyMilliseconds(track.duration, { colonNotation: true })}\``).join('\n')}`);
 		embed.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png');
-		embed.setAuthor(`${message.guild.name}'s Queue (${Math.floor(x / 10)} / ${Math.floor((player.queue.slice(1).length + 10) / 10)})`);
-		embed.setFooter(`Total items in queue: ${player.queue.length}`);
-		embed.setColor(this.client.utils.color(message.guild.me.displayHexColor));
-		message.channel.send(embed).then(async (msg) => {
-			if (Math.floor((player.queue.slice(1).length + 10) / 10) > 1) {
-				await msg.react('⏪');
-				await msg.react('◀');
-				await msg.react('🟣');
-				await msg.react('▶');
-				await msg.react('⏩');
-				const pages = Math.floor((player.queue.slice(1).length + 10) / 10);
-				let page = Math.floor(x / 10);
-				const back = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '◀' && user.id === message.author.id, { time: 60000 });
-				const doubleback = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏪' && user.id === message.author.id, { time: 60000 });
-				const doubleforwad = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '⏩' && user.id === message.author.id, { time: 60000 });
-				const forwad = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '▶' && user.id === message.author.id, { time: 60000 });
-				const middle = msg.createReactionCollector((reaction, user) => reaction.emoji.name === '🟣' && user.id === message.author.id, { time: 60000 });
-				msg.delete({ timeout: 60000 });
-				back.on('collect', async (r) => {
-					if (page === 1) return r.users.remove(message.author);
-					await r.users.remove(message.author);
-					await page--;
-					x = Math.floor(page) * 10 + 1;
-					i = x - 11;
-					queuelist = player.queue.slice(x - 10, x).map(() => `**${++i}.** [${queue[i].title}](${queue[i].uri}) [<@${queue[i].requester.id}>]`).join('\n');
-					embed.setDescription(`🎧 Now Playing:\n [${title}](${uri}) [<@${requester.id}>]\n__Up Next__:\n${queuelist}`);
-					embed.setAuthor(`${message.guild.name}'s Queue (${page} / ${pages})`);
-					msg.edit(embed);
-				});
-				forwad.on('collect', async (r) => {
-					if (page === pages) return r.users.remove(message.author);
-					await r.users.remove(message.author);
-					await page++;
-					x = Math.floor(page) * 10 + 1;
-					i = x - 11;
-					queuelist = player.queue.slice(x - 10, x).map(() => `**${++i}.** [${queue[i].title}](${queue[i].uri}) [<@${queue[i].requester.id}>]`).join('\n');
-					embed.setDescription(`🎧 Now Playing:\n [${title}](${uri}) [<@${requester.id}>]\n__Up Next__:\n${queuelist}`);
-					embed.setAuthor(`${message.guild.name}'s Queue (${page} / ${pages})`);
-					msg.edit(embed);
-				});
-				doubleback.on('collect', async (r) => {
-					if (page === 1) return r.users.remove(message.author);
-					await r.users.remove(message.author);
-					page = 1;
-					x = Math.floor(page) * 10 + 1;
-					i = x - 11;
-					queuelist = player.queue.slice(x - 10, x).map(() => `**${++i}.** [${queue[i].title}](${queue[i].uri}) [<@${queue[i].requester.id}>]`).join('\n');
-					embed.setDescription(`🎧 Now Playing:\n [${title}](${uri}) [<@${requester.id}>]\n__Up Next__:\n${queuelist}`);
-					embed.setAuthor(`${message.guild.name}'s Queue (${page} / ${pages})`);
-					msg.edit(embed);
-				});
-				doubleforwad.on('collect', async (r) => {
-					if (page === pages) return r.users.remove(message.author);
-					await r.users.remove(message.author);
-					page = pages;
-					x = Math.floor(page) * 10 + 1;
-					i = x - 11;
-					queuelist = player.queue.slice(x - 10, x).map(() => `**${++i}.** [${queue[i].title}](${queue[i].uri}) [<@${queue[i].requester.id}>]`).join('\n');
-					embed.setDescription(`🎧 Now Playing:\n [${title}](${uri}) [<@${requester.id}>]\n__Up Next__:\n${queuelist}`);
-					embed.setAuthor(`${message.guild.name}'s Queue (${page} / ${pages})`);
-					msg.edit(embed);
-				});
-				middle.on('collect', async (r) => r.users.remove(message.author));
-			}
-		});
+
+		const maxPages = Math.ceil(queue.length / multiple);
+
+		embed.setFooter(`Page ${page > maxPages ? maxPages : page} of ${maxPages}`);
+
+		message.channel.send(embed);
 	}
 
 };
