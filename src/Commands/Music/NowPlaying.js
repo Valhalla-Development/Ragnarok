@@ -1,9 +1,9 @@
 const Command = require('../../Structures/Command');
-const { Utils } = require('erela.js');
 const { stripIndents } = require('common-tags');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
+const prettyMilliseconds = require('pretty-ms');
 
 module.exports = class extends Command {
 
@@ -37,8 +37,8 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const player = this.client.music.players.get(message.guild.id);
-		if (!player || !player.queue[0]) {
+		const player = this.client.manager.players.get(message.guild.id);
+		if (!player || player.queue.size === 0) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - NowPlaying**`,
@@ -47,14 +47,13 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const { title, duration, requester } = player.queue[0];
-
+		const { title, duration, requester } = player.queue.current;
 		const embed = new MessageEmbed()
 			.setAuthor('Current Song Playing', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 			.setDescription(stripIndents`
-            ${player.playing ? '▶️' : '⏸️'} **${title}** \`${Utils.formatTime(duration, true)}\` Requested by: [<@${requester.id}>]`);
+            ${player.playing ? '▶️' : '⏸️'} **${title}** \`${prettyMilliseconds(duration, { colonNotation: true })}\` Requested by: [${requester}]`);
 		message.channel.send(embed);
 		return;
 	}

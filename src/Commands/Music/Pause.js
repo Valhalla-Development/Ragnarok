@@ -43,7 +43,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const player = this.client.music.players.get(message.guild.id);
+		const player = this.client.manager.players.get(message.guild.id);
 		const { channel } = message.member.voice;
 
 		if (!player) {
@@ -55,7 +55,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (!channel || channel.id !== player.voiceChannel.id) {
+		if (!channel || channel.id !== player.voiceChannel) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Pause**`,
@@ -64,8 +64,8 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (player.playing === true) {
-			player.pause(player.playing);
+		if (!player.paused) {
+			player.pause(true);
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Pause**`,
@@ -73,7 +73,7 @@ module.exports = class extends Command {
 			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
-		if (player.playing === false) {
+		if (player.paused) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Pause**`,

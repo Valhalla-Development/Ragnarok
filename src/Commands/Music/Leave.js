@@ -7,7 +7,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			aliases: ['fuckoff'],
+			aliases: ['fuckoff', 'stop'],
 			description: 'Forces the bot to leave the voice channel.',
 			category: 'Music'
 		});
@@ -45,7 +45,7 @@ module.exports = class extends Command {
 		}
 
 		const { channel } = message.member.voice;
-		const player = this.client.music.players.get(message.guild.id);
+		const player = this.client.manager.players.get(message.guild.id);
 
 		if (!player) {
 			const embed = new MessageEmbed()
@@ -56,7 +56,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (!channel || channel.id !== player.voiceChannel.id) {
+		if (!channel || channel.id !== player.voiceChannel) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Leave**`,
@@ -65,7 +65,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		this.client.music.players.destroy(message.guild.id);
+		player.destroy(message.guild.id);
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Leave**`,
