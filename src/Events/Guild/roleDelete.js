@@ -13,7 +13,7 @@ module.exports = class extends Event {
 		const logembed = new MessageEmbed()
 			.setAuthor(role.guild, role.guild.iconURL())
 			.setDescription(`**◎ Role Deleted: \`${role.name}\`.**`)
-			.setColor(role.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(role.guild.me.displayHexColor))
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send(logembed);
 	}

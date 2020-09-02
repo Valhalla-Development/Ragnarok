@@ -14,6 +14,13 @@ module.exports = class extends Event {
 			}
 		);
 
+		// AirReps Alert
+
+		if (member.guild.id === '657235952116170794') {
+			if (member.guild.memberCount === 6000) {
+				this.client.channels.cache.get('657241621112553474').send('We just hit 6000 members!');
+			}
+		}
 		// welcome
 		async function welcomeMessage(clientGrab) {
 			const setwelcome = db
@@ -91,7 +98,7 @@ module.exports = class extends Event {
 			const logs = id.channel;
 			if (logs) {
 				const logembed = new MessageEmbed()
-					.setColor(member.guild.me.displayHexColor || 'A10000')
+					.setColor(this.client.utils.color(member.guild.me.displayHexColor))
 					.setAuthor(member.guild, member.user.avatarURL())
 					.setDescription(`**◎ Member Joined:** <@${member.user.id}> - ${member.user.tag}`)
 					.setFooter(`ID: ${member.user.id}`)

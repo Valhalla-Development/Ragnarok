@@ -23,7 +23,7 @@ module.exports = class extends Event {
 		});
 		const embed = new MessageEmbed()
 			.setAuthor(guild, guild.iconURL())
-			.setColor(guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(guild.me.displayHexColor))
 			.setTitle('Hello, I\'m **Ragnarok**! Thanks for inviting me!')
 			.setDescription(`The prefix for all my commands is \`${this.client.prefix}\`, e.g: \`${this.client.prefix}help\`.\nIf you find any bugs, report them with \`${this.client.prefix}bugreport <bug>\`\nCheck \`${this.client.prefix}stats\` to see the latest announcements!`);
 		defaultChannel.send({

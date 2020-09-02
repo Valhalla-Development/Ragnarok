@@ -12,7 +12,7 @@ module.exports = class extends Event {
 		if (!logs) return;
 
 		const logembed = new MessageEmbed()
-			.setColor(invite.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(invite.guild.me.displayHexColor))
 			.setAuthor(invite.guild, invite.guild.iconURL())
 			.setDescription(`**◎ Invite Deleted:**\n**◎ Invite Code:** \`${invite.code}\``)
 			.setTimestamp();

@@ -13,7 +13,7 @@ module.exports = class extends Event {
 		if (!logs) return;
 
 		const logembed = new MessageEmbed()
-			.setColor(channel.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(channel.guild.me.displayHexColor))
 			.setAuthor(channel.guild, channel.guild.iconURL())
 			.setTitle('Channel Created')
 			.setFooter(`ID: ${channel.id}`)

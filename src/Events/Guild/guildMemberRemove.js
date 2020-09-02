@@ -21,7 +21,7 @@ module.exports = class extends Event {
 				const logembed = new MessageEmbed()
 					.setAuthor('Member Left', member.user.avatarURL())
 					.setDescription(`<@${member.user.id}> - ${member.user.tag}`)
-					.setColor(member.guild.me.displayHexColor || 'A10000')
+					.setColor(this.client.utils.color(member.guild.me.displayHexColor))
 					.setFooter(`ID: ${member.user.id}`)
 					.setTimestamp();
 				this.client.channels.cache.get(logs).send(logembed);
@@ -69,7 +69,7 @@ module.exports = class extends Event {
 		const inviteUses = usedInvite.uses;
 
 		const embed = new MessageEmbed()
-			.setColor(member.guild.me.displayHexColor || 'A10000')
+			.setColor(this.client.utils.color(member.guild.me.displayHexColor))
 			.setAuthor(member.guild, member.user.avatarURL())
 			.addField(`**Invite Manager**`,
 				`**◎ ${member.user} joined**; Invited by ${inviter.username} (${inviteUses} invites)`)
