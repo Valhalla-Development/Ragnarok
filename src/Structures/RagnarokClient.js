@@ -1,4 +1,4 @@
-const { Client, Collection } = require('discord.js');
+const { Client, Collection, MessageEmbed } = require('discord.js');
 const Util = require('./Util.js');
 const Canvas = require('canvas');
 Canvas.registerFont('./Storage/Canvas/Fonts/Notethis.ttf', {
@@ -7,6 +7,8 @@ Canvas.registerFont('./Storage/Canvas/Fonts/Notethis.ttf', {
 const { GiveawaysManager } = require('discord-giveaways');
 const db = require('quick.db');
 if (!db.get('giveaways')) db.set('giveaways', []);
+const { Manager } = require('erela.js');
+const prettyMilliseconds = require('pretty-ms');
 
 module.exports = class RagnarokClient extends Client {
 
@@ -25,6 +27,87 @@ module.exports = class RagnarokClient extends Client {
 		this.utils = new Util(this);
 
 		this.owners = options.ownerID;
+
+		// Music
+		function erelaClient(grabClient) {
+			grabClient.manager = new Manager({
+				// Auto plays tracks after one ends, defaults to "false".
+				autoPlay: true,
+				// A send method to send data to the Discord WebSocket using your library.
+				// Getting the shard for the guild and sending the data to the WebSocket.
+				send(id, payload) {
+					const guild = grabClient.guilds.cache.get(id);
+					if (guild) guild.shard.send(payload);
+				}
+			})
+				.on('nodeCreate', () => console.log('Successfully created a new Erela Node.'))
+				.on('nodeDestroy', () => console.log('Successfully destroyed the Erela Node.'))
+				.on('nodeConnect', () => console.log('Successfully created a new Erela Node.'))
+				.on('nodeReconnect', () => console.log('Connection restored to Erela Node.'))
+				.on('nodeDisconnect', () => console.log('Lost connection to Erela Node.'))
+				.on('nodeError', (node, error) => console.log(`Node error: ${error.message}`))
+				.on('queueEnd', (player) => {
+					if (player.queueRepeat) {
+						return;
+					}
+					const textChannel = player.get('textChannel');
+					const embed = new MessageEmbed()
+						.addField(`**${grabClient.user.username} - Music**`,
+							`**◎ Success:** <:MusicLogo:684822003110117466> Queue has ended.`)
+						.setColor(textChannel.guild.me.displayHexColor || '36393F');
+					grabClient.channels.cache.get(player.textChannel).send(embed);
+					player.destroy(player.guild.id);
+					return;
+				})
+				.on('trackStart', (player, track) => {
+					if (player.trackRepeat) {
+						return;
+					}
+					const textChannel = player.get('textChannel');
+					const embed = new MessageEmbed()
+						.setAuthor('Now Playing:', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
+						.setColor(textChannel.guild.me.displayHexColor || '36393F')
+						.setDescription(`Now playing: \`${track.title}\`\nDuration: \`${prettyMilliseconds(track.duration, { colonNotation: true })}\`\nRequested by: ${track.requester}`);
+					grabClient.channels.cache.get(player.textChannel).send(embed);
+				})
+				.on('trackEnd', (player) => {
+					if (player.trackRepeat) {
+						return;
+					}
+					const textChannel = player.get('textChannel');
+					if (player.queue.size >= 1) {
+						const embed = new MessageEmbed()
+							.addField(`**${grabClient.user.username} - Music**`,
+								`**◎ Success:** <:MusicLogo:684822003110117466> Track has ended.`)
+							.setColor(textChannel.guild.me.displayHexColor || '36393F');
+						grabClient.channels.cache.get(player.textChannel).send(embed);
+						return;
+					}
+					player.destroy(player.guild.id);
+				})
+				.on('trackStuck', (player) => {
+					const textChannel = player.get('textChannel');
+					const embed = new MessageEmbed()
+						.addField(`**${grabClient.user.username} - Music**`,
+							`**◎ Error:** <:MusicLogo:684822003110117466> An error occured, ending playback.`)
+						.setColor(textChannel.guild.me.displayHexColor || '36393F');
+					grabClient.channels.cache.get(player.textChannel).send(embed);
+					player.destroy(player.guild.id);
+				})
+				.on('trackError', (player) => {
+					const textChannel = player.get('textChannel');
+					const embed = new MessageEmbed()
+						.addField(`**${grabClient.user.username} - Music**`,
+							`**◎ Error:** <:MusicLogo:684822003110117466> An error occured, ending playback.`)
+						.setColor(textChannel.guild.me.displayHexColor || '36393F');
+					grabClient.channels.cache.get(player.textChannel).send(embed);
+					player.destroy(player.guild.id);
+				})
+				.on('socketClosed', (player) => {
+					player.destroy(player.guild.id);
+				});
+		}
+		erelaClient(this);
 
 		const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
 
