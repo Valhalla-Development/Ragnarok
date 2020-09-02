@@ -60,7 +60,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
 					`**◎ Success:** You have withdrawn <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}.`);
-			message.channel.send(depAll).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(depAll);
 			return;
 		}
 
@@ -103,7 +103,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Withdraw**`,
 				`**◎ Success:** You have withdrawn <:coin:706659001164628008> ${numberCov.toLocaleString('en')}.`);
-		message.channel.send(depAll).then((m) => m.delete({ timeout: 15000 }));
+		message.channel.send(depAll);
 	}
 
 };
