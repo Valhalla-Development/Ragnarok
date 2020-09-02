@@ -41,6 +41,13 @@ module.exports = class extends Command {
 		const user = message.mentions.users.first() || message.author;
 		if (user.bot) return;
 
+		let colorGrab;
+		if (message.mentions.users.first()) {
+			colorGrab = this.client.utils.color(message.mentions.members.first().displayHexColor);
+		} else {
+			colorGrab = this.client.utils.color(message.member.displayHexColor);
+		}
+
 		let score;
 		if (message.guild) {
 			score = this.client.getScore.get(user.id, message.guild.id);
@@ -141,8 +148,8 @@ module.exports = class extends Command {
 		}
 
 		const progressbar = new ProgressBar({
-			x: 259.8, y: 182.9, width: 628.4, height: 36.5
-		}, '#FF1700', xpPercent);
+			x: 259.8, y: 182.62, width: 628.4, height: 36.5
+		}, colorGrab, xpPercent);
 		progressbar.draw();
 
 
@@ -230,7 +237,7 @@ module.exports = class extends Command {
 		// circle around avatar
 		ctx.beginPath();
 		ctx.arc(122.5, 141.8, 81, 0, Math.PI * 2, true);
-		ctx.strokeStyle = '#000000';
+		ctx.strokeStyle = colorGrab;
 		ctx.lineWidth = 6;
 		ctx.stroke();
 		ctx.save();
@@ -239,7 +246,7 @@ module.exports = class extends Command {
 		const avatar = await Canvas.loadImage(
 			avatarGrab
 		);
-		ctx.strokeStyle = '#ffffff';
+		ctx.strokeStyle = colorGrab;
 		ctx.strokeRect(0, 0, canvas.width, canvas.height);
 		ctx.drawImage(avatar, 41.5, 60.5, 162, 162);
 
