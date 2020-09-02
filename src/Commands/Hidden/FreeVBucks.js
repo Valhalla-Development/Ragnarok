@@ -26,6 +26,9 @@ module.exports = class extends Command {
 					const reaction = collected.first();
 
 					if (reaction.emoji.name === '✅') {
+						if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+							message.delete();
+						}
 						message.reply('Virus activated!');
 						a.delete();
 					}
