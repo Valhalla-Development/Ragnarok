@@ -164,7 +164,7 @@ module.exports = class RagnarokClient extends Client {
 		}
 
 		process.on('unhandledRejection', (error) => {
-			if (this.id === '508756879564865539') {
+			if (this.user.id === '508756879564865539') {
 				this.channels.cache.get('685973401772621843').send(`${error.stack}`, { code: 'js' });
 			}
 			console.error(`Error: \n${error.stack}`);
