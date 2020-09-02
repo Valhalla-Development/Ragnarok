@@ -34,16 +34,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (!message.member.roles.cache.has(role.id) && message.author.id !== message.guild.ownerID) {
-			const embed = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Skip**`,
-					`**◎ Error:** Sorry! You do not have the **${role}** role.`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
-			return;
-		}
-
-		const player = this.client.music.players.get(message.guild.id);
+		const player = this.client.manager.players.get(message.guild.id);
 		const { channel } = message.member.voice;
 
 		if (!player) {
@@ -55,7 +46,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (!channel || channel.id !== player.voiceChannel.id) {
+		if (!channel || channel.id !== player.voiceChannel) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Skip**`,
@@ -64,17 +55,89 @@ module.exports = class extends Command {
 			return;
 		}
 
-		player.stop();
-		if (player.queue.length < 1) {
-			this.client.music.players.destroy(message.guild.id);
+		if (message.member.roles.cache.has(role.id) || message.author.id === message.guild.ownerID) {
+			if (player.trackRepeat) {
+				player.stop();
+				const success1 = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Skip**`,
+						`**◎ Success:** <:MusicLogo:684822003110117466> Repeat is enabled so I restarted the track.\nTo disable repeat, run \`${prefix}repeat\``);
+				message.channel.send(success1).then((m) => m.delete({ timeout: 15000 }));
+				return;
+			}
+
+			player.stop();
+			if (player.queue.size === 1) {
+				player.destroy();
+			}
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Skip**`,
+					`**◎ Success:** <:MusicLogo:684822003110117466> Skipped the current song.`);
+			message.channel.send(embed);
 			return;
 		}
+
+		const fetchChannel = this.client.channels.cache.get(player.voiceChannel);
+		const userCount = fetchChannel.members.size - 1;
+
+		if (userCount === 1) {
+			player.stop();
+			if (player.queue.size === 1) {
+				player.destroy();
+			}
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Skip**`,
+					`**◎ Success:** <:MusicLogo:684822003110117466> Skipped the current song.`);
+			message.channel.send(embed);
+			return;
+		}
+
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Skip**`,
-				`**◎ Success:** <:MusicLogo:684822003110117466> Skipped the current song.`);
-		message.channel.send(embed);
-		return;
+				`**◎ Vote to Skip:** <:MusicLogo:684822003110117466> React with ✅ to skip!\nVote will end in 15 seconds. Votes needed: ${Math.round(userCount / 2)}`);
+		message.channel.send(embed).then(async (msg) => {
+			await msg.react('✅');
+
+			const skip = msg.createReactionCollector((reaction) => reaction.emoji.name === '✅', { time: 15000 });
+
+			setTimeout(() => {
+				if (skip.total >= Math.round(userCount / 2)) {
+					if (player.trackRepeat) {
+						const success1 = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Skip**`,
+								`**◎ Success:** <:MusicLogo:684822003110117466> Repeat is enabled so I restarted the track.\nTo disable repeat, run \`${prefix}repeat\``);
+						message.channel.send(success1).then((m) => m.delete({ timeout: 15000 }));
+						msg.delete();
+						return;
+					}
+
+					player.stop();
+					if (player.queue.size === 1) {
+						player.destroy();
+					}
+
+					const success2 = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Skip**`,
+							`**◎ Success:** <:MusicLogo:684822003110117466> Skipped the current song.`);
+					message.channel.send(success2).then((m) => m.delete({ timeout: 15000 }));
+					msg.delete();
+					return;
+				} else {
+					const fail = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Skip**`,
+							`**◎ Error:** <:MusicLogo:684822003110117466> Not enough people voted!\nReceived ${skip.total}/${Math.round(userCount / 2)}`);
+					message.channel.send(fail).then((m) => m.delete({ timeout: 15000 }));
+					msg.delete();
+				}
+			}, 15000);
+		});
 	}
 
 };
