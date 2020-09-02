@@ -40,7 +40,7 @@ module.exports = class Util {
 	color(me) {
 		let color;
 		if (me === '#000000') {
-			color = 'A10000';
+			color = '#A10000';
 		} else {
 			color = me;
 		}
