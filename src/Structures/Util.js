@@ -47,6 +47,16 @@ module.exports = class Util {
 		return color;
 	}
 
+	messageDelete(message, time) {
+		if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+			try {
+				message.delete({ timeout: time });
+			} catch {
+				return;
+			}
+		}
+	}
+
 	async loadCommands() {
 		return glob(`${this.directory}Commands/**/*.js`).then(commands => {
 			for (const commandFile of commands) {
