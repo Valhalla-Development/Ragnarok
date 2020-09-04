@@ -21,7 +21,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Leader**`,
 					`**◎ Error:** Level system is disabled for this guild!`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.messageDelete(m, 15000));
 			return;
 		}
 

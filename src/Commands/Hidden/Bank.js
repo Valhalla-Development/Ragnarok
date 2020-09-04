@@ -48,7 +48,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Bank**`,
 						`**◎ Error:** Uh oh! There is a bank limit of <:coin:706659001164628008> ${bankLimit.toLocaleString('en')}.\n Your current bank balance is <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}.\nYou may deposit <:coin:706659001164628008> ${remainDepA.toLocaleString('en')} more.`);
-				message.channel.send(limitE).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(limitE).then((m) => this.client.utils.messageDelete(m, 15000));
 				return;
 			}
 
@@ -77,7 +77,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Bank**`,
 					`**◎ Error:** An example of this command is: \`${prefix}bank 100\`\nAlternatively, you can run \`${prefix}bank all\``);
-			message.channel.send(wrongUsage).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(wrongUsage).then((m) => this.client.utils.messageDelete(m, 15000));
 			return;
 		}
 
@@ -87,7 +87,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Bank**`,
 					`**◎ Error:** Uh oh! You only have <:coin:706659001164628008> ${balance.cash.toLocaleString('en')}. Please try again with a valid amount.`);
-			message.channel.send(wrongUsage).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(wrongUsage).then((m) => this.client.utils.messageDelete(m, 15000));
 			return;
 		}
 
@@ -97,7 +97,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Bank**`,
 					`**◎ Error:** Uh oh! There is a bank limit of <:coin:706659001164628008> ${bankLimit.toLocaleString('en')}.\n Your current bank balance is <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}.\nYou may deposit <:coin:706659001164628008> ${remainDepA.toLocaleString('en')} more.`);
-			message.channel.send(limitE).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(limitE).then((m) => this.client.utils.messageDelete(m, 15000));
 			return;
 		}
 		const cashA = balance.cash - numberCov;

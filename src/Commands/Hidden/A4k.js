@@ -23,7 +23,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - A4K**`,
 					`**◎ Error:** Incorrect usage! Please use \`${prefix}a4k <search>\``);
-			message.channel.send(incorrectFormat).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(incorrectFormat).then((m) => this.client.utils.messageDelete(m, 15000));
 			return;
 		}
 

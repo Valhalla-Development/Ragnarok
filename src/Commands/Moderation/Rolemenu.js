@@ -41,16 +41,14 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
-		if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-			message.delete();
-		}
+		this.client.utils.messageDelete(message, 0);
 
 		if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - RoleMenu**`,
 					`**◎ Error:** You do not have permission to run this command.`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.messageDelete(m, 15000));
 		} else {
 			const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${message.guild.id}`).get();
 			if (!foundRoleMenu || JSON.parse(foundRoleMenu.roleList).length <= 0) {
@@ -58,7 +56,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - RoleMenu**`,
 						`**◎ Error:** The roles for the menu have not been set yet. Please try again later.`);
-				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(embed).then((m) => this.client.utils.messageDelete(m, 15000));
 			} else {
 				const roleArray = JSON.parse(foundRoleMenu.roleList);
 				let embedRoleList = '';

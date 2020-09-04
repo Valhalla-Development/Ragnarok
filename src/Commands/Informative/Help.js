@@ -33,7 +33,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Help**`,
 						`**◎ Error:** Invalid command name: \`${command}\``);
-				message.channel.send(embed1).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(embed1).then((m) => this.client.utils.messageDelete(m, 15000));
 				return;
 			}
 

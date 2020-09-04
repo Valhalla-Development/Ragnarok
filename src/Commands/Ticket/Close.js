@@ -28,7 +28,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Error:** You can't use the close command outside of a ticket channel.`);
-			message.channel.send(badChannel).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(badChannel).then((m) => this.client.utils.messageDelete(m, 15000));
 			return;
 		}
 		if (!foundTicket) {
@@ -36,7 +36,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Error:** You can't use the close command outside of a ticket channel.`);
-			message.channel.send(errEmbed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(errEmbed).then((m) => this.client.utils.messageDelete(m, 15000));
 			return;
 		}
 
@@ -88,7 +88,7 @@ module.exports = class extends Command {
 					});
 				}
 			}).catch(() => {
-				msg.delete();
+				this.client.utils.messageDelete(msg, 0);
 			});
 		});
 	}

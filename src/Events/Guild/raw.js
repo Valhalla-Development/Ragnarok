@@ -285,7 +285,7 @@ module.exports = class extends Event {
 											const embed = new MessageEmbed()
 												.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
 												.addField(`**${grabClient.user.username} - Volume**`,
-													`**◎ Error:** The role you tried to add, no longer exists!`).then((m) => m.delete({ timeout: 15000 }));
+													`**◎ Error:** The role you tried to add, no longer exists!`).then((m) => grabClient.utils.messageDelete(m, 15000));
 											msg.channel.send(embed);
 											return;
 										}
@@ -296,7 +296,7 @@ module.exports = class extends Event {
 											const embed = new MessageEmbed()
 												.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
 												.addField(`**${grabClient.user.username} - Volume**`,
-													`**◎ Error:** The role you tried to add, no longer exists!`).then((m) => m.delete({ timeout: 15000 }));
+													`**◎ Error:** The role you tried to add, no longer exists!`).then((m) => grabClient.utils.messageDelete(m, 15000));
 											msg.channel.send(embed);
 											return;
 										}

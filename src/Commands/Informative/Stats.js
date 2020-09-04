@@ -35,7 +35,7 @@ module.exports = class extends Command {
 		const osVersion = platform.distro;
 		const core = os.cpus()[0];
 
-		msg.delete();
+		this.client.utils.messageDelete(msg, 0);
 
 		const embed = new MessageEmbed()
 			.setThumbnail(this.client.user.displayAvatarURL())

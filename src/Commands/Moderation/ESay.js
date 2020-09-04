@@ -22,7 +22,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - ESay**`,
 					`**◎ Error:** Only the server's managers can use this command!`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.messageDelete(m, 15000));
 			return;
 		}
 
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - ESay**`,
 					`**◎ Error:** You need to input text!`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.messageDelete(m, 15000));
 			return;
 		}
 

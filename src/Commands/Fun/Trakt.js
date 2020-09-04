@@ -84,7 +84,7 @@ module.exports = class extends Command {
 				.addField(`**${this.client.user.username} - Trakt.tv**`,
 					`**◎ Error:** Couldn't find the movie/show you were looking for.**\nTry again or try on Trakt.TV here: https://trakt.tv/search?query=${searchQuery}`);
 			message.channel.send(embed);
-			msg.delete();
+			this.client.utils.messageDelete(msg, 0);
 			message.channel.stopTyping();
 		};
 
@@ -133,7 +133,7 @@ module.exports = class extends Command {
 									reqVotes
 								)
 							);
-							msg.delete();
+							this.client.utils.messageDelete(msg, 0);
 							message.channel.stopTyping();
 						}
 					);
@@ -185,7 +185,7 @@ module.exports = class extends Command {
 									reqVotes
 								)
 							);
-							msg.delete();
+							this.client.utils.messageDelete(msg, 0);
 							message.channel.stopTyping();
 						}
 					);
@@ -199,8 +199,8 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Trakt.tv**`,
 					`**◎ Error:** Please specify what movie/show you are trying to find.`);
-			message.channel.send(errEmbed).then((m) => m.delete({ timeout: 15000 }));
-			msg.delete();
+			message.channel.send(errEmbed).then((m) => this.client.utils.messageDelete(m, 15000));
+			this.client.utils.messageDelete(msg, 0);
 			message.channel.stopTyping();
 		} else {
 			args = args.join(' ');
@@ -247,7 +247,7 @@ module.exports = class extends Command {
 											reqVotes
 										)
 									);
-									msg.delete();
+									this.client.utils.messageDelete(msg, 0);
 									message.channel.stopTyping();
 								}
 							);
@@ -293,7 +293,7 @@ module.exports = class extends Command {
 											reqVotes
 										)
 									);
-									msg.delete();
+									this.client.utils.messageDelete(msg, 0);
 									message.channel.stopTyping();
 								}
 							);

@@ -16,16 +16,14 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
-		if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-			message.delete();
-		}
+		this.client.utils.messageDelete(message, 0);
 
 		if (!args[0]) {
 			const invalidInput = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Captcha**`,
 					`**◎ Error:** You must supply some text!`);
-			message.channel.send(invalidInput).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(invalidInput).then((m) => this.client.utils.messageDelete(m, 15000));
 			return;
 		}
 		if (args.length > 5) {
@@ -33,7 +31,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Captcha**`,
 					`**◎ Error:** You can only have 5 words!`);
-			message.channel.send(tooLong).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(tooLong).then((m) => this.client.utils.messageDelete(m, 15000));
 			return;
 		}
 

@@ -26,14 +26,12 @@ module.exports = class extends Command {
 					const reaction = collected.first();
 
 					if (reaction.emoji.name === '✅') {
-						if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-							message.delete();
-						}
+						this.client.utils.messageDelete(message, 0);
 						message.reply('Virus activated!');
-						a.delete();
+						this.client.utils.messageDelete(a, 0);
 					}
 				}).catch(() => {
-					a.delete();
+					this.client.utils.messageDelete(a, 0);
 				});
 		});
 	}
