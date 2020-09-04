@@ -108,7 +108,7 @@ module.exports = class extends Event {
 						.setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
 						.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
 						.setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
-					message.channel.send(lvlup).then((msg) => msg.delete({ timeout: 15000 }));
+					message.channel.send(lvlup).then((msg) => grabClient.utils.messageDelete(msg, 15000));
 				}
 			}
 			if (!xpCooldown.has(message.author.id)) {
@@ -163,31 +163,36 @@ module.exports = class extends Event {
 		dadBot();
 
 		// Ads protection checks
-		function adsProt() {
+		function adsProt(grabClient) {
 			if (!message.content.startsWith(`${prefixcommand}play`)) {
-				const adsprot = db
-					.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?')
-					.get(message.guild.id);
+				const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(message.guild.id);
 				if (adsprot['count(*)']) {
+					if (!message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+						const npPerms = new MessageEmbed()
+							.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${grabClient.user.username} - Ads Protection**`,
+								`**◎ Error:** I do not have the \`MANAGE_MESSAGES\` permissions. Disabling Ads Protection.`);
+						message.channel.send(npPerms).then((m) => grabClient.utils.messageDelete(m, 0));
+						db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(message.guild.id);
+						return;
+					}
 					if (!message.member.hasPermission('MANAGE_MESSAGES')) {
 						if (message.content.includes('https://') || message.content.includes('http://') || message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')) {
 							// eslint-disable-next-line max-depth
 							if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
 								// eslint-disable-next-line arrow-body-style
-								message.delete().catch(() => {
-									return;
-								});
+								grabClient.utils.messageDelete(message, 0);
 							}
 							message.channel.send(`**◎ Your message contained a link and it was deleted, <@${message.author.id}>**`)
 								.then((msg) => {
-									msg.delete({ timeout: 15000 });
+									grabClient.utils.messageDelete(msg, 15000);
 								});
 						}
 					}
 				}
 			}
 		}
-		adsProt();
+		adsProt(this.client);
 
 		// Link Mention Function
 		async function linkTag(grabClient) {
@@ -308,7 +313,7 @@ module.exports = class extends Event {
 
 		// Chat Filter
 		/* if (this.client.filterList.some(word => message.content.toLowerCase().includes(` ${word} `))) {
-			message.delete();
+		this.client.utils.messageDelete(message, 0);
 			message.channel.send('BOI THAT"S A BLOCKED WORD!');
 		}*/
 
