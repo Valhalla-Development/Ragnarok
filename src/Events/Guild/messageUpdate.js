@@ -9,6 +9,15 @@ module.exports = class extends Event {
 		if (!newMessage.guild || oldMessage.content === newMessage.content || newMessage.author.bot) return;
 		const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(newMessage.guild.id);
 		if (adsprot['count(*)']) {
+			if (!newMessage.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+				const npPerms = new MessageEmbed()
+					.setColor(this.client.utils.color(newMessage.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Ads Protection**`,
+						`**◎ Error:** I do not have the \`MANAGE_MESSAGES\` permissions. Disabling Ads Protection.`);
+				newMessage.channel.send(npPerms).then((m) => newMessage.utils.messageDelete(m, 0));
+				db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(newMessage.guild.id);
+				return;
+			}
 			if (newMessage.content.includes('https://') || newMessage.content.includes('http://') || newMessage.content.includes('discord.gg') || newMessage.content.includes('discord.me') || newMessage.content.includes('discord.io')) {
 				if (!newMessage.member.hasPermission('MANAGE_MESSAGES')) {
 					newMessage.delete();
