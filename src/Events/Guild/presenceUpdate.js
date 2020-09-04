@@ -6,7 +6,7 @@ module.exports = class extends Event {
 	// this is just for AirReps!
 
 	async run(oldPresence, newPresence) {
-		if (oldPresence.guild.id !== '495602800802398212') return;
+		if (newPresence.guild.id !== '495602800802398212') return;
 
 		const Towy = this.client.users.cache.find((a) => a.id === '178843418061963264');
 		const Ragnar = this.client.users.cache.find((a) => a.id === '151516555757223936');
