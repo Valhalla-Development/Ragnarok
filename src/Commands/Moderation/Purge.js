@@ -17,7 +17,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
 					`**◎ Error:** You need to have the \`MANAGE_MESSAGES\` permission to use this command.`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -26,7 +26,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
 					`**◎ Error:** You need to specify the amount of messages to purge!`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (isNaN(args[0])) {
@@ -34,7 +34,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
 					`**◎ Error:** The provided argument is not a valid number.`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (args[0] < 1) {
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
 					`**◎ Error:** You need to specify the amount of messages to purge!`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -73,17 +73,11 @@ module.exports = class extends Command {
 		try {
 			await message.channel.bulkDelete(amt);
 			message.channel.bulkDelete(args[0]).then(() => {
-				setTimeout(() => {
-					const embed = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Purge**`,
-							`**◎ Success:** Successfully deleted ${args[0]} messages!`);
-					message.channel.send(embed).then((m) => {
-						setTimeout(() => {
-							m.delete();
-						}, 5000);
-					});
-				}, 2000);
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Purge**`,
+						`**◎ Success:** Successfully deleted ${args[0]} messages!`);
+				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 13000));
 			}).catch((error) => {
 				console.log(error);
 			});
@@ -92,7 +86,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
 					`**◎ Error:** You can not delete messages older than 14 days.`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 		}
 	}
 

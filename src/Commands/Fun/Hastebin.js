@@ -33,7 +33,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Hastebin**`,
 						`**◎ Error:** \`.${fileExtension}\` is not a valid file type!\n\n**Acceptable files:**\n\`${validExtensions.join(', ')}\``);
-				message.channel.send(invalidExt).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(invalidExt).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			await fetch(file)
@@ -44,7 +44,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Hastebin**`,
 								`**◎ Error:** You can not upload an empty file!`);
-						message.channel.send(emptyFile).then((m) => m.delete({ timeout: 15000 }));
+						message.channel.send(emptyFile).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 					haste.post(body, extension)
@@ -60,14 +60,14 @@ module.exports = class extends Command {
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - HasteBin**`,
 									`**◎ Error:** An error occured!`);
-							message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
+							message.channel.send(error).then((m) => this.client.utils.deletableCheck(m, 10000));
 						});
 				}).catch(() => {
 					const error = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - HasteBin**`,
 							`**◎ Error:** An error occured!`);
-					message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
+					message.channel.send(error).then((m) => this.client.utils.deletableCheck(m, 10000));
 				});
 			return;
 		} if (message.attachments.size > 1) {
@@ -75,7 +75,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Hastebin**`,
 					`**◎ Error:** You can only post 1 file at a time!`);
-			message.channel.send(fileCount).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(fileCount).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (args[0] === undefined) {
@@ -83,7 +83,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Hastebin**`,
 					`**◎ Error:** You must input some text!`);
-			message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(error).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -100,7 +100,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - HasteBin**`,
 						`**◎ Error:** An error occured!`);
-				message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(error).then((m) => this.client.utils.deletableCheck(m, 10000));
 			});
 	}
 

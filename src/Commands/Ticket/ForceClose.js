@@ -29,7 +29,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - ForceClose**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
-			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(nomodRole).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - ForceClose**`,
 					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
-			message.channel.send(donthaveRole).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(donthaveRole).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -61,9 +61,7 @@ module.exports = class extends Command {
 					const cancelTimer = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.setDescription('Canceling Ticket Close');
-					timerMsg.edit(cancelTimer).then((cancelMsg) => {
-						cancelMsg.delete({ timeout: 15000 });
-					});
+					timerMsg.edit(cancelTimer).then((m) => this.client.utils.deletableCheck(m, 10000));
 				}).catch(() => {
 					getChan.delete();
 					db.prepare(`DELETE FROM tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`).run({

@@ -30,7 +30,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Skip**`,
 					`**◎ Error:** Sorry, I could not find a role name \`DJ\`, if you prefer, you could set a custom role as the DJ, check the command command \`${prefix}config\` for more information.`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Skip**`,
 					`**◎ Error:** <:MusicLogo:684822003110117466> No song is currently playing.`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -51,7 +51,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Skip**`,
 					`**◎ Error:** You need to be in a voice channel to use this command!`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -62,7 +62,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Skip**`,
 						`**◎ Success:** <:MusicLogo:684822003110117466> Repeat is enabled so I restarted the track.\nTo disable repeat, run \`${prefix}repeat\``);
-				message.channel.send(success1).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(success1).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -111,8 +111,8 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Skip**`,
 								`**◎ Success:** <:MusicLogo:684822003110117466> Repeat is enabled so I restarted the track.\nTo disable repeat, run \`${prefix}repeat\``);
-						message.channel.send(success1).then((m) => m.delete({ timeout: 15000 }));
-						msg.delete();
+						message.channel.send(success1).then((m) => this.client.utils.deletableCheck(m, 10000));
+						this.client.utils.deletableCheck(msg, 0);
 						return;
 					}
 
@@ -125,16 +125,16 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Skip**`,
 							`**◎ Success:** <:MusicLogo:684822003110117466> Skipped the current song.`);
-					message.channel.send(success2).then((m) => m.delete({ timeout: 15000 }));
-					msg.delete();
+					message.channel.send(success2).then((m) => this.client.utils.deletableCheck(m, 10000));
+					this.client.utils.deletableCheck(msg, 0);
 					return;
 				} else {
 					const fail = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Skip**`,
 							`**◎ Error:** <:MusicLogo:684822003110117466> Not enough people voted!\nReceived ${skip.total}/${Math.round(userCount / 2)}`);
-					message.channel.send(fail).then((m) => m.delete({ timeout: 15000 }));
-					msg.delete();
+					message.channel.send(fail).then((m) => this.client.utils.deletableCheck(m, 10000));
+					this.client.utils.deletableCheck(msg, 0);
 				}
 			}, 15000);
 		});

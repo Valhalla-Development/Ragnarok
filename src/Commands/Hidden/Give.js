@@ -38,7 +38,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** An example of this command is: \`${prefix}give @user 100\`\nAlternatively, you can run \`${prefix}give @user all\``);
-			message.channel.send(wrongUsage).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -57,7 +57,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** You have no balance!`);
-			message.channel.send(wrongUsage).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (!otherB) {
@@ -74,7 +74,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** An error occurred, please try again.`);
-			message.channel.send(errorE).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(errorE).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -85,7 +85,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** Uh oh! You currently have no money in your bank!`);
-			message.channel.send(noBal).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(noBal).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -96,7 +96,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Give**`,
 						`**◎ Error:** Transferring your entire bank would exceed the target users bank limit! They have <:coin:706659001164628008> \`${bankLimit - otherB.balance}\` available space!`);
-				message.channel.send(youViolatedTheLaw).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(youViolatedTheLaw).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -137,7 +137,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** An example of this command is: \`${prefix}give @user 100\`\nAlternatively, you can run \`${prefix}give @user all\``);
-			message.channel.send(wrongUsage).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -147,7 +147,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** You only have <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}. Please try again with a valid amount.`);
-			message.channel.send(wrongUsage).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 

@@ -21,7 +21,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Eval**`,
 					`**◎ Error:** Please input some text!`);
-			message.channel.send(incorrectFormat).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(incorrectFormat).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 

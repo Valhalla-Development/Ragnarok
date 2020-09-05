@@ -19,7 +19,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Calculation**`,
 					`**◎ Error:** Please input a calculation!`);
-			message.channel.send(incorrectFormat).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(incorrectFormat).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Calculation**`,
 					`**◎ Error:** Please input a valid calculation!`);
-			message.channel.send(invalidInput).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(invalidInput).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 

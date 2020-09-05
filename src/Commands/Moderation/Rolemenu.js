@@ -48,7 +48,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - RoleMenu**`,
 					`**◎ Error:** You do not have permission to run this command.`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 		} else {
 			const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${message.guild.id}`).get();
 			if (!foundRoleMenu || JSON.parse(foundRoleMenu.roleList).length <= 0) {
@@ -56,7 +56,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - RoleMenu**`,
 						`**◎ Error:** The roles for the menu have not been set yet. Please try again later.`);
-				message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			} else {
 				const roleArray = JSON.parse(foundRoleMenu.roleList);
 				let embedRoleList = '';

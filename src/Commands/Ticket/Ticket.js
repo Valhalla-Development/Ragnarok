@@ -24,9 +24,7 @@ module.exports = class extends Command {
 		} else if (args[0] === 'list') {
 			if (
 				!message.member.hasPermission('ADMINISTRATOR') && !this.client.owners.includes(message.author.id)) {
-				message.channel.send('You need to have the `ADMINISTRATOR` permission to use this command!').then((msg) => {
-					msg.delete({ timeout: 15000 });
-				});
+				message.channel.send('You need to have the `ADMINISTRATOR` permission to use this command!').then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			const ticketGrab = db
@@ -37,7 +35,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Error:** There are currently no tickets open in this guild!`);
-				message.channel.send(noTickets).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(noTickets).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -48,9 +46,7 @@ module.exports = class extends Command {
 			return;
 		} else if (args[0] === 'clear') {
 			if (!message.member.hasPermission('ADMINISTRATOR') && !this.client.owners.includes(message.author.id)) {
-				message.channel.send('You need to have the `ADMINISTRATOR` permission to use this command!').then((msg) => {
-					msg.delete({ timeout: 15000 });
-				});
+				message.channel.send('You need to have the `ADMINISTRATOR` permission to use this command!').then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			const ticketGrab = db.prepare('SELECT * FROM tickets WHERE guildid = ?').get(message.guild.id);

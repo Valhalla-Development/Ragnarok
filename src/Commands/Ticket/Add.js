@@ -28,7 +28,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Add**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
-			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(nomodRole).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -37,7 +37,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Add**`,
 					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
-			message.channel.send(donthaveRole).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(donthaveRole).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -47,7 +47,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Add**`,
 					`**◎ Error:** Sorry! I could not find the specified user!`);
-			message.channel.send(nouser).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(nouser).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -82,7 +82,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Add**`,
 					`**◎ Error:** This ticket could not be found.`);
-			message.channel.send(errEmbed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(errEmbed).then((m) => this.client.utils.deletableCheck(m, 10000));
 		}
 	}
 

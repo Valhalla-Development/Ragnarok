@@ -17,7 +17,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You need to have the \`KICK_MEMBERS\` permission to use this command.`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -28,7 +28,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You must mention someone!`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -39,7 +39,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You can't kick yourself <:wut:745408596233289839>`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -50,7 +50,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You cannot kick <@${user.id}>`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -61,7 +61,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You cannot kick me. :slight_frown:`);
-			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -96,7 +96,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Kick**`,
 						`**◎ Cancelled:** Kick command canceled.`);
-				message.channel.send(embed2).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(embed2).then((m) => this.client.utils.deletableCheck(m, 10000));
 			});
 		});
 	}

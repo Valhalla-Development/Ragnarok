@@ -22,7 +22,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Giveaway**`,
 					`**◎ Error:** You need to have the manage messages permissions to reroll giveaways.`);
-			message.channel.send(invalidPerm).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(invalidPerm).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
@@ -39,11 +39,11 @@ module.exports = class extends Command {
 			.setTimestamp();
 
 		if (!args[0]) {
-			message.channel.send(usageE).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(usageE).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (args[0] !== 'start' && args[0] !== 'reroll' && args[0] !== 'stop') {
-			message.channel.send(usageE).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(usageE).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -53,7 +53,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** \`${prefix}giveaway start <time> <winners amount> <prize>\``);
-				message.channel.send(incorrectStart).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(incorrectStart).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			if (!args[1].match('[dhm]')) {
@@ -61,7 +61,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** You did not use the correct formatting for the time! The valid options are \`d\`, \`h\`, or \`m\``);
-				message.channel.send(incorrectFormat).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(incorrectFormat).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			if (ms(args[1]) > '7889400000') {
@@ -69,7 +69,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Please input a value lower than 3 months!`);
-				message.channel.send(valueHigh).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(valueHigh).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			if (ms(args[1]) < '60000') {
@@ -77,7 +77,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Please input a value higher than 1 minute!`);
-				message.channel.send(valueLow).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(valueLow).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			if (isNaN(ms(args[1]))) {
@@ -85,7 +85,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Please input a valid duration!`);
-				message.channel.send(invalidDur).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(invalidDur).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			if (isNaN(args[2]) || (parseInt(args[2]) <= 0)) {
@@ -93,7 +93,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Please input a valid number!`);
-				message.channel.send(invalidNum).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(invalidNum).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -131,7 +131,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** \`${prefix}giveaway reroll <message id>\``);
-				message.channel.send(incorrectReroll).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(incorrectReroll).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.messageID === args[1]);
@@ -140,7 +140,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Unable to find a giveaway with ID: \`${args.slice(1).join(' ')}\`.`);
-				message.channel.send(noGiveaway).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(noGiveaway).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			this.client.giveawaysManager.reroll(giveaway.messageID)
@@ -157,14 +157,14 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Giveaway**`,
 								`**◎ Error:** This giveaway has not ended!`);
-						message.channel.send(notEnded).then((m) => m.delete({ timeout: 15000 }));
+						message.channel.send(notEnded).then((m) => this.client.utils.deletableCheck(m, 10000));
 					} else {
 						console.error(e);
 						const error = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Giveaway**`,
 								`**◎ Error:** An error occured!`);
-						message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
+						message.channel.send(error).then((m) => this.client.utils.deletableCheck(m, 10000));
 					}
 				});
 		}
@@ -176,7 +176,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** \`${prefix}giveaway stop <message id>\``);
-				message.channel.send(incorrectStop).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(incorrectStop).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.messageID === args[1]);
@@ -185,7 +185,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Unable to find a giveaway with ID: \`${args.slice(1).join(' ')}\`.`);
-				message.channel.send(noGiveaway).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(noGiveaway).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			this.client.giveawaysManager.edit(giveaway.messageID, {
@@ -195,21 +195,21 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Success:** Giveaway will end in less than ${this.client.giveawaysManager.options.updateCountdownEvery / 1000} seconds.`);
-				message.channel.send(stopped).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(stopped).then((m) => this.client.utils.deletableCheck(m, 10000));
 			}).catch((e) => {
 				if (e.startsWith(`Giveaway with message ID ${giveaway.messageID} is already ended.`)) {
 					const alreadyEnded = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Giveaway**`,
 							`**◎ Error:** This giveaway has already ended!`);
-					message.channel.send(alreadyEnded).then((m) => m.delete({ timeout: 15000 }));
+					message.channel.send(alreadyEnded).then((m) => this.client.utils.deletableCheck(m, 10000));
 				} else {
 					console.error(e);
 					const error = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Giveaway**`,
 							`**◎ Error:** An error occured!`);
-					message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
+					message.channel.send(error).then((m) => this.client.utils.deletableCheck(m, 10000));
 				}
 			});
 		}

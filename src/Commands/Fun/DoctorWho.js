@@ -25,7 +25,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - DoctorWho**`,
 					`**◎ Error:** I could not fetch the post!`);
-			message.channel.send(noPost).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(noPost).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -49,7 +49,7 @@ module.exports = class extends Command {
 		message.channel.send(embed);
 
 		message.channel.stopTyping();
-		msg.delete();
+		this.client.utils.deletableCheck(msg, 0);
 	}
 
 };

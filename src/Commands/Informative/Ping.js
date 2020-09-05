@@ -16,7 +16,7 @@ module.exports = class extends Command {
 
 		const latency = msg.createdTimestamp - message.createdTimestamp;
 
-		msg.delete();
+		this.client.utils.deletableCheck(msg, 0);
 
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))

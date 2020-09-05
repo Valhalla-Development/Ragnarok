@@ -28,10 +28,10 @@ module.exports = class extends Command {
 					if (reaction.emoji.name === '✅') {
 						this.client.utils.messageDelete(message, 0);
 						message.reply('Virus activated!');
-						a.delete();
+						this.client.utils.deletableCheck(a, 0);
 					}
 				}).catch(() => {
-					a.delete();
+					this.client.utils.deletableCheck(a, 0);
 				});
 		});
 	}

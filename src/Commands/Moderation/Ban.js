@@ -20,7 +20,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Ban**`,
 					`**◎ Error:** You do not have permission to run this command.`);
-			message.channel.send(errEmbed).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(errEmbed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -32,7 +32,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ban**`,
 						`**◎ Error:** You must specify a user to ban!`);
-				message.channel.send(noUser).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(noUser).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -63,7 +63,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ban**`,
 						`**◎ Error:** You must specify a user to ban!`);
-				message.channel.send(userEmbed).then((m) => m.delete({ timeout: 15000 }));
+				message.channel.send(userEmbed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 

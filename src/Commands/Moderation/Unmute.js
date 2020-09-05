@@ -20,7 +20,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Unmute**`,
 					`**◎ Error:** You need to have the \`KICK_MEMBERS\` permission to use this command.`);
-			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(nomodRole).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Unmute**`,
 					`**◎ Error:** You must mention someone to unmute them!`);
-			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(nomodRole).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		const muterole = message.guild.roles.cache.find((x) => x.name === 'Muted');
@@ -40,7 +40,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Unmute**`,
 					`**◎ Error:** This user is not muted!`);
-			message.channel.send(nomodRole).then((m) => m.delete({ timeout: 15000 }));
+			message.channel.send(nomodRole).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 

@@ -20,11 +20,8 @@ module.exports = class extends Event {
 			}
 			if (newMessage.content.includes('https://') || newMessage.content.includes('http://') || newMessage.content.includes('discord.gg') || newMessage.content.includes('discord.me') || newMessage.content.includes('discord.io')) {
 				if (!newMessage.member.hasPermission('MANAGE_MESSAGES')) {
-					newMessage.delete();
-					newMessage.channel.send(`**Your message contained a link and it was deleted, <@${newMessage.author.id}>**`)
-						.then((msg) => {
-							msg.delete({ timeout: 15000 });
-						});
+					this.client.utils.deletableCheck(newMessage, 0);
+					newMessage.channel.send(`**Your message contained a link and it was deleted, <@${newMessage.author.id}>**`).then((m) => this.client.utils.deletableCheck(m, 10000));
 				}
 			}
 		}
