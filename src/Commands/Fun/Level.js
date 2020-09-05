@@ -52,6 +52,19 @@ module.exports = class extends Command {
 		if (message.guild) {
 			score = this.client.getScore.get(user.id, message.guild.id);
 		}
+
+		if (!score) {
+			const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
+			const newData = {
+				id: `${message.guild.id}-${message.author.id}`,
+				user: message.author.id,
+				guild: message.guild.id,
+				points: xpAdd,
+				level: 0
+			};
+			await this.client.setScore.run(newData);
+		}
+
 		let level;
 		let points;
 		let levelNoMinus;
@@ -59,15 +72,15 @@ module.exports = class extends Command {
 		let currentxpLvl;
 		let currentLvl;
 		let toLevel;
-		let inlevel;
-		let xplevel;
+		let inLevel;
+		let xpLevel;
 		let xpPercent;
 		if (!score) {
 			level = '0';
 			points = '0';
 			toLevel = '100';
 			inLevel = '0';
-			xplevel = '0/100 XP';
+			xpLevel = '0/100 XP';
 			xpPercent = 0;
 		} else {
 			level = score.level;
@@ -77,9 +90,9 @@ module.exports = class extends Command {
 			nxtLvlXp = 5 / 6 * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
 			currentxpLvl = 5 / 6 * currentLvl * (2 * currentLvl * currentLvl + 27 * currentLvl + 91);
 			toLevel = Math.floor(nxtLvlXp - currentxpLvl);
-			inlevel = Math.floor(points - currentxpLvl);
-			xplevel = `${abbreviate(inlevel, 2)}/${abbreviate(toLevel, 2)} XP`;
-			xpPercent = inlevel / toLevel * 100;
+			inLevel = Math.floor(points - currentxpLvl);
+			xpLevel = `${abbreviate(inLevel, 2)}/${abbreviate(toLevel, 2)} XP`;
+			xpPercent = inLevel / toLevel * 100;
 		}
 
 		const userRank = db.prepare('SELECT count(*) FROM scores WHERE points >= ? AND guild = ? AND user ORDER BY points DESC').all(points, message.guild.id);
@@ -164,7 +177,7 @@ module.exports = class extends Command {
 			ctx.strokeText(xp, x, y);
 			ctx.save();
 		}
-		drawXP(880, 165.4, xplevel);
+		drawXP(880, 165.4, xpLevel);
 
 		// Draw level
 		function drawLevel(x, y, txt, num, style) {
@@ -261,7 +274,7 @@ module.exports = class extends Command {
 		ctx.fill();
 		ctx.save();
 
-		const attachment = await new MessageAttachment(canvas.toBuffer(), 'level.jpg');
+		const attachment = new MessageAttachment(canvas.toBuffer(), 'level.jpg');
 		message.channel.send(attachment).catch((err) => console.log(err));
 	}
 
