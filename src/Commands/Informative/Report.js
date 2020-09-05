@@ -22,7 +22,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** You must specify a user to report!`);
-			message.channel.send(noTarget).then((m) => this.client.utils.messageDelete(m, 15000));
+			message.channel.send(noTarget).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 		if (!reason) {
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** You must specify a reason!`);
-			message.channel.send(noReason).then((m) => this.client.utils.messageDelete(m, 15000));
+			message.channel.send(noReason).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 		if (!reports) {
@@ -40,7 +40,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** Reports are disabled on this server! If you are an administrator, create the channel and name it \`reports\``);
-			message.channel.send(noReason).then((m) => this.client.utils.messageDelete(m, 15000));
+			message.channel.send(noReason).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -61,7 +61,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Report**`,
 				`**◎ Success:** ${target}** was reported by **${message.author}`);
-		message.channel.send(success).then((m) => this.client.utils.messageDelete(m, 15000));
+		message.channel.send(success).then((m) => m.delete({ timeout: 15000 }));
 	}
 
 };

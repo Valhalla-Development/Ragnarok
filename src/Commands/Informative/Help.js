@@ -1,5 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 const Command = require('../../Structures/Command');
+const { version } = require('../../../package.json');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -22,8 +23,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setAuthor(`${message.guild.name} Help`, message.guild.iconURL({ dynamic: true }))
 			.setThumbnail(this.client.user.displayAvatarURL())
-			.setFooter(`This guild's prefix is ${prefix}`, this.client.user.avatarURL({ dynamic: true }))
-			.setTimestamp();
+			.setFooter(`This guild's prefix is ${prefix} - Bot Version ${version}`, this.client.user.avatarURL({ dynamic: true }));
 
 		if (command) {
 			const cmd = this.client.commands.get(command) || this.client.commands.get(this.client.aliases.get(command));
@@ -33,7 +33,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Help**`,
 						`**◎ Error:** Invalid command name: \`${command}\``);
-				message.channel.send(embed1).then((m) => this.client.utils.messageDelete(m, 15000));
+				message.channel.send(embed1).then((m) => m.delete({ timeout: 15000 }));
 				return;
 			}
 

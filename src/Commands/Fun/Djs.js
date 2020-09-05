@@ -18,7 +18,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Discord.js**`,
 					`**◎ Error:** You must input a search term!`);
-			message.channel.send(noInput).then((m) => this.client.utils.messageDelete(m, 15000));
+			message.channel.send(noInput).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -34,7 +34,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Discord.js**`,
 							`**◎ Error:** I found no results for\n\`${query}\``);
-					message.channel.send(noResult).then((m) => this.client.utils.messageDelete(m, 15000));
+					message.channel.send(noResult).then((m) => m.delete({ timeout: 15000 }));
 				}
 			})
 			.catch(err => {
@@ -43,7 +43,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Discord.js**`,
 						`**◎ Error:** An error occured :slight_frown:`);
-				message.channel.send(error).then((m) => this.client.utils.messageDelete(m, 15000));
+				message.channel.send(error).then((m) => m.delete({ timeout: 15000 }));
 			});
 	}
 

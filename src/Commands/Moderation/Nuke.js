@@ -17,7 +17,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Nuke**`,
 					`**◎ Error:** This command has been disabled for this server!`);
-			message.channel.send(embed).then((m) => this.client.utils.messageDelete(m, 15000));
+			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 		if (!message.member.hasPermission('ADMINISTRATOR') && !this.client.owners.includes(message.author.id)) {
@@ -25,7 +25,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Nuke**`,
 					`**◎ Error:** You need to have the \`ADMINISTRATOR\` permission to use this command.`);
-			message.channel.send(embed).then((m) => this.client.utils.messageDelete(m, 15000));
+			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 		if (!message.guild.member(this.client.user).hasPermission('MANAGE_CHANNELS')) {
@@ -33,7 +33,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Nuke**`,
 					`**◎ Error:** I need the \`MANAGE_CHANNELS\` permissions to execute this command.`);
-			message.channel.send(embed).then((m) => this.client.utils.messageDelete(m, 15000));
+			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 

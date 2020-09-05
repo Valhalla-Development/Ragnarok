@@ -108,7 +108,7 @@ module.exports = class extends Event {
 						.setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
 						.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
 						.setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
-					message.channel.send(lvlup).then((msg) => grabClient.utils.messageDelete(msg, 15000));
+					message.channel.send(lvlup).then((msg) => msg.delete({ timeout: 15000 }));
 				}
 			}
 			if (!xpCooldown.has(message.author.id)) {

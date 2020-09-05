@@ -20,7 +20,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - BugReport**`,
 					`**◎ Error:** Please input some text!`);
-			message.channel.send(noinEmbed).then((m) => this.client.utils.messageDelete(m, 15000));
+			message.channel.send(noinEmbed).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - BugReport**`,
 				`**◎ Success:** Bug has been successfully reported!`);
-		message.channel.send(loggedEmbed).then((m) => this.client.utils.messageDelete(m, 15000));
+		message.channel.send(loggedEmbed).then((m) => m.delete({ timeout: 15000 }));
 	}
 
 };

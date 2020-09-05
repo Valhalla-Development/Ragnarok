@@ -40,7 +40,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
 					`**◎ Error:** You currently have no money in your bank!`);
-			message.channel.send(noBalance).then((m) => this.client.utils.messageDelete(m, 15000));
+			message.channel.send(noBalance).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -70,7 +70,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
 					`**◎ Error:** An example of this command is: \`${prefix}withdraw 100\`\nAlternatively, you can run \`${prefix}withdraw all\``);
-			message.channel.send(wrongUsage).then((m) => this.client.utils.messageDelete(m, 15000));
+			message.channel.send(wrongUsage).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -80,7 +80,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
 					`**◎ Error:** You only have <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}. Please try again with a valid amount.`);
-			message.channel.send(wrongUsage).then((m) => this.client.utils.messageDelete(m, 15000));
+			message.channel.send(wrongUsage).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 

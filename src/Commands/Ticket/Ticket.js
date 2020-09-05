@@ -25,7 +25,7 @@ module.exports = class extends Command {
 			if (
 				!message.member.hasPermission('ADMINISTRATOR') && !this.client.owners.includes(message.author.id)) {
 				message.channel.send('You need to have the `ADMINISTRATOR` permission to use this command!').then((msg) => {
-					this.client.utils.messageDelete(msg, 15000);
+					msg.delete({ timeout: 15000 });
 				});
 				return;
 			}
@@ -37,7 +37,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Error:** There are currently no tickets open in this guild!`);
-				message.channel.send(noTickets).then((m) => this.client.utils.messageDelete(m, 15000));
+				message.channel.send(noTickets).then((m) => m.delete({ timeout: 15000 }));
 				return;
 			}
 
@@ -49,7 +49,7 @@ module.exports = class extends Command {
 		} else if (args[0] === 'clear') {
 			if (!message.member.hasPermission('ADMINISTRATOR') && !this.client.owners.includes(message.author.id)) {
 				message.channel.send('You need to have the `ADMINISTRATOR` permission to use this command!').then((msg) => {
-					this.client.utils.messageDelete(msg, 15000);
+					msg.delete({ timeout: 15000 });
 				});
 				return;
 			}

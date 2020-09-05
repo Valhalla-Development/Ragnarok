@@ -19,7 +19,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Markdown**`,
 					`**◎ Error:** Only users with \`MANAGE_GUILD\` can use this command!`);
-			message.channel.send(embed).then((m) => this.client.utils.messageDelete(m, 15000));
+			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
@@ -32,11 +32,11 @@ module.exports = class extends Command {
 				`**◎ Error:** Please input text, example: \`${prefix}markdown <language> <text> !\``);
 
 		if (args[0] === undefined) {
-			message.channel.send(embed).then((m) => this.client.utils.messageDelete(m, 15000));
+			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 		if (args[1] === undefined) {
-			message.channel.send(embed).then((m) => this.client.utils.messageDelete(m, 15000));
+			message.channel.send(embed).then((m) => m.delete({ timeout: 15000 }));
 			return;
 		}
 
