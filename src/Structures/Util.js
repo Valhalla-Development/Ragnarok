@@ -57,6 +57,14 @@ module.exports = class Util {
 		}
 	}
 
+	deletableCheck(message, time) {
+		setTimeout(() => {
+			if (message.deletable) {
+				message.delete();
+			}
+		}, time);
+	}
+
 	async loadCommands() {
 		return glob(`${this.directory}Commands/**/*.js`).then(commands => {
 			for (const commandFile of commands) {
