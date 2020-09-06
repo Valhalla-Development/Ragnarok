@@ -324,6 +324,11 @@ module.exports = class extends Event {
 		if (!message.content.startsWith(prefixcommand)) return;
 
 		if (command) {
+			if (command.ownerOnly) {
+				if (!this.client.owners.includes(message.author.id)) {
+					return;
+				}
+			}
 			if (command.requiredPermission) {
 				if (!message.member.hasPermission(command.requiredPermission) && !this.client.owners.includes(message.author.id)) {
 					const embed = new MessageEmbed()
