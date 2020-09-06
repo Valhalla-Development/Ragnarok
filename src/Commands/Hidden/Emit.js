@@ -9,13 +9,12 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Emits a Discord.js event.',
 			category: 'Hidden',
-			usage: '<event>'
+			usage: '<event>',
+			ownerOnly: true
 		});
 	}
 
 	async run(message, args) {
-		if (!this.client.owners.includes(message.author.id)) return;
-
 		const prefixgrab = db
 			.prepare('SELECT prefix FROM setprefix WHERE guildid = ?')
 			.get(message.guild.id);

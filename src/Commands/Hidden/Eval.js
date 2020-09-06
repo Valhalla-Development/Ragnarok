@@ -10,12 +10,12 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Evaluates given input.',
 			category: 'Hidden',
-			usage: '<input>'
+			usage: '<input>',
+			ownerOnly: true
 		});
 	}
 
 	async run(message, args) {
-		if (!this.client.owners.includes(message.author.id)) return;
 		if (args.length < 1) {
 			const incorrectFormat = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
