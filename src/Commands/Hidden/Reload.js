@@ -1,0 +1,57 @@
+const Command = require('../../Structures/Command');
+const { MessageEmbed } = require('discord.js');
+
+module.exports = class extends Command {
+
+	constructor(...args) {
+		super(...args, {
+			description: 'Reloads specified command.',
+			category: 'Hidden',
+			ownerOnly: true
+		});
+	}
+
+	async run(message, args) {
+		const cmd = args[0];
+		if (!cmd) {
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Reload**`,
+					`**◎ Error:** Please specify a command to reload!`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		const command = this.client.commands.get(cmd) || this.client.commands.get(this.client.aliases.get(cmd));
+
+		if (command) {
+			delete require.cache[require.resolve(`../${command.category}/${ucFirst(command.name)}.js`)];
+
+			const File = require(`../${command.category}/${ucFirst(command.name)}.js`);
+			const CommandCre = new File(this.client, command.name.toLowerCase());
+
+			this.client.commands.delete(command.name);
+			await this.client.commands.set(command.name, CommandCre);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Reload**`,
+					`**◎ Success:** Command **${command.name}** has been successfully reloaded!`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		} else {
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Reload**`,
+					`**◎ Success:** Could not find command name \`${cmd}\``);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		function ucFirst(str) {
+			if (!str) return str;
+			return str[0].toUpperCase() + str.slice(1);
+		}
+	}
+
+};
