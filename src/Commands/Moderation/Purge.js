@@ -69,7 +69,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Purge**`,
 						`**◎ Success:** Successfully deleted ${args[0]} messages!`);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 13000));
+				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			}).catch((error) => {
 				console.log(error);
 			});
