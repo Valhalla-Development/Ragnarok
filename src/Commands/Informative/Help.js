@@ -42,7 +42,8 @@ module.exports = class extends Command {
 				`**◎ Aliases:** ${cmd.aliases.length ? cmd.aliases.map(alias => `\`${alias}\``).join(' ') : 'No Aliases'}`,
 				`**◎ Description:** ${cmd.description}`,
 				`**◎ Category:** ${cmd.category}`,
-				`**◎ Usage:** ${cmd.usage}`
+				`**◎ Usage:** ${cmd.usage}`,
+				`**◎ Permission Required:** \`${cmd.requiredPermission}\``
 			]);
 			message.channel.send(embed);
 			return;
