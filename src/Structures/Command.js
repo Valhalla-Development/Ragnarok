@@ -8,6 +8,7 @@ module.exports = class Command {
 		this.category = options.category || 'Misc';
 		this.usage = `${this.client.prefix}${this.name} ${options.usage || ''}`.trim();
 		this.requiredPermission = options.requiredPermission || null;
+		this.ownerOnly = options.ownerOnly || null;
 	}
 
 	// eslint-disable-next-line no-unused-vars
