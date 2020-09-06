@@ -324,6 +324,16 @@ module.exports = class extends Event {
 		if (!message.content.startsWith(prefixcommand)) return;
 
 		if (command) {
+			if (command.requiredPermission) {
+				if (!message.member.hasPermission(command.requiredPermission) && !this.client.owners.includes(message.author.id)) {
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
+							`**◎ Error:** You need the \`${command.requiredPermission}\` role in order to execute this command.`);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+			}
 			command.run(message, args);
 		}
 
