@@ -5,22 +5,12 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Kicks tagged user from the guild.',
-			category: 'Moderation'
+			category: 'Moderation',
+			requiredPermission: 'KICK_MEMBERS'
 		});
 	}
 
 	async run(message) {
-		// no perms check
-
-		if (!message.member.hasPermission('KICK_MEMBERS') && !this.client.owners.includes(message.author.id)) {
-			const embed = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Kick**`,
-					`**◎ Error:** You need to have the \`KICK_MEMBERS\` permission to use this command.`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
-
 		// no mention check
 
 		if (message.mentions.users.size < 1) {

@@ -11,23 +11,14 @@ module.exports = class extends Command {
 			aliases: ['shh'],
 			description: 'Mutes tagged user.',
 			category: 'Moderation',
-			usage: '<@user>'
+			usage: '<@user>',
+			requiredPermission: 'MANAGE_MESSAGES'
 		});
 	}
 
 	async run(message, args) {
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
-
-
-		if (!message.member.hasPermission('KICK_MEMBERS') && !this.client.owners.includes(message.author.id)) {
-			const embed = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Mute**`,
-					`**◎ Error:** You need to have the \`KICK_MEMBERS\` permission to use this command.`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
 
 		const mod = message.author;
 		const user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));

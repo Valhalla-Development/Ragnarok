@@ -8,7 +8,8 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Posts an embed where users can create a ticket with a reaction.',
-			category: 'Ticket'
+			category: 'Ticket',
+			requiredPermission: 'MANAGE_MESSAGES'
 		});
 	}
 
@@ -17,15 +18,6 @@ module.exports = class extends Command {
 
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
-
-		if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-			const errEmbed = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - TEmbed**`,
-					`**◎ Error:** You do not have permission to run this command.`);
-			message.channel.send(errEmbed).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
 
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))

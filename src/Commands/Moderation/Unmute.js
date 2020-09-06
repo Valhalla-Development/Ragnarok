@@ -10,20 +10,12 @@ module.exports = class extends Command {
 			aliases: ['unshh'],
 			description: 'Unmutes tagged user.',
 			category: 'Moderation',
-			usage: '<@user>'
+			usage: '<@user>',
+			requiredPermission: 'MANAGE_MESSAGES'
 		});
 	}
 
 	async run(message, args) {
-		if (!message.member.hasPermission('KICK_MEMBERS') && !this.client.owners.includes(message.author.id)) {
-			const nomodRole = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Unmute**`,
-					`**◎ Error:** You need to have the \`KICK_MEMBERS\` permission to use this command.`);
-			message.channel.send(nomodRole).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
-
 		const mod = message.author;
 		const user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
 		if (!user) {

@@ -7,20 +7,12 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Deletes specified amount of messages from the channel.',
 			category: 'Moderation',
-			usage: '<amount of messages to delete>'
+			usage: '<amount of messages to delete>',
+			requiredPermission: 'MANAGE_MESSAGES'
 		});
 	}
 
 	async run(message, args) {
-		if (!message.member.hasPermission('MANAGE_MESSAGES') && !this.client.owners.includes(message.author.id)) {
-			const embed = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Purge**`,
-					`**◎ Error:** You need to have the \`MANAGE_MESSAGES\` permission to use this command.`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
-
 		if (!args[0]) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))

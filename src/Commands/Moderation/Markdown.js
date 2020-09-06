@@ -9,20 +9,12 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Posts supplied text with markdown support.',
 			category: 'Moderation',
-			usage: '<language> <input>'
+			usage: '<language> <input>',
+			requiredPermission: 'MANAGE_MESSAGES'
 		});
 	}
 
 	async run(message, args) {
-		if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-			const embed = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Markdown**`,
-					`**◎ Error:** Only users with \`MANAGE_GUILD\` can use this command!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
-
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 

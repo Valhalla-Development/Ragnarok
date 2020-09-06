@@ -6,7 +6,8 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Clones the channel and deletes the original.',
-			category: 'Moderation'
+			category: 'Moderation',
+			requiredPermission: 'MANAGE_CHANNELS'
 		});
 	}
 
@@ -17,14 +18,6 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Nuke**`,
 					`**◎ Error:** This command has been disabled for this server!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
-		if (!message.member.hasPermission('ADMINISTRATOR') && !this.client.owners.includes(message.author.id)) {
-			const embed = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Nuke**`,
-					`**◎ Error:** You need to have the \`ADMINISTRATOR\` permission to use this command.`);
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}

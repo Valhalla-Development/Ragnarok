@@ -8,21 +8,13 @@ module.exports = class extends Command {
 			aliases: ['embed'],
 			description: 'Posts given input in an embed.',
 			category: 'Moderation',
-			usage: '<text>'
+			usage: '<text>',
+			requiredPermission: 'MANAGE_GUILD'
 		});
 	}
 
 	async run(message, args) {
 		this.client.utils.messageDelete(message, 0);
-
-		if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-			const embed = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - ESay**`,
-					`**◎ Error:** Only the server's managers can use this command!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
 
 		if (args[0] === undefined) {
 			const embed = new MessageEmbed()

@@ -10,7 +10,8 @@ module.exports = class extends Command {
 			aliases: ['conf'],
 			description: 'Contains multiple commands to configure the bot.',
 			category: 'Moderation',
-			usage: '[sub-command]'
+			usage: '[sub-command]',
+			requiredPermission: 'MANAGE_GUILD'
 		});
 	}
 
@@ -74,15 +75,6 @@ module.exports = class extends Command {
 		// Level toggle
 
 		if (args[0] === 'level') {
-			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-				const embed = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Config**`,
-						`**◎ Error:** Only users with \`MANAGE_GUILD\` can use this command!`);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
-			}
-
 			this.client.getTable = db.prepare('SELECT * FROM level WHERE guildid = ?');
 
 			let status;
@@ -143,16 +135,6 @@ module.exports = class extends Command {
 
 		// Membercount Command
 		if (args[0] === 'membercount') {
-			// perms checking
-			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-				const embed = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Config**`,
-						`**◎ Error:** You do not have permission to run this command.`);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
-			}
-
 			// preparing count
 			this.client.getTable = db.prepare('SELECT * FROM membercount WHERE guildid = ?');
 			let status;
@@ -269,15 +251,6 @@ module.exports = class extends Command {
 		// Rolemenu Command
 		if (args[0] === 'rolemenu') {
 			// Rolemenu Config
-			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-				const embed = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Config**`,
-						`**◎ Error:** Only users with the \`MANAGE_GUILD\` permission can use this command!`);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
-			}
-
 			if (args[1] === 'add') {
 				const roleList = [];
 				if (message.mentions.roles.size <= 0) {
@@ -377,16 +350,6 @@ module.exports = class extends Command {
 
 		// dadbot
 		if (args[0] === 'dadbot') {
-			// perms checking
-			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-				const embed = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Config**`,
-						`**◎ Error:** Only guild managers can use this command!`);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
-			}
-
 			// preparing count
 			this.client.getTable = db.prepare('SELECT * FROM dadbot WHERE guildid = ?');
 			let status;
@@ -447,15 +410,6 @@ module.exports = class extends Command {
 		// adsprot
 		if (args[0] === 'adsprot') {
 			// perms checking
-			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-				const embed = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Config**`,
-						`**◎ Error:** Only guild managers can use this command!`);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
-			}
-
 			if (!message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
 				const npPerms = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -526,15 +480,6 @@ module.exports = class extends Command {
 
 		// autorole
 		if (args[0] === 'autorole') {
-			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-				const embed = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Config**`,
-						`**◎ Error:** Only users with the \`MANAGE_GUILD\` permission can use this command!`);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
-			}
-
 			this.client.getTable = db.prepare('SELECT * FROM autorole WHERE guildid = ?');
 			let role;
 			if (message.guild.id) {
@@ -604,15 +549,6 @@ module.exports = class extends Command {
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
-			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-				const embed = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Config**`,
-						`**◎ Error:** Only users with \`MANAGE_GUILD\` can use this command!`);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
-			}
-
 			this.client.getTable = db.prepare('SELECT * FROM logging WHERE guildid = ?');
 
 			const lchan = message.mentions.channels.first();
@@ -697,15 +633,6 @@ module.exports = class extends Command {
 		// ticket cat and log and role
 		if (args[0] === 'ticket') {
 			if (args[1] === 'cat') {
-				if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-					const embed = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Error:** Only users with \`MANAGE_GUILD\` can use this command!`);
-					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-					return;
-				}
-
 				this.client.getTable = db.prepare('SELECT category FROM ticketConfig WHERE guildid = ?');
 
 				const category = message.guild.channels.cache.find(
@@ -782,15 +709,6 @@ module.exports = class extends Command {
 					return;
 				}
 			} else if (args[1] === 'log') {
-				if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-					const embed = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Error:** Only users with \`MANAGE_GUILD\` can use this command!`);
-					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-					return;
-				}
-
 				this.client.getTable = db.prepare('SELECT log FROM ticketConfig WHERE guildid = ?');
 
 				const lchan = message.mentions.channels.first();
@@ -865,15 +783,6 @@ module.exports = class extends Command {
 					return;
 				}
 			} else if (args[1] === 'role') {
-				if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-					const embed = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Success:** Only users with \`MANAGE_GUILD\` can use this command!`);
-					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-					return;
-				}
-
 				this.client.getTable = db.prepare('SELECT role FROM ticketConfig WHERE guildid = ?');
 				const status = this.client.getTable.get(message.guild.id);
 
@@ -944,15 +853,6 @@ module.exports = class extends Command {
 				setTimeout(() => {
 					talkedRecently.delete(message.author.id);
 				}, 60000);
-			}
-
-			if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-				const embed = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Config**`,
-						`**◎ Error:** You need to have the \`MANAGE_GUILD\` permission to use this command.`);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
 			}
 
 			this.client.getTable = db.prepare('SELECT * FROM setprefix WHERE guildid = ?');
@@ -1029,15 +929,6 @@ module.exports = class extends Command {
 				return;
 			}
 			if (args[1] === 'channel') {
-				if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-					const embed = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Error:** Only users with \`MANAGE_GUILD\` can use this command!`);
-					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-					return;
-				}
-
 				this.client.getTable = db.prepare('SELECT * FROM setwelcome WHERE guildid = ?');
 
 				const lchan = message.mentions.channels.first();
@@ -1119,15 +1010,6 @@ module.exports = class extends Command {
 				return;
 			}
 			if (args[1] === 'role') {
-				if (!message.member.hasPermission('MANAGE_GUILD') && !this.client.owners.includes(message.author.id)) {
-					const embed = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Error:** Only users with \`MANAGE_GUILD\` can use this command!`);
-					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-					return;
-				}
-
 				this.client.getTable = db.prepare('SELECT * FROM music WHERE guildid = ?');
 
 				let status;

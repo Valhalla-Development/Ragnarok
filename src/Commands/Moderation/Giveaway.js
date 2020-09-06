@@ -21,7 +21,7 @@ module.exports = class extends Command {
 			const invalidPerm = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Giveaway**`,
-					`**◎ Error:** You need to have the manage messages permissions to reroll giveaways.`);
+					`**◎ Error:** You need to have the manage messages permissions or the giveaway role for this command.`);
 			message.channel.send(invalidPerm).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}

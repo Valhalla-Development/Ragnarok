@@ -10,20 +10,12 @@ module.exports = class extends Command {
 			aliases: ['begone'],
 			description: 'Bans tagged user from the guild.',
 			category: 'Moderation',
-			usage: '<@user>'
+			usage: '<@user>',
+			requiredPermission: 'BAN_MEMBERS'
 		});
 	}
 
 	async run(message, args) {
-		if (!message.member.hasPermission('BAN_MEMBERS') && !this.client.owners.includes(message.author.id)) {
-			const errEmbed = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Ban**`,
-					`**◎ Error:** You do not have permission to run this command.`);
-			message.channel.send(errEmbed).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
-
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
 		if (!id) {
 			const user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
