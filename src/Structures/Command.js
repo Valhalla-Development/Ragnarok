@@ -7,6 +7,7 @@ module.exports = class Command {
 		this.description = options.description || 'No description provided.';
 		this.category = options.category || 'Misc';
 		this.usage = `${this.client.prefix}${this.name} ${options.usage || ''}`.trim();
+		this.requiredPermission = options.requiredPermission || null;
 	}
 
 	// eslint-disable-next-line no-unused-vars
