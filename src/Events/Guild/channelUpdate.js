@@ -54,7 +54,7 @@ module.exports = class extends Event {
 
 		if (oldChannel.type === 'voice') {
 			if (oldChannel.name !== newChannel.name) {
-				updateM = `**◎ *Voice Channel Name Updated:**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
+				updateM = `**◎ Voice Channel Name Updated:**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
 				logembed
 					.setDescription(updateM);
 				this.client.channels.cache.get(logs).send(logembed);
