@@ -20,7 +20,7 @@ module.exports = class extends Event {
 			if (logs) {
 				const logembed = new MessageEmbed()
 					.setAuthor('Member Left', member.user.avatarURL())
-					.setDescription(`<@${member.user.id}> - ${member.user.tag}`)
+					.setDescription(`${member.user.tag}`)
 					.setColor(this.client.utils.color(member.guild.me.displayHexColor))
 					.setFooter(`ID: ${member.user.id}`)
 					.setTimestamp();
