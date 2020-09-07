@@ -15,8 +15,11 @@ module.exports = class extends Event {
 
 		this.client.manager.updateVoiceState(event);
 
-		function ticketEmbed(grabClient) {
+		async function ticketEmbed(grabClient) {
 			if (eventType === 'MESSAGE_DELETE') {
+				const channel = await grabClient.channels.cache.find(channel => channel.id === data.channel_id);
+				if (channel.type === 'dm') return;
+
 				if (data.user_id === grabClient.user.id) return;
 				const getTicketEmbed = db.prepare(`SELECT * FROM ticketConfig WHERE guildid = ${data.guild_id}`).get();
 				if (!getTicketEmbed || !getTicketEmbed.ticketembed) {
@@ -27,6 +30,9 @@ module.exports = class extends Event {
 				}
 			}
 			if (eventType === 'MESSAGE_REACTION_ADD') {
+				const channel = await grabClient.channels.cache.find(channel => channel.id === data.channel_id);
+				if (channel.type === 'dm') return;
+
 				const emoji = '📩';
 				if (data.user_id === grabClient.user.id) return;
 				const guild = grabClient.guilds.cache.find((guild) => guild.id === data.guild_id);
@@ -215,6 +221,9 @@ module.exports = class extends Event {
 
 		function roleMenu(grabClient) {
 			if (eventType === 'MESSAGE_DELETE') {
+				const channel = grabClient.channels.cache.find(channel => channel.id === data.channel_id);
+				if (channel.type === 'dm') return;
+
 				if (data.user_id === grabClient.user.id) return;
 				const getRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${data.guild_id}`).get();
 				if (!getRoleMenu || !getRoleMenu.activeRoleMenuID) {
@@ -254,6 +263,9 @@ module.exports = class extends Event {
 					'🇿'
 				];
 				if (data.user_id === grabClient.user.id) return;
+				const channel = grabClient.channels.cache.find(channel => channel.id === data.channel_id);
+				if (channel.type === 'dm') return;
+
 				const guild = grabClient.guilds.cache.find((guild) => guild.id === data.guild_id);
 				const member = guild.members.cache.find((member) => member.id === data.user_id);
 				const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${data.guild_id}`).get();
