@@ -47,7 +47,7 @@ module.exports = class extends Command {
 					const cleared = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - TicketEmbed**`,
-							`**◎ Error:** Tickets embed has been cleared from the database.`);
+							`**◎ Success:** Tickets embed has been cleared from the database.`);
 					message.channel.send(cleared).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
