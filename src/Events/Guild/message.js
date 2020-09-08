@@ -196,8 +196,6 @@ module.exports = class extends Event {
 
 		// Link Mention Function
 		async function linkTag(grabClient) {
-			// Plexi succ and muted the bot because of this awesome feature
-			if (message.guild.id === '343572980351107077') return;
 			const mainReg = /https:\/\/discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
 			const ptbReg = /https:\/\/ptb\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
 			const mainCheck = mainReg.test(message.content.toLowerCase());
