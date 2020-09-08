@@ -7,7 +7,7 @@ module.exports = class Command {
 		this.description = options.description || 'No description provided.';
 		this.category = options.category || 'Misc';
 		this.usage = `${this.client.prefix}${this.name} ${options.usage || ''}`.trim();
-		this.requiredPermission = options.requiredPermission || 'N/A';
+		this.requiredPermission = options.requiredPermission || null;
 		this.ownerOnly = options.ownerOnly || null;
 	}
 
