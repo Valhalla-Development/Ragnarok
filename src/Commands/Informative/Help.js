@@ -37,13 +37,19 @@ module.exports = class extends Command {
 				return;
 			}
 
+			let reqPerm;
+			if (cmd.requiredPermission === null) {
+				reqPerm = 'N/A.';
+			} else {
+				reqPerm = `\`${cmd.requiredPermission}\``;
+			}
 			embed.setAuthor(`${this.client.utils.capitalise(cmd.name)} Command Help`, this.client.user.displayAvatarURL());
 			embed.setDescription([
 				`**◎ Aliases:** ${cmd.aliases.length ? cmd.aliases.map(alias => `\`${alias}\``).join(' ') : 'No Aliases'}`,
 				`**◎ Description:** ${cmd.description}`,
 				`**◎ Category:** ${cmd.category}`,
 				`**◎ Usage:** ${cmd.usage}`,
-				`**◎ Permission Required:** \`${cmd.requiredPermission}\``
+				`**◎ Permission Required:** ${reqPerm}`
 			]);
 			message.channel.send(embed);
 			return;
