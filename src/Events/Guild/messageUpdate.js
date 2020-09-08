@@ -1,5 +1,6 @@
 const Event = require('../../Structures/Event');
 const { MessageEmbed } = require('discord.js');
+const RagnarokEmbed = require('../../Structures/RagnarokEmbed');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -43,11 +44,11 @@ module.exports = class extends Event {
 		if (oldMessage.content === newMessage.content) {
 			return;
 		}
-		const embed = new MessageEmbed()
+		const embed = new RagnarokEmbed()
 			.setColor(this.client.utils.color(newMessage.guild.me.displayHexColor))
 			.setAuthor(oldMessage.author.tag, this.client.user.displayAvatarURL({ dynamic: true }))
 			.setTitle('Message Updated')
-			.setDescription([
+			.splitFields([
 				`**◎ Before:**\n${oldMessage.content}`,
 				`**◎ After:**\n${newMessage.content}`
 			])
