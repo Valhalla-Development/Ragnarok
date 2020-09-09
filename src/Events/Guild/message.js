@@ -205,6 +205,7 @@ module.exports = class extends Event {
 			let guildID;
 			let channelID;
 			let messageID;
+			let URL;
 
 			if (mainCheck || ptbCheck) {
 				const mainGlob = /https:\/\/discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
@@ -230,11 +231,14 @@ module.exports = class extends Event {
 					guildID = mesLink.substring(32, mesLink.length - 38);
 					channelID = mesLink.substring(51, mesLink.length - 19);
 					messageID = mesLink.substring(70);
+					URL = `https://discordapp.com/channels/${guildID}/${channelID}/${messageID}`;
 				} else if (ptbCheck) {
 					guildID = mesLink.substring(36, mesLink.length - 38);
 					channelID = mesLink.substring(55, mesLink.length - 19);
 					messageID = mesLink.substring(74);
+					URL = `https://ptb.discordapp.com/channels/${guildID}/${channelID}/${messageID}`;
 				}
+
 				if (!guildID) {
 					return;
 				}
@@ -260,7 +264,7 @@ module.exports = class extends Event {
 								if (res.embeds[0].url) {
 									const fileExtension = res.embeds[0].url.substring(res.embeds[0].url.lastIndexOf('.') + 1);
 									if (validExtensions.includes(fileExtension)) {
-										embed.setDescription(`**◎ [Message Link](${message.content}) to** ${res.channel}\n${res.content}`);
+										embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content}`);
 										embed.setImage(res.embeds[0].url);
 										message.channel.send(embed);
 									}
@@ -275,10 +279,10 @@ module.exports = class extends Event {
 								const attachmentUrl = res.attachments.first().url;
 								const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
 								if (!validExtensions.includes(fileExtension)) {
-									embed.setDescription(`**◎ [Message Link](${message.content}) to** ${res.channel}\n${res.content}`);
+									embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content}`);
 									return;
 								} else {
-									embed.setDescription(`**◎ [Message Link](${message.content}) to** ${res.channel}\n${res.content}`);
+									embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content}`);
 									embed.setImage(attachmentUrl);
 									message.channel.send(embed);
 									return;
@@ -290,13 +294,13 @@ module.exports = class extends Event {
 								if (!validExtensions.includes(fileExtension)) {
 									return;
 								} else {
-									embed.setDescription(`**◎ [Message Link](${message.content}) to** ${res.channel}`);
+									embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}`);
 									embed.setImage(attachmentUrl);
 									message.channel.send(embed);
 									return;
 								}
 							} else {
-								embed.setDescription(`**◎ [Message Link](${message.content}) to** ${res.channel}\n${res.content}`);
+								embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content}`);
 								message.channel.send(embed);
 								return;
 							}
