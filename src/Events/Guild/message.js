@@ -198,18 +198,34 @@ module.exports = class extends Event {
 		async function linkTag(grabClient) {
 			const mainReg = /https:\/\/discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
 			const ptbReg = /https:\/\/ptb\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
+			const disReg = /https:\/\/discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
+			const ptReg = /https:\/\/ptb\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
+			const caReg = /https:\/\/canary\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
+			const canApReg = /https:\/\/canary\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
+
 			const mainCheck = mainReg.test(message.content.toLowerCase());
 			const ptbCheck = ptbReg.test(message.content.toLowerCase());
-			const exec = mainReg.exec(message.content.toLowerCase()) || ptbReg.exec(message.content.toLowerCase());
+			const disCheck = disReg.test(message.content.toLowerCase());
+			const ptbdisCheck = ptReg.test(message.content.toLowerCase());
+			const canCheck = caReg.test(message.content.toLowerCase());
+			const canACheck = canApReg.test(message.content.toLowerCase());
+
+			const exec = mainReg.exec(message.content.toLowerCase()) || ptbReg.exec(message.content.toLowerCase()) || disReg.exec(message.content.toLowerCase()) || ptReg.exec(message.content.toLowerCase()) || caReg.exec(message.content.toLowerCase()) || canApReg.exec(message.content.toLowerCase());
 
 			let guildID;
 			let channelID;
 			let messageID;
 			let URL;
 
-			if (mainCheck || ptbCheck) {
+			if (mainCheck || ptbCheck || disCheck || ptbdisCheck || canCheck || canACheck) {
 				const mainGlob = /https:\/\/discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
 				const ptbGlob = /https:\/\/ptb\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
+				const disGlob = /https:\/\/discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
+				const ptGlob = /https:\/\/ptb\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
+				const caGlob = /https:\/\/canary\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
+				const canAGlob = /https:\/\/canary\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
+
+
 				let lengthMain;
 				let lengthPtb;
 
@@ -220,6 +236,26 @@ module.exports = class extends Event {
 				}
 				if (ptbGlob.test(message.content.toLowerCase()) === true) {
 					lengthPtb = message.content.toLowerCase().match(ptbGlob).length;
+				} else {
+					lengthPtb = 0;
+				}
+				if (disGlob.test(message.content.toLowerCase()) === true) {
+					lengthMain = message.content.toLowerCase().match(disGlob).length;
+				} else {
+					lengthMain = 0;
+				}
+				if (ptGlob.test(message.content.toLowerCase()) === true) {
+					lengthPtb = message.content.toLowerCase().match(ptGlob).length;
+				} else {
+					lengthPtb = 0;
+				}
+				if (caGlob.test(message.content.toLowerCase()) === true) {
+					lengthMain = message.content.toLowerCase().match(caGlob).length;
+				} else {
+					lengthMain = 0;
+				}
+				if (canAGlob.test(message.content.toLowerCase()) === true) {
+					lengthPtb = message.content.toLowerCase().match(canAGlob).length;
 				} else {
 					lengthPtb = 0;
 				}
@@ -237,6 +273,26 @@ module.exports = class extends Event {
 					channelID = mesLink.substring(55, mesLink.length - 19);
 					messageID = mesLink.substring(74);
 					URL = `https://ptb.discordapp.com/channels/${guildID}/${channelID}/${messageID}`;
+				} else if (disCheck) {
+					guildID = mesLink.substring(29, mesLink.length - 38);
+					channelID = mesLink.substring(48, mesLink.length - 19);
+					messageID = mesLink.substring(67);
+					URL = `https://discord.com/channels/${guildID}/${channelID}/${messageID}`;
+				} else if (ptbdisCheck) {
+					guildID = mesLink.substring(33, mesLink.length - 38);
+					channelID = mesLink.substring(52, mesLink.length - 19);
+					messageID = mesLink.substring(71);
+					URL = `https://ptb.discord.com/channels/${guildID}/${channelID}/${messageID}`;
+				} else if (canCheck) {
+					guildID = mesLink.substring(36, mesLink.length - 38);
+					channelID = mesLink.substring(55, mesLink.length - 19);
+					messageID = mesLink.substring(74);
+					URL = `https://canary.discord.com/channels/${guildID}/${channelID}/${messageID}`;
+				} else if (canACheck) {
+					guildID = mesLink.substring(39, mesLink.length - 38);
+					channelID = mesLink.substring(58, mesLink.length - 19);
+					messageID = mesLink.substring(77);
+					URL = `https://canary.discordapp.com/channels/${guildID}/${channelID}/${messageID}`;
 				}
 
 				if (!guildID) {
@@ -342,6 +398,8 @@ module.exports = class extends Event {
 				}
 			}
 			command.run(message, args);
+		} else {
+			return;
 		}
 
 		// Logging
