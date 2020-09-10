@@ -68,6 +68,12 @@ module.exports = class extends Command {
 			return;
 		}
 
+		if (message.member.roles.cache.has(role.id)) {
+			if (talkedRecently.has(message.author.id)) {
+				talkedRecently.delete(message.author.id);
+			}
+		}
+
 		if (talkedRecently.has(message.author.id)) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -75,7 +81,7 @@ module.exports = class extends Command {
 					`**◎ Error:** There is a 30 second cooldown for this command!\nDJ's are exempt from the cooldown.`);
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
-		} // add check if role was added after cooldown bub
+		}
 
 		if (!args[0]) {
 			const embed = new MessageEmbed()
@@ -93,8 +99,14 @@ module.exports = class extends Command {
 		});
 
 		await this.client.manager.search(args.join(' '), message.author).then(async (res) => {
+			talkedRecently.add(message.author.id);
+
 			if (res.loadType === 'NO_MATCHES' || res.loadType === 'LOAD_FAILED') {
 				this.client.utils.messageDelete(message, 0);
+				if (talkedRecently.has(message.author.id)) {
+					talkedRecently.delete(message.author.id);
+				}
+
 				const noTrack = new MessageEmbed()
 					.setAuthor('Error', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -117,7 +129,7 @@ module.exports = class extends Command {
 						return;
 					}
 					player.queue.add(res.tracks[0]);
-					player.connect();
+					player.setVoiceChannel(message.member.voice.channel.id);
 					if (!player.playing && !player.paused && player.queue.size === 1) player.play();
 					if (player.queue.size !== 1) {
 						const trackloade = new MessageEmbed()
@@ -164,7 +176,7 @@ module.exports = class extends Command {
 							this.client.utils.deletableCheck(searchEmbed, 0);
 							this.client.utils.deletableCheck(m, 0);
 							player.queue.add(track);
-							player.connect();
+							player.setVoiceChannel(message.member.voice.channel.id);
 							if (!player.playing && !player.paused && player.queue.size === 1) player.play();
 							if (player.queue.size !== 1) {
 								const trackloade = new MessageEmbed()
@@ -177,6 +189,12 @@ module.exports = class extends Command {
 
 						collector.on('end', (_, reason) => {
 							if (['time', 'cancelled'].includes(reason)) {
+								this.client.utils.deletableCheck(searchEmbed, 0);
+
+								if (talkedRecently.has(message.author.id)) {
+									talkedRecently.delete(message.author.id);
+								}
+
 								const upperReason = reason.charAt(0).toUpperCase() + reason.substring(1);
 								const cancelE = new MessageEmbed()
 									.setAuthor(' Cancelled', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
@@ -198,7 +216,7 @@ module.exports = class extends Command {
 					const duration = prettyMilliseconds(res.tracks.reduce((acc, cur) => ({
 						duration: acc.duration + cur.duration
 					})).duration, { colonNotation: true });
-					player.connect();
+					player.setVoiceChannel(message.member.voice.channel.id);
 					if (!player.playing && !player.paused && player.queue.size === res.tracks.length) player.play();
 					if (player.queue.size !== 1) {
 						const playlistload = new MessageEmbed()
@@ -214,8 +232,10 @@ module.exports = class extends Command {
 		if (message.member.roles.cache.has(role.id)) {
 			return;
 		}
-		talkedRecently.add(message.author.id);
 		setTimeout(() => {
+			if (message.member.roles.cache.has(role.id)) {
+				return;
+			}
 			const embed1 = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Play**`,
