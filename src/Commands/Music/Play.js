@@ -117,11 +117,13 @@ module.exports = class extends Command {
 			player.set('textChannel', message.channel);
 			switch (res.loadType) {
 				case 'TRACK_LOADED': {
-					if (res.tracks[0].duration >= 600000) {
+					this.client.utils.messageDelete(message, 0);
+
+					if (res.tracks[0].duration >= 900000) {
 						const embed1 = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Play**`,
-								`**◎ Error:** Duration is over 10 minutes! Cancelling playback`);
+								`**◎ Error:** Duration is over 15 minutes! Cancelling playback`);
 						message.channel.send(embed1).then((m) => this.client.utils.deletableCheck(m, 10000));
 						if (player.queue.size === 0) {
 							player.destroy(message.guild.id);
@@ -212,6 +214,7 @@ module.exports = class extends Command {
 					break;
 				}
 				case 'PLAYLIST_LOADED': {
+					this.client.utils.messageDelete(message, 0);
 					res.tracks.forEach((track) => player.queue.add(track));
 					const duration = prettyMilliseconds(res.tracks.reduce((acc, cur) => ({
 						duration: acc.duration + cur.duration
