@@ -6,14 +6,13 @@ module.exports = class extends Event {
 	// this is just for AirReps!
 
 	async run(oldPresence, newPresence) {
-		if (newPresence.guild.id !== '495602800802398212') return;
+		if (newPresence.guild.id !== '657235952116170794') return;
 
-		const Towy = this.client.users.cache.find((a) => a.id === '178843418061963264');
 		const Ragnar = this.client.users.cache.find((a) => a.id === '151516555757223936');
 
 		const offlineEmbed = new MessageEmbed()
 			.setTitle('Ragnarok Report')
-			.setDescription(`<@${newPresence.userID}> is **OFFLINE**\n${Towy}, ${Ragnar}`)
+			.setDescription(`<@${newPresence.userID}> is **OFFLINE**`)
 			.setColor('#ff2f2f')
 			.setTimestamp();
 
@@ -33,8 +32,10 @@ module.exports = class extends Event {
 			if (oldPresence.status === newPresence.status) return;
 			if (statusList.includes(oldPresence.status) && statusList.includes(newPresence.status)) return;
 			if (newPresence.status === 'offline') {
+				channelid.send(`${Ragnar}`);
 				channelid.send(offlineEmbed);
 			} else {
+				channelid.send(`${Ragnar}`);
 				channelid.send(onlineEmbed);
 			}
 		}
