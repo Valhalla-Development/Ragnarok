@@ -49,7 +49,7 @@ module.exports = class extends Event {
 			.setDescription([
 				`**◎ Message ID:** ${message.id}`,
 				`**◎ Channel:** ${message.channel}`,
-				`**◎ Author:** ${message.member.displayName}`,
+				`**◎ Author:** ${message.guild.members.resolve(message.author) ? message.author : message.author.username}`,
 				`${attachments ? `**◎ Attachments:** ${attachments.join('\n')}` : ''}`
 			])
 			.setTimestamp();
