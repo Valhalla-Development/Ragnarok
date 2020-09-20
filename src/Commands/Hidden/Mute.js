@@ -1,0 +1,239 @@
+const Command = require('../../Structures/Command');
+const { MessageEmbed } = require('discord.js');
+const ms = require('ms');
+const SQLite = require('better-sqlite3');
+const db = new SQLite('./Storage/DB/db.sqlite');
+
+module.exports = class extends Command {
+
+	constructor(...args) {
+		super(...args, {
+			aliases: ['shh'],
+			description: 'Mutes tagged user.',
+			category: 'Moderation',
+			usage: '<@user> <time> [reason]',
+			requiredPermission: 'MANAGE_MESSAGES',
+			ownerOnly: true
+		});
+	}
+
+	async run(message, args) {
+		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
+		const { prefix } = prefixgrab;
+
+		const muteRoleGrab = db.prepare(`SELECT role FROM mute WHERE guildid = ${message.guild.id}`).get();
+
+		const user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
+
+		// No user
+		if (!user) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Mute**`,
+					`**◎ Error:** Run \`${prefix}help mute\` If you are unsure.`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		// If user id = message id
+		if (user.user.id === message.author.id) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Mute**`,
+					`**◎ Error:** You cannot Mute yourself!`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		// Check if user has a role that is higher than the message author
+		if (user.roles.highest.position >= message.member.roles.highest.position) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Mute**`,
+					`**◎ Error:** You cannot Mute someone with a higher role than yourself!`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		// Check if user is muteable
+		if (user.hasPermission('MANAGE_GUILD') || user.hasPermission('ADMINISTRATOR')) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Mute**`,
+					`**◎ Error:** You cannot Mute <@${user.id}>`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		// Check if user is the bot
+		if (user.user.id === this.client.user.id) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Mute**`,
+					`**◎ Error:** You cannot Mute me. :slight_frown:`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		// Define mutetime
+		const mutetime = args[1];
+		if (!mutetime) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Mute**`,
+					`**◎ Error:** You must specify a mute time!`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		// Ensure mutetime is a valid option
+		if (!args[1].match('[dhms]')) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const incorrectFormat = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Mute**`,
+					`**◎ Error:** You did not use the correct formatting for the time! The valid options are \`d\`, \`h\`, \`m\` or \`s\``);
+			message.channel.send(incorrectFormat).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		// Checks if mutetime is a number
+		if (isNaN(ms(args[1]))) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const invalidDur = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Mute**`,
+					`**◎ Error:** Please input a valid duration!`);
+			message.channel.send(invalidDur).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		// Check if mutetime is higher than 30 seconds
+		if (ms(args[1]) < '30000') {
+			this.client.utils.messageDelete(message, 10000);
+
+			const valueLow = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Mute**`,
+					`**◎ Error:** Please input a value higher than 30 seconds!`);
+			message.channel.send(valueLow).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		let reason = args.slice(2).join(' ');
+		if (!reason) reason = 'No reason given.';
+
+
+		let muteRole;
+		if (muteRoleGrab) {
+			muteRole = message.guild.roles.cache.find((r) => r.id === muteRoleGrab.role);
+		} else {
+			muteRole = message.guild.roles.cache.find((x) => x.name === 'Muted');
+		}
+
+		// Checks if muteRole exists
+		if (!muteRole) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Mute**`,
+					`**◎ Error:** I could not find the mute role! Please create it, it **must** be named \`Muted\`\n You can set a custom Mute role with: \`${prefix}config mute role <@role>\``);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		// Time Now
+		const muteTime = new Date().getTime();
+		console.log(muteTime);
+		// When the mute ends
+		const endTime = muteTime + ms(args[1]);
+		console.log(endTime);
+
+		if (user.roles.cache.has(muteRole)) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Mute**`,
+					`**◎ Error:** This user is already muted!`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
+		if (!dbid) {
+			await user.roles.add(muteRole);
+			const embed = new MessageEmbed()
+				.setThumbnail(this.client.user.displayAvatarURL())
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField('Action | Mute', [
+					`**◎ User:** <@${user.user.id}>`,
+					`**◎ Reason:** ${reason}`,
+					`**◎ Time:** ${mutetime}`,
+					`**◎ Moderator:** ${message.author}`
+				])
+				.setTimestamp();
+			message.channel.send(embed);
+
+			setTimeout(() => {
+				user.roles.remove(muteRole);
+				const embed1 = new MessageEmbed()
+					.setThumbnail(this.client.user.displayAvatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField('Action | Un-Mute', [
+						`**◎ User:** <@${user.user.id}>`,
+						`**◎ Reason:** Mute time ended.`
+					])
+					.setTimestamp();
+				message.channel.send(embed1);
+			}, ms(mutetime));
+		} else {
+			const dblogs = dbid.channel;
+			await user.roles.add(muteRole);
+
+			const embed = new MessageEmbed()
+				.setThumbnail(this.client.user.displayAvatarURL())
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField('Action | Mute', [
+					`**◎ User:** <@${user.user.id}>`,
+					`**◎ Reason:** ${reason}`,
+					`**◎ Time:** ${mutetime}`,
+					`**◎ Moderator:** ${message.author}`
+				])
+				.setTimestamp();
+			this.client.channels.cache.get(dblogs).send(embed);
+			message.channel.send(embed);
+
+			setTimeout(() => {
+				user.roles.remove(muteRole);
+
+				const embed2 = new MessageEmbed()
+					.setThumbnail(this.client.user.displayAvatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField('Action | Un-Mute', [
+						`**◎ User:** <@${user.user.id}>`,
+						`**◎ Reason:** Mute time ended.`
+					])
+					.setTimestamp();
+				this.client.channels.cache.get(dblogs).send(embed2);
+				message.channel.send(embed2);
+			}, ms(mutetime));
+		}
+	}
+
+};
