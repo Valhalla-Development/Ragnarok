@@ -27,6 +27,8 @@ module.exports = class extends Command {
 		}
 
 		if (!role) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Leave**`,
@@ -36,6 +38,8 @@ module.exports = class extends Command {
 		}
 
 		if (!message.member.roles.cache.has(role.id) && message.author.id !== message.guild.ownerID) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Leave**`,
@@ -48,6 +52,8 @@ module.exports = class extends Command {
 		const player = this.client.manager.players.get(message.guild.id);
 
 		if (!player) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Leave**`,
@@ -57,6 +63,8 @@ module.exports = class extends Command {
 		}
 
 		if (!channel || channel.id !== player.voiceChannel) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Leave**`,
@@ -64,6 +72,8 @@ module.exports = class extends Command {
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
+
+		this.client.utils.messageDelete(message, 10000);
 
 		player.destroy(message.guild.id);
 		const embed = new MessageEmbed()

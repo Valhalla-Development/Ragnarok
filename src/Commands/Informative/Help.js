@@ -29,6 +29,8 @@ module.exports = class extends Command {
 			const cmd = this.client.commands.get(command) || this.client.commands.get(this.client.aliases.get(command));
 
 			if (!cmd) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const embed1 = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Help**`,

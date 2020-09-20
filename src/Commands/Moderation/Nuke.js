@@ -14,6 +14,8 @@ module.exports = class extends Command {
 	async run(message) {
 		// Disable for AirReps server
 		if (message.guild.id === '657235952116170794') {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Nuke**`,
@@ -22,6 +24,8 @@ module.exports = class extends Command {
 			return;
 		}
 		if (!message.guild.member(this.client.user).hasPermission('MANAGE_CHANNELS')) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Nuke**`,

@@ -22,6 +22,8 @@ module.exports = class extends Command {
 		const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
 
 		if (!message.member.guild.me.hasPermission('MANAGE_CHANNELS')) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const botPerm = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - New**`,
@@ -32,6 +34,8 @@ module.exports = class extends Command {
 
 		// "Support" role
 		if (!message.guild.roles.cache.find((r) => r.name === 'Support Team') && !suppRole) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const nomodRole = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - New**`,
@@ -63,6 +67,8 @@ module.exports = class extends Command {
 			authorid: message.author.id
 		})
 		) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const existTM = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - New**`,
@@ -114,6 +120,8 @@ module.exports = class extends Command {
 					ticketid: randomString
 				});
 				// Send a message saying the ticket has been created.
+				this.client.utils.messageDelete(message, 10000);
+
 				const newTicketE = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - New**`,
@@ -149,6 +157,8 @@ module.exports = class extends Command {
 
 			const role = message.guild.roles.cache.find((x) => x.name === 'Support Team') || message.guild.roles.cache.find((r) => r.id === suppRole.role);
 			if (!role) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const nomodRole = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - New**`,
@@ -180,6 +190,8 @@ module.exports = class extends Command {
 					chanid: c.id,
 					ticketid: randomString
 				});
+				this.client.utils.messageDelete(message, 10000);
+
 				// Send a message saying the ticket has been created.
 				const newTicketE = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))

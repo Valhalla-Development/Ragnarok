@@ -43,6 +43,8 @@ module.exports = class extends Command {
 
 		if (args[0] === 'all') {
 			if (balance.cash + balance.bank > bankLimit) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const limitE = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -72,6 +74,8 @@ module.exports = class extends Command {
 		}
 
 		if (isNaN(args[0]) || args.length > 1) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -82,6 +86,8 @@ module.exports = class extends Command {
 		}
 
 		if (args[0] > balance.cash) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -92,6 +98,8 @@ module.exports = class extends Command {
 		}
 
 		if (numberCov + balance.bank > bankLimit) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const limitE = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))

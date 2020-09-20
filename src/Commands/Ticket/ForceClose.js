@@ -25,6 +25,8 @@ module.exports = class extends Command {
 		}
 
 		if (!modRole) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const nomodRole = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - ForceClose**`,
@@ -34,6 +36,8 @@ module.exports = class extends Command {
 		}
 
 		if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const donthaveRole = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - ForceClose**`,
@@ -58,6 +62,8 @@ module.exports = class extends Command {
 					time: 10000,
 					errors: ['time']
 				}).then(() => {
+					this.client.utils.messageDelete(message, 10000);
+
 					const cancelTimer = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.setDescription('Canceling Ticket Close');

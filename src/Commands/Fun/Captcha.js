@@ -42,6 +42,7 @@ module.exports = class extends Command {
 
 		const user = message.guild.member(message.mentions.users.first());
 		if (user) return;
+
 		/* (SCRAP THIS FOR NOW: This only works for the first tag, not the second etc.)
     if (!user) {
       messagetoAdd = message.content

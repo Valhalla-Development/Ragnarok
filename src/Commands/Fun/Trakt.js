@@ -195,6 +195,8 @@ module.exports = class extends Command {
 					notFound(reqSearch);
 				});
 		} else if (args.length === 0) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const errEmbed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Trakt.tv**`,

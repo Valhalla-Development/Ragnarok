@@ -24,6 +24,8 @@ module.exports = class extends Command {
 		}
 
 		if (!modRole) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const nomodRole = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Remove**`,
@@ -33,6 +35,8 @@ module.exports = class extends Command {
 		}
 
 		if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const donthaveRole = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Remove**`,
@@ -43,6 +47,8 @@ module.exports = class extends Command {
 
 		const rUser = message.mentions.users.first();
 		if (!rUser) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const nouser = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Remove**`,
@@ -73,6 +79,8 @@ module.exports = class extends Command {
 				.setDescription(`<@${message.author.id}> removed ${rUser} from ticket <#${getChan.id}>`);
 			logchan.send(loggingembed);
 		} else {
+			this.client.utils.messageDelete(message, 10000);
+
 			const errEmbed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Remove**`,

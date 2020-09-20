@@ -33,6 +33,8 @@ module.exports = class extends Command {
 		const user = message.mentions.users.first();
 
 		if (!user) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -52,6 +54,8 @@ module.exports = class extends Command {
 		}
 
 		if (!balance) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -69,6 +73,9 @@ module.exports = class extends Command {
 				total: 1000
 			};
 			this.client.setUserBalance.run(noBalSet);
+
+			this.client.utils.messageDelete(message, 10000);
+
 			const errorE = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -80,6 +87,8 @@ module.exports = class extends Command {
 
 
 		if (balance.bank === 0) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const noBal = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -90,6 +99,8 @@ module.exports = class extends Command {
 		}
 
 		if (args[1] === 'all') {
+			this.client.utils.messageDelete(message, 10000);
+
 			if (otherB.bank + balance.bank > bankLimit) {
 				const youViolatedTheLaw = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
@@ -132,6 +143,8 @@ module.exports = class extends Command {
 		}
 
 		if (isNaN(args[1]) || args.length > 2) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -142,6 +155,8 @@ module.exports = class extends Command {
 		}
 
 		if (args[1] > balance.bank) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))

@@ -15,6 +15,8 @@ module.exports = class extends Command {
 
 	async run(message, args) {
 		if (!args[0]) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const noinEmbed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -27,11 +29,13 @@ module.exports = class extends Command {
 		const argresult = args.join(' ');
 
 		const embed = new MessageEmbed()
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(this.client.guilds.cache.get(supportGuild).me.displayHexColor))
 			.setTitle('Bug Report')
 			.setDescription(`**◎ User: <@${message.author.id}> - **\`${message.author.tag}\`\n**Bug:** ${argresult}`)
 			.setFooter(`${message.guild.name} - ${message.guild.id}`);
 		this.client.guilds.cache.get(supportGuild).channels.cache.get(supportChannel).send(embed);
+
+		this.client.utils.messageDelete(message, 10000);
 
 		const loggedEmbed = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())

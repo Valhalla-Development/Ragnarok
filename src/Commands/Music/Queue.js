@@ -30,6 +30,8 @@ module.exports = class extends Command {
 		}
 
 		if (!role) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Queue**`,
@@ -42,6 +44,8 @@ module.exports = class extends Command {
 		const { channel } = message.member.voice;
 
 		if (!player) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Queue**`,
@@ -51,6 +55,8 @@ module.exports = class extends Command {
 		}
 
 		if (!channel || channel.id !== player.voiceChannel) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Queue**`,
@@ -60,6 +66,8 @@ module.exports = class extends Command {
 		}
 
 		if (player.queue.size === 0) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Queue**`,
@@ -79,6 +87,8 @@ module.exports = class extends Command {
 				`**◎ Success:** <:MusicLogo:684822003110117466> The queue has been cleared.`);
 
 		if (args[0] === 'clear') {
+			this.client.utils.messageDelete(message, 10000);
+
 			if (player.queue.size === 0) {
 				message.channel.send(embed1).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;

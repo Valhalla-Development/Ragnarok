@@ -14,6 +14,8 @@ module.exports = class extends Command {
 
 	async run(message, args) {
 		if (!args[0]) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const noInput = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Discord.js**`,
@@ -24,12 +26,15 @@ module.exports = class extends Command {
 
 		const query = args.join(' ');
 		const url = `https://djsdocs.sorta.moe/v2/embed?src=stable&q=${encodeURIComponent(query)}`;
+
 		fetch(url)
 			.then(res => res.json())
 			.then(embed => {
 				if (embed && !embed.error) {
 					message.channel.send({ embed });
 				} else {
+					this.client.utils.messageDelete(message, 10000);
+
 					const noResult = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Discord.js**`,
@@ -39,6 +44,9 @@ module.exports = class extends Command {
 			})
 			.catch(err => {
 				console.error(err);
+
+				this.client.utils.messageDelete(message, 10000);
+
 				const error = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Discord.js**`,

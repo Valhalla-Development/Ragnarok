@@ -19,6 +19,8 @@ module.exports = class extends Command {
 
 		// Check for input
 		if (!args[0]) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Poll**`,

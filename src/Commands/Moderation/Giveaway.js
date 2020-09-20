@@ -18,6 +18,8 @@ module.exports = class extends Command {
 
 	async run(message, args) {
 		if (!message.member.hasPermission('MANAGE_MESSAGES') && !message.member.roles.cache.some((r) => r.name === 'Giveaways')) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const invalidPerm = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Giveaway**`,
@@ -39,16 +41,22 @@ module.exports = class extends Command {
 			.setTimestamp();
 
 		if (!args[0]) {
+			this.client.utils.messageDelete(message, 10000);
+
 			message.channel.send(usageE).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (args[0] !== 'start' && args[0] !== 'reroll' && args[0] !== 'stop') {
+			this.client.utils.messageDelete(message, 10000);
+
 			message.channel.send(usageE).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
 		if (args[0] === 'start') {
 			if (!args[1] || !args[2] || !args[3]) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const incorrectStart = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
@@ -57,6 +65,8 @@ module.exports = class extends Command {
 				return;
 			}
 			if (!args[1].match('[dhm]')) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const incorrectFormat = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
@@ -65,6 +75,8 @@ module.exports = class extends Command {
 				return;
 			}
 			if (ms(args[1]) > '7889400000') {
+				this.client.utils.messageDelete(message, 10000);
+
 				const valueHigh = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
@@ -73,6 +85,8 @@ module.exports = class extends Command {
 				return;
 			}
 			if (ms(args[1]) < '60000') {
+				this.client.utils.messageDelete(message, 10000);
+
 				const valueLow = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
@@ -81,6 +95,8 @@ module.exports = class extends Command {
 				return;
 			}
 			if (isNaN(ms(args[1]))) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const invalidDur = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
@@ -89,6 +105,8 @@ module.exports = class extends Command {
 				return;
 			}
 			if (isNaN(args[2]) || (parseInt(args[2]) <= 0)) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const invalidNum = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
@@ -126,6 +144,8 @@ module.exports = class extends Command {
 		}
 
 		if (args[0] === 'reroll') {
+			this.client.utils.messageDelete(message, 10000);
+
 			if (!args[1]) {
 				const incorrectReroll = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -136,6 +156,8 @@ module.exports = class extends Command {
 			}
 			const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.messageID === args[1]);
 			if (!giveaway) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const noGiveaway = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
@@ -152,6 +174,8 @@ module.exports = class extends Command {
 					message.channel.send(rerolled);
 				})
 				.catch((e) => {
+					this.client.utils.messageDelete(message, 10000);
+
 					if (e.startsWith(`Giveaway with message ID ${giveaway.messageID} is not ended.`)) {
 						const notEnded = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -159,6 +183,8 @@ module.exports = class extends Command {
 								`**◎ Error:** This giveaway has not ended!`);
 						message.channel.send(notEnded).then((m) => this.client.utils.deletableCheck(m, 10000));
 					} else {
+						this.client.utils.messageDelete(message, 10000);
+
 						console.error(e);
 						const error = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -172,6 +198,8 @@ module.exports = class extends Command {
 
 		if (args[0] === 'stop') {
 			if (!args[1]) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const incorrectStop = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
@@ -181,6 +209,8 @@ module.exports = class extends Command {
 			}
 			const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.messageID === args[1]);
 			if (!giveaway) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const noGiveaway = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
@@ -191,12 +221,16 @@ module.exports = class extends Command {
 			this.client.giveawaysManager.edit(giveaway.messageID, {
 				setEndTimestamp: Date.now()
 			}).then(() => {
+				this.client.utils.messageDelete(message, 10000);
+
 				const stopped = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Success:** Giveaway will end in less than ${this.client.giveawaysManager.options.updateCountdownEvery / 1000} seconds.`);
 				message.channel.send(stopped).then((m) => this.client.utils.deletableCheck(m, 10000));
 			}).catch((e) => {
+				this.client.utils.messageDelete(message, 10000);
+
 				if (e.startsWith(`Giveaway with message ID ${giveaway.messageID} is already ended.`)) {
 					const alreadyEnded = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -204,6 +238,8 @@ module.exports = class extends Command {
 							`**◎ Error:** This giveaway has already ended!`);
 					message.channel.send(alreadyEnded).then((m) => this.client.utils.deletableCheck(m, 10000));
 				} else {
+					this.client.utils.messageDelete(message, 10000);
+
 					console.error(e);
 					const error = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))

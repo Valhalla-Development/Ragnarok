@@ -23,6 +23,8 @@ module.exports = class extends Command {
 		}
 
 		if (!modRole) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const nomodRole = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Rename**`,
@@ -33,6 +35,8 @@ module.exports = class extends Command {
 
 		if (
 			!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const donthaveRole = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Rename**`,
@@ -78,6 +82,8 @@ module.exports = class extends Command {
 					`**◎ Success:** <@${message.author.id}> renamed ticket from \`#${message.channel.name}\` to <#${message.channel.id}>`);
 			logchan.send(loggingembed);
 		} else if (!foundTicket && !message.channel.name.startsWith('ticket-')) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const errEmbed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Rename**`,

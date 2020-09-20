@@ -30,6 +30,8 @@ module.exports = class extends Command {
 		}
 
 		if (!role) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Play**`,
@@ -40,6 +42,8 @@ module.exports = class extends Command {
 
 		const { channel } = message.member.voice;
 		if (!channel) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Play**`,
@@ -51,6 +55,8 @@ module.exports = class extends Command {
 
 		const permissions = channel.permissionsFor(this.client.user);
 		if (!permissions.has('CONNECT')) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Play**`,
@@ -60,6 +66,8 @@ module.exports = class extends Command {
 		}
 
 		if (!permissions.has('SPEAK')) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Play**`,
@@ -75,6 +83,8 @@ module.exports = class extends Command {
 		}
 
 		if (talkedRecently.has(message.author.id)) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Play**`,
@@ -84,6 +94,8 @@ module.exports = class extends Command {
 		}
 
 		if (!args[0]) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Play**`,
@@ -102,10 +114,12 @@ module.exports = class extends Command {
 			talkedRecently.add(message.author.id);
 
 			if (res.loadType === 'NO_MATCHES' || res.loadType === 'LOAD_FAILED') {
-				this.client.utils.messageDelete(message, 0);
+				this.client.utils.messageDelete(message, 10000);
 				if (talkedRecently.has(message.author.id)) {
 					talkedRecently.delete(message.author.id);
 				}
+
+				this.client.utils.messageDelete(message, 10000);
 
 				const noTrack = new MessageEmbed()
 					.setAuthor('Error', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
@@ -117,7 +131,7 @@ module.exports = class extends Command {
 			player.set('textChannel', message.channel);
 			switch (res.loadType) {
 				case 'TRACK_LOADED': {
-					this.client.utils.messageDelete(message, 0);
+					this.client.utils.messageDelete(message, 10000);
 
 					if (res.tracks[0].duration >= 900000) {
 						const embed1 = new MessageEmbed()
@@ -214,7 +228,7 @@ module.exports = class extends Command {
 					break;
 				}
 				case 'PLAYLIST_LOADED': {
-					this.client.utils.messageDelete(message, 0);
+					this.client.utils.messageDelete(message, 10000);
 					res.tracks.forEach((track) => player.queue.add(track));
 					const duration = prettyMilliseconds(res.tracks.reduce((acc, cur) => ({
 						duration: acc.duration + cur.duration

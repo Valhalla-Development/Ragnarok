@@ -19,6 +19,8 @@ module.exports = class extends Command {
 		const { prefix } = prefixgrab;
 
 		if (!args[0]) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const incorrectFormat = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - A4K**`,
@@ -41,7 +43,14 @@ module.exports = class extends Command {
 					[**◎ ${res[2].data.title}**](${res[2].data.url})\n  \`\`\`${res[2].data.selftext.substring(0, 150)}...\`\`\`\n
 					[**__Search Results...__**](https://www.reddit.com/r/Addons4Kodi/search/?q=${searchTerm}&restrict_sr=1)`);
 				message.channel.send(embed);
-			}).catch(() => message.channel.send('No results found.'));
+			}).catch(() => {
+				this.client.utils.messageDelete(message, 10000);
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - A4K**`,
+						`**◎ Error:** No results found!`);
+				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			});
 	}
 
 };

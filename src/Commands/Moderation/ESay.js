@@ -17,6 +17,8 @@ module.exports = class extends Command {
 		this.client.utils.messageDelete(message, 0);
 
 		if (args[0] === undefined) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - ESay**`,

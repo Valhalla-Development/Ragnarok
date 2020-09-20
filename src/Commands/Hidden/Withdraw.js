@@ -35,6 +35,8 @@ module.exports = class extends Command {
 		const numberCov = Number(args[0]);
 
 		if (balance.bank === 0) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const noBalance = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -65,6 +67,8 @@ module.exports = class extends Command {
 		}
 
 		if (isNaN(args[0]) || args.length > 1) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -75,6 +79,8 @@ module.exports = class extends Command {
 		}
 
 		if (args[0] > balance.bank) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const wrongUsage = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))

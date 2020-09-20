@@ -15,6 +15,8 @@ module.exports = class extends Command {
 
 	async run(message, args) {
 		if (!args[0]) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const incorrectFormat = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Calculation**`,
@@ -27,6 +29,8 @@ module.exports = class extends Command {
 		try {
 			resp = math.evaluate(args.join(' '));
 		} catch (err) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const invalidInput = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Calculation**`,

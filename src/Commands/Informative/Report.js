@@ -17,6 +17,8 @@ module.exports = class extends Command {
 		const reason = args.slice(1).join(' ');
 
 		if (!target) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const noTarget = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -26,6 +28,8 @@ module.exports = class extends Command {
 			return;
 		}
 		if (!reason) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const noReason = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -35,6 +39,8 @@ module.exports = class extends Command {
 			return;
 		}
 		if (!reports) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const noReason = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))

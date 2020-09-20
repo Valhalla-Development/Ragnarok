@@ -27,6 +27,8 @@ module.exports = class extends Command {
 				.prepare('SELECT count(*) FROM tickets WHERE guildid = ?')
 				.get(message.guild.id);
 			if (!ticketGrab['count(*)']) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const noTickets = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,

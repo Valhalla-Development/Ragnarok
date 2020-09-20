@@ -24,6 +24,8 @@ module.exports = class extends Command {
 
 		// Make sure it's inside the ticket channel.
 		if (foundTicket && message.channel.id !== foundTicket.chanid) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const badChannel = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
@@ -32,6 +34,8 @@ module.exports = class extends Command {
 			return;
 		}
 		if (!foundTicket) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const errEmbed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,

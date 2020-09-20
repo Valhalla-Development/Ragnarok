@@ -29,6 +29,8 @@ module.exports = class extends Command {
 		}
 
 		if (!role) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - NowPlaying**`,
@@ -39,6 +41,8 @@ module.exports = class extends Command {
 
 		const player = this.client.manager.players.get(message.guild.id);
 		if (!player || player.queue.size === 0) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - NowPlaying**`,

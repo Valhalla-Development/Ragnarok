@@ -28,6 +28,8 @@ module.exports = class extends Command {
 		}
 
 		if (!role) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Volume**`,
@@ -37,6 +39,8 @@ module.exports = class extends Command {
 		}
 
 		if (!message.member.roles.cache.has(role.id) && message.author.id !== message.guild.ownerID) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Volume**`,
@@ -49,6 +53,8 @@ module.exports = class extends Command {
 		const { channel } = message.member.voice;
 
 		if (!player) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Volume**`,
@@ -58,6 +64,8 @@ module.exports = class extends Command {
 		}
 
 		if (!channel || channel.id !== player.voiceChannel) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Volume**`,

@@ -14,6 +14,8 @@ module.exports = class extends Command {
 	async run(message, args) {
 		const cmd = args[0];
 		if (!cmd) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reload**`,
@@ -33,6 +35,8 @@ module.exports = class extends Command {
 			this.client.commands.delete(command.name);
 			await this.client.commands.set(command.name, CommandCre);
 
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reload**`,
@@ -40,6 +44,8 @@ module.exports = class extends Command {
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		} else {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reload**`,

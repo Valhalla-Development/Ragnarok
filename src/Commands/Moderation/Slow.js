@@ -33,6 +33,8 @@ module.exports = class extends Command {
 		}
 
 		if (args[0] === 'off' || args[1] === 'off') {
+			this.client.utils.messageDelete(message, 10000);
+
 			channel.setRateLimitPerUser(0);
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -43,6 +45,8 @@ module.exports = class extends Command {
 		}
 
 		if (!time) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
@@ -55,6 +59,8 @@ module.exports = class extends Command {
 		const toSecond = Math.floor(convert / 1000);
 
 		if (!toSecond || toSecond === undefined) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
@@ -64,6 +70,8 @@ module.exports = class extends Command {
 		}
 
 		if (toSecond > 21600) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
@@ -71,6 +79,8 @@ module.exports = class extends Command {
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		} else if (toSecond < 1) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
@@ -78,6 +88,8 @@ module.exports = class extends Command {
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
+
+		this.client.utils.messageDelete(message, 10000);
 
 		await channel.setRateLimitPerUser(toSecond);
 		const embed = new MessageEmbed()

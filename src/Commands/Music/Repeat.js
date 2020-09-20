@@ -21,6 +21,8 @@ module.exports = class extends Command {
 
 		const dlRole = message.guild.roles.cache.find((x) => x.name === 'DJ') || message.guild.roles.cache.find((r) => r.id === dlRoleGrab.role);
 		if (!dlRole) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Repeat**`,
@@ -30,6 +32,8 @@ module.exports = class extends Command {
 		}
 
 		if (!message.member.roles.cache.has(dlRole.id) && message.author.id !== message.guild.ownerID) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Repeat**`,
@@ -42,6 +46,8 @@ module.exports = class extends Command {
 		const { channel } = message.member.voice;
 
 		if (!player) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Repeat**`,
@@ -51,6 +57,8 @@ module.exports = class extends Command {
 		}
 
 		if (!channel || channel.id !== player.voiceChannel) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Repeat**`,
@@ -79,6 +87,8 @@ module.exports = class extends Command {
 			}
 		} else if (args[0] === 'queue') {
 			if (!player || player.queue.size === 0) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Repeat**`,

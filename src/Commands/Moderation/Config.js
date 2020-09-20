@@ -57,6 +57,10 @@ module.exports = class extends Command {
 					`\u3000 \`${prefix}config music role <@role>\` : Sets the DJ role`,
 					`\u3000 \`${prefix}config music role off\` : Disables the DJ role`,
 					`\u3000`,
+					`**◎ Mute:**`,
+					`\u3000 \`${prefix}config mute role <@role>\` : Sets the Mute role`,
+					`\u3000 \`${prefix}config mute role off\` : Disables the Mute role`,
+					`\u3000`,
 					`**◎ Membercount:**`,
 					`\u3000 \`${prefix}config membercount <on/off>\` : Toggles the member count module`,
 					`\u3000`,
@@ -82,6 +86,8 @@ module.exports = class extends Command {
 				status = this.client.getTable.get(message.guild.id);
 
 				if (args[1] === undefined) {
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -92,6 +98,8 @@ module.exports = class extends Command {
 
 				if (args[1] === 'disable') {
 					if (status) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -99,6 +107,8 @@ module.exports = class extends Command {
 						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
+
+					this.client.utils.messageDelete(message, 10000);
 
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -114,6 +124,8 @@ module.exports = class extends Command {
 				}
 				if (args[1] === 'enable') {
 					if (!status) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -121,6 +133,8 @@ module.exports = class extends Command {
 						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
+
+					this.client.utils.messageDelete(message, 10000);
 
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -144,6 +158,8 @@ module.exports = class extends Command {
 				if (args[1] === 'on') {
 					// if already on
 					if (status) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -203,6 +219,8 @@ module.exports = class extends Command {
 						});
 					});
 
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -213,6 +231,8 @@ module.exports = class extends Command {
 				} else if (args[1] === 'off') {
 					// if already off
 					if (!status) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -231,6 +251,9 @@ module.exports = class extends Command {
 					if (channelC) channelC.delete();
 					if (catA) catA.delete();
 					db.prepare('DELETE FROM membercount WHERE guildid = ?').run(message.guild.id);
+
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -238,6 +261,8 @@ module.exports = class extends Command {
 					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				} else if (args[1] !== 'off' || args[1] !== 'on') {
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -254,6 +279,8 @@ module.exports = class extends Command {
 			if (args[1] === 'add') {
 				const roleList = [];
 				if (message.mentions.roles.size <= 0) {
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -272,6 +299,9 @@ module.exports = class extends Command {
 						guildid: `${message.guild.id}`,
 						roleList: JSON.stringify(roleList)
 					});
+
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -288,6 +318,9 @@ module.exports = class extends Command {
 					updateRoleMenu.run({
 						roleList: JSON.stringify(foundRoleList)
 					});
+
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -298,6 +331,8 @@ module.exports = class extends Command {
 			}
 			if (args[1] === 'remove') {
 				if (message.mentions.roles.size <= 0) {
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -323,6 +358,8 @@ module.exports = class extends Command {
 					}
 				}
 
+				this.client.utils.messageDelete(message, 10000);
+
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
@@ -331,6 +368,8 @@ module.exports = class extends Command {
 				return;
 			}
 			if (args[1] === 'clear') {
+				this.client.utils.messageDelete(message, 10000);
+
 				db.prepare(`DELETE FROM rolemenu where guildid=${message.guild.id}`).run();
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -339,6 +378,8 @@ module.exports = class extends Command {
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
+
+			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -359,6 +400,8 @@ module.exports = class extends Command {
 				if (args[1] === 'on') {
 					// if already on
 					if (status) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -371,6 +414,9 @@ module.exports = class extends Command {
 						guildid: `${message.guild.id}`,
 						status: 'on'
 					});
+
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -381,6 +427,8 @@ module.exports = class extends Command {
 				} else if (args[1] === 'off') {
 					// if already off
 					if (!status) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -388,6 +436,8 @@ module.exports = class extends Command {
 						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
+
+					this.client.utils.messageDelete(message, 10000);
 
 					db.prepare('DELETE FROM dadbot WHERE guildid = ?').run(message.guild.id);
 					const embed = new MessageEmbed()
@@ -397,6 +447,8 @@ module.exports = class extends Command {
 					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				} else if (args[1] !== 'off' || args[1] !== 'on') {
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -411,11 +463,13 @@ module.exports = class extends Command {
 		if (args[0] === 'adsprot') {
 			// perms checking
 			if (!message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const npPerms = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ads Protection**`,
 						`**◎ Error:** I need to have the \`MANAGE_MESSAGES\` permission for this function.`);
-				message.channel.send(npPerms).then((m) => message.utils.messageDelete(m, 0));
+				message.channel.send(npPerms).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -429,6 +483,8 @@ module.exports = class extends Command {
 				if (args[1] === 'on') {
 					// if already on
 					if (status) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -442,6 +498,8 @@ module.exports = class extends Command {
 						guildid: `${message.guild.id}`,
 						status: 'on'
 					});
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -452,6 +510,8 @@ module.exports = class extends Command {
 				} else if (args[1] === 'off') {
 					// if already off
 					if (!status) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -460,14 +520,18 @@ module.exports = class extends Command {
 						return;
 					}
 
+					this.client.utils.messageDelete(message, 10000);
+
 					db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(message.guild.id);
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Success:** Advert protection was enabled`);
+							`**◎ Success:** Advert protection was disabled`);
 					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				} else if (args[1] !== 'off' || args[1] !== 'on') {
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -486,6 +550,8 @@ module.exports = class extends Command {
 				role = this.client.getTable.get(message.guild.id);
 
 				if (!args[1]) {
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -494,6 +560,8 @@ module.exports = class extends Command {
 					return;
 				}
 				if (args[1] === 'off') {
+					this.client.utils.messageDelete(message, 10000);
+
 					db.prepare('DELETE FROM autorole WHERE guildid = ?').run(message.guild.id);
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -503,6 +571,8 @@ module.exports = class extends Command {
 					return;
 				}
 				if (!message.guild.roles.cache.some((r) => [`${args[1]}`].includes(r.name))) {
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -516,6 +586,8 @@ module.exports = class extends Command {
 						guildid: `${message.guild.id}`,
 						role: `${args[1]}`
 					});
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -529,6 +601,8 @@ module.exports = class extends Command {
 					guildid: `${message.guild.id}`,
 					role: `${args[1]}`
 				});
+				this.client.utils.messageDelete(message, 10000);
+
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
@@ -542,6 +616,8 @@ module.exports = class extends Command {
 
 		if (args[0] === 'logging') {
 			if (!message.member.guild.me.hasPermission('VIEW_AUDIT_LOG')) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
@@ -558,6 +634,8 @@ module.exports = class extends Command {
 				status = this.client.getTable.get(message.guild.id);
 
 				if (args[1] === undefined) {
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -569,6 +647,8 @@ module.exports = class extends Command {
 				if (args[1] === 'off') {
 					// to turn logging off
 					if (!status) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -576,6 +656,8 @@ module.exports = class extends Command {
 						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
+
+					this.client.utils.messageDelete(message, 10000);
 
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -586,6 +668,8 @@ module.exports = class extends Command {
 					return;
 				}
 				if (!lchan) {
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -594,6 +678,8 @@ module.exports = class extends Command {
 					return;
 				}
 				if (lchan.type === 'voice' || lchan.type === 'category') {
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -607,6 +693,8 @@ module.exports = class extends Command {
 						guildid: `${message.guild.id}`,
 						channel: `${lchan.id}`
 					});
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -621,6 +709,8 @@ module.exports = class extends Command {
 					guildid: `${message.guild.id}`,
 					channel: `${lchan.id}`
 				});
+				this.client.utils.messageDelete(message, 10000);
+
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
@@ -644,6 +734,8 @@ module.exports = class extends Command {
 					status = this.client.getTable.get(message.guild.id);
 
 					if (args[2] === undefined) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -655,6 +747,8 @@ module.exports = class extends Command {
 					if (args[2] === 'off') {
 						// to turn logging off
 						if (!status) {
+							this.client.utils.messageDelete(message, 10000);
+
 							const embed = new MessageEmbed()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
@@ -662,6 +756,8 @@ module.exports = class extends Command {
 							message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 							return;
 						}
+
+						this.client.utils.messageDelete(message, 10000);
 
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -675,6 +771,8 @@ module.exports = class extends Command {
 						return;
 					}
 					if (!category) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -688,6 +786,8 @@ module.exports = class extends Command {
 							guildid: `${message.guild.id}`,
 							category: `${category.id}`
 						});
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -701,6 +801,8 @@ module.exports = class extends Command {
 						guildid: `${message.guild.id}`,
 						category: `${category.id}`
 					});
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -718,6 +820,8 @@ module.exports = class extends Command {
 					status = this.client.getTable.get(message.guild.id);
 
 					if (args[2] === undefined) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -729,6 +833,8 @@ module.exports = class extends Command {
 					if (args[2] === 'off') {
 						// to turn logging off
 						if (!status) {
+							this.client.utils.messageDelete(message, 10000);
+
 							const embed = new MessageEmbed()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
@@ -736,6 +842,8 @@ module.exports = class extends Command {
 							message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 							return;
 						}
+
+						this.client.utils.messageDelete(message, 10000);
 
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -749,6 +857,8 @@ module.exports = class extends Command {
 						return;
 					}
 					if (!lchan) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -762,6 +872,8 @@ module.exports = class extends Command {
 							guildid: `${message.guild.id}`,
 							channel: `${lchan.id}`
 						});
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -775,6 +887,8 @@ module.exports = class extends Command {
 						guildid: `${message.guild.id}`,
 						log: `${lchan.id}`
 					});
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -789,6 +903,8 @@ module.exports = class extends Command {
 				const suppRole = message.mentions.roles.first();
 
 				if (message.mentions.roles.size <= 0 && args[2] !== 'off') {
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -802,6 +918,8 @@ module.exports = class extends Command {
 						guildid: `${message.guild.id}`,
 						role: null
 					});
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -815,6 +933,8 @@ module.exports = class extends Command {
 						guildid: `${message.guild.id}`,
 						role: `${suppRole.id}`
 					});
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -828,6 +948,8 @@ module.exports = class extends Command {
 					guildid: `${message.guild.id}`,
 					role: `${suppRole.id}`
 				});
+				this.client.utils.messageDelete(message, 10000);
+
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
@@ -843,6 +965,8 @@ module.exports = class extends Command {
 			const talkedRecently = new Set();
 
 			if (talkedRecently.has(message.author.id)) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
@@ -862,6 +986,8 @@ module.exports = class extends Command {
 				off.run({
 					guildid: `${message.guild.id}`
 				});
+				this.client.utils.messageDelete(message, 10000);
+
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
@@ -870,6 +996,8 @@ module.exports = class extends Command {
 				return;
 			}
 			if (args[1] === '[' || args[1] === '{' || args[1] === ']' || args[1] === '}' || args[1] === ':') {
+				this.client.utils.messageDelete(message, 10000);
+
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
@@ -879,6 +1007,8 @@ module.exports = class extends Command {
 			}
 
 			if (!args[1]) {
+				this.client.utils.messageDelete(message, 10000);
+
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
@@ -893,6 +1023,8 @@ module.exports = class extends Command {
 					guildid: `${message.guild.id}`,
 					prefix: `${args[1]}`
 				});
+				this.client.utils.messageDelete(message, 10000);
+
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
@@ -906,6 +1038,8 @@ module.exports = class extends Command {
 				guildid: `${message.guild.id}`,
 				prefix: `${args[1]}`
 			});
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Config**`,
@@ -938,6 +1072,8 @@ module.exports = class extends Command {
 					status = this.client.getTable.get(message.guild.id);
 
 					if (args[2] === undefined) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -949,12 +1085,16 @@ module.exports = class extends Command {
 					if (args[2] === 'off') {
 						// to turn logging off
 						if (!status) {
+							this.client.utils.messageDelete(message, 10000);
+
 							const embed = new MessageEmbed()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Welcome channel is already disabled!`);
 							message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 						} else {
+							this.client.utils.messageDelete(message, 10000);
+
 							const embed = new MessageEmbed()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
@@ -965,6 +1105,8 @@ module.exports = class extends Command {
 							});
 						}
 					} else if (!lchan) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -976,6 +1118,8 @@ module.exports = class extends Command {
 							guildid: `${message.guild.id}`,
 							channel: `${lchan.id}`
 						});
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -987,6 +1131,8 @@ module.exports = class extends Command {
 							guildid: `${message.guild.id}`,
 							channel: `${lchan.id}`
 						});
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -1019,6 +1165,8 @@ module.exports = class extends Command {
 					const djRole = message.mentions.roles.first();
 
 					if (message.mentions.roles.size <= 0 && args[2] !== 'off') {
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -1032,6 +1180,8 @@ module.exports = class extends Command {
 							guildid: `${message.guild.id}`,
 							role: null
 						});
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -1046,6 +1196,8 @@ module.exports = class extends Command {
 							guildid: `${message.guild.id}`,
 							role: `${djRole.id}`
 						});
+						this.client.utils.messageDelete(message, 10000);
+
 						const embed = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
@@ -1059,10 +1211,92 @@ module.exports = class extends Command {
 						guildid: `${message.guild.id}`,
 						role: `${djRole.id}`
 					});
+					this.client.utils.messageDelete(message, 10000);
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** DJ Role updated to ${djRole}`);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				}
+			}
+		}
+
+		// Mute
+		if (args[0] === 'mute') {
+			if (args[1] === undefined) {
+				const embed = new MessageEmbed()
+					.setThumbnail(this.client.user.displayAvatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField('Ragnarok', [
+						`**◎ Mute:** To set the Mute role, the command is \`${prefix}config mute role <@role>\`\nTo disable the role, use \`${prefix}config mute role off\``
+					])
+					.setTimestamp();
+				message.channel.send(embed);
+				return;
+			}
+			if (args[1] === 'role') {
+				this.client.getTable = db.prepare('SELECT * FROM mute WHERE guildid = ?');
+
+				let status;
+				if (message.guild.id) {
+					status = this.client.getTable.get(message.guild.id);
+
+					const muteRole = message.mentions.roles.first();
+
+					if (message.mentions.roles.size <= 0 && args[2] !== 'off') {
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Error:** A role must be mentioned`);
+						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+					if (args[2] === 'off') {
+						const update = db.prepare('UPDATE mute SET role = (@role) WHERE guildid = (@guildid)');
+						update.run({
+							guildid: `${message.guild.id}`,
+							role: null
+						});
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Success:** Custom Mute Role disabled!`);
+						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+
+					if (!status) {
+						const update = db.prepare('INSERT INTO mute (role, guildid) VALUES (@role, @guildid);');
+						update.run({
+							guildid: `${message.guild.id}`,
+							role: `${muteRole.id}`
+						});
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Success:** Mute Role updated to ${muteRole}`);
+						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+
+					const update = db.prepare('UPDATE mute SET role = (@role) WHERE guildid = (@guildid);');
+					update.run({
+						guildid: `${message.guild.id}`,
+						role: `${muteRole.id}`
+					});
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Config**`,
+							`**◎ Success:** Mute Role updated to ${muteRole}`);
 					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}

@@ -21,6 +21,8 @@ module.exports = class extends Command {
 
 		const safe = message.channel.nsfw ? data.children : data.children.filter((post) => !post.data.over_18);
 		if (!safe.length) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const noPost = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - DoctorWho**`,

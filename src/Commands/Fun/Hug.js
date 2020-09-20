@@ -12,6 +12,8 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
+		this.client.utils.messageDelete(message, 0);
+
 		const hug = [
 			'https://media1.tenor.com/images/78b4745385a1b810501be693d2111a16/tenor.gif?itemid=10592461',
 			'https://media1.tenor.com/images/d7529f6003b20f3b21f1c992dffb8617/tenor.gif?itemid=4782499',

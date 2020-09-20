@@ -26,7 +26,10 @@ module.exports = class extends Command {
 
 	async run(message) {
 		const levelDb = db.prepare(`SELECT status FROM level WHERE guildid = ${message.guild.id};`).get();
+
 		if (levelDb) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Level**`,

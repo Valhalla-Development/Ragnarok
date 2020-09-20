@@ -14,6 +14,8 @@ module.exports = class extends Command {
 
 	async run(message, args) {
 		if (!args[0]) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
@@ -22,6 +24,8 @@ module.exports = class extends Command {
 			return;
 		}
 		if (isNaN(args[0])) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
@@ -30,6 +34,8 @@ module.exports = class extends Command {
 			return;
 		}
 		if (args[0] < 1) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
@@ -65,6 +71,8 @@ module.exports = class extends Command {
 		try {
 			await message.channel.bulkDelete(amt);
 			message.channel.bulkDelete(args[0]).then(() => {
+				this.client.utils.messageDelete(message, 10000);
+
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Purge**`,
@@ -74,6 +82,8 @@ module.exports = class extends Command {
 				console.log(error);
 			});
 		} catch (e) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,

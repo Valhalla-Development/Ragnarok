@@ -12,6 +12,8 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
+		this.client.utils.messageDelete(message, 0);
+
 		const channel = message.guild.channels.cache.find((chan) => chan.name === 'testing');
 
 		const embed = new MessageEmbed()

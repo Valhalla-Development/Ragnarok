@@ -17,6 +17,8 @@ module.exports = class extends Command {
 
 	async run(message, args) {
 		if (args.length < 1) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const incorrectFormat = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Eval**`,

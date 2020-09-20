@@ -26,6 +26,8 @@ module.exports = class extends Command {
 		}
 
 		if (!role) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Skip**`,
@@ -38,6 +40,8 @@ module.exports = class extends Command {
 		const { channel } = message.member.voice;
 
 		if (!player) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Skip**`,
@@ -47,6 +51,8 @@ module.exports = class extends Command {
 		}
 
 		if (!channel || channel.id !== player.voiceChannel) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Skip**`,
@@ -57,6 +63,8 @@ module.exports = class extends Command {
 
 		if (message.member.roles.cache.has(role.id) || message.author.id === message.guild.ownerID) {
 			if (player.trackRepeat) {
+				this.client.utils.messageDelete(message, 10000);
+
 				player.stop();
 				const success1 = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -107,6 +115,8 @@ module.exports = class extends Command {
 			setTimeout(() => {
 				if (skip.total >= Math.round(userCount / 2)) {
 					if (player.trackRepeat) {
+						this.client.utils.messageDelete(message, 10000);
+
 						const success1 = new MessageEmbed()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Skip**`,
@@ -121,6 +131,8 @@ module.exports = class extends Command {
 						player.destroy();
 					}
 
+					this.client.utils.messageDelete(message, 10000);
+
 					const success2 = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Skip**`,
@@ -129,6 +141,8 @@ module.exports = class extends Command {
 					this.client.utils.deletableCheck(msg, 0);
 					return;
 				} else {
+					this.client.utils.messageDelete(message, 10000);
+
 					const fail = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Skip**`,

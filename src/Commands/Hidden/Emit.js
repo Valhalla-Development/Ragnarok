@@ -15,12 +15,13 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
-		const prefixgrab = db
-			.prepare('SELECT prefix FROM setprefix WHERE guildid = ?')
-			.get(message.guild.id);
+		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
+
 		const { prefix } = prefixgrab;
 
 		if (args[0] === undefined) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const noArgs = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Emit**`,
