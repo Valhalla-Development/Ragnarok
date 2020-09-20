@@ -8,6 +8,7 @@ module.exports = class extends Event {
 	async run(channel) {
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${channel.guild.id};`).get();
 		if (!id) return;
+
 		const logs = id.channel;
 		if (!logs) return;
 

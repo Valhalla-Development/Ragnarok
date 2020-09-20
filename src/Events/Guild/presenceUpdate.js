@@ -3,8 +3,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Event {
 
-	// this is just for AirReps!
-
+	// this while file is just for AirReps!
 	async run(oldPresence, newPresence) {
 		if (newPresence.guild.id !== '657235952116170794') return;
 

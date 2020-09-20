@@ -7,8 +7,10 @@ module.exports = class extends Event {
 
 	async run(channel) {
 		if (channel.type === 'dm') return;
+
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${channel.guild.id};`).get();
 		if (!id) return;
+
 		const logs = id.channel;
 		if (!logs) return;
 

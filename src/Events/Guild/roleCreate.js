@@ -8,8 +8,10 @@ module.exports = class extends Event {
 	async run(role) {
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${role.guild.id};`).get();
 		if (!id) return;
+
 		const logs = id.channel;
 		if (!logs) return;
+
 		const logembed = new MessageEmbed()
 			.setAuthor(role.guild, role.guild.iconURL())
 			.setDescription(`**◎ Role Created: \`${role.name}\`.**`)

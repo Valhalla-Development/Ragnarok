@@ -12,21 +12,22 @@ module.exports = class extends Event {
 			}
 		);
 
-		const id = db
-			.prepare(`SELECT channel FROM logging WHERE guildid = ${member.guild.id};`)
-			.get();
-		if (id) {
+		function logging(grabClient) {
+			const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${member.guild.id};`).get();
+			if (!id) return;
+
 			const logs = id.channel;
-			if (logs) {
-				const logembed = new MessageEmbed()
-					.setAuthor('Member Left', member.user.avatarURL())
-					.setDescription(`${member.user.tag}`)
-					.setColor(this.client.utils.color(member.guild.me.displayHexColor))
-					.setFooter(`ID: ${member.user.id}`)
-					.setTimestamp();
-				this.client.channels.cache.get(logs).send(logembed);
-			}
+			if (!logs) return;
+
+			const logembed = new MessageEmbed()
+				.setAuthor('Member Left', member.user.avatarURL())
+				.setDescription(`${member.user.tag}`)
+				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
+				.setFooter(`ID: ${member.user.id}`)
+				.setTimestamp();
+			grabClient.channels.cache.get(logs).send(logembed);
 		}
+		logging(this.client);
 
 		// Member Count
 		const memStat = db.prepare(`SELECT * FROM membercount WHERE guildid = ${member.guild.id};`).get();
@@ -51,31 +52,6 @@ module.exports = class extends Event {
 				db.prepare('DELETE FROM membercount WHERE guildid = ?').run(member.guild.id);
 			}
 		}
-
-		/* // Invite Manager
-		if (member.user.bot) return;
-
-		const cachedInvites = this.invites.get(member.guild.id);
-		const newInvites = await member.guild.fetchInvites();
-		this.invites.set(member.guild.id, newInvites);
-
-		const usedInvite = newInvites.find(invite => cachedInvites.get(invite.code).uses < invite.uses);
-
-		const logChannel = member.guild.channels.cache.find(channel => channel.name === 'general');
-
-		if (!logChannel) return;
-
-		const { inviter } = usedInvite;
-		const inviteUses = usedInvite.uses;
-
-		const embed = new MessageEmbed()
-			.setColor(this.client.utils.color(member.guild.me.displayHexColor))
-			.setAuthor(member.guild, member.user.avatarURL())
-			.addField(`**Invite Manager**`,
-				`**◎ ${member.user} joined**; Invited by ${inviter.username} (${inviteUses} invites)`)
-			.setFooter(`ID: ${member.user.id}`)
-			.setTimestamp();
-		logChannel.send(embed);*/
 	}
 
 };

@@ -15,29 +15,25 @@ module.exports = class extends Event {
 		);
 
 		// AirReps Alert
-
 		if (member.guild.id === '657235952116170794') {
 			if (member.guild.memberCount === 6000) {
 				this.client.channels.cache.get('657241621112553474').send('We just hit 6000 members!');
 			}
 		}
+
 		// welcome
 		async function welcomeMessage(clientGrab) {
-			const setwelcome = db
-				.prepare(`SELECT * FROM setwelcome WHERE guildid = ${member.guild.id};`)
-				.get();
-			if (!setwelcome) {
-				return;
-			}
+			// Return if user is my testing alt
+			if (member.user.id === '488717256897855519') return;
+
+			const setwelcome = db.prepare(`SELECT * FROM setwelcome WHERE guildid = ${member.guild.id};`).get();
+			if (!setwelcome) return;
 
 			const sendchannel = setwelcome.channel;
-			const chnsen = member.guild.channels.cache.find(
-				(channel) => channel.id === sendchannel
-			);
+			const chnsen = member.guild.channels.cache.find((channel) => channel.id === sendchannel);
+
 			if (!chnsen) {
-				db.prepare('DELETE FROM setwelcome WHERE guildid = ?').run(
-					member.guild.id
-				);
+				db.prepare('DELETE FROM setwelcome WHERE guildid = ?').run(member.guild.id);
 				return;
 			}
 
@@ -65,9 +61,8 @@ module.exports = class extends Event {
 			ctx.closePath();
 			ctx.clip();
 
-			const avatar = await Canvas.loadImage(
-				member.user.displayAvatarURL({ format: 'png' })
-			);
+			const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: 'png' }));
+
 			ctx.strokeStyle = '#ffffff';
 			ctx.strokeRect(0, 0, canvas.width, canvas.height);
 			ctx.drawImage(avatar, 257.5, 57.5, 180, 180);
@@ -82,30 +77,66 @@ module.exports = class extends Event {
 		function autoRole() {
 			const autoroletable = db.prepare(`SELECT role FROM autorole WHERE guildid = ${member.guild.id};`).get();
 			if (!autoroletable) return;
+
 			const autorole = autoroletable.role;
-			if (!autorole) {
-				return;
-			}
+			if (!autorole) return;
+
 			const myRole = member.guild.roles.cache.find((role) => role.name === autorole);
 			if (!myRole) return;
+
 			member.roles.add(myRole);
 		}
 		autoRole();
 
-		// Logs
-		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${member.guild.id};`).get();
-		if (id) {
-			const logs = id.channel;
-			if (logs) {
-				const logembed = new MessageEmbed()
-					.setColor(this.client.utils.color(member.guild.me.displayHexColor))
+		// Invite Manager
+		async function inviteManager(grabClient) {
+		// Invite Manager
+			const inviteID = db.prepare(`SELECT channel FROM invmanager WHERE guildid = ${member.guild.id};`).get();
+			if (inviteID) {
+				if (member.user.bot) return;
+
+				const cachedInvites = grabClient.invites.get(member.guild.id);
+				const newInvites = await member.guild.fetchInvites();
+
+				grabClient.invites.set(member.guild.id, newInvites);
+
+				const usedInvites = newInvites.find(invite => cachedInvites.get(invite.code).uses < invite.uses);
+
+				const logChannel = member.guild.channels.cache.find(channel => channel.id === inviteID.channel);
+
+				if (!logChannel) return;
+
+				const { uses, inviter } = usedInvites;
+
+				const embed = new MessageEmbed()
+					.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
 					.setAuthor(member.guild, member.user.avatarURL())
-					.setDescription(`**◎ Member Joined:** <@${member.user.id}> - ${member.user.tag}`)
+					.addField(`**Invite Manager**`,
+						`**◎ ${member.user} joined**; Invited by ${inviter} (${uses} invites)`)
 					.setFooter(`ID: ${member.user.id}`)
 					.setTimestamp();
-				this.client.channels.cache.get(logs).send(logembed);
+				logChannel.send(embed);
 			}
 		}
+		inviteManager(this.client);
+
+		// Logs
+		function logging(grabClient) {
+			const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${member.guild.id};`).get();
+			if (!id) return;
+
+			const logs = id.channel;
+			if (!logs) return;
+
+			const logembed = new MessageEmbed()
+				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
+				.setAuthor(member.guild, member.user.avatarURL())
+				.setDescription(`**◎ Member Joined:** <@${member.user.id}> - ${member.user.tag}`)
+				.setFooter(`ID: ${member.user.id}`)
+				.setTimestamp();
+			grabClient.channels.cache.get(logs).send(logembed);
+		}
+		logging(this.client);
 
 		// Member Count
 		const memStat = db.prepare(`SELECT * FROM membercount WHERE guildid = ${member.guild.id};`).get();
