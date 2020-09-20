@@ -6,8 +6,12 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 module.exports = class extends Event {
 
 	async run(invite) {
+		// Invite Manager
+		this.client.invites.set(invite.guild.id, await invite.guild.fetchInvites());
+
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${invite.guild.id};`).get();
 		if (!id) return;
+
 		const logs = id.channel;
 		if (!logs) return;
 
@@ -34,7 +38,6 @@ module.exports = class extends Event {
 			.setColor(this.client.utils.color(invite.guild.me.displayHexColor))
 			.setAuthor(invite.guild, invite.guild.iconURL())
 			.setDescription(`**◎ Invite Created:**\n**◎ Created By:** ${invite.inviter}\n**◎ Expires:** \`${expiry}\`\n**◎ Location:** ${invite.channel}\n**◎ Invite:** [https://discord.gg/${invite.code}](https://discord.gg/${invite.code}${invite.code})`)
-			.setFooter(`ID: ${invite.id}`)
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send(logembed);
 	}
