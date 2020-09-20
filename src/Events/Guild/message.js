@@ -53,9 +53,6 @@ module.exports = class extends Event {
 			message.channel.send('Leave my table alone!\n┬─┬ ノ( ゜-゜ノ)');
 		}
 
-		// Anti Spam
-		this.client.antiSpam.message(message);
-
 		// Balance (balance)
 		if (message.author.bot) return;
 		let balance;
