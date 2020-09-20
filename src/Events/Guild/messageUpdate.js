@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js');
 const RagnarokEmbed = require('../../Structures/RagnarokEmbed');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
+const urlRegexSafe = require('url-regex-safe');
 
 module.exports = class extends Event {
 
@@ -19,19 +20,21 @@ module.exports = class extends Event {
 				db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(newMessage.guild.id);
 				return;
 			}
-			if (newMessage.content.includes('https://') || newMessage.content.includes('http://') || newMessage.content.includes('discord.gg') || newMessage.content.includes('discord.me') || newMessage.content.includes('discord.io')) {
-				if (!newMessage.member.hasPermission('MANAGE_MESSAGES')) {
-					this.client.utils.deletableCheck(newMessage, 0);
-					newMessage.channel.send(`**Your message contained a link and it was deleted, <@${newMessage.author.id}>**`).then((m) => this.client.utils.deletableCheck(m, 10000));
+			const matches = urlRegexSafe({ strict: false }).test(newMessage.content.toLowerCase());
+			if (matches) {
+				if (newMessage.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+					this.client.utils.messageDelete(newMessage, 0);
+					newMessage.channel.send(`**◎ Your message contained a link and it was deleted, ${newMessage.author}**`)
+						.then((msg) => {
+							this.client.utils.deletableCheck(msg, 10000);
+						});
 				}
 			}
 		}
 
-		// This never runs if adsprot is disabled, damn
-		const id = db
-			.prepare(`SELECT channel FROM logging WHERE guildid = ${oldMessage.guild.id};`)
-			.get();
+		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${oldMessage.guild.id};`).get();
 		if (!id) return;
+
 		const logs = id.channel;
 		if (!logs) return;
 
