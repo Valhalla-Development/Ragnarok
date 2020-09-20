@@ -1,30 +1,43 @@
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
+const SQLite = require('better-sqlite3');
+const db = new SQLite('./Storage/DB/db.sqlite');
+
 module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
 			description: 'Kicks tagged user from the guild.',
 			category: 'Moderation',
+			usage: '<@user> [reason]',
 			requiredPermission: 'KICK_MEMBERS'
 		});
 	}
 
-	async run(message) {
-		// no mention check
+	async run(message, args) {
+		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
+		const { prefix } = prefixgrab;
 
-		if (message.mentions.users.size < 1) {
+		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
+
+		const user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
+
+		// No user
+		if (!user) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
-					`**◎ Error:** You must mention someone!`);
+					`**◎ Error:** Run \`${prefix}help kick\` If you are unsure.`);
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
-		const user = message.mentions.users.first();
+		// If user id = message id
+		if (user.user.id === message.author.id) {
+			this.client.utils.messageDelete(message, 10000);
 
-		if (user.id === message.author.id) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
@@ -33,9 +46,22 @@ module.exports = class extends Command {
 			return;
 		}
 
-		// perms checking again
+		// Check if user has a role that is higher than the message author
+		if (user.roles.highest.position >= message.member.roles.highest.position) {
+			this.client.utils.messageDelete(message, 10000);
 
-		if (message.mentions.members.first().hasPermission('MANAGE_GUILD') || message.mentions.members.first().hasPermission('ADMINISTRATOR') || !message.mentions.members.first().kickable) {
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Kick**`,
+					`**◎ Error:** You cannot kick someone with a higher role than yourself!`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		// Check if user is kickable
+		if (user.hasPermission('MANAGE_GUILD') || user.hasPermission('ADMINISTRATOR') || !user.kickable) {
+			this.client.utils.messageDelete(message, 10000);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
@@ -44,9 +70,10 @@ module.exports = class extends Command {
 			return;
 		}
 
-		// other checks
+		// Check if user is the bot
+		if (user.user.id === this.client.user.id) {
+			this.client.utils.messageDelete(message, 10000);
 
-		if (user.id === this.client.user.id) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
@@ -55,40 +82,41 @@ module.exports = class extends Command {
 			return;
 		}
 
-		// message sending (await message)
+		let reason = args.slice(1).join(' ');
+		if (!reason) reason = 'No reason given.';
+
+		// Kick the user and send the embed
+		user.kick({ reason: `${reason}` }).catch(() => {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Kick**`,
+					`**◎ Error:** An error occured!`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		});
 
 		const embed = new MessageEmbed()
+			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Kick**`,
-				`**◎ Success:** You have 30 seconds to reply to this message with a reason for kicking <@${user.id}`);
-		message.channel.send(embed).then(() => {
-			message.channel.awaitMessages((response) => response.author.id === message.author.id, {
-				max: 1,
-				time: 25000,
-				errors: ['time']
-			}).then((collected) => {
-				message.mentions.members.first().kick({
-					reason: collected.first().content
-				}).then(() => {
-					const embed1 = new MessageEmbed()
-						.setThumbnail(this.client.user.displayAvatarURL())
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField('User Kicked', [
-							`**◎ User:** ${user.name}`,
-							`**◎ Reason:**: ${collected.first().content}`,
-							`**◎ Moderator:**: ${message.author.tag}`
-						])
-						.setTimestamp();
-					message.channel.send(embed1);
-				});
-			}).catch(() => {
-				const embed2 = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Kick**`,
-						`**◎ Cancelled:** Kick command canceled.`);
-				message.channel.send(embed2).then((m) => this.client.utils.deletableCheck(m, 10000));
-			});
-		});
+			.addField('User Kicked', [
+				`**◎ User:** ${user.user.tag}`,
+				`**◎ Reason:**: ${reason}`,
+				`**◎ Moderator:**: ${message.author.tag}`
+			])
+			.setFooter('User Kick Logs')
+			.setTimestamp();
+		message.channel.send(embed);
+
+		if (id) {
+			const logch = id.channel;
+			const logsch = this.client.channels.cache.get(logch);
+
+			if (!logsch) return;
+
+			logsch.send(embed);
+		}
 	}
 
 };
