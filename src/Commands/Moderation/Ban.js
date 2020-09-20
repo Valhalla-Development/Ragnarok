@@ -10,85 +10,113 @@ module.exports = class extends Command {
 			aliases: ['begone'],
 			description: 'Bans tagged user from the guild.',
 			category: 'Moderation',
-			usage: '<@user>',
+			usage: '<@user> [reason]',
 			requiredPermission: 'BAN_MEMBERS'
 		});
 	}
 
 	async run(message, args) {
+		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
+		const { prefix } = prefixgrab;
+
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
-		if (!id) {
-			const user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
-			if (!user) {
-				const noUser = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Ban**`,
-						`**◎ Error:** You must specify a user to ban!`);
-				message.channel.send(noUser).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
-			}
 
-			let reason = args.slice(1).join(' ');
-			if (!reason) reason = 'No reason given';
+		const user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
 
-			message.guild.members.ban(user, { reason: `${reason}` });
+		// No user
+		if (!user) {
+			this.client.utils.messageDelete(message, 10000);
 
-			const logsEmbed = new MessageEmbed()
-				.setThumbnail(this.client.user.displayAvatarURL())
+			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField('User Banned', [
-					`**◎ Banned User::** ${user}, ID: ${user.id}`,
-					`**◎ Reason:** ${reason}`,
-					`**◎ Moderator:** ${message.author}, ID: ${message.author.id}`,
-					`**◎ Time:** ${message.createdAt}`
-				])
-				.setFooter('User Ban Logs')
-				.setTimestamp();
-			message.channel.send(logsEmbed);
-		} else {
+				.addField(`**${this.client.user.username} - Ban**`,
+					`**◎ Error:** Run \`${prefix}help ban\` If you are unsure.`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		// If user id = message id
+		if (user.user.id === message.author.id) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Ban**`,
+					`**◎ Error:** You cannot Ban yourself!`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		// Check if user has a role that is higher than the message author
+		if (user.roles.highest.position >= message.member.roles.highest.position) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Ban**`,
+					`**◎ Error:** You cannot ban someone with a higher role than yourself!`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		// Check if user is bannable
+		if (user.hasPermission('MANAGE_GUILD') || user.hasPermission('ADMINISTRATOR') || !user.bannable) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Ban**`,
+					`**◎ Error:** You cannot ban <@${user.id}>`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		// Check if user is the bot
+		if (user.user.id === this.client.user.id) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Kick**`,
+					`**◎ Error:** You cannot kick me. :slight_frown:`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		let reason = args.slice(1).join(' ');
+		if (!reason) reason = 'No reason given.';
+
+		// Kick the user and send the embed
+		message.guild.members.ban(user, { reason: `${reason}` }).catch(() => {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Ban**`,
+					`**◎ Error:** An error occured!`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		});
+
+		const embed = new MessageEmbed()
+			.setThumbnail(this.client.user.displayAvatarURL())
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.addField('User Banned', [
+				`**◎ User:** ${user.user.tag}`,
+				`**◎ Reason:**: ${reason}`,
+				`**◎ Moderator:**: ${message.author.tag}`
+			])
+			.setFooter('User Ban Logs')
+			.setTimestamp();
+		message.channel.send(embed);
+
+		if (id) {
 			const logch = id.channel;
 			const logsch = this.client.channels.cache.get(logch);
 
-			const chuser = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
-			if (!chuser) {
-				const userEmbed = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Ban**`,
-						`**◎ Error:** You must specify a user to ban!`);
-				message.channel.send(userEmbed).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
-			}
+			if (!logsch) return;
 
-			let chreason = args.slice(1).join(' ');
-			if (!chreason) {
-				chreason = 'None given';
-			}
-
-			message.guild.members.ban(chuser, { reason: `${chreason}` });
-			const embed = new MessageEmbed()
-				.setThumbnail(this.client.user.displayAvatarURL())
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField('User Banned', [
-					`**◎ Banned User::** ${chuser}, ID: ${chuser.id}`,
-					`**◎ Reason:** ${chreason}`,
-					`**◎ Moderator:** ${message.author}, ID: ${message.author.id}`,
-					`**◎ Time:** ${message.createdAt}`
-				])
-				.setTimestamp();
-			message.channel.send(embed);
-
-			const logsEmbedD = new MessageEmbed()
-				.setThumbnail(this.client.user.displayAvatarURL())
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField('User Banned', [
-					`**◎ Banned User::** ${chuser}, ID: ${chuser.id}`,
-					`**◎ Reason:** ${chreason}`,
-					`**◎ Moderator:** ${message.author}, ID: ${message.author.id}`,
-					`**◎ Time:** ${message.createdAt}`
-				])
-				.setFooter('User Ban Logs')
-				.setTimestamp();
-			logsch.send(logsEmbedD);
+			logsch.send(embed);
 		}
 	}
 
