@@ -49,11 +49,11 @@ module.exports = class Util {
 
 	messageDelete(message, time) {
 		if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-			try {
-				message.delete({ timeout: time });
-			} catch {
-				return;
-			}
+			setTimeout(() => {
+				if (message.deletable) {
+					message.delete();
+				}
+			}, time);
 		}
 	}
 
