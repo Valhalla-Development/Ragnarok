@@ -8,6 +8,7 @@ const { GiveawaysManager } = require('discord-giveaways');
 const db = require('quick.db');
 if (!db.get('giveaways')) db.set('giveaways', []);
 const { Manager } = require('erela.js');
+const Spotify = require('erela.js-spotify');
 const prettyMilliseconds = require('pretty-ms');
 
 module.exports = class RagnarokClient extends Client {
@@ -29,8 +30,12 @@ module.exports = class RagnarokClient extends Client {
 		this.owners = options.ownerID;
 
 		// Music
+		const clientID = 'fee99683e65f44939358d0fb4f66837b';
+		const clientSecret = '6038f0595e944b8896a5ac05d1741c46';
+
 		function erelaClient(grabClient) {
 			grabClient.manager = new Manager({
+				plugins: [new Spotify({ clientID, clientSecret })],
 				// Auto plays tracks after one ends, defaults to "false".
 				autoPlay: true,
 				// A send method to send data to the Discord WebSocket using your library.
@@ -148,6 +153,10 @@ module.exports = class RagnarokClient extends Client {
 			}
 		});
 		this.giveawaysManager = manager;
+
+		// Invite Manager
+		const guildInvites = new Collection();
+		this.invites = guildInvites;
 
 		// error notifiers
 		this.on('error', (err) => {
