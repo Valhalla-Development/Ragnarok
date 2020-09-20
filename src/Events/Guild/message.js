@@ -9,6 +9,9 @@ const coinCooldown = new Set();
 const coinCooldownSeconds = 30;
 const xpCooldown = new Set();
 const xpCooldownSeconds = 60;
+const urlRegexSafe = require('url-regex-safe');
+const dadCooldown = new Set();
+const dadCooldownSeconds = 60;
 
 module.exports = class extends Event {
 
@@ -37,7 +40,6 @@ module.exports = class extends Event {
 		const command = this.client.commands.get(cmd.toLowerCase()) || this.client.commands.get(this.client.aliases.get(cmd.toLowerCase()));
 
 		// Prefix command
-
 		if (message.content.toLowerCase() === `${this.client.prefix}prefix`) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -45,6 +47,14 @@ module.exports = class extends Event {
 			message.channel.send(embed);
 			return;
 		}
+
+		// Easter Egg/s
+		if (message.content.includes('(╯°□°）╯︵ ┻━┻')) {
+			message.channel.send('Leave my table alone!\n┬─┬ ノ( ゜-゜ノ)');
+		}
+
+		// Anti Spam
+		this.client.antiSpam.message(message);
 
 		// Balance (balance)
 		if (message.author.bot) return;
@@ -124,6 +134,7 @@ module.exports = class extends Event {
 		// Dad Bot
 
 		function dadBot() {
+			if (dadCooldown.has(message.author.id)) return;
 			if (message.content.toLowerCase().startsWith('im ') || message.content.toLowerCase().startsWith('i\'m ')) {
 				const dadbot = db.prepare(`SELECT * FROM dadbot WHERE guildid = ${message.guild.id};`).get();
 				if (!dadbot) {
@@ -135,22 +146,12 @@ module.exports = class extends Event {
 				if (args[0] === undefined) {
 					return;
 				}
-				if (message.content.includes('https://')) {
-					message.channel.send('Hi unloved virgin, I\'m Dad!');
-				} else if (message.content.includes('http://')) {
-					message.channel.send('Hi unloved virgin, I\'m Dad!');
-				} else if (message.content.includes('discord.gg')) {
-					message.channel.send('Hi unloved virgin, I\'m Dad!');
-				} else if (message.content.includes('discord.me')) {
-					message.channel.send('Hi unloved virgin, I\'m Dad!');
-				} else if (message.content.includes('discord.io')) {
-					message.channel.send('Hi unloved virgin, I\'m Dad!');
-				} else if (message.content.includes('@everyone')) {
-					message.channel.send('Hi unloved virgin, I\'m Dad!');
-				} else if (message.content.includes('@here')) {
-					message.channel.send('Hi unloved virgin, I\'m Dad!');
-				} else if (message.content.toLowerCase().includes('`')) {
-					message.channel.send('Hi unloved virgin, I\'m Dad!');
+				const matches = urlRegexSafe({ strict: false }).test(message.content.toLowerCase());
+
+				if (matches) {
+					message.channel.send({
+						files: ['./Storage/Images/dadNo.png']
+					});
 				} else if (
 					message.content.toLowerCase().startsWith('im dad') || message.content.toLowerCase().startsWith('i\'m dad')) {
 					message.channel.send('No, I\'m Dad!');
@@ -158,34 +159,36 @@ module.exports = class extends Event {
 					message.channel.send(`Hi ${oargresult}, I'm Dad!`);
 				}
 			}
+			if (!dadCooldown.has(message.author.id)) {
+				dadCooldown.add(message.author.id);
+				setTimeout(() => {
+					dadCooldown.delete(message.author.id);
+				}, dadCooldownSeconds * 1000);
+			}
 		}
-
 		dadBot();
 
 		// Ads protection checks
 		function adsProt(grabClient) {
-			if (!message.content.startsWith(`${prefixcommand}play`)) {
-				const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(message.guild.id);
-				if (adsprot['count(*)']) {
-					if (!message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-						const npPerms = new MessageEmbed()
-							.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
-							.addField(`**${grabClient.user.username} - Ads Protection**`,
-								`**◎ Error:** I do not have the \`MANAGE_MESSAGES\` permissions. Disabling Ads Protection.`);
-						message.channel.send(npPerms).then((m) => grabClient.utils.messageDelete(m, 0));
-						db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(message.guild.id);
-						return;
-					}
-					if (!message.member.hasPermission('MANAGE_MESSAGES')) {
-						if (message.content.includes('https://') || message.content.includes('http://') || message.content.includes('discord.gg') || message.content.includes('discord.me') || message.content.includes('discord.io')) {
-							// eslint-disable-next-line max-depth
-							if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
-								// eslint-disable-next-line arrow-body-style
-								grabClient.utils.messageDelete(message, 0);
-							}
-							message.channel.send(`**◎ Your message contained a link and it was deleted, <@${message.author.id}>**`)
+			const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(message.guild.id);
+			if (adsprot['count(*)']) {
+				if (!message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+					const npPerms = new MessageEmbed()
+						.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${grabClient.user.username} - Ads Protection**`,
+							`**◎ Error:** I do not have the \`MANAGE_MESSAGES\` permissions. Disabling Ads Protection.`);
+					message.channel.send(npPerms).then((m) => grabClient.utils.messageDelete(m, 0));
+					db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(message.guild.id);
+					return;
+				}
+				if (!message.member.hasPermission('MANAGE_MESSAGES')) {
+					const matches = urlRegexSafe({ strict: false }).test(message.content.toLowerCase());
+					if (matches) {
+						if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+							grabClient.utils.messageDelete(message, 0);
+							message.channel.send(`**◎ Your message contained a link and it was deleted, ${message.author}**`)
 								.then((msg) => {
-									grabClient.utils.messageDelete(msg, 10000);
+									grabClient.utils.deletableCheck(msg, 10000);
 								});
 						}
 					}
@@ -418,11 +421,14 @@ module.exports = class extends Event {
 				console.log(LoggingArgs);
 			}
 		}
+
 		// Logging command exectuion
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
 		if (!id) return;
+
 		const logs = id.channel;
 		if (!logs) return;
+
 		if (id) {
 			if (id.channel === null) {
 				db.prepare(`DELETE FROM logging WHERE guildid = ${message.guild.id}`).run();
