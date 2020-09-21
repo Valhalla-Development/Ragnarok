@@ -131,12 +131,13 @@ module.exports = class extends Event {
 		// Dad Bot
 
 		function dadBot() {
+			const dadbot = db.prepare(`SELECT * FROM dadbot WHERE guildid = ${message.guild.id};`).get();
+			if (!dadbot) {
+				return;
+			}
+
 			if (dadCooldown.has(message.author.id)) return;
 			if (message.content.toLowerCase().startsWith('im ') || message.content.toLowerCase().startsWith('i\'m ')) {
-				const dadbot = db.prepare(`SELECT * FROM dadbot WHERE guildid = ${message.guild.id};`).get();
-				if (!dadbot) {
-					return;
-				}
 				if (args.length > 10) {
 					return;
 				}
