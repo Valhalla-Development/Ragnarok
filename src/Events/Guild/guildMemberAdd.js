@@ -90,33 +90,39 @@ module.exports = class extends Event {
 
 		// Invite Manager
 		async function inviteManager(grabClient) {
-		// Invite Manager
 			const inviteID = db.prepare(`SELECT channel FROM invmanager WHERE guildid = ${member.guild.id};`).get();
-			if (inviteID) {
-				if (member.user.bot) return;
+			if (!inviteID) return;
 
-				const cachedInvites = grabClient.invites.get(member.guild.id);
-				const newInvites = await member.guild.fetchInvites();
-
-				grabClient.invites.set(member.guild.id, newInvites);
-
-				const usedInvites = newInvites.find(invite => cachedInvites.get(invite.code).uses < invite.uses);
-
-				const logChannel = member.guild.channels.cache.find(channel => channel.id === inviteID.channel);
-
-				if (!logChannel) return;
-
-				const { uses, inviter } = usedInvites;
-
-				const embed = new MessageEmbed()
-					.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
-					.setAuthor(member.guild, member.user.avatarURL())
-					.addField(`**Invite Manager**`,
-						`**◎ ${member.user} joined**; Invited by ${inviter} (${uses} invites)`)
-					.setFooter(`ID: ${member.user.id}`)
-					.setTimestamp();
-				logChannel.send(embed);
+			if (!member.guild.me.hasPermission('MANAGE_SERVER')) {
+				db.prepare('DELETE FROM invmanager WHERE guildid = ?').run(member.guild.id);
+				return;
 			}
+
+			if (member.user.bot) return;
+
+			const cachedInvites = grabClient.invites.get(member.guild.id);
+			const newInvites = await member.guild.fetchInvites();
+
+			grabClient.invites.set(member.guild.id, newInvites);
+
+			const usedInvites = newInvites.find(invite => cachedInvites.get(invite.code).uses < invite.uses);
+
+			if (!usedInvites) return;
+
+			const logChannel = member.guild.channels.cache.find(channel => channel.id === inviteID.channel);
+
+			if (!logChannel) return;
+
+			const { uses, inviter } = usedInvites;
+
+			const embed = new MessageEmbed()
+				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
+				.setAuthor(member.guild, member.user.avatarURL())
+				.addField(`**Invite Manager**`,
+					`**◎ ${member.user} joined**; Invited by ${inviter} (${uses} invites)`)
+				.setFooter(`ID: ${member.user.id}`)
+				.setTimestamp();
+			logChannel.send(embed);
 		}
 		inviteManager(this.client);
 
