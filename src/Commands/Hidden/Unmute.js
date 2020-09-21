@@ -56,6 +56,11 @@ module.exports = class extends Command {
 			message.channel.send(embed);
 		} else {
 			const dblogs = dbid.channel;
+			const chnCheck = this.client.channels.cache.get(dblogs);
+			if (!chnCheck) {
+				db.prepare('DELETE FROM logging WHERE guildid = ?').run(message.guild.id);
+			}
+
 			await user.roles.remove(muterole.id);
 			const embed1 = new MessageEmbed()
 				.setThumbnail(this.client.user.displayAvatarURL())
