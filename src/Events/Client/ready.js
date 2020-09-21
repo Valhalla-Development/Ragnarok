@@ -36,13 +36,6 @@ module.exports = class extends Event {
 		// Initiate the Erela manager.
 		this.client.manager.init(this.client.user.id);
 
-		// Invite Manager
-		for (const guild of this.client.guilds.cache.values()) {
-			guild.fetchInvites()
-				.then(invite => this.client.invites.set(guild.id, invite))
-				.catch(error => console.log(error));
-		}
-
 		// Database Creation
 
 		// Invite Manager table
