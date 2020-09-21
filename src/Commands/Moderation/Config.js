@@ -33,25 +33,20 @@ module.exports = class extends Command {
 					`**◎ Autorole:**`,
 					`\u3000 \`${prefix}config autorole <@role>\` : Sets the role users are given when they join the guild`,
 					`\u3000`,
+					`**◎ Dad Bot:**`,
+					`\u3000 \`${prefix}config dadbot <on/off>\` : Toggles the Dad bot module`,
+					`\u3000`,
+					`**◎ Invite Manager:**`,
+					`\u3000 \`${prefix}config invmanager <#channel/off>\` : Toggles the Invite Manager module`,
+					`\u3000`,
+					`**◎ Level System:**`,
+					`\u3000 \`${prefix}config level <enable/disable>\` : Toggles the Level module`,
+					`\u3000`,
 					`**◎ Logging:**`,
 					`\u3000 \`${prefix}config logging <#channel/off>\` : Sets/disables the logging channel`,
 					`\u3000`,
-					`**◎ Prefix:**`,
-					`\u3000 \`${prefix}config prefix <prefix>\` : Sets the guild prefix`,
-					`\u3000`,
-					`**◎ Tickets:**`,
-					`\u3000 \`${prefix}config ticket cat <cat name>\` : Sets the ticket category`,
-					`\u3000 \`${prefix}config ticket log <#channel>\` : Enables ticket logging`,
-					`\u3000 \`${prefix}config ticket role <@role>\` : Sets custom support role for ticket system`,
-					`\u3000`,
-					`**◎ Welcome:**`,
-					`\u3000 \`${prefix}config welcome channel <#channel>\` : Sets the welcome channel`,
-					`\u3000 \`${prefix}config welcome channel off\` : Disables the welcome message`,
-					`\u3000`,
-					`**◎ Rolemenu:**`,
-					`\u3000 \`${prefix}config rolemenu add <@role>\` : Sets the rolemenu roles`,
-					`\u3000 \`${prefix}config rolemenu remove <@role>\` : Removes a role from rolemenu`,
-					`\u3000 \`${prefix}config rolemenu clear\` : Removes all roles from rolemenu`,
+					`**◎ Membercount:**`,
+					`\u3000 \`${prefix}config membercount <on/off>\` : Toggles the member count module`,
 					`\u3000`,
 					`**◎ Music:**`,
 					`\u3000 \`${prefix}config music role <@role>\` : Sets the DJ role`,
@@ -61,14 +56,22 @@ module.exports = class extends Command {
 					`\u3000 \`${prefix}config mute role <@role>\` : Sets the Mute role`,
 					`\u3000 \`${prefix}config mute role off\` : Disables the Mute role`,
 					`\u3000`,
-					`**◎ Membercount:**`,
-					`\u3000 \`${prefix}config membercount <on/off>\` : Toggles the member count module`,
+					`**◎ Prefix:**`,
+					`\u3000 \`${prefix}config prefix <prefix>\` : Sets the guild prefix`,
 					`\u3000`,
-					`**◎ Dad Bot:**`,
-					`\u3000 \`${prefix}config dadbot <on/off>\` : Toggles the Dad bot module`,
+					`**◎ Rolemenu:**`,
+					`\u3000 \`${prefix}config rolemenu add <@role>\` : Sets the rolemenu roles`,
+					`\u3000 \`${prefix}config rolemenu remove <@role>\` : Removes a role from rolemenu`,
+					`\u3000 \`${prefix}config rolemenu clear\` : Removes all roles from rolemenu`,
 					`\u3000`,
-					`**◎ Level System:**`,
-					`\u3000 \`${prefix}config level <enable/disable>\` : Toggles the Level module`,
+					`**◎ Tickets:**`,
+					`\u3000 \`${prefix}config ticket cat <cat name>\` : Sets the ticket category`,
+					`\u3000 \`${prefix}config ticket log <#channel>\` : Enables ticket logging`,
+					`\u3000 \`${prefix}config ticket role <@role>\` : Sets custom support role for ticket system`,
+					`\u3000`,
+					`**◎ Welcome:**`,
+					`\u3000 \`${prefix}config welcome channel <#channel>\` : Sets the welcome channel`,
+					`\u3000 \`${prefix}config welcome channel off\` : Disables the welcome message`,
 					`\u3000`
 				])
 				.setTimestamp();
@@ -1300,6 +1303,124 @@ module.exports = class extends Command {
 					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
+			}
+		}
+
+		// invite manger
+
+		if (args[0] === 'invmanager') {
+			if (!message.member.guild.me.hasPermission('MANAGE_GUILD')) {
+				this.client.utils.messageDelete(message, 10000);
+
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Config**`,
+						`**◎ Error:** I need the permission \`Manage Guild\` for this command!`);
+				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
+			}
+			this.client.getTable = db.prepare('SELECT * FROM invmanager WHERE guildid = ?');
+
+			const lchan = message.mentions.channels.first();
+
+			let status;
+			if (message.guild.id) {
+				status = this.client.getTable.get(message.guild.id);
+
+				if (args[1] === undefined) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Config**`,
+							`**◎ Error:** Please mention a channel!`);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				if (args[1] === 'off') {
+					// to turn logging off
+					if (!status) {
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Error:** Invite Manager is already disabled!`);
+						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Config**`,
+							`**◎ Success:** Invite Manager disabled!`);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					db.prepare('DELETE FROM invmanager WHERE guildid = ?').run(message.guild.id);
+					return;
+				}
+				if (!lchan) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Config**`,
+							`**◎ Error:** Check if the entered channel's name is correct and then type the command again.`);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+				if (lchan.type === 'voice' || lchan.type === 'category') {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Config**`,
+							`**◎ Error:** Check if the entered text channel's name is correct and then type the command again.`);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+				if (!status) {
+					const insert = db.prepare('INSERT INTO invmanager (guildid, channel) VALUES (@guildid, @channel);');
+					insert.run({
+						guildid: `${message.guild.id}`,
+						channel: `${lchan.id}`
+					});
+
+					message.guild.fetchInvites()
+						.then(invite => this.client.invites.set(message.guild.id, invite))
+						.catch(error => console.log(error));
+
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Config**`,
+							`**◎ Success:** Invite Manager channel set to ${lchan}`);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				const update = db.prepare('UPDATE invmanager SET channel = (@channel) WHERE guildid = (@guildid);'
+				);
+				update.run({
+					guildid: `${message.guild.id}`,
+					channel: `${lchan.id}`
+				});
+
+				message.guild.fetchInvites()
+					.then(invite => this.client.invites.set(message.guild.id, invite))
+					.catch(error => console.log(error));
+
+				this.client.utils.messageDelete(message, 10000);
+
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Config**`,
+						`**◎ Success:** Invite Manager updated to ${lchan}`);
+				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
 			}
 		}
 	}
