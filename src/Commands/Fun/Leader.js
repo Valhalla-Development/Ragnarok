@@ -37,7 +37,7 @@ module.exports = class extends Command {
 		let xp = '';
 		for (let i = 0; i < top10.length; i++) {
 			const data = top10[i];
-			let user = message.guild.members.fetch(data.user);
+			let user = this.client.users.cache.get(data.user);
 			if (user === undefined) {
 				user = 'User Left Guild.';
 			}
