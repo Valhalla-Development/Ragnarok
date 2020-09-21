@@ -19,6 +19,11 @@ module.exports = class extends Event {
 			const logs = id.channel;
 			if (!logs) return;
 
+			const chnCheck = grabClient.channels.cache.get(logs);
+			if (!chnCheck) {
+				db.prepare('DELETE FROM logging WHERE guildid = ?').run(member.guild.id);
+			}
+
 			const logembed = new MessageEmbed()
 				.setAuthor('Member Left', member.user.avatarURL())
 				.setDescription(`${member.user.tag}`)
