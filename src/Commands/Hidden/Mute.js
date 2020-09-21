@@ -204,6 +204,13 @@ module.exports = class extends Command {
 			}, ms(mutetime));
 		} else {
 			const dblogs = dbid.channel;
+
+			const chnCheck = this.client.channels.cache.get(dblogs);
+			if (!chnCheck) {
+				db.prepare('DELETE FROM logging WHERE guildid = ?').run(message.guild.id);
+				return;
+			}
+
 			await user.roles.add(muteRole);
 
 			const embed = new MessageEmbed()
