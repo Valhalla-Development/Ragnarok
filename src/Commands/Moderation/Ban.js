@@ -78,7 +78,7 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
-					`**◎ Error:** You cannot kick me. :slight_frown:`);
+					`**◎ Error:** You cannot ban me. :slight_frown:`);
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
