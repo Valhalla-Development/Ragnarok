@@ -46,7 +46,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 512 }))
-			.setColor(member.displayHexColor || this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(member.displayHexColor))
 			.addField('User', [
 				`**◎ Username:** ${member.user.username}#${member.user.discriminator}`,
 				`**◎ ID:** ${member.id}`,
@@ -60,7 +60,7 @@ module.exports = class extends Command {
 			.addField('Member', [
 				`**◎ Highest Role:** ${member.roles.highest.id === message.guild.id ? 'None' : member.roles.highest}`,
 				`**◎ Server Join Data:** ${moment(member.joinedAt).format('LL LTS')}`,
-				`**◎ Roles [${roles.length}]:** ${roles.length < 10 ? roles.join(', ') : roles.length > 9 ? this.client.utils.trimArray(roles) : 'None'}`,
+				`${roles.length ? `**◎ Roles [${roles.length}]:**` : '**◎ Roles:** None'} ${roles.length < 10 ? roles.join(', ') : roles.length > 9 ? this.client.utils.trimArray(roles) : 'None'}`,
 				`\u200b`
 			]);
 		message.channel.send(embed);
