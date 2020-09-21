@@ -14,13 +14,13 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
+		this.client.utils.messageDelete(message, 0);
+
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 
 		// Check for input
 		if (!args[0]) {
-			this.client.utils.messageDelete(message, 10000);
-
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Poll**`,
@@ -32,7 +32,7 @@ module.exports = class extends Command {
 		// Create Embed
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField(`**Poll Create By ${message.author.username}**`,
+			.addField(`**Poll Created By ${message.author.username}**`,
 				`${args.join(' ')}`)
 			.setFooter('React to Vote.');
 
