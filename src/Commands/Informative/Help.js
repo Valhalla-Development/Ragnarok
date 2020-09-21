@@ -40,18 +40,21 @@ module.exports = class extends Command {
 			}
 
 			let reqPerm;
-			if (cmd.requiredPermission === null) {
-				reqPerm = 'N/A.';
+			if (cmd.ownerOnly) {
+				reqPerm = `**◎ Owner Only:** Yes`;
+			} else if (cmd.requiredPermission === null) {
+				reqPerm = '**◎ Permission Required:** None.';
 			} else {
-				reqPerm = `\`${cmd.requiredPermission}\``;
+				reqPerm = `**◎ Permission Required:** \`${cmd.requiredPermission}\``;
 			}
+
 			embed.setAuthor(`${this.client.utils.capitalise(cmd.name)} Command Help`, this.client.user.displayAvatarURL());
 			embed.setDescription([
 				`**◎ Aliases:** ${cmd.aliases.length ? cmd.aliases.map(alias => `\`${alias}\``).join(' ') : 'No Aliases'}`,
 				`**◎ Description:** ${cmd.description}`,
 				`**◎ Category:** ${cmd.category}`,
 				`**◎ Usage:** ${cmd.usage}`,
-				`**◎ Permission Required:** ${reqPerm}`
+				`${reqPerm}`
 			]);
 			message.channel.send(embed);
 			return;
