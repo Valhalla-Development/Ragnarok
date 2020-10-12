@@ -10,5 +10,14 @@
   "logging": true,
   "trackClient": "REDACTED",
   "trackSecret": "REDACTED",
-  "filterList" : ["example1", "example2", "example3", "example4"]
+  "filterList": [
+    "example1",
+    "example2",
+    "example3",
+    "example4"
+  ],
+  "defaultPerms": [
+    "VIEW_CHANNEL",
+    "SEND_MESSAGES"
+  ]
 }
