@@ -3,6 +3,7 @@ const Event = require('../../Structures/Event');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const chalk = require('chalk');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Event {
 
@@ -36,7 +37,194 @@ module.exports = class extends Event {
 		// Initiate the Erela manager.
 		this.client.manager.init(this.client.user.id);
 
+		// Mutes
+		function coolDowns(grabClient) {
+			grabClient.setInterval(() => {
+				// Mutes
+				const grabMutes = db.prepare('SELECT * FROM mute').all();
+
+
+				grabMutes.forEach(r => {
+					const guild = grabClient.guilds.cache.get(r.guildid);
+					if (!guild) return;
+
+					const member = guild.members.cache.get(r.userid);
+					if (!member) {
+						db.prepare('DELETE FROM mute WHERE id = ?').run(`${member.guild.id}-${r.userid}`);
+						return;
+					}
+
+					if (Date.now() > r.endtime) {
+						const muteRoleGrab = db.prepare(`SELECT role FROM muterole WHERE guildid = ${member.guild.id}`).get();
+
+						let muteRole;
+						if (muteRoleGrab) {
+							muteRole = member.guild.roles.cache.find((ro) => ro.id === muteRoleGrab.role);
+						} else {
+							muteRole = member.guild.roles.cache.find((x) => x.name === 'Muted');
+						}
+						const role = member.roles.cache.find((rol) => rol.id === muteRole.id);
+						if (!role) {
+							db.prepare('DELETE FROM mute WHERE id = ?').run(`${member.guild.id}-${r.userid}`);
+							return;
+						}
+
+						try {
+							member.roles.remove(role.id);
+						} catch {
+							db.prepare('DELETE FROM mute WHERE id = ?').run(`${member.guild.id}-${r.userid}`);
+							return;
+						}
+
+						const channelGrab = db.prepare(`SELECT channel FROM mute WHERE id = ?`).get(`${member.guild.id}-${r.userid}`);
+						const findChannel = grabClient.channels.cache.get(channelGrab.channel);
+
+						const embed = new MessageEmbed()
+							.setThumbnail(grabClient.user.displayAvatarURL())
+							.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
+							.addField('Action | Un-Mute', [
+								`**◎ User:** ${member}`,
+								`**◎ Reason:** Mute time ended.`
+							])
+							.setTimestamp();
+						findChannel.send(embed);
+
+						db.prepare('DELETE FROM mute WHERE id = ?').run(`${member.guild.id}-${r.userid}`);
+
+						const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${member.guild.id};`).get();
+						if (!dbid) return;
+						const dblogs = dbid.channel;
+						const chnCheck = grabClient.channels.cache.get(dblogs);
+						if (!chnCheck) {
+							db.prepare('DELETE FROM logging WHERE guildid = ?').run(member.guild.id);
+						}
+
+						if (dbid) {
+							grabClient.channels.cache.get(dblogs).send(embed);
+						}
+					}
+				});
+
+				// Bans
+				const grabBans = db.prepare('SELECT * FROM ban').all();
+
+				grabBans.forEach(r => {
+					const guild = grabClient.guilds.cache.get(r.guildid);
+					if (!guild) return;
+
+					guild.fetchBans().then(bans => {
+						const userCheck = bans.filter(ban => ban.user.id === r.userid);
+						if (!userCheck.first()) {
+							db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+							return;
+						}
+					});
+
+					if (Date.now() > r.endtime) {
+						try {
+							guild.members.unban(r.userid);
+						} catch {
+							db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+							return;
+						}
+
+						const channelGrab = db.prepare(`SELECT channel FROM ban WHERE id = ?`).get(`${guild.id}-${r.userid}`);
+						const findChannel = grabClient.channels.cache.get(channelGrab.channel);
+
+						const embed = new MessageEmbed()
+							.setThumbnail(grabClient.user.displayAvatarURL())
+							.setColor(grabClient.utils.color(guild.me.displayHexColor))
+							.addField('Action | Un-Ban', [
+								`**◎ User:** ${r.username}`,
+								`**◎ Reason:** Ban time ended.`
+							])
+							.setTimestamp();
+						findChannel.send(embed);
+
+						db.prepare('DELETE FROM mute WHERE id = ?').run(`${guild.id}-${r.userid}`);
+
+						const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`).get();
+						const dblogs = dbid.channel;
+						const chnCheck = grabClient.channels.cache.get(dblogs);
+						if (!chnCheck) {
+							db.prepare('DELETE FROM logging WHERE guildid = ?').run(guild.id);
+						}
+
+						if (dbid) {
+							grabClient.channels.cache.get(dblogs).send(embed);
+						}
+					}
+				});
+
+				// Economy
+				const grabEconomy = db.prepare('SELECT * FROM balance').all();
+
+				grabEconomy.forEach(r => {
+					const guild = grabClient.guilds.cache.get(r.guild);
+					if (!guild) return;
+
+					if (Date.now() > r.hourly) {
+						db.prepare('UPDATE balance SET hourly = (@hourly) WHERE id = (@id);').run({
+							hourly: null,
+							id: `${r.user}-${guild.id}`
+						});
+					}
+
+					if (Date.now() > r.daily) {
+						db.prepare('UPDATE balance SET daily = (@daily) WHERE id = (@id);').run({
+							daily: null,
+							id: `${r.user}-${guild.id}`
+						});
+					}
+
+					if (Date.now() > r.weekly) {
+						db.prepare('UPDATE balance SET weekly = (@weekly) WHERE id = (@id);').run({
+							weekly: null,
+							id: `${r.user}-${guild.id}`
+						});
+					}
+
+					if (Date.now() > r.monthly) {
+						db.prepare('UPDATE balance SET monthly = (@monthly) WHERE id = (@id);').run({
+							monthly: null,
+							id: `${r.user}-${guild.id}`
+						});
+					}
+				});
+			}, 5000);
+		}
+		coolDowns(this.client);
+
 		// Database Creation
+		// Ban table
+		const bantable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'ban\';').get();
+		if (!bantable['count(*)']) {
+			console.log('ban table created!');
+			db.prepare('CREATE TABLE ban (id TEXT PRIMARY KEY, guildid TEXT, userid TEXT, endtime TEXT, channel TEXT, username TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_ban_id ON ban (id);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// Mute table
+		const mutetable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'mute\';').get();
+		if (!mutetable['count(*)']) {
+			console.log('mute table created!');
+			db.prepare('CREATE TABLE mute (id TEXT PRIMARY KEY, guildid TEXT, userid TEXT, endtime TEXT, channel TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_mute_id ON mute (id);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// Mute Role table
+		const muteRole = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'muterole\';').get();
+		if (!muteRole['count(*)']) {
+			console.log('muterole table created!');
+			db.prepare('CREATE TABLE muterole (guildid TEXT PRIMARY KEY, role TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_muterole_id ON muterole (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
 
 		// Invite Manager table
 		const inviteManager = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'invmanager\';').get();
@@ -142,15 +330,15 @@ module.exports = class extends Event {
 		const balancetable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'balance\';').get();
 		if (!balancetable['count(*)']) {
 			console.log('balance table created!');
-			db.prepare('CREATE TABLE balance (user TEXT PRIMARY KEY, guild TEXT, boosts TEXT, cash INTEGER, bank INTEGER, total INTEGER);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_balance_id ON balance (user);').run();
+			db.prepare('CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly TEXT, daily TEXT, weekly TEXT, monthly TEXT, boosts TEXT, cash INTEGER, bank INTEGER, total INTEGER);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_balance_id ON balance (id);').run();
 			db.pragma('synchronous = 1');
 			db.pragma('journal_mode = wal');
 		}
 
-		this.client.getBalance = db.prepare('SELECT * FROM balance WHERE user = ? AND guild = ?');
-		this.client.setBalance = db.prepare('INSERT OR REPLACE INTO balance (user, guild, cash, bank, total) VALUES (@user, @guild, @cash, @bank, @total);');
-		this.client.setUserBalance = db.prepare('INSERT OR REPLACE INTO balance (user, guild, cash, bank, total) VALUES (@user, @guild, @cash, @bank, @total);');
+		this.client.getBalance = db.prepare('SELECT * FROM balance WHERE id = ?');
+		this.client.setBalance = db.prepare('INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, cash, bank, total) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @cash, @bank, @total);');
+		this.client.setUserBalance = db.prepare('INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, cash, bank, total) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @cash, @bank, @total);');
 
 		// scores table
 		const table = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'scores\';').get();
