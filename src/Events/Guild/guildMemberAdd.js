@@ -16,8 +16,15 @@ module.exports = class extends Event {
 
 		// AirReps Alert
 		if (member.guild.id === '657235952116170794') {
-			if (member.guild.memberCount === 6000) {
-				this.client.channels.cache.get('657241621112553474').send('We just hit 6000 members!');
+			if (member.guild.memberCount === 7000) {
+				this.client.channels.cache.get('657241621112553474').send('We just hit 7000 members!');
+				member.guild.roles.create({
+					data: {
+						name: '7000th Member',
+						color: 'BLUE'
+					},
+					reason: '7000th Member'
+				}).then((role) => member.roles.add(role)).catch(console.error);
 			}
 		}
 
@@ -93,7 +100,7 @@ module.exports = class extends Event {
 			const inviteID = db.prepare(`SELECT channel FROM invmanager WHERE guildid = ${member.guild.id};`).get();
 			if (!inviteID) return;
 
-			if (!member.guild.me.hasPermission('MANAGE_SERVER')) {
+			if (!member.guild.me.hasPermission('MANAGE_GUILD')) {
 				db.prepare('DELETE FROM invmanager WHERE guildid = ?').run(member.guild.id);
 				return;
 			}
