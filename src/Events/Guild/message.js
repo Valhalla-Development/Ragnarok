@@ -12,10 +12,48 @@ const xpCooldownSeconds = 60;
 const urlRegexSafe = require('url-regex-safe');
 const dadCooldown = new Set();
 const dadCooldownSeconds = 60;
+const cleverbot = require('cleverbot-free');
 
 module.exports = class extends Event {
 
 	async run(message) {
+		// Cleverbot
+		async function cleverBot(grabClient) {
+			const cleverArgs = message.content.slice().trim().split(/ +/g);
+			if (message.guild) {
+				if (message.author.bot) return;
+				if (message.content.startsWith(`<@${grabClient.user.id}>`) || message.content.startsWith(`<@!${grabClient.user.id}>`)) {
+					if (cleverArgs[1] === undefined) return;
+
+					message.channel.startTyping();
+
+					await cleverbot(cleverArgs.join(' ')).then(response => {
+						message.channel.send(response);
+					}).catch(() => {
+						message.channel.stopTyping();
+					});
+
+					message.channel.stopTyping();
+					return;
+				}
+			} else {
+				if (message.author.bot) return;
+				if (cleverArgs[0] === undefined) return;
+
+				message.channel.startTyping();
+
+				await cleverbot(cleverArgs.join(' ')).then(response => {
+					message.channel.send(response);
+				}).catch(() => {
+					message.channel.stopTyping();
+				});
+
+				message.channel.stopTyping();
+				return;
+			}
+		}
+		cleverBot(this.client);
+
 		if (!message.guild || message.author.bot) return;
 
 		// Custom prefixes
@@ -57,11 +95,16 @@ module.exports = class extends Event {
 		if (message.author.bot) return;
 		let balance;
 		if (message.guild) {
-			balance = this.client.getBalance.get(message.author.id, message.guild.id);
+			balance = this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
 			if (!balance) {
 				balance = {
+					id: `${message.author.id}-${message.guild.id}`,
 					user: message.author.id,
 					guild: message.guild.id,
+					hourly: null,
+					daily: null,
+					weekly: null,
+					monthly: null,
 					cash: 0,
 					bank: 1000,
 					total: 1000
@@ -376,24 +419,38 @@ module.exports = class extends Event {
 			message.channel.send('BOI THAT"S A BLOCKED WORD!');
 		}*/
 
-		const mentionRegex = RegExp(`^<@!${this.client.user.id}>$`);
+		const mentionRegex = RegExp(`^<@!?${this.client.user.id}>$`);
 
 		if (message.content.match(mentionRegex)) message.channel.send(`**◎ My prefix for ${message.guild.name} is \`${this.client.prefix}\`.**`);
 
 		if (!message.content.startsWith(prefixcommand)) return;
 
 		if (command) {
-			if (command.ownerOnly) {
-				if (!this.client.owners.includes(message.author.id)) {
-					return;
-				}
+			if (command.ownerOnly && !this.client.utils.checkOwner(message.author.id)) {
+				return;
 			}
-			if (command.requiredPermission) {
-				if (!message.member.hasPermission(command.requiredPermission) && !this.client.owners.includes(message.author.id)) {
+
+			const userPermCheck = command.userPerms ? this.client.defaultPerms.add(command.userPerms) : this.client.defaultPerms;
+			if (userPermCheck || !this.client.owners.includes(message.author.id)) {
+				const missing = message.channel.permissionsFor(message.member).missing(userPermCheck);
+				if (missing.length) {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
-							`**◎ Error:** You need the \`${command.requiredPermission}\` role in order to execute this command.`);
+							`**◎ Error:** You are missing \`${this.client.utils.formatArray(missing.map(this.client.utils.formatPerms))}\` permissions, they are required for this command.`);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+			}
+
+			const botPermCheck = command.botPerms ? this.client.defaultPerms.add(command.botPerms) : this.client.defaultPerms;
+			if (botPermCheck || !this.client.owners.includes(message.author.id)) {
+				const missing = message.channel.permissionsFor(this.client.user).missing(botPermCheck);
+				if (missing.length) {
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
+							`**◎ Error:** I am missing \`${this.client.utils.formatArray(missing.map(this.client.utils.formatPerms))}\` permissions, they are required for this command.`);
 					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
