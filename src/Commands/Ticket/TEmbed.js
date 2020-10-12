@@ -9,7 +9,8 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Posts an embed where users can create a ticket with a reaction.',
 			category: 'Ticket',
-			requiredPermission: 'MANAGE_MESSAGES'
+			userPerms: ['MANAGE_MESSAGES'],
+			botPerms: ['ADD_REACTIONS']
 		});
 	}
 

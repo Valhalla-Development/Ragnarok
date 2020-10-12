@@ -10,7 +10,8 @@ module.exports = class extends Command {
 			description: 'Kicks tagged user from the guild.',
 			category: 'Moderation',
 			usage: '<@user> [reason]',
-			requiredPermission: 'KICK_MEMBERS'
+			userPerms: ['KICK_MEMBERS'],
+			botPerms: ['KICK_MEMBERS']
 		});
 	}
 

@@ -20,7 +20,8 @@ module.exports = class extends Command {
 			aliases: ['rank'],
 			description: 'Displays level of message author/tagged user.',
 			category: 'Fun',
-			usage: '[@user]'
+			usage: '[@user]',
+			botPerms: ['ATTACH_FILES']
 		});
 	}
 

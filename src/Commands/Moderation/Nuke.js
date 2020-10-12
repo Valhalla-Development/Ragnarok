@@ -7,7 +7,8 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Clones the channel and deletes the original.',
 			category: 'Moderation',
-			requiredPermission: 'MANAGE_CHANNELS'
+			userPerms: ['MANAGE_CHANNELS'],
+			botPerms: ['MANAGE_CHANNELS']
 		});
 	}
 

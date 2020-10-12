@@ -11,7 +11,8 @@ module.exports = class extends Command {
 			description: 'Bans tagged user from the guild.',
 			category: 'Moderation',
 			usage: '<@user> [reason]',
-			requiredPermission: 'BAN_MEMBERS'
+			userPerms: ['BAN_MEMBERS', 'SEND_MESSAGES', 'VIEW_AUDIT_LOG'],
+			botPerms: ['BAN_MEMBERS']
 		});
 	}
 

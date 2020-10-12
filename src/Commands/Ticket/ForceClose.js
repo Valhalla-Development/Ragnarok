@@ -10,7 +10,8 @@ module.exports = class extends Command {
 			aliases: ['fclose'],
 			description: 'Forcefully closes a ticket.',
 			category: 'Ticket',
-			usage: '[ticketid]'
+			usage: '[ticketid]',
+			botPerms: ['MANAGE_CHANNELS']
 		});
 	}
 

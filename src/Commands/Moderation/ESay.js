@@ -9,7 +9,7 @@ module.exports = class extends Command {
 			description: 'Posts given input in an embed.',
 			category: 'Moderation',
 			usage: '<text>',
-			requiredPermission: 'MANAGE_GUILD'
+			userPerms: ['MANAGE_GUILD']
 		});
 	}
 

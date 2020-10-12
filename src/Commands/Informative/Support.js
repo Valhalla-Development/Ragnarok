@@ -5,7 +5,8 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Displays an invite link to the bots support server.',
-			category: 'Informative'
+			category: 'Informative',
+			botPerms: ['EMBED_LINKS']
 		});
 	}
 

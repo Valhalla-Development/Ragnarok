@@ -13,7 +13,8 @@ module.exports = class extends Command {
 			description: 'Sets the slowmode of the specified channel!',
 			category: 'Moderation',
 			usage: '[channel] <slowmode>',
-			requiredPermission: 'MANAGE_CHANNELS'
+			userPerms: ['MANAGE_CHANNELS'],
+			botPerms: ['MANAGE_CHANNELS']
 		});
 	}
 

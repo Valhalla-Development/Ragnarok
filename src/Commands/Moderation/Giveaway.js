@@ -12,7 +12,8 @@ module.exports = class extends Command {
 			aliases: ['g'],
 			description: 'Starts a giveaway.',
 			category: 'Moderation',
-			usage: '<start/stop/reroll> <time> <winners amount> <prize>'
+			usage: '<start/stop/reroll> <time> <winners amount> <prize>',
+			botPerms: ['ADD_REACTIONS']
 		});
 	}
 

@@ -8,7 +8,8 @@ module.exports = class extends Command {
 			description: 'Deletes specified amount of messages from the channel.',
 			category: 'Moderation',
 			usage: '<amount of messages to delete>',
-			requiredPermission: 'MANAGE_MESSAGES'
+			userPerms: ['MANAGE_MESSAGES'],
+			botPerms: ['MANAGE_MESSAGES']
 		});
 	}
 

@@ -11,7 +11,8 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Generates a captcha image with given text.',
 			category: 'Fun',
-			usage: '<input>'
+			usage: '<input>',
+			botPerms: ['ATTACH_FILES']
 		});
 	}
 

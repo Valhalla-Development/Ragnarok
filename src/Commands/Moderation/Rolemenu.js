@@ -37,7 +37,8 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Posts the role menu with pre-defiend roles.',
 			category: 'Moderation',
-			requiredPermission: 'MANAGE_GUILD'
+			userPerms: ['MANAGE_GUILD'],
+			botPerms: ['ADD_REACTIONS']
 		});
 	}
 

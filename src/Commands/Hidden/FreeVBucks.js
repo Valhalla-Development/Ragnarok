@@ -7,7 +7,8 @@ module.exports = class extends Command {
 		super(...args, {
 			aliases: ['vbucks', 'fortnite'],
 			description: 'Hidden Easter Egg, shh!',
-			category: 'Hidden'
+			category: 'Hidden',
+			botPerms: ['ADD_REACTIONS']
 		});
 	}
 

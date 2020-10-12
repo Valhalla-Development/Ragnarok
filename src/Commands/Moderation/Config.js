@@ -11,7 +11,8 @@ module.exports = class extends Command {
 			description: 'Contains multiple commands to configure the bot.',
 			category: 'Moderation',
 			usage: '[sub-command]',
-			requiredPermission: 'MANAGE_GUILD'
+			userPerms: ['MANAGE_GUILD'],
+			botPerms: ['MANAGE_GUILD']
 		});
 	}
 
@@ -1239,7 +1240,7 @@ module.exports = class extends Command {
 				return;
 			}
 			if (args[1] === 'role') {
-				this.client.getTable = db.prepare('SELECT * FROM mute WHERE guildid = ?');
+				this.client.getTable = db.prepare('SELECT * FROM muterole WHERE guildid = ?');
 
 				let status;
 				if (message.guild.id) {
@@ -1258,7 +1259,7 @@ module.exports = class extends Command {
 						return;
 					}
 					if (args[2] === 'off') {
-						const update = db.prepare('UPDATE mute SET role = (@role) WHERE guildid = (@guildid)');
+						const update = db.prepare('UPDATE muterole SET role = (@role) WHERE guildid = (@guildid)');
 						update.run({
 							guildid: `${message.guild.id}`,
 							role: null
@@ -1274,7 +1275,7 @@ module.exports = class extends Command {
 					}
 
 					if (!status) {
-						const update = db.prepare('INSERT INTO mute (role, guildid) VALUES (@role, @guildid);');
+						const update = db.prepare('INSERT INTO muterole (role, guildid) VALUES (@role, @guildid);');
 						update.run({
 							guildid: `${message.guild.id}`,
 							role: `${muteRole.id}`
@@ -1289,7 +1290,7 @@ module.exports = class extends Command {
 						return;
 					}
 
-					const update = db.prepare('UPDATE mute SET role = (@role) WHERE guildid = (@guildid);');
+					const update = db.prepare('UPDATE muterole SET role = (@role) WHERE guildid = (@guildid);');
 					update.run({
 						guildid: `${message.guild.id}`,
 						role: `${muteRole.id}`

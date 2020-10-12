@@ -8,7 +8,8 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Renames the ticket channel name.',
-			category: 'Ticket'
+			category: 'Ticket',
+			botPerms: ['MANAGE_CHANNELS']
 		});
 	}
 

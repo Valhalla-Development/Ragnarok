@@ -11,7 +11,8 @@ module.exports = class extends Command {
 		super(...args, {
 			aliases: ['open'],
 			description: 'Creates a private ticket.',
-			category: 'Ticket'
+			category: 'Ticket',
+			botPerms: ['MANAGE_CHANNELS']
 		});
 	}
 

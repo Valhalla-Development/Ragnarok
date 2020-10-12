@@ -9,7 +9,8 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Adds tagged user to the ticket.',
 			category: 'Ticket',
-			usage: '<@user> [ticketid]'
+			usage: '<@user> [ticketid]',
+			botPerms: ['MANAGE_CHANNELS']
 		});
 	}
 
