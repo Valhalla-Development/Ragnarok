@@ -42,10 +42,11 @@ module.exports = class extends Command {
 			let reqPerm;
 			if (cmd.ownerOnly) {
 				reqPerm = `**◎ Owner Only:** Yes`;
-			} else if (cmd.requiredPermission === null) {
+			}
+			if (cmd.userPerms.bitfield === 0) {
 				reqPerm = '**◎ Permission Required:** None.';
 			} else {
-				reqPerm = `**◎ Permission Required:** \`${cmd.requiredPermission}\``;
+				reqPerm = `**◎ Permission(s) Required:** \`${this.client.utils.formatArray(cmd.userPerms)}\``;
 			}
 
 			embed.setAuthor(`${this.client.utils.capitalise(cmd.name)} Command Help`, this.client.user.displayAvatarURL());
