@@ -16,14 +16,12 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
-		this.client.getBalance = db.prepare('SELECT * FROM balance WHERE user = ? AND guild = ?');
-
 		const user = message.mentions.users.first() || message.author;
 		if (user.bot) return;
 
 		let balance;
 		if (message.guild) {
-			balance = this.client.getBalance.get(user.id, message.guild.id);
+			balance = this.client.getBalance.get(`${user.id}-${message.guild.id}`);
 		}
 
 		let phrase;
