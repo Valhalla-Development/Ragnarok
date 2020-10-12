@@ -1,4 +1,4 @@
-const { Client, Collection, MessageEmbed } = require('discord.js');
+const { Client, Collection, MessageEmbed, Permissions } = require('discord.js');
 const Util = require('./Util.js');
 const Canvas = require('canvas');
 Canvas.registerFont('./Storage/Canvas/Fonts/Notethis.ttf', {
@@ -194,6 +194,9 @@ module.exports = class RagnarokClient extends Client {
 		if (!options.prefix) throw new Error('You must pass a prefix for the client.');
 		if (typeof options.prefix !== 'string') throw new TypeError('Prefix should be a type of String.');
 		this.prefix = options.prefix;
+
+		if (!options.defaultPerms) throw new Error('You must pass default perm(s) for the Client.');
+		this.defaultPerms = new Permissions(options.defaultPerms).freeze();
 	}
 
 	async start(token = this.token) {
