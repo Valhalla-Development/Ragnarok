@@ -12,7 +12,8 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Plays/searches for input.',
 			category: 'Music',
-			usage: '<search term/url>'
+			usage: '<search term/url>',
+			botPerms: ['CONNECT', 'SPEAK']
 		});
 	}
 
@@ -76,7 +77,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (message.member.roles.cache.has(role.id)) {
+		if (message.member.roles.cache.has(role.id) || message.member.hasPermission('MANAGE_MESSAGES')) {
 			if (talkedRecently.has(message.author.id)) {
 				talkedRecently.delete(message.author.id);
 			}
@@ -229,19 +230,24 @@ module.exports = class extends Command {
 				}
 				case 'PLAYLIST_LOADED': {
 					this.client.utils.messageDelete(message, 10000);
-					res.tracks.forEach((track) => player.queue.add(track));
-					const duration = prettyMilliseconds(res.tracks.reduce((acc, cur) => ({
-						duration: acc.duration + cur.duration
-					})).duration, { colonNotation: true });
-					player.setVoiceChannel(message.member.voice.channel.id);
-					if (!player.playing && !player.paused && player.queue.size === res.tracks.length) player.play();
-					if (player.queue.size !== 1) {
-						const playlistload = new MessageEmbed()
-							.setAuthor('Enqueuing Playlist.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-							.setDescription(`Enqueuing \`${res.tracks.length}\` tracks in playlist \`${res.playlist.name}\`\nTotal duration: \`${duration}\``);
-						message.channel.send(playlistload);
-					}
+					message.channel.startTyping();
+					message.channel.send('Enqueuing Tracks...').then((enq) => {
+						res.tracks.forEach((track) => player.queue.add(track));
+						const duration = prettyMilliseconds(res.tracks.reduce((acc, cur) => ({
+							duration: acc.duration + cur.duration
+						})).duration, { colonNotation: true });
+						player.setVoiceChannel(message.member.voice.channel.id);
+						if (!player.playing && !player.paused && player.queue.size === res.tracks.length) player.play();
+						if (player.queue.size !== 1) {
+							const playlistload = new MessageEmbed()
+								.setAuthor('Enqueuing Playlist.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.setDescription(`Enqueuing \`${res.tracks.length}\` tracks in playlist \`${res.playlist.name}\`\nTotal duration: \`${duration}\``);
+							message.channel.send(playlistload);
+						}
+						this.client.utils.deletableCheck(enq, 0);
+						message.channel.stopTyping();
+					});
 					break;
 				}
 			}
@@ -250,7 +256,7 @@ module.exports = class extends Command {
 			return;
 		}
 		setTimeout(() => {
-			if (message.member.roles.cache.has(role.id)) {
+			if (message.member.roles.cache.has(role.id) || message.member.hasPermission('MANAGE_MESSAGES')) {
 				return;
 			}
 			const embed1 = new MessageEmbed()
