@@ -19,17 +19,6 @@ module.exports = class extends Command {
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 
-		this.client.getBalance = db.prepare(
-			'SELECT * FROM balance WHERE user = ? AND guild = ?'
-		);
-
-		this.client.setBalance = db.prepare(
-			'INSERT OR REPLACE INTO balance (user, guild, cash, bank, total) VALUES (@user, @guild, @cash, @bank, @total);'
-		);
-		this.client.setUserBalance = db.prepare(
-			'INSERT OR REPLACE INTO balance (user, guild, cash, bank, total) VALUES (@user, @guild, @cash, @bank, @total);'
-		);
-
 		const user = message.mentions.users.first();
 
 		if (!user) {
@@ -49,8 +38,8 @@ module.exports = class extends Command {
 		let balance;
 		let otherB;
 		if (message.guild) {
-			balance = this.client.getBalance.get(message.author.id, message.guild.id);
-			otherB = this.client.getBalance.get(user.id, message.guild.id);
+			balance = this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
+			otherB = this.client.getBalance.get(`${user.id}-${message.guild.id}`);
 		}
 
 		if (!balance) {
@@ -66,8 +55,13 @@ module.exports = class extends Command {
 		}
 		if (!otherB) {
 			const noBalSet = {
+				id: `${user.id}-${message.guild.id}`,
 				user: user.id,
 				guild: message.guild.id,
+				hourly: otherB.hourly,
+				daily: otherB.daily,
+				weekly: otherB.weekly,
+				monthly: otherB.monthly,
 				cash: 0,
 				bank: 1000,
 				total: 1000
@@ -113,8 +107,13 @@ module.exports = class extends Command {
 
 			const totaCalc1 = otherB.total + balance.bank;
 			const setUse = {
+				id: `${user.id}-${message.guild.id}`,
 				user: user.id,
 				guild: message.guild.id,
+				hourly: otherB.hourly,
+				daily: otherB.daily,
+				weekly: otherB.weekly,
+				monthly: otherB.monthly,
 				cash: otherB.cash,
 				bank: balance.bank + otherB.bank,
 				total: totaCalc1
@@ -124,8 +123,13 @@ module.exports = class extends Command {
 
 			const totaCalc2 = balance.total - balance.bank;
 			const addAut = {
+				id: `${message.author.id}-${message.guild.id}`,
 				user: message.author.id,
 				guild: message.guild.id,
+				hourly: balance.hourly,
+				daily: balance.daily,
+				weekly: balance.weekly,
+				monthly: balance.monthly,
 				cash: balance.cash,
 				bank: 0,
 				total: totaCalc2
@@ -170,8 +174,13 @@ module.exports = class extends Command {
 
 		const totaCalc1 = otherB.total + numberCov;
 		const setUse = {
+			id: `${user.id}-${message.guild.id}`,
 			user: user.id,
 			guild: message.guild.id,
+			hourly: otherB.hourly,
+			daily: otherB.daily,
+			weekly: otherB.weekly,
+			monthly: otherB.monthly,
 			cash: otherB.cash,
 			bank: numberCov + otherB.bank,
 			total: totaCalc1
@@ -181,15 +190,19 @@ module.exports = class extends Command {
 
 		const totaCalc2 = balance.total - balance.bank;
 		const addAut = {
+			id: `${message.author.id}-${message.guild.id}`,
 			user: message.author.id,
 			guild: message.guild.id,
+			hourly: balance.hourly,
+			daily: balance.daily,
+			weekly: balance.weekly,
+			monthly: balance.monthly,
 			cash: balance.cash,
 			bank: balance.bank - numberCov,
 			total: totaCalc2
 		};
 
 		this.client.setBalance.run(addAut);
-
 
 		const depArg = new MessageEmbed()
 			.setAuthor(`${message.author.username}`, message.author.avatarURL())
