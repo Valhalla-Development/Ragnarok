@@ -17,13 +17,9 @@ module.exports = class extends Command {
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 
-		this.client.getBalance = db.prepare('SELECT * FROM balance WHERE user = ? AND guild = ?');
-
-		this.client.setBalance = db.prepare('INSERT OR REPLACE INTO balance (user, guild, cash, bank, total) VALUES (@user, @guild, @cash, @bank, @total);');
-
 		let balance;
 		if (message.guild) {
-			balance = this.client.getBalance.get(message.author.id, message.guild.id);
+			balance = this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
 		}
 
 		const noBal = 'You have no balance';
@@ -49,8 +45,13 @@ module.exports = class extends Command {
 		if (args[0] === 'all') {
 			const bankCalc = balance.cash + balance.bank;
 			const addAll = {
+				id: `${message.author.id}-${message.guild.id}`,
 				user: message.author.id,
 				guild: message.guild.id,
+				hourly: balance.hourly,
+				daily: balance.daily,
+				weekly: balance.weeky,
+				monthly: balance.monthly,
 				cash: bankCalc,
 				bank: 0,
 				total: bankCalc
@@ -95,8 +96,13 @@ module.exports = class extends Command {
 		const totaA = balance.total;
 
 		const addAll = {
+			id: `${message.author.id}-${message.guild.id}`,
 			user: message.author.id,
 			guild: message.guild.id,
+			hourly: balance.hourly,
+			daily: balance.daily,
+			weekly: balance.weeky,
+			monthly: balance.monthly,
 			cash: cashA,
 			bank: bankA,
 			total: totaA
