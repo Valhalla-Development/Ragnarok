@@ -25,10 +25,23 @@ module.exports = class extends Event {
 		const memStat = db.prepare(`SELECT * FROM membercount WHERE guildid = ${oldChannel.guild.id};`).get();
 		if (memStat) {
 			const channelA = this.client.channels.cache.find((a) => a.id === memStat.channela);
+			if (!channelA) {
+				db.prepare('DELETE FROM membercount WHERE guildid = ?').run(oldChannel.guild.id);
+				return;
+			}
 			const channelB = this.client.channels.cache.find((b) => b.id === memStat.channelb);
+			if (!channelB) {
+				db.prepare('DELETE FROM membercount WHERE guildid = ?').run(oldChannel.guild.id);
+				return;
+			}
 			const channelC = this.client.channels.cache.find((c) => c.id === memStat.channelc);
+			if (!channelC) {
+				db.prepare('DELETE FROM membercount WHERE guildid = ?').run(oldChannel.guild.id);
+				return;
+			}
 
 			if (oldChannel.id === channelA.id) {
+				console.log(oldChannel.id, channelA.id);
 				return;
 			}
 			if (oldChannel.id === channelB.id) {
