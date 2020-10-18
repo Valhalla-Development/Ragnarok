@@ -1,7 +1,7 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable no-inline-comments */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageAttachment } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -143,9 +143,13 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
+				const fishingRodImage = new MessageAttachment('./Storage/Images/Economy/FishingRod.png', 'FishingRod.png');
+
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.attachFiles(fishingRodImage)
+					.setThumbnail('attachment://FishingRod.png')
 					.addField(`**${this.client.user.username} - Shop - Fishing Rod**`, [
 						`**◎ Success:** You have bought a fishing rod!`
 					]);
@@ -202,9 +206,13 @@ module.exports = class extends Command {
 
 				foundItemList.farmingTools = Number(1).toString();
 
+				const toolsImage = new MessageAttachment('./Storage/Images/Economy/FarmingTool.png', 'FarmingTool.png');
+
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.attachFiles(toolsImage)
+					.setThumbnail('attachment://FarmingTool.png')
 					.addField(`**${this.client.user.username} - Shop - Farming Tools**`, [
 						`**◎ Success:** You have bought Farming Tools${foundItemList.barley || foundItemList.spinach || foundItemList.strawberries || foundItemList.lettuce ? `.\nYou had some old crops, I have sold them for you and credited <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` to your account.` : `!`}`
 					]);
