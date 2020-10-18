@@ -44,6 +44,8 @@ module.exports = class extends Command {
 				`**◎ 8:** A command that will create a role and give it to the richest person in the server, can be enabled or disabled by server managers`,
 				`\u3000`,
 				`**◎ 9:** There will be a limit on how many items you can have at once, at and you will be able to upgrade your storage`,
+				`\u3000`,
+				`**◎ 10:** \`-farm\` & \`-fish\` --- these items will slowly decay when in your inventory, you must sell them as the price will lower over time`,
 				`\u3000`
 			]);
 		message.channel.send(embed);
