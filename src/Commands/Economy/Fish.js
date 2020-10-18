@@ -1,7 +1,7 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable no-inline-comments */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageAttachment } = require('discord.js');
 const ms = require('ms');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -87,10 +87,13 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
+			const treasureImage = new MessageAttachment('./Storage/Images/Economy/Treasure.png', 'Treasure.png');
+
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.setThumbnail(`https://developer.ibm.com/apimanagement/wp-content/uploads/sites/23/2015/02/treasurechest.png`)
+				.attachFiles(treasureImage)
+				.setThumbnail('attachment://Treasure.png')
 				.addField(`**${this.client.user.username} - Fish**`,
 					`**◎ Success:** You found hidden treasure! You are extremely lucky, there is only a \`0.18%\` of finding this! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
 			message.channel.send(embed);
@@ -116,10 +119,13 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
+			const pufferfishImage = new MessageAttachment('./Storage/Images/Economy/Pufferfish.png', 'Pufferfish.png');
+
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.setThumbnail(`https://clipartsworld.com/images/puffer-fish-clip-art-31.png`)
+				.attachFiles(pufferfishImage)
+				.setThumbnail('attachment://Pufferfish.png')
 				.addField(`**${this.client.user.username} - Fish**`,
 					`**◎ Success:** You caught a Pufferfish! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
 			message.channel.send(embed);
@@ -145,10 +151,13 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
+			const swordfishImage = new MessageAttachment('./Storage/Images/Economy/Swordfish.png', 'Swordfish.png');
+
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.setThumbnail(`https://vignette.wikia.nocookie.net/poohs-jamming-adventures/images/7/7f/Hunk.png`)
+				.attachFiles(swordfishImage)
+				.setThumbnail('attachment://Swordfish.png')
 				.addField(`**${this.client.user.username} - Fish**`,
 					`**◎ Success:** You caught a Swordfish! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
 			message.channel.send(embed);
@@ -174,9 +183,13 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
+			const kingSalmonImage = new MessageAttachment('./Storage/Images/Economy/KingSalmon.png', 'KingSalmon.png');
+
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.attachFiles(kingSalmonImage)
+				.setThumbnail('attachment://KingSalmon.png')
 				.addField(`**${this.client.user.username} - Fish**`,
 					`**◎ Success:** You caught a King Salmon! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
 			message.channel.send(embed);
@@ -202,9 +215,13 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
+			const troutImage = new MessageAttachment('./Storage/Images/Economy/Trout.png', 'Trout.png');
+
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.attachFiles(troutImage)
+				.setThumbnail('attachment://Trout.png')
 				.addField(`**${this.client.user.username} - Fish**`,
 					`**◎ Success:** You caught a Trout! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
 			message.channel.send(embed);
