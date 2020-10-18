@@ -189,7 +189,7 @@ module.exports = class extends Command {
 					.setAuthor(`${message.author.username}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Hourly**`,
-						`**◎ Success:** You have received your hourly sum of: <:coin:706659001164628008> ${hourlyAmount.toLocaleString('en')}.`);
+						`**◎ Success:** You have received your hourly sum of: <:coin:706659001164628008> \`${hourlyAmount.toLocaleString('en')}\`.`);
 				message.channel.send(depArg);
 				return;
 			}
@@ -245,7 +245,7 @@ module.exports = class extends Command {
 					.setAuthor(`${message.author.username}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Daily**`,
-						`**◎ Success:** You have received your daily sum of: <:coin:706659001164628008> ${dailyAmount.toLocaleString('en')}.`);
+						`**◎ Success:** You have received your daily sum of: <:coin:706659001164628008> \`${dailyAmount.toLocaleString('en')}\`.`);
 				message.channel.send(depArg);
 				return;
 			}
@@ -301,7 +301,7 @@ module.exports = class extends Command {
 					.setAuthor(`${message.author.username}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Weeky**`,
-						`**◎ Success:** You have received your weekly sum of: <:coin:706659001164628008> ${weeklyAmount.toLocaleString('en')}.`);
+						`**◎ Success:** You have received your weekly sum of: <:coin:706659001164628008> \`${weeklyAmount.toLocaleString('en')}\`.`);
 				message.channel.send(depArg);
 				return;
 			}
@@ -357,7 +357,7 @@ module.exports = class extends Command {
 					.setAuthor(`${message.author.username}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Monthly**`,
-						`**◎ Success:** You have received your monthly sum of: <:coin:706659001164628008> ${monthlyAmount.toLocaleString('en')}.`);
+						`**◎ Success:** You have received your monthly sum of: <:coin:706659001164628008> \`${monthlyAmount.toLocaleString('en')}\`.`);
 				message.channel.send(depArg);
 				return;
 			}
@@ -413,7 +413,7 @@ module.exports = class extends Command {
 					.setAuthor(`${message.author.username}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Yearly**`,
-						`**◎ Success:** You have received your yearly sum of: <:coin:706659001164628008> ${yearlyAmount.toLocaleString('en')}.`);
+						`**◎ Success:** You have received your yearly sum of: <:coin:706659001164628008> \`${yearlyAmount.toLocaleString('en')}\`.`);
 				message.channel.send(depArg);
 				return;
 			}

@@ -60,7 +60,7 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
-					`**◎ Success:** You have withdrawn <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}.`);
+					`**◎ Success:** You have withdrawn <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`.`);
 			message.channel.send(depAll);
 			return;
 		}
@@ -84,7 +84,7 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
-					`**◎ Error:** You only have <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}. Please try again with a valid amount.`);
+					`**◎ Error:** You only have <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`. Please try again with a valid amount.`);
 			message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -119,7 +119,7 @@ module.exports = class extends Command {
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Withdraw**`,
-				`**◎ Success:** You have withdrawn <:coin:706659001164628008> ${numberCov.toLocaleString('en')}.`);
+				`**◎ Success:** You have withdrawn <:coin:706659001164628008> \`${numberCov.toLocaleString('en')}\`.`);
 		message.channel.send(depAll);
 	}
 

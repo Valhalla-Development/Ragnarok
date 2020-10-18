@@ -58,7 +58,7 @@ module.exports = class extends Command {
 			.attachFiles(bankImage)
 			.setThumbnail('attachment://Bank.png')
 			.addField(`**${this.client.user.username} - Bank**`,
-				`**◎ Success:** You have deposited <:coin:706659001164628008> ${balance.cash.toLocaleString('en')} to your bank.`);
+				`**◎ Success:** You have deposited <:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\` to your bank.`);
 		message.channel.send(depAll);
 		return;
 	}

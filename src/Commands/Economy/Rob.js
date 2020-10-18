@@ -162,12 +162,12 @@ module.exports = class extends Command {
 			this.client.setBalance.run(addAut);
 
 			const succMessage = [
-				`You held ${user} at gun-point and stole <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}.`,
-				`You stabbed ${user} and took <:coin:706659001164628008> ${stealAmount.toLocaleString('en')} from their wallet.`,
-				`You hired someone to mug ${user}, you received <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}.`,
-				`${user} said they watch anime, you kicked them in the face and took <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}.`,
-				`You snuck up on ${user} and pick-pocketed <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}.`,
-				`*slaps ${user} with a large trout*, they dropped <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}.`
+				`You held ${user} at gun-point and stole <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
+				`You stabbed ${user} and took <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\` from their wallet.`,
+				`You hired someone to mug ${user}, you received <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
+				`${user} said they watch anime, you kicked them in the face and took <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
+				`You snuck up on ${user} and pick-pocketed <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
+				`*slaps ${user} with a large trout*, they dropped <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`
 			];
 
 			const depArg = new MessageEmbed()
@@ -235,12 +235,12 @@ module.exports = class extends Command {
 			this.client.setBalance.run(addAut);
 
 			const failMessage = [
-				`You tried to mug ${user} but they over-powered you${stealAmount > 1 ? ` and took <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}.` : `.`}`,
-				`You held ${user} at knife point but they knew Karate${stealAmount > 1 ? ` and stole your lunch money <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}.` : `.`}`,
-				`You challenged ${user} to a 1v1 and lost${stealAmount > 1 ? ` <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}.` : `.`}`,
-				`You hired someone to mug ${user}${stealAmount > 1 ? ` but they mugged you instead and took <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}.` : ` ${user} fought him off.`}`,
-				`You tried to stab ${user}, but they said 'no u'${stealAmount > 1 ? ` and you stabbed yourself. You lost <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}.` : ` and walked away.`}`,
-				`You tried to steal from ${user} but they caught you${stealAmount > 1 ? ` and they took <:coin:706659001164628008> ${stealAmount.toLocaleString('en')} from you.` : ` they simply said 'pathetic' and walked away.`}`
+				`You tried to mug ${user} but they over-powered you${stealAmount > 1 ? ` and took <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.` : `.`}`,
+				`You held ${user} at knife point but they knew Karate${stealAmount > 1 ? ` and stole your lunch money <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.` : `.`}`,
+				`You challenged ${user} to a 1v1 and lost${stealAmount > 1 ? ` <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.` : `.`}`,
+				`You hired someone to mug ${user}${stealAmount > 1 ? ` but they mugged you instead and took <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.` : ` ${user} fought him off.`}`,
+				`You tried to stab ${user}, but they said 'no u'${stealAmount > 1 ? ` and you stabbed yourself. You lost <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.` : ` and walked away.`}`,
+				`You tried to steal from ${user} but they caught you${stealAmount > 1 ? ` and they took <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\` from you.` : ` they simply said 'pathetic' and walked away.`}`
 			];
 
 			const depArg = new MessageEmbed()

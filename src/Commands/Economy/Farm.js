@@ -328,7 +328,42 @@ module.exports = class extends Command {
 				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
 			message.channel.send(embed);
 			return;
-		} else if (farmChance >= 0.3718 && farmChance < 0.8718) { // 50%
+		} else if (balance.items && foundItemList.farmingTools && farmChance >= 0.3718) { // 50%
+			const embed = new MessageEmbed()
+				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
+
+			const tomatoImage = new MessageAttachment('./Storage/Images/Economy/Tomatoes.png', 'Tomatoes.png');
+
+			embed.attachFiles(tomatoImage);
+			embed.setThumbnail('attachment://Tomatoes.png');
+
+			name = 'Tomatoes';
+
+			price = this.client.ecoPrices.tomatoes;
+			if (foundItemList.tomatoes) {
+				amt = Number(foundItemList.tomatoes) + Number(1);
+			} else {
+				amt = Number(1);
+			}
+			foundItemList.tomatoes = amt.toString();
+
+			const endTime = new Date().getTime() + this.client.ecoPrices.farmToolWinTime;
+
+			balance.farmcool = Math.round(endTime);
+
+			this.client.setBalance.run(balance);
+
+			await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
+				items: JSON.stringify(foundItemList),
+				id: `${message.author.id}-${message.guild.id}`
+			});
+
+			embed.addField(`**${this.client.user.username} - Farm**`,
+				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
+			message.channel.send(embed);
+			return;
+		} else if (farmChance >= 0.3718 && farmChance < 0.8718) {
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
@@ -392,7 +427,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
 			if (!balance.items || !foundItemList.farmingTools) { // No Tool
-				embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
+				embed.setFooter(`Purchase farming tools to never fail farming! - ${prefix}shop buy tools`);
 
 				const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 

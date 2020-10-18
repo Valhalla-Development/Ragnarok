@@ -237,7 +237,7 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Fish**`,
-					`**◎ Fail:** You caught nothing!`);
+					`**◎ Fail:** Your catch escaped the line!`);
 			message.channel.send(embed);
 			return;
 		}

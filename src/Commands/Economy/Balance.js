@@ -43,9 +43,9 @@ module.exports = class extends Command {
 				.setAuthor(`${user.username}'s Balance`, user.avatarURL())
 				.setDescription(`Leaderboard Rank: \`${rankPos}\``)
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addFields({ name: 'Cash', value: `<:coin:706659001164628008> ${balance.cash.toLocaleString('en')}`, inline: true },
-					{ name: 'Bank', value: `<:coin:706659001164628008> ${balance.bank.toLocaleString('en')}`, inline: true },
-					{ name: 'Total', value: `<:coin:706659001164628008> ${balance.total.toLocaleString('en')}`, inline: true },
+				.addFields({ name: 'Cash', value: `<:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\``, inline: true },
+					{ name: 'Bank', value: `<:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\``, inline: true },
+					{ name: 'Total', value: `<:coin:706659001164628008> \`${balance.total.toLocaleString('en')}\``, inline: true },
 					{ name: 'Steal Cooldown', value: `\`${balance.stealcool ? ms(balance.stealcool - new Date().getTime(), { long: true }) : 'Available'}\`` })
 				.setTimestamp();
 			message.channel.send(embed1);
@@ -55,9 +55,9 @@ module.exports = class extends Command {
 			.setAuthor(`${user.username}'s Balance`, user.avatarURL())
 			.setDescription(`Leaderboard Rank: \`${rankPos}\``)
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addFields({ name: 'Cash', value: `<:coin:706659001164628008> ${balance.cash.toLocaleString('en')}`, inline: true },
-				{ name: 'Bank', value: `<:coin:706659001164628008> ${balance.bank.toLocaleString('en')}`, inline: true },
-				{ name: 'Total', value: `<:coin:706659001164628008> ${balance.total.toLocaleString('en')}`, inline: true })
+			.addFields({ name: 'Cash', value: `<:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\``, inline: true },
+				{ name: 'Bank', value: `<:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\``, inline: true },
+				{ name: 'Total', value: `<:coin:706659001164628008> \`${balance.total.toLocaleString('en')}\``, inline: true })
 			.setTimestamp();
 		message.channel.send(embed1);
 	}

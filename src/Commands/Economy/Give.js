@@ -53,7 +53,7 @@ module.exports = class extends Command {
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Give - Admin**`,
-						`**◎ Success:** System gave <:coin:706659001164628008> ${Number(args[2]).toLocaleString('en')} to ${user}\nNew total: <:coin:706659001164628008> ${amt.toLocaleString('en')}`);
+						`**◎ Success:** System gave <:coin:706659001164628008> \`${Number(args[2]).toLocaleString('en')}\` to ${user}\nNew total: <:coin:706659001164628008> \`${amt.toLocaleString('en')}\``);
 				message.channel.send(embed);
 				return;
 			}
@@ -151,7 +151,7 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
-					`**◎ Success:** You have paid ${user} the sum of: <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}.`);
+					`**◎ Success:** You have paid ${user} the sum of: <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`.`);
 			message.channel.send(depAll);
 			return;
 		}
@@ -175,7 +175,7 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
-					`**◎ Error:** You only have <:coin:706659001164628008> ${balance.bank.toLocaleString('en')}. Please try again with a valid amount.`);
+					`**◎ Error:** You only have <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`. Please try again with a valid amount.`);
 			message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -232,7 +232,7 @@ module.exports = class extends Command {
 			.setAuthor(`${message.author.username}`, message.author.avatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Give**`,
-				`**◎ Success:** You have paid ${user} the sum of: <:coin:706659001164628008> ${numberCov.toLocaleString('en')}.`);
+				`**◎ Success:** You have paid ${user} the sum of: <:coin:706659001164628008> \`${numberCov.toLocaleString('en')}\`.`);
 		message.channel.send(depArg);
 	}
 
