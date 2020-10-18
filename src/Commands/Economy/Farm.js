@@ -1,7 +1,7 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable no-inline-comments */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageAttachment } = require('discord.js');
 const ms = require('ms');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -63,6 +63,11 @@ module.exports = class extends Command {
 				embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
 
 				if (goldChance < 0.80) { // 80% of this happening
+					const goldNuggetImage = new MessageAttachment('./Storage/Images/Economy/GoldNugget.png', 'GoldNugget.png');
+
+					embed.attachFiles(goldNuggetImage);
+					embed.setThumbnail('attachment://GoldNugget.png');
+
 					name = 'Gold Nugget';
 
 					price = this.client.ecoPrices.goldNugget;
@@ -77,6 +82,11 @@ module.exports = class extends Command {
 
 					balance.farmcool = Math.round(endTime);
 				} else {
+					const goldBarImage = new MessageAttachment('./Storage/Images/Economy/GoldBar.png', 'GoldBar.png');
+
+					embed.attachFiles(goldBarImage);
+					embed.setThumbnail('attachment://GoldBar.png');
+
 					name = 'Gold Bar';
 
 					price = this.client.ecoPrices.goldBar;
@@ -93,6 +103,11 @@ module.exports = class extends Command {
 				}
 			} else if (foundItemList.farmingTools) { // Tool
 				if (goldChance < 0.80) { // 80% of this happening
+					const goldBarImage = new MessageAttachment('./Storage/Images/Economy/GoldBar.png', 'GoldBar.png');
+
+					embed.attachFiles(goldBarImage);
+					embed.setThumbnail('attachment://GoldBar.png');
+
 					name = 'Gold Bar';
 
 					price = this.client.ecoPrices.goldBar;
@@ -107,6 +122,11 @@ module.exports = class extends Command {
 
 					balance.farmcool = Math.round(endTime);
 				} else {
+					const goldNuggetImage = new MessageAttachment('./Storage/Images/Economy/GoldNugget.png', 'GoldNugget.png');
+
+					embed.attachFiles(goldNuggetImage);
+					embed.setThumbnail('attachment://GoldNugget.png');
+
 					name = 'Gold Nugget';
 
 					price = this.client.ecoPrices.goldNugget;
@@ -141,7 +161,11 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
 			if (!balance.items || !foundItemList.farmingTools) { // No Tool
+				const barleyImage = new MessageAttachment('./Storage/Images/Economy/Barley.png', 'Barley.png');
+
 				embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
+				embed.attachFiles(barleyImage);
+				embed.setThumbnail('attachment://Barley.png');
 
 				name = 'Barley';
 
@@ -157,6 +181,11 @@ module.exports = class extends Command {
 
 				balance.farmcool = Math.round(endTime);
 			} else { // Tool
+				const cornImage = new MessageAttachment('./Storage/Images/Economy/Corn.png', 'Corn.png');
+
+				embed.attachFiles(cornImage);
+				embed.setThumbnail('attachment://Corn.png');
+
 				name = 'Corn';
 
 				price = this.client.ecoPrices.corn;
@@ -189,6 +218,11 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
 			if (!balance.items || !foundItemList.farmingTools) { // No Tool
+				const spinachImage = new MessageAttachment('./Storage/Images/Economy/Spinach.png', 'Spinach.png');
+
+				embed.attachFiles(spinachImage);
+				embed.setThumbnail('attachment://Spinach.png');
+
 				embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
 
 				name = 'Spinach';
@@ -205,6 +239,11 @@ module.exports = class extends Command {
 
 				balance.farmcool = Math.round(endTime);
 			} else { // Tool
+				const wheatImage = new MessageAttachment('./Storage/Images/Economy/Wheat.png', 'Wheat.png');
+
+				embed.attachFiles(wheatImage);
+				embed.setThumbnail('attachment://Wheat.png');
+
 				name = 'Wheat';
 
 				price = this.client.ecoPrices.wheat;
@@ -237,6 +276,11 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
 			if (!balance.items || !foundItemList.farmingTools) { // No Tool
+				const strawberryImage = new MessageAttachment('./Storage/Images/Economy/Strawberry.png', 'Strawberry.png');
+
+				embed.attachFiles(strawberryImage);
+				embed.setThumbnail('attachment://Strawberry.png');
+
 				embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
 
 				name = 'Strawberries';
@@ -253,6 +297,11 @@ module.exports = class extends Command {
 
 				balance.farmcool = Math.round(endTime);
 			} else { // Tool
+				const potatoImage = new MessageAttachment('./Storage/Images/Economy/Potatoe.png', 'Potatoe.png');
+
+				embed.attachFiles(potatoImage);
+				embed.setThumbnail('attachment://Potatoe.png');
+
 				name = 'Potatoes';
 
 				price = this.client.ecoPrices.potatoes;
@@ -285,6 +334,11 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
 			if (!balance.items || !foundItemList.farmingTools) { // No Tool
+				const lettuceImage = new MessageAttachment('./Storage/Images/Economy/Lettuce.png', 'Lettuce.png');
+
+				embed.attachFiles(lettuceImage);
+				embed.setThumbnail('attachment://Lettuce.png');
+
 				embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
 
 				name = 'Lettuce';
@@ -301,6 +355,11 @@ module.exports = class extends Command {
 
 				balance.farmcool = Math.round(endTime);
 			} else { // Tool
+				const tomatoImage = new MessageAttachment('./Storage/Images/Economy/Tomatoes.png', 'Tomatoes.png');
+
+				embed.attachFiles(tomatoImage);
+				embed.setThumbnail('attachment://Tomatoes.png');
+
 				name = 'Tomatoes';
 
 				price = this.client.ecoPrices.tomatoes;
