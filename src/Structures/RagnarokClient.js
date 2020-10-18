@@ -1,3 +1,5 @@
+/* eslint-disable no-inline-comments */
+/* eslint-disable no-mixed-operators */
 const { Client, Collection, MessageEmbed, Permissions } = require('discord.js');
 const Util = require('./Util.js');
 const Canvas = require('canvas');
@@ -32,6 +34,48 @@ module.exports = class RagnarokClient extends Client {
 		// Music
 		const clientID = 'fee99683e65f44939358d0fb4f66837b';
 		const clientSecret = '6038f0595e944b8896a5ac05d1741c46';
+
+		const balancePrice = {
+			// Time new users have to wait until using the claim command
+			newUserTime: 259200000, // 3 Days
+			// Claim times
+			hourlyClaim: Math.floor(Math.random() * (150 - 50 + 1) + 50),
+			dailyClaim: Math.floor(Math.random() * (300 - 150 + 1) + 150),
+			weeklyClaim: Math.floor(Math.random() * (1000 - 750 + 1) + 750),
+			monthlyCliam: Math.floor(Math.random() * (6000 - 4000 + 1) + 4000),
+			yearlyClaim: Math.floor(Math.random() * (50000 - 47500 + 1) + 47500),
+			// Fishing related prices
+			fishingRod: 10000,
+			treasure: 50000,
+			pufferfish: 3000,
+			swordfish: 1500,
+			kingSalmon: 500,
+			trout: 150,
+			// Fishing related timeouts
+			fishWinTime: 600000, // 10 Minutes
+			fishFailtime: 900000, // 15 Minutes
+			// Farming with tools prices
+			farmingTools: 10000,
+			goldBar: 25000,
+			corn: 1500,
+			wheat: 750,
+			potatoes: 250,
+			tomatoes: 75,
+			// Farming with tools timeouts
+			farmToolWinTime: 300000, // 5 Minutes
+			farmToolFailTime: 600000, // 10 Minutes
+			// Farming without tools prices
+			goldNugget: 15000,
+			barley: 1200,
+			spinach: 600,
+			strawberries: 200,
+			lettuce: 60,
+			// Farming without tools timeouts
+			farmWinTime: 600000, // 10 Minutes
+			farmFailTime: 900000 // 15 Minutes
+		};
+
+		this.ecoPrices = balancePrice;
 
 		function erelaClient(grabClient) {
 			grabClient.manager = new Manager({
