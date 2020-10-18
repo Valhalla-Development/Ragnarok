@@ -6,7 +6,7 @@ const moment = require('moment');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const coinCooldown = new Set();
-const coinCooldownSeconds = 30;
+const coinCooldownSeconds = 60;
 const xpCooldown = new Set();
 const xpCooldownSeconds = 60;
 const urlRegexSafe = require('url-regex-safe');
@@ -94,35 +94,42 @@ module.exports = class extends Event {
 		// Balance (balance)
 		if (message.author.bot) return;
 		let balance;
-		if (message.guild) {
-			balance = this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
-			if (!balance) {
-				balance = {
-					id: `${message.author.id}-${message.guild.id}`,
-					user: message.author.id,
-					guild: message.guild.id,
-					hourly: null,
-					daily: null,
-					weekly: null,
-					monthly: null,
-					cash: 0,
-					bank: 1000,
-					total: 1000
-				};
-			}
-			const curBal = balance.cash;
-			const curBan = balance.bank;
-			const coinAmt = Math.floor(Math.random() * (60 - 20 + 1) + 20); // * (max - min + 1) + min);
-			if (coinAmt) {
-				if (!coinCooldown.has(message.author.id)) {
-					balance.cash = curBal + coinAmt;
-					balance.total = curBal + curBan + coinAmt;
-					this.client.setBalance.run(balance);
-					coinCooldown.add(message.author.id);
-					setTimeout(() => {
-						coinCooldown.delete(message.author.id);
-					}, coinCooldownSeconds * 1000);
-				}
+		balance = this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
+		if (!balance) {
+			const claimNewUserTime = new Date().getTime() + this.client.ecoPrices.newUserTime;
+
+			balance = {
+				id: `${message.author.id}-${message.guild.id}`,
+				user: message.author.id,
+				guild: message.guild.id,
+				hourly: null,
+				daily: null,
+				weekly: null,
+				monthly: null,
+				yearly: null,
+				stealcool: null,
+				boosts: null,
+				cash: 0,
+				bank: 500,
+				total: 500,
+				fishcool: null,
+				farmcool: null,
+				items: null,
+				claimNewUser: claimNewUserTime
+			};
+		}
+		const curBal = balance.cash;
+		const curBan = balance.bank;
+		const coinAmt = Math.floor(Math.random() * (40 - 10 + 1) + 10); // * (max - min + 1) + min);
+		if (coinAmt) {
+			if (!coinCooldown.has(message.author.id)) {
+				balance.cash = curBal + coinAmt;
+				balance.total = curBal + curBan + coinAmt;
+				this.client.setBalance.run(balance);
+				coinCooldown.add(message.author.id);
+				setTimeout(() => {
+					coinCooldown.delete(message.author.id);
+				}, coinCooldownSeconds * 1000);
 			}
 		}
 
@@ -431,7 +438,7 @@ module.exports = class extends Event {
 			}
 
 			const userPermCheck = command.userPerms ? this.client.defaultPerms.add(command.userPerms) : this.client.defaultPerms;
-			if (userPermCheck || !this.client.owners.includes(message.author.id)) {
+			if (!this.client.owners.includes(message.author.id) || userPermCheck) {
 				const missing = message.channel.permissionsFor(message.member).missing(userPermCheck);
 				if (missing.length) {
 					const embed = new MessageEmbed()
@@ -444,7 +451,7 @@ module.exports = class extends Event {
 			}
 
 			const botPermCheck = command.botPerms ? this.client.defaultPerms.add(command.botPerms) : this.client.defaultPerms;
-			if (botPermCheck || !this.client.owners.includes(message.author.id)) {
+			if (!this.client.owners.includes(message.author.id) || botPermCheck) {
 				const missing = message.channel.permissionsFor(this.client.user).missing(botPermCheck);
 				if (missing.length) {
 					const embed = new MessageEmbed()
