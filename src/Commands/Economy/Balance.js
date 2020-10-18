@@ -38,6 +38,8 @@ module.exports = class extends Command {
 
 		const rankPos = converter.toOrdinal(`${userRank[0]['count(*)']}`);
 
+		const date = new Date().getTime();
+
 		if (user.id === message.author.id) {
 			const embed1 = new MessageEmbed()
 				.setAuthor(`${user.username}'s Balance`, user.avatarURL())
@@ -46,9 +48,17 @@ module.exports = class extends Command {
 				.addFields({ name: 'Cash', value: `<:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\``, inline: true },
 					{ name: 'Bank', value: `<:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\``, inline: true },
 					{ name: 'Total', value: `<:coin:706659001164628008> \`${balance.total.toLocaleString('en')}\``, inline: true },
-					{ name: 'Steal Cooldown', value: `\`${balance.stealcool ? ms(balance.stealcool - new Date().getTime(), { long: true }) : 'Available'}\`` })
-				.setTimestamp();
-			message.channel.send(embed1);
+					{ name: 'Steal Cooldown', value: `${Date.now() > balance.stealcool ? `\`Available!\`` : `\`${ms(balance.stealcool - date, { long: true })}\``}`, inline: true },
+					{ name: 'Fish Cooldown', value: `${Date.now() > balance.fishcool ? `\`Available!\`` : `\`${ms(balance.fishcool - date, { long: true })}\``}`, inline: true },
+					{ name: 'Farm Cooldown', value: `${Date.now() > balance.farmcool ? `\`Available!\`` : `\`${ms(balance.farmcool - date, { long: true })}\``}`, inline: true },
+					{ name: '**◎ Claim Cooldown**', value: `\n**Hourly:** ${Date.now() > balance.hourly ? `\`Available!\`` : `\`${ms(balance.hourly - date, { long: true })}\``}
+					\n**Daily:** ${Date.now() > balance.daily ? `\`Available!\`` : `\`${ms(balance.daily - date, { long: true })}\``}
+					\n**Weekly:** ${Date.now() > balance.weekly ? `\`Available!\`` : `\`${ms(balance.weekly - date, { long: true })}\``}
+					\n**Monthly:** ${Date.now() > balance.monthly ? `\`Available!\`` : `\`${ms(balance.monthly - date, { long: true })}\``}
+					\n**Yearly:** ${Date.now() > balance.yearly ? `\`Available!\`` : `\`${ms(balance.yearly - date, { long: true })}\``}` });
+			// eslint-disable-next-line no-inline-comments
+			message.channel.send(embed1);// `\n\u3000 **Hourly:** \`${Date.now() > balance.hourly ? `\`Available!\`` : `\`${ms(balance.hourly - date, { long: true })}\``}` })
+
 			return;
 		}
 		const embed1 = new MessageEmbed()
