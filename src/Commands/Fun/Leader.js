@@ -27,7 +27,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const top10 = db.prepare('SELECT * FROM scores WHERE guild = ? ORDER BY points DESC LIMIT 10;').all(message.guild.id);
+		const top10 = db.prepare('SELECT * FROM scores WHERE guild = ? ORDER BY points DESC;').all(message.guild.id);
 		if (!top10) {
 			return;
 		}
@@ -35,16 +35,22 @@ module.exports = class extends Command {
 		let userNames = '';
 		let levels = '';
 		let xp = '';
+		let j = 0;
+
 		for (let i = 0; i < top10.length; i++) {
 			const data = top10[i];
-			let user = this.client.users.cache.get(data.user);
-			if (user === undefined) {
-				user = 'User Left Guild.';
+			const fetchUsers = message.guild.members.cache.get(data.user);
+
+			if (fetchUsers === undefined) {
+				continue;
 			}
 
-			userNames += `◎ \`${i + 1}\` ${user}\n`;
+			j++;
+
+			userNames += `◎ \`${j}\` ${fetchUsers}\n`;
 			levels += `\`${data.level}\`\n`;
 			xp += `\`${data.points.toLocaleString('en')}\`\n`;
+			if (j === 10) break;
 		}
 
 		const embed = new MessageEmbed()
