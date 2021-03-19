@@ -10,10 +10,11 @@ module.exports = class extends Command {
 		super(...args, {
 			aliases: ['shh'],
 			description: 'Mutes tagged user.',
-			category: 'Moderation',
+			category: 'Hidden',
 			usage: '<@user> <time> [reason]',
 			userPerms: ['MANAGE_MESSAGES'],
-			botPerms: ['MANAGE_GUILD']
+			botPerms: ['MANAGE_GUILD'],
+			ownerOnly: true
 		});
 	}
 
