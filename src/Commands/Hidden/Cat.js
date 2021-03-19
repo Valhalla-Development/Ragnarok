@@ -9,6 +9,14 @@ const subreddits = [
 	'kittens'
 ];
 
+const allowedExt = [
+	'.jpg',
+	'.jpeg',
+	'.gif',
+	'.gifv',
+	'.png'
+];
+
 module.exports = class extends Command {
 
 	constructor(...args) {
@@ -25,7 +33,15 @@ module.exports = class extends Command {
 		const res = await fetch(`https://www.reddit.com/r/${subreddits[Math.floor(Math.random() * subreddits.length)]}/hot.json`);
 		const { data } = await res.json();
 
-		const safe = message.channel.nsfw ? data.children : data.children.filter((post) => !post.data.over_18);
+		function clean(url) {
+			const lastOf = url.lastIndexOf('.');
+			const output = url.substring(lastOf);
+			return allowedExt.includes(output);
+		}
+
+		const allowed = data.children.filter((post) => clean(post.data.url));
+
+		const safe = message.channel.nsfw ? allowed : allowed.filter((post) => !post.data.over_18);
 
 		if (!safe.length) {
 			this.client.utils.messageDelete(message, 10000);
