@@ -1,7 +1,8 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { MessageAttachment, MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
+const fetchAll = require('discord-fetch-all');
 
 module.exports = class extends Command {
 
@@ -56,7 +57,37 @@ module.exports = class extends Command {
 				max: 1,
 				time: 20000,
 				errors: ['time']
-			}).then(() => {
+			}).then(async () => {
+				message.channel.startTyping();
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Ticket**`,
+						`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.`);
+				message.channel.send(embed);
+
+				const allMessages = await fetchAll.messages(message.channel, {
+					reverseArray: true,
+					userOnly: false,
+					botOnly: false,
+					pinnedOnly: false
+				});
+
+				allMessages.filter((m) => m.content !== '');
+				const mapfile = allMessages.map(e => ({ time: new Date(e.createdTimestamp).toUTCString(), username: e.author.username, message: e.content }));
+				const file = mapfile.filter((m) => m.message !== '');
+				file.unshift({ tickeData: `Ticket Creator: ${user.username} || Ticket Reason: ${foundTicket.reason}` });
+
+				const buffer = Buffer.from(JSON.stringify(file, null, 3));
+				const attachment = new MessageAttachment(buffer, `${user.username}-ticket.json`);
+
+				try {
+					user.send(attachment);
+				} catch {
+					return;
+				}
+
+				message.channel.stopTyping();
+
 				message.channel.delete();
 
 				const deleteTicket = db.prepare(`DELETE FROM tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`);
@@ -80,11 +111,13 @@ module.exports = class extends Command {
 						.addField(`**${this.client.user.username} - Close**`,
 							`**◎ Success:** <@${message.author.id}> has closed ticket \`#${message.channel.name}\``);
 					logchan.send(loggingembed);
+					logchan.send(attachment);
 				} else {
 					loggingembed
 						.addField(`**${this.client.user.username} - Close**`,
 							`**◎ Success:** <@${message.author.id}> has closed ticket \`#${message.channel.name}\`\nReason: \`${reason}\``);
 					logchan.send(loggingembed);
+					logchan.send(attachment);
 
 					user.send(`Your ticket in guild: \`${message.guild.name}\` was closed for the following reason:\n\`${reason}\``).then(() => {
 					// eslint-disable-next-line arrow-body-style

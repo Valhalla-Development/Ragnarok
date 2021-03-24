@@ -1,7 +1,8 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { MessageAttachment, MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
+const fetchAll = require('discord-fetch-all');
 
 module.exports = class extends Command {
 
@@ -19,13 +20,11 @@ module.exports = class extends Command {
 		const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
 
 		let modRole;
-		if (suppRole) {
+		if (message.guild.roles.cache.find((supId) => supId.id === suppRole.role)) {
 			modRole = message.guild.roles.cache.find((supId) => supId.id === suppRole.role);
-		} else {
+		} else if (message.guild.roles.cache.find((supNa) => supNa.name === 'Support Team')) {
 			modRole = message.guild.roles.cache.find((supNa) => supNa.name === 'Support Team');
-		}
-
-		if (!modRole) {
+		} else {
 			this.client.utils.messageDelete(message, 10000);
 
 			const nomodRole = new MessageEmbed()
@@ -56,7 +55,7 @@ module.exports = class extends Command {
 			const forceclosetimer = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle(':x: Closing Ticket! :x:')
-				.setDescription(`This ticket will automatically close in 10 seconds.**\nType a message to cancel the timer.`);
+				.setDescription(`**This ticket will automatically close in 10 seconds.**\nType a message to cancel the timer.`);
 			getChan.send(forceclosetimer).then((timerMsg) => {
 				getChan.awaitMessages((resp) => resp.author.id === message.author.id || foundTicket.authorid, {
 					max: 1,
@@ -69,7 +68,39 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.setDescription('Canceling Ticket Close');
 					timerMsg.edit(cancelTimer).then((m) => this.client.utils.deletableCheck(m, 10000));
-				}).catch(() => {
+				}).catch(async () => {
+					message.channel.startTyping();
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Ticket**`,
+							`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.`);
+					message.channel.send(embed);
+
+					const allMessages = await fetchAll.messages(message.channel, {
+						reverseArray: true,
+						userOnly: false,
+						botOnly: false,
+						pinnedOnly: false
+					});
+
+					const user = this.client.users.cache.find((a) => a.id === foundTicket.authorid);
+
+					allMessages.filter((m) => m.content !== '');
+					const mapfile = allMessages.map(e => ({ time: new Date(e.createdTimestamp).toUTCString(), username: e.author.username, message: e.content }));
+					const file = mapfile.filter((m) => m.message !== '');
+					file.unshift({ tickeData: `Ticket Creator: ${user.username} || Ticket Reason: ${foundTicket.reason}` });
+
+					const buffer = Buffer.from(JSON.stringify(file, null, 3));
+					const attachment = new MessageAttachment(buffer, `${user.username}-ticket.json`);
+
+					try {
+						user.send(attachment);
+					} catch {
+						return;
+					}
+
+					message.channel.stopTyping();
+
 					getChan.delete();
 					db.prepare(`DELETE FROM tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`).run({
 						ticketid: foundTicket.ticketid
