@@ -108,19 +108,19 @@ module.exports = class extends Event {
 				monthly: null,
 				yearly: null,
 				stealcool: null,
+				fishcool: null,
+				farmcool: null,
 				boosts: null,
+				items: null,
 				cash: 0,
 				bank: 500,
 				total: 500,
-				fishcool: null,
-				farmcool: null,
-				items: null,
 				claimNewUser: claimNewUserTime
 			};
 		}
 		const curBal = balance.cash;
 		const curBan = balance.bank;
-		const coinAmt = Math.floor(Math.random() * (40 - 10 + 1) + 10); // * (max - min + 1) + min);
+		const coinAmt = Math.floor(Math.random() * this.client.ecoPrices.maxPerM) + this.client.ecoPrices.minPerM;
 		if (coinAmt) {
 			if (!coinCooldown.has(message.author.id)) {
 				balance.cash = curBal + coinAmt;
