@@ -10,7 +10,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			aliases: ['rewards', 'claimable', 'reward'],
+			aliases: ['rewards', 'claimable', 'reward', 'collect'],
 			description: 'Displays available rewards',
 			category: 'Economy'
 		});
@@ -23,7 +23,6 @@ module.exports = class extends Command {
 
 		if (balance.claimNewUser) {
 			if (Date.now() > balance.claimNewUser) {
-				message.channel.send(balance.claimNewUser);
 				await db.prepare('UPDATE balance SET claimNewUser = (@claimNewUser) WHERE id = (@id);').run({
 					claimNewUser: null,
 					id: `${message.author.id}-${message.guild.id}`
@@ -91,7 +90,7 @@ module.exports = class extends Command {
 		}
 
 		if (args[0] === 'all') {
-			if (balance.hourly && balance.daily && balance.weekly && balance.monthly && balance.yearly) {
+			if (Date.now() < balance.hourly && Date.now() < balance.daily && Date.now() < balance.weekly && Date.now() < balance.monthly && Date.now() < balance.yearly) {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed = new MessageEmbed()
@@ -106,15 +105,12 @@ module.exports = class extends Command {
 
 			let fullPrice = 0;
 
-			if (!balance.hourly) fullPrice += this.client.ecoPrices.hourlyClaim;
-			if (!balance.daily) fullPrice += this.client.ecoPrices.dailyClaim;
-			if (!balance.weekly) fullPrice += this.client.ecoPrices.weeklyClaim;
-			if (!balance.monthly) fullPrice += this.client.ecoPrices.monthlyCliam;
-			if (!balance.yearly) fullPrice += this.client.ecoPrices.yearlyClaim;
+			if (!balance.hourly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.hourlyClaimMax) + this.client.ecoPrices.hourlyClaimMin;
+			if (!balance.daily) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.dailyClaimMax) + this.client.ecoPrices.dailyClaimMin;
+			if (!balance.weekly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.weeklylaimMax) + this.client.ecoPrices.weeklyClaimMin;
+			if (!balance.monthly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.monthlyCliamMax) + this.client.ecoPrices.monthlyCliamMin;
+			if (!balance.yearly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.yearlyClaimMax) + this.client.ecoPrices.yearlyClaimMin;
 
-			message.channel.send(fullPrice);
-			message.channel.send(this.client.ecoPrices.yearlyClaim);
-			message.channel.send(Number(fullPrice).toLocaleString('en'));
 			const endTime = new Date().getTime();
 
 			const addAut = {
@@ -158,7 +154,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const hourlyAmount = Math.floor(Math.random() * (150 - 50 + 1) + 50); // * (max - min + 1) + min);
+				const hourlyAmount = Math.floor(Math.random() * this.client.ecoPrices.hourlyClaimMax) + this.client.ecoPrices.hourlyClaimMin;
 
 				const endTime = new Date().getTime() + 3600000;
 
@@ -214,7 +210,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const dailyAmount = Math.floor(Math.random() * (300 - 150 + 1) + 150); // * (max - min + 1) + min);
+				const dailyAmount = Math.floor(Math.random() * this.client.ecoPrices.dailyClaimMax) + this.client.ecoPrices.dailyClaimMin;
 
 				const endTime = new Date().getTime() + 86400000;
 
@@ -270,7 +266,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const weeklyAmount = Math.floor(Math.random() * (1000 - 750 + 1) + 750); // * (max - min + 1) + min);
+				const weeklyAmount = Math.floor(Math.random() * this.client.ecoPrices.weeklyClaimMax) + this.client.ecoPrices.weeklyClaimMin;
 
 				const endTime = new Date().getTime() + 604800000;
 
@@ -326,7 +322,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const monthlyAmount = Math.floor(Math.random() * (6000 - 4000 + 1) + 4000); // * (max - min + 1) + min);
+				const monthlyAmount = Math.floor(Math.random() * this.client.ecoPrices.monthlyClaimMax) + this.client.ecoPrices.monthlyClaimMin;
 
 				const endTime = new Date().getTime() + 2629800000;
 
@@ -382,7 +378,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const yearlyAmount = Math.floor(Math.random() * (50000 - 47500 + 1) + 47500); // * (max - min + 1) + min);
+				const yearlyAmount = Math.floor(Math.random() * this.client.ecoPrices.yearlyClaimMax) + this.client.ecoPrices.yearlyClaimMin;
 
 				const endTime = new Date().getTime() + 31557600000;
 
