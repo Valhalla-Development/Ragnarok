@@ -1,6 +1,6 @@
 {
   "name": "ragnarok",
-  "version": "3.2.910",
+  "version": "3.2.921",
   "description": "A multi-purpose Discord bot.",
   "main": "src/index",
   "repository": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git",
@@ -27,6 +27,7 @@
     "pretty-ms": "^7.0.0",
     "quick.db": "^7.1.1",
     "request": "^2.88.2",
+    "slash-create": "^2.1.2",
     "systeminformation": "^4.26.10",
     "trakt.tv": "^8.0.0",
     "twemoji-parser": "^13.0.0",
