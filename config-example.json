@@ -1,5 +1,7 @@
 {
   "token": "REDACTED",
+  "applicationID": "REDACTED",
+  "publicKey": "REDACTED",
   "traktKey": "REDACTED",
   "traktSecret": "REDACTED",
   "fanartKey": "REDACTED",
