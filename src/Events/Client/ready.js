@@ -37,9 +37,29 @@ module.exports = class extends Event {
 		// Initiate the Erela manager.
 		this.client.manager.init(this.client.user.id);
 
-		// Mutes
+		// Slash Commands
+		const { GatewayServer } = require('slash-create');
+		const path = require('path');
+
+		this.client.slashClient
+			.withServer(
+				new GatewayServer(
+					(handler) => this.client.ws.on('INTERACTION_CREATE', handler)
+				)
+			)
+			.registerCommandsIn(path.join(__dirname, '../../Slash-Commands'))
+			.syncCommands();
+		this.client.slashClient
+			.on('warn', m => console.log('slash-create warn:', m));
+		this.client.slashClient
+			.on('commandError', m => console.log('slash-create commanderror:', m));
+		this.client.slashClient
+			.on('error', m => console.log('slash-create error:', m));
+
+		// Cooldowns
 		function coolDowns(grabClient) {
-			grabClient.setInterval(() => {
+			grabClient.setInterval(() => { // welp mute is broken lmao
+				/*
 				// Mutes
 				const grabMutes = db.prepare('SELECT * FROM mute').all();
 
@@ -103,7 +123,7 @@ module.exports = class extends Event {
 							grabClient.channels.cache.get(dblogs).send(embed);
 						}
 					}
-				});
+				});*/
 
 				// Bans
 				const grabBans = db.prepare('SELECT * FROM ban').all();
@@ -162,20 +182,6 @@ module.exports = class extends Event {
 				grabEconomy.forEach(r => {
 					const guild = grabClient.guilds.cache.get(r.guild);
 					if (!guild) return;
-
-					if (Date.now() > r.stealcool) {
-						db.prepare('UPDATE balance SET stealcool = (@stealcool) WHERE id = (@id);').run({
-							stealcool: null,
-							id: `${r.user}-${guild.id}`
-						});
-					}
-
-					if (Date.now() > r.fishcool) {
-						db.prepare('UPDATE balance SET fishcool = (@fishcool) WHERE id = (@id);').run({
-							fishcool: null,
-							id: `${r.user}-${guild.id}`
-						});
-					}
 				});
 			}, 5000);
 		}
@@ -316,15 +322,15 @@ module.exports = class extends Event {
 		const balancetable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'balance\';').get();
 		if (!balancetable['count(*)']) {
 			console.log('balance table created!');
-			db.prepare('CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly TEXT, daily TEXT, weekly TEXT, monthly TEXT, yearly, stealcool TEXT, boosts BLOB, cash INTEGER, bank INTEGER, total INTEGER, items BLOB, fishcool TEXT, farmcool TEXT, claimNewUser TEXT);').run();
+			db.prepare('CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly INTEGER, daily INTEGER, weekly INTEGER, monthly INTEGER, yearly INTEGER, stealcool INTEGER, fishcool INTEGER, farmcool INTEGER, boosts BLOB, items BLOB, cash INTEGER, bank INTEGER, total INTEGER, claimNewUser INTEGER);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_balance_id ON balance (id);').run();
 			db.pragma('synchronous = 1');
 			db.pragma('journal_mode = wal');
 		}
 
 		this.client.getBalance = db.prepare('SELECT * FROM balance WHERE id = ?');
-		this.client.setBalance = db.prepare('INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, yearly, stealcool, boosts, cash, bank, total, fishcool, farmcool, items, claimNewUser) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @yearly, @stealcool, @boosts, @cash, @bank, @total, @fishcool, @farmcool, @items, @claimNewUser);');
-		this.client.setUserBalance = db.prepare('INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, yearly, stealcool, boosts, cash, bank, total, fishcool, farmcool, items, claimNewUser) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @yearly, @stealcool, @boosts, @cash, @bank, @total, @fishcool, @farmcool, @items, @claimNewUser);');
+		this.client.setBalance = db.prepare('INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, yearly, stealcool, fishcool, farmcool, boosts, items, cash, bank, total, claimNewUser) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @yearly, @stealcool, @fishcool, @farmcool, @boosts, @items, @cash, @bank, @total, @claimNewUser);');
+		this.client.setUserBalance = db.prepare('INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, yearly, stealcool, fishcool, farmcool, boosts, items, cash, bank, total, claimNewUser) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @yearly, @stealcool, @fishcool, @farmcool, @boosts, @items, @cash, @bank, @total, @claimNewUser);');
 
 		// scores table
 		const table = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'scores\';').get();
