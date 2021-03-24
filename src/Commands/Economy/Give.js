@@ -168,6 +168,18 @@ module.exports = class extends Command {
 			return;
 		}
 
+		if (Number(args[1]) < 1) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const wrongUsage = new MessageEmbed()
+				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Give**`,
+					`**◎ Error:** Please enter a value of at least \`1\`. Please try again with a valid amount.`);
+			message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
 		if (args[1] > balance.bank) {
 			this.client.utils.messageDelete(message, 10000);
 
