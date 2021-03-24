@@ -91,7 +91,7 @@ module.exports = class extends Command {
 					file.unshift({ tickeData: `Ticket Creator: ${user.username} || Ticket Reason: ${foundTicket.reason}` });
 
 					const buffer = Buffer.from(JSON.stringify(file, null, 3));
-					const attachment = new MessageAttachment(buffer, `${user.username}-ticket.json`);
+					const attachment = new MessageAttachment(buffer, `${user.username}-ticketLog.json`);
 
 					try {
 						user.send(attachment);
