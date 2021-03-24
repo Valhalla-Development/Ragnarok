@@ -72,19 +72,12 @@ module.exports = class extends Command {
 					pinnedOnly: false
 				});
 
-				allMessages.filter((m) => m.content !== '');
 				const mapfile = allMessages.map(e => ({ time: new Date(e.createdTimestamp).toUTCString(), username: e.author.username, message: e.content }));
 				const file = mapfile.filter((m) => m.message !== '');
 				file.unshift({ tickeData: `Ticket Creator: ${user.username} || Ticket Reason: ${foundTicket.reason}` });
 
 				const buffer = Buffer.from(JSON.stringify(file, null, 3));
 				const attachment = new MessageAttachment(buffer, `${user.username}-ticketLog.json`);
-
-				try {
-					user.send(attachment);
-				} catch {
-					return;
-				}
 
 				message.channel.stopTyping();
 
@@ -94,6 +87,20 @@ module.exports = class extends Command {
 				deleteTicket.run({
 					ticketid: channelArgs[channelArgs.length - 1]
 				});
+
+				if (!reason) {
+					user.send(`Your ticket in guild: \`${message.guild.name}\` was closed.\nI have attached the chat transcript.`, attachment).then(() => {
+						// eslint-disable-next-line arrow-body-style
+					}).catch(() => {
+						return;
+					});
+				} else {
+					user.send(`Your ticket in guild: \`${message.guild.name}\` was closed for the following reason:\n\`${reason}\`\nI have attached the chat transcript.`, attachment).then(() => {
+						// eslint-disable-next-line arrow-body-style
+					}).catch(() => {
+						return;
+					});
+				}
 
 				const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
 				if (!logget) {
@@ -118,12 +125,6 @@ module.exports = class extends Command {
 							`**◎ Success:** <@${message.author.id}> has closed ticket \`#${message.channel.name}\`\nReason: \`${reason}\``);
 					logchan.send(loggingembed);
 					logchan.send(attachment);
-
-					user.send(`Your ticket in guild: \`${message.guild.name}\` was closed for the following reason:\n\`${reason}\``).then(() => {
-					// eslint-disable-next-line arrow-body-style
-					}).catch(() => {
-						return;
-					});
 				}
 			}).catch(() => {
 				this.client.utils.deletableCheck(msg, 0);

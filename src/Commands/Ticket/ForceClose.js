@@ -85,7 +85,6 @@ module.exports = class extends Command {
 
 					const user = this.client.users.cache.find((a) => a.id === foundTicket.authorid);
 
-					allMessages.filter((m) => m.content !== '');
 					const mapfile = allMessages.map(e => ({ time: new Date(e.createdTimestamp).toUTCString(), username: e.author.username, message: e.content }));
 					const file = mapfile.filter((m) => m.message !== '');
 					file.unshift({ tickeData: `Ticket Creator: ${user.username} || Ticket Reason: ${foundTicket.reason}` });
@@ -93,17 +92,16 @@ module.exports = class extends Command {
 					const buffer = Buffer.from(JSON.stringify(file, null, 3));
 					const attachment = new MessageAttachment(buffer, `${user.username}-ticketLog.json`);
 
-					try {
-						user.send(attachment);
-					} catch {
-						return;
-					}
-
 					message.channel.stopTyping();
 
 					getChan.delete();
 					db.prepare(`DELETE FROM tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`).run({
 						ticketid: foundTicket.ticketid
+					});
+					user.send(`Your ticket in guild: \`${message.guild.name}\` was closed.\`\nI have attached the chat transcript.`, attachment).then(() => {
+						// eslint-disable-next-line arrow-body-style
+					}).catch(() => {
+						return;
 					});
 					const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
 					if (!logget) return;
@@ -114,6 +112,7 @@ module.exports = class extends Command {
 						.addField(`**${this.client.user.username} - ForceClose**`,
 							`**◎ Success:** <@${message.author.id}> has forcefully closed ticket \`#${message.channel.name}\``);
 					logchan.send(loggingembed);
+					logchan.send(attachment);
 				});
 			});
 		} else {
