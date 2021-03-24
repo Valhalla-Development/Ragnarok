@@ -421,7 +421,7 @@ module.exports = class extends Command {
 				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
 			message.channel.send(embed);
 			return;
-		} else { // 12.82&
+		} else { // 12.82%
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
