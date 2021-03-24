@@ -16,7 +16,7 @@ const allowedExt = [
 	'.png'
 ];
 
-module.exports = class CatCommand extends SlashCommand {
+module.exports = class DogCommand extends SlashCommand {
 
 	constructor(creator) {
 		super(creator, {
