@@ -68,13 +68,6 @@ module.exports = class extends Command {
 			});
 		}
 
-		if (Date.now() > balance.yearly) {
-			await db.prepare('UPDATE balance SET yearly = (@monthly) WHERE id = (@id);').run({
-				monthly: null,
-				id: `${message.author.id}-${message.guild.id}`
-			});
-		}
-
 		if (!args.length) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -82,15 +75,14 @@ module.exports = class extends Command {
 					`**◎ Hourly:** \`${Date.now() > balance.hourly ? 'Available!' : ms(balance.hourly - date.getTime(), { long: true })}\``,
 					`**◎ Daily:** \`${Date.now() > balance.daily ? 'Available!' : ms(balance.daily - date.getTime(), { long: true })}\``,
 					`**◎ Weekly:** \`${Date.now() > balance.weekly ? 'Available!' : ms(balance.weekly - date.getTime(), { long: true })}\``,
-					`**◎ Monthly:** \`${Date.now() > balance.monthly ? 'Available!' : ms(balance.monthly - date.getTime(), { long: true })}\``,
-					`**◎ Yearly:** \`${Date.now() > balance.yearly ? 'Available!' : ms(balance.yearly - date.getTime(), { long: true })}\``
+					`**◎ Monthly:** \`${Date.now() > balance.monthly ? 'Available!' : ms(balance.monthly - date.getTime(), { long: true })}\``
 				]);
 			message.channel.send(embed);
 			return;
 		}
 
 		if (args[0] === 'all') {
-			if (Date.now() < balance.hourly && Date.now() < balance.daily && Date.now() < balance.weekly && Date.now() < balance.monthly && Date.now() < balance.yearly) {
+			if (Date.now() < balance.hourly && Date.now() < balance.daily && Date.now() < balance.weekly && Date.now() < balance.monthly) {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed = new MessageEmbed()
@@ -109,7 +101,6 @@ module.exports = class extends Command {
 			if (!balance.daily) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.dailyClaimMax) + this.client.ecoPrices.dailyClaimMin;
 			if (!balance.weekly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.weeklylaimMax) + this.client.ecoPrices.weeklyClaimMin;
 			if (!balance.monthly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.monthlyCliamMax) + this.client.ecoPrices.monthlyCliamMin;
-			if (!balance.yearly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.yearlyClaimMax) + this.client.ecoPrices.yearlyClaimMin;
 
 			const endTime = new Date().getTime();
 
@@ -121,7 +112,6 @@ module.exports = class extends Command {
 				daily: !balance.daily ? endTime + 86400000 : balance.daily,
 				weekly: !balance.weekly ? endTime + 604800000 : balance.weekly,
 				monthly: !balance.monthly ? endTime + 2629800000 : balance.monthly,
-				yearly: !balance.yearly ? endTime + 31557600000 : balance.yearly,
 				stealcool: balance.stealcool,
 				boosts: balance.boosts,
 				cash: balance.cash,
@@ -167,7 +157,6 @@ module.exports = class extends Command {
 					daily: balance.daily,
 					weekly: balance.weekly,
 					monthly: balance.monthly,
-					yearly: balance.yearly,
 					stealcool: balance.stealcool,
 					boosts: balance.boosts,
 					cash: balance.cash + hourlyAmount,
@@ -223,7 +212,6 @@ module.exports = class extends Command {
 					daily: endTime,
 					weekly: balance.weekly,
 					monthly: balance.monthly,
-					yearly: balance.yearly,
 					stealcool: balance.stealcool,
 					boosts: balance.boosts,
 					cash: balance.cash + dailyAmount,
@@ -279,7 +267,6 @@ module.exports = class extends Command {
 					daily: balance.daily,
 					weekly: endTime,
 					monthly: balance.monthly,
-					yearly: balance.yearly,
 					stealcool: balance.stealcool,
 					boosts: balance.boosts,
 					cash: balance.cash + weeklyAmount,
@@ -335,7 +322,6 @@ module.exports = class extends Command {
 					daily: balance.daily,
 					weekly: balance.weekly,
 					monthly: endTime,
-					yearly: balance.yearly,
 					stealcool: balance.stealcool,
 					boosts: balance.boosts,
 					cash: balance.cash + monthlyAmount,
@@ -366,62 +352,6 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Monthly**`,
 						`**◎ Error:** Please wait another \`${Date.now() > balance.monthly ? 'Available!' : ms(balance.monthly - date.getTime(), { long: true })}\` before using this command.`);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
-			}
-		}
-
-		if (args[0] === 'yearly') {
-			if (Date.now() > balance.yearly) {
-				await db.prepare('UPDATE balance SET yearly = (@yearly) WHERE id = (@id);').run({
-					yearly: null,
-					id: `${message.author.id}-${message.guild.id}`
-				});
-
-				const yearlyAmount = Math.floor(Math.random() * this.client.ecoPrices.yearlyClaimMax) + this.client.ecoPrices.yearlyClaimMin;
-
-				const endTime = new Date().getTime() + 31557600000;
-
-				const totaCalc2 = balance.total + yearlyAmount;
-				const addAut = {
-					id: `${message.author.id}-${message.guild.id}`,
-					user: message.author.id,
-					guild: message.guild.id,
-					hourly: balance.hourly,
-					daily: balance.daily,
-					weekly: balance.weekly,
-					monthly: balance.monthly,
-					yearly: endTime,
-					stealcool: balance.stealcool,
-					boosts: balance.boosts,
-					cash: balance.cash + yearlyAmount,
-					bank: balance.bank,
-					total: totaCalc2,
-					fishcool: balance.fishcool,
-					farmcool: balance.farmcool,
-					items: balance.items,
-					claimNewUser: balance.claimNewUser
-				};
-
-				this.client.setBalance.run(addAut);
-
-				const depArg = new MessageEmbed()
-					.setAuthor(`${message.author.username}`, message.author.avatarURL())
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Yearly**`,
-						`**◎ Success:** You have received your yearly sum of: <:coin:706659001164628008> \`${yearlyAmount.toLocaleString('en')}\`.`);
-				message.channel.send(depArg);
-				return;
-			}
-
-			if (balance.yearly !== null) {
-				this.client.utils.messageDelete(message, 10000);
-
-				const embed = new MessageEmbed()
-					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Yearly**`,
-						`**◎ Error:** Please wait another \`${Date.now() > balance.yearly ? 'Available!' : ms(balance.yearly - date.getTime(), { long: true })}\` before using this command.`);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}

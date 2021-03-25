@@ -106,7 +106,6 @@ module.exports = class extends Event {
 				daily: null,
 				weekly: null,
 				monthly: null,
-				yearly: null,
 				stealcool: null,
 				fishcool: null,
 				farmcool: null,

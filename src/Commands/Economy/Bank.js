@@ -36,7 +36,6 @@ module.exports = class extends Command {
 			daily: balance.daily,
 			weekly: balance.weekly,
 			monthly: balance.monthly,
-			yearly: balance.yearly,
 			stealcool: balance.stealcool,
 			boosts: balance.boosts,
 			cash: 0,
