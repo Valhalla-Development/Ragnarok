@@ -25,6 +25,11 @@ module.exports = class extends Command {
 
 		const fishingPrice = this.client.ecoPrices.fishingRod;
 		const farmingPrice = this.client.ecoPrices.farmingTools;
+		const cornSeedPrice = this.client.ecoPrices.cornSeed;
+		const wheatSeedPrice = this.client.ecoPrices.wheatSeed;
+		const potatoeSeedPrice = this.client.ecoPrices.potatoSeed;
+		const tomatoeSeedprice = this.client.ecoPrices.tomatoSeed;
+		const multiSeedPrice = this.client.ecoPrices.multiSeed;
 
 		if (!foundItemList) {
 			foundItemList = {};
@@ -84,25 +89,386 @@ module.exports = class extends Command {
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Shop - Buy**`, [
-						/* `**◎ Steal Success Multiplier:** \`Current Level: ${foundBoostsList.stealSuccess}\``, // When hit level 25, you can now steal from bank, but at a low percentage, will take bank if percentage is lower than cash -- max level 50
-						`\u3000 Next Level Price: <:coin:706659001164628008> \`${stealPrice.toLocaleString('en')}\``,
+						`**◎ Farming Seeds: (Amount optional)**`,
+						`\u3000 \`${prefix}shop buy corn [amount]\` - 10 Seeds per pack - ${!foundItemList.cornSeeds ? `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\` - \`Owned ${foundItemList.cornSeeds.toLocaleString('en')}\``}`,
+						`\u3000 \`${prefix}shop buy wheat [amount]\` - 10 Seeds per pack - ${!foundItemList.wheatSeeds ? `<:coin:706659001164628008> \`${wheatSeedPrice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${wheatSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.wheatSeeds.toLocaleString('en')}\``}`,
+						`\u3000 \`${prefix}shop buy potato [amount]\` - 10 Seeds per pack - ${!foundItemList.potatoeSeeds ? `<:coin:706659001164628008> \`${potatoeSeedPrice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${potatoeSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.potatoeSeeds.toLocaleString('en')}\``}`,
+						`\u3000 \`${prefix}shop buy tomato [amount]\` - 10 Seeds per pack - ${!foundItemList.tomatoeSeed ? `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`- \`Owned ${foundItemList.tomatoeSeeds.toLocaleString('en')}\``}`,
+						`\u3000 \`${prefix}shop buy multi [amount]\` - 5 of each seed type - ${!foundItemList.multiSeed ? `<:coin:706659001164628008> \`${multiSeedPrice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${multiSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.multiSeed.toLocaleString('en')}\``}`,
 						`\u200b`,
-						`**◎ Work Multiplier:** \`Current Level: ${foundBoostsList.workMultiplier}\``,
-						`\u3000 Next Level Price: <:coin:706659001164628008> \`${workPrice.toLocaleString('en')}\``,
-						`\u200b`,
-						`**◎ Points per Message Multiplier:** \`Current Level: ${foundBoostsList.perMesMultiplier}\``,
-						`\u3000 Next Level Price: <:coin:706659001164628008> \`${pointMesPrice.toLocaleString('en')}\``,
-						`\u200b`,
-						`**◎ Auto Bank:** \`Current Level: ${foundBoostsList.autoBank}\``,
-						`\u3000 Next Level Price: <:coin:706659001164628008> \`${autoBankPrice.toLocaleString('en')}\``,
-						`\u200b`,*/
 						`**◎ Permanent Items:**`,
-						`\u3000 \`${prefix}shop buy rod\` ${!foundItemList.fishingRod ? `<:coin:706659001164628008> \`${fishingPrice.toLocaleString('en')}\`` : `- \`Owned\``}`,
-						`\u3000 \`${prefix}shop buy tools\` ${!foundItemList.farmingTools ? `<:coin:706659001164628008> \`${fishingPrice.toLocaleString('en')}\`` : `- \`Owned\``}`
+						`\u3000 \`${prefix}shop buy rod\` - ${!foundItemList.fishingRod ? `<:coin:706659001164628008> \`${fishingPrice.toLocaleString('en')}\`` : `- \`Owned\``}`,
+						`\u3000 \`${prefix}shop buy tools\` - ${!foundItemList.farmingTools ? `<:coin:706659001164628008> \`${farmingPrice.toLocaleString('en')}\`` : `- \`Owned\``}`
 					]);
 				message.channel.send(embed);
 				return;
 			}
+
+			if (args[1] === 'corn' || args[1] === 'wheat' || args[1] === 'potato' || args[1] === 'tomato' || args[1] === 'multi') {
+				if (!foundItemList.farmingTools) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Seeds**`, [
+							`**◎ Error:** You must own farming tools before you can buy seeds!\nYou can buy them with \`${prefix}shop buy tools\``
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+			}
+
+			if (args[1] === 'corn') {
+				const cornAmt = args[2] ? Number(args[2]) : 1;
+
+				if (isNaN(cornAmt)) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Corn Seeds**`, [
+							`**◎ Error:** Please enter a valid number.`
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				let cornTot = 0;
+				cornTot += Number(cornSeedPrice) * Number(cornAmt);
+
+				if (balance.bank < cornTot) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const notEnough = Number(cornTot) - Number(balance.bank);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Corn Seeds**`, [
+							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				balance.bank = Number(balance.bank) - Number(cornTot);
+				balance.total = Number(balance.total) - Number(cornTot);
+				this.client.setBalance.run(balance);
+
+				let calc = 0;
+				if (foundItemList.cornSeeds) {
+					calc = Number(foundItemList.cornSeeds) + Number(cornAmt) * 10;
+				} else {
+					calc = Number(cornAmt) * 10;
+				}
+
+				foundItemList.cornSeeds = Number(calc).toString();
+
+				const cornSeedImage = new MessageAttachment('./Storage/Images/Economy/CornSeeds.png', 'CornSeeds.png');
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.attachFiles(cornSeedImage)
+					.setThumbnail('attachment://CornSeeds.png')
+					.addField(`**${this.client.user.username} - Shop - Corn Seeds**`, [
+						`**◎ Success:** You have bought Corn Seeds.\nYou now have \`${calc}\` total seeds.`
+					]);
+				message.channel.send(embed);
+
+				await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
+					items: JSON.stringify(foundItemList),
+					id: `${message.author.id}-${message.guild.id}`
+				});
+				return;
+			}
+
+			if (args[1] === 'wheat') {
+				const wheatAmt = args[2] ? Number(args[2]) : 1;
+
+				if (isNaN(wheatAmt)) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Wheat Seeds**`, [
+							`**◎ Error:** Please enter a valid number.`
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				let wheatTot = 0;
+				wheatTot += Number(wheatSeedPrice) * Number(wheatAmt);
+
+				if (balance.bank < wheatTot) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const notEnough = Number(wheatTot) - Number(balance.bank);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Wheat Seeds**`, [
+							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				balance.bank = Number(balance.bank) - Number(wheatTot);
+				balance.total = Number(balance.total) - Number(wheatTot);
+				this.client.setBalance.run(balance);
+
+				let calc = 0;
+				if (foundItemList.wheatSeed) {
+					calc = Number(foundItemList.wheatSeeds) + Number(wheatAmt) * 10;
+				} else {
+					calc = Number(wheatAmt) * 10;
+				}
+
+				foundItemList.wheatSeeds = Number(calc).toString();
+
+				const wheatSeedImage = new MessageAttachment('./Storage/Images/Economy/WheatSeeds.png', 'WheatSeeds.png');
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.attachFiles(wheatSeedImage)
+					.setThumbnail('attachment://WheatSeeds.png')
+					.addField(`**${this.client.user.username} - Shop - Wheat Seeds**`, [
+						`**◎ Success:** You have bought Wheat Seeds.\nYou now have \`${calc}\` total Wheat seeds.`
+					]);
+				message.channel.send(embed);
+
+				await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
+					items: JSON.stringify(foundItemList),
+					id: `${message.author.id}-${message.guild.id}`
+				});
+				return;
+			}
+
+			if (args[1] === 'potato') {
+				const potatoeAmt = args[2] ? Number(args[2]) : 1;
+
+				if (isNaN(potatoeAmt)) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Potato Seeds**`, [
+							`**◎ Error:** Please enter a valid number.`
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				let potatoeTot = 0;
+				potatoeTot += Number(potatoeSeedPrice) * Number(potatoeAmt);
+
+				if (balance.bank < potatoeTot) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const notEnough = Number(potatoeTot) - Number(balance.bank);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Potato Seeds**`, [
+							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				balance.bank = Number(balance.bank) - Number(potatoeTot);
+				balance.total = Number(balance.total) - Number(potatoeTot);
+				this.client.setBalance.run(balance);
+
+				let calc = 0;
+				if (foundItemList.potatoeSeeds) {
+					calc = Number(foundItemList.potatoeSeeds) + Number(potatoeAmt) * 10;
+				} else {
+					calc = Number(potatoeAmt) * 10;
+				}
+
+				foundItemList.potatoeSeeds = Number(calc).toString();
+
+				const potatoeSeedImage = new MessageAttachment('./Storage/Images/Economy/Potatoe.png', 'Potatoe.png');
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.attachFiles(potatoeSeedImage)
+					.setThumbnail('attachment://Potatoe.png')
+					.addField(`**${this.client.user.username} - Shop - Potato Seeds**`, [
+						`**◎ Success:** You have bought Potato Seeds.\nYou now have \`${calc}\` total Potato seeds.`
+					]);
+				message.channel.send(embed);
+
+				await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
+					items: JSON.stringify(foundItemList),
+					id: `${message.author.id}-${message.guild.id}`
+				});
+				return;
+			}
+
+			if (args[1] === 'tomato') {
+				const tomatoeAmt = args[2] ? Number(args[2]) : 1;
+
+				if (isNaN(tomatoeAmt)) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Tomato Seeds**`, [
+							`**◎ Error:** Please enter a valid number.`
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				let tomatoeTot = 0;
+				tomatoeTot += Number(tomatoeSeedprice) * Number(tomatoeAmt);
+
+				if (balance.bank < tomatoeTot) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const notEnough = Number(tomatoeTot) - Number(balance.bank);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Tomato Seeds**`, [
+							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				balance.bank = Number(balance.bank) - Number(tomatoeTot);
+				balance.total = Number(balance.total) - Number(tomatoeTot);
+				this.client.setBalance.run(balance);
+
+				let calc = 0;
+				if (foundItemList.tomatoeSeeds) {
+					calc = Number(foundItemList.tomatoeSeeds) + Number(tomatoeAmt) * 10;
+				} else {
+					calc = Number(tomatoeAmt) * 10;
+				}
+
+				foundItemList.tomatoeSeeds = Number(calc).toString();
+
+				const tomatoeSeedImage = new MessageAttachment('./Storage/Images/Economy/Tomatoes.png', 'Tomatoe.png');
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.attachFiles(tomatoeSeedImage)
+					.setThumbnail('attachment://Tomatoe.png')
+					.addField(`**${this.client.user.username} - Shop - Tomato Seeds**`, [
+						`**◎ Success:** You have bought Tomato Seeds.\nYou now have \`${calc}\` total Tomato seeds.`
+					]);
+				message.channel.send(embed);
+
+				await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
+					items: JSON.stringify(foundItemList),
+					id: `${message.author.id}-${message.guild.id}`
+				});
+				return;
+			}
+
+			if (args[1] === 'multi') {
+				const multiAmt = args[2] ? Number(args[2]) : 1;
+
+				if (isNaN(multiAmt)) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Multi-Pack Seeds**`, [
+							`**◎ Error:** Please enter a valid number.`
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				let multiTot = 0;
+				multiTot += Number(multiSeedPrice) * Number(multiAmt);
+
+				if (balance.bank < multiTot) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const notEnough = Number(multiTot) - Number(balance.bank);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Multi-Pack Seeds**`, [
+							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				balance.bank = Number(balance.bank) - Number(multiTot);
+				balance.total = Number(balance.total) - Number(multiTot);
+				this.client.setBalance.run(balance);
+
+				const totalSeedCount = multiAmt * 25;
+
+				let cornAdd = 0;
+				let wheatAdd = 0;
+				let potatoAdd = 0;
+				let tomatoAdd = 0;
+
+				if (foundItemList.cornSeeds) {
+					cornAdd = Number(foundItemList.cornSeeds) + Number(multiAmt) * 5;
+				} else {
+					cornAdd = Number(multiAmt) * 5;
+				}
+				if (foundItemList.wheatSeeds) {
+					wheatAdd = Number(foundItemList.wheatSeeds) + Number(multiAmt) * 5;
+				} else {
+					wheatAdd = Number(multiAmt) * 5;
+				}
+				if (foundItemList.potatoeSeeds) {
+					potatoAdd = Number(foundItemList.potatoeSeeds) + Number(multiAmt) * 5;
+				} else {
+					potatoAdd = Number(multiAmt) * 5;
+				}
+				if (foundItemList.tomatoeSeeds) {
+					tomatoAdd = Number(foundItemList.tomatoeSeeds) + Number(multiAmt) * 5;
+				} else {
+					tomatoAdd = Number(multiAmt) * 5;
+				}
+
+				foundItemList.cornSeeds = Number(cornAdd).toString();
+				foundItemList.wheatSeeds = Number(wheatAdd).toString();
+				foundItemList.potatoeSeeds = Number(potatoAdd).toString();
+				foundItemList.tomatoeSeeds = Number(tomatoAdd).toString();
+
+
+				const multiSeedImage = new MessageAttachment('./Storage/Images/Economy/Multi.png', 'Multi.png');
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.attachFiles(multiSeedImage)
+					.setThumbnail('attachment://Multi.png')
+					.addField(`**${this.client.user.username} - Shop - Multi-Pack Seeds**`, [
+						`**◎ Success:** You have bought \`${totalSeedCount}\`.\nYou now have:\n\`${cornAdd}\` seeds.\n\`${wheatAdd}\` seeds.\n\`${potatoAdd}\` seeds.\n\`${tomatoAdd}\` seeds.`
+					]);
+				message.channel.send(embed);
+
+				await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
+					items: JSON.stringify(foundItemList),
+					id: `${message.author.id}-${message.guild.id}`
+				});
+				return;
+			}
+
 			if (args[1] === 'rod' || args[1] === 'fishingrod') {
 				if (foundItemList.fishingRod) {
 					this.client.utils.messageDelete(message, 10000);
@@ -279,7 +645,9 @@ module.exports = class extends Command {
 						`\u3000 Gold Nugget: Own ${foundItemList.goldNugget === undefined ? `\`0\`` : `\`${foundItemList.goldNugget}\` - <:coin:706659001164628008> \`${goldNuggetPrice.toLocaleString('en')}\``}`,
 						`\u200b`,
 						`**◎ Available Commands:**`,
+						`\u3000 \`${prefix}shop sell all\``,
 						`\u3000 \`${prefix}shop sell fish\``,
+						`\u3000 \`${prefix}shop sell farm\``,
 						`\u3000 \`${prefix}shop sell treasure\``
 					]);
 				message.channel.send(embed);
@@ -345,7 +713,6 @@ module.exports = class extends Command {
 					daily: balance.daily,
 					weekly: balance.weekly,
 					monthly: balance.monthly,
-					yearly: balance.yearly,
 					stealcool: balance.stealcool,
 					boosts: balance.boosts,
 					cash: balance.cash,
@@ -354,7 +721,8 @@ module.exports = class extends Command {
 					fishcool: balance.fishcool,
 					farmcool: balance.farmcool,
 					items: balance.items,
-					claimNewUser: balance.claimNewUser
+					claimNewUser: balance.claimNewUser,
+					seedBackpack: balance.seedBackpack
 				};
 
 				this.client.setBalance.run(addAut);
@@ -428,7 +796,6 @@ module.exports = class extends Command {
 					daily: balance.daily,
 					weekly: balance.weekly,
 					monthly: balance.monthly,
-					yearly: balance.yearly,
 					stealcool: balance.stealcool,
 					boosts: balance.boosts,
 					cash: balance.cash,
@@ -437,7 +804,8 @@ module.exports = class extends Command {
 					fishcool: balance.fishcool,
 					farmcool: balance.farmcool,
 					items: balance.items,
-					claimNewUser: balance.claimNewUser
+					claimNewUser: balance.claimNewUser,
+					seedBackpack: balance.seedBackpack
 				};
 
 				this.client.setBalance.run(addAut);
@@ -496,7 +864,6 @@ module.exports = class extends Command {
 					daily: balance.daily,
 					weekly: balance.weekly,
 					monthly: balance.monthly,
-					yearly: balance.yearly,
 					stealcool: balance.stealcool,
 					boosts: balance.boosts,
 					cash: balance.cash,
@@ -505,7 +872,8 @@ module.exports = class extends Command {
 					fishcool: balance.fishcool,
 					farmcool: balance.farmcool,
 					items: balance.items,
-					claimNewUser: balance.claimNewUser
+					claimNewUser: balance.claimNewUser,
+					seedBackpack: balance.seedBackpack
 				};
 
 				this.client.setBalance.run(addAut);
@@ -576,7 +944,6 @@ module.exports = class extends Command {
 					daily: balance.daily,
 					weekly: balance.weekly,
 					monthly: balance.monthly,
-					yearly: balance.yearly,
 					stealcool: balance.stealcool,
 					boosts: balance.boosts,
 					cash: balance.cash,
@@ -585,7 +952,8 @@ module.exports = class extends Command {
 					fishcool: balance.fishcool,
 					farmcool: balance.farmcool,
 					items: balance.items,
-					claimNewUser: balance.claimNewUser
+					claimNewUser: balance.claimNewUser,
+					seedBackpack: balance.seedBackpack
 				};
 
 				this.client.setBalance.run(addAut);
