@@ -17,12 +17,12 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
-		const balance = this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
+		const updateBal = await this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
 
 		const date = new Date();
 
-		if (balance.claimNewUser) {
-			if (Date.now() > balance.claimNewUser) {
+		if (updateBal.claimNewUser) {
+			if (Date.now() > updateBal.claimNewUser) {
 				await db.prepare('UPDATE balance SET claimNewUser = (@claimNewUser) WHERE id = (@id);').run({
 					claimNewUser: null,
 					id: `${message.author.id}-${message.guild.id}`
@@ -34,39 +34,41 @@ module.exports = class extends Command {
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Claim**`,
-						`**◎ Error:** Your Economy proifle is too new! Please wait another \`${ms(balance.claimNewUser - new Date().getTime(), { long: true })}\` before using this command.`);
+						`**◎ Error:** Your Economy proifle is too new! Please wait another \`${ms(updateBal.claimNewUser - new Date().getTime(), { long: true })}\` before using this command.`);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 		}
 
-		if (Date.now() > balance.hourly) {
+		if (Date.now() > updateBal.hourly) {
 			await db.prepare('UPDATE balance SET hourly = (@hourly) WHERE id = (@id);').run({
 				hourly: null,
 				id: `${message.author.id}-${message.guild.id}`
 			});
 		}
 
-		if (Date.now() > balance.daily) {
+		if (Date.now() > updateBal.daily) {
 			await db.prepare('UPDATE balance SET daily = (@daily) WHERE id = (@id);').run({
 				daily: null,
 				id: `${message.author.id}-${message.guild.id}`
 			});
 		}
 
-		if (Date.now() > balance.weekly) {
+		if (Date.now() > updateBal.weekly) {
 			await db.prepare('UPDATE balance SET weekly = (@weekly) WHERE id = (@id);').run({
 				weekly: null,
 				id: `${message.author.id}-${message.guild.id}`
 			});
 		}
 
-		if (Date.now() > balance.monthly) {
+		if (Date.now() > updateBal.monthly) {
 			await db.prepare('UPDATE balance SET monthly = (@monthly) WHERE id = (@id);').run({
 				monthly: null,
 				id: `${message.author.id}-${message.guild.id}`
 			});
 		}
+
+		const balance = await this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
 
 		if (!args.length) {
 			const embed = new MessageEmbed()
@@ -97,10 +99,10 @@ module.exports = class extends Command {
 
 			let fullPrice = 0;
 
-			if (!balance.hourly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.hourlyClaimMax) + this.client.ecoPrices.hourlyClaimMin;
-			if (!balance.daily) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.dailyClaimMax) + this.client.ecoPrices.dailyClaimMin;
-			if (!balance.weekly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.weeklylaimMax) + this.client.ecoPrices.weeklyClaimMin;
-			if (!balance.monthly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.monthlyCliamMax) + this.client.ecoPrices.monthlyCliamMin;
+			if (!balance.hourly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.hourlyClaimMax - this.client.ecoPrices.hourlyClaimMin + 1) + this.client.ecoPrices.hourlyClaimMin;
+			if (!balance.hourly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.dailyClaimMax - this.client.ecoPrices.dailyClaimMin + 1) + this.client.ecoPrices.dailyClaimMin;
+			if (!balance.hourly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.weeklyClaimMax - this.client.ecoPrices.weeklyClaimMin + 1) + this.client.ecoPrices.weeklyClaimMin;
+			if (!balance.hourly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.monthlyClaimMax - this.client.ecoPrices.monthlyClaimMin + 1) + this.client.ecoPrices.monthlyClaimMin;
 
 			const endTime = new Date().getTime();
 
@@ -144,7 +146,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const hourlyAmount = Math.floor(Math.random() * this.client.ecoPrices.hourlyClaimMax) + this.client.ecoPrices.hourlyClaimMin;
+				const hourlyAmount = Math.floor(Math.random() * this.client.ecoPrices.hourlyClaimMax - this.client.ecoPrices.hourlyClaimMin + 1) + this.client.ecoPrices.hourlyClaimMin;
 
 				const endTime = new Date().getTime() + 3600000;
 
@@ -199,7 +201,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const dailyAmount = Math.floor(Math.random() * this.client.ecoPrices.dailyClaimMax) + this.client.ecoPrices.dailyClaimMin;
+				const dailyAmount = Math.floor(Math.random() * this.client.ecoPrices.dailyClaimMax - this.client.ecoPrices.dailyClaimMin + 1) + this.client.ecoPrices.dailyClaimMin;
 
 				const endTime = new Date().getTime() + 86400000;
 
@@ -254,7 +256,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const weeklyAmount = Math.floor(Math.random() * this.client.ecoPrices.weeklyClaimMax) + this.client.ecoPrices.weeklyClaimMin;
+				const weeklyAmount = Math.floor(Math.random() * this.client.ecoPrices.weeklyClaimMax - this.client.ecoPrices.weeklyClaimMin + 1) + this.client.ecoPrices.weeklyClaimMin;
 
 				const endTime = new Date().getTime() + 604800000;
 
@@ -309,7 +311,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const monthlyAmount = Math.floor(Math.random() * this.client.ecoPrices.monthlyClaimMax) + this.client.ecoPrices.monthlyClaimMin;
+				const monthlyAmount = Math.floor(Math.random() * this.client.ecoPrices.monthlyClaimMax - this.client.ecoPrices.monthlyClaimMin + 1) + this.client.ecoPrices.monthlyClaimMin;
 
 				const endTime = new Date().getTime() + 2629800000;
 
