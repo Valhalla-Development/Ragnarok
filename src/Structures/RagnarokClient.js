@@ -12,6 +12,7 @@ if (!db.get('giveaways')) db.set('giveaways', []);
 const { Manager } = require('erela.js');
 const Spotify = require('erela.js-spotify');
 const prettyMilliseconds = require('pretty-ms');
+const { SlashCreator } = require('slash-create');
 
 module.exports = class RagnarokClient extends Client {
 
@@ -31,19 +32,34 @@ module.exports = class RagnarokClient extends Client {
 
 		this.owners = options.ownerID;
 
+		// Slash Commands
+		const creator = new SlashCreator({
+			applicationID: options.applicationID,
+			publicKey: options.publicKey,
+			token: options.token
+		});
+
+		this.slashClient = creator;
+
 		// Music
-		const clientID = 'fee99683e65f44939358d0fb4f66837b';
-		const clientSecret = '6038f0595e944b8896a5ac05d1741c46';
+		const clientID = options.musicClientID;
+		const clientSecret = options.musicClientSecret;
 
 		const balancePrice = {
+			// Amount you earn per message & cooldown
+			maxPerM: 40,
+			minPerM: 10,
 			// Time new users have to wait until using the claim command
-			newUserTime: 259200000, // 3 Days
-			// Claim times
-			hourlyClaim: Math.floor(Math.random() * (150 - 50 + 1) + 50),
-			dailyClaim: Math.floor(Math.random() * (300 - 150 + 1) + 150),
-			weeklyClaim: Math.floor(Math.random() * (1000 - 750 + 1) + 750),
-			monthlyCliam: Math.floor(Math.random() * (6000 - 4000 + 1) + 4000),
-			yearlyClaim: Math.floor(Math.random() * (50000 - 47500 + 1) + 47500),
+			newUserTime: 604800000, // 7 Days
+			// Claim amount
+			hourlyClaimMin: 50,
+			hourlyClaimMax: 150,
+			dailyClaimMin: 150,
+			dailyClaimMax: 300,
+			weeklyClaimMin: 750,
+			weeklylaimMax: 1000,
+			monthlyClaimMin: 4000,
+			monthlyClaimMax: 6000,
 			// Fishing related prices
 			fishingRod: 10000,
 			treasure: 50000,
@@ -57,13 +73,12 @@ module.exports = class RagnarokClient extends Client {
 			// Farming with tools prices
 			farmingTools: 10000,
 			goldBar: 25000,
-			corn: 1500,
-			wheat: 750,
-			potatoes: 250,
-			tomatoes: 75,
+			corn: 1250,
+			wheat: 500,
+			potatoes: 165,
+			tomatoes: 50,
 			// Farming with tools timeouts
-			farmToolWinTime: 300000, // 5 Minutes
-			farmToolFailTime: 600000, // 10 Minutes
+			farmToolWinTime: 7200000, // 2 Hour
 			// Farming without tools prices
 			goldNugget: 15000,
 			barley: 1200,
@@ -72,7 +87,17 @@ module.exports = class RagnarokClient extends Client {
 			lettuce: 60,
 			// Farming without tools timeouts
 			farmWinTime: 600000, // 10 Minutes
-			farmFailTime: 900000 // 15 Minutes
+			farmFailTime: 900000, // 15 Minutes,
+			// Seed prices
+			cornSeed: 5000, // You get 10 per pack, multiSeed gives 5 of each seed type
+			wheatSeed: 2000,
+			potatoSeed: 660,
+			tomatoSeed: 200,
+			multiSeed: 3400,
+			// Seed Bag
+			seedBadLimit: 250,
+			// Beg timeout
+			begTimer: 120000
 		};
 
 		this.ecoPrices = balancePrice;
@@ -217,9 +242,9 @@ module.exports = class RagnarokClient extends Client {
 		}
 
 		process.on('unhandledRejection', (error) => {
-			if (this.user.id === '508756879564865539') {
+			/*if (this.user.id === '508756879564865539') {
 				this.channels.cache.get('685973401772621843').send(`${error.stack}`, { code: 'js' });
-			}
+			}*/
 			console.error(`Error: \n${error.stack}`);
 		});
 	}
