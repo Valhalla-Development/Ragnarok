@@ -41,6 +41,63 @@ module.exports = class extends Command {
 		const date = new Date().getTime();
 
 		if (user.id === message.author.id) {
+			let foundItemList = JSON.parse(balance.items);
+			let foundBoostList = JSON.parse(balance.boosts);
+
+			if (!foundItemList) {
+				foundItemList = {};
+			}
+
+			if (!foundBoostList) {
+				foundBoostList = {};
+			}
+
+			let currentTotalSeeds = 0;
+
+			if (foundItemList.cornSeeds) {
+				currentTotalSeeds += Number(foundItemList.cornSeeds);
+			} else {
+				currentTotalSeeds += Number(0);
+			}
+			if (foundItemList.wheatSeeds) {
+				currentTotalSeeds += Number(foundItemList.wheatSeeds);
+			} else {
+				currentTotalSeeds += Number(0);
+			}
+			if (foundItemList.potatoeSeeds) {
+				currentTotalSeeds += Number(foundItemList.potatoeSeeds);
+			} else {
+				currentTotalSeeds += Number(0);
+			}
+			if (foundItemList.tomatoeSeeds) {
+				currentTotalSeeds += Number(foundItemList.tomatoeSeeds);
+			} else {
+				currentTotalSeeds += Number(0);
+			}
+
+			let currentTotalFish = 0;
+
+			if (foundItemList.trout) {
+				currentTotalFish += Number(foundItemList.trout);
+			} else {
+				currentTotalFish += Number(0);
+			}
+			if (foundItemList.kingSalmon) {
+				currentTotalFish += Number(foundItemList.kingSalmon);
+			} else {
+				currentTotalFish += Number(0);
+			}
+			if (foundItemList.swordfish) {
+				currentTotalFish += Number(foundItemList.swordfish);
+			} else {
+				currentTotalFish += Number(0);
+			}
+			if (foundItemList.pufferfish) {
+				currentTotalFish += Number(foundItemList.pufferfish);
+			} else {
+				currentTotalFish += Number(0);
+			}
+
 			const embed1 = new MessageEmbed()
 				.setAuthor(`${user.username}'s Balance`, user.avatarURL())
 				.setDescription(`Leaderboard Rank: \`${rankPos}\``)
@@ -51,6 +108,8 @@ module.exports = class extends Command {
 					{ name: 'Steal Cooldown', value: `${Date.now() > balance.stealcool ? `\`Available!\`` : `\`${ms(balance.stealcool - date, { long: true })}\``}`, inline: true },
 					{ name: 'Fish Cooldown', value: `${Date.now() > balance.fishcool ? `\`Available!\`` : `\`${ms(balance.fishcool - date, { long: true })}\``}`, inline: true },
 					{ name: 'Farm Cooldown', value: `${Date.now() > balance.farmcool ? `\`Available!\`` : `\`${ms(balance.farmcool - date, { long: true })}\``}`, inline: true },
+					{ name: 'Seed Bag', value: `\`${Number(currentTotalSeeds).toLocaleString('en')}/${Number(foundBoostList.seedBag).toLocaleString('en')}\``, inline: true },
+					{ name: 'Fish Bag', value: `\`${Number(currentTotalFish).toLocaleString('en')}/${Number(foundBoostList.fishBag).toLocaleString('en')}\``, inline: true },
 					{ name: '**◎ Claim Cooldown**', value: `\n**Hourly:** ${Date.now() > balance.hourly ? `\`Available!\`` : `\`${ms(balance.hourly - date, { long: true })}\``}
 					\n**Daily:** ${Date.now() > balance.daily ? `\`Available!\`` : `\`${ms(balance.daily - date, { long: true })}\``}
 					\n**Weekly:** ${Date.now() > balance.weekly ? `\`Available!\`` : `\`${ms(balance.weekly - date, { long: true })}\``}
