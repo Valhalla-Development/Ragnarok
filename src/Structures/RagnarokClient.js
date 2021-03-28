@@ -61,6 +61,8 @@ module.exports = class RagnarokClient extends Client {
 			monthlyClaimMin: 4000,
 			monthlyClaimMax: 6000,
 			// Fishing related prices
+			fishBagFirst: 50,
+			fishBagLimit: 1000,
 			fishingRod: 10000,
 			treasure: 50000,
 			pufferfish: 3000,
@@ -71,6 +73,7 @@ module.exports = class RagnarokClient extends Client {
 			fishWinTime: 600000, // 10 Minutes
 			fishFailtime: 900000, // 15 Minutes
 			// Farming with tools prices
+			freeFarmLimit: 5,
 			farmingTools: 10000,
 			goldBar: 25000,
 			corn: 1250,
@@ -78,7 +81,8 @@ module.exports = class RagnarokClient extends Client {
 			potatoes: 165,
 			tomatoes: 50,
 			// Farming with tools timeouts
-			farmToolWinTime: 7200000, // 2 Hour
+			farmToolWinTime: 240000, // 4 Minutes
+			farmToolFailTime: 480000, // 8 Minutes
 			// Farming without tools prices
 			goldNugget: 15000,
 			barley: 1200,
@@ -89,11 +93,12 @@ module.exports = class RagnarokClient extends Client {
 			farmWinTime: 600000, // 10 Minutes
 			farmFailTime: 900000, // 15 Minutes,
 			// Seed prices
-			cornSeed: 5000, // You get 10 per pack, multiSeed gives 5 of each seed type
+			seedBagFirst: 50, // Inital bag purchase
+			seedBagLimit: 10000, // Max upgrade possible
+			cornSeed: 5000, // You get 10 per pack
 			wheatSeed: 2000,
 			potatoSeed: 660,
 			tomatoSeed: 200,
-			multiSeed: 3400,
 			// Seed Bag
 			seedBadLimit: 250,
 			// Beg timeout
