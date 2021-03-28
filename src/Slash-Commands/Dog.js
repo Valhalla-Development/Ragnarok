@@ -21,7 +21,7 @@ module.exports = class DogCommand extends SlashCommand {
 	constructor(creator) {
 		super(creator, {
 			name: 'dog',
-			description: 'Fetches a random meme from several sub-reddits.'
+			description: 'Fetches a random Dog from several sub-reddits.'
 		});
 		this.filePath = __filename;
 	}

@@ -22,7 +22,7 @@ module.exports = class CatCommand extends SlashCommand {
 	constructor(creator) {
 		super(creator, {
 			name: 'cat',
-			description: 'Fetches a random meme from several sub-reddits.'
+			description: 'Fetches a random Cat from several sub-reddits.'
 		});
 		this.filePath = __filename;
 	}

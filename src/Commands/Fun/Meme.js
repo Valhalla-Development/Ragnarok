@@ -26,7 +26,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			aliases: ['funny'],
-			description: 'Fetches a random meme from several sub-reddits.',
+			description: 'Fetches a random Meme from several sub-reddits.',
 			category: 'Fun'
 		});
 	}

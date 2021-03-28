@@ -20,9 +20,8 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Fetches a random meme from several sub-reddits.',
-			category: 'Hidden',
-			usage: 'Meme'
+			description: 'Fetches a random Dog from several sub-reddits.',
+			category: 'Hidden'
 		});
 	}
 
@@ -48,7 +47,7 @@ module.exports = class extends Command {
 
 			const noPost = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Meme**`,
+				.addField(`**${this.client.user.username} - Dog**`,
 					`**◎ Error:** I could not find a psot.`);
 			message.channel.send(noPost).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
