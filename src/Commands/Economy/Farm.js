@@ -51,6 +51,45 @@ module.exports = class extends Command {
 			}
 		}
 
+		const freeLimit = this.client.ecoPrices.freeFarmLimit;
+		let currentTotalFarm = 0;
+
+		if (foundItemList.barley) {
+			currentTotalFarm += Number(foundItemList.barley);
+		} else {
+			currentTotalFarm += Number(0);
+		}
+		if (foundItemList.spinach) {
+			currentTotalFarm += Number(foundItemList.spinach);
+		} else {
+			currentTotalFarm += Number(0);
+		}
+		if (foundItemList.strawberries) {
+			currentTotalFarm += Number(foundItemList.strawberries);
+		} else {
+			currentTotalFarm += Number(0);
+		}
+		if (foundItemList.lettuce) {
+			currentTotalFarm += Number(foundItemList.lettuce);
+		} else {
+			currentTotalFarm += Number(0);
+		}
+
+		if (!foundItemList.farmingTools) {
+			if (currentTotalFarm >= Number(freeLimit)) {
+				this.client.utils.messageDelete(message, 10000);
+
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Farm**`,
+						`**◎ Error:** Your farm bag is full! You can sell your produce with \`${prefix}shop sell\``)
+					.setFooter(`Consider purchasing farming tools to increase your limit.`);
+				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
+			}
+		}
+
 		let amt;
 		const farmChance = Math.random();
 		if (farmChance < 0.0018) { // 0.18%
@@ -59,7 +98,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
 			const goldChance = Math.random();
-			if (!balance.items || !foundItemList.farmingTools) {
+			if (!foundItemList.farmingTools) {
 				embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
 
 				if (goldChance < 0.80) { // 80% of this happening
@@ -160,7 +199,7 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			if (!balance.items || !foundItemList.farmingTools) { // No Tool
+			if (!foundItemList.farmingTools) { // No Tool
 				const barleyImage = new MessageAttachment('./Storage/Images/Economy/Barley.png', 'Barley.png');
 
 				embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
@@ -217,7 +256,7 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			if (!balance.items || !foundItemList.farmingTools) { // No Tool
+			if (!foundItemList.farmingTools) { // No Tool
 				const spinachImage = new MessageAttachment('./Storage/Images/Economy/Spinach.png', 'Spinach.png');
 
 				embed.attachFiles(spinachImage);
@@ -275,7 +314,7 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			if (!balance.items || !foundItemList.farmingTools) { // No Tool
+			if (!foundItemList.farmingTools) { // No Tool
 				const strawberryImage = new MessageAttachment('./Storage/Images/Economy/Strawberry.png', 'Strawberry.png');
 
 				embed.attachFiles(strawberryImage);
@@ -368,7 +407,7 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			if (!balance.items || !foundItemList.farmingTools) { // No Tool
+			if (!foundItemList.farmingTools) { // No Tool
 				const lettuceImage = new MessageAttachment('./Storage/Images/Economy/Lettuce.png', 'Lettuce.png');
 
 				embed.attachFiles(lettuceImage);
@@ -426,14 +465,14 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			if (!balance.items || !foundItemList.farmingTools) { // No Tool
+			if (!foundItemList.farmingTools) { // No Tool
 				embed.setFooter(`Purchase farming tools to never fail farming! - ${prefix}shop buy tools`);
 
-				const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
+				const endTime = new Date().getTime() + this.client.ecoPrices.farmFailTime;
 
 				balance.farmcool = Math.round(endTime);
 			} else { // Tool
-				const endTime = new Date().getTime() + this.client.ecoPrices.farmToolWinTime;
+				const endTime = new Date().getTime() + this.client.ecoPrices.farmToolFailTime;
 
 				balance.farmcool = Math.round(endTime);
 			}
