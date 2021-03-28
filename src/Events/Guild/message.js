@@ -114,8 +114,7 @@ module.exports = class extends Event {
 				cash: 0,
 				bank: 500,
 				total: 500,
-				claimNewUser: claimNewUserTime,
-				seedBackpack: 250
+				claimNewUser: claimNewUserTime
 			};
 		}
 		const curBal = balance.cash;

@@ -51,8 +51,7 @@ module.exports = class extends Command {
 				fishcool: balance.fishcool,
 				farmcool: balance.farmcool,
 				items: balance.items,
-				claimNewUser: balance.claimNewUser,
-				seedBackpack: balance.seedBackpack
+				claimNewUser: balance.claimNewUser
 			};
 
 			this.client.setBalance.run(addAll);
@@ -109,8 +108,7 @@ module.exports = class extends Command {
 			fishcool: balance.fishcool,
 			farmcool: balance.farmcool,
 			items: balance.items,
-			claimNewUser: balance.claimNewUser,
-			seedBackpack: balance.seedBackpack
+			claimNewUser: balance.claimNewUser
 		};
 
 		this.client.setBalance.run(addAll);
