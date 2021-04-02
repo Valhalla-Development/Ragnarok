@@ -25,6 +25,32 @@ module.exports = class extends Command {
 
 		const birthdayDB = db.prepare(`SELECT * FROM birthdays WHERE userid = ${user.id};`).get();
 
+		if (!birthdayConfigDB && birthdayDB) {
+			let year;
+
+			const bdayNow = moment();
+			const nextBirthday = birthdayDB.birthday.slice(0, birthdayDB.birthday.length - 4);
+
+			const birthdayNext = new Date(nextBirthday + bdayNow.year());
+			const getNow = new Date();
+			if (birthdayNext > getNow) {
+				year = bdayNow.year();
+			} else {
+				year = bdayNow.year() + 1;
+			}
+
+			const then = moment(nextBirthday + year);
+			const diffInDays = bdayNow.diff(then, 'days');
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Birthday**`,
+					`**◎** ${user}'s **next** birthday is in **${diffInDays.toString().slice(1)}** days, on **${nextBirthday + year}**`)
+				.setFooter('This server currently has this feature disabled, you will not receive a message in this server.');
+			message.channel.send(embed);
+			return;
+		}
+
 		if (!birthdayConfigDB) {
 			this.client.utils.messageDelete(message, 10000);
 
