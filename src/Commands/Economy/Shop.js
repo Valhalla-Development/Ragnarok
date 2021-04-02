@@ -152,7 +152,7 @@ module.exports = class extends Command {
 
 				if (foundBoostList.fishBag) {
 					if (Number(foundBoostList.fishBag) < Number(fishBagMax)) {
-						const upgradeFishBag = foundBoostList.fishBag * 60;
+						const upgradeFishBag = foundBoostList.fishBag * 30;
 						arr.push(`\u3000 \`${prefix}shop upgrade fishbag\` - <:coin:706659001164628008> \`${upgradeFishBag.toLocaleString('en')}\` Upgrade by 25, current capacity: \`${Number(currentTotalFish).toLocaleString('en')}\`/\`${Number(foundBoostList.fishBag).toLocaleString('en')}\``);
 					}
 				}
@@ -266,7 +266,7 @@ module.exports = class extends Command {
 					return;
 				}
 
-				if (balance.bank < foundBoostList.fishBag * 60) {
+				if (balance.bank < foundBoostList.fishBag * 30) {
 					this.client.utils.messageDelete(message, 10000);
 
 					const notEnough = foundBoostList.fishBag * 10 - Number(balance.bank);
@@ -281,8 +281,8 @@ module.exports = class extends Command {
 					return;
 				}
 
-				balance.bank = Number(balance.bank) - foundBoostList.fishBag * 60;
-				balance.total = Number(balance.total) - foundBoostList.fishBag * 60;
+				balance.bank = Number(balance.bank) - foundBoostList.fishBag * 30;
+				balance.total = Number(balance.total) - foundBoostList.fishBag * 30;
 
 				this.client.setBalance.run(balance);
 
