@@ -104,7 +104,7 @@ module.exports = class extends Command {
 				}
 
 				if (args[1] === 'off') {
-					if (status) {
+					if (!status) {
 						this.client.utils.messageDelete(message, 10000);
 
 						const embed = new MessageEmbed()
