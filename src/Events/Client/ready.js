@@ -1,9 +1,12 @@
+/* eslint-disable max-nested-callbacks */
 /* eslint-disable consistent-return */
 const Event = require('../../Structures/Event');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const chalk = require('chalk');
 const { MessageEmbed } = require('discord.js');
+const moment = require('moment');
+const { CronJob } = require('cron');
 
 module.exports = class extends Event {
 
@@ -57,9 +60,8 @@ module.exports = class extends Event {
 			.on('error', m => console.log('slash-create error:', m));
 
 		// Cooldowns
-		function coolDowns(grabClient) {
-			grabClient.setInterval(() => { // welp mute is broken lmao
-				/*
+		const job = new CronJob('* * * * * *', () => {
+		/*
 				// Mutes
 				const grabMutes = db.prepare('SELECT * FROM mute').all();
 
@@ -125,61 +127,160 @@ module.exports = class extends Event {
 					}
 				});*/
 
-				// Bans
-				const grabBans = db.prepare('SELECT * FROM ban').all();
+			// Bans
+			const grabBans = db.prepare('SELECT * FROM ban').all();
 
-				grabBans.forEach(r => {
-					const guild = grabClient.guilds.cache.get(r.guildid);
-					if (!guild) return;
+			grabBans.forEach(r => {
+				const guild = this.client.guilds.cache.get(r.guildid);
+				if (!guild) return;
 
-					guild.fetchBans().then(bans => {
-						const userCheck = bans.filter(ban => ban.user.id === r.userid);
-						if (!userCheck.first()) {
-							db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+				guild.fetchBans().then(bans => {
+					const userCheck = bans.filter(ban => ban.user.id === r.userid);
+					if (!userCheck.first()) {
+						db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+						return;
+					}
+				});
+
+				if (Date.now() > r.endtime) {
+					try {
+						guild.members.unban(r.userid);
+					} catch {
+						db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+						return;
+					}
+
+					const channelGrab = db.prepare(`SELECT channel FROM ban WHERE id = ?`).get(`${guild.id}-${r.userid}`);
+					const findChannel = this.client.channels.cache.get(channelGrab.channel);
+
+					const embed = new MessageEmbed()
+						.setThumbnail(this.client.user.displayAvatarURL())
+						.setColor(this.client.utils.color(guild.me.displayHexColor))
+						.addField('Action | Un-Ban', [
+							`**◎ User:** ${r.username}`,
+							`**◎ Reason:** Ban time ended.`
+						])
+						.setTimestamp();
+					findChannel.send(embed);
+
+					db.prepare('DELETE FROM mute WHERE id = ?').run(`${guild.id}-${r.userid}`);
+
+					const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`).get();
+					const dblogs = dbid.channel;
+					const chnCheck = this.client.channels.cache.get(dblogs);
+					if (!chnCheck) {
+						db.prepare('DELETE FROM logging WHERE guildid = ?').run(guild.id);
+					}
+
+					if (dbid) {
+						this.client.channels.cache.get(dblogs).send(embed);
+					}
+				}
+			});
+
+			// Birthdays
+			const grabBdays = db.prepare('SELECT * FROM birthdays').all();
+			const grabBdaysConfig = db.prepare('SELECT * FROM birthdayConfig').all();
+
+			grabBdaysConfig.forEach(a => {
+				const guild = this.client.guilds.cache.get(a.guildid);
+				if (!guild) {
+					db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(guild.id);
+					return;
+				}
+				// Cache users
+				guild.members.fetch();
+
+				const channel = guild.channels.cache.get(a.channel);
+				if (!channel) {
+					db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(guild.id);
+					return;
+				}
+				grabBdays.forEach(b => {
+					const userids = b.userid;
+					const foundUsers = guild.members.cache.filter(member => member.id === userids);
+
+					foundUsers.forEach(c => {
+						const user = guild.members.cache.get(c.user.id);
+						const grabUser = db.prepare(`SELECT * FROM birthdays WHERE userid = ${c.user.id};`).get();
+
+						const now = moment();
+
+						let foundLastRun = JSON.parse(grabUser.lastRun);
+
+						if (!foundLastRun) {
+							foundLastRun = [];
+						}
+
+						if (foundLastRun.includes(`${guild.id}-${now.year().toString()}`)) return;
+
+						const checkDate = new Date();
+						checkDate.setFullYear('2018');
+						checkDate.setHours('0');
+						checkDate.setMilliseconds('0');
+						checkDate.setSeconds('0');
+						checkDate.setMinutes('0');
+
+						const savedDate = new Date(grabUser.birthday);
+						savedDate.setFullYear('2018');
+						savedDate.setHours('0');
+						savedDate.setMilliseconds('0');
+						savedDate.setSeconds('0');
+						savedDate.setMinutes('0');
+
+						if (checkDate.getTime() === savedDate.getTime()) {
+							let msg;
+
+							const role = guild.roles.cache.get(a.role);
+
+							if (role) {
+								msg = `It's ${user}'s birthday! ${role} Say Happy Birthday! 🍰`;
+							} else {
+								msg = `It's ${user}'s birthday! Say Happy Birthday! 🍰`;
+							}
+							channel.send(msg);
+
+							const lastYear = now.year() - 1;
+							if (foundLastRun.includes(`${guild.id}-${lastYear}`)) {
+								const findString = foundLastRun.indexOf(`${guild.id}-${lastYear}`);
+								foundLastRun[findString] = `${guild.id}-${now.year().toString()}`;
+							} else {
+								foundLastRun.push(`${guild.id}-${now.year().toString()}`);
+							}
+
+							db.prepare('UPDATE birthdays SET lastRun = (@lastRun);').run({
+								lastRun: JSON.stringify(foundLastRun)
+							});
 							return;
 						}
 					});
-
-					if (Date.now() > r.endtime) {
-						try {
-							guild.members.unban(r.userid);
-						} catch {
-							db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
-							return;
-						}
-
-						const channelGrab = db.prepare(`SELECT channel FROM ban WHERE id = ?`).get(`${guild.id}-${r.userid}`);
-						const findChannel = grabClient.channels.cache.get(channelGrab.channel);
-
-						const embed = new MessageEmbed()
-							.setThumbnail(grabClient.user.displayAvatarURL())
-							.setColor(grabClient.utils.color(guild.me.displayHexColor))
-							.addField('Action | Un-Ban', [
-								`**◎ User:** ${r.username}`,
-								`**◎ Reason:** Ban time ended.`
-							])
-							.setTimestamp();
-						findChannel.send(embed);
-
-						db.prepare('DELETE FROM mute WHERE id = ?').run(`${guild.id}-${r.userid}`);
-
-						const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`).get();
-						const dblogs = dbid.channel;
-						const chnCheck = grabClient.channels.cache.get(dblogs);
-						if (!chnCheck) {
-							db.prepare('DELETE FROM logging WHERE guildid = ?').run(guild.id);
-						}
-
-						if (dbid) {
-							grabClient.channels.cache.get(dblogs).send(embed);
-						}
-					}
 				});
-			}, 5000);
-		}
-		coolDowns(this.client);
+			});
+		}, null, true, 'America/Los_Angeles');
+		job.start();
+
 
 		// Database Creation
+		// Birthday table
+		const birthdaystable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'birthdays\';').get();
+		if (!birthdaystable['count(*)']) {
+			console.log('birthdays table created!');
+			db.prepare('CREATE TABLE birthdays (userid TEXT PRIMARY KEY, birthday TEXT, lastRun BLOB);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_birthdays_id ON birthdays (userid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// Birthday Config table
+		const birthdayconfigtable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'birthdayConfig\';').get();
+		if (!birthdayconfigtable['count(*)']) {
+			console.log('birthday config table created!');
+			db.prepare('CREATE TABLE birthdayConfig (guildid TEXT PRIMARY KEY, channel TEXT, role TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_birthdayConfig_id ON birthdayConfig (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
 		// Ban table
 		const bantable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'ban\';').get();
 		if (!bantable['count(*)']) {
