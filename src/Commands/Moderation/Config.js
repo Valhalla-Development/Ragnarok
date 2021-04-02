@@ -35,8 +35,8 @@ module.exports = class extends Command {
 					`\u3000 \`${prefix}config autorole <@role>\` : Sets the role users are given when they join the guild`,
 					`\u3000`,
 					`**◎ Birthday:**`,
-					`\u3000 \`${prefix}config birthday <#channel>\` : Sets the channel where birthday alerts are sent.`,
-					`\u3000 \`${prefix}config birthday [@role]\` : Sets the (optional) role is pinged when it is someones birthday.`,
+					`\u3000 \`${prefix}config birthday channel <#channel>\` : Sets the channel where birthday alerts are sent.`,
+					`\u3000 \`${prefix}config birthday role [@role]\` : Sets the (optional) role is pinged when it is someones birthday.`,
 					`\u3000`,
 					`**◎ Dad Bot:**`,
 					`\u3000 \`${prefix}config dadbot <on/off>\` : Toggles the Dad bot module`,
@@ -98,7 +98,7 @@ module.exports = class extends Command {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Error:** Available options are:\n\`${prefix}config birthday <#channel>\` : Sets the channel where birthday alerts are sent.\n\`${prefix}config birthday [@role]\` : Sets the (optional) role is pinged when it is someones birthday.\nor \`${prefix}config birthday off\``);
+							`**◎ Error:** Available options are:\n\`${prefix}config birthday channel <#channel>\` : Sets the channel where birthday alerts are sent.\n\`${prefix}config birthday role [@role]\` : Sets the (optional) role is pinged when it is someones birthday.\nor \`${prefix}config birthday off\``);
 					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
