@@ -57,7 +57,7 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
-					`**◎ Error:** Birthdays are currently disabled on this server, an admin may need to enable this function.`);
+					`**◎ Error:** Birthdays are currently disabled on this server, an admin may need to enable this function.\nThey can do this by running \`${prefix}config birthday\``);
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
