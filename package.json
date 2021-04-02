@@ -1,6 +1,6 @@
 {
   "name": "ragnarok",
-  "version": "3.2.922",
+  "version": "3.2.942",
   "description": "A multi-purpose Discord bot.",
   "main": "src/index",
   "repository": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git",
@@ -13,6 +13,7 @@
     "chalk": "^4.1.0",
     "cleverbot-free": "^1.0.4",
     "common-tags": "^1.8.0",
+    "cron": "^1.8.2",
     "discord-fetch-all": "^3.0.2",
     "discord-giveaways": "^4.2.1",
     "discord.js": "^12.3.1",
