@@ -34,6 +34,10 @@ module.exports = class extends Command {
 					`**◎ Autorole:**`,
 					`\u3000 \`${prefix}config autorole <@role>\` : Sets the role users are given when they join the guild`,
 					`\u3000`,
+					`**◎ Birthday:**`,
+					`\u3000 \`${prefix}config birthday <#channel>\` : Sets the channel where birthday alerts are sent.`,
+					`\u3000 \`${prefix}config birthday [@role]\` : Sets the (optional) role is pinged when it is someones birthday.`,
+					`\u3000`,
 					`**◎ Dad Bot:**`,
 					`\u3000 \`${prefix}config dadbot <on/off>\` : Toggles the Dad bot module`,
 					`\u3000`,
@@ -80,8 +84,142 @@ module.exports = class extends Command {
 			return;
 		}
 
-		// Level toggle
+		// Birthday config
+		if (args[0] === 'birthday') {
+			this.client.getTable = db.prepare('SELECT * FROM birthdayConfig WHERE guildid = ?');
 
+			let status;
+			if (message.guild.id) {
+				status = this.client.getTable.get(message.guild.id);
+
+				if (args[1] === undefined) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Config**`,
+							`**◎ Error:** Available options are:\n\`${prefix}config birthday <#channel>\` : Sets the channel where birthday alerts are sent.\n\`${prefix}config birthday [@role]\` : Sets the (optional) role is pinged when it is someones birthday.\nor \`${prefix}config birthday off\``);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				if (args[1] === 'off') {
+					if (status) {
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Error:** Birthday function is already disabled!`);
+						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Config**`,
+							`**◎ Success:** Birthday function disabled!`);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(message.guild.id);
+					return;
+				}
+
+				if (args[1] === 'channel') {
+					const lchan = message.mentions.channels.first();
+
+					if (args[2] === undefined) {
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Error:** Please mention a channel!`);
+						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+
+					if (!lchan) {
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Error:** Ensure you are tagging a valid channel, I had difficulty locating ${lchan}`);
+						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					} else if (!status) {
+						const insert = db.prepare('INSERT INTO birthdayConfig (guildid, channel) VALUES (@guildid, @channel);');
+						insert.run({
+							guildid: `${message.guild.id}`,
+							channel: `${lchan.id}`
+						});
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Success:** Birthday channel is now set to ${lchan}`);
+						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					} else {
+						const update = db.prepare('UPDATE birthdayConfig SET channel = (@channel) WHERE guildid = (@guildid);');
+						update.run({
+							guildid: `${message.guild.id}`,
+							channel: `${lchan.id}`
+						});
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Success:** Birthday channel updated to ${lchan}`);
+						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					}
+				}
+
+				if (args[1] === 'role') {
+					if (!status) {
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Error:** Please set a channel before setting the role! You can do this by running: \`${prefix}config birthday channel #channel\``);
+						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+
+					const role = message.mentions.roles.first();
+
+					if (!role) {
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Error:** A role must be mentioned`);
+						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+
+					const update = db.prepare('UPDATE birthdayConfig SET role = (@role) WHERE guildid = (@guildid);');
+					update.run({
+						guildid: `${message.guild.id}`,
+						role: `${role.id}`
+					});
+
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Config**`,
+							`**◎ Success:** Birthday Role updated to ${role}`);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				}
+			}
+		}
+
+		// Level toggle
 		if (args[0] === 'level') {
 			this.client.getTable = db.prepare('SELECT * FROM level WHERE guildid = ?');
 
