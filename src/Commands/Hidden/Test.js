@@ -7,7 +7,7 @@ module.exports = class extends Command {
 		super(...args, {
 			aliases: ['upgrade', 'boosts', 'store'],
 			description: 'Purchase upgrades',
-			category: 'Economy',
+			category: 'Hidden',
 			ownerOnly: true
 		});
 	}
