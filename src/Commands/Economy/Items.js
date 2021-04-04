@@ -2,6 +2,8 @@
 /* eslint-disable no-inline-comments */
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
+const SQLite = require('better-sqlite3');
+const db = new SQLite('./Storage/DB/db.sqlite');
 
 module.exports = class extends Command {
 
@@ -14,6 +16,9 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
+		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
+		const { prefix } = prefixgrab;
+
 		const balance = this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
 
 		if (!balance.items) {
@@ -28,7 +33,11 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const foundItemList = JSON.parse(balance.items);
+		const fishingPrice = this.client.ecoPrices.fishingRod;
+		const farmingPrice = this.client.ecoPrices.farmingTools;
+
+		let foundItemList = JSON.parse(balance.items);
+		let foundBoostList = JSON.parse(balance.boosts);
 
 		let troutPrice;
 		let salmonPrice;
@@ -82,10 +91,88 @@ module.exports = class extends Command {
 		if (foundItemList.strawberries) fullPrice += Number(foundItemList.strawberries) * this.client.ecoPrices.strawberries;
 		if (foundItemList.lettuce) fullPrice += Number(foundItemList.lettuce) * this.client.ecoPrices.lettuce;
 
+		let currentTotalSeeds = 0;
+
+		if (foundItemList.cornSeeds) {
+			currentTotalSeeds += Number(foundItemList.cornSeeds);
+		} else {
+			currentTotalSeeds += Number(0);
+		}
+		if (foundItemList.wheatSeeds) {
+			currentTotalSeeds += Number(foundItemList.wheatSeeds);
+		} else {
+			currentTotalSeeds += Number(0);
+		}
+		if (foundItemList.potatoeSeeds) {
+			currentTotalSeeds += Number(foundItemList.potatoeSeeds);
+		} else {
+			currentTotalSeeds += Number(0);
+		}
+		if (foundItemList.tomatoeSeeds) {
+			currentTotalSeeds += Number(foundItemList.tomatoeSeeds);
+		} else {
+			currentTotalSeeds += Number(0);
+		}
+
+		let currentTotalFish = 0;
+
+		if (foundItemList.trout) {
+			currentTotalFish += Number(foundItemList.trout);
+		} else {
+			currentTotalFish += Number(0);
+		}
+		if (foundItemList.kingSalmon) {
+			currentTotalFish += Number(foundItemList.kingSalmon);
+		} else {
+			currentTotalFish += Number(0);
+		}
+		if (foundItemList.swordfish) {
+			currentTotalFish += Number(foundItemList.swordfish);
+		} else {
+			currentTotalFish += Number(0);
+		}
+		if (foundItemList.pufferfish) {
+			currentTotalFish += Number(foundItemList.pufferfish);
+		} else {
+			currentTotalFish += Number(0);
+		}
+
+		let currentTotalFarm = 0;
+
+		if (foundItemList.corn) {
+			currentTotalFarm += Number(foundItemList.corn);
+		} else {
+			currentTotalFarm += Number(0);
+		}
+		if (foundItemList.wheat) {
+			currentTotalFarm += Number(foundItemList.wheat);
+		} else {
+			currentTotalFarm += Number(0);
+		}
+		if (foundItemList.potatoes) {
+			currentTotalFarm += Number(foundItemList.potatoes);
+		} else {
+			currentTotalFarm += Number(0);
+		}
+		if (foundItemList.tomatoes) {
+			currentTotalFarm += Number(foundItemList.tomatoes);
+		} else {
+			currentTotalFarm += Number(0);
+		}
+
+		if (!foundBoostList) {
+			foundBoostList = {};
+		}
+
+		if (!foundItemList) {
+			foundItemList = {};
+		}
+
 		let fields;
 
 		if (!foundItemList.farmingTools) {
 			fields = [
+				`**◎ Crops:**`,
 				`\u3000 Barley: Own ${foundItemList.barley === undefined ? `\`0\`` : `\`${foundItemList.barley}\` - <:coin:706659001164628008> \`${barleyPrice.toLocaleString('en')}\``}`,
 				`\u3000 Spinach: Own ${foundItemList.spinach === undefined ? `\`0\`` : `\`${foundItemList.spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``}`,
 				`\u3000 Strawberries: Own ${foundItemList.strawberries === undefined ? `\`0\`` : `\`${foundItemList.strawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``}`,
@@ -105,16 +192,6 @@ module.exports = class extends Command {
 				`\u3000 Potatoes: Own ${foundItemList.potatoeSeeds === undefined ? `\`0\`` : `\`${foundItemList.potatoeSeeds}\``}`,
 				`\u3000 Tomatoes: Own ${foundItemList.tomatoeSeeds === undefined ? `\`0\`` : `\`${foundItemList.tomatoeSeeds}\``}`
 			];
-
-			if (foundItemList.barley || foundItemList.spinach || foundItemList.strawberries || foundItemList.lettuce) {
-				const lowCrops = [
-					`\u3000 Barley: Own ${foundItemList.barley === undefined ? `\`0\`` : `\`${foundItemList.barley}\` - <:coin:706659001164628008> \`${barleyPrice.toLocaleString('en')}\``}`,
-					`\u3000 Spinach: Own ${foundItemList.spinach === undefined ? `\`0\`` : `\`${foundItemList.spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``}`,
-					`\u3000 Strawberries: Own ${foundItemList.strawberries === undefined ? `\`0\`` : `\`${foundItemList.strawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``}`,
-					`\u3000 Lettuce: Own ${foundItemList.lettuce === undefined ? `\`0\`` : `\`${foundItemList.lettuce}\` - <:coin:706659001164628008> \`${lettucePrice.toLocaleString('en')}\``}`
-				];
-				fields.push(lowCrops.join('\n'));
-			}
 		}
 
 		if (!args.length) {
@@ -136,8 +213,11 @@ module.exports = class extends Command {
 					`\u3000 Gold Nugget: Own ${foundItemList.goldNugget === undefined ? `\`0\`` : `\`${foundItemList.goldNugget}\` - <:coin:706659001164628008> \`${goldNuggetPrice.toLocaleString('en')}\``}`,
 					`\u200b`,
 					`**◎ Permanent Items:**`,
-					`\u3000 Fishing Rod: \`${foundItemList.fishingRod === undefined ? 'Not Owned' : 'Owned'}\``,
-					`\u3000 Farming Tools: \`${foundItemList.farmingTools === undefined ? 'Not Owned' : 'Owned'}\``
+					`\u3000 ${!foundItemList.fishingRod ? `\`${prefix}shop buy rod\` - <:coin:706659001164628008> \`${fishingPrice.toLocaleString('en')}\`` : `Fishing Rod - \`Owned\``}`,
+					`\u3000 Fish Bag - ${!foundBoostList.fishBag ? `\`Not Owned\` - Buy fishing rod to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFish)}\`/\`${foundBoostList.fishBag}\``}`,
+					`\u3000 ${!foundItemList.farmingTools ? `\`${prefix}shop buy tools\` - <:coin:706659001164628008> \`${farmingPrice.toLocaleString('en')}\`` : `Farming Tools - \`Owned\``}`,
+					`\u3000 Seed Bag - ${!foundBoostList.seedBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalSeeds)}\`/\`${foundBoostList.seedBag}\``}`,
+					`\u3000 Farm Bag - ${!foundBoostList.farmBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.farmBag}\``}`
 				]);
 			if (fullPrice > 0) {
 				embed.setFooter(`Total Value: ${fullPrice.toLocaleString('en')}`);
