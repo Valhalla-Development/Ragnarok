@@ -98,88 +98,27 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
 			const goldChance = Math.random();
-			if (!foundItemList.farmingTools) {
-				embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
+			embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
 
-				if (goldChance < 0.80) { // 80% of this happening
-					const goldNuggetImage = new MessageAttachment('./Storage/Images/Economy/GoldNugget.png', 'GoldNugget.png');
+			if (goldChance < 0.80) { // 80% of this happening
+				const goldNuggetImage = new MessageAttachment('./Storage/Images/Economy/GoldNugget.png', 'GoldNugget.png');
 
-					embed.attachFiles(goldNuggetImage);
-					embed.setThumbnail('attachment://GoldNugget.png');
+				embed.attachFiles(goldNuggetImage);
+				embed.setThumbnail('attachment://GoldNugget.png');
 
-					name = 'Gold Nugget';
+				name = 'Gold Nugget';
 
-					price = this.client.ecoPrices.goldNugget;
-					if (foundItemList.goldNugget) {
-						amt = Number(foundItemList.goldNugget) + Number(1);
-					} else {
-						amt = Number(1);
-					}
-					foundItemList.goldNugget = amt.toString();
-
-					const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
-
-					balance.farmcool = Math.round(endTime);
+				price = this.client.ecoPrices.goldNugget;
+				if (foundItemList.goldNugget) {
+					amt = Number(foundItemList.goldNugget) + Number(1);
 				} else {
-					const goldBarImage = new MessageAttachment('./Storage/Images/Economy/GoldBar.png', 'GoldBar.png');
-
-					embed.attachFiles(goldBarImage);
-					embed.setThumbnail('attachment://GoldBar.png');
-
-					name = 'Gold Bar';
-
-					price = this.client.ecoPrices.goldBar;
-					if (foundItemList.goldBar) {
-						amt = Number(foundItemList.goldBar) + Number(1);
-					} else {
-						amt = Number(1);
-					}
-					foundItemList.goldBar = amt.toString();
-
-					const endTime = new Date().getTime() + this.client.ecoPrices.farmToolWinTime;
-
-					balance.farmcool = Math.round(endTime);
+					amt = Number(1);
 				}
-			} else if (foundItemList.farmingTools) { // Tool
-				if (goldChance < 0.80) { // 80% of this happening
-					const goldBarImage = new MessageAttachment('./Storage/Images/Economy/GoldBar.png', 'GoldBar.png');
+				foundItemList.goldNugget = amt.toString();
 
-					embed.attachFiles(goldBarImage);
-					embed.setThumbnail('attachment://GoldBar.png');
+				const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
-					name = 'Gold Bar';
-
-					price = this.client.ecoPrices.goldBar;
-					if (foundItemList.goldBar) {
-						amt = Number(foundItemList.goldBar) + Number(1);
-					} else {
-						amt = Number(1);
-					}
-					foundItemList.goldBar = amt.toString();
-
-					const endTime = new Date().getTime() + this.client.ecoPrices.farmToolWinTime;
-
-					balance.farmcool = Math.round(endTime);
-				} else {
-					const goldNuggetImage = new MessageAttachment('./Storage/Images/Economy/GoldNugget.png', 'GoldNugget.png');
-
-					embed.attachFiles(goldNuggetImage);
-					embed.setThumbnail('attachment://GoldNugget.png');
-
-					name = 'Gold Nugget';
-
-					price = this.client.ecoPrices.goldNugget;
-					if (foundItemList.goldNugget) {
-						amt = Number(foundItemList.goldNugget) + Number(1);
-					} else {
-						amt = Number(1);
-					}
-					foundItemList.goldNugget = amt.toString();
-
-					const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
-
-					balance.farmcool = Math.round(endTime);
-				}
+				balance.farmcool = Math.round(endTime);
 			}
 
 			this.client.setBalance.run(balance);
@@ -199,46 +138,25 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			if (!foundItemList.farmingTools) { // No Tool
-				const barleyImage = new MessageAttachment('./Storage/Images/Economy/Barley.png', 'Barley.png');
+			const barleyImage = new MessageAttachment('./Storage/Images/Economy/Barley.png', 'Barley.png');
 
-				embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
-				embed.attachFiles(barleyImage);
-				embed.setThumbnail('attachment://Barley.png');
+			embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
+			embed.attachFiles(barleyImage);
+			embed.setThumbnail('attachment://Barley.png');
 
-				name = 'Barley';
+			name = 'Barley';
 
-				price = this.client.ecoPrices.barley;
-				if (foundItemList.barley) {
-					amt = Number(foundItemList.barley) + Number(1);
-				} else {
-					amt = Number(1);
-				}
-				foundItemList.barley = amt.toString();
-
-				const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
-
-				balance.farmcool = Math.round(endTime);
-			} else { // Tool
-				const cornImage = new MessageAttachment('./Storage/Images/Economy/Corn.png', 'Corn.png');
-
-				embed.attachFiles(cornImage);
-				embed.setThumbnail('attachment://Corn.png');
-
-				name = 'Corn';
-
-				price = this.client.ecoPrices.corn;
-				if (foundItemList.corn) {
-					amt = Number(foundItemList.corn) + Number(1);
-				} else {
-					amt = Number(1);
-				}
-				foundItemList.corn = amt.toString();
-
-				const endTime = new Date().getTime() + this.client.ecoPrices.farmToolWinTime;
-
-				balance.farmcool = Math.round(endTime);
+			price = this.client.ecoPrices.barley;
+			if (foundItemList.barley) {
+				amt = Number(foundItemList.barley) + Number(1);
+			} else {
+				amt = Number(1);
 			}
+			foundItemList.barley = amt.toString();
+
+			const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
+
+			balance.farmcool = Math.round(endTime);
 
 			this.client.setBalance.run(balance);
 
@@ -256,47 +174,26 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			if (!foundItemList.farmingTools) { // No Tool
-				const spinachImage = new MessageAttachment('./Storage/Images/Economy/Spinach.png', 'Spinach.png');
+			const spinachImage = new MessageAttachment('./Storage/Images/Economy/Spinach.png', 'Spinach.png');
 
-				embed.attachFiles(spinachImage);
-				embed.setThumbnail('attachment://Spinach.png');
+			embed.attachFiles(spinachImage);
+			embed.setThumbnail('attachment://Spinach.png');
 
-				embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
+			embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
 
-				name = 'Spinach';
+			name = 'Spinach';
 
-				price = this.client.ecoPrices.spinach;
-				if (foundItemList.spinach) {
-					amt = Number(foundItemList.spinach) + Number(1);
-				} else {
-					amt = Number(1);
-				}
-				foundItemList.spinach = amt.toString();
-
-				const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
-
-				balance.farmcool = Math.round(endTime);
-			} else { // Tool
-				const wheatImage = new MessageAttachment('./Storage/Images/Economy/Wheat.png', 'Wheat.png');
-
-				embed.attachFiles(wheatImage);
-				embed.setThumbnail('attachment://Wheat.png');
-
-				name = 'Wheat';
-
-				price = this.client.ecoPrices.wheat;
-				if (foundItemList.wheat) {
-					amt = Number(foundItemList.wheat) + Number(1);
-				} else {
-					amt = Number(1);
-				}
-				foundItemList.wheat = amt.toString();
-
-				const endTime = new Date().getTime() + this.client.ecoPrices.farmToolWinTime;
-
-				balance.farmcool = Math.round(endTime);
+			price = this.client.ecoPrices.spinach;
+			if (foundItemList.spinach) {
+				amt = Number(foundItemList.spinach) + Number(1);
+			} else {
+				amt = Number(1);
 			}
+			foundItemList.spinach = amt.toString();
+
+			const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
+
+			balance.farmcool = Math.round(endTime);
 
 			this.client.setBalance.run(balance);
 
@@ -314,80 +211,24 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			if (!foundItemList.farmingTools) { // No Tool
-				const strawberryImage = new MessageAttachment('./Storage/Images/Economy/Strawberry.png', 'Strawberry.png');
+			const strawberryImage = new MessageAttachment('./Storage/Images/Economy/Strawberry.png', 'Strawberry.png');
 
-				embed.attachFiles(strawberryImage);
-				embed.setThumbnail('attachment://Strawberry.png');
+			embed.attachFiles(strawberryImage);
+			embed.setThumbnail('attachment://Strawberry.png');
 
-				embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
+			embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
 
-				name = 'Strawberries';
+			name = 'Strawberries';
 
-				price = this.client.ecoPrices.strawberries;
-				if (foundItemList.strawberries) {
-					amt = Number(foundItemList.strawberries) + Number(1);
-				} else {
-					amt = Number(1);
-				}
-				foundItemList.strawberries = amt.toString();
-
-				const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
-
-				balance.farmcool = Math.round(endTime);
-			} else { // Tool
-				const potatoImage = new MessageAttachment('./Storage/Images/Economy/Potatoe.png', 'Potatoe.png');
-
-				embed.attachFiles(potatoImage);
-				embed.setThumbnail('attachment://Potatoe.png');
-
-				name = 'Potatoes';
-
-				price = this.client.ecoPrices.potatoes;
-				if (foundItemList.potatoes) {
-					amt = Number(foundItemList.potatoes) + Number(1);
-				} else {
-					amt = Number(1);
-				}
-				foundItemList.potatoes = amt.toString();
-
-				const endTime = new Date().getTime() + this.client.ecoPrices.farmToolWinTime;
-
-				balance.farmcool = Math.round(endTime);
-			}
-
-			this.client.setBalance.run(balance);
-
-			await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-				items: JSON.stringify(foundItemList),
-				id: `${message.author.id}-${message.guild.id}`
-			});
-
-			embed.addField(`**${this.client.user.username} - Farm**`,
-				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-			message.channel.send(embed);
-			return;
-		} else if (balance.items && foundItemList.farmingTools && farmChance >= 0.3718) { // 50%
-			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
-
-			const tomatoImage = new MessageAttachment('./Storage/Images/Economy/Tomatoes.png', 'Tomatoes.png');
-
-			embed.attachFiles(tomatoImage);
-			embed.setThumbnail('attachment://Tomatoes.png');
-
-			name = 'Tomatoes';
-
-			price = this.client.ecoPrices.tomatoes;
-			if (foundItemList.tomatoes) {
-				amt = Number(foundItemList.tomatoes) + Number(1);
+			price = this.client.ecoPrices.strawberries;
+			if (foundItemList.strawberries) {
+				amt = Number(foundItemList.strawberries) + Number(1);
 			} else {
 				amt = Number(1);
 			}
-			foundItemList.tomatoes = amt.toString();
+			foundItemList.strawberries = amt.toString();
 
-			const endTime = new Date().getTime() + this.client.ecoPrices.farmToolWinTime;
+			const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
 			balance.farmcool = Math.round(endTime);
 
@@ -407,47 +248,26 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			if (!foundItemList.farmingTools) { // No Tool
-				const lettuceImage = new MessageAttachment('./Storage/Images/Economy/Lettuce.png', 'Lettuce.png');
+			const lettuceImage = new MessageAttachment('./Storage/Images/Economy/Lettuce.png', 'Lettuce.png');
 
-				embed.attachFiles(lettuceImage);
-				embed.setThumbnail('attachment://Lettuce.png');
+			embed.attachFiles(lettuceImage);
+			embed.setThumbnail('attachment://Lettuce.png');
 
-				embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
+			embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
 
-				name = 'Lettuce';
+			name = 'Lettuce';
 
-				price = this.client.ecoPrices.lettuce;
-				if (foundItemList.lettuce) {
-					amt = Number(foundItemList.lettuce) + Number(1);
-				} else {
-					amt = Number(1);
-				}
-				foundItemList.lettuce = amt.toString();
-
-				const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
-
-				balance.farmcool = Math.round(endTime);
-			} else { // Tool
-				const tomatoImage = new MessageAttachment('./Storage/Images/Economy/Tomatoes.png', 'Tomatoes.png');
-
-				embed.attachFiles(tomatoImage);
-				embed.setThumbnail('attachment://Tomatoes.png');
-
-				name = 'Tomatoes';
-
-				price = this.client.ecoPrices.tomatoes;
-				if (foundItemList.tomatoes) {
-					amt = Number(foundItemList.tomatoes) + Number(1);
-				} else {
-					amt = Number(1);
-				}
-				foundItemList.tomatoes = amt.toString();
-
-				const endTime = new Date().getTime() + this.client.ecoPrices.farmToolWinTime;
-
-				balance.farmcool = Math.round(endTime);
+			price = this.client.ecoPrices.lettuce;
+			if (foundItemList.lettuce) {
+				amt = Number(foundItemList.lettuce) + Number(1);
+			} else {
+				amt = Number(1);
 			}
+			foundItemList.lettuce = amt.toString();
+
+			const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
+
+			balance.farmcool = Math.round(endTime);
 
 			this.client.setBalance.run(balance);
 
@@ -465,17 +285,11 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			if (!foundItemList.farmingTools) { // No Tool
-				embed.setFooter(`Purchase farming tools to never fail farming! - ${prefix}shop buy tools`);
+			embed.setFooter(`Purchase farming tools to never fail farming! - ${prefix}shop buy tools`);
 
-				const endTime = new Date().getTime() + this.client.ecoPrices.farmFailTime;
+			const endTime = new Date().getTime() + this.client.ecoPrices.farmFailTime;
 
-				balance.farmcool = Math.round(endTime);
-			} else { // Tool
-				const endTime = new Date().getTime() + this.client.ecoPrices.farmToolFailTime;
-
-				balance.farmcool = Math.round(endTime);
-			}
+			balance.farmcool = Math.round(endTime);
 
 			this.client.setBalance.run(balance);
 
