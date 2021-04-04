@@ -34,6 +34,12 @@ module.exports = class extends Command {
 		const seedBagMax = this.client.ecoPrices.seedBagLimit;
 		const initialFishBag = this.client.ecoPrices.fishBagFirst;
 		const fishBagMax = this.client.ecoPrices.fishBagLimit;
+		const initalFarmBag = this.client.ecoPrices.farmBagFirst;
+		const farmBagMax = this.client.ecoPrices.farmBagLimit;
+
+		const seedBagPrice = 10;
+		const farmBagPrice = 20;
+		const fishBagPrice = 30;
 
 		if (!foundItemList) {
 			foundItemList = {};
@@ -139,21 +145,50 @@ module.exports = class extends Command {
 			currentTotalFish += Number(0);
 		}
 
-		console.log(currentTotalFish)
+		let currentTotalFarm = 0;
+
+		if (foundItemList.corn) {
+			currentTotalFarm += Number(foundItemList.corn);
+		} else {
+			currentTotalFarm += Number(0);
+		}
+		if (foundItemList.wheat) {
+			currentTotalFarm += Number(foundItemList.wheat);
+		} else {
+			currentTotalFarm += Number(0);
+		}
+		if (foundItemList.potatoes) {
+			currentTotalFarm += Number(foundItemList.potatoes);
+		} else {
+			currentTotalFarm += Number(0);
+		}
+		if (foundItemList.tomatoes) {
+			currentTotalFarm += Number(foundItemList.tomatoes);
+		} else {
+			currentTotalFarm += Number(0);
+		}
+
 		if (args[0] === 'upgrade') {
 			if (args[1] === undefined) {
 				const arr = [];
 				if (foundBoostList.seedBag) {
 					if (Number(foundBoostList.seedBag) < Number(seedBagMax)) {
-						const upgradeSeedBag = foundBoostList.seedBag * 10;
+						const upgradeSeedBag = foundBoostList.seedBag * seedBagPrice;
 						arr.push(`\u3000 \`${prefix}shop upgrade seedbag\` - <:coin:706659001164628008> \`${upgradeSeedBag.toLocaleString('en')}\` Upgrade by 25, current capacity: \`${Number(currentTotalSeeds).toLocaleString('en')}\`/\`${Number(foundBoostList.seedBag).toLocaleString('en')}\``);
 					}
 				}
 
 				if (foundBoostList.fishBag) {
 					if (Number(foundBoostList.fishBag) < Number(fishBagMax)) {
-						const upgradeFishBag = foundBoostList.fishBag * 30;
+						const upgradeFishBag = foundBoostList.fishBag * fishBagPrice;
 						arr.push(`\u3000 \`${prefix}shop upgrade fishbag\` - <:coin:706659001164628008> \`${upgradeFishBag.toLocaleString('en')}\` Upgrade by 25, current capacity: \`${Number(currentTotalFish).toLocaleString('en')}\`/\`${Number(foundBoostList.fishBag).toLocaleString('en')}\``);
+					}
+				}
+
+				if (foundBoostList.farmBag) {
+					if (Number(foundBoostList.farmBag) < Number(farmBagMax)) {
+						const upgradeFarmBag = foundBoostList.farmBag * farmBagPrice;
+						arr.push(`\u3000 \`${prefix}shop upgrade farmbag\` - <:coin:706659001164628008> \`${upgradeFarmBag.toLocaleString('en')}\` Upgrade by 25, current capacity: \`${Number(currentTotalFarm).toLocaleString('en')}\`/\`${Number(foundBoostList.farmBag).toLocaleString('en')}\``);
 					}
 				}
 
@@ -197,10 +232,10 @@ module.exports = class extends Command {
 					return;
 				}
 
-				if (balance.bank < foundBoostList.seedBag * 10) {
+				if (balance.bank < foundBoostList.seedBag * seedBagPrice) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const notEnough = foundBoostList.seedBag * 10 - Number(balance.bank);
+					const notEnough = foundBoostList.seedBag * seedBagPrice - Number(balance.bank);
 
 					const embed = new MessageEmbed()
 						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
@@ -212,8 +247,8 @@ module.exports = class extends Command {
 					return;
 				}
 
-				balance.bank = Number(balance.bank) - foundBoostList.seedBag * 10;
-				balance.total = Number(balance.total) - foundBoostList.seedBag * 10;
+				balance.bank = Number(balance.bank) - foundBoostList.seedBag * seedBagPrice;
+				balance.total = Number(balance.total) - foundBoostList.seedBag * seedBagPrice;
 
 				this.client.setBalance.run(balance);
 
@@ -266,10 +301,10 @@ module.exports = class extends Command {
 					return;
 				}
 
-				if (balance.bank < foundBoostList.fishBag * 30) {
+				if (balance.bank < foundBoostList.fishBag * fishBagPrice) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const notEnough = foundBoostList.fishBag * 10 - Number(balance.bank);
+					const notEnough = foundBoostList.fishBag * fishBagPrice - Number(balance.bank);
 
 					const embed = new MessageEmbed()
 						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
@@ -281,8 +316,8 @@ module.exports = class extends Command {
 					return;
 				}
 
-				balance.bank = Number(balance.bank) - foundBoostList.fishBag * 30;
-				balance.total = Number(balance.total) - foundBoostList.fishBag * 30;
+				balance.bank = Number(balance.bank) - foundBoostList.fishBag * fishBagPrice;
+				balance.total = Number(balance.total) - foundBoostList.fishBag * fishBagPrice;
 
 				this.client.setBalance.run(balance);
 
@@ -307,6 +342,75 @@ module.exports = class extends Command {
 				message.channel.send(embed);
 				return;
 			}
+
+			if (args[1] === 'farm' || args[1] === 'farmbag' || args[1] === 'farmbackpack') {
+				if (!foundBoostList.farmBag) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Farm Bag**`, [
+							`**◎ Error:** You do not own a farm bag! You will be awarded one once you purchase farming tools.`
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				if (Number(foundBoostList.farmBag) >= Number(farmBagMax)) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Farm Bag**`, [
+							`**◎ Error:** You have already upgraded your farm bag to the maximum level!!`
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				if (balance.bank < foundBoostList.farmBag * farmBagPrice) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const notEnough = foundBoostList.farmBag * farmBagPrice - Number(balance.bank);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Farm Bag**`, [
+							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				balance.bank = Number(balance.bank) - foundBoostList.farmBag * farmBagPrice;
+				balance.total = Number(balance.total) - foundBoostList.farmBag * farmBagPrice;
+
+				this.client.setBalance.run(balance);
+
+				const calc = Number(foundBoostList.farmBag) + Number(25);
+				foundBoostList.farmBag = calc.toString();
+
+				await db.prepare('UPDATE balance SET boosts = (@boosts) WHERE id = (@id);').run({
+					boosts: JSON.stringify(foundBoostList),
+					id: `${message.author.id}-${message.guild.id}`
+				});
+
+				const farmBagImage = new MessageAttachment('./Storage/Images/Economy/FarmBag.png', 'FarmBag.png');
+
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.attachFiles(farmBagImage)
+					.setThumbnail('attachment://FarmBag.png')
+					.addField(`**${this.client.user.username} - Shop - Fish Bag**`, [
+						`**◎ Success:** You have upgraded your fish bag, your new limit is \`${Number(foundBoostList.fishBag)}\`!`
+					]);
+				message.channel.send(embed);
+				return;
+			}
 		}
 
 		if (args[0] === 'buy') {
@@ -319,11 +423,14 @@ module.exports = class extends Command {
 						`\u3000 \`${prefix}shop buy corn [amount]\` - 10 Seeds per pack - ${!foundItemList.cornSeeds ? `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\` - \`Owned ${foundItemList.cornSeeds.toLocaleString('en')}\``}`,
 						`\u3000 \`${prefix}shop buy wheat [amount]\` - 10 Seeds per pack - ${!foundItemList.wheatSeeds ? `<:coin:706659001164628008> \`${wheatSeedPrice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${wheatSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.wheatSeeds.toLocaleString('en')}\``}`,
 						`\u3000 \`${prefix}shop buy potato [amount]\` - 10 Seeds per pack - ${!foundItemList.potatoeSeeds ? `<:coin:706659001164628008> \`${potatoeSeedPrice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${potatoeSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.potatoeSeeds.toLocaleString('en')}\``}`,
-						`\u3000 \`${prefix}shop buy tomato [amount]\` - 10 Seeds per pack - ${!foundItemList.tomatoeSeed ? `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`- \`Owned ${foundItemList.tomatoeSeeds.toLocaleString('en')}\``}`,
+						`\u3000 \`${prefix}shop buy tomato [amount]\` - 10 Seeds per pack - ${!foundItemList.potatoeSeeds ? `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`- \`Owned ${foundItemList.tomatoeSeeds.toLocaleString('en')}\``}`,
 						`\u200b`,
 						`**◎ Permanent Items:**`,
-						`\u3000 \`${prefix}shop buy rod\` ${!foundItemList.fishingRod ? `- <:coin:706659001164628008> \`${fishingPrice.toLocaleString('en')}\`` : `- \`Owned\``}`,
-						`\u3000 \`${prefix}shop buy tools\` ${!foundItemList.farmingTools ? `- <:coin:706659001164628008> \`${farmingPrice.toLocaleString('en')}\`` : `- \`Owned\``}`
+						`\u3000 ${!foundItemList.fishingRod ? `\`${prefix}shop buy rod\` - <:coin:706659001164628008> \`${fishingPrice.toLocaleString('en')}\`` : `Fishing Rod - \`Owned\``}`,
+						`\u3000 Fish Bag - ${!foundBoostList.fishBag ? `\`Not Owned\` - Buy fishing rod to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFish)}\`/\`${foundBoostList.fishBag}\``}`,
+						`\u3000 ${!foundItemList.farmingTools ? `\`${prefix}shop buy tools\` - <:coin:706659001164628008> \`${farmingPrice.toLocaleString('en')}\`` : `Farming Tools - \`Owned\``}`,
+						`\u3000 Seed Bag - ${!foundBoostList.seedBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalSeeds)}\`/\`${foundBoostList.seedBag}\``}`,
+						`\u3000 Farm Bag - ${!foundBoostList.farmBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.farmBag}\``}`
 					]);
 				message.channel.send(embed);
 				return;
@@ -656,60 +763,6 @@ module.exports = class extends Command {
 				return;
 			}
 
-			if (args[1] === 'boosts' || args[1] === 'boost' || args[1] === 'upgrade') {
-				if (args[2] === undefined) {
-					this.client.utils.messageDelete(message, 10000);
-
-					const embed = new MessageEmbed()
-						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Shop - Fishing Rod**`, [
-							`**◎ Error:** You already own a fishing rod!`
-						]);
-					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-					return;
-				}
-
-				if (balance.bank < fishingPrice) {
-					this.client.utils.messageDelete(message, 10000);
-
-					const notEnough = Number(fishingPrice) - Number(balance.bank);
-
-					const embed = new MessageEmbed()
-						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Shop - Fishing Rod**`, [
-							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``
-						]);
-					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-					return;
-				}
-
-				balance.bank = Number(balance.bank) - Number(fishingPrice);
-				balance.total = Number(balance.total) - Number(fishingPrice);
-				this.client.setBalance.run(balance);
-
-				foundItemList.fishingRod = Number(1).toString();
-
-				await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-					items: JSON.stringify(foundItemList),
-					id: `${message.author.id}-${message.guild.id}`
-				});
-
-				const fishingRodImage = new MessageAttachment('./Storage/Images/Economy/FishingRod.png', 'FishingRod.png');
-
-				const embed = new MessageEmbed()
-					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.attachFiles(fishingRodImage)
-					.setThumbnail('attachment://FishingRod.png')
-					.addField(`**${this.client.user.username} - Shop - Fishing Rod**`, [
-						`**◎ Success:** You have bought a fishing rod!`
-					]);
-				message.channel.send(embed);
-				return;
-			}
-
 			if (args[1] === 'rod' || args[1] === 'fishingrod') {
 				if (foundItemList.fishingRod) {
 					this.client.utils.messageDelete(message, 10000);
@@ -814,6 +867,7 @@ module.exports = class extends Command {
 				this.client.setBalance.run(balance);
 
 				foundItemList.farmingTools = Number(1).toString();
+				foundBoostList.farmBag = Number(initalFarmBag).toString();
 				foundBoostList.seedBag = Number(initalSeedBag).toString();
 
 				const toolsImage = new MessageAttachment('./Storage/Images/Economy/FarmingTool.png', 'FarmingTool.png');
@@ -824,7 +878,7 @@ module.exports = class extends Command {
 					.attachFiles(toolsImage)
 					.setThumbnail('attachment://FarmingTool.png')
 					.addField(`**${this.client.user.username} - Shop - Farming Tools**`, [
-						`**◎ Success:** You have bought Farming Tools${foundItemList.barley || foundItemList.spinach || foundItemList.strawberries || foundItemList.lettuce ? `.\nYou had some old crops, I have sold them for you and credited <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` to your account.` : `!`}\nYou have also been awarded a starter Seed bag, it's capacity is \`${initalSeedBag}\``
+						`**◎ Success:** You have bought Farming Tools${foundItemList.barley || foundItemList.spinach || foundItemList.strawberries || foundItemList.lettuce ? `.\nYou had some old crops, I have sold them for you and credited <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` to your account.` : `!`}\nYou have also been awarded a starter Farm and Seed bag\nFarm capacity: \`${initalFarmBag}\` Seed capacity: \`${initalSeedBag}\``
 					]);
 				message.channel.send(embed);
 
