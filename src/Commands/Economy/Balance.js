@@ -98,6 +98,29 @@ module.exports = class extends Command {
 				currentTotalFish += Number(0);
 			}
 
+			let currentTotalFarm = 0;
+
+			if (foundItemList.corn) {
+				currentTotalFarm += Number(foundItemList.corn);
+			} else {
+				currentTotalFarm += Number(0);
+			}
+			if (foundItemList.wheat) {
+				currentTotalFarm += Number(foundItemList.wheat);
+			} else {
+				currentTotalFarm += Number(0);
+			}
+			if (foundItemList.potatoes) {
+				currentTotalFarm += Number(foundItemList.potatoes);
+			} else {
+				currentTotalFarm += Number(0);
+			}
+			if (foundItemList.tomatoes) {
+				currentTotalFarm += Number(foundItemList.tomatoes);
+			} else {
+				currentTotalFarm += Number(0);
+			}
+
 			const embed1 = new MessageEmbed()
 				.setAuthor(`${user.username}'s Balance`, user.avatarURL())
 				.setDescription(`Leaderboard Rank: \`${rankPos}\``)
@@ -108,8 +131,9 @@ module.exports = class extends Command {
 					{ name: 'Steal Cooldown', value: `${Date.now() > balance.stealcool ? `\`Available!\`` : `\`${ms(balance.stealcool - date, { long: true })}\``}`, inline: true },
 					{ name: 'Fish Cooldown', value: `${Date.now() > balance.fishcool ? `\`Available!\`` : `\`${ms(balance.fishcool - date, { long: true })}\``}`, inline: true },
 					{ name: 'Farm Cooldown', value: `${Date.now() > balance.farmcool ? `\`Available!\`` : `\`${ms(balance.farmcool - date, { long: true })}\``}`, inline: true },
-					{ name: 'Seed Bag', value: `\`${Number(currentTotalSeeds).toLocaleString('en')}/${Number(foundBoostList.seedBag).toLocaleString('en')}\``, inline: true },
-					{ name: 'Fish Bag', value: `\`${Number(currentTotalFish).toLocaleString('en')}/${Number(foundBoostList.fishBag).toLocaleString('en')}\``, inline: true },
+					{ name: 'Seed Bag', value: `${foundBoostList.seedBag ? `\`${Number(currentTotalSeeds).toLocaleString('en')}/${Number(foundBoostList.seedBag).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
+					{ name: 'Fish Bag', value: `${foundBoostList.fishBag ? `\`${Number(currentTotalFish).toLocaleString('en')}/${Number(foundBoostList.fishBag).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
+					{ name: 'Farm Bag', value: `${foundBoostList.farmBag ? `\`${Number(currentTotalFarm).toLocaleString('en')}/${Number(foundBoostList.farmBag).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
 					{ name: '**◎ Claim Cooldown**', value: `\n**Hourly:** ${Date.now() > balance.hourly ? `\`Available!\`` : `\`${ms(balance.hourly - date, { long: true })}\``}
 					\n**Daily:** ${Date.now() > balance.daily ? `\`Available!\`` : `\`${ms(balance.daily - date, { long: true })}\``}
 					\n**Weekly:** ${Date.now() > balance.weekly ? `\`Available!\`` : `\`${ms(balance.weekly - date, { long: true })}\``}
