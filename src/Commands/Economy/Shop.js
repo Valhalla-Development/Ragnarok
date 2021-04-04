@@ -36,6 +36,7 @@ module.exports = class extends Command {
 		const fishBagMax = this.client.ecoPrices.fishBagLimit;
 		const initalFarmBag = this.client.ecoPrices.farmBagFirst;
 		const farmBagMax = this.client.ecoPrices.farmBagLimit;
+		const initialFarmPlot = this.client.ecoPrices.farmPlotFirst;
 
 		const seedBagPrice = 10;
 		const farmBagPrice = 20;
@@ -869,6 +870,7 @@ module.exports = class extends Command {
 				foundItemList.farmingTools = Number(1).toString();
 				foundBoostList.farmBag = Number(initalFarmBag).toString();
 				foundBoostList.seedBag = Number(initalSeedBag).toString();
+				foundBoostList.farmPlot = Number(initialFarmPlot).toString();
 
 				const toolsImage = new MessageAttachment('./Storage/Images/Economy/FarmingTool.png', 'FarmingTool.png');
 
@@ -878,7 +880,7 @@ module.exports = class extends Command {
 					.attachFiles(toolsImage)
 					.setThumbnail('attachment://FarmingTool.png')
 					.addField(`**${this.client.user.username} - Shop - Farming Tools**`, [
-						`**◎ Success:** You have bought Farming Tools${foundItemList.barley || foundItemList.spinach || foundItemList.strawberries || foundItemList.lettuce ? `.\nYou had some old crops, I have sold them for you and credited <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` to your account.` : `!`}\nYou have also been awarded a starter Farm and Seed bag\nFarm capacity: \`${initalFarmBag}\` Seed capacity: \`${initalSeedBag}\``
+						`**◎ Success:** You have bought Farming Tools${foundItemList.barley || foundItemList.spinach || foundItemList.strawberries || foundItemList.lettuce ? `.\nYou had some old crops, I have sold them for you and credited <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` to your account.` : `!`}\n\nYou have also been awarded a starter Farm bag, Plot and Seed bag\nFarm capacity: \`${initalFarmBag}\` Seed capacity: \`${initalSeedBag}\` Plot Capacity: \`${initialFarmPlot}\``
 					]);
 				message.channel.send(embed);
 
@@ -1020,7 +1022,8 @@ module.exports = class extends Command {
 					fishcool: balance.fishcool,
 					farmcool: balance.farmcool,
 					items: balance.items,
-					claimNewUser: balance.claimNewUser
+					claimNewUser: balance.claimNewUser,
+					farmPlot: balance.farmPlot
 				};
 
 				this.client.setBalance.run(addAut);
@@ -1102,7 +1105,8 @@ module.exports = class extends Command {
 					fishcool: balance.fishcool,
 					farmcool: balance.farmcool,
 					items: balance.items,
-					claimNewUser: balance.claimNewUser
+					claimNewUser: balance.claimNewUser,
+					farmPlot: balance.farmPlot
 				};
 
 				this.client.setBalance.run(addAut);
@@ -1169,7 +1173,8 @@ module.exports = class extends Command {
 					fishcool: balance.fishcool,
 					farmcool: balance.farmcool,
 					items: balance.items,
-					claimNewUser: balance.claimNewUser
+					claimNewUser: balance.claimNewUser,
+					farmPlot: balance.farmPlot
 				};
 
 				this.client.setBalance.run(addAut);
@@ -1248,7 +1253,8 @@ module.exports = class extends Command {
 					fishcool: balance.fishcool,
 					farmcool: balance.farmcool,
 					items: balance.items,
-					claimNewUser: balance.claimNewUser
+					claimNewUser: balance.claimNewUser,
+					farmPlot: balance.farmPlot
 				};
 
 				this.client.setBalance.run(addAut);
