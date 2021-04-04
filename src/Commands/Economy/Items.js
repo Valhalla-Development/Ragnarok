@@ -93,10 +93,17 @@ module.exports = class extends Command {
 			];
 		} else {
 			fields = [
+				`**◎ Crops:**`,
 				`\u3000 Corn: Own ${foundItemList.corn === undefined ? `\`0\`` : `\`${foundItemList.corn}\` - <:coin:706659001164628008> \`${cornPrice.toLocaleString('en')}\``}`,
 				`\u3000 Wheat: Own ${foundItemList.wheat === undefined ? `\`0\`` : `\`${foundItemList.wheat}\` - <:coin:706659001164628008> \`${wheatPrice.toLocaleString('en')}\``}`,
 				`\u3000 Potatoes: Own ${foundItemList.potatoes === undefined ? `\`0\`` : `\`${foundItemList.potatoes} \`- <:coin:706659001164628008> \`${potatoesPrice.toLocaleString('en')}\``}`,
-				`\u3000 Tomatoes: Own ${foundItemList.tomatoes === undefined ? `\`0\`` : `\`${foundItemList.tomatoes}\` - <:coin:706659001164628008> \`${tomatoesPrice.toLocaleString('en')}\``}`
+				`\u3000 Tomatoes: Own ${foundItemList.tomatoes === undefined ? `\`0\`` : `\`${foundItemList.tomatoes}\` - <:coin:706659001164628008> \`${tomatoesPrice.toLocaleString('en')}\``}`,
+				`\u200b`,
+				`**◎ Seeds:**`,
+				`\u3000 Corn: Own ${foundItemList.cornSeeds === undefined ? `\`0\`` : `\`${foundItemList.cornSeeds}\``}`,
+				`\u3000 Wheat: Own ${foundItemList.wheatSeeds === undefined ? `\`0\`` : `\`${foundItemList.wheatSeeds}\``}`,
+				`\u3000 Potatoes: Own ${foundItemList.potatoeSeeds === undefined ? `\`0\`` : `\`${foundItemList.potatoeSeeds}\``}`,
+				`\u3000 Tomatoes: Own ${foundItemList.tomatoeSeeds === undefined ? `\`0\`` : `\`${foundItemList.tomatoeSeeds}\``}`
 			];
 
 			if (foundItemList.barley || foundItemList.spinach || foundItemList.strawberries || foundItemList.lettuce) {
@@ -121,7 +128,6 @@ module.exports = class extends Command {
 					`\u3000 Swordfish: Own ${foundItemList.swordfish === undefined ? `\`0\`` : `\`${foundItemList.swordfish} \`- <:coin:706659001164628008> \`${swordFishPrice.toLocaleString('en')}\``}`,
 					`\u3000 Pufferfish: Own ${foundItemList.pufferfish === undefined ? `\`0\`` : `\`${foundItemList.pufferfish}\` - <:coin:706659001164628008> \`${pufferFishPrice.toLocaleString('en')}\``}`,
 					`\u200b`,
-					`**◎ Crops:**`,
 					`${fields.join('\n')}`,
 					`\u200b`,
 					`**◎ Treasure:**`,
