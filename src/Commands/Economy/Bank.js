@@ -44,7 +44,8 @@ module.exports = class extends Command {
 			fishcool: balance.fishcool,
 			farmcool: balance.farmcool,
 			items: balance.items,
-			claimNewUser: balance.claimNewUser
+			claimNewUser: balance.claimNewUser,
+			farmPlot: balance.farmPlot
 		};
 
 		this.client.setBalance.run(addAll);

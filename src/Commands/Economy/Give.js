@@ -118,7 +118,8 @@ module.exports = class extends Command {
 				fishcool: otherB.fishcool,
 				farmcool: otherB.farmcool,
 				items: otherB.items,
-				claimNewUser: otherB.claimNewUser
+				claimNewUser: otherB.claimNewUser,
+				farmPlot: otherB.farmPlot
 			};
 
 			this.client.setUserBalance.run(setUse);
@@ -140,7 +141,8 @@ module.exports = class extends Command {
 				fishcool: balance.fishcool,
 				farmcool: balance.farmcool,
 				items: balance.items,
-				claimNewUser: balance.claimNewUser
+				claimNewUser: balance.claimNewUser,
+				farmPlot: balance.farmPlot
 			};
 
 			this.client.setBalance.run(addAut);
@@ -209,7 +211,8 @@ module.exports = class extends Command {
 			fishcool: otherB.fishcool,
 			farmcool: otherB.farmcool,
 			items: otherB.items,
-			claimNewUser: otherB.claimNewUser
+			claimNewUser: otherB.claimNewUser,
+			farmPlot: otherB.farmPlot
 		};
 
 		this.client.setUserBalance.run(setUse);
@@ -231,7 +234,8 @@ module.exports = class extends Command {
 			fishcool: balance.fishcool,
 			farmcool: balance.farmcool,
 			items: balance.items,
-			claimNewUser: balance.claimNewUser
+			claimNewUser: balance.claimNewUser,
+			farmPlot: balance.farmPlot
 		};
 
 		this.client.setBalance.run(addAut);
