@@ -256,7 +256,55 @@ module.exports = class extends Event {
 					});
 				});
 			});
-		}, null, true, 'America/Los_Angeles');
+
+			// Economy
+			const grabEconomy = db.prepare('SELECT * FROM balance').all();
+
+			grabEconomy.forEach(r => {
+				const guild = this.client.guilds.cache.get(r.guild);
+				if (!guild) return;
+
+				const user = guild.members.cache.get(r.user);
+				if (!user) return;
+
+				guild.members.fetch();
+
+				let foundPlotList = JSON.parse(r.farmPlot);
+
+				if (!foundPlotList) {
+					foundPlotList = {};
+				}
+
+				Object.keys(foundPlotList).forEach(key => {
+					const growTime = foundPlotList[key].cropGrowTime;
+
+					if (Date.now() > growTime) {
+						foundPlotList[key] = { cropType: foundPlotList[key].cropType, cropStatus: 'harvest', cropGrowTime: 'null' };
+
+						db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
+							farmPlot: JSON.stringify(foundPlotList),
+							id: `${user.id}-${guild.id}`
+						});
+
+						/* if (!foundPlotList.dm) {
+							try {
+								const embed = new MessageEmbed()
+									.setAuthor(`${user.user.tag}`, user.user.avatarURL())
+									.setColor('#A10000')
+									.addField(`**${this.client.user.username} - Harvest**`, [
+										`You have crops available to harvest in \`${guild.name}\`\n\nYou can disable this alert by running the following command within \`${guild.name}\`\n\`-plant dm off\`\n**NOTE: This command is guild specific.**`
+									]);
+								user.send(embed);
+							} catch {
+								return;
+							}
+						} else {
+							return;
+						}*/
+					}
+				});
+			});
+		}, null, true);
 		job.start();
 
 
@@ -415,7 +463,7 @@ module.exports = class extends Event {
 		const balancetable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'balance\';').get();
 		if (!balancetable['count(*)']) {
 			console.log('balance table created!');
-			db.prepare('CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly INTEGER, daily INTEGER, weekly INTEGER, monthly INTEGER, stealcool INTEGER, fishcool INTEGER, farmcool INTEGER, boosts BLOB, items BLOB, cash INTEGER, bank INTEGER, total INTEGER, claimNewUser INTEGER, farmPlot BLOB);').run();
+			db.prepare('CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly INTEGER, daily INTEGER, weekly INTEGER, monthly INTEGER, stealcool INTEGER, fishcool INTEGER, farmcool INTEGER, boosts BLOB, items BLOB, cash INTEGER, bank INTEGER, total INTEGER, claimNewUser INTEGER, farmPlot BLOB, dmHarvest TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_balance_id ON balance (id);').run();
 			db.pragma('synchronous = 1');
 			db.pragma('journal_mode = wal');
