@@ -85,10 +85,10 @@ module.exports = class RagnarokClient extends Client {
 			potatoes: 330,
 			tomatoes: 100,
 			// Planting Times
-			cornPlant: 150000,
-			wheatPlant: 300000,
-			potatoPlant: 600000,
-			tomatoPlant: 1200000,
+			cornPlant: 600000, // 10 minutes
+			wheatPlant: 450000, // 7 min 30
+			potatoPlant: 210000, // 3 min 30
+			tomatoPlant: 90000, // 1 min 30
 			// Farming without tools prices
 			goldNugget: 15000,
 			barley: 1200,
@@ -105,8 +105,6 @@ module.exports = class RagnarokClient extends Client {
 			wheatSeed: 2000,
 			potatoSeed: 660,
 			tomatoSeed: 200,
-			// Seed Bag
-			seedBadLimit: 250,
 			// Beg timeout
 			begTimer: 120000
 		};
