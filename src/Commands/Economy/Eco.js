@@ -21,8 +21,8 @@ module.exports = class extends Command {
 				`** These are the planned features for full-release**`,
 				`\u3000`,
 				`\u3000`,
-				`**◎ 1:** \`-farm\` this will require to buy seeds and plant them, the higher quality seeds will grant higher percentages`,
-				`\u200b at the start you can farm for free, and buy tools for better quality produce, however you will also be able to level up your farming level and buy new fields with better yield`,
+				`**◎ 1:** \`-farm\``,
+				`\u200b at the start you can farm for free, and buy tools for better quality produce, however you will also be able to level up your farming level and upgrade your farming plot slots`,
 				`\u200b also your crops will decay if you do not farm them, and you will lose money (the price of the seeds you plant)`,
 				`\u3000`,
 				`**◎ 2:** \`-work\` *details unknown*`,
@@ -43,9 +43,7 @@ module.exports = class extends Command {
 				`\u3000`,
 				`**◎ 8:** A command that will create a role and give it to the richest person in the server, can be enabled or disabled by server managers`,
 				`\u3000`,
-				`**◎ 9:** There will be a limit on how many items you can have at once, at and you will be able to upgrade your storage`,
-				`\u3000`,
-				`**◎ 10:** \`-farm\` & \`-fish\` --- these items will slowly decay when in your inventory, you must sell them as the price will lower over time`,
+				`**◎ 9:** \`-farm\` & \`-fish\` --- these items will slowly decay when in your inventory, you must sell them as the price will lower over time`,
 				`\u3000`
 			]);
 		message.channel.send(embed);
