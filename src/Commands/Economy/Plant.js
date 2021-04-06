@@ -169,7 +169,7 @@ module.exports = class extends Command {
 				// I added 1 because it seemed to make it work, don’t ask why
 				const number = occupied + cropCounter + 1;
 
-				foundPlotList[`plot${number}`] = { cropType: type, cropStatus: status, cropGrowTime: time };
+				foundPlotList[`plot${number}`] = { cropType: type, cropStatus: status, cropGrowTime: time, decay: null };
 			}
 
 			await db.prepare('UPDATE balance SET farmPlot = (@crops) WHERE id = (@id);').run({
@@ -320,7 +320,7 @@ module.exports = class extends Command {
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
-						`**◎ Error:** You do not have any wheat seeds! You can buy some by running: \`${prefix}shop buy\``);
+						`**◎ Error:** You do not have any potato seeds! You can buy some by running: \`${prefix}shop buy\``);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -386,7 +386,7 @@ module.exports = class extends Command {
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
-						`**◎ Error:** You do not have any wheat seeds! You can buy some by running: \`${prefix}shop buy\``);
+						`**◎ Error:** You do not have any tomato seeds! You can buy some by running: \`${prefix}shop buy\``);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
