@@ -32,6 +32,8 @@ module.exports = class RagnarokClient extends Client {
 
 		this.owners = options.ownerID;
 
+		this.logger = require('./Logger.js');
+
 		// Slash Commands
 		const creator = new SlashCreator({
 			applicationID: options.applicationID,
@@ -89,6 +91,8 @@ module.exports = class RagnarokClient extends Client {
 			wheatPlant: 450000, // 7 min 30
 			potatoPlant: 210000, // 3 min 30
 			tomatoPlant: 90000, // 1 min 30
+			// Decay rate
+			decayRate: 0.0001,
 			// Farming without tools prices
 			goldNugget: 15000,
 			barley: 1200,
@@ -123,12 +127,12 @@ module.exports = class RagnarokClient extends Client {
 					if (guild) guild.shard.send(payload);
 				}
 			})
-				.on('nodeCreate', () => console.log('Successfully created a new Erela Node.'))
-				.on('nodeDestroy', () => console.log('Successfully destroyed the Erela Node.'))
-				.on('nodeConnect', () => console.log('Successfully created a new Erela Node.'))
-				.on('nodeReconnect', () => console.log('Connection restored to Erela Node.'))
-				.on('nodeDisconnect', () => console.log('Lost connection to Erela Node.'))
-				.on('nodeError', (node, error) => console.log(`Node error: ${error.message}`))
+				.on('nodeCreate', () => grabClient.logger.ready('Successfully created a new Erela Node.'))
+				.on('nodeDestroy', () => grabClient.logger.ready('Successfully destroyed the Erela Node.'))
+				.on('nodeConnect', () => grabClient.logger.ready('Successfully created a new Erela Node.'))
+				.on('nodeReconnect', () => grabClient.logger.ready('Connection restored to Erela Node.'))
+				.on('nodeDisconnect', () => grabClient.logger.warn('Lost connection to Erela Node.'))
+				.on('nodeError', (error) => grabClient.logger.error(`Node error: ${error.message}`))
 				.on('queueEnd', (player) => {
 					if (player.queueRepeat) {
 						return;
@@ -236,25 +240,57 @@ module.exports = class RagnarokClient extends Client {
 		const guildInvites = new Collection();
 		this.invites = guildInvites;
 
-		// error notifiers
-		this.on('error', (err) => {
-			console.error(err);
-		});
+		function sendError(client, message) {
+			if (client.user.id && client.user.id === '509122286561787904') {
+				const channel = client.channels.cache.get('534872912876797962');
+				if (!channel) return;
 
-		this.on('warn', (err) => {
-			console.warn(err);
-		});
-
-		if (process.version.slice(1).split('.')[0] < 12) {
-			console.log(new Error(`[${this.user.username}] You must have NodeJS 12 or higher installed on your PC.`));
-			process.exit(1);
+				channel.send(message, { code: 'js' });
+			}
 		}
 
+		// Error Notifiers
+		this.on('disconnect', () => this.logger.warn('Bot is disconnecting . . .'))
+			.on('reconnecting', () => this.logger.log('Bot reconnecting . . .'))
+			.on('rateLimit', (info) => this.logger.warn(info))
+			.on('error', (e) => this.logger.error(e))
+			.on('debug', (info) => {
+				// this.logger.debug(info)
+				const loading = info.match(/\[WS => Shard (\d+)] \[CONNECT]/),
+					sessions = info.match(/Remaining: (\d+)$/),
+					reconnect = info.match(/\[WS => Shard (\d+)] \[RECONNECT] Discord asked us to reconnect/),
+					swept = info.match(/Swept \d+ messages older than \d+ seconds in \d+ text-based channels/),
+					discard = info.match(/\[WS => (Shard (\d+)|Manager)]/);
+				if (loading) {
+					this.logger.log(`Loading . . .`);
+					return;
+				}
+				if (sessions) {
+					this.logger.debug(`Session ${1000 - parseInt(sessions[1], 10)} of 1000`);
+					return;
+				}
+				if (reconnect) {
+					this.logger.log(`Discord asked shard ${reconnect[1]} to reconnect`);
+					return;
+				}
+				if (swept) {
+					this.logger.log(info);
+					return;
+				}
+				if (discard) return;
+
+				if (info.match(/\[WS => Shard \d+] (?:\[HeartbeatTimer] Sending a heartbeat\.|Heartbeat acknowledged, latency of \d+ms\.)/)) {
+					return;
+				}
+				if (info.startsWith('429 hit on route')) return;
+			})
+			.on('warn', (info) => this.logger.warn(info))
+			.on('shardReady', () => this.logger.ready(`Connected!`))
+			.on('shardResume', () => this.logger.ready(`Connected!`));
+
 		process.on('unhandledRejection', (error) => {
-			/*if (this.user.id === '508756879564865539') {
-				this.channels.cache.get('685973401772621843').send(`${error.stack}`, { code: 'js' });
-			}*/
-			console.error(`Error: \n${error.stack}`);
+			this.logger.error(error);
+			sendError(this, error.stack);
 		});
 	}
 
