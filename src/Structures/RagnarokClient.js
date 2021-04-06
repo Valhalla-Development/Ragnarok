@@ -241,8 +241,8 @@ module.exports = class RagnarokClient extends Client {
 		this.invites = guildInvites;
 
 		function sendError(client, message) {
-			if (client.user.id && client.user.id === '509122286561787904') {
-				const channel = client.channels.cache.get('534872912876797962');
+			if (client.user.id && client.user.id === '508756879564865539') {
+				const channel = client.channels.cache.get('685973401772621843');
 				if (!channel) return;
 
 				channel.send(message, { code: 'js' });
