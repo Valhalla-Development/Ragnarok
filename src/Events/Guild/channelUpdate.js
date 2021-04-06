@@ -41,7 +41,6 @@ module.exports = class extends Event {
 			}
 
 			if (oldChannel.id === channelA.id) {
-				console.log(oldChannel.id, channelA.id);
 				return;
 			}
 			if (oldChannel.id === channelB.id) {

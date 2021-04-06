@@ -41,7 +41,7 @@ module.exports = class extends Command {
 			msg.react('✅');
 			msg.react('❌');
 		}).catch((error) => {
-			console.log(error);
+			this.client.logger.error(error);
 		});
 	}
 

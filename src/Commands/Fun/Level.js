@@ -280,7 +280,7 @@ module.exports = class extends Command {
 		ctx.save();
 
 		const attachment = new MessageAttachment(canvas.toBuffer(), 'level.jpg');
-		message.channel.send(attachment).catch((err) => console.log(err));
+		message.channel.send(attachment).catch((err) => this.client.logger.error(err));
 	}
 
 };

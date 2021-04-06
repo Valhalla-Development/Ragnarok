@@ -1529,7 +1529,7 @@ module.exports = class extends Command {
 
 					message.guild.fetchInvites()
 						.then(invite => this.client.invites.set(message.guild.id, invite))
-						.catch(error => console.log(error));
+						.catch(error => this.client.logger.error(error));
 
 					this.client.utils.messageDelete(message, 10000);
 
@@ -1550,7 +1550,7 @@ module.exports = class extends Command {
 
 				message.guild.fetchInvites()
 					.then(invite => this.client.invites.set(message.guild.id, invite))
-					.catch(error => console.log(error));
+					.catch(error => this.client.logger.error(error));
 
 				this.client.utils.messageDelete(message, 10000);
 

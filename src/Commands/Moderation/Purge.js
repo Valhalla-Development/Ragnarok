@@ -80,7 +80,7 @@ module.exports = class extends Command {
 						`**◎ Success:** Successfully deleted ${args[0]} messages!`);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			}).catch((error) => {
-				console.log(error);
+				this.client.logger.error(error);
 			});
 		} catch (e) {
 			this.client.utils.messageDelete(message, 10000);

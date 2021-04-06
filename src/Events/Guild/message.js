@@ -413,7 +413,7 @@ module.exports = class extends Event {
 							}
 						}
 					}).catch((e) => {
-						console.log(e);
+						grabClient.logger.error(e);
 					});
 				}
 			}

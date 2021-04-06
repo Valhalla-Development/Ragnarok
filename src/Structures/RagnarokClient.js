@@ -132,7 +132,7 @@ module.exports = class RagnarokClient extends Client {
 				.on('nodeConnect', () => grabClient.logger.ready('Successfully created a new Erela Node.'))
 				.on('nodeReconnect', () => grabClient.logger.ready('Connection restored to Erela Node.'))
 				.on('nodeDisconnect', () => grabClient.logger.warn('Lost connection to Erela Node.'))
-				.on('nodeError', (error) => grabClient.logger.error(`Node error: ${error.message}`))
+				.on('nodeError', (node, error) => grabClient.logger.error(`Node error: ${error.message}`))
 				.on('queueEnd', (player) => {
 					if (player.queueRepeat) {
 						return;
