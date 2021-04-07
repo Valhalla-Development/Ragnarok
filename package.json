@@ -33,6 +33,7 @@
     "systeminformation": "^4.26.10",
     "trakt.tv": "^8.0.0",
     "twemoji-parser": "^13.0.0",
+    "twit": "^2.2.11",
     "unescape": "^1.0.1",
     "url-regex-safe": "^1.0.2"
   },
