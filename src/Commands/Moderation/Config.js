@@ -160,7 +160,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Birthday channel is now set to ${lchan}`);
-						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send(embed);
 					} else {
 						const update = db.prepare('UPDATE birthdayConfig SET channel = (@channel) WHERE guildid = (@guildid);');
 						update.run({
@@ -173,7 +173,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Birthday channel updated to ${lchan}`);
-						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send(embed);
 					}
 				}
 
@@ -214,7 +214,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Birthday Role updated to ${role}`);
-					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send(embed);
 				}
 			}
 		}
