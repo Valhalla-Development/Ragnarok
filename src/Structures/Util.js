@@ -24,7 +24,7 @@ module.exports = class Util {
 		if (arr.length > maxLen) {
 			const len = arr.length - maxLen;
 			arr = arr.slice(0, maxLen);
-			arr.push(` ${len} more...`);
+			arr.push(`\u3000${len} more...`);
 		}
 		return arr;
 	}
