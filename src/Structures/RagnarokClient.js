@@ -253,7 +253,6 @@ module.exports = class RagnarokClient extends Client {
 		// Error Notifiers
 		this.on('disconnect', () => this.logger.warn('Bot is disconnecting . . .'))
 			.on('reconnecting', () => this.logger.log('Bot reconnecting . . .'))
-			.on('rateLimit', (info) => this.logger.warn(info))
 			.on('error', (e) => this.logger.error(e))
 			.on('debug', (info) => {
 				// this.logger.debug(info)
