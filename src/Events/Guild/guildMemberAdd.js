@@ -17,6 +17,7 @@ module.exports = class extends Event {
 		// AirReps Alert
 		if (member.guild.id === '657235952116170794') {
 			if (member.guild.memberCount === 8000) {
+				if (member.guild.roles.cache.find((r) => r.name === '8000th Member')) return;
 				this.client.channels.cache.get('657241621112553474').send(`We just hit 8000 members!\n`);
 				member.guild.roles.create({
 					data: {
