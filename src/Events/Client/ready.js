@@ -37,6 +37,223 @@ module.exports = class extends Event {
 			}
 		);
 
+		// Database Creation
+		// Birthday table
+		const birthdaystable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'birthdays\';').get();
+		if (!birthdaystable['count(*)']) {
+			this.client.logger.ready('birthdays table created!');
+			db.prepare('CREATE TABLE birthdays (userid TEXT PRIMARY KEY, birthday TEXT, lastRun BLOB);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_birthdays_id ON birthdays (userid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// Birthday Config table
+		const birthdayconfigtable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'birthdayConfig\';').get();
+		if (!birthdayconfigtable['count(*)']) {
+			this.client.logger.ready('birthday config table created!');
+			db.prepare('CREATE TABLE birthdayConfig (guildid TEXT PRIMARY KEY, channel TEXT, role TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_birthdayConfig_id ON birthdayConfig (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// Ban table
+		const bantable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'ban\';').get();
+		if (!bantable['count(*)']) {
+			this.client.logger.ready('ban table created!');
+			db.prepare('CREATE TABLE ban (id TEXT PRIMARY KEY, guildid TEXT, userid TEXT, endtime TEXT, channel TEXT, username TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_ban_id ON ban (id);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// Mute table
+		const mutetable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'mute\';').get();
+		if (!mutetable['count(*)']) {
+			this.client.logger.ready('mute table created!');
+			db.prepare('CREATE TABLE mute (id TEXT PRIMARY KEY, guildid TEXT, userid TEXT, endtime TEXT, channel TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_mute_id ON mute (id);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// Mute Role table
+		const muteRole = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'muterole\';').get();
+		if (!muteRole['count(*)']) {
+			this.client.logger.ready('muterole table created!');
+			db.prepare('CREATE TABLE muterole (guildid TEXT PRIMARY KEY, role TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_muterole_id ON muterole (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// Invite Manager table
+		const inviteManager = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'invmanager\';').get();
+		if (!inviteManager['count(*)']) {
+			this.client.logger.ready('invmanager table created!');
+			db.prepare('CREATE TABLE invmanager (guildid TEXT PRIMARY KEY, channel TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_invmanager_id ON invmanager (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// Level table
+		const levelstatustable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'level\';').get();
+		if (!levelstatustable['count(*)']) {
+			this.client.logger.ready('level table created!');
+			db.prepare('CREATE TABLE level (guildid TEXT PRIMARY KEY, status TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_level_id ON level (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// Dad Bot Table
+		const dadbot = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'dadbot\';').get();
+		if (!dadbot['count(*)']) {
+			this.client.logger.ready('dadbot table created!');
+			db.prepare('CREATE TABLE dadbot (guildid TEXT PRIMARY KEY, status TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_dadbot_id ON dadbot (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// Membercount Table
+		const memcount = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'membercount\';').get();
+		if (!memcount['count(*)']) {
+			this.client.logger.ready('membercount table created!');
+			db.prepare('CREATE TABLE membercount (guildid TEXT PRIMARY KEY, status TEXT, channela TEXT, channelb TEXT, channelc TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_membercount_id ON membercount (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// Announcement Table
+		const announcement = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'announcement\';').get();
+		if (!announcement['count(*)']) {
+			this.client.logger.ready('announcement table created!');
+			db.prepare('CREATE TABLE announcement (msg TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_announcement_id ON announcement (msg);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// Music Table
+		const music = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'music\';').get();
+		if (!music['count(*)']) {
+			this.client.logger.ready('music table created!');
+			db.prepare('CREATE TABLE music (guildid TEXT PRIMARY KEY, role TEXT, channel BLOB);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_music_id ON music (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// RoleMenu Table
+		const rolemenu = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'rolemenu\';').get();
+		if (!rolemenu['count(*)']) {
+			this.client.logger.ready('rolemenu table created!');
+			db.prepare('CREATE TABLE rolemenu (guildid TEXT PRIMARY KEY, activeRoleMenuID TEXT, roleList BLOB);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_rolemenu_id ON rolemenu (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// setprefix table
+		const setprefix = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'setprefix\';').get();
+		if (!setprefix['count(*)']) {
+			this.client.logger.ready('setprefix table created!');
+			db.prepare('CREATE TABLE setprefix (guildid TEXT PRIMARY KEY, prefix TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_setprefix_id ON setprefix (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// setwelcome table
+		const setwelcome = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'setwelcome\';').get();
+		if (!setwelcome['count(*)']) {
+			this.client.logger.ready('setwelcome table created!');
+			db.prepare('CREATE TABLE setwelcome (guildid TEXT PRIMARY KEY, channel TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_setwelcome_id ON setwelcome (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// autorole table
+		const autorole = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'autorole\';').get();
+		if (!autorole['count(*)']) {
+			this.client.logger.ready('autorole table created!');
+			db.prepare('CREATE TABLE autorole (guildid TEXT PRIMARY KEY, role TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_autorole_id ON autorole (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// balance table
+		const balancetable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'balance\';').get();
+		if (!balancetable['count(*)']) {
+			this.client.logger.ready('balance table created!');
+			db.prepare('CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly INTEGER, daily INTEGER, weekly INTEGER, monthly INTEGER, stealcool INTEGER, fishcool INTEGER, farmcool INTEGER, boosts BLOB, items BLOB, harvested BLOB, cash INTEGER, bank INTEGER, total INTEGER, claimNewUser INTEGER, farmPlot BLOB, dmHarvest TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_balance_id ON balance (id);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		this.client.getBalance = db.prepare('SELECT * FROM balance WHERE id = ?');
+		this.client.setBalance = db.prepare('INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, stealcool, fishcool, farmcool, boosts, items, cash, bank, total, claimNewUser, farmPlot) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @stealcool, @fishcool, @farmcool, @boosts, @items, @cash, @bank, @total, @claimNewUser, @farmPlot);');
+		this.client.setUserBalance = db.prepare('INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, stealcool, fishcool, farmcool, boosts, items, cash, bank, total, claimNewUser, farmPlot) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @stealcool, @fishcool, @farmcool, @boosts, @items, @cash, @bank, @total, @claimNewUser, @farmPlot);');
+
+		// scores table
+		const table = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'scores\';').get();
+		if (!table['count(*)']) {
+			this.client.logger.ready('scores table created!');
+			db.prepare('CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_scores_id ON scores (id);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		this.client.getScore = db.prepare('SELECT * FROM scores WHERE user = ? AND guild = ?');
+		this.client.setScore = db.prepare('INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);');
+
+		// adsprot table
+		const adsprottable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'adsprot\';').get();
+		if (!adsprottable['count(*)']) {
+			this.client.logger.ready('adsprot table created!');
+			db.prepare('CREATE TABLE adsprot (guildid TEXT PRIMARY KEY, status TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_adsprot_id ON adsprot (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// logging table
+		const loggingtable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'logging\';').get();
+		if (!loggingtable['count(*)']) {
+			this.client.logger.ready('logging table created!');
+			db.prepare('CREATE TABLE logging (guildid TEXT PRIMARY KEY, channel TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_logging_id ON logging (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+		// Ticket Config Table
+		const ticketConfigTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'ticketConfig\';').get();
+		if (!ticketConfigTable['count(*)']) {
+			this.client.logger.ready('ticketConfig table created!');
+			db.prepare('CREATE TABLE ticketConfig (guildid TEXT PRIMARY KEY, category TEXT, log TEXT, role TEXT, ticketembed TEXT, ticketembedchan TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_ticketConfig_id ON ticketConfig (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// Stored Tickets Table
+		const ticketsTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'tickets\';').get();
+		if (!ticketsTable['count(*)']) {
+			this.client.logger.ready('tickets table created!');
+			db.prepare('CREATE TABLE tickets (guildid TEXT, ticketid TEXT, authorid TEXT, reason TEXT, chanid TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_tickets_id ON tickets (ticketid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
 		// Initiate the Erela manager.
 		this.client.manager.init(this.client.user.id);
 
@@ -272,15 +489,14 @@ module.exports = class extends Event {
 				let foundPlotList = JSON.parse(r.farmPlot);
 
 				if (!foundPlotList) {
-					foundPlotList = {};
+					foundPlotList = [];
 				}
 
-				Object.keys(foundPlotList).forEach(key => {
-					const { cropGrowTime } = foundPlotList[key];
-					const { cropStatus } = foundPlotList[key];
-
-					if (Date.now() > cropGrowTime) {
-						foundPlotList[key] = { cropType: foundPlotList[key].cropType, cropStatus: 'harvest', cropGrowTime: 'null', decay: '0' };
+				foundPlotList.forEach(key => {
+					if (Date.now() > key.cropGrowTime) {
+						key.cropStatus = 'harvest';
+						key.cropGrowTime = 'na';
+						key.decay = 0;
 
 						db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
 							farmPlot: JSON.stringify(foundPlotList),
@@ -288,8 +504,26 @@ module.exports = class extends Event {
 						});
 					}
 
-					if (cropStatus === 'harvest') {
-						foundPlotList[key] = { cropType: foundPlotList[key].cropType, cropStatus: 'harvest', cropGrowTime: 'null', decay: Number(foundPlotList[key].decay) + Number(this.client.ecoPrices.decayRate) };
+					if (key.cropStatus === 'harvest') {
+						if (key.decay >= 100) {
+							foundPlotList = foundPlotList.filter(a => a.decay <= 100);
+
+							if (foundPlotList.length <= 0) {
+								db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
+									farmPlot: null,
+									id: `${user.id}-${guild.id}`
+								});
+								return;
+							}
+
+							db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
+								farmPlot: JSON.stringify(foundPlotList),
+								id: `${user.id}-${guild.id}`
+							});
+							return;
+						}
+
+						key.decay += Number(this.client.ecoPrices.decayRate);
 
 						db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
 							farmPlot: JSON.stringify(foundPlotList),
@@ -300,223 +534,6 @@ module.exports = class extends Event {
 			});
 		}, null, true);
 		job.start();
-
-		// Database Creation
-		// Birthday table
-		const birthdaystable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'birthdays\';').get();
-		if (!birthdaystable['count(*)']) {
-			this.client.logger.ready('birthdays table created!');
-			db.prepare('CREATE TABLE birthdays (userid TEXT PRIMARY KEY, birthday TEXT, lastRun BLOB);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_birthdays_id ON birthdays (userid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// Birthday Config table
-		const birthdayconfigtable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'birthdayConfig\';').get();
-		if (!birthdayconfigtable['count(*)']) {
-			this.client.logger.ready('birthday config table created!');
-			db.prepare('CREATE TABLE birthdayConfig (guildid TEXT PRIMARY KEY, channel TEXT, role TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_birthdayConfig_id ON birthdayConfig (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// Ban table
-		const bantable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'ban\';').get();
-		if (!bantable['count(*)']) {
-			this.client.logger.ready('ban table created!');
-			db.prepare('CREATE TABLE ban (id TEXT PRIMARY KEY, guildid TEXT, userid TEXT, endtime TEXT, channel TEXT, username TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_ban_id ON ban (id);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// Mute table
-		const mutetable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'mute\';').get();
-		if (!mutetable['count(*)']) {
-			this.client.logger.ready('mute table created!');
-			db.prepare('CREATE TABLE mute (id TEXT PRIMARY KEY, guildid TEXT, userid TEXT, endtime TEXT, channel TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_mute_id ON mute (id);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// Mute Role table
-		const muteRole = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'muterole\';').get();
-		if (!muteRole['count(*)']) {
-			this.client.logger.ready('muterole table created!');
-			db.prepare('CREATE TABLE muterole (guildid TEXT PRIMARY KEY, role TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_muterole_id ON muterole (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// Invite Manager table
-		const inviteManager = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'invmanager\';').get();
-		if (!inviteManager['count(*)']) {
-			this.client.logger.ready('invmanager table created!');
-			db.prepare('CREATE TABLE invmanager (guildid TEXT PRIMARY KEY, channel TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_invmanager_id ON invmanager (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// Level table
-		const levelstatustable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'level\';').get();
-		if (!levelstatustable['count(*)']) {
-			this.client.logger.ready('level table created!');
-			db.prepare('CREATE TABLE level (guildid TEXT PRIMARY KEY, status TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_level_id ON level (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// Dad Bot Table
-		const dadbot = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'dadbot\';').get();
-		if (!dadbot['count(*)']) {
-			this.client.logger.ready('dadbot table created!');
-			db.prepare('CREATE TABLE dadbot (guildid TEXT PRIMARY KEY, status TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_dadbot_id ON dadbot (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// Membercount Table
-		const memcount = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'membercount\';').get();
-		if (!memcount['count(*)']) {
-			this.client.logger.ready('membercount table created!');
-			db.prepare('CREATE TABLE membercount (guildid TEXT PRIMARY KEY, status TEXT, channela TEXT, channelb TEXT, channelc TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_membercount_id ON membercount (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// Announcement Table
-		const announcement = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'announcement\';').get();
-		if (!announcement['count(*)']) {
-			this.client.logger.ready('announcement table created!');
-			db.prepare('CREATE TABLE announcement (msg TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_announcement_id ON announcement (msg);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// Music Table
-		const music = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'music\';').get();
-		if (!music['count(*)']) {
-			this.client.logger.ready('music table created!');
-			db.prepare('CREATE TABLE music (guildid TEXT PRIMARY KEY, role TEXT, channel BLOB);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_music_id ON music (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// RoleMenu Table
-		const rolemenu = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'rolemenu\';').get();
-		if (!rolemenu['count(*)']) {
-			this.client.logger.ready('rolemenu table created!');
-			db.prepare('CREATE TABLE rolemenu (guildid TEXT PRIMARY KEY, activeRoleMenuID TEXT, roleList BLOB);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_rolemenu_id ON rolemenu (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// setprefix table
-		const setprefix = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'setprefix\';').get();
-		if (!setprefix['count(*)']) {
-			this.client.logger.ready('setprefix table created!');
-			db.prepare('CREATE TABLE setprefix (guildid TEXT PRIMARY KEY, prefix TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_setprefix_id ON setprefix (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// setwelcome table
-		const setwelcome = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'setwelcome\';').get();
-		if (!setwelcome['count(*)']) {
-			this.client.logger.ready('setwelcome table created!');
-			db.prepare('CREATE TABLE setwelcome (guildid TEXT PRIMARY KEY, channel TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_setwelcome_id ON setwelcome (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// autorole table
-		const autorole = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'autorole\';').get();
-		if (!autorole['count(*)']) {
-			this.client.logger.ready('autorole table created!');
-			db.prepare('CREATE TABLE autorole (guildid TEXT PRIMARY KEY, role TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_autorole_id ON autorole (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// balance table
-		const balancetable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'balance\';').get();
-		if (!balancetable['count(*)']) {
-			this.client.logger.ready('balance table created!');
-			db.prepare('CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly INTEGER, daily INTEGER, weekly INTEGER, monthly INTEGER, stealcool INTEGER, fishcool INTEGER, farmcool INTEGER, boosts BLOB, items BLOB, cash INTEGER, bank INTEGER, total INTEGER, claimNewUser INTEGER, farmPlot BLOB, dmHarvest TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_balance_id ON balance (id);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		this.client.getBalance = db.prepare('SELECT * FROM balance WHERE id = ?');
-		this.client.setBalance = db.prepare('INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, stealcool, fishcool, farmcool, boosts, items, cash, bank, total, claimNewUser, farmPlot) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @stealcool, @fishcool, @farmcool, @boosts, @items, @cash, @bank, @total, @claimNewUser, @farmPlot);');
-		this.client.setUserBalance = db.prepare('INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, stealcool, fishcool, farmcool, boosts, items, cash, bank, total, claimNewUser, farmPlot) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @stealcool, @fishcool, @farmcool, @boosts, @items, @cash, @bank, @total, @claimNewUser, @farmPlot);');
-
-		// scores table
-		const table = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'scores\';').get();
-		if (!table['count(*)']) {
-			this.client.logger.ready('scores table created!');
-			db.prepare('CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_scores_id ON scores (id);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		this.client.getScore = db.prepare('SELECT * FROM scores WHERE user = ? AND guild = ?');
-		this.client.setScore = db.prepare('INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);');
-
-		// adsprot table
-		const adsprottable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'adsprot\';').get();
-		if (!adsprottable['count(*)']) {
-			this.client.logger.ready('adsprot table created!');
-			db.prepare('CREATE TABLE adsprot (guildid TEXT PRIMARY KEY, status TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_adsprot_id ON adsprot (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// logging table
-		const loggingtable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'logging\';').get();
-		if (!loggingtable['count(*)']) {
-			this.client.logger.ready('logging table created!');
-			db.prepare('CREATE TABLE logging (guildid TEXT PRIMARY KEY, channel TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_logging_id ON logging (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-		// Ticket Config Table
-		const ticketConfigTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'ticketConfig\';').get();
-		if (!ticketConfigTable['count(*)']) {
-			this.client.logger.ready('ticketConfig table created!');
-			db.prepare('CREATE TABLE ticketConfig (guildid TEXT PRIMARY KEY, category TEXT, log TEXT, role TEXT, ticketembed TEXT, ticketembedchan TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_ticketConfig_id ON ticketConfig (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// Stored Tickets Table
-		const ticketsTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'tickets\';').get();
-		if (!ticketsTable['count(*)']) {
-			this.client.logger.ready('tickets table created!');
-			db.prepare('CREATE TABLE tickets (guildid TEXT, ticketid TEXT, authorid TEXT, reason TEXT, chanid TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_tickets_id ON tickets (ticketid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
 	}
 
 };
