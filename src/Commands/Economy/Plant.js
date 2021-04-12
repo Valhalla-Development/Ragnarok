@@ -19,7 +19,14 @@ module.exports = class extends Command {
 
 		const balance = this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
 
-		let foundPlotList = JSON.parse(balance.farmPlot);
+		let foundPlotList;
+
+		if (!balance || !balance.farmPlot) {
+			foundPlotList = [];
+		} else {
+			foundPlotList = JSON.parse(balance.farmPlot);
+		}
+
 		let foundBoostList = JSON.parse(balance.boosts);
 		let foundItemList = JSON.parse(balance.items);
 
@@ -27,10 +34,6 @@ module.exports = class extends Command {
 		const wheatGrow = this.client.ecoPrices.wheatPlant;
 		const potatoGrow = this.client.ecoPrices.potatoPlant;
 		const tomatoeGrow = this.client.ecoPrices.tomatoPlant;
-
-		if (!foundPlotList) {
-			foundPlotList = {};
-		}
 
 		if (!foundBoostList) {
 			foundBoostList = {};
@@ -137,14 +140,14 @@ module.exports = class extends Command {
 			}
 		}
 
-		if (Object.keys(foundPlotList).length >= Number(foundBoostList.farmPlot)) {
+		if (foundPlotList.length >= Number(foundBoostList.farmPlot)) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Plant**`,
-					`**◎ Error:** You do not have enough space in your plot. You can upgrade your plot with the command \`${prefix}shop upgrade`);
+					`**◎ Error:** You do not have enough space in your plot. You can upgrade your plot with the command \`${prefix}shop upgrade\``);
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -162,14 +165,9 @@ module.exports = class extends Command {
 		}
 
 		async function cropCreator(type, status, time, count) {
-			const occupied = Object.keys(foundPlotList).length;
-
 			var cropCounter;
 			for (cropCounter = 0; cropCounter < count; cropCounter++) {
-				// I added 1 because it seemed to make it work, don’t ask why
-				const number = occupied + cropCounter + 1;
-
-				foundPlotList[`plot${number}`] = { cropType: type, cropStatus: status, cropGrowTime: time, decay: null };
+				foundPlotList.push({ cropType: type, cropStatus: status, cropGrowTime: time, decay: 0 });
 			}
 
 			await db.prepare('UPDATE balance SET farmPlot = (@crops) WHERE id = (@id);').run({
@@ -206,14 +204,14 @@ module.exports = class extends Command {
 				return;
 			}
 
-			if (Object.keys(foundPlotList).length + Number(cornAmt) > Number(foundBoostList.farmPlot)) {
+			if (foundPlotList.length + Number(cornAmt) > Number(foundBoostList.farmPlot)) {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** You do not have enough room to plant \`${cornAmt}\` ${cornAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${Object.keys(foundPlotList).length}\`/\`${Number(foundBoostList.farmPlot)}\``
+						`**◎ Error:** You do not have enough room to plant \`${cornAmt}\` ${cornAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
 					]);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
@@ -238,7 +236,7 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Plant**`, [
-					`**◎ Success:** You have successfully planted \`${cornAmt}\` ${cornAmt > 1 ? 'seeds.' : 'seed.'}\nCorn takes \`${prettyMilliseconds(cornGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${Object.keys(foundPlotList).length}\`/\`${Number(foundBoostList.farmPlot)}\``
+					`**◎ Success:** You have successfully planted \`${cornAmt}\` ${cornAmt > 1 ? 'seeds.' : 'seed.'}\nCorn takes \`${prettyMilliseconds(cornGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
 				]);
 			message.channel.send(embed);
 			return;
@@ -272,14 +270,14 @@ module.exports = class extends Command {
 				return;
 			}
 
-			if (Object.keys(foundPlotList).length + Number(wheatAmt) > Number(foundBoostList.farmPlot)) {
+			if (foundPlotList.length + Number(wheatAmt) > Number(foundBoostList.farmPlot)) {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** You do not have enough room to plant \`${wheatAmt}\` ${wheatAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${Object.keys(foundPlotList).length}\`/\`${Number(foundBoostList.farmPlot)}\``
+						`**◎ Error:** You do not have enough room to plant \`${wheatAmt}\` ${wheatAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
 					]);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
@@ -304,7 +302,7 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Plant**`, [
-					`**◎ Success:** You have successfully planted \`${wheatAmt}\` ${wheatAmt > 1 ? 'seeds.' : 'seed.'}\nWheat takes \`${prettyMilliseconds(wheatGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${Object.keys(foundPlotList).length}\`/\`${Number(foundBoostList.farmPlot)}\``
+					`**◎ Success:** You have successfully planted \`${wheatAmt}\` ${wheatAmt > 1 ? 'seeds.' : 'seed.'}\nWheat takes \`${prettyMilliseconds(wheatGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
 				]);
 			message.channel.send(embed);
 			return;
@@ -338,14 +336,14 @@ module.exports = class extends Command {
 				return;
 			}
 
-			if (Object.keys(foundPlotList).length + Number(potatoeAmt) > Number(foundBoostList.farmPlot)) {
+			if (foundPlotList.length + Number(potatoeAmt) > Number(foundBoostList.farmPlot)) {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** You do not have enough room to plant \`${potatoeAmt}\` ${potatoeAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${Object.keys(foundPlotList).length}\`/\`${Number(foundBoostList.farmPlot)}\``
+						`**◎ Error:** You do not have enough room to plant \`${potatoeAmt}\` ${potatoeAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
 					]);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
@@ -370,7 +368,7 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Plant**`, [
-					`**◎ Success:** You have successfully planted \`${potatoeAmt}\` ${potatoeAmt > 1 ? 'seeds.' : 'seed.'}\nPotatoe's take \`${prettyMilliseconds(potatoGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${Object.keys(foundPlotList).length}\`/\`${Number(foundBoostList.farmPlot)}\``
+					`**◎ Success:** You have successfully planted \`${potatoeAmt}\` ${potatoeAmt > 1 ? 'seeds.' : 'seed.'}\nPotatoe's take \`${prettyMilliseconds(potatoGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
 				]);
 			message.channel.send(embed);
 			return;
@@ -404,14 +402,14 @@ module.exports = class extends Command {
 				return;
 			}
 
-			if (Object.keys(foundPlotList).length + Number(tomatoeAmt) > Number(foundBoostList.farmPlot)) {
+			if (foundPlotList.length + Number(tomatoeAmt) > Number(foundBoostList.farmPlot)) {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** You do not have enough room to plant \`${tomatoeAmt}\` ${tomatoeAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${Object.keys(foundPlotList).length}\`/\`${Number(foundBoostList.farmPlot)}\``
+						`**◎ Error:** You do not have enough room to plant \`${tomatoeAmt}\` ${tomatoeAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
 					]);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
@@ -436,7 +434,7 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Plant**`, [
-					`**◎ Success:** You have successfully planted \`${tomatoeAmt}\` ${tomatoeAmt > 1 ? 'seeds.' : 'seed.'}\nTomatoe's take \`${prettyMilliseconds(tomatoeGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${Object.keys(foundPlotList).length}\`/\`${Number(foundBoostList.farmPlot)}\``
+					`**◎ Success:** You have successfully planted \`${tomatoeAmt}\` ${tomatoeAmt > 1 ? 'seeds.' : 'seed.'}\nTomatoe's take \`${prettyMilliseconds(tomatoeGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
 				]);
 			message.channel.send(embed);
 			return;
