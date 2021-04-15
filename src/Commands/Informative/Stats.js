@@ -20,17 +20,23 @@ module.exports = class extends Command {
 
 	async run(message) {
 		const dbGrab = db.prepare('SELECT msg FROM announcement').get();
-		const dbMessage = dbGrab.msg;
+		let annc;
+		if (dbGrab) {
+			annc = dbGrab.msg;
+		} else {
+			annc = 'N/A';
+		}
+
 		const msg = await message.channel.send('Generating...');
 		message.channel.startTyping();
 		const memory = await si.mem();
 		const totalMemory = Math.floor(memory.total / 1024 / 1024);
-		const cachedMem = Math.floor(memory.buffcache / 1024 / 1024);
-		const memoryUsed = Math.floor(memory.used / 1024 / 1024);
+		const cachedMem = memory.buffcache / 1024 / 1024;
+		const memoryUsed = memory.used / 1024 / 1024;
 		const realMemUsed = Math.floor(memoryUsed - cachedMem);
-		const memPercent = Math.floor((realMemUsed / totalMemory) * 100);
+		const memPercent = (realMemUsed / totalMemory) * 100;
 		const load = await si.currentLoad();
-		const cpuUsage = Math.floor(load.currentload_user);
+		const cpuUsage = load.currentload_user;
 		const platform = await si.osInfo();
 		const osVersion = platform.distro;
 		const core = os.cpus()[0];
@@ -56,7 +62,7 @@ module.exports = class extends Command {
 			.addField('System', [
 				`**◎ OS:** ${osVersion}`,
 				`**◎ Uptime:** ${ms(os.uptime() * 1000, { long: true })}`,
-				`**◎ Memory Usage:** ${realMemUsed} / ${totalMemory}MB - ${memPercent}%`,
+				`**◎ Memory Usage:** ${realMemUsed} / ${totalMemory}MB - ${memPercent.toFixed(1)}%`,
 				`**◎ CPU:**`,
 				`\u3000 Cores: ${os.cpus().length}`,
 				`\u3000 Model: ${core.model}`,
@@ -64,7 +70,7 @@ module.exports = class extends Command {
 				`\u3000 Usage: ${cpuUsage}%`
 			])
 			.addField('Announcement',
-				`\`\`\`${dbMessage}\`\`\``)
+				`\`\`\`${annc}\`\`\``)
 			.setTimestamp();
 		message.channel.send(embed);
 		message.channel.stopTyping();
