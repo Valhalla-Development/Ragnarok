@@ -402,7 +402,7 @@ module.exports = class extends Event {
 			grabBdaysConfig.forEach(a => {
 				const guild = this.client.guilds.cache.get(a.guildid);
 				if (!guild) {
-					db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(guild.id);
+					db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(a.guildid);
 					return;
 				}
 				// Cache users
@@ -410,7 +410,7 @@ module.exports = class extends Event {
 
 				const channel = guild.channels.cache.get(a.channel);
 				if (!channel) {
-					db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(guild.id);
+					db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(a.guildid);
 					return;
 				}
 				grabBdays.forEach(b => {
