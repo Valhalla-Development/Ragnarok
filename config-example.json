@@ -12,10 +12,6 @@
   "logging": true,
   "trackClient": "REDACTED",
   "trackSecret": "REDACTED",
-  "twitterConsumerKey": "REDACTED",
-  "twitterConsumerSecret": "REDACTED",
-  "twitterAccessToken": "REDACTED",
-  "twitterAccessTokenSecret": "REDACTED",
   "filterList": [
     "example1",
     "example2",
