@@ -116,9 +116,9 @@
     "@types/node" "*"
 
 "@types/node@*":
-  version "14.14.37"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.37.tgz#a3dd8da4eb84a996c36e331df98d82abd76b516e"
-  integrity sha512-XYmBiy+ohOR4Lh5jE379fV2IU+6Jn4g5qASinhitfyO71b/sCo6MKsMLF5tc7Zf2CE8hViVQyYSobJNke8OvUw==
+  version "14.14.40"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.40.tgz#05a7cd31154487f357ca0bec4334ed1b1ab825a0"
+  integrity sha512-2HoZZGylcnz19ZSbvWhgWHqvprw1ZGHanxIrDWYykPD4CauLW4gcyLzCVfUN2kv/1t1F3CurQIdi+s1l9+XgEA==
 
 "@types/responselike@*":
   version "1.0.0"
@@ -168,9 +168,9 @@ ajv@^6.10.0, ajv@^6.12.3, ajv@^6.12.4:
     uri-js "^4.2.2"
 
 ajv@^8.0.1:
-  version "8.0.5"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.0.5.tgz#f07d6fdeffcdbb80485570ce3f1bc845fcc812b9"
-  integrity sha512-RkiLa/AeJx7+9OvniQ/qeWu0w74A8DiPPBclQ6ji3ZQkv5KamO+QGpqmi7O4JIw3rHGUXZ6CoP9tsAkn3gyazg==
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-8.1.0.tgz#45d5d3d36c7cdd808930cc3e603cf6200dbeb736"
+  integrity sha512-B/Sk2Ix7A36fs/ZkuGLIR86EdjbgR6fsAcbx9lOP/QBSXujDNbVmIS/U4Itz5k8fPFDeVZl/zQ/gJW4Jrq6XjQ==
   dependencies:
     fast-deep-equal "^3.1.1"
     json-schema-traverse "^1.0.0"
@@ -288,9 +288,9 @@ bcrypt-pbkdf@^1.0.0:
     tweetnacl "^0.14.3"
 
 better-sqlite3@^7.1.1:
-  version "7.1.4"
-  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-7.1.4.tgz#19ba6aa10b92f81410944f498d9f63b000f0b9c1"
-  integrity sha512-9BvUSm8/xSyxZbnWpcRAwEZsfTK0196qi4592N5WoVMM3dAH9g0E3/colX0dxhGVSLcVfkiBUoCEBkFz8uvySw==
+  version "7.1.5"
+  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-7.1.5.tgz#3eb0fcc81bed463ddf2da4a02aad7e02726205c0"
+  integrity sha512-HX5dN0zLllJLQOJP2tXqV42bvjXPnbe/Nl5o6nD1jj99h0148B39zbfGZVoJBLtDAd/CJc4Zdm8K+GhHIq84IQ==
   dependencies:
     bindings "^1.5.0"
     prebuild-install "^6.0.1"
@@ -1766,9 +1766,9 @@ performance-now@^2.1.0:
   integrity sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns=
 
 petitio@^1.1.0:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/petitio/-/petitio-1.2.1.tgz#70049338cb05bd868aef1921bba8eb69a8c76ae8"
-  integrity sha512-K+SFnYI8BhYVZEdduQcWTv8F4GNKYYS4MlJMOLQDWcgNsC4DTjsw/ijx10JKGZ9ytKiYd9grMAVKog44WZRHUA==
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/petitio/-/petitio-1.3.0.tgz#eece31273a80b88ced4a47165a853f32d3f2ff9d"
+  integrity sha512-9okn37XbJxvzz4n2DLR6r/C6T5RgwuImpgS8StH4KImm2Gx1xKcEZKgIv13m5xMGQ95zlemgT8GvnogmvfJbug==
 
 prebuild-install@^6.0.1:
   version "6.1.1"
@@ -2203,9 +2203,9 @@ systeminformation@^4.26.10:
   integrity sha512-KyT3TFxs14x9CvSbNukbBq2DIjhuLHXkBjZ6Pqllnzqt3ERxDdC6SwIBiKnXeMq6NAOfx1Dp9PjPtXtnIFuAow==
 
 table@^6.0.4:
-  version "6.0.9"
-  resolved "https://registry.yarnpkg.com/table/-/table-6.0.9.tgz#790a12bf1e09b87b30e60419bafd6a1fd85536fb"
-  integrity sha512-F3cLs9a3hL1Z7N4+EkSscsel3z55XT950AvB05bwayrNg5T1/gykXtigioTAjbltvbMSJvvhFCbnf6mX+ntnJQ==
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/table/-/table-6.1.0.tgz#676a0cfb206008b59e783fcd94ef8ba7d67d966c"
+  integrity sha512-T4G5KMmqIk6X87gLKWyU5exPpTjLjY5KyrFWaIjv3SvgaIUGXV7UEzGEnZJdTA38/yUS6f9PlKezQ0bYXG3iIQ==
   dependencies:
     ajv "^8.0.1"
     is-boolean-object "^1.1.0"
