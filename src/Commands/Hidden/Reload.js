@@ -26,24 +26,7 @@ module.exports = class extends Command {
 
 		const command = this.client.commands.get(cmd) || this.client.commands.get(this.client.aliases.get(cmd));
 
-		if (command) {
-			delete require.cache[require.resolve(`../${command.category}/${ucFirst(command.name)}.js`)];
-
-			const File = require(`../${command.category}/${ucFirst(command.name)}.js`);
-			const CommandCre = new File(this.client, command.name.toLowerCase());
-
-			this.client.commands.delete(command.name);
-			await this.client.commands.set(command.name, CommandCre);
-
-			this.client.utils.messageDelete(message, 10000);
-
-			const embed = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Reload**`,
-					`**◎ Success:** Command **${command.name}** has been successfully reloaded!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		} else {
+		if (!command) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
@@ -53,6 +36,33 @@ module.exports = class extends Command {
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
+
+		const embed = new MessageEmbed()
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.addField(`**${this.client.user.username} - Reload**`,
+				`**◎ Success:** Realoading \`${command.name}\``);
+		message.channel.send(embed).then(async (m) => {
+			const startRestart = new Date();
+
+			delete require.cache[require.resolve(`../${command.category}/${ucFirst(command.name)}.js`)];
+
+			const File = require(`../${command.category}/${ucFirst(command.name)}.js`);
+			const CommandCre = new File(this.client, command.name.toLowerCase());
+
+			this.client.commands.delete(command.name);
+			await this.client.commands.set(command.name, CommandCre);
+
+			const endRestart = new Date();
+
+			const timeInMs = endRestart.getTime() - startRestart.getTime();
+
+			const embedUpd = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Reload**`,
+					`**◎ Success:** Command **${command.name}** has been successfully reloaded!\nCommand took \`${timeInMs}\`ms to reload.`);
+			m.edit(embedUpd);
+			return;
+		});
 
 		function ucFirst(str) {
 			if (!str) return str;
