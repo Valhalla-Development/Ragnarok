@@ -16,15 +16,15 @@ module.exports = class extends Event {
 
 		// AirReps Alert
 		if (member.guild.id === '657235952116170794') {
-			if (member.guild.memberCount === 8000) {
-				if (member.guild.roles.cache.find((r) => r.name === '8000th Member')) return;
-				this.client.channels.cache.get('657241621112553474').send(`We just hit 8000 members!\n`);
+			if (member.guild.memberCount === 9000) {
+				if (member.guild.roles.cache.find((r) => r.name === '9000th Member')) return;
+				this.client.channels.cache.get('657241621112553474').send(`We just hit 9000 members!\n`);
 				member.guild.roles.create({
 					data: {
-						name: '8000th Member',
+						name: '9000th Member',
 						color: 'BLUE'
 					},
-					reason: '8000th Member'
+					reason: '9000th Member'
 				}).then((role) => member.roles.add(role)).catch(console.error);
 			}
 		}
