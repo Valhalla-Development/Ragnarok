@@ -36,7 +36,7 @@ module.exports = class extends Command {
 		const realMemUsed = Math.floor(memoryUsed - cachedMem);
 		const memPercent = (realMemUsed / totalMemory) * 100;
 		const load = await si.currentLoad();
-		const cpuUsage = load.currentload_user;
+		const cpuUsage = load.currentLoadUser;
 		const platform = await si.osInfo();
 		const osVersion = platform.distro;
 		const core = os.cpus()[0];
@@ -67,7 +67,7 @@ module.exports = class extends Command {
 				`\u3000 Cores: ${os.cpus().length}`,
 				`\u3000 Model: ${core.model}`,
 				`\u3000 Speed: ${core.speed}MHz`,
-				`\u3000 Usage: ${cpuUsage}%`
+				`\u3000 Usage: ${cpuUsage.toFixed(1)}%`
 			])
 			.addField('Announcement',
 				`\`\`\`${annc}\`\`\``)
