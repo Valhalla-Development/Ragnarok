@@ -144,9 +144,7 @@ module.exports = class extends Command {
 					\n**Daily:** ${Date.now() > balance.daily ? `\`Available!\`` : `\`${ms(balance.daily - date, { long: true })}\``}
 					\n**Weekly:** ${Date.now() > balance.weekly ? `\`Available!\`` : `\`${ms(balance.weekly - date, { long: true })}\``}
 					\n**Monthly:** ${Date.now() > balance.monthly ? `\`Available!\`` : `\`${ms(balance.monthly - date, { long: true })}\``}` });
-			// eslint-disable-next-line no-inline-comments
 			message.channel.send(embed1);// `\n\u3000 **Hourly:** \`${Date.now() > balance.hourly ? `\`Available!\`` : `\`${ms(balance.hourly - date, { long: true })}\``}` })
-
 			return;
 		}
 		const embed1 = new MessageEmbed()

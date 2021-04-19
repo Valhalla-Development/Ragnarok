@@ -58,7 +58,6 @@ module.exports = class extends Command {
 		}
 
 		if (!score) {
-			// eslint-disable-next-line no-inline-comments
 			const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
 			const newData = {
 				id: `${message.guild.id}-${message.author.id}`,

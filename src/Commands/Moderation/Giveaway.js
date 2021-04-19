@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 const Command = require('../../Structures/Command');
 const ms = require('ms');
 const SQLite = require('better-sqlite3');
