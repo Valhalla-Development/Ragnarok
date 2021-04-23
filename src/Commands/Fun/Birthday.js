@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const moment = require('moment');
+const ms = require('ms');
 
 module.exports = class extends Command {
 
@@ -40,12 +41,11 @@ module.exports = class extends Command {
 			}
 
 			const then = moment(nextBirthday + year);
-			const diffInDays = bdayNow.diff(then, 'days');
 
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
-					`**◎** ${user}'s **next** birthday is in **${diffInDays.toString().slice(1)}** days, on **${nextBirthday + year}**`)
+					`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on **${nextBirthday + year}**`)
 				.setFooter('This server currently has this feature disabled, you will not receive a message in this server.');
 			message.channel.send(embed);
 			return;
@@ -98,12 +98,11 @@ module.exports = class extends Command {
 				}
 
 				const then = moment(nextBirthday + year);
-				const diffInDays = bdayNow.diff(then, 'days');
 
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Birthday**`,
-						`**◎** ${user}'s **next** birthday is in **${diffInDays.toString().slice(1)}** days, on **${nextBirthday + year}**`);
+						`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on **${nextBirthday + year}**`);
 				message.channel.send(embed);
 				return;
 			}
@@ -221,12 +220,11 @@ module.exports = class extends Command {
 			}
 
 			const then = moment(nextBirthday + year, 'MM/DD/YYYY');
-			const diffInDays = bdayNow.diff(then, 'days');
 
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
-					`**◎** ${user}'s **next** birthday is in **${diffInDays.toString().slice(1)}** days, on **${nextBirthday + year}**`)
+					`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on **${nextBirthday + year}**`)
 				.setFooter(`Run '${prefix}birthday help' if you wish to change your birthday`);
 			message.channel.send(embed);
 			return;
