@@ -512,7 +512,7 @@ module.exports = class extends Command {
 			if (args[1] === 'clear') {
 				this.client.utils.messageDelete(message, 10000);
 
-				db.prepare(`DELETE FROM rolemenu where guildid=${message.guild.id}`).run();
+				db.prepare(`DELETE FROM rolemenu WHERE guildid=${message.guild.id}`).run();
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
