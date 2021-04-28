@@ -192,7 +192,7 @@ module.exports = class extends Event {
 		const balancetable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'balance\';').get();
 		if (!balancetable['count(*)']) {
 			this.client.logger.ready('balance table created!');
-			db.prepare('CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly INTEGER, daily INTEGER, weekly INTEGER, monthly INTEGER, stealcool INTEGER, fishcool INTEGER, farmcool INTEGER, boosts BLOB, items BLOB, harvested BLOB, cash INTEGER, bank INTEGER, total INTEGER, claimNewUser INTEGER, farmPlot BLOB, dmHarvest TEXT);').run();
+			db.prepare('CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly INTEGER, daily INTEGER, weekly INTEGER, monthly INTEGER, stealcool INTEGER, fishcool INTEGER, farmcool INTEGER, boosts BLOB, items BLOB, harvested BLOB, cash INTEGER, bank INTEGER, total INTEGER, claimNewUser INTEGER, farmPlot BLOB, dmHarvest TEXT, harvestedCrops BLOB);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_balance_id ON balance (id);').run();
 			db.pragma('synchronous = 1');
 			db.pragma('journal_mode = wal');
