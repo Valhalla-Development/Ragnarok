@@ -277,7 +277,7 @@ module.exports = class extends Event {
 			.on('error', m => this.client.logger.error('slash-create error:', m));
 
 		// Cooldowns
-		const job = new CronJob('* * * * * *', () => {
+		const job = new CronJob('*/10 * * * * *', () => {
 		/*
 				// Mutes
 				const grabMutes = db.prepare('SELECT * FROM mute').all();
