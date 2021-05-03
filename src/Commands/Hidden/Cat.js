@@ -49,8 +49,9 @@ module.exports = class extends Command {
 			const noPost = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Cat**`,
-					`**◎ Error:** I could not find a psot.`);
+					`**◎ Error:** I could not find a post.`);
 			message.channel.send(noPost).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.stopTyping();
 			return;
 		}
 
