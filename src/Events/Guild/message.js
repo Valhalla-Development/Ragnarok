@@ -371,7 +371,7 @@ module.exports = class extends Event {
 								if (res.embeds[0].url) {
 									const fileExtension = res.embeds[0].url.substring(res.embeds[0].url.lastIndexOf('.') + 1);
 									if (validExtensions.includes(fileExtension)) {
-										embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content}`);
+										embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.length > 1048 ? res.content.substring(0, 1048) : res.content}`);
 										embed.setImage(res.embeds[0].url);
 										message.channel.send(embed);
 									}
@@ -386,10 +386,10 @@ module.exports = class extends Event {
 								const attachmentUrl = res.attachments.first().url;
 								const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
 								if (!validExtensions.includes(fileExtension)) {
-									embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content}`);
+									embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
 									return;
 								} else {
-									embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content}`);
+									embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
 									embed.setImage(attachmentUrl);
 									message.channel.send(embed);
 									return;
@@ -407,7 +407,7 @@ module.exports = class extends Event {
 									return;
 								}
 							} else {
-								embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content}`);
+								embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
 								message.channel.send(embed);
 								return;
 							}
