@@ -40,35 +40,35 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@discordjs/opus", "npm:0.5.0"],
             ["@extreme_hero/deeptype", "npm:1.0.1"],
             ["@xoalone/discordjs-pagination", "npm:2.2.3"],
-            ["better-sqlite3", "npm:7.1.5"],
+            ["better-sqlite3", "npm:7.3.1"],
             ["canvas", "npm:2.7.0"],
-            ["chalk", "npm:4.1.0"],
-            ["cleverbot-free", "npm:1.1.1"],
+            ["chalk", "npm:4.1.1"],
+            ["cleverbot-free", "npm:1.1.6"],
             ["common-tags", "npm:1.8.0"],
             ["cron", "npm:1.8.2"],
             ["discord-fetch-all", "npm:3.0.2"],
-            ["discord-giveaways", "npm:4.4.3"],
+            ["discord-giveaways", "npm:4.5.1"],
             ["discord.js", "npm:12.5.3"],
             ["erela.js", "npm:2.3.3"],
             ["erela.js-spotify", "npm:1.2.0"],
-            ["eslint", "npm:7.24.0"],
+            ["eslint", "npm:7.26.0"],
             ["eslint-config-tesseract", "npm:0.0.3"],
-            ["glob", "npm:7.1.6"],
+            ["glob", "npm:7.1.7"],
             ["hastebin.js", "npm:1.3.2"],
             ["mathjs", "npm:9.3.2"],
             ["moment", "npm:2.29.1"],
             ["ms", "npm:2.1.3"],
-            ["nanoid", "npm:3.1.22"],
+            ["nanoid", "npm:3.1.23"],
             ["node-fetch", "npm:2.6.1"],
             ["number-abbreviate", "npm:2.0.0"],
             ["number-to-words-en", "npm:1.2.5"],
-            ["prettier", "npm:2.2.1"],
+            ["prettier", "npm:2.3.0"],
             ["prettier-eslint", "npm:12.0.0"],
             ["pretty-ms", "npm:7.0.1"],
             ["quick.db", "npm:7.1.3"],
             ["request", "npm:2.88.2"],
             ["slash-create", "virtual:7c19d9afc62449b43dedae8a29118b5814d64b440925e8847d5590b895e573b70a6dadd9a2a890f80737d8338fa07aab1feada78eb8c0c8942fc4499a758a005#npm:3.1.0"],
-            ["systeminformation", "npm:5.6.12"],
+            ["systeminformation", "npm:5.6.20"],
             ["trakt.tv", "npm:8.0.0"],
             ["twemoji-parser", "npm:13.0.0"],
             ["unescape", "npm:1.0.1"],
@@ -163,6 +163,22 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@eslint-eslintrc-npm-0.4.0-901e1408cc-d3f51b7419.zip/node_modules/@eslint/eslintrc/",
           "packageDependencies": [
             ["@eslint/eslintrc", "npm:0.4.0"],
+            ["ajv", "npm:6.12.6"],
+            ["debug", "virtual:428f325a939c2653ad822eb3d75efb02ac311523dd0d4f9645afc39ea00bd86eceac35a9d59c9b6977d76b670a4ef0ae057ea572338a44729aa592711a8c05a3#npm:4.3.2"],
+            ["espree", "npm:7.3.1"],
+            ["globals", "npm:12.4.0"],
+            ["ignore", "npm:4.0.6"],
+            ["import-fresh", "npm:3.3.0"],
+            ["js-yaml", "npm:3.14.1"],
+            ["minimatch", "npm:3.0.4"],
+            ["strip-json-comments", "npm:3.1.1"]
+          ],
+          "linkType": "HARD",
+        }],
+        ["npm:0.4.1", {
+          "packageLocation": "./.yarn/cache/@eslint-eslintrc-npm-0.4.1-48933b2833-418f5810c8.zip/node_modules/@eslint/eslintrc/",
+          "packageDependencies": [
+            ["@eslint/eslintrc", "npm:0.4.1"],
             ["ajv", "npm:6.12.6"],
             ["debug", "virtual:428f325a939c2653ad822eb3d75efb02ac311523dd0d4f9645afc39ea00bd86eceac35a9d59c9b6977d76b670a4ef0ae057ea572338a44729aa592711a8c05a3#npm:4.3.2"],
             ["espree", "npm:7.3.1"],
@@ -804,6 +820,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["tar", "npm:6.1.0"]
           ],
           "linkType": "HARD",
+        }],
+        ["npm:7.3.1", {
+          "packageLocation": "./.yarn/unplugged/better-sqlite3-npm-7.3.1-4ba40e3ba5/node_modules/better-sqlite3/",
+          "packageDependencies": [
+            ["better-sqlite3", "npm:7.3.1"],
+            ["bindings", "npm:1.5.0"],
+            ["node-gyp", "npm:8.0.0"],
+            ["prebuild-install", "npm:6.1.1"],
+            ["tar", "npm:6.1.0"]
+          ],
+          "linkType": "HARD",
         }]
       ]],
       ["bindings", [
@@ -1004,6 +1031,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["supports-color", "npm:7.2.0"]
           ],
           "linkType": "HARD",
+        }],
+        ["npm:4.1.1", {
+          "packageLocation": "./.yarn/cache/chalk-npm-4.1.1-f1ce6bae57-445c12db7a.zip/node_modules/chalk/",
+          "packageDependencies": [
+            ["chalk", "npm:4.1.1"],
+            ["ansi-styles", "npm:4.3.0"],
+            ["supports-color", "npm:7.2.0"]
+          ],
+          "linkType": "HARD",
         }]
       ]],
       ["charenc", [
@@ -1041,10 +1077,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["cleverbot-free", [
-        ["npm:1.1.1", {
-          "packageLocation": "./.yarn/cache/cleverbot-free-npm-1.1.1-1af5ee823e-d480b717bc.zip/node_modules/cleverbot-free/",
+        ["npm:1.1.6", {
+          "packageLocation": "./.yarn/cache/cleverbot-free-npm-1.1.6-c84f168613-73246f1538.zip/node_modules/cleverbot-free/",
           "packageDependencies": [
-            ["cleverbot-free", "npm:1.1.1"],
+            ["cleverbot-free", "npm:1.1.6"],
             ["md5", "npm:2.3.0"],
             ["superagent", "npm:5.3.1"]
           ],
@@ -1440,11 +1476,12 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["discord-giveaways", [
-        ["npm:4.4.3", {
-          "packageLocation": "./.yarn/cache/discord-giveaways-npm-4.4.3-176adf9b4d-cfde8bdf15.zip/node_modules/discord-giveaways/",
+        ["npm:4.5.1", {
+          "packageLocation": "./.yarn/cache/discord-giveaways-npm-4.5.1-362db48beb-1d6bc0a3a4.zip/node_modules/discord-giveaways/",
           "packageDependencies": [
-            ["discord-giveaways", "npm:4.4.3"],
-            ["deepmerge", "npm:4.2.2"]
+            ["discord-giveaways", "npm:4.5.1"],
+            ["deepmerge", "npm:4.2.2"],
+            ["serialize-javascript", "npm:5.0.1"]
           ],
           "linkType": "HARD",
         }]
@@ -1637,6 +1674,50 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint", "npm:7.24.0"],
             ["@babel/code-frame", "npm:7.12.11"],
             ["@eslint/eslintrc", "npm:0.4.0"],
+            ["ajv", "npm:6.12.6"],
+            ["chalk", "npm:4.1.0"],
+            ["cross-spawn", "npm:7.0.3"],
+            ["debug", "virtual:428f325a939c2653ad822eb3d75efb02ac311523dd0d4f9645afc39ea00bd86eceac35a9d59c9b6977d76b670a4ef0ae057ea572338a44729aa592711a8c05a3#npm:4.3.2"],
+            ["doctrine", "npm:3.0.0"],
+            ["enquirer", "npm:2.3.6"],
+            ["eslint-scope", "npm:5.1.1"],
+            ["eslint-utils", "npm:2.1.0"],
+            ["eslint-visitor-keys", "npm:2.0.0"],
+            ["espree", "npm:7.3.1"],
+            ["esquery", "npm:1.4.0"],
+            ["esutils", "npm:2.0.3"],
+            ["file-entry-cache", "npm:6.0.1"],
+            ["functional-red-black-tree", "npm:1.0.1"],
+            ["glob-parent", "npm:5.1.2"],
+            ["globals", "npm:13.8.0"],
+            ["ignore", "npm:4.0.6"],
+            ["import-fresh", "npm:3.3.0"],
+            ["imurmurhash", "npm:0.1.4"],
+            ["is-glob", "npm:4.0.1"],
+            ["js-yaml", "npm:3.14.1"],
+            ["json-stable-stringify-without-jsonify", "npm:1.0.1"],
+            ["levn", "npm:0.4.1"],
+            ["lodash", "npm:4.17.21"],
+            ["minimatch", "npm:3.0.4"],
+            ["natural-compare", "npm:1.4.0"],
+            ["optionator", "npm:0.9.1"],
+            ["progress", "npm:2.0.3"],
+            ["regexpp", "npm:3.1.0"],
+            ["semver", "npm:7.3.5"],
+            ["strip-ansi", "npm:6.0.0"],
+            ["strip-json-comments", "npm:3.1.1"],
+            ["table", "npm:6.3.0"],
+            ["text-table", "npm:0.2.0"],
+            ["v8-compile-cache", "npm:2.3.0"]
+          ],
+          "linkType": "HARD",
+        }],
+        ["npm:7.26.0", {
+          "packageLocation": "./.yarn/cache/eslint-npm-7.26.0-0bcc96e5d3-08f99befd7.zip/node_modules/eslint/",
+          "packageDependencies": [
+            ["eslint", "npm:7.26.0"],
+            ["@babel/code-frame", "npm:7.12.11"],
+            ["@eslint/eslintrc", "npm:0.4.1"],
             ["ajv", "npm:6.12.6"],
             ["chalk", "npm:4.1.0"],
             ["cross-spawn", "npm:7.0.3"],
@@ -2318,6 +2399,19 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/glob-npm-7.1.6-1ce3a5189a-789977b524.zip/node_modules/glob/",
           "packageDependencies": [
             ["glob", "npm:7.1.6"],
+            ["fs.realpath", "npm:1.0.0"],
+            ["inflight", "npm:1.0.6"],
+            ["inherits", "npm:2.0.4"],
+            ["minimatch", "npm:3.0.4"],
+            ["once", "npm:1.4.0"],
+            ["path-is-absolute", "npm:1.0.1"]
+          ],
+          "linkType": "HARD",
+        }],
+        ["npm:7.1.7", {
+          "packageLocation": "./.yarn/cache/glob-npm-7.1.7-5698ad9c48-352f74f082.zip/node_modules/glob/",
+          "packageDependencies": [
+            ["glob", "npm:7.1.7"],
             ["fs.realpath", "npm:1.0.0"],
             ["inflight", "npm:1.0.6"],
             ["inherits", "npm:2.0.4"],
@@ -3411,10 +3505,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["nanoid", [
-        ["npm:3.1.22", {
-          "packageLocation": "./.yarn/cache/nanoid-npm-3.1.22-e0ab44a9c0-6a38c79981.zip/node_modules/nanoid/",
+        ["npm:3.1.23", {
+          "packageLocation": "./.yarn/cache/nanoid-npm-3.1.23-5f6acb650d-e6dea1da5a.zip/node_modules/nanoid/",
           "packageDependencies": [
-            ["nanoid", "npm:3.1.22"]
+            ["nanoid", "npm:3.1.23"]
           ],
           "linkType": "HARD",
         }]
@@ -3925,6 +4019,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prettier", "npm:2.2.1"]
           ],
           "linkType": "HARD",
+        }],
+        ["npm:2.3.0", {
+          "packageLocation": "./.yarn/cache/prettier-npm-2.3.0-29ef37e8b6-652640cc8b.zip/node_modules/prettier/",
+          "packageDependencies": [
+            ["prettier", "npm:2.3.0"]
+          ],
+          "linkType": "HARD",
         }]
       ]],
       ["prettier-eslint", [
@@ -4153,41 +4254,51 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@discordjs/opus", "npm:0.5.0"],
             ["@extreme_hero/deeptype", "npm:1.0.1"],
             ["@xoalone/discordjs-pagination", "npm:2.2.3"],
-            ["better-sqlite3", "npm:7.1.5"],
+            ["better-sqlite3", "npm:7.3.1"],
             ["canvas", "npm:2.7.0"],
-            ["chalk", "npm:4.1.0"],
-            ["cleverbot-free", "npm:1.1.1"],
+            ["chalk", "npm:4.1.1"],
+            ["cleverbot-free", "npm:1.1.6"],
             ["common-tags", "npm:1.8.0"],
             ["cron", "npm:1.8.2"],
             ["discord-fetch-all", "npm:3.0.2"],
-            ["discord-giveaways", "npm:4.4.3"],
+            ["discord-giveaways", "npm:4.5.1"],
             ["discord.js", "npm:12.5.3"],
             ["erela.js", "npm:2.3.3"],
             ["erela.js-spotify", "npm:1.2.0"],
-            ["eslint", "npm:7.24.0"],
+            ["eslint", "npm:7.26.0"],
             ["eslint-config-tesseract", "npm:0.0.3"],
-            ["glob", "npm:7.1.6"],
+            ["glob", "npm:7.1.7"],
             ["hastebin.js", "npm:1.3.2"],
             ["mathjs", "npm:9.3.2"],
             ["moment", "npm:2.29.1"],
             ["ms", "npm:2.1.3"],
-            ["nanoid", "npm:3.1.22"],
+            ["nanoid", "npm:3.1.23"],
             ["node-fetch", "npm:2.6.1"],
             ["number-abbreviate", "npm:2.0.0"],
             ["number-to-words-en", "npm:1.2.5"],
-            ["prettier", "npm:2.2.1"],
+            ["prettier", "npm:2.3.0"],
             ["prettier-eslint", "npm:12.0.0"],
             ["pretty-ms", "npm:7.0.1"],
             ["quick.db", "npm:7.1.3"],
             ["request", "npm:2.88.2"],
             ["slash-create", "virtual:7c19d9afc62449b43dedae8a29118b5814d64b440925e8847d5590b895e573b70a6dadd9a2a890f80737d8338fa07aab1feada78eb8c0c8942fc4499a758a005#npm:3.1.0"],
-            ["systeminformation", "npm:5.6.12"],
+            ["systeminformation", "npm:5.6.20"],
             ["trakt.tv", "npm:8.0.0"],
             ["twemoji-parser", "npm:13.0.0"],
             ["unescape", "npm:1.0.1"],
             ["url-regex-safe", "npm:2.0.2"]
           ],
           "linkType": "SOFT",
+        }]
+      ]],
+      ["randombytes", [
+        ["npm:2.1.0", {
+          "packageLocation": "./.yarn/cache/randombytes-npm-2.1.0-e3da76bccf-ede2693af0.zip/node_modules/randombytes/",
+          "packageDependencies": [
+            ["randombytes", "npm:2.1.0"],
+            ["safe-buffer", "npm:5.2.1"]
+          ],
+          "linkType": "HARD",
         }]
       ]],
       ["range-parser", [
@@ -4523,6 +4634,16 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["on-finished", "npm:2.3.0"],
             ["range-parser", "npm:1.2.1"],
             ["statuses", "npm:1.5.0"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["serialize-javascript", [
+        ["npm:5.0.1", {
+          "packageLocation": "./.yarn/cache/serialize-javascript-npm-5.0.1-8ffc173f09-97eef70a33.zip/node_modules/serialize-javascript/",
+          "packageDependencies": [
+            ["serialize-javascript", "npm:5.0.1"],
+            ["randombytes", "npm:2.1.0"]
           ],
           "linkType": "HARD",
         }]
@@ -4913,10 +5034,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["systeminformation", [
-        ["npm:5.6.12", {
-          "packageLocation": "./.yarn/cache/systeminformation-npm-5.6.12-48f8c20d5c-38d1ee8839.zip/node_modules/systeminformation/",
+        ["npm:5.6.20", {
+          "packageLocation": "./.yarn/cache/systeminformation-npm-5.6.20-1800f7f78c-677ff81195.zip/node_modules/systeminformation/",
           "packageDependencies": [
-            ["systeminformation", "npm:5.6.12"]
+            ["systeminformation", "npm:5.6.20"]
           ],
           "linkType": "HARD",
         }]

@@ -96,6 +96,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@eslint/eslintrc@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "@eslint/eslintrc@npm:0.4.1"
+  dependencies:
+    ajv: ^6.12.4
+    debug: ^4.1.1
+    espree: ^7.3.0
+    globals: ^12.1.0
+    ignore: ^4.0.6
+    import-fresh: ^3.2.1
+    js-yaml: ^3.13.1
+    minimatch: ^3.0.4
+    strip-json-comments: ^3.1.1
+  checksum: 418f5810c8dd9897d2457ceef098197d0e5f1ad345fbe4cd9256fd4223d7ea83d5e350f9091b3ab3483b6b1c367fa560df3ba1fccc7eb8ca6e1aae5a5b126d60
+  languageName: node
+  linkType: hard
+
 "@extreme_hero/deeptype@npm:^1.0.1":
   version: 1.0.1
   resolution: "@extreme_hero/deeptype@npm:1.0.1"
@@ -582,7 +599,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"better-sqlite3@npm:^7.1.1, better-sqlite3@npm:^7.1.5":
+"better-sqlite3@npm:^7.1.1":
   version: 7.1.5
   resolution: "better-sqlite3@npm:7.1.5"
   dependencies:
@@ -591,6 +608,18 @@ __metadata:
     prebuild-install: ^6.0.1
     tar: ^6.1.0
   checksum: be7459d2751603ebe8596a543757b2acccc11116e459c8827fe0222ad3e50de4f1887466d88b831ceca8843fe2328b45b76d65220cc7f7f9969fff9384a6a6cf
+  languageName: node
+  linkType: hard
+
+"better-sqlite3@npm:^7.3.1":
+  version: 7.3.1
+  resolution: "better-sqlite3@npm:7.3.1"
+  dependencies:
+    bindings: ^1.5.0
+    node-gyp: latest
+    prebuild-install: ^6.0.1
+    tar: ^6.1.0
+  checksum: fe44902eb5a4dac28d7f9b5fddc56e91da21dc5fff061362bd62b878e868ac8feeda74bf2f0c2d3033dd076ace1a1284ed4b30e27332bbb445fe7414a03e9ac2
   languageName: node
   linkType: hard
 
@@ -745,7 +774,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:4.1.0, chalk@npm:^4.0.0, chalk@npm:^4.1.0":
+"chalk@npm:4.1.0, chalk@npm:^4.0.0":
   version: 4.1.0
   resolution: "chalk@npm:4.1.0"
   dependencies:
@@ -779,6 +808,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chalk@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "chalk@npm:4.1.1"
+  dependencies:
+    ansi-styles: ^4.1.0
+    supports-color: ^7.1.0
+  checksum: 445c12db7aeed0046500a1e4184d31209a77d165654c885a789c41c8598a6a95bd2392180987cac572c967b93a2a730dda778bb7f87fa06ca63fd8592f8cc59f
+  languageName: node
+  linkType: hard
+
 "charenc@npm:0.0.2":
   version: 0.0.2
   resolution: "charenc@npm:0.0.2"
@@ -807,13 +846,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cleverbot-free@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "cleverbot-free@npm:1.1.1"
+"cleverbot-free@npm:^1.1.6":
+  version: 1.1.6
+  resolution: "cleverbot-free@npm:1.1.6"
   dependencies:
     md5: ^2.2.1
     superagent: ^5.1.0
-  checksum: d480b717bc50d18137a39b0d9a1b4f85fffb78fa8c56a5965b247554458130a808876d33560f508250f7e13e9b0b7b3c005452ffc631c22ff0a35ab7c9359a6c
+  checksum: 73246f1538d00880ba5c3e75cf7b2655f0cb770b10a85d07b5bdcf83ac79ec05021af636dffd819415473c58bf10a51d208075754c9f5ba164beaa825870bb25
   languageName: node
   linkType: hard
 
@@ -1125,12 +1164,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-giveaways@npm:^4.4.3":
-  version: 4.4.3
-  resolution: "discord-giveaways@npm:4.4.3"
+"discord-giveaways@npm:^4.5.1":
+  version: 4.5.1
+  resolution: "discord-giveaways@npm:4.5.1"
   dependencies:
     deepmerge: ^4.2.2
-  checksum: cfde8bdf15e1f5d345f418f7e25bf629f9371ad1314da2117d5a581bae39f2ff3fe631699b7fa7c7bb9d61ec83585f7ef3e31e5446dc8e47137620810ce60d51
+    serialize-javascript: ^5.0.1
+  checksum: 1d6bc0a3a4c5b4a5739c6f27463d87e8213ffd2b4703e1521fec459cb4bb993ddff22a1cf8cb57b8e0b3851c398c3f5c83354817279b579c2faf9ab35662aade
   languageName: node
   linkType: hard
 
@@ -1327,7 +1367,54 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^7.24.0, eslint@npm:^7.9.0":
+"eslint@npm:^7.26.0":
+  version: 7.26.0
+  resolution: "eslint@npm:7.26.0"
+  dependencies:
+    "@babel/code-frame": 7.12.11
+    "@eslint/eslintrc": ^0.4.1
+    ajv: ^6.10.0
+    chalk: ^4.0.0
+    cross-spawn: ^7.0.2
+    debug: ^4.0.1
+    doctrine: ^3.0.0
+    enquirer: ^2.3.5
+    eslint-scope: ^5.1.1
+    eslint-utils: ^2.1.0
+    eslint-visitor-keys: ^2.0.0
+    espree: ^7.3.1
+    esquery: ^1.4.0
+    esutils: ^2.0.2
+    file-entry-cache: ^6.0.1
+    functional-red-black-tree: ^1.0.1
+    glob-parent: ^5.0.0
+    globals: ^13.6.0
+    ignore: ^4.0.6
+    import-fresh: ^3.0.0
+    imurmurhash: ^0.1.4
+    is-glob: ^4.0.0
+    js-yaml: ^3.13.1
+    json-stable-stringify-without-jsonify: ^1.0.1
+    levn: ^0.4.1
+    lodash: ^4.17.21
+    minimatch: ^3.0.4
+    natural-compare: ^1.4.0
+    optionator: ^0.9.1
+    progress: ^2.0.0
+    regexpp: ^3.1.0
+    semver: ^7.2.1
+    strip-ansi: ^6.0.0
+    strip-json-comments: ^3.1.0
+    table: ^6.0.4
+    text-table: ^0.2.0
+    v8-compile-cache: ^2.0.3
+  bin:
+    eslint: bin/eslint.js
+  checksum: 08f99befd764fbd6ea811e9eec27d5c6b9dc9d1bbfe5ffa1016e4f1fe526a4f45ea127c4e30c554c423ee55eb290ce9af4fb7fedf9b7af3f84076a444c2bbdf6
+  languageName: node
+  linkType: hard
+
+"eslint@npm:^7.9.0":
   version: 7.24.0
   resolution: "eslint@npm:7.24.0"
   dependencies:
@@ -1901,6 +1988,20 @@ __metadata:
     once: ^1.3.0
     path-is-absolute: ^1.0.0
   checksum: 789977b52432865bd63846da5c75a6efc2c56abdc0cb5ffcdb8e91eeb67a58fa5594c1195d18b2b4aff99675b0739ed6bd61024b26562e0cca18c8f993efdc82
+  languageName: node
+  linkType: hard
+
+"glob@npm:^7.1.7":
+  version: 7.1.7
+  resolution: "glob@npm:7.1.7"
+  dependencies:
+    fs.realpath: ^1.0.0
+    inflight: ^1.0.4
+    inherits: 2
+    minimatch: ^3.0.4
+    once: ^1.3.0
+    path-is-absolute: ^1.0.0
+  checksum: 352f74f08247db5420161a2f68f2bd84b53228b5fcfc9dcc37cd54d3f19ec0232495d84aeff1286d0727059e9fdc1031400e00b971bdc59e30f8f82b199c9d02
   languageName: node
   linkType: hard
 
@@ -2852,12 +2953,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.1.22":
-  version: 3.1.22
-  resolution: "nanoid@npm:3.1.22"
+"nanoid@npm:^3.1.23":
+  version: 3.1.23
+  resolution: "nanoid@npm:3.1.23"
   bin:
     nanoid: bin/nanoid.cjs
-  checksum: 6a38c799816de388cd67233a9fad6216e0ad2abda3ce5b34eb126afbef6905924507223dc65797e2bcbc513f9cd7e078ea7e69448d59f434a6206b491278ae24
+  checksum: e6dea1da5a593ffdc8cf2676d1d02f0626f07a54a5947a7a1f5ff1fd07901b2f53044c285e98b87eb367f016fde285fd8785d54a2dceeab9c3721f4e618f8326
   languageName: node
   linkType: hard
 
@@ -3327,12 +3428,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.0.0, prettier@npm:^2.2.1":
+"prettier@npm:^2.0.0":
   version: 2.2.1
   resolution: "prettier@npm:2.2.1"
   bin:
     prettier: bin-prettier.js
   checksum: 92c6c9f4b87eba1f28466edee57dd18c80d00b858edda77d46d1950d20e6e302b68ee255fc91133ba931e63c4577b5ae30da194d9626a8f3c0177778b91bf056
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "prettier@npm:2.3.0"
+  bin:
+    prettier: bin-prettier.js
+  checksum: 652640cc8b71bc5277cfb8bf6f161783ca588efcf683c3d630837b39da8d57fef35c9e00ae5855a8e3c75136c42274046c913cc2b2d2968558315f31c6a26981
   languageName: node
   linkType: hard
 
@@ -3495,41 +3605,50 @@ __metadata:
     "@discordjs/opus": ^0.5.0
     "@extreme_hero/deeptype": ^1.0.1
     "@xoalone/discordjs-pagination": ^2.2.3
-    better-sqlite3: ^7.1.5
+    better-sqlite3: ^7.3.1
     canvas: ^2.7.0
-    chalk: ^4.1.0
-    cleverbot-free: ^1.1.1
+    chalk: ^4.1.1
+    cleverbot-free: ^1.1.6
     common-tags: ^1.8.0
     cron: ^1.8.2
     discord-fetch-all: ^3.0.2
-    discord-giveaways: ^4.4.3
+    discord-giveaways: ^4.5.1
     discord.js: ^12.5.3
     erela.js: ^2.3.3
     erela.js-spotify: ^1.2.0
-    eslint: ^7.24.0
+    eslint: ^7.26.0
     eslint-config-tesseract: ^0.0.3
-    glob: ^7.1.6
+    glob: ^7.1.7
     hastebin.js: ^1.3.2
     mathjs: ^9.3.2
     moment: ^2.29.1
     ms: ^2.1.3
-    nanoid: ^3.1.22
+    nanoid: ^3.1.23
     node-fetch: ^2.6.1
     number-abbreviate: ^2.0.0
     number-to-words-en: ^1.2.5
-    prettier: ^2.2.1
+    prettier: ^2.3.0
     prettier-eslint: ^12.0.0
     pretty-ms: ^7.0.1
     quick.db: ^7.1.3
     request: ^2.88.2
     slash-create: ^3.1.0
-    systeminformation: ^5.6.12
+    systeminformation: ^5.6.20
     trakt.tv: ^8.0.0
     twemoji-parser: ^13.0.0
     unescape: ^1.0.1
     url-regex-safe: ^2.0.2
   languageName: unknown
   linkType: soft
+
+"randombytes@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "randombytes@npm:2.1.0"
+  dependencies:
+    safe-buffer: ^5.1.0
+  checksum: ede2693af09732ceab1c273dd70db787f34a7b8d95bab13f1aca763483c0113452a78e53d61ff18d393dcea586d388e01f198a5132a4a85cebba31ec54164b75
+  languageName: node
+  linkType: hard
 
 "range-parser@npm:~1.2.1":
   version: 1.2.1
@@ -3730,7 +3849,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.2, safe-buffer@npm:~5.2.0":
+"safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.1.2, safe-buffer@npm:~5.2.0":
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: 0bb57f0d8f9d1fa4fe35ad8a2db1f83a027d48f2822d59ede88fd5cd4ddad83c0b497213feb7a70fbf90597a70c5217f735b0eb1850df40ce9b4ae81dd22b3f9
@@ -3835,6 +3954,15 @@ __metadata:
     range-parser: ~1.2.1
     statuses: ~1.5.0
   checksum: 58e4ab2e07e8dfb206ca954a9b85f4e367aba0e4d59ce4c9c96a82034385b67f25d33ad526fdb69d635744bbe4d8afea06e2c0348d7d32920e3489d86dc3ec6f
+  languageName: node
+  linkType: hard
+
+"serialize-javascript@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "serialize-javascript@npm:5.0.1"
+  dependencies:
+    randombytes: ^2.1.0
+  checksum: 97eef70a33c75e690b0c6aa2ffe622ecdfc888d3f181a5cf129e5778228dcd100febabc0f41ff793199ee79acd14cbbad0c69f1348a3893580fe424c4718889b
   languageName: node
   linkType: hard
 
@@ -4181,12 +4309,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"systeminformation@npm:^5.6.12":
-  version: 5.6.12
-  resolution: "systeminformation@npm:5.6.12"
+"systeminformation@npm:^5.6.20":
+  version: 5.6.20
+  resolution: "systeminformation@npm:5.6.20"
   bin:
     systeminformation: lib/cli.js
-  checksum: 38d1ee883950624a3cbfa892e00120077b766e643c2410da4e259848ac410596a1480c2a86297f56eab9c75265a14a11b681c53639c98fc3a22b015360e27fde
+  checksum: 677ff811950c6dc5a86390e3a0da088a9101fcae3d0bfbbe15512edffc5c53ab18702bb1222414b10109aea840b054038de76ae3191845e4b673d75c20498099
   languageName: node
   linkType: hard
 
