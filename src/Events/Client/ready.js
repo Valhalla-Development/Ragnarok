@@ -248,7 +248,7 @@ module.exports = class extends Event {
 		const ticketsTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'tickets\';').get();
 		if (!ticketsTable['count(*)']) {
 			this.client.logger.ready('tickets table created!');
-			db.prepare('CREATE TABLE tickets (guildid TEXT, ticketid TEXT, authorid TEXT, reason TEXT, chanid TEXT);').run();
+			db.prepare('CREATE TABLE tickets (guildid TEXT, ticketid TEXT PRIMARY KEY, authorid TEXT, reason TEXT, chanid TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_tickets_id ON tickets (ticketid);').run();
 			db.pragma('synchronous = 1');
 			db.pragma('journal_mode = wal');
