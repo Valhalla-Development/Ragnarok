@@ -29,6 +29,33 @@ module.exports = class extends Event {
 					db.prepare(`UPDATE ticketConfig SET ticketembed = '' WHERE guildid = ${data.guild_id}`).run();
 				}
 			}
+			if (eventType === 'MESSAGE_REACTION_REMOVE' || eventType === 'MESSAGE_REACTION_REMOVE_ALL') {
+				const channel = await grabClient.channels.cache.find(channel => channel.id === data.channel_id);
+				if (channel.type === 'dm') return;
+
+				const emoji = '📩';
+				const guild = grabClient.guilds.cache.find((guild) => guild.id === data.guild_id);
+				const foundTicketConfig = db.prepare(`SELECT * FROM ticketconfig WHERE guildid = ${data.guild_id}`).get();
+				if (!foundTicketConfig) {
+					return;
+				}
+				if (eventType === 'MESSAGE_REACTION_REMOVE') {
+					if (foundTicketConfig.ticketembed === data.message_id) {
+						if (emoji.includes(data.emoji.name)) {
+							const channel = guild.channels.cache.find((channel) => channel.id === data.channel_id);
+							channel.messages.fetch(foundTicketConfig.ticketembed).then((msg) => {
+								msg.react('📩');
+							});
+						}
+					}
+				}
+				if (eventType === 'MESSAGE_REACTION_REMOVE_ALL') {
+					const channel = guild.channels.cache.find((channel) => channel.id === data.channel_id);
+					channel.messages.fetch(foundTicketConfig.ticketembed).then((msg) => {
+						msg.react('📩');
+					});
+				}
+			}
 			if (eventType === 'MESSAGE_REACTION_ADD') {
 				const channel = await grabClient.channels.cache.find(channel => channel.id === data.channel_id);
 				if (channel.type === 'dm') return;
@@ -210,7 +237,12 @@ module.exports = class extends Event {
 								}
 								reaction.users.remove(member.id);
 							} else {
-								reaction.users.remove(member.id);
+								try {
+									reaction.users.remove(member.id);
+								} catch {
+									msg.reactions.removeAll();
+									msg.react('📩');
+								}
 							}
 						}
 					});
