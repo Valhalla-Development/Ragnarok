@@ -98,7 +98,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
 			const goldChance = Math.random();
-			embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
+			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
 
 			if (goldChance < 0.80) { // 80% of this happening
 				const goldNuggetImage = new MessageAttachment('./Storage/Images/Economy/GoldNugget.png', 'GoldNugget.png');
@@ -140,7 +140,7 @@ module.exports = class extends Command {
 
 			const barleyImage = new MessageAttachment('./Storage/Images/Economy/Barley.png', 'Barley.png');
 
-			embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
+			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
 			embed.attachFiles(barleyImage);
 			embed.setThumbnail('attachment://Barley.png');
 
@@ -179,7 +179,7 @@ module.exports = class extends Command {
 			embed.attachFiles(spinachImage);
 			embed.setThumbnail('attachment://Spinach.png');
 
-			embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
+			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
 
 			name = 'Spinach';
 
@@ -216,7 +216,7 @@ module.exports = class extends Command {
 			embed.attachFiles(strawberryImage);
 			embed.setThumbnail('attachment://Strawberry.png');
 
-			embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
+			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
 
 			name = 'Strawberries';
 
@@ -253,7 +253,7 @@ module.exports = class extends Command {
 			embed.attachFiles(lettuceImage);
 			embed.setThumbnail('attachment://Lettuce.png');
 
-			embed.setFooter(`Purchase farming tools to increase quality of produce! - ${prefix}shop buy tools`);
+			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
 
 			name = 'Lettuce';
 
