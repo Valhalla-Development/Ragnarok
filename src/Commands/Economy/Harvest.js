@@ -18,14 +18,19 @@ module.exports = class extends Command {
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 
-		const balance = this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
+		const balance = await this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
 
-		let foundPlotList = JSON.parse(balance.farmPlot);
-		let foundBoostList = JSON.parse(balance.boosts);
-		let foundItemList = JSON.parse(balance.items);
+		let foundPlotList = await JSON.parse(balance.farmPlot);
+		let foundHarvestedList = await JSON.parse(balance.harvestedCrops);
+		let foundBoostList = await JSON.parse(balance.boosts);
+		let foundItemList = await JSON.parse(balance.items);
 
 		if (!foundPlotList) {
 			foundPlotList = [];
+		}
+
+		if (!foundHarvestedList) {
+			foundHarvestedList = [];
 		}
 
 		if (!foundBoostList) {
@@ -36,37 +41,13 @@ module.exports = class extends Command {
 			foundItemList = {};
 		}
 
+		const availableSpots = await foundBoostList.farmBag - foundHarvestedList.length;
+
 		let harvestable;
 
 		if (foundPlotList.length > 0) {
-			harvestable = foundPlotList.filter(key => key.cropStatus === 'harvest').length;
+			harvestable = foundPlotList.filter(key => key.cropStatus === 'harvest');
 		}
-
-		let currentTotalFarm = 0;
-
-		if (foundItemList.corn) {
-			currentTotalFarm += Number(foundItemList.corn);
-		} else {
-			currentTotalFarm += Number(0);
-		}
-		if (foundItemList.wheat) {
-			currentTotalFarm += Number(foundItemList.wheat);
-		} else {
-			currentTotalFarm += Number(0);
-		}
-		if (foundItemList.potatoes) {
-			currentTotalFarm += Number(foundItemList.potatoes);
-		} else {
-			currentTotalFarm += Number(0);
-		}
-		if (foundItemList.tomatoes) {
-			currentTotalFarm += Number(foundItemList.tomatoes);
-		} else {
-			currentTotalFarm += Number(0);
-		}
-
-		const availableSpots = foundBoostList.farmBag - currentTotalFarm;
-		const fetchLimit = foundPlotList.slice(0, availableSpots);
 
 		const cornPrice = this.client.ecoPrices.corn;
 		const wheatPrice = this.client.ecoPrices.wheat;
@@ -85,7 +66,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (foundPlotList.length <= 0 || harvestable <= 0) {
+		if (foundPlotList.length <= 0 || harvestable.length <= 0) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
@@ -93,6 +74,18 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Harvest**`,
 					`**◎ Error:** You have nothing to harvest!`);
+			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		if (availableSpots <= 0) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Harvest**`,
+					`**◎ Error:** You do not have enough space to harvest anything!\nYou can upgrade your storage with the command \`${prefix}shop upgrade\``);
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -105,12 +98,18 @@ module.exports = class extends Command {
 					arr.push(`\u3000Crop Type: \`${this.client.utils.capitalise(key.cropType)}\` - Crop Decay: \`${key.decay.toFixed(4)}%\``);
 				}
 			});
-			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Harvest**`,
-					`**◎ Success:** The following crops are ready to be harvested!\n\n${arr.join(`\n`)}`);
-			message.channel.send(embed);
+
+			const pages = [];
+
+			while (arr.length) {
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Harvest**`,
+						`**◎ Success:** The following crops are ready to be harvested!\n${arr.splice(0, 5).join(`\n`)}`);
+				pages.push(embed);
+			}
+			paginationEmbed(message, pages);
 		}
 
 		if (args[0] === 'all') {
@@ -118,29 +117,34 @@ module.exports = class extends Command {
 			let sellPrice;
 			const arr = [];
 
-			fetchLimit.forEach(key => {
-				if (key.cropStatus === 'harvest') {
-					if (key.cropType === 'corn') {
-						totalToAdd += Math.floor(cornPrice * (1 - key.decay.toFixed(4) / 100));
-						sellPrice = Math.floor(cornPrice * (1 - key.decay.toFixed(4) / 100));
-						arr.push(`\u3000Crop Type: \`Corn\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString('en')}\` - Decayed: \`${key.decay.toFixed(4)}\`%`);
-					}
-					if (key.cropType === 'wheat') {
-						totalToAdd += Math.floor(wheatPrice * (1 - key.decay.toFixed(4) / 100));
-						sellPrice = Math.floor(wheatPrice * (1 - key.decay.toFixed(4) / 100));
-						arr.push(`\u3000Crop Type: \`Wheat\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString('en')}\` - Decayed: \`${key.decay.toFixed(4)}\`%`);
-					}
-					if (key.cropType === 'potato') {
-						totalToAdd += Math.floor(potatoesPrice * (1 - key.decay.toFixed(4) / 100));
-						sellPrice = Math.floor(potatoesPrice * (1 - key.decay.toFixed(4) / 100));
-						arr.push(`\u3000Crop Type: \`Potato\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString('en')}\` - Decayed: \`${key.decay.toFixed(4)}\`%`);
-					}
-					if (key.cropType === 'tomato') {
-						totalToAdd += Math.floor(tomatoesPrice * (1 - key.decay.toFixed(4) / 100));
-						sellPrice = Math.floor(tomatoesPrice * (1 - key.decay.toFixed(4) / 100));
-						arr.push(`\u3000Crop Type: \`Tomato\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString('en')}\` - Decayed: \`${key.decay.toFixed(4)}\`%`);
-					}
+			harvestCrops();
+
+			foundHarvestedList.forEach(key => {
+				if (key.cropType === 'corn') {
+					totalToAdd += Math.floor(cornPrice * (1 - key.decay.toFixed(4) / 100));
+					sellPrice = Math.floor(cornPrice * (1 - key.decay.toFixed(4) / 100));
+					arr.push(`\u3000Crop Type: \`Corn\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString('en')}\` - Decayed: \`${key.decay.toFixed(4)}\`%`);
 				}
+				if (key.cropType === 'wheat') {
+					totalToAdd += Math.floor(wheatPrice * (1 - key.decay.toFixed(4) / 100));
+					sellPrice = Math.floor(wheatPrice * (1 - key.decay.toFixed(4) / 100));
+					arr.push(`\u3000Crop Type: \`Wheat\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString('en')}\` - Decayed: \`${key.decay.toFixed(4)}\`%`);
+				}
+				if (key.cropType === 'potato') {
+					totalToAdd += Math.floor(potatoesPrice * (1 - key.decay.toFixed(4) / 100));
+					sellPrice = Math.floor(potatoesPrice * (1 - key.decay.toFixed(4) / 100));
+					arr.push(`\u3000Crop Type: \`Potato\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString('en')}\` - Decayed: \`${key.decay.toFixed(4)}\`%`);
+				}
+				if (key.cropType === 'tomato') {
+					totalToAdd += Math.floor(tomatoesPrice * (1 - key.decay.toFixed(4) / 100));
+					sellPrice = Math.floor(tomatoesPrice * (1 - key.decay.toFixed(4) / 100));
+					arr.push(`\u3000Crop Type: \`Tomato\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString('en')}\` - Decayed: \`${key.decay.toFixed(4)}\`%`);
+				}
+			});
+
+			await db.prepare('UPDATE balance SET harvestedCrops = (@crops) WHERE id = (@id);').run({
+				crops: JSON.stringify(foundHarvestedList),
+				id: `${message.author.id}-${message.guild.id}`
 			});
 
 			const pages = [];
@@ -154,6 +158,17 @@ module.exports = class extends Command {
 				pages.push(embed);
 			}
 			paginationEmbed(message, pages);
+		}
+		function harvestCrops() {
+			for (let removeCounter = 0, harvestCounter = 0; removeCounter < foundPlotList.length && harvestCounter < availableSpots; removeCounter++) {
+				if (foundPlotList[removeCounter].cropStatus === 'harvest') {
+					const removedArray = foundPlotList.splice(removeCounter, 1);
+					foundHarvestedList.push(removedArray[0]);
+					harvestCounter++;
+					removeCounter--;
+				}
+			}
+			return foundHarvestedList;
 		}
 	}
 
