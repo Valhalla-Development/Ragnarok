@@ -69,13 +69,13 @@ module.exports = class extends Command {
 			} else {
 				currentTotalSeeds += Number(0);
 			}
-			if (foundItemList.potatoeSeeds) {
-				currentTotalSeeds += Number(foundItemList.potatoeSeeds);
+			if (foundItemList.potatoSeeds) {
+				currentTotalSeeds += Number(foundItemList.potatoSeeds);
 			} else {
 				currentTotalSeeds += Number(0);
 			}
-			if (foundItemList.tomatoeSeeds) {
-				currentTotalSeeds += Number(foundItemList.tomatoeSeeds);
+			if (foundItemList.tomatoSeeds) {
+				currentTotalSeeds += Number(foundItemList.tomatoSeeds);
 			} else {
 				currentTotalSeeds += Number(0);
 			}
@@ -105,23 +105,23 @@ module.exports = class extends Command {
 
 			let currentTotalFarm = 0;
 
-			if (foundItemList.corn) {
-				currentTotalFarm += Number(foundItemList.corn);
+			if (foundPlotList.corn) {
+				currentTotalFarm += Number(foundPlotList.corn);
 			} else {
 				currentTotalFarm += Number(0);
 			}
-			if (foundItemList.wheat) {
-				currentTotalFarm += Number(foundItemList.wheat);
+			if (foundPlotList.corn) {
+				currentTotalFarm += Number(foundPlotList.corn);
 			} else {
 				currentTotalFarm += Number(0);
 			}
-			if (foundItemList.potatoes) {
-				currentTotalFarm += Number(foundItemList.potatoes);
+			if (foundPlotList.potato) {
+				currentTotalFarm += Number(foundPlotList.potato);
 			} else {
 				currentTotalFarm += Number(0);
 			}
-			if (foundItemList.tomatoes) {
-				currentTotalFarm += Number(foundItemList.tomatoes);
+			if (foundPlotList.tomato) {
+				currentTotalFarm += Number(foundPlotList.tomato);
 			} else {
 				currentTotalFarm += Number(0);
 			}
