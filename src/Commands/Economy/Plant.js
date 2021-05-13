@@ -55,7 +55,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (!foundItemList.cornSeeds && !foundItemList.wheatSeeds && !foundItemList.potatoeSeeds && !foundItemList.tomatoeSeeds) {
+		if (!foundItemList.cornSeeds && !foundItemList.wheatSeeds && !foundItemList.potatoSeeds && !foundItemList.tomatoSeeds) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
@@ -159,7 +159,7 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Plant**`,
-					`**◎ Error:** Incorrect Usage! Available commands:\n\`${prefix}plant corn <amt>\`\n\`${prefix}plant wheat <amt>\`\n\`${prefix}plant potato <amt>\`\n\`${prefix}plant tomato <amt>\``);
+					`**◎ Error:** Incorrect Usage! Available commands:\n\`${prefix}plant corn <amt>\`${foundItemList.cornSeeds ? ` - Available Corn seeds: \`${foundItemList.cornSeeds}\`` : ``}\n\`${prefix}plant wheat <amt>\`${foundItemList.wheatSeeds ? ` - Available Wheat seeds: \`${foundItemList.wheatSeeds}\`` : ``}\n\`${prefix}plant potato <amt>\`${foundItemList.potatoSeeds ? ` - Available Potato seeds: \`${foundItemList.potatoSeeds}\`` : ``}\n\`${prefix}plant tomato <amt>\`${foundItemList.tomatoSeeds ? ` - Available Tomato seeds: \`${foundItemList.tomatoSeeds}\`` : ``}`);
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -311,7 +311,7 @@ module.exports = class extends Command {
 		if (args[0] === 'potato') {
 			const potatoeAmt = args[1] ? Number(args[1]) : 1;
 
-			if (!foundItemList.potatoeSeeds || Number(foundItemList.potatoeSeeds - Number(potatoeAmt)) < 0) {
+			if (!foundItemList.potatoSeeds || Number(foundItemList.potatoSeeds - Number(potatoeAmt)) < 0) {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed = new MessageEmbed()
@@ -349,12 +349,12 @@ module.exports = class extends Command {
 				return;
 			}
 
-			const removeSeed = Number(foundItemList.potatoeSeeds) - Number(potatoeAmt);
+			const removeSeed = Number(foundItemList.potatoSeeds) - Number(potatoeAmt);
 
 			if (removeSeed === 0) {
-				delete foundItemList.potatoeSeeds;
+				delete foundItemList.potatoSeeds;
 			} else {
-				foundItemList.potatoeSeeds = removeSeed.toString();
+				foundItemList.potatoSeeds = removeSeed.toString();
 			}
 
 			cropCreator('potato', 'planting', new Date().getTime() + Number(potatoGrow), potatoeAmt);
@@ -377,7 +377,7 @@ module.exports = class extends Command {
 		if (args[0] === 'tomato') {
 			const tomatoeAmt = args[1] ? Number(args[1]) : 1;
 
-			if (!foundItemList.tomatoeSeeds || Number(foundItemList.tomatoeSeeds - Number(tomatoeAmt)) < 0) {
+			if (!foundItemList.tomatoSeeds || Number(foundItemList.tomatoSeeds - Number(tomatoeAmt)) < 0) {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed = new MessageEmbed()
@@ -415,12 +415,12 @@ module.exports = class extends Command {
 				return;
 			}
 
-			const removeSeed = Number(foundItemList.tomatoeSeeds) - Number(tomatoeAmt);
+			const removeSeed = Number(foundItemList.tomatoSeeds) - Number(tomatoeAmt);
 
 			if (removeSeed === 0) {
-				delete foundItemList.tomatoeSeeds;
+				delete foundItemList.tomatoSeeds;
 			} else {
-				foundItemList.tomatoeSeeds = removeSeed.toString();
+				foundItemList.tomatoSeeds = removeSeed.toString();
 			}
 
 			cropCreator('tomato', 'planting', new Date().getTime() + Number(tomatoeGrow), tomatoeAmt);
