@@ -59,7 +59,7 @@ module.exports = class RagnarokClient extends Client {
 			dailyClaimMin: 150,
 			dailyClaimMax: 300,
 			weeklyClaimMin: 750,
-			weeklylaimMax: 1000,
+			weeklyClaimMax: 1000,
 			monthlyClaimMin: 4000,
 			monthlyClaimMax: 6000,
 			// Fishing related prices
