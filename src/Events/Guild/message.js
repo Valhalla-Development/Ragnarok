@@ -500,6 +500,10 @@ module.exports = class extends Event {
 				db.prepare(`DELETE FROM logging WHERE guildid = ${message.guild.id}`).run();
 				return;
 			}
+			const ch = message.guild.channels.cache.get(logs);
+			if (!message.guild.me.permissionsIn(ch).has('SEND_MESSAGES')) {
+				return;
+			}
 		}
 		const logembed = new MessageEmbed()
 			.setAuthor(message.author.tag, message.guild.iconURL())
