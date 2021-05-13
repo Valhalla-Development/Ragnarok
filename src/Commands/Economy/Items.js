@@ -38,6 +38,19 @@ module.exports = class extends Command {
 
 		let foundItemList = JSON.parse(balance.items);
 		let foundBoostList = JSON.parse(balance.boosts);
+		let foundPlotList = JSON.parse(balance.farmPlot);
+
+		if (!foundBoostList) {
+			foundBoostList = {};
+		}
+
+		if (!foundItemList) {
+			foundItemList = {};
+		}
+
+		if (!foundPlotList) {
+			foundPlotList = [];
+		}
 
 		let troutPrice;
 		let salmonPrice;
@@ -63,10 +76,10 @@ module.exports = class extends Command {
 		if (foundItemList.treasure) treasurePrice = this.client.ecoPrices.treasure * Number(foundItemList.treasure);
 
 		if (foundItemList.goldBar) goldBarPrice = this.client.ecoPrices.goldBar * Number(foundItemList.goldBar);
-		if (foundItemList.corn) cornPrice = this.client.ecoPrices.corn * Number(foundItemList.corn);
-		if (foundItemList.wheat) wheatPrice = this.client.ecoPrices.wheat * Number(foundItemList.wheat);
-		if (foundItemList.potatoes) potatoesPrice = this.client.ecoPrices.potatoes * Number(foundItemList.potatoes);
-		if (foundItemList.tomatoes) tomatoesPrice = this.client.ecoPrices.tomatoes * Number(foundItemList.tomatoes);
+		if (foundPlotList.corn) cornPrice = this.client.ecoPrices.corn * Number(foundPlotList.corn);
+		if (foundPlotList.corn) wheatPrice = this.client.ecoPrices.wheat * Number(foundPlotList.corn);
+		if (foundPlotList.potato) potatoesPrice = this.client.ecoPrices.potatoes * Number(foundPlotList.potato);
+		if (foundPlotList.tomato) tomatoesPrice = this.client.ecoPrices.tomatoes * Number(foundPlotList.tomato);
 		if (foundItemList.goldNugget) goldNuggetPrice = this.client.ecoPrices.goldNugget * Number(foundItemList.goldNugget);
 		if (foundItemList.barley) barleyPrice = this.client.ecoPrices.barley * Number(foundItemList.barley);
 		if (foundItemList.spinach) spinachPrice = this.client.ecoPrices.spinach * Number(foundItemList.spinach);
@@ -81,10 +94,10 @@ module.exports = class extends Command {
 		if (foundItemList.treasure) fullPrice += Number(foundItemList.treasure) * this.client.ecoPrices.treasure;
 
 		if (foundItemList.goldBar) fullPrice += Number(foundItemList.goldBar) * this.client.ecoPrices.goldBar;
-		if (foundItemList.corn) fullPrice += Number(foundItemList.corn) * this.client.ecoPrices.corn;
-		if (foundItemList.wheat) fullPrice += Number(foundItemList.wheat) * this.client.ecoPrices.wheat;
-		if (foundItemList.potatoes) fullPrice += Number(foundItemList.potatoes) * this.client.ecoPrices.potatoes;
-		if (foundItemList.tomatoes) fullPrice += Number(foundItemList.tomatoes) * this.client.ecoPrices.tomatoes;
+		if (foundPlotList.corn) fullPrice += Number(foundPlotList.corn) * this.client.ecoPrices.corn;
+		if (foundPlotList.corn) fullPrice += Number(foundPlotList.corn) * this.client.ecoPrices.wheat;
+		if (foundPlotList.potato) fullPrice += Number(foundPlotList.potato) * this.client.ecoPrices.potatoes;
+		if (foundPlotList.tomato) fullPrice += Number(foundPlotList.tomato) * this.client.ecoPrices.tomatoes;
 		if (foundItemList.goldNugget) fullPrice += Number(foundItemList.goldNugget) * this.client.ecoPrices.goldNugget;
 		if (foundItemList.barley) fullPrice += Number(foundItemList.barley) * this.client.ecoPrices.barley;
 		if (foundItemList.spinach) fullPrice += Number(foundItemList.spinach) * this.client.ecoPrices.spinach;
@@ -103,13 +116,13 @@ module.exports = class extends Command {
 		} else {
 			currentTotalSeeds += Number(0);
 		}
-		if (foundItemList.potatoeSeeds) {
-			currentTotalSeeds += Number(foundItemList.potatoeSeeds);
+		if (foundItemList.potatoSeeds) {
+			currentTotalSeeds += Number(foundItemList.potatoSeeds);
 		} else {
 			currentTotalSeeds += Number(0);
 		}
-		if (foundItemList.tomatoeSeeds) {
-			currentTotalSeeds += Number(foundItemList.tomatoeSeeds);
+		if (foundItemList.tomatoSeeds) {
+			currentTotalSeeds += Number(foundItemList.tomatoSeeds);
 		} else {
 			currentTotalSeeds += Number(0);
 		}
@@ -139,33 +152,25 @@ module.exports = class extends Command {
 
 		let currentTotalFarm = 0;
 
-		if (foundItemList.corn) {
-			currentTotalFarm += Number(foundItemList.corn);
+		if (foundPlotList.corn) {
+			currentTotalFarm += Number(foundPlotList.corn);
 		} else {
 			currentTotalFarm += Number(0);
 		}
-		if (foundItemList.wheat) {
-			currentTotalFarm += Number(foundItemList.wheat);
+		if (foundPlotList.corn) {
+			currentTotalFarm += Number(foundPlotList.corn);
 		} else {
 			currentTotalFarm += Number(0);
 		}
-		if (foundItemList.potatoes) {
-			currentTotalFarm += Number(foundItemList.potatoes);
+		if (foundPlotList.potato) {
+			currentTotalFarm += Number(foundPlotList.potato);
 		} else {
 			currentTotalFarm += Number(0);
 		}
-		if (foundItemList.tomatoes) {
-			currentTotalFarm += Number(foundItemList.tomatoes);
+		if (foundPlotList.tomato) {
+			currentTotalFarm += Number(foundPlotList.tomato);
 		} else {
 			currentTotalFarm += Number(0);
-		}
-
-		if (!foundBoostList) {
-			foundBoostList = {};
-		}
-
-		if (!foundItemList) {
-			foundItemList = {};
 		}
 
 		let fields;
@@ -181,16 +186,16 @@ module.exports = class extends Command {
 		} else {
 			fields = [
 				`**◎ Crops:**`,
-				`\u3000 Corn: Own ${foundItemList.corn === undefined ? `\`0\`` : `\`${foundItemList.corn}\` - <:coin:706659001164628008> \`${cornPrice.toLocaleString('en')}\``}`,
-				`\u3000 Wheat: Own ${foundItemList.wheat === undefined ? `\`0\`` : `\`${foundItemList.wheat}\` - <:coin:706659001164628008> \`${wheatPrice.toLocaleString('en')}\``}`,
-				`\u3000 Potatoes: Own ${foundItemList.potatoes === undefined ? `\`0\`` : `\`${foundItemList.potatoes} \`- <:coin:706659001164628008> \`${potatoesPrice.toLocaleString('en')}\``}`,
-				`\u3000 Tomatoes: Own ${foundItemList.tomatoes === undefined ? `\`0\`` : `\`${foundItemList.tomatoes}\` - <:coin:706659001164628008> \`${tomatoesPrice.toLocaleString('en')}\``}`,
+				`\u3000 Corn: Own ${foundPlotList.corn === undefined ? `\`0\`` : `\`${foundPlotList.corn}\` - <:coin:706659001164628008> \`${cornPrice.toLocaleString('en')}\``}`,
+				`\u3000 Wheat: Own ${foundPlotList.corn === undefined ? `\`0\`` : `\`${foundPlotList.corn}\` - <:coin:706659001164628008> \`${wheatPrice.toLocaleString('en')}\``}`,
+				`\u3000 Potatoes: Own ${foundPlotList.potato === undefined ? `\`0\`` : `\`${foundPlotList.potato} \`- <:coin:706659001164628008> \`${potatoesPrice.toLocaleString('en')}\``}`,
+				`\u3000 Tomatoes: Own ${foundPlotList.tomato === undefined ? `\`0\`` : `\`${foundPlotList.tomato}\` - <:coin:706659001164628008> \`${tomatoesPrice.toLocaleString('en')}\``}`,
 				`\u200b`,
 				`**◎ Seeds:**`,
 				`\u3000 Corn: Own ${foundItemList.cornSeeds === undefined ? `\`0\`` : `\`${foundItemList.cornSeeds}\``}`,
 				`\u3000 Wheat: Own ${foundItemList.wheatSeeds === undefined ? `\`0\`` : `\`${foundItemList.wheatSeeds}\``}`,
-				`\u3000 Potatoes: Own ${foundItemList.potatoeSeeds === undefined ? `\`0\`` : `\`${foundItemList.potatoeSeeds}\``}`,
-				`\u3000 Tomatoes: Own ${foundItemList.tomatoeSeeds === undefined ? `\`0\`` : `\`${foundItemList.tomatoeSeeds}\``}`
+				`\u3000 Potatoes: Own ${foundItemList.potatoSeeds === undefined ? `\`0\`` : `\`${foundItemList.potatoSeeds}\``}`,
+				`\u3000 Tomatoes: Own ${foundItemList.tomatoSeeds === undefined ? `\`0\`` : `\`${foundItemList.tomatoSeeds}\``}`
 			];
 		}
 
