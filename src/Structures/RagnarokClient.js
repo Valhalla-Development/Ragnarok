@@ -17,9 +17,7 @@ const { SlashCreator } = require('slash-create');
 module.exports = class RagnarokClient extends Client {
 
 	constructor(options = {}) {
-		super({
-			disableMentions: 'everyone'
-		});
+		super();
 		this.validate(options);
 
 		this.commands = new Collection();
