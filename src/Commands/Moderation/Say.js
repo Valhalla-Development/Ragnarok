@@ -21,11 +21,21 @@ module.exports = class extends Command {
 
 		if (channel) {
 			const ch = message.guild.channels.cache.get(channel.id);
+
+			if (ch.type !== 'text' && ch.type !== 'news') {
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Say**`,
+						`**◎ Error:** Please input a valid channel!`);
+				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
+			}
+
 			if (!ch) {
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Say**`,
-						`**◎ Error:** I could not find the channel you mentioned!!`);
+						`**◎ Error:** I could not find the channel you mentioned!`);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
