@@ -22,7 +22,8 @@ module.exports = class extends Command {
 
 		const birthdayConfigDB = db.prepare(`SELECT * FROM birthdayConfig WHERE guildid = ${message.guild.id};`).get();
 
-		const user = message.mentions.users.first() || message.author;
+		const user = message.mentions.members.first() || message.guild.members.cache.find((a) => a.id === args[0]) || message.member;
+		console.log(user)
 
 		const birthdayDB = db.prepare(`SELECT * FROM birthdays WHERE userid = ${user.id};`).get();
 
@@ -66,7 +67,7 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
-					`**◎** ${message.author} does not have a birthday set!`);
+					`**◎** ${user} does not have a birthday set!`);
 			message.channel.send(embed);
 			return;
 		}
