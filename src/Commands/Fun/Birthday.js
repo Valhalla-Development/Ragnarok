@@ -23,7 +23,6 @@ module.exports = class extends Command {
 		const birthdayConfigDB = db.prepare(`SELECT * FROM birthdayConfig WHERE guildid = ${message.guild.id};`).get();
 
 		const user = message.mentions.members.first() || message.guild.members.cache.find((a) => a.id === args[0]) || message.member;
-		console.log(user)
 
 		const birthdayDB = db.prepare(`SELECT * FROM birthdays WHERE userid = ${user.id};`).get();
 
@@ -198,7 +197,7 @@ module.exports = class extends Command {
 					`**◎ Success:** You have successfully set your birthday to \`${args[1]}\``);
 			message.channel.send(embed);
 
-			await db.prepare('UPDATE birthdays SET userid = (@userid), birthday = (@birthday), lastRun = (@lastRun);').run({
+			await db.prepare('UPDATE birthdays SET birthday = (@birthday), lastRun = (@lastRun) WHERE userid = (@userid);').run({
 				userid: message.author.id,
 				birthday: args[1],
 				lastRun: null
