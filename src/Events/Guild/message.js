@@ -115,7 +115,9 @@ module.exports = class extends Event {
 				bank: 500,
 				total: 500,
 				claimNewUser: claimNewUserTime,
-				farmPlot: null
+				farmPlot: null,
+				dmHarvest: null,
+				harvestedCrops: null
 			};
 		}
 		const curBal = balance.cash;
