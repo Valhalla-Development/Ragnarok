@@ -411,8 +411,8 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.attachFiles(farmBagImage)
 					.setThumbnail('attachment://FarmBag.png')
-					.addField(`**${this.client.user.username} - Shop - Fish Bag**`, [
-						`**◎ Success:** You have upgraded your fish bag, your new limit is \`${Number(foundBoostList.fishBag)}\`!`
+					.addField(`**${this.client.user.username} - Shop - Farm Bag**`, [
+						`**◎ Success:** You have upgraded your farm bag, your new limit is \`${Number(foundBoostList.farmBag)}\`!`
 					]);
 				message.channel.send(embed);
 				return;
@@ -429,7 +429,7 @@ module.exports = class extends Command {
 						`\u3000 \`${prefix}shop buy corn [amount]\` - 10 Seeds per pack - ${!foundItemList.cornSeeds ? `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\` - \`Owned ${foundItemList.cornSeeds.toLocaleString('en')}\``}`,
 						`\u3000 \`${prefix}shop buy wheat [amount]\` - 10 Seeds per pack - ${!foundItemList.wheatSeeds ? `<:coin:706659001164628008> \`${wheatSeedPrice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${wheatSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.wheatSeeds.toLocaleString('en')}\``}`,
 						`\u3000 \`${prefix}shop buy potato [amount]\` - 10 Seeds per pack - ${!foundItemList.potatoSeeds ? `<:coin:706659001164628008> \`${potatoeSeedPrice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${potatoeSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.potatoSeeds.toLocaleString('en')}\``}`,
-						`\u3000 \`${prefix}shop buy tomato [amount]\` - 10 Seeds per pack - ${!foundItemList.potatoSeeds ? `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`- \`Owned ${foundItemList.tomatoSeeds.toLocaleString('en')}\``}`,
+						`\u3000 \`${prefix}shop buy tomato [amount]\` - 10 Seeds per pack - ${!foundItemList.tomatoSeeds ? `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`- \`Owned ${foundItemList.tomatoSeeds.toLocaleString('en')}\``}`,
 						`\u200b`,
 						`**◎ Permanent Items:**`,
 						`\u3000 ${!foundItemList.fishingRod ? `\`${prefix}shop buy rod\` - <:coin:706659001164628008> \`${fishingPrice.toLocaleString('en')}\`` : `Fishing Rod - \`Owned\``}`,
@@ -459,6 +459,19 @@ module.exports = class extends Command {
 
 			if (args[1] === 'corn') {
 				const cornAmt = args[2] ? Number(args[2]) : 1;
+
+				if (cornAmt <= 0) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Corn Seeds**`, [
+							`**◎ Error:** Please enter a valid number.`
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
 
 				if (isNaN(cornAmt)) {
 					this.client.utils.messageDelete(message, 10000);
@@ -538,6 +551,19 @@ module.exports = class extends Command {
 			if (args[1] === 'wheat') {
 				const wheatAmt = args[2] ? Number(args[2]) : 1;
 
+				if (wheatAmt <= 0) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Wheat Seeds**`, [
+							`**◎ Error:** Please enter a valid number.`
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
 				if (isNaN(wheatAmt)) {
 					this.client.utils.messageDelete(message, 10000);
 
@@ -616,6 +642,19 @@ module.exports = class extends Command {
 			if (args[1] === 'potato') {
 				const potatoeAmt = args[2] ? Number(args[2]) : 1;
 
+				if (potatoeAmt <= 0) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Potato Seeds**`, [
+							`**◎ Error:** Please enter a valid number.`
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
 				if (isNaN(potatoeAmt)) {
 					this.client.utils.messageDelete(message, 10000);
 
@@ -693,6 +732,19 @@ module.exports = class extends Command {
 
 			if (args[1] === 'tomato') {
 				const tomatoeAmt = args[2] ? Number(args[2]) : 1;
+
+				if (tomatoeAmt <= 0) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Tomato Seeds**`, [
+							`**◎ Error:** Please enter a valid number.`
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
 
 				if (isNaN(tomatoeAmt)) {
 					this.client.utils.messageDelete(message, 10000);
