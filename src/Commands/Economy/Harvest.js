@@ -20,39 +20,11 @@ module.exports = class extends Command {
 
 		const balance = await this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
 
-		let foundPlotList = await JSON.parse(balance.farmPlot);
-		let foundHarvestedList = await JSON.parse(balance.harvestedCrops);
 		let foundBoostList = await JSON.parse(balance.boosts);
-		let foundItemList = await JSON.parse(balance.items);
-
-		if (!foundPlotList) {
-			foundPlotList = [];
-		}
-
-		if (!foundHarvestedList) {
-			foundHarvestedList = [];
-		}
 
 		if (!foundBoostList) {
 			foundBoostList = {};
 		}
-
-		if (!foundItemList) {
-			foundItemList = {};
-		}
-
-		const availableSpots = await foundBoostList.farmBag - foundHarvestedList.length;
-
-		let harvestable;
-
-		if (foundPlotList.length > 0) {
-			harvestable = foundPlotList.filter(key => key.cropStatus === 'harvest');
-		}
-
-		const cornPrice = this.client.ecoPrices.corn;
-		const wheatPrice = this.client.ecoPrices.wheat;
-		const potatoesPrice = this.client.ecoPrices.potatoes;
-		const tomatoesPrice = this.client.ecoPrices.tomatoes;
 
 		if (!foundBoostList.farmPlot) {
 			this.client.utils.messageDelete(message, 10000);
@@ -66,7 +38,19 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (foundPlotList.length <= 0 || harvestable.length <= 0) {
+		let foundPlotList = await JSON.parse(balance.farmPlot);
+
+		if (!foundPlotList) {
+			foundPlotList = [];
+		}
+
+		let harvestable;
+
+		if (foundPlotList.length) {
+			harvestable = foundPlotList.filter(key => key.cropStatus === 'harvest');
+		}
+
+		if (!foundPlotList.length || !harvestable.length) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
@@ -77,6 +61,20 @@ module.exports = class extends Command {
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
+
+		let foundHarvestedList = await JSON.parse(balance.harvestedCrops);
+
+		if (!foundHarvestedList) {
+			foundHarvestedList = [];
+		}
+
+		const availableSpots = foundBoostList.farmBag - foundHarvestedList.length;
+
+		const cornPrice = this.client.ecoPrices.corn;
+		const wheatPrice = this.client.ecoPrices.wheat;
+		const potatoesPrice = this.client.ecoPrices.potatoes;
+		const tomatoesPrice = this.client.ecoPrices.tomatoes;
+
 
 		if (availableSpots <= 0) {
 			this.client.utils.messageDelete(message, 10000);
@@ -106,10 +104,12 @@ module.exports = class extends Command {
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Harvest**`,
-						`**◎ Success:** The following crops are ready to be harvested!\n${arr.splice(0, 5).join(`\n`)}`);
+						`**◎ Success:** The following crops are ready to be harvested!\n${arr.splice(0, 5).join(`\n`)}`)
+					.setFooter(`To harvest, you can run ${prefix}harvest all`);
 				pages.push(embed);
 			}
 			paginationEmbed(message, pages);
+			return;
 		}
 
 		if (args[0] === 'all') {
@@ -142,6 +142,11 @@ module.exports = class extends Command {
 				}
 			});
 
+			await db.prepare('UPDATE balance SET farmPlot = (@crops) WHERE id = (@id);').run({
+				crops: foundPlotList.length ? JSON.stringify(foundPlotList) : null,
+				id: `${message.author.id}-${message.guild.id}`
+			});
+
 			await db.prepare('UPDATE balance SET harvestedCrops = (@crops) WHERE id = (@id);').run({
 				crops: JSON.stringify(foundHarvestedList),
 				id: `${message.author.id}-${message.guild.id}`
@@ -157,7 +162,7 @@ module.exports = class extends Command {
 						`**◎ Success:** You have harvested the following crops:\n${arr.splice(0, 5).join(`\n`)}\n\n In total, the current value is <:coin:706659001164628008>\`${totalToAdd.toLocaleString('en')}\`\nThis value of each crop will continue to depreciate, I recommend you sell your crops.`);
 				pages.push(embed);
 			}
-			paginationEmbed(message, pages);
+			paginationEmbed(message, pages); // when emotes get removed manually, error in log, add catch maybe somehow
 		}
 		function harvestCrops() {
 			for (let removeCounter = 0, harvestCounter = 0; removeCounter < foundPlotList.length && harvestCounter < availableSpots; removeCounter++) {
