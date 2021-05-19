@@ -90,7 +90,7 @@ module.exports = class RagnarokClient extends Client {
 			potatoPlant: 210000, // 3 min 30
 			tomatoPlant: 90000, // 1 min 30
 			// Decay rate
-			decayRate: 0.0001,
+			decayRate: 0.001,
 			// Farming without tools prices
 			goldNugget: 15000,
 			barley: 1200,
