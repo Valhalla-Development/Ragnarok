@@ -75,15 +75,9 @@ module.exports = class extends Command {
 			}
 
 			player.stop();
-			if (player.queue.size === 1) {
+			if (!player.queue.size) {
 				player.destroy();
 			}
-
-			const embed = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Skip**`,
-					`**◎ Success:** <:MusicLogo:684822003110117466> Skipped the current song.`);
-			message.channel.send(embed);
 			return;
 		}
 
@@ -92,14 +86,9 @@ module.exports = class extends Command {
 
 		if (userCount === 1) {
 			player.stop();
-			if (player.queue.size === 1) {
+			if (!player.queue.size) {
 				player.destroy();
 			}
-			const embed = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Skip**`,
-					`**◎ Success:** <:MusicLogo:684822003110117466> Skipped the current song.`);
-			message.channel.send(embed);
 			return;
 		}
 
@@ -127,17 +116,11 @@ module.exports = class extends Command {
 					}
 
 					player.stop();
-					if (player.queue.size === 1) {
+					if (!player.queue.size) {
 						player.destroy();
 					}
 
 					this.client.utils.messageDelete(message, 10000);
-
-					const success2 = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Skip**`,
-							`**◎ Success:** <:MusicLogo:684822003110117466> Skipped the current song.`);
-					message.channel.send(success2).then((m) => this.client.utils.deletableCheck(m, 10000));
 					this.client.utils.deletableCheck(msg, 0);
 					return;
 				} else {

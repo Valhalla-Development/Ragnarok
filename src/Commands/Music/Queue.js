@@ -65,7 +65,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (player.queue.size === 0) {
+		if (!player.queue.current) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
@@ -89,7 +89,7 @@ module.exports = class extends Command {
 		if (args[0] === 'clear') {
 			this.client.utils.messageDelete(message, 10000);
 
-			if (player.queue.size === 0) {
+			if (player.queue.size) {
 				message.channel.send(embed1).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -113,7 +113,7 @@ module.exports = class extends Command {
 
 		const tracks = queue.slice(start, end);
 
-		if (player.queue.size === 1) {
+		if (player.queue.size === 0) {
 			embed.setDescription(`🎧 Now Playing:\n [${queue.current.title}](${queue.current.uri}) [<@${queue.current.requester.id}>] - \`${prettyMilliseconds(queue.current.duration, { colonNotation: true })}\``);
 			message.channel.send(embed);
 			return;

@@ -53,7 +53,6 @@ module.exports = class extends Command {
 			return;
 		}
 
-
 		const permissions = channel.permissionsFor(this.client.user);
 		if (!permissions.has('CONNECT')) {
 			this.client.utils.messageDelete(message, 10000);
@@ -140,15 +139,18 @@ module.exports = class extends Command {
 							.addField(`**${this.client.user.username} - Play**`,
 								`**◎ Error:** Duration is over 15 minutes! Cancelling playback`);
 						message.channel.send(embed1).then((m) => this.client.utils.deletableCheck(m, 10000));
-						if (player.queue.size === 0) {
+						if (!player.queue.current) {
 							player.destroy(message.guild.id);
 						}
 						return;
 					}
 					player.queue.add(res.tracks[0]);
-					player.setVoiceChannel(message.member.voice.channel.id);
-					if (!player.playing && !player.paused && player.queue.size === 1) player.play();
-					if (player.queue.size !== 1) {
+					if (!player.playing && !player.paused && !player.queue.size) {
+						player.setVoiceChannel(message.member.voice.channel.id);
+						player.play();
+					}
+
+					if (player.queue.size) {
 						const trackloade = new MessageEmbed()
 							.setAuthor('Enqueueing.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -185,7 +187,7 @@ module.exports = class extends Command {
 									.addField(`**${this.client.user.username} - Play**`,
 										`**◎ Error:** Duration is over 10 minutes! Cancelling playback`);
 								message.channel.send(embed1).then((msg) => this.client.utils.deletableCheck(msg, 10000));
-								if (player.queue.size === 0) {
+								if (!player.queue.current) {
 									player.destroy(message.guild.id);
 								}
 								return;
@@ -193,9 +195,12 @@ module.exports = class extends Command {
 							this.client.utils.deletableCheck(searchEmbed, 0);
 							this.client.utils.deletableCheck(m, 0);
 							player.queue.add(track);
-							player.setVoiceChannel(message.member.voice.channel.id);
-							if (!player.playing && !player.paused && player.queue.size === 1) player.play();
-							if (player.queue.size !== 1) {
+							if (!player.playing && !player.paused && !player.queue.size) {
+								player.setVoiceChannel(message.member.voice.channel.id);
+								player.play();
+							}
+
+							if (player.queue.size) {
 								const trackloade = new MessageEmbed()
 									.setAuthor('Enqueuing Track.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -219,7 +224,7 @@ module.exports = class extends Command {
 									.setDescription(`Search results cancelled.\nReason: \`${upperReason}\``);
 								message.channel.send(cancelE).then((m) => this.client.utils.deletableCheck(m, 10000));
 								this.client.utils.deletableCheck(searchEmbed, 10000);
-								if (player.queue.size === 0) {
+								if (!player.queue.current) {
 									player.destroy(message.guild.id);
 								}
 								return;
@@ -236,9 +241,12 @@ module.exports = class extends Command {
 						const duration = prettyMilliseconds(res.tracks.reduce((acc, cur) => ({
 							duration: acc.duration + cur.duration
 						})).duration, { colonNotation: true });
-						player.setVoiceChannel(message.member.voice.channel.id);
-						if (!player.playing && !player.paused && player.queue.size === res.tracks.length) player.play();
-						if (player.queue.size !== 1) {
+						if (!player.playing && !player.paused && player.queue.size === res.tracks.length) {
+							player.setVoiceChannel(message.member.voice.channel.id);
+							player.play();
+						}
+
+						if (player.queue.size) {
 							const playlistload = new MessageEmbed()
 								.setAuthor('Enqueuing Playlist.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))

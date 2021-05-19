@@ -160,7 +160,7 @@ module.exports = class RagnarokClient extends Client {
 						return;
 					}
 					const textChannel = player.get('textChannel');
-					if (player.queue.size >= 1) {
+					if (!player.queue.size) {
 						const embed = new MessageEmbed()
 							.addField(`**${grabClient.user.username} - Music**`,
 								`**◎ Success:** <:MusicLogo:684822003110117466> Track has ended.`)
@@ -172,6 +172,15 @@ module.exports = class RagnarokClient extends Client {
 				})
 				.on('trackStuck', (player) => {
 					const textChannel = player.get('textChannel');
+					if (player.queue.size) {
+						const embed = new MessageEmbed()
+							.addField(`**${grabClient.user.username} - Music**`,
+								`**◎ Error:** <:MusicLogo:684822003110117466> An error occured, skipping playback.`)
+							.setColor(textChannel.guild.me.displayHexColor || '36393F');
+						grabClient.channels.cache.get(player.textChannel).send(embed);
+						player.stop();
+						return;
+					}
 					const embed = new MessageEmbed()
 						.addField(`**${grabClient.user.username} - Music**`,
 							`**◎ Error:** <:MusicLogo:684822003110117466> An error occured, ending playback.`)
@@ -181,14 +190,20 @@ module.exports = class RagnarokClient extends Client {
 				})
 				.on('trackError', (player) => {
 					const textChannel = player.get('textChannel');
+					if (player.queue.size) {
+						const embed = new MessageEmbed()
+							.addField(`**${grabClient.user.username} - Music**`,
+								`**◎ Error:** <:MusicLogo:684822003110117466> An error occured, skipping playback.`)
+							.setColor(textChannel.guild.me.displayHexColor || '36393F');
+						grabClient.channels.cache.get(player.textChannel).send(embed);
+						player.stop();
+						return;
+					}
 					const embed = new MessageEmbed()
 						.addField(`**${grabClient.user.username} - Music**`,
 							`**◎ Error:** <:MusicLogo:684822003110117466> An error occured, ending playback.`)
 						.setColor(textChannel.guild.me.displayHexColor || '36393F');
 					grabClient.channels.cache.get(player.textChannel).send(embed);
-					player.destroy(player.guild.id);
-				})
-				.on('socketClosed', (player) => {
 					player.destroy(player.guild.id);
 				});
 		}

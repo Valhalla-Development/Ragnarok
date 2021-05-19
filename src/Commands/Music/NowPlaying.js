@@ -40,7 +40,7 @@ module.exports = class extends Command {
 		}
 
 		const player = this.client.manager.players.get(message.guild.id);
-		if (!player || player.queue.size === 0) {
+		if (!player || !player.queue.current) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
