@@ -179,6 +179,19 @@ module.exports = class extends Command {
 		if (args[0] === 'corn') {
 			const cornAmt = args[1] ? Number(args[1]) : 1;
 
+			if (cornAmt <= 0) {
+				this.client.utils.messageDelete(message, 10000);
+
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Plant**`, [
+						`**◎ Error:** Please enter a valid number.`
+					]);
+				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
+			}
+
 			if (!foundItemList.cornSeeds || Number(foundItemList.cornSeeds - Number(cornAmt)) < 0) {
 				this.client.utils.messageDelete(message, 10000);
 
@@ -244,6 +257,19 @@ module.exports = class extends Command {
 
 		if (args[0] === 'wheat') {
 			const wheatAmt = args[1] ? Number(args[1]) : 1;
+
+			if (wheatAmt <= 0) {
+				this.client.utils.messageDelete(message, 10000);
+
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Plant**`, [
+						`**◎ Error:** Please enter a valid number.`
+					]);
+				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
+			}
 
 			if (!foundItemList.wheatSeeds || Number(foundItemList.wheatSeeds - Number(wheatAmt)) < 0) {
 				this.client.utils.messageDelete(message, 10000);
@@ -311,6 +337,19 @@ module.exports = class extends Command {
 		if (args[0] === 'potato') {
 			const potatoeAmt = args[1] ? Number(args[1]) : 1;
 
+			if (potatoeAmt <= 0) {
+				this.client.utils.messageDelete(message, 10000);
+
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Plant**`, [
+						`**◎ Error:** Please enter a valid number.`
+					]);
+				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
+			}
+
 			if (!foundItemList.potatoSeeds || Number(foundItemList.potatoSeeds - Number(potatoeAmt)) < 0) {
 				this.client.utils.messageDelete(message, 10000);
 
@@ -376,6 +415,19 @@ module.exports = class extends Command {
 
 		if (args[0] === 'tomato') {
 			const tomatoeAmt = args[1] ? Number(args[1]) : 1;
+
+			if (tomatoeAmt <= 0) {
+				this.client.utils.messageDelete(message, 10000);
+
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Plant**`, [
+						`**◎ Error:** Please enter a valid number.`
+					]);
+				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
+			}
 
 			if (!foundItemList.tomatoSeeds || Number(foundItemList.tomatoSeeds - Number(tomatoeAmt)) < 0) {
 				this.client.utils.messageDelete(message, 10000);
