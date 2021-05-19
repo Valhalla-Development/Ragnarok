@@ -35,27 +35,12 @@ module.exports = class extends Command {
 
 		if (args[0] === 'all') {
 			const bankCalc = balance.cash + balance.bank;
-			const addAll = {
-				id: `${message.author.id}-${message.guild.id}`,
-				user: message.author.id,
-				guild: message.guild.id,
-				hourly: balance.hourly,
-				daily: balance.daily,
-				weekly: balance.weeky,
-				monthly: balance.monthly,
-				stealcool: balance.stealcool,
-				boosts: balance.boosts,
-				cash: bankCalc,
-				bank: 0,
-				total: bankCalc,
-				fishcool: balance.fishcool,
-				farmcool: balance.farmcool,
-				items: balance.items,
-				claimNewUser: balance.claimNewUser,
-				farmPlot: balance.farmPlot
-			};
 
-			this.client.setBalance.run(addAll);
+			balance.cash = bankCalc;
+			balance.bank = 0;
+			balance.total = bankCalc;
+			this.client.setBalance.run(balance);
+
 			const depAll = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -93,27 +78,10 @@ module.exports = class extends Command {
 		const bankA = balance.bank - numberCov;
 		const totaA = balance.total;
 
-		const addAll = {
-			id: `${message.author.id}-${message.guild.id}`,
-			user: message.author.id,
-			guild: message.guild.id,
-			hourly: balance.hourly,
-			daily: balance.daily,
-			weekly: balance.weeky,
-			monthly: balance.monthly,
-			stealcool: balance.stealcool,
-			boosts: balance.boosts,
-			cash: cashA,
-			bank: bankA,
-			total: totaA,
-			fishcool: balance.fishcool,
-			farmcool: balance.farmcool,
-			items: balance.items,
-			claimNewUser: balance.claimNewUser,
-			farmPlot: balance.farmPlot
-		};
-
-		this.client.setBalance.run(addAll);
+		balance.cash = cashA;
+		balance.bank = bankA;
+		balance.total = totaA;
+		this.client.setBalance.run(balance);
 
 		const depAll = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())

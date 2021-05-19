@@ -28,27 +28,6 @@ module.exports = class extends Command {
 		}
 
 		const bankCalc = balance.cash + balance.bank;
-		const addAll = {
-			id: `${message.author.id}-${message.guild.id}`,
-			user: message.author.id,
-			guild: message.guild.id,
-			hourly: balance.hourly,
-			daily: balance.daily,
-			weekly: balance.weekly,
-			monthly: balance.monthly,
-			stealcool: balance.stealcool,
-			boosts: balance.boosts,
-			cash: 0,
-			bank: bankCalc,
-			total: bankCalc,
-			fishcool: balance.fishcool,
-			farmcool: balance.farmcool,
-			items: balance.items,
-			claimNewUser: balance.claimNewUser,
-			farmPlot: balance.farmPlot
-		};
-
-		this.client.setBalance.run(addAll);
 
 		const bankImage = new MessageAttachment('./Storage/Images/Economy/Bank.png', 'Bank.png');
 
@@ -60,6 +39,12 @@ module.exports = class extends Command {
 			.addField(`**${this.client.user.username} - Bank**`,
 				`**◎ Success:** You have deposited <:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\` to your bank.`);
 		message.channel.send(depAll);
+
+		balance.cash = 0;
+		balance.bank = bankCalc;
+		balance.total = bankCalc;
+
+		this.client.setBalance.run(balance);
 		return;
 	}
 

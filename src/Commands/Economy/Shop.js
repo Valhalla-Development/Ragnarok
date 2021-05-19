@@ -1063,27 +1063,10 @@ module.exports = class extends Command {
 				if (foundItemList.goldNugget) itemCount += Number(foundItemList.goldNugget);
 
 				const totalAdd = balance.total + fullPrice;
-				const addAut = {
-					id: `${message.author.id}-${message.guild.id}`,
-					user: message.author.id,
-					guild: message.guild.id,
-					hourly: balance.hourly,
-					daily: balance.daily,
-					weekly: balance.weekly,
-					monthly: balance.monthly,
-					stealcool: balance.stealcool,
-					boosts: balance.boosts,
-					cash: balance.cash,
-					bank: balance.bank + fullPrice,
-					total: totalAdd,
-					fishcool: balance.fishcool,
-					farmcool: balance.farmcool,
-					items: balance.items,
-					claimNewUser: balance.claimNewUser,
-					farmPlot: balance.farmPlot
-				};
 
-				this.client.setBalance.run(addAut);
+				balance.bank += fullPrice;
+				balance.total = totalAdd;
+				this.client.setBalance.run(balance);
 
 				if (foundItemList.treasure) delete foundItemList.treasure;
 				if (foundItemList.trout) delete foundItemList.trout;
@@ -1146,27 +1129,10 @@ module.exports = class extends Command {
 				// if (foundItemList.treasure) i += Number(foundItemList.treasure);
 
 				const totalAdd = balance.total + fullPrice;
-				const addAut = {
-					id: `${message.author.id}-${message.guild.id}`,
-					user: message.author.id,
-					guild: message.guild.id,
-					hourly: balance.hourly,
-					daily: balance.daily,
-					weekly: balance.weekly,
-					monthly: balance.monthly,
-					stealcool: balance.stealcool,
-					boosts: balance.boosts,
-					cash: balance.cash,
-					bank: balance.bank + fullPrice,
-					total: totalAdd,
-					fishcool: balance.fishcool,
-					farmcool: balance.farmcool,
-					items: balance.items,
-					claimNewUser: balance.claimNewUser,
-					farmPlot: balance.farmPlot
-				};
 
-				this.client.setBalance.run(addAut);
+				balance.bank += fullPrice;
+				balance.total = totalAdd;
+				this.client.setBalance.run(balance);
 
 				if (foundItemList.trout) delete foundItemList.trout;
 				if (foundItemList.kingSalmon) delete foundItemList.kingSalmon;
@@ -1214,27 +1180,10 @@ module.exports = class extends Command {
 				if (foundItemList.goldNugget) treasureCount += Number(foundItemList.goldNugget);
 
 				const totalAdd = balance.total + fullPrice;
-				const addAut = {
-					id: `${message.author.id}-${message.guild.id}`,
-					user: message.author.id,
-					guild: message.guild.id,
-					hourly: balance.hourly,
-					daily: balance.daily,
-					weekly: balance.weekly,
-					monthly: balance.monthly,
-					stealcool: balance.stealcool,
-					boosts: balance.boosts,
-					cash: balance.cash,
-					bank: balance.bank + fullPrice,
-					total: totalAdd,
-					fishcool: balance.fishcool,
-					farmcool: balance.farmcool,
-					items: balance.items,
-					claimNewUser: balance.claimNewUser,
-					farmPlot: balance.farmPlot
-				};
 
-				this.client.setBalance.run(addAut);
+				balance.bank += fullPrice;
+				balance.total = totalAdd;
+				this.client.setBalance.run(balance);
 
 				if (foundItemList.treasure) delete foundItemList.treasure;
 				if (foundItemList.goldBar) delete foundItemList.goldBar;
@@ -1294,27 +1243,10 @@ module.exports = class extends Command {
 				if (foundPlotList.corn) itemCount += Number(foundPlotList.corn);
 
 				const totalAdd = balance.total + fullPrice;
-				const addAut = {
-					id: `${message.author.id}-${message.guild.id}`,
-					user: message.author.id,
-					guild: message.guild.id,
-					hourly: balance.hourly,
-					daily: balance.daily,
-					weekly: balance.weekly,
-					monthly: balance.monthly,
-					stealcool: balance.stealcool,
-					boosts: balance.boosts,
-					cash: balance.cash,
-					bank: balance.bank + fullPrice,
-					total: totalAdd,
-					fishcool: balance.fishcool,
-					farmcool: balance.farmcool,
-					items: balance.items,
-					claimNewUser: balance.claimNewUser,
-					farmPlot: balance.farmPlot
-				};
 
-				this.client.setBalance.run(addAut);
+				balance.bank += fullPrice;
+				balance.total = totalAdd;
+				this.client.setBalance.run(balance);
 
 				if (foundItemList.barley) delete foundItemList.barley;
 				if (foundItemList.spinach) delete foundItemList.spinach;

@@ -112,30 +112,16 @@ module.exports = class extends Command {
 			if (!balance.weekly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.weeklyClaimMax - this.client.ecoPrices.weeklyClaimMin + 1) + this.client.ecoPrices.weeklyClaimMin;
 			if (!balance.monthly) fullPrice += Math.floor(Math.random() * this.client.ecoPrices.monthlyClaimMax - this.client.ecoPrices.monthlyClaimMin + 1) + this.client.ecoPrices.monthlyClaimMin;
 
-			console.log(fullPrice);
 			const endTime = new Date().getTime();
 
-			const addAut = {
-				id: `${message.author.id}-${message.guild.id}`,
-				user: message.author.id,
-				guild: message.guild.id,
-				hourly: !balance.hourly ? endTime + 3600000 : balance.hourly,
-				daily: !balance.daily ? endTime + 86400000 : balance.daily,
-				weekly: !balance.weekly ? endTime + 604800000 : balance.weekly,
-				monthly: !balance.monthly ? endTime + 2629800000 : balance.monthly,
-				stealcool: balance.stealcool,
-				boosts: balance.boosts,
-				cash: balance.cash,
-				bank: balance.bank + fullPrice,
-				total: balance.total + fullPrice,
-				fishcool: balance.fishcool,
-				farmcool: balance.farmcool,
-				items: balance.items,
-				claimNewUser: balance.claimNewUser,
-				farmPlot: balance.farmPlot
-			};
+			balance.hourly = !balance.hourly ? endTime + 3600000 : balance.hourly;
+			balance.daily = !balance.daily ? endTime + 86400000 : balance.daily;
+			balance.weekly = !balance.weekly ? endTime + 604800000 : balance.weekly;
+			balance.monthly = !balance.monthly ? endTime + 2629800000 : balance.monthly;
+			balance.bank += fullPrice;
+			balance.total += fullPrice;
 
-			this.client.setBalance.run(addAut);
+			this.client.setBalance.run(balance);
 
 			const newTot = balance.total + fullPrice;
 
@@ -161,27 +147,11 @@ module.exports = class extends Command {
 				const endTime = new Date().getTime() + 3600000;
 
 				const totaCalc2 = balance.total + hourlyAmount;
-				const addAut = {
-					id: `${message.author.id}-${message.guild.id}`,
-					user: message.author.id,
-					guild: message.guild.id,
-					hourly: endTime,
-					daily: balance.daily,
-					weekly: balance.weekly,
-					monthly: balance.monthly,
-					stealcool: balance.stealcool,
-					boosts: balance.boosts,
-					cash: balance.cash + hourlyAmount,
-					bank: balance.bank,
-					total: totaCalc2,
-					fishcool: balance.fishcool,
-					farmcool: balance.farmcool,
-					items: balance.items,
-					claimNewUser: balance.claimNewUser,
-					farmPlot: balance.farmPlot
-				};
 
-				this.client.setBalance.run(addAut);
+				balance.hourly = endTime;
+				balance.cash += hourlyAmount;
+				balance.total = totaCalc2;
+				this.client.setBalance.run(balance);
 
 				const depArg = new MessageEmbed()
 					.setAuthor(`${message.author.username}`, message.author.avatarURL())
@@ -217,27 +187,11 @@ module.exports = class extends Command {
 				const endTime = new Date().getTime() + 86400000;
 
 				const totaCalc2 = balance.total + dailyAmount;
-				const addAut = {
-					id: `${message.author.id}-${message.guild.id}`,
-					user: message.author.id,
-					guild: message.guild.id,
-					hourly: balance.hourly,
-					daily: endTime,
-					weekly: balance.weekly,
-					monthly: balance.monthly,
-					stealcool: balance.stealcool,
-					boosts: balance.boosts,
-					cash: balance.cash + dailyAmount,
-					bank: balance.bank,
-					total: totaCalc2,
-					fishcool: balance.fishcool,
-					farmcool: balance.farmcool,
-					items: balance.items,
-					claimNewUser: balance.claimNewUser,
-					farmPlot: balance.farmPlot
-				};
 
-				this.client.setBalance.run(addAut);
+				balance.daily = endTime;
+				balance.cash += dailyAmount;
+				balance.total = totaCalc2;
+				this.client.setBalance.run(balance);
 
 				const depArg = new MessageEmbed()
 					.setAuthor(`${message.author.username}`, message.author.avatarURL())
@@ -273,27 +227,11 @@ module.exports = class extends Command {
 				const endTime = new Date().getTime() + 604800000;
 
 				const totaCalc2 = balance.total + weeklyAmount;
-				const addAut = {
-					id: `${message.author.id}-${message.guild.id}`,
-					user: message.author.id,
-					guild: message.guild.id,
-					hourly: balance.hourly,
-					daily: balance.daily,
-					weekly: endTime,
-					monthly: balance.monthly,
-					stealcool: balance.stealcool,
-					boosts: balance.boosts,
-					cash: balance.cash + weeklyAmount,
-					bank: balance.bank,
-					total: totaCalc2,
-					fishcool: balance.fishcool,
-					farmcool: balance.farmcool,
-					items: balance.items,
-					claimNewUser: balance.claimNewUser,
-					farmPlot: balance.farmPlot
-				};
 
-				this.client.setBalance.run(addAut);
+				balance.weekly = endTime;
+				balance.cash += weeklyAmount;
+				balance.total = totaCalc2;
+				this.client.setBalance.run(balance);
 
 				const depArg = new MessageEmbed()
 					.setAuthor(`${message.author.username}`, message.author.avatarURL())
@@ -329,26 +267,11 @@ module.exports = class extends Command {
 				const endTime = new Date().getTime() + 2629800000;
 
 				const totaCalc2 = balance.total + monthlyAmount;
-				const addAut = {
-					id: `${message.author.id}-${message.guild.id}`,
-					user: message.author.id,
-					guild: message.guild.id,
-					hourly: balance.hourly,
-					daily: balance.daily,
-					weekly: balance.weekly,
-					monthly: endTime,
-					stealcool: balance.stealcool,
-					boosts: balance.boosts,
-					cash: balance.cash + monthlyAmount,
-					bank: balance.bank,
-					total: totaCalc2,
-					fishcool: balance.fishcool,
-					farmcool: balance.farmcool,
-					items: balance.items,
-					claimNewUser: balance.claimNewUser
-				};
 
-				this.client.setBalance.run(addAut);
+				balance.monthly = endTime;
+				balance.cash += monthlyAmount;
+				balance.total = totaCalc2;
+				this.client.setBalance.run(balance);
 
 				const depArg = new MessageEmbed()
 					.setAuthor(`${message.author.username}`, message.author.avatarURL())

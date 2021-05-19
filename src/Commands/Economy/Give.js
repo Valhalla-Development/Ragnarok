@@ -102,50 +102,12 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const totaCalc1 = otherB.total + balance.bank;
-			const setUse = {
-				id: `${user.id}-${message.guild.id}`,
-				user: user.id,
-				guild: message.guild.id,
-				hourly: otherB.hourly,
-				daily: otherB.daily,
-				weekly: otherB.weekly,
-				monthly: otherB.monthly,
-				stealcool: otherB.stealcool,
-				boosts: otherB.boosts,
-				cash: otherB.cash,
-				bank: balance.bank + otherB.bank,
-				total: totaCalc1,
-				fishcool: otherB.fishcool,
-				farmcool: otherB.farmcool,
-				items: otherB.items,
-				claimNewUser: otherB.claimNewUser,
-				farmPlot: otherB.farmPlot
-			};
 
-			this.client.setUserBalance.run(setUse);
+			otherB.bank += balance.bank;
+			otherB.total = totaCalc1;
+			this.client.setUserBalance.run(otherB);
 
 			const totaCalc2 = balance.total - balance.bank;
-			const addAut = {
-				id: `${message.author.id}-${message.guild.id}`,
-				user: message.author.id,
-				guild: message.guild.id,
-				hourly: balance.hourly,
-				daily: balance.daily,
-				weekly: balance.weekly,
-				monthly: balance.monthly,
-				stealcool: balance.stealcool,
-				boosts: balance.boosts,
-				cash: balance.cash,
-				bank: 0,
-				total: totaCalc2,
-				fishcool: balance.fishcool,
-				farmcool: balance.farmcool,
-				items: balance.items,
-				claimNewUser: balance.claimNewUser,
-				farmPlot: balance.farmPlot
-			};
-
-			this.client.setBalance.run(addAut);
 
 			const depAll = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
@@ -153,6 +115,10 @@ module.exports = class extends Command {
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Success:** You have paid ${user} the sum of: <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`.`);
 			message.channel.send(depAll);
+
+			balance.bank = 0;
+			balance.total = totaCalc2;
+			this.client.setBalance.run(balance);
 			return;
 		}
 
@@ -195,50 +161,16 @@ module.exports = class extends Command {
 		const numberCov = Number(args[1]);
 
 		const totaCalc1 = otherB.total + numberCov;
-		const setUse = {
-			id: `${user.id}-${message.guild.id}`,
-			user: user.id,
-			guild: message.guild.id,
-			hourly: otherB.hourly,
-			daily: otherB.daily,
-			weekly: otherB.weekly,
-			monthly: otherB.monthly,
-			stealcool: otherB.stealcool,
-			boosts: otherB.boosts,
-			cash: otherB.cash,
-			bank: numberCov + otherB.bank,
-			total: totaCalc1,
-			fishcool: otherB.fishcool,
-			farmcool: otherB.farmcool,
-			items: otherB.items,
-			claimNewUser: otherB.claimNewUser,
-			farmPlot: otherB.farmPlot
-		};
 
-		this.client.setUserBalance.run(setUse);
+		otherB.bank += numberCov;
+		otherB.total = totaCalc1;
+		this.client.setUserBalance.run(otherB);
 
 		const totaCalc2 = balance.total - numberCov;
-		const addAut = {
-			id: `${message.author.id}-${message.guild.id}`,
-			user: message.author.id,
-			guild: message.guild.id,
-			hourly: balance.hourly,
-			daily: balance.daily,
-			weekly: balance.weekly,
-			monthly: balance.monthly,
-			stealcool: balance.stealcool,
-			boosts: balance.boosts,
-			cash: balance.cash,
-			bank: balance.bank - numberCov,
-			total: totaCalc2,
-			fishcool: balance.fishcool,
-			farmcool: balance.farmcool,
-			items: balance.items,
-			claimNewUser: balance.claimNewUser,
-			farmPlot: balance.farmPlot
-		};
 
-		this.client.setBalance.run(addAut);
+		balance.bank -= numberCov;
+		balance.total = totaCalc2;
+		this.client.setBalance.run(balance);
 
 		const depArg = new MessageEmbed()
 			.setAuthor(`${message.author.username}`, message.author.avatarURL())

@@ -102,51 +102,16 @@ module.exports = class extends Command {
 				totalCalc2 = balance.total + stealAmount;
 				calc2 = balance.cash + stealAmount;
 
-				const setUse = {
-					id: `${user.id}-${message.guild.id}`,
-					user: user.id,
-					guild: message.guild.id,
-					hourly: otherB.hourly,
-					daily: otherB.daily,
-					weekly: otherB.weekly,
-					monthly: otherB.monthly,
-					stealcool: otherB.stealcool,
-					boosts: otherB.boosts,
-					cash: calc,
-					bank: otherB.bank,
-					total: totalCalc,
-					fishcool: otherB.fishcool,
-					farmcool: otherB.farmcool,
-					items: otherB.items,
-					claimNewUser: otherB.claimNewUser,
-					farmPlot: otherB.farmPlot
-				};
-
-				this.client.setUserBalance.run(setUse);
+				otherB.cash = calc;
+				otherB.total = totalCalc;
+				this.client.setUserBalance.run(otherB);
 
 				const endTime = new Date().getTime() + 120000;
 
-				const addAut = {
-					id: `${message.author.id}-${message.guild.id}`,
-					user: message.author.id,
-					guild: message.guild.id,
-					hourly: balance.hourly,
-					daily: balance.daily,
-					weekly: balance.weekly,
-					monthly: balance.monthly,
-					stealcool: endTime,
-					boosts: balance.boosts,
-					cash: calc2,
-					bank: balance.bank,
-					total: totalCalc2,
-					fishcool: balance.fishcool,
-					farmcool: balance.farmcool,
-					items: balance.items,
-					claimNewUser: balance.claimNewUser,
-					farmPlot: balance.farmPlot
-				};
-
-				this.client.setBalance.run(addAut);
+				balance.stealcool = endTime;
+				balance.cash = calc2;
+				balance.total = totalCalc2;
+				this.client.setBalance.run(balance);
 
 				const succMessage = [
 					`You held ${user} at gun-point and stole <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
@@ -175,51 +140,17 @@ module.exports = class extends Command {
 				totalCalc2 = balance.total - stealAmount;
 				calc2 = balance.bank - stealAmount;
 
-				const setUse = {
-					id: `${user.id}-${message.guild.id}`,
-					user: user.id,
-					guild: message.guild.id,
-					hourly: otherB.hourly,
-					daily: otherB.daily,
-					weekly: otherB.weekly,
-					monthly: otherB.monthly,
-					stealcool: otherB.stealcool,
-					boosts: otherB.boosts,
-					cash: otherB.cash,
-					bank: calc,
-					total: totalCalc,
-					fishcool: otherB.fishcool,
-					farmcool: otherB.farmcool,
-					items: otherB.items,
-					claimNewUser: otherB.claimNewUser,
-					farmPlot: otherB.farmPlot
-				};
 
-				this.client.setUserBalance.run(setUse);
+				otherB.bank = calc;
+				otherB.total = totalCalc;
+				this.client.setUserBalance.run(otherB);
 
 				const endTime = new Date().getTime() + 240000;
 
-				const addAut = {
-					id: `${message.author.id}-${message.guild.id}`,
-					user: message.author.id,
-					guild: message.guild.id,
-					hourly: balance.hourly,
-					daily: balance.daily,
-					weekly: balance.weekly,
-					monthly: balance.monthly,
-					stealcool: endTime,
-					boosts: balance.boosts,
-					cash: balance.cash,
-					bank: calc2,
-					total: totalCalc2,
-					fishcool: balance.fishcool,
-					farmcool: balance.farmcool,
-					items: balance.items,
-					claimNewUser: balance.claimNewUser,
-					farmPlot: balance.farmPlot
-				};
-
-				this.client.setBalance.run(addAut);
+				balance.stealcool = endTime;
+				balance.bank = calc2;
+				balance.total = totalCalc2;
+				this.client.setBalance.run(balance);
 
 				const failMessage = [
 					`You tried to mug ${user} but they over-powered you${stealAmount > 1 ? ` and took <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.` : `.`}`,
