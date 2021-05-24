@@ -5,9 +5,6 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 module.exports = class extends Event {
 
 	async run(guild) {
-		// Invite Manager
-		this.client.invites.set(guild.id, await guild.fetchInvites());
-
 		// when the bot is removed from a guild.
 		this.client.logger.ready(`I have been removed from: ${guild.name} (id: ${guild.id})`);
 		this.client.user.setActivity(`${this.client.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
