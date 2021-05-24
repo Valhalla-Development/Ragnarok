@@ -46,6 +46,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["cleverbot-free", "npm:1.1.6"],
             ["common-tags", "npm:1.8.0"],
             ["cron", "npm:1.8.2"],
+            ["cryptocurrencies", "npm:7.0.0"],
             ["discord-fetch-all", "npm:3.0.2"],
             ["discord-giveaways", "npm:4.5.1"],
             ["discord.js", "npm:12.5.3"],
@@ -1284,6 +1285,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/crypt-npm-0.0.2-033627d94f-1ad9c8439a.zip/node_modules/crypt/",
           "packageDependencies": [
             ["crypt", "npm:0.0.2"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
+      ["cryptocurrencies", [
+        ["npm:7.0.0", {
+          "packageLocation": "./.yarn/cache/cryptocurrencies-npm-7.0.0-4d3108dada-543eca3aef.zip/node_modules/cryptocurrencies/",
+          "packageDependencies": [
+            ["cryptocurrencies", "npm:7.0.0"]
           ],
           "linkType": "HARD",
         }]
@@ -4260,6 +4270,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["cleverbot-free", "npm:1.1.6"],
             ["common-tags", "npm:1.8.0"],
             ["cron", "npm:1.8.2"],
+            ["cryptocurrencies", "npm:7.0.0"],
             ["discord-fetch-all", "npm:3.0.2"],
             ["discord-giveaways", "npm:4.5.1"],
             ["discord.js", "npm:12.5.3"],
