@@ -68,7 +68,9 @@ module.exports = class extends Command {
 						.setDescription('Canceling Ticket Close');
 					timerMsg.edit(cancelTimer).then((m) => this.client.utils.deletableCheck(m, 10000));
 				}).catch(async () => {
-					getChan.delete();
+					if (getChan) {
+						getChan.delete();
+					}
 					db.prepare(`DELETE FROM tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`).run({
 						ticketid: foundTicket.ticketid
 					});

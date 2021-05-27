@@ -84,8 +84,9 @@ module.exports = class extends Command {
 
 					message.channel.stopTyping();
 
-					message.channel.delete();
-
+					if (message.channel) {
+						message.channel.delete();
+					}
 					const deleteTicket = db.prepare(`DELETE FROM tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`);
 					deleteTicket.run({
 						ticketid: channelArgs[channelArgs.length - 1]
