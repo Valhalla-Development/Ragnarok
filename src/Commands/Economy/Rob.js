@@ -65,10 +65,7 @@ module.exports = class extends Command {
 		}
 
 		if (Date.now() > balance.stealcool) {
-			await db.prepare('UPDATE balance SET stealcool = (@stealcool) WHERE id = (@id);').run({
-				stealcool: null,
-				id: `${message.author.id}-${message.guild.id}`
-			});
+			balance.stealcool = null;
 
 			if (otherB.cash < 10) {
 				this.client.utils.messageDelete(message, 10000);

@@ -45,10 +45,7 @@ module.exports = class extends Command {
 		}
 
 		if (Date.now() > balance.fishcool) {
-			await db.prepare('UPDATE balance SET fishcool = (@fishcool) WHERE id = (@id);').run({
-				fishcool: null,
-				id: `${message.author.id}-${message.guild.id}`
-			});
+			balance.fishcool = null;
 
 			let fishPrice;
 			let amt;

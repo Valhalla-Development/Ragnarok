@@ -17,16 +17,13 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
-		const updateBal = await this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
+		const balance = await this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
 
 		const date = new Date();
 
-		if (updateBal.claimNewUser) {
-			if (Date.now() > updateBal.claimNewUser) {
-				await db.prepare('UPDATE balance SET claimNewUser = (@claimNewUser) WHERE id = (@id);').run({
-					claimNewUser: null,
-					id: `${message.author.id}-${message.guild.id}`
-				});
+		if (balance.claimNewUser) {
+			if (Date.now() > balance.claimNewUser) {
+				balance.claimNewUser = null;
 			} else {
 				this.client.utils.messageDelete(message, 10000);
 
@@ -34,49 +31,35 @@ module.exports = class extends Command {
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Claim**`,
-						`**◎ Error:** Your Economy proifle is too new! Please wait another \`${ms(updateBal.claimNewUser - new Date().getTime(), { long: true })}\` before using this command.`);
+						`**◎ Error:** Your Economy proifle is too new! Please wait another \`${ms(balance.claimNewUser - new Date().getTime(), { long: true })}\` before using this command.`);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 		}
 
-		if (updateBal.hourly) {
-			if (Date.now() > updateBal.hourly) {
-				await db.prepare('UPDATE balance SET hourly = (@hourly) WHERE id = (@id);').run({
-					hourly: null,
-					id: `${message.author.id}-${message.guild.id}`
-				});
+		if (balance.hourly) {
+			if (Date.now() > balance.hourly) {
+				balance.hourly = null;
 			}
 		}
 
-		if (updateBal.hourly) {
-			if (Date.now() > updateBal.daily) {
-				await db.prepare('UPDATE balance SET daily = (@daily) WHERE id = (@id);').run({
-					daily: null,
-					id: `${message.author.id}-${message.guild.id}`
-				});
+		if (balance.daily) {
+			if (Date.now() > balance.daily) {
+				balance.daily = null;
 			}
 		}
 
-		if (updateBal.hourly) {
-			if (Date.now() > updateBal.weekly) {
-				await db.prepare('UPDATE balance SET weekly = (@weekly) WHERE id = (@id);').run({
-					weekly: null,
-					id: `${message.author.id}-${message.guild.id}`
-				});
+		if (balance.weekly) {
+			if (Date.now() > balance.weekly) {
+				balance.weekly = null;
 			}
 		}
 
-		if (updateBal.hourly) {
-			if (Date.now() > updateBal.monthly) {
-				await db.prepare('UPDATE balance SET monthly = (@monthly) WHERE id = (@id);').run({
-					monthly: null,
-					id: `${message.author.id}-${message.guild.id}`
-				});
+		if (balance.monthly) {
+			if (Date.now() > balance.monthly) {
+				balance.monthly = null;
 			}
 		}
-
-		const balance = await this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
 
 		if (!args.length) {
 			const embed = new MessageEmbed()

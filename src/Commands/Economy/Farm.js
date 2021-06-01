@@ -34,10 +34,7 @@ module.exports = class extends Command {
 
 		if (balance.farmcool !== null) {
 			if (Date.now() > balance.farmcool) {
-				await db.prepare('UPDATE balance SET farmcool = (@farmcool) WHERE id = (@id);').run({
-					farmcool: null,
-					id: `${message.author.id}-${message.guild.id}`
-				});
+				balance.farmcool = null;
 			} else {
 				this.client.utils.messageDelete(message, 10000);
 
