@@ -24,6 +24,7 @@ module.exports = class extends Command {
 		let foundItemList = JSON.parse(balance.items);
 		let foundBoostList = JSON.parse(balance.boosts);
 		let foundPlotList = JSON.parse(balance.farmPlot);
+		let foundHarvestList = JSON.parse(balance.harvestedCrops);
 
 		const fishingPrice = this.client.ecoPrices.fishingRod;
 		const farmingPrice = this.client.ecoPrices.farmingTools;
@@ -38,10 +39,12 @@ module.exports = class extends Command {
 		const initalFarmBag = this.client.ecoPrices.farmBagFirst;
 		const farmBagMax = this.client.ecoPrices.farmBagLimit;
 		const initialFarmPlot = this.client.ecoPrices.farmPlotFirst;
+		const farmPlotMax = this.client.ecoPrices.farmPlotLimit;
 
-		const seedBagPrice = 10;
-		const farmBagPrice = 20;
-		const fishBagPrice = 30;
+		const { seedBagPrice } = this.client.ecoPrices;
+		const { farmBagPrice } = this.client.ecoPrices;
+		const { fishBagPrice } = this.client.ecoPrices;
+		const { farmPlotPrice } = this.client.ecoPrices;
 
 		if (!foundItemList) {
 			foundItemList = {};
@@ -53,6 +56,10 @@ module.exports = class extends Command {
 
 		if (!foundPlotList) {
 			foundPlotList = [];
+		}
+
+		if (!foundHarvestList) {
+			foundHarvestList = [];
 		}
 
 		let troutPrice;
@@ -79,16 +86,15 @@ module.exports = class extends Command {
 		if (foundItemList.treasure !== undefined) treasurePrice = this.client.ecoPrices.treasure * Number(foundItemList.treasure);
 
 		if (foundItemList.goldBar !== undefined) goldBarPrice = this.client.ecoPrices.goldBar * Number(foundItemList.goldBar);
-		if (foundPlotList.corn !== undefined) cornPrice = this.client.ecoPrices.corn * Number(foundPlotList.corn);
-		if (foundPlotList.wheat !== undefined) wheatPrice = this.client.ecoPrices.wheat * Number(foundPlotList.wheat);
-		if (foundPlotList.potato !== undefined) potatoesPrice = this.client.ecoPrices.potatoes * Number(foundPlotList.potato);
-		if (foundPlotList.tomato !== undefined) tomatoesPrice = this.client.ecoPrices.tomatoes * Number(foundPlotList.tomato);
+		if (foundHarvestList.filter(key => key.cropType === 'corn').length) cornPrice = this.client.ecoPrices.corn * Number(foundHarvestList.filter(key => key.cropType === 'corn').length);
+		if (foundHarvestList.filter(key => key.cropType === 'wheat').length) wheatPrice = this.client.ecoPrices.wheat * Number(foundHarvestList.filter(key => key.cropType === 'wheat').length);
+		if (foundHarvestList.filter(key => key.cropType === 'potato').length) potatoesPrice = this.client.ecoPrices.potatoes * Number(foundHarvestList.filter(key => key.cropType === 'potato').length);
+		if (foundHarvestList.filter(key => key.cropType === 'tomato').length) tomatoesPrice = this.client.ecoPrices.tomatoes * Number(foundHarvestList.filter(key => key.cropType === 'tomato').length);
 		if (foundItemList.goldNugget !== undefined) goldNuggetPrice = this.client.ecoPrices.goldNugget * Number(foundItemList.goldNugget);
 		if (foundItemList.barley !== undefined) barleyPrice = this.client.ecoPrices.barley * Number(foundItemList.barley);
 		if (foundItemList.spinach !== undefined) spinachPrice = this.client.ecoPrices.spinach * Number(foundItemList.spinach);
 		if (foundItemList.strawberries !== undefined) strawberriesPrice = this.client.ecoPrices.strawberries * Number(foundItemList.strawberries);
 		if (foundItemList.lettuce !== undefined) lettucePrice = this.client.ecoPrices.lettuce * Number(foundItemList.lettuce);
-
 
 		if (!args.length) { // add stealTimer purchase
 			const embed = new MessageEmbed()
@@ -153,25 +159,19 @@ module.exports = class extends Command {
 
 		let currentTotalFarm = 0;
 
-		if (foundPlotList.corn) {
-			currentTotalFarm += Number(foundPlotList.corn);
-		} else {
-			currentTotalFarm += Number(0);
+		if (foundHarvestList) {
+			currentTotalFarm += Number(foundHarvestList.filter(key => key.cropType === 'corn').length);
+			currentTotalFarm += Number(foundHarvestList.filter(key => key.cropType === 'wheat').length);
+			currentTotalFarm += Number(foundHarvestList.filter(key => key.cropType === 'potato').length);
+			currentTotalFarm += Number(foundHarvestList.filter(key => key.cropType === 'tomato').length);
 		}
-		if (foundPlotList.wheat) {
-			currentTotalFarm += Number(foundPlotList.wheat);
+
+		let currentTotalPlot = 0;
+
+		if (foundBoostList.farmPlot) {
+			currentTotalPlot += Number(foundPlotList.length);
 		} else {
-			currentTotalFarm += Number(0);
-		}
-		if (foundPlotList.potato) {
-			currentTotalFarm += Number(foundPlotList.potato);
-		} else {
-			currentTotalFarm += Number(0);
-		}
-		if (foundPlotList.tomato) {
-			currentTotalFarm += Number(foundPlotList.tomato);
-		} else {
-			currentTotalFarm += Number(0);
+			currentTotalPlot += Number(0);
 		}
 
 		if (args[0] === 'upgrade') {
@@ -195,6 +195,13 @@ module.exports = class extends Command {
 					if (Number(foundBoostList.farmBag) < Number(farmBagMax)) {
 						const upgradeFarmBag = foundBoostList.farmBag * farmBagPrice;
 						arr.push(`\u3000 \`${prefix}shop upgrade farmbag\` - <:coin:706659001164628008> \`${upgradeFarmBag.toLocaleString('en')}\` Upgrade by 25, current capacity: \`${Number(currentTotalFarm).toLocaleString('en')}\`/\`${Number(foundBoostList.farmBag).toLocaleString('en')}\``);
+					}
+				}
+
+				if (foundBoostList.farmPlot) {
+					if (Number(foundBoostList.farmPlot) < Number(farmPlotMax)) {
+						const upgradeFarmPlot = foundBoostList.farmPlot * farmPlotPrice;
+						arr.push(`\u3000 \`${prefix}shop upgrade plot\` - <:coin:706659001164628008> \`${upgradeFarmPlot.toLocaleString('en')}\` Upgrade by 25, current capacity: \`${Number(currentTotalPlot).toLocaleString('en')}\`/\`${Number(foundBoostList.farmPlot).toLocaleString('en')}\``);
 					}
 				}
 
@@ -417,6 +424,75 @@ module.exports = class extends Command {
 				message.channel.send(embed);
 				return;
 			}
+
+			if (args[1] === 'plot' || args[1] === 'farmplot' || args[1] === 'farmingplot') {
+				if (!foundBoostList.farmPlot) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Farm Plot**`, [
+							`**◎ Error:** You do not own a farm plot! You will be awarded one once you purchase farming tools.`
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				if (Number(foundBoostList.farmPlot) >= Number(farmPlotMax)) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Farm Plot**`, [
+							`**◎ Error:** You have already upgraded your farm plot to the maximum level!!`
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				if (balance.bank < foundBoostList.farmPlot * farmPlotPrice) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const notEnough = foundBoostList.farmPlot * farmPlotPrice - Number(balance.bank);
+
+					const embed = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Shop - Farm Plot**`, [
+							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``
+						]);
+					message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				balance.bank = Number(balance.bank) - foundBoostList.farmPlot * farmPlotPrice;
+				balance.total = Number(balance.total) - foundBoostList.farmPlot * farmPlotPrice;
+
+				this.client.setBalance.run(balance);
+
+				const calc = Number(foundBoostList.farmPlot) + Number(25);
+				foundBoostList.farmPlot = calc.toString();
+
+				await db.prepare('UPDATE balance SET boosts = (@boosts) WHERE id = (@id);').run({
+					boosts: JSON.stringify(foundBoostList),
+					id: `${message.author.id}-${message.guild.id}`
+				});
+
+				const farmPlotImage = new MessageAttachment('./Storage/Images/Economy/FarmPlot.png', 'FarmPlot.png');
+
+				const embed = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.attachFiles(farmPlotImage)
+					.setThumbnail('attachment://FarmPlot.png')
+					.addField(`**${this.client.user.username} - Shop - Farm Plot**`, [
+						`**◎ Success:** You have upgraded your farm plot, your new limit is \`${Number(foundBoostList.farmPlot)}\`!`
+					]);
+				message.channel.send(embed);
+				return;
+			}
 		}
 
 		if (args[0] === 'buy') {
@@ -436,7 +512,9 @@ module.exports = class extends Command {
 						`\u3000 Fish Bag - ${!foundBoostList.fishBag ? `\`Not Owned\` - Buy fishing rod to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFish)}\`/\`${foundBoostList.fishBag}\``}`,
 						`\u3000 ${!foundItemList.farmingTools ? `\`${prefix}shop buy tools\` - <:coin:706659001164628008> \`${farmingPrice.toLocaleString('en')}\`` : `Farming Tools - \`Owned\``}`,
 						`\u3000 Seed Bag - ${!foundBoostList.seedBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalSeeds)}\`/\`${foundBoostList.seedBag}\``}`,
-						`\u3000 Farm Bag - ${!foundBoostList.farmBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.farmBag}\``}`
+						`\u3000 Farm Bag - ${!foundBoostList.farmBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.farmBag}\``}`,
+						`\u3000 Farm Plot - ${!foundBoostList.farmPlot ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalPlot)}\`/\`${foundBoostList.farmPlot}\``}`
+
 					]);
 				message.channel.send(embed);
 				return;
@@ -954,6 +1032,7 @@ module.exports = class extends Command {
 				return;
 			}
 		}
+
 		if (args[0] === 'sell') {
 			if (args[1] === undefined) {
 				let fields;
@@ -967,10 +1046,10 @@ module.exports = class extends Command {
 					];
 				} else {
 					fields = [
-						`\u3000 Corn: Own ${foundPlotList.corn === undefined ? `\`0\`` : `\`${foundPlotList.corn}\` - <:coin:706659001164628008> \`${cornPrice.toLocaleString('en')}\``}`,
-						`\u3000 Wheat: Own ${foundPlotList.wheat === undefined ? `\`0\`` : `\`${foundPlotList.wheat}\` - <:coin:706659001164628008> \`${wheatPrice.toLocaleString('en')}\``}`,
-						`\u3000 Potatoes: Own ${foundPlotList.potato === undefined ? `\`0\`` : `\`${foundPlotList.potato} \`- <:coin:706659001164628008> \`${potatoesPrice.toLocaleString('en')}\``}`,
-						`\u3000 Tomatoes: Own ${foundPlotList.tomato === undefined ? `\`0\`` : `\`${foundPlotList.tomato}\` - <:coin:706659001164628008> \`${tomatoesPrice.toLocaleString('en')}\``}`
+						`\u3000 Corn: Own ${!foundHarvestList.filter(key => key.cropType === 'corn').length ? `\`0\`` : `\`${foundHarvestList.filter(key => key.cropType === 'corn').length}\` - <:coin:706659001164628008> \`${cornPrice.toLocaleString('en')}\``}`,
+						`\u3000 Wheat: Own ${!foundHarvestList.filter(key => key.cropType === 'wheat').length ? `\`0\`` : `\`${foundHarvestList.filter(key => key.cropType === 'wheat').length}\` - <:coin:706659001164628008> \`${wheatPrice.toLocaleString('en')}\``}`,
+						`\u3000 Potatoes: Own ${!foundHarvestList.filter(key => key.cropType === 'potato').length ? `\`0\`` : `\`${foundHarvestList.filter(key => key.cropType === 'potato').length}\` - <:coin:706659001164628008> \`${potatoesPrice.toLocaleString('en')}\``}`,
+						`\u3000 Tomatoes: Own ${!foundHarvestList.filter(key => key.cropType === 'tomato').length ? `\`0\`` : `\`${foundHarvestList.filter(key => key.cropType === 'tomato').length}\` - <:coin:706659001164628008> \`${tomatoesPrice.toLocaleString('en')}\``}`
 					];
 
 					if (foundItemList.barley || foundItemList.spinach || foundItemList.strawberries || foundItemList.lettuce) {
