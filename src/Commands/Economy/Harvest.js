@@ -44,6 +44,19 @@ module.exports = class extends Command {
 			foundPlotList = [];
 		}
 
+		foundPlotList.forEach(key => {
+			if (Date.now() > key.cropGrowTime) {
+				key.cropStatus = 'harvest';
+				key.cropGrowTime = 'na';
+				key.decay = 0;
+
+				db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
+					farmPlot: JSON.stringify(foundPlotList),
+					id: `${message.author.id}-${message.guild.id}`
+				});
+			}
+		});
+
 		let harvestable;
 
 		if (foundPlotList.length) {
@@ -164,6 +177,7 @@ module.exports = class extends Command {
 			}
 			paginationEmbed(message, pages); // when emotes get removed manually, error in log, add catch maybe somehow
 		}
+
 		function harvestCrops() {
 			for (let removeCounter = 0, harvestCounter = 0; removeCounter < foundPlotList.length && harvestCounter < availableSpots; removeCounter++) {
 				if (foundPlotList[removeCounter].cropStatus === 'harvest') {
