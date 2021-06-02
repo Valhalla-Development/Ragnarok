@@ -108,6 +108,16 @@ module.exports = class extends Event {
 			db.pragma('journal_mode = wal');
 		}
 
+		// Hastebin Table
+		const hastetb = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'hastebin\';').get();
+		if (!hastetb['count(*)']) {
+			this.client.logger.ready('hastebin table created!');
+			db.prepare('CREATE TABLE hastebin (guildid TEXT PRIMARY KEY, status TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_hastebin_id ON hastebin (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
 		// Dad Bot Table
 		const dadbot = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'dadbot\';').get();
 		if (!dadbot['count(*)']) {
