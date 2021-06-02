@@ -181,9 +181,9 @@ module.exports = class extends Command {
 				if (foundPlotList[removeCounter].cropStatus === 'harvest') {
 					const removedArray = foundPlotList.splice(removeCounter, 1);
 					foundHarvestedList.push(removedArray[0]);
+					harvestedFunc.push(removedArray[0]);
 					harvestCounter++;
 					removeCounter--;
-					harvestedFunc.push(removedArray[0]);
 				}
 			}
 			return foundHarvestedList;
