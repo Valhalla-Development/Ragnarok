@@ -50,10 +50,12 @@ module.exports = class extends Event {
 					}
 				}
 				if (eventType === 'MESSAGE_REACTION_REMOVE_ALL') {
-					const channel = guild.channels.cache.find((channel) => channel.id === data.channel_id);
-					channel.messages.fetch(foundTicketConfig.ticketembed).then((msg) => {
-						msg.react('📩');
-					});
+					if (foundTicketConfig.ticketembed === data.message_id) {
+						const channel = guild.channels.cache.find((channel) => channel.id === data.channel_id);
+						channel.messages.fetch(foundTicketConfig.ticketembed).then((msg) => {
+							msg.react('📩');
+						});
+					}
 				}
 			}
 			if (eventType === 'MESSAGE_REACTION_ADD') {
