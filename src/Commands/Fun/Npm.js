@@ -25,10 +25,10 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const res = await fetch(`https://registry.npmjs.org/${args[0]}`).then(r =>
+		const res = await fetch(`https://registry.npmjs.org/${args.join('-')}`).then(r =>
 			r.json());
 
-		if (!res) {
+		if (res.error) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const noInput = new MessageEmbed()
