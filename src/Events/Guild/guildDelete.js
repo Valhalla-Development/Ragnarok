@@ -25,10 +25,28 @@ module.exports = class extends Event {
 			db.prepare('DELETE FROM autorole WHERE guildid = ?').run(guild.id);
 		}
 
+		// ban table
+		const delban = db.prepare('SELECT count(*) FROM ban WHERE guildid = ?;').get(guild.id);
+		if (delban['count(*)']) {
+			db.prepare('DELETE FROM ban WHERE guildid = ?').run(guild.id);
+		}
+
+		// birthdayConfig table
+		const delbdayconf = db.prepare('SELECT count(*) FROM birthdayConfig WHERE guildid = ?;').get(guild.id);
+		if (delbdayconf['count(*)']) {
+			db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(guild.id);
+		}
+
 		// dadbot table
 		const deldad = db.prepare('SELECT count(*) FROM dadbot WHERE guildid = ?;').get(guild.id);
 		if (deldad['count(*)']) {
 			db.prepare('DELETE FROM dadbot WHERE guildid = ?').run(guild.id);
+		}
+
+		// hastebin table
+		const delhaste = db.prepare('SELECT count(*) FROM hastebin WHERE guildid = ?;').get(guild.id);
+		if (delhaste['count(*)']) {
+			db.prepare('DELETE FROM hastebin WHERE guildid = ?').run(guild.id);
 		}
 
 		// invmanager table
@@ -59,6 +77,12 @@ module.exports = class extends Event {
 		const delmut = db.prepare('SELECT count(*) FROM mute WHERE guildid = ?;').get(guild.id);
 		if (delmut['count(*)']) {
 			db.prepare('DELETE FROM mute WHERE guildid = ?').run(guild.id);
+		}
+
+		// mute role table
+		const delmuterole = db.prepare('SELECT count(*) FROM muterole WHERE guildid = ?;').get(guild.id);
+		if (delmuterole['count(*)']) {
+			db.prepare('DELETE FROM muterole WHERE guildid = ?').run(guild.id);
 		}
 
 		// rolemenu table
