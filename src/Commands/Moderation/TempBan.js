@@ -12,7 +12,7 @@ module.exports = class extends Command {
 			category: 'Moderation',
 			usage: '<@user> <time> [reason]',
 			userPerms: ['BAN_MEMBERS'],
-			botPerms: ['KICK_MEMBERS']
+			botPerms: ['BAN_MEMBERS']
 		});
 	}
 
