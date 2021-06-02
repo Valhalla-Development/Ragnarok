@@ -3,7 +3,7 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const paginationEmbed = require('@xoalone/discordjs-pagination');
+const paginationEmbed = require('discord.js-pagination');
 
 module.exports = class extends Command {
 
@@ -25,6 +25,7 @@ module.exports = class extends Command {
 		if (!foundBoostList) {
 			foundBoostList = {};
 		}
+
 
 		if (!foundBoostList.farmPlot) {
 			this.client.utils.messageDelete(message, 10000);
@@ -125,6 +126,8 @@ module.exports = class extends Command {
 			return;
 		}
 
+		const harvestedFunc = [];
+
 		if (args[0] === 'all') {
 			let totalToAdd = 0;
 			let sellPrice;
@@ -132,7 +135,7 @@ module.exports = class extends Command {
 
 			harvestCrops();
 
-			foundHarvestedList.forEach(key => {
+			harvestedFunc.forEach(key => {
 				if (key.cropType === 'corn') {
 					totalToAdd += Math.floor(cornPrice * (1 - key.decay.toFixed(4) / 100));
 					sellPrice = Math.floor(cornPrice * (1 - key.decay.toFixed(4) / 100));
@@ -155,15 +158,10 @@ module.exports = class extends Command {
 				}
 			});
 
-			await db.prepare('UPDATE balance SET farmPlot = (@crops) WHERE id = (@id);').run({
-				crops: foundPlotList.length ? JSON.stringify(foundPlotList) : null,
-				id: `${message.author.id}-${message.guild.id}`
-			});
+			balance.farmPlot = foundPlotList.length ? JSON.stringify(foundPlotList) : null;
+			balance.harvestedCrops = JSON.stringify(foundHarvestedList);
 
-			await db.prepare('UPDATE balance SET harvestedCrops = (@crops) WHERE id = (@id);').run({
-				crops: JSON.stringify(foundHarvestedList),
-				id: `${message.author.id}-${message.guild.id}`
-			});
+			this.client.setBalance.run(balance);
 
 			const pages = [];
 
@@ -175,7 +173,7 @@ module.exports = class extends Command {
 						`**◎ Success:** You have harvested the following crops:\n${arr.splice(0, 5).join(`\n`)}\n\n In total, the current value is <:coin:706659001164628008>\`${totalToAdd.toLocaleString('en')}\`\nThis value of each crop will continue to depreciate, I recommend you sell your crops.`);
 				pages.push(embed);
 			}
-			paginationEmbed(message, pages); // when emotes get removed manually, error in log, add catch maybe somehow
+			paginationEmbed(message, pages);
 		}
 
 		function harvestCrops() {
@@ -185,6 +183,7 @@ module.exports = class extends Command {
 					foundHarvestedList.push(removedArray[0]);
 					harvestCounter++;
 					removeCounter--;
+					harvestedFunc.push(removedArray[0]);
 				}
 			}
 			return foundHarvestedList;
