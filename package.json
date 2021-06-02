@@ -9,7 +9,6 @@
   "dependencies": {
     "@discordjs/opus": "^0.5.0",
     "@extreme_hero/deeptype": "^1.0.1",
-    "@xoalone/discordjs-pagination": "^2.2.3",
     "better-sqlite3": "^7.4.0",
     "canvas": "^2.8.0",
     "chalk": "^4.1.1",
@@ -20,6 +19,7 @@
     "discord-fetch-all": "^3.0.2",
     "discord-giveaways": "^4.5.1",
     "discord.js": "^12.5.3",
+    "discord.js-pagination": "^1.0.3",
     "erela.js": "^2.3.3",
     "erela.js-spotify": "^1.2.0",
     "glob": "^7.1.7",

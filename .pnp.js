@@ -39,7 +39,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["@discordjs/opus", "npm:0.5.0"],
             ["@extreme_hero/deeptype", "npm:1.0.1"],
-            ["@xoalone/discordjs-pagination", "npm:2.2.3"],
             ["better-sqlite3", "npm:7.4.0"],
             ["canvas", "npm:2.8.0"],
             ["chalk", "npm:4.1.1"],
@@ -50,6 +49,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["discord-fetch-all", "npm:3.0.2"],
             ["discord-giveaways", "npm:4.5.1"],
             ["discord.js", "npm:12.5.3"],
+            ["discord.js-pagination", "npm:1.0.3"],
             ["erela.js", "npm:2.3.3"],
             ["erela.js-spotify", "npm:1.2.0"],
             ["eslint", "npm:7.27.0"],
@@ -477,17 +477,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["@typescript-eslint/visitor-keys", "npm:3.10.1"],
             ["eslint-visitor-keys", "npm:1.3.0"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
-      ["@xoalone/discordjs-pagination", [
-        ["npm:2.2.3", {
-          "packageLocation": "./.yarn/unplugged/@xoalone-discordjs-pagination-npm-2.2.3-aefbaaaac6/node_modules/@xoalone/discordjs-pagination/",
-          "packageDependencies": [
-            ["@xoalone/discordjs-pagination", "npm:2.2.3"],
-            ["chalk", "npm:4.1.0"],
-            ["figlet", "npm:1.5.0"]
           ],
           "linkType": "HARD",
         }]
@@ -1523,6 +1512,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD",
         }]
       ]],
+      ["discord.js-pagination", [
+        ["npm:1.0.3", {
+          "packageLocation": "./.yarn/cache/discord.js-pagination-npm-1.0.3-43a2eabeca-da5863c89b.zip/node_modules/discord.js-pagination/",
+          "packageDependencies": [
+            ["discord.js-pagination", "npm:1.0.3"]
+          ],
+          "linkType": "HARD",
+        }]
+      ]],
       ["dlv", [
         ["npm:1.1.3", {
           "packageLocation": "./.yarn/cache/dlv-npm-1.1.3-187c903a21-3ed2cd5054.zip/node_modules/dlv/",
@@ -2134,15 +2132,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [
             ["fastq", "npm:1.11.0"],
             ["reusify", "npm:1.0.4"]
-          ],
-          "linkType": "HARD",
-        }]
-      ]],
-      ["figlet", [
-        ["npm:1.5.0", {
-          "packageLocation": "./.yarn/cache/figlet-npm-1.5.0-8014ee3b57-49839d8179.zip/node_modules/figlet/",
-          "packageDependencies": [
-            ["figlet", "npm:1.5.0"]
           ],
           "linkType": "HARD",
         }]
@@ -4174,7 +4163,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["ragnarok", "workspace:."],
             ["@discordjs/opus", "npm:0.5.0"],
             ["@extreme_hero/deeptype", "npm:1.0.1"],
-            ["@xoalone/discordjs-pagination", "npm:2.2.3"],
             ["better-sqlite3", "npm:7.4.0"],
             ["canvas", "npm:2.8.0"],
             ["chalk", "npm:4.1.1"],
@@ -4185,6 +4173,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["discord-fetch-all", "npm:3.0.2"],
             ["discord-giveaways", "npm:4.5.1"],
             ["discord.js", "npm:12.5.3"],
+            ["discord.js-pagination", "npm:1.0.3"],
             ["erela.js", "npm:2.3.3"],
             ["erela.js-spotify", "npm:1.2.0"],
             ["eslint", "npm:7.27.0"],
