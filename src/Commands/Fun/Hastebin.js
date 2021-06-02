@@ -3,12 +3,15 @@ const { MessageEmbed } = require('discord.js');
 const Hastebin = require('hastebin.js');
 const haste = new Hastebin({ url: 'https://pastie.io' });
 const fetch = require('node-fetch');
+const SQLite = require('better-sqlite3');
+const db = new SQLite('./Storage/DB/db.sqlite');
+const urlRegexSafe = require('url-regex-safe');
 
 module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			aliases: ['haste', 'paste'],
+			aliases: ['haste', 'hb'],
 			description: 'Posts text/file to paste.io.',
 			category: 'Fun',
 			usage: '<text/attachment>'
@@ -16,6 +19,9 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
+		this.client.getTable = db.prepare('SELECT * FROM hastebin WHERE guildid = ?');
+		const status = this.client.getTable.get(message.guild.id);
+
 		this.client.utils.messageDelete(message, 0);
 
 		if (message.attachments.size === 1) {
@@ -87,7 +93,23 @@ module.exports = class extends Command {
 			return;
 		}
 
-		await haste.post(args.join(' '), 'js')
+		let cnt;
+
+		const text = args.join(' ');
+		const user = message.guild.member(message.author);
+
+		if (status) {
+			if (user.hasPermission('MANAGE_GUILD') || user.hasPermission('ADMINISTRATOR')) {
+				const matches = text.match(urlRegexSafe());
+				cnt = text.replace(matches, ' || Discord Link Removed By Server Config. If this is a mistake, please contact a server administrator. || ');
+			} else {
+				cnt = args.join(' ');
+			}
+		} else {
+			cnt = args.join(' ');
+		}
+
+		await haste.post(cnt, 'js')
 			.then((link) => {
 				const hastEmb = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
