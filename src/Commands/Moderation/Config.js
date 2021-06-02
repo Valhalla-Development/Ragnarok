@@ -41,6 +41,9 @@ module.exports = class extends Command {
 					`**◎ Dad Bot:**`,
 					`\u3000 \`${prefix}config dadbot <on/off>\` : Toggles the Dad bot module`,
 					`\u3000`,
+					`**◎ Hastebin Options:**`,
+					`\u3000 \`${prefix}config haste url <on/off>\` : Toggles the Hastebin URL blocker`,
+					`\u3000`,
 					`**◎ Invite Manager:**`,
 					`\u3000 \`${prefix}config invmanager <#channel/off>\` : Toggles the Invite Manager module`,
 					`\u3000`,
@@ -529,6 +532,78 @@ module.exports = class extends Command {
 					`**◎ Error:** Please use \`${prefix}config\` to see available commands!`);
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
+		}
+
+		// hastebin
+		if (args[0] === 'haste') {
+			// preparing count
+			this.client.getTable = db.prepare('SELECT * FROM hastebin WHERE guildid = ?');
+			let status;
+			if (message.guild.id) {
+				status = this.client.getTable.get(message.guild.id);
+
+				if (args[1] === 'url') {
+					if (args[2] === 'on') {
+						// if already on
+						if (status) {
+							this.client.utils.messageDelete(message, 10000);
+
+							const embed = new MessageEmbed()
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.addField(`**${this.client.user.username} - Config**`,
+									`**◎ Error:** Hastebin URL blocker is already enabled on this guild! To disable it, please use \`${prefix}config haste url <off>\``);
+							message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+							return;
+						}
+						const insert = db.prepare('INSERT INTO hastebin (guildid, status) VALUES (@guildid, @status);');
+						insert.run({
+							guildid: `${message.guild.id}`,
+							status: 'on'
+						});
+
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Success:** Hastebin URL blocker was enabled.`);
+						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+
+						// if args = off
+					} else if (args[2] === 'off') {
+						// if already off
+						if (!status) {
+							this.client.utils.messageDelete(message, 10000);
+
+							const embed = new MessageEmbed()
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.addField(`**${this.client.user.username} - Config**`,
+									`**◎ Error:** Hastebin URL blocker is not enabled on this guild! To activate it, please use \`${prefix}config haste url <on>\``);
+							message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+							return;
+						}
+
+						this.client.utils.messageDelete(message, 10000);
+
+						db.prepare('DELETE FROM hastebin WHERE guildid = ?').run(message.guild.id);
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Success:** Hastebin URL blocker was disabled!`);
+						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					} else if (args[2] !== 'off' || args[2] !== 'on') {
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Error:** Correct usage \`${prefix}config haste inv <on/off>\``);
+						message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+				}
+			}
 		}
 
 		// dadbot
