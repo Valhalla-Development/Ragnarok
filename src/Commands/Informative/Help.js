@@ -50,22 +50,20 @@ module.exports = class extends Command {
 			}
 
 			embed.setAuthor(`${this.client.utils.capitalise(cmd.name)} Command Help`, this.client.user.displayAvatarURL());
-			embed.setDescription([
-				`**◎ Aliases:** ${cmd.aliases.length ? cmd.aliases.map(alias => `\`${alias}\``).join(' ') : 'No Aliases'}`,
-				`**◎ Description:** ${cmd.description}`,
-				`**◎ Category:** ${cmd.category}`,
-				`**◎ Usage:** ${cmd.usage}`,
-				`${reqPerm}`
-			]);
+			embed.setDescription(
+				`**◎ Aliases:** ${cmd.aliases.length ? cmd.aliases.map(alias => `\`${alias}\``).join(' ') : 'No Aliases'}
+				**◎ Description:** ${cmd.description}
+				**◎ Category:** ${cmd.category}
+				**◎ Usage:** ${cmd.usage}
+				${reqPerm}`);
 			message.channel.send(embed);
 			return;
 		} else {
-			embed.setDescription([
-				`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!`,
-				`Run \`${prefix}help <command>\` to see command specific instructions`,
-				`All commands must be preceded by \`${prefix}\``,
-				`Command Parameters: \`<>\` is strict & \`[]\` is optional`
-			]);
+			embed.setDescription(
+				`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
+				Run \`${prefix}help <command>\` to see command specific instructions
+				All commands must be preceded by \`${prefix}\`
+				Command Parameters: \`<>\` is strict & \`[]\` is optional`);
 			const categories = this.client.utils.removeDuplicates(this.client.commands.filter(cmd => cmd.category !== 'Hidden').map(cmd => cmd.category));
 
 			for (const category of categories) {

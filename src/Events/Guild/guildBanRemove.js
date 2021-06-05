@@ -19,10 +19,9 @@ module.exports = class extends Event {
 		const embed = new MessageEmbed()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(guild.me.displayHexColor))
-			.addField('User Unbanned', [
-				`**◎ User:** ${user.tag}`,
-				`**◎ Moderator:**: ${mod}`
-			])
+			.addField('User Unbanned',
+				`**◎ User:** ${user.tag}
+				**◎ Moderator:**: ${mod}`)
 			.setFooter('User Ban Logs')
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send(embed);

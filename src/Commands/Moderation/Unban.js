@@ -34,10 +34,9 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField('Action | Un-Ban', [
-				`**◎ User ID:** ${args[0]}`,
-				`**◎ Moderator:**: ${message.author.tag}`
-			])
+			.addField('Action | Un-Ban',
+				`**◎ User ID:** ${args[0]}
+				**◎ Moderator:**: ${message.author.tag}`)
 			.setFooter('User Un-Ban Logs')
 			.setTimestamp();
 

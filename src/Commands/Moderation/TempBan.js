@@ -20,7 +20,7 @@ module.exports = class extends Command {
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 
-		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0])
+		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0]);
 
 		// No user
 		if (!user) {
@@ -161,12 +161,11 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField('Action | Temp-Banned', [
-				`**◎ User:** ${user.user.tag}`,
-				`**◎ Reason:**: ${reason}`,
-				`**◎ Time:** ${bantime}`,
-				`**◎ Moderator:**: ${message.author.tag}`
-			])
+			.addField('Action | Temp-Banned',
+				`**◎ User:** ${user.user.tag}
+				**◎ Reason:**: ${reason}
+				**◎ Time:** ${bantime}
+				**◎ Moderator:**: ${message.author.tag}`)
 			.setFooter('User Ban Logs')
 			.setTimestamp();
 		message.channel.send(embed);

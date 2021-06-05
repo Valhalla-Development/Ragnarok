@@ -1272,9 +1272,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setThumbnail(this.client.user.displayAvatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField('Ragnarok', [
-						`**◎ Set Welcome:** To set the welcome channel, the command is \`${prefix}config welcome channel <#channel>\`\nTo disable the welcome, use \`${prefix}config welcome channel off\``
-					])
+					.addField('Ragnarok',
+						`**◎ Set Welcome:** To set the welcome channel, the command is \`${prefix}config welcome channel <#channel>\`\nTo disable the welcome, use \`${prefix}config welcome channel off\``)
 					.setTimestamp();
 				message.channel.send(embed);
 				return;
@@ -1365,9 +1364,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setThumbnail(this.client.user.displayAvatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField('Ragnarok', [
-						`**◎ Music:** To set the music role, the command is \`${prefix}config music role <@role>\`\nTo disable the role, use \`${prefix}config music role off\``
-					])
+					.addField('Ragnarok',
+						`**◎ Music:** To set the music role, the command is \`${prefix}config music role <@role>\`\nTo disable the role, use \`${prefix}config music role off\``)
 					.setTimestamp();
 				message.channel.send(embed);
 				return;
@@ -1445,9 +1443,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setThumbnail(this.client.user.displayAvatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField('Ragnarok', [
-						`**◎ Mute:** To set the Mute role, the command is \`${prefix}config mute role <@role>\`\nTo disable the role, use \`${prefix}config mute role off\``
-					])
+					.addField('Ragnarok',
+						`**◎ Mute:** To set the Mute role, the command is \`${prefix}config mute role <@role>\`\nTo disable the role, use \`${prefix}config mute role off\``)
 					.setTimestamp();
 				message.channel.send(embed);
 				return;

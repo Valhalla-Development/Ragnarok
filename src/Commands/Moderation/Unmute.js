@@ -18,7 +18,7 @@ module.exports = class extends Command {
 
 	async run(message, args) {
 		const mod = message.author;
-		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0])
+		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0]);
 
 		if (!user) {
 			this.client.utils.messageDelete(message, 10000);
@@ -55,10 +55,9 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField('Action | Un-Mute', [
-				`**◎ User:** <@${user.user.id}>`,
-				`**◎ Staff Member:** ${mod}`
-			])
+			.addField('Action | Un-Mute',
+				`**◎ User:** <@${user.user.id}>
+				**◎ Staff Member:** ${mod}`)
 			.setTimestamp();
 		message.channel.send(embed);
 

@@ -42,7 +42,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0])
+		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0]);
 
 		// No user
 		if (!user) {
@@ -185,12 +185,11 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField('Action | Mute', [
-				`**◎ User:** <@${user.user.id}>`,
-				`**◎ Reason:** ${reason}`,
-				`**◎ Time:** ${mutetime}`,
-				`**◎ Moderator:** ${message.author}`
-			])
+			.addField('Action | Mute',
+				`**◎ User:** <@${user.user.id}>
+				**◎ Reason:** ${reason}
+				**◎ Time:** ${mutetime}
+				**◎ Moderator:** ${message.author}`)
 			.setTimestamp();
 		message.channel.send(embed);
 

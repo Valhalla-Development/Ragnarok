@@ -48,22 +48,20 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 512 }))
 			.setColor(this.client.utils.color(member.displayHexColor))
-			.addField('User', [
-				`**◎ Username:** ${member.user.username}#${member.user.discriminator}`,
-				`**◎ ID:** ${member.id}`,
-				`**◎ Flags:** ${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}`,
-				`**◎ Avatar:** [Link to avatar](${member.user.displayAvatarURL({ dynamic: true })})`,
-				`**◎ Time Created:** ${moment(member.user.createdTimestamp).format('LT')} ${moment(member.user.createdTimestamp).format('LL')} - ${moment(member.user.createdTimestamp).fromNow()}`,
-				`**◎ Status:** ${status[member.user.presence.status]}`,
-				`**◎ Game:** ${member.user.presence.activities[0] ? member.user.presence.activities[0].name : 'Not playing a game.'}`,
-				`\u200b`
-			])
-			.addField('Member', [
-				`**◎ Highest Role:** ${member.roles.highest.id === message.guild.id ? 'None' : member.roles.highest}`,
-				`**◎ Server Join Data:** ${moment(member.joinedAt).format('LL LTS')}`,
-				`${roles.length ? `**◎ Roles [${roles.length}]:**` : '**◎ Roles:** None'} ${roles.length < 10 ? roles.join(', ') : roles.length > 9 ? this.client.utils.trimArray(roles) : 'None'}`,
-				`\u200b`
-			]);
+			.addField('User',
+				`**◎ Username:** ${member.user.username}#${member.user.discriminator}
+				**◎ ID:** ${member.id}
+				**◎ Flags:** ${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}
+				**◎ Avatar:** [Link to avatar](${member.user.displayAvatarURL({ dynamic: true })})
+				**◎ Time Created:** ${moment(member.user.createdTimestamp).format('LT')} ${moment(member.user.createdTimestamp).format('LL')} - ${moment(member.user.createdTimestamp).fromNow()}
+				**◎ Status:** ${status[member.user.presence.status]}
+				**◎ Game:** ${member.user.presence.activities[0] ? member.user.presence.activities[0].name : 'Not playing a game.'}
+				\u200b`)
+			.addField('Member',
+				`**◎ Highest Role:** ${member.roles.highest.id === message.guild.id ? 'None' : member.roles.highest}
+				**◎ Server Join Data:** ${moment(member.joinedAt).format('LL LTS')}
+				${roles.length ? `**◎ Roles [${roles.length}]:**` : '**◎ Roles:** None'} ${roles.length < 10 ? roles.join(', ') : roles.length > 9 ? this.client.utils.trimArray(roles) : 'None'}
+				\u200b`);
 		message.channel.send(embed);
 	}
 

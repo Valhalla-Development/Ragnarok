@@ -21,7 +21,7 @@ module.exports = class extends Command {
 
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
 
-		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0])
+		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0]);
 
 		// No user
 		if (!user) {
@@ -101,11 +101,10 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField('User Kicked', [
-				`**◎ User:** ${user.user.tag}`,
-				`**◎ Reason:**: ${reason}`,
-				`**◎ Moderator:**: ${message.author.tag}`
-			])
+			.addField('User Kicked',
+				`**◎ User:** ${user.user.tag}
+				**◎ Reason:**: ${reason}
+				**◎ Moderator:**: ${message.author.tag}`)
 			.setFooter('User Kick Logs')
 			.setTimestamp();
 		message.channel.send(embed);

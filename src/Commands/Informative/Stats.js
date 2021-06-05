@@ -46,29 +46,27 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField('General', [
-				`**◎ Client:** ${this.client.user.tag}`,
-				`**◎ Uptime:** ${ms(this.client.uptime, { long: true })}`,
-				`**◎ Commands:** ${this.client.commands.filter(cmd => cmd.category !== 'Hidden').size}`,
-				`**◎ Servers:** ${this.client.guilds.cache.size.toLocaleString()}`,
-				`**◎ Users:** ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')}`,
-				`**◎ Channels:** ${this.client.channels.cache.size.toLocaleString()}`,
-				`**◎ Creation Date:** ${utc(this.client.user.createdTimestamp).format('Do MMMM YYYY')}`,
-				`**◎ Node.js:** ${process.version}`,
-				`**◎ Bot Version:** v${version}`,
-				`**◎ Discord.js:** v${djsversion}`,
-				'\u200b'
-			])
-			.addField('System', [
-				`**◎ OS:** ${osVersion}`,
-				`**◎ Uptime:** ${ms(os.uptime() * 1000, { long: true })}`,
-				`**◎ Memory Usage:** ${realMemUsed} / ${totalMemory}MB - ${memPercent.toFixed(1)}%`,
-				`**◎ CPU:**`,
-				`\u3000 Cores: ${os.cpus().length}`,
-				`\u3000 Model: ${core.model}`,
-				`\u3000 Speed: ${core.speed}MHz`,
-				`\u3000 Usage: ${cpuUsage.toFixed(1)}%`
-			])
+			.addField('General',
+				`**◎ Client:** ${this.client.user.tag}
+				**◎ Uptime:** ${ms(this.client.uptime, { long: true })}
+				**◎ Commands:** ${this.client.commands.filter(cmd => cmd.category !== 'Hidden').size}
+				**◎ Servers:** ${this.client.guilds.cache.size.toLocaleString()}
+				**◎ Users:** ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')}
+				**◎ Channels:** ${this.client.channels.cache.size.toLocaleString()}
+				**◎ Creation Date:** ${utc(this.client.user.createdTimestamp).format('Do MMMM YYYY')}
+				**◎ Node.js:** ${process.version}
+				**◎ Bot Version:** v${version}
+				**◎ Discord.js:** v${djsversion}
+				\u200b`)
+			.addField('System',
+				`**◎ OS:** ${osVersion}
+				**◎ Uptime:** ${ms(os.uptime() * 1000, { long: true })}
+				**◎ Memory Usage:** ${realMemUsed} / ${totalMemory}MB - ${memPercent.toFixed(1)}%
+				**◎ CPU:**
+				\u3000 Cores: ${os.cpus().length}
+				\u3000 Model: ${core.model}
+				\u3000 Speed: ${core.speed}MHz
+				\u3000 Usage: ${cpuUsage.toFixed(1)}%`)
 			.addField('Announcement',
 				`\`\`\`${annc}\`\`\``)
 			.setTimestamp();
