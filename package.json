@@ -43,7 +43,7 @@
     "unescape": "^1.0.1",
     "url": "^0.11.0",
     "url-regex-safe": "^2.0.2",
-    "weky": "^1.9.0"
+    "weky": "^1.9.3"
   },
   "devDependencies": {
     "eslint": "^7.27.0",
