@@ -45,18 +45,17 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail('https://static.npmjs.com/338e4905a2684ca96e08c7780fc68412.png')
 			.setAuthor(res.name, 'https://i.imgur.com/ErKf5Y0.png', `https://www.npmjs.com/package/${res._id}`)
-			.addField('Package Info', [
-				`**❯ Author:** ${version.maintainers[0].name || 'None'}`,
-				`**❯ Repository:** ${res.repository.url || 'None'}`,
-				`**❯ ${version.maintainers.length > 1 ? 'Maintainers' : 'Maintainer'}:** ${version.maintainers
-					.map(usr => usr.name)
-					.join(', ')}`,
-				`**❯ Latest Version:** ${version.version || 'None'}`,
-				`**❯ Keywords:** ${res.keywords ? res.keywords.join(', ') : 'None'}`
-			]);
+			.addField('Package Info\n',
+				`**❯ Author:** ${version.maintainers[0].name || 'None'}
+				**❯ Repository:** ${res.repository ? res.repository.url : 'None'}
+				**❯ ${version.maintainers.length > 1 ? 'Maintainers' : 'Maintainer'}:** ${version.maintainers
+	.map(usr => usr.name)
+	.join(', ')}
+				**❯ Latest Version:** ${version.version || 'None'}
+				**❯ Keywords:** ${res.keywords ? res.keywords.join(', ') : 'None'}`);
 
 		if (res.description) {
-			embed.setDescription(['**Description:**', res.description]);
+			embed.setDescription('**Description:**', res.description);
 		}
 
 		message.channel.send(embed);

@@ -1,7 +1,7 @@
 /* eslint-disable max-depth */
 /* eslint-disable no-shadow */
 const Event = require('../../Structures/Event');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Permissions } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
@@ -319,7 +319,7 @@ module.exports = class extends Event {
 								const addedRole = msg.guild.roles.cache.find((r) => r.id === roleArray[roleIndex]);
 								const memberRole = member.roles.cache.map((role) => role.id);
 
-								if (!member.hasPermission('MANAGE_MESSAGES') && addedRole.permissions.has('MANAGE_MESSAGES')) {
+								if (!member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) && addedRole.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
 									const getReactUser = reaction.users.map((react) => react.id);
 									if (getReactUser.includes(member.id)) {
 										reaction.users.remove(member.id);

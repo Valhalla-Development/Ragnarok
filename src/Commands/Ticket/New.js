@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Permissions } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
@@ -22,7 +22,7 @@ module.exports = class extends Command {
 
 		const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
 
-		if (!message.member.guild.me.hasPermission('MANAGE_CHANNELS')) {
+		if (!message.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const botPerm = new MessageEmbed()

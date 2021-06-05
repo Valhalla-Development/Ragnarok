@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Guild } = require('discord.js');
 const moment = require('moment');
 
 const filterLevels = {
@@ -48,6 +48,11 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
+		let owner;
+		const guildOwner = message.guild.fetchOwner().then(d => {
+			owner = d.user
+		})
+		return message.channel.send(guildOwner)
 		const roles = message.guild.roles.cache
 			.sort((a, b) => b.position - a.position)
 			.map(role => role.toString())
@@ -64,7 +69,7 @@ module.exports = class extends Command {
 			.addField('General', [
 				`**◎ Name:** ${message.guild.name}`,
 				`**◎ ID:** ${message.guild.id}`,
-				`**◎ Owner:** ${message.guild.owner.user.tag} (${message.guild.ownerID})`,
+				`**◎ Owner:** ${message.guild.fetchOwner().tag} (${message.guild.ownerID})`,
 				`**◎ Region:** ${regions[message.guild.region]}`,
 				`**◎ Boost Tier:** ${message.guild.premiumTier ? `Tier ${message.guild.premiumTier}` : 'None'}`,
 				`**◎ Explicit Filter:** ${filterLevels[message.guild.explicitContentFilter]}`,

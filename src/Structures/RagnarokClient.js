@@ -1,6 +1,6 @@
 /* eslint-disable no-inline-comments */
 /* eslint-disable no-mixed-operators */
-const { Client, Collection, MessageEmbed, Permissions } = require('discord.js');
+const { Client, Collection, MessageEmbed, Permissions, Intents } = require('discord.js');
 const Util = require('./Util.js');
 const Canvas = require('canvas');
 Canvas.registerFont('./Storage/Canvas/Fonts/Notethis.ttf', {
@@ -13,11 +13,13 @@ const { Manager } = require('erela.js');
 const Spotify = require('erela.js-spotify');
 const prettyMilliseconds = require('pretty-ms');
 const { SlashCreator } = require('slash-create');
+const disbut = require('discord-buttons');
+
 
 module.exports = class RagnarokClient extends Client {
 
 	constructor(options = {}) {
-		super();
+		super({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_EMOJIS, Intents.FLAGS.GUILD_INVITES, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_TYPING] });
 		this.validate(options);
 
 		this.commands = new Collection();
@@ -31,6 +33,8 @@ module.exports = class RagnarokClient extends Client {
 		this.owners = options.ownerID;
 
 		this.logger = require('./Logger.js');
+
+		disbut(this);
 
 		// Slash Commands
 		const creator = new SlashCreator({

@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Permissions } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -24,7 +24,7 @@ module.exports = class extends Command {
 			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
-		if (!message.guild.member(this.client.user).hasPermission('MANAGE_CHANNELS')) {
+		if (!message.guild.member(this.client.user).permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()

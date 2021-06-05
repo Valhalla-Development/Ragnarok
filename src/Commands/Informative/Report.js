@@ -12,7 +12,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
-		const target = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
+		const target = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0])
 		const reports = message.guild.channels.cache.find((chan) => chan.name === 'reports');
 		const reason = args.slice(1).join(' ');
 

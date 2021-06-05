@@ -17,7 +17,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
-		if (!message.member.hasPermission('MANAGE_MESSAGES') && !message.member.roles.cache.some((r) => r.name === 'Giveaways')) {
+		if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) && !message.member.roles.cache.some((r) => r.name === 'Giveaways')) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const invalidPerm = new MessageEmbed()

@@ -222,7 +222,7 @@ module.exports = class extends Event {
 		function adsProt(grabClient) {
 			const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(message.guild.id);
 			if (adsprot['count(*)']) {
-				if (!message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+				if (!message.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
 					const npPerms = new MessageEmbed()
 						.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${grabClient.user.username} - Ads Protection**`,
@@ -231,10 +231,10 @@ module.exports = class extends Event {
 					db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(message.guild.id);
 					return;
 				}
-				if (!message.member.hasPermission('MANAGE_MESSAGES')) {
+				if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
 					const matches = urlRegexSafe({ strict: false }).test(message.content.toLowerCase());
 					if (matches) {
-						if (message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+						if (message.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
 							grabClient.utils.messageDelete(message, 0);
 							message.channel.send(`**◎ Your message contained a link and it was deleted, ${message.author}**`)
 								.then((msg) => {

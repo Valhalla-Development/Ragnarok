@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Permissions } = require('discord.js');
 const talkedRecently = new Set();
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -54,7 +54,7 @@ module.exports = class extends Command {
 		}
 
 		const permissions = channel.permissionsFor(this.client.user);
-		if (!permissions.has('CONNECT')) {
+		if (!permissions.has(Permissions.FLAGS.CONNECT)) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
@@ -65,7 +65,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (!permissions.has('SPEAK')) {
+		if (!permissions.has(Permissions.FLAGS.SPEAK)) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
@@ -76,7 +76,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (message.member.roles.cache.has(role.id) || message.member.hasPermission('MANAGE_MESSAGES')) {
+		if (message.member.roles.cache.has(role.id) || message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
 			if (talkedRecently.has(message.author.id)) {
 				talkedRecently.delete(message.author.id);
 			}
@@ -264,7 +264,7 @@ module.exports = class extends Command {
 			return;
 		}
 		setTimeout(() => {
-			if (message.member.roles.cache.has(role.id) || message.member.hasPermission('MANAGE_MESSAGES')) {
+			if (message.member.roles.cache.has(role.id) || message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
 				return;
 			}
 			const embed1 = new MessageEmbed()

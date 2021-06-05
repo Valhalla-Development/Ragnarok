@@ -11,7 +11,7 @@ module.exports = class extends Event {
 		if (!newMessage.guild || oldMessage.content === newMessage.content || newMessage.author.bot) return;
 		const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(newMessage.guild.id);
 		if (adsprot['count(*)']) {
-			if (!newMessage.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+			if (!newMessage.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
 				const npPerms = new MessageEmbed()
 					.setColor(this.client.utils.color(newMessage.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ads Protection**`,
@@ -22,7 +22,7 @@ module.exports = class extends Event {
 			}
 			const matches = urlRegexSafe({ strict: false }).test(newMessage.content.toLowerCase());
 			if (matches) {
-				if (newMessage.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+				if (newMessage.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
 					this.client.utils.messageDelete(newMessage, 0);
 					newMessage.channel.send(`**◎ Your message contained a link and it was deleted, ${newMessage.author}**`)
 						.then((msg) => {

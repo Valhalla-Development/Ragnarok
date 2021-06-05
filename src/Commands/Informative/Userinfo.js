@@ -4,7 +4,8 @@ const moment = require('moment');
 
 const flags = {
 	DISCORD_EMPLOYEE: '<:DiscordStaff:748651259849998377>',
-	DISCORD_PARTNER: '<:DiscordPartner:748985364022165694>',
+	DISCORD_CERTIFIED_MODERATOR: 'Certified Moderator',
+	PARTNERED_SERVER_OWNER: '<:DiscordPartner:748985364022165694>',
 	BUGHUNTER_LEVEL_1: '<:DiscordBugHunter1:748651259724300364>',
 	BUGHUNTER_LEVEL_2: '<:DiscordBugHunter2:748651259741077574>',
 	HYPESQUAD_EVENTS: '<:HypeSquadEvents:748651259761786981>',
@@ -15,7 +16,7 @@ const flags = {
 	TEAM_USER: 'Team User',
 	SYSTEM: 'System',
 	VERIFIED_BOT: 'Verified Bot',
-	VERIFIED_DEVELOPER: '<:VerifiedBotDeveloper:748651259858255973>'
+	EARLY_VERIFIED_BOT_DEVELOPER: '<:VerifiedBotDeveloper:748651259858255973>'
 };
 
 const status = {

@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Permissions } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -22,7 +22,7 @@ module.exports = class extends Command {
 
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
 
-		const user = message.guild.member(message.mentions.users.first() || message.guild.members.cache.get(args[0]));
+		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0])
 
 		// No user
 		if (!user) {
@@ -61,7 +61,7 @@ module.exports = class extends Command {
 		}
 
 		// Check if user is bannable
-		if (user.hasPermission('MANAGE_GUILD') || user.hasPermission('ADMINISTRATOR') || !user.bannable) {
+		if (user.permissions.has(Permissions.FLAGS.MANAGE_GUILD) || user.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || !user.bannable) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()

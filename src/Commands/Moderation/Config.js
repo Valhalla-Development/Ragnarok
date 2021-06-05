@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Permissions } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -679,7 +679,7 @@ module.exports = class extends Command {
 		// adsprot
 		if (args[0] === 'adsprot') {
 			// perms checking
-			if (!message.member.guild.me.hasPermission('MANAGE_MESSAGES')) {
+			if (!message.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
 				this.client.utils.messageDelete(message, 10000);
 
 				const npPerms = new MessageEmbed()
@@ -832,7 +832,7 @@ module.exports = class extends Command {
 		// logging
 
 		if (args[0] === 'logging') {
-			if (!message.member.guild.me.hasPermission('VIEW_AUDIT_LOG')) {
+			if (!message.member.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed = new MessageEmbed()
@@ -1523,7 +1523,7 @@ module.exports = class extends Command {
 		// invite manger
 
 		if (args[0] === 'invmanager') {
-			if (!message.member.guild.me.hasPermission('MANAGE_GUILD')) {
+			if (!message.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed = new MessageEmbed()
