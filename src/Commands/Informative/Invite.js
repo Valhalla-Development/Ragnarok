@@ -15,7 +15,7 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Invite**`,
-				`**◎ [Bot Invite Link](https://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot%20pplications.commands&permissions=1580723711)**`);
+				`**◎ [Bot Invite Link](https://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot%20applications.commands&permissions=1580723711)**`);
 		message.channel.send(embed);
 	}
 
