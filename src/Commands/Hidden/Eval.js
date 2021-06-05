@@ -43,10 +43,9 @@ module.exports = class extends Command {
 			}
 			const stop = process.hrtime(start);
 			const success = new MessageEmbed()
-				.addField(`${this.client.user.username} - Eval`, [
-					`**◎ Output:** \`\`\`js\n${this.clean(inspect(evaled, { depth: 0 }))}\n\`\`\``,
-					`**◎ Type:** \`\`\`ts\n${new Type(evaled).is}\n\`\`\``
-				])
+				.addField(`${this.client.user.username} - Eval`,
+					`**◎ Output:** \`\`\`js\n${this.clean(inspect(evaled, { depth: 0 }))}\n\`\`\`
+					**◎ Type:** \`\`\`ts\n${new Type(evaled).is}\n\`\`\``)
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setFooter(`Time Taken: ${(((stop[0] * 1e9) + stop[1])) / 1e6}s`);
 
@@ -68,9 +67,8 @@ module.exports = class extends Command {
 			await message.channel.send(success);
 		} catch (err) {
 			const error = new MessageEmbed()
-				.addField(`${this.client.user.username} - Eval`, [
-					`**◎ Error:** \`\`\`x1\n${this.clean(err)}\n\`\`\``
-				])
+				.addField(`${this.client.user.username} - Eval`,
+					`**◎ Error:** \`\`\`x1\n${this.clean(err)}\n\`\`\``)
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 			message.channel.send(error);
 			return;

@@ -185,9 +185,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** Please enter a valid number.`
-					]);
+					.addField(`**${this.client.user.username} - Plant**`,
+						`**◎ Error:** Please enter a valid number.`);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -210,9 +209,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** Please enter a valid number.`
-					]);
+					.addField(`**${this.client.user.username} - Plant**`,
+						`**◎ Error:** Please enter a valid number.`);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -223,9 +221,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** You do not have enough room to plant \`${cornAmt}\` ${cornAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
-					]);
+					.addField(`**${this.client.user.username} - Plant**`,
+						`**◎ Error:** You do not have enough room to plant \`${cornAmt}\` ${cornAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -248,9 +245,8 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Plant**`, [
-					`**◎ Success:** You have successfully planted \`${cornAmt}\` ${cornAmt > 1 ? 'seeds.' : 'seed.'}\nCorn takes \`${prettyMilliseconds(cornGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
-				]);
+				.addField(`**${this.client.user.username} - Plant**`,
+					`**◎ Success:** You have successfully planted \`${cornAmt}\` ${cornAmt > 1 ? 'seeds.' : 'seed.'}\nCorn takes \`${prettyMilliseconds(cornGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``);
 			message.channel.send(embed);
 			return;
 		}
@@ -264,9 +260,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** Please enter a valid number.`
-					]);
+					.addField(`**${this.client.user.username} - Plant**`,
+						`**◎ Error:** Please enter a valid number.`);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -289,9 +284,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** Please enter a valid number.`
-					]);
+					.addField(`**${this.client.user.username} - Plant**`,
+						`**◎ Error:** Please enter a valid number.`);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -302,9 +296,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** You do not have enough room to plant \`${wheatAmt}\` ${wheatAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
-					]);
+					.addField(`**${this.client.user.username} - Plant**`,
+						`**◎ Error:** You do not have enough room to plant \`${wheatAmt}\` ${wheatAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -327,9 +320,8 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Plant**`, [
-					`**◎ Success:** You have successfully planted \`${wheatAmt}\` ${wheatAmt > 1 ? 'seeds.' : 'seed.'}\nWheat takes \`${prettyMilliseconds(wheatGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
-				]);
+				.addField(`**${this.client.user.username} - Plant**`,
+					`**◎ Success:** You have successfully planted \`${wheatAmt}\` ${wheatAmt > 1 ? 'seeds.' : 'seed.'}\nWheat takes \`${prettyMilliseconds(wheatGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``);
 			message.channel.send(embed);
 			return;
 		}
@@ -343,9 +335,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** Please enter a valid number.`
-					]);
+					.addField(`**${this.client.user.username} - Plant**`,
+						`**◎ Error:** Please enter a valid number.`);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -368,9 +359,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** Please enter a valid number.`
-					]);
+					.addField(`**${this.client.user.username} - Plant**`,
+						`**◎ Error:** Please enter a valid number.`);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -381,9 +371,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** You do not have enough room to plant \`${potatoeAmt}\` ${potatoeAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
-					]);
+					.addField(`**${this.client.user.username} - Plant**`,
+						`**◎ Error:** You do not have enough room to plant \`${potatoeAmt}\` ${potatoeAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -406,9 +395,8 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Plant**`, [
-					`**◎ Success:** You have successfully planted \`${potatoeAmt}\` ${potatoeAmt > 1 ? 'seeds.' : 'seed.'}\nPotatoe's take \`${prettyMilliseconds(potatoGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
-				]);
+				.addField(`**${this.client.user.username} - Plant**`,
+					`**◎ Success:** You have successfully planted \`${potatoeAmt}\` ${potatoeAmt > 1 ? 'seeds.' : 'seed.'}\nPotatoe's take \`${prettyMilliseconds(potatoGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``);
 			message.channel.send(embed);
 			return;
 		}
@@ -422,9 +410,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** Please enter a valid number.`
-					]);
+					.addField(`**${this.client.user.username} - Plant**`,
+						`**◎ Error:** Please enter a valid number.`);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -447,9 +434,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** Please enter a valid number.`
-					]);
+					.addField(`**${this.client.user.username} - Plant**`,
+						`**◎ Error:** Please enter a valid number.`);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -460,9 +446,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Plant**`, [
-						`**◎ Error:** You do not have enough room to plant \`${tomatoeAmt}\` ${tomatoeAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
-					]);
+					.addField(`**${this.client.user.username} - Plant**`,
+						`**◎ Error:** You do not have enough room to plant \`${tomatoeAmt}\` ${tomatoeAmt > 1 ? 'seeds.' : 'seed.'}\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -485,9 +470,8 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Plant**`, [
-					`**◎ Success:** You have successfully planted \`${tomatoeAmt}\` ${tomatoeAmt > 1 ? 'seeds.' : 'seed.'}\nTomatoe's take \`${prettyMilliseconds(tomatoeGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``
-				]);
+				.addField(`**${this.client.user.username} - Plant**`,
+					`**◎ Success:** You have successfully planted \`${tomatoeAmt}\` ${tomatoeAmt > 1 ? 'seeds.' : 'seed.'}\nTomatoe's take \`${prettyMilliseconds(tomatoeGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.farmPlot)}\``);
 			message.channel.send(embed);
 			return;
 		}

@@ -195,27 +195,26 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Items**`, [
-				`**◎ Fish:**`,
-				`\u3000 Trout: Own ${foundItemList.trout === undefined ? `\`0\`` : `\`${foundItemList.trout}\` - <:coin:706659001164628008> \`${troutPrice.toLocaleString('en')}\``}`,
-				`\u3000 King Salmon: Own ${foundItemList.kingSalmon === undefined ? `\`0\`` : `\`${foundItemList.kingSalmon}\` - <:coin:706659001164628008> \`${salmonPrice.toLocaleString('en')}\``}`,
-				`\u3000 Swordfish: Own ${foundItemList.swordfish === undefined ? `\`0\`` : `\`${foundItemList.swordfish} \`- <:coin:706659001164628008> \`${swordFishPrice.toLocaleString('en')}\``}`,
-				`\u3000 Pufferfish: Own ${foundItemList.pufferfish === undefined ? `\`0\`` : `\`${foundItemList.pufferfish}\` - <:coin:706659001164628008> \`${pufferFishPrice.toLocaleString('en')}\``}`,
-				`\u200b`,
-				`${fields.join('\n')}`,
-				`\u200b`,
-				`**◎ Treasure:**`,
-				`\u3000 Treasure Chest: Own ${foundItemList.treasure === undefined ? `\`0\`` : `\`${foundItemList.treasure}\` - <:coin:706659001164628008> \`${treasurePrice.toLocaleString('en')}\``}`,
-				`\u3000 Gold Bar: Own ${foundItemList.goldBar === undefined ? `\`0\`` : `\`${foundItemList.goldBar}\` - <:coin:706659001164628008> \`${goldBarPrice.toLocaleString('en')}\``}`,
-				`\u3000 Gold Nugget: Own ${foundItemList.goldNugget === undefined ? `\`0\`` : `\`${foundItemList.goldNugget}\` - <:coin:706659001164628008> \`${goldNuggetPrice.toLocaleString('en')}\``}`,
-				`\u200b`,
-				`**◎ Permanent Items:**`,
-				`\u3000 ${!foundItemList.fishingRod ? `\`${prefix}shop buy rod\` - <:coin:706659001164628008> \`${fishingPrice.toLocaleString('en')}\`` : `Fishing Rod - \`Owned\``}`,
-				`\u3000 Fish Bag - ${!foundBoostList.fishBag ? `\`Not Owned\` - Buy fishing rod to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFish)}\`/\`${foundBoostList.fishBag}\``}`,
-				`\u3000 ${!foundItemList.farmingTools ? `\`${prefix}shop buy tools\` - <:coin:706659001164628008> \`${farmingPrice.toLocaleString('en')}\`` : `Farming Tools - \`Owned\``}`,
-				`\u3000 Seed Bag - ${!foundBoostList.seedBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalSeeds)}\`/\`${foundBoostList.seedBag}\``}`,
-				`\u3000 Farm Bag - ${!foundBoostList.farmBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.farmBag}\``}`
-			]);
+			.addField(`**${this.client.user.username} - Items**`,
+				`**◎ Fish:**
+				\u3000 Trout: Own ${foundItemList.trout === undefined ? `\`0\`` : `\`${foundItemList.trout}\` - <:coin:706659001164628008> \`${troutPrice.toLocaleString('en')}\``}
+				\u3000 King Salmon: Own ${foundItemList.kingSalmon === undefined ? `\`0\`` : `\`${foundItemList.kingSalmon}\` - <:coin:706659001164628008> \`${salmonPrice.toLocaleString('en')}\``}
+				\u3000 Swordfish: Own ${foundItemList.swordfish === undefined ? `\`0\`` : `\`${foundItemList.swordfish} \`- <:coin:706659001164628008> \`${swordFishPrice.toLocaleString('en')}\``}
+				\u3000 Pufferfish: Own ${foundItemList.pufferfish === undefined ? `\`0\`` : `\`${foundItemList.pufferfish}\` - <:coin:706659001164628008> \`${pufferFishPrice.toLocaleString('en')}\``}
+				\u200b
+				${fields.join('\n')}
+				\u200b
+				**◎ Treasure:**
+				\u3000 Treasure Chest: Own ${foundItemList.treasure === undefined ? `\`0\`` : `\`${foundItemList.treasure}\` - <:coin:706659001164628008> \`${treasurePrice.toLocaleString('en')}\``}
+				\u3000 Gold Bar: Own ${foundItemList.goldBar === undefined ? `\`0\`` : `\`${foundItemList.goldBar}\` - <:coin:706659001164628008> \`${goldBarPrice.toLocaleString('en')}\``}
+				\u3000 Gold Nugget: Own ${foundItemList.goldNugget === undefined ? `\`0\`` : `\`${foundItemList.goldNugget}\` - <:coin:706659001164628008> \`${goldNuggetPrice.toLocaleString('en')}\``}
+				\u200b
+				**◎ Permanent Items:**
+				\u3000 ${!foundItemList.fishingRod ? `\`${prefix}shop buy rod\` - <:coin:706659001164628008> \`${fishingPrice.toLocaleString('en')}\`` : `Fishing Rod - \`Owned\``}
+				\u3000 Fish Bag - ${!foundBoostList.fishBag ? `\`Not Owned\` - Buy fishing rod to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFish)}\`/\`${foundBoostList.fishBag}\``}
+				\u3000 ${!foundItemList.farmingTools ? `\`${prefix}shop buy tools\` - <:coin:706659001164628008> \`${farmingPrice.toLocaleString('en')}\`` : `Farming Tools - \`Owned\``}
+				\u3000 Seed Bag - ${!foundBoostList.seedBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalSeeds)}\`/\`${foundBoostList.seedBag}\``}
+				\u3000 Farm Bag - ${!foundBoostList.farmBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.farmBag}\``}`);
 		if (fullPrice > 0) {
 			embed.setFooter(`Total Value: ${fullPrice.toLocaleString('en')}`);
 		}

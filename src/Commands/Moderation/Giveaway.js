@@ -1,7 +1,7 @@
 const Command = require('../../Structures/Command');
 const ms = require('ms');
 const SQLite = require('better-sqlite3');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Permissions } = require('discord.js');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
 module.exports = class extends Command {
@@ -33,11 +33,10 @@ module.exports = class extends Command {
 		const usageE = new MessageEmbed()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Giveaway**`, [
-				`**◎ Start:** \`${prefix}giveaway start <time> <winners amount> <prize>\``,
-				`**◎ Reroll:** \`${prefix}giveaway reroll <message id>\``,
-				`**◎ Stop:** \`${prefix}giveaway stop <message id>\``
-			])
+			.addField(`**${this.client.user.username} - Giveaway**`,
+				`**◎ Start:** \`${prefix}giveaway start <time> <winners amount> <prize>\`
+				**◎ Reroll:** \`${prefix}giveaway reroll <message id>\`
+				**◎ Stop:** \`${prefix}giveaway stop <message id>\``)
 			.setTimestamp();
 
 		if (!args[0]) {

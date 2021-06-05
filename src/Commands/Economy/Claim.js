@@ -64,12 +64,11 @@ module.exports = class extends Command {
 		if (!args.length) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Claim**`, [
-					`**◎ Hourly:** \`${Date.now() > balance.hourly ? 'Available!' : ms(balance.hourly - date.getTime(), { long: true })}\``,
-					`**◎ Daily:** \`${Date.now() > balance.daily ? 'Available!' : ms(balance.daily - date.getTime(), { long: true })}\``,
-					`**◎ Weekly:** \`${Date.now() > balance.weekly ? 'Available!' : ms(balance.weekly - date.getTime(), { long: true })}\``,
-					`**◎ Monthly:** \`${Date.now() > balance.monthly ? 'Available!' : ms(balance.monthly - date.getTime(), { long: true })}\``
-				]);
+				.addField(`**${this.client.user.username} - Claim**`,
+					`**◎ Hourly:** \`${Date.now() > balance.hourly ? 'Available!' : ms(balance.hourly - date.getTime(), { long: true })}\`
+					**◎ Daily:** \`${Date.now() > balance.daily ? 'Available!' : ms(balance.daily - date.getTime(), { long: true })}\`
+					**◎ Weekly:** \`${Date.now() > balance.weekly ? 'Available!' : ms(balance.weekly - date.getTime(), { long: true })}\`
+					**◎ Monthly:** \`${Date.now() > balance.monthly ? 'Available!' : ms(balance.monthly - date.getTime(), { long: true })}\``);
 			message.channel.send(embed);
 			return;
 		}
@@ -81,9 +80,8 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Claim - All**`, [
-						`**◎ Error:** You have nothing to claim!`
-					]);
+					.addField(`**${this.client.user.username} - Claim - All**`,
+						`**◎ Error:** You have nothing to claim!`);
 				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -111,9 +109,8 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Claim - All**`, [
-					`**◎ Success:** You have claimed all available claims! <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` has been credited to your bank.\n Your new total is <:coin:706659001164628008> \`${newTot.toLocaleString('en')}\``
-				]);
+				.addField(`**${this.client.user.username} - Claim - All**`,
+					`**◎ Success:** You have claimed all available claims! <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` has been credited to your bank.\n Your new total is <:coin:706659001164628008> \`${newTot.toLocaleString('en')}\``);
 			message.channel.send(embed);
 			return;
 		}
