@@ -1,6 +1,8 @@
+/* eslint-disable new-cap */
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const math = require('mathjs');
+const { Calculator } = require('weky');
 
 module.exports = class extends Command {
 
@@ -9,11 +11,16 @@ module.exports = class extends Command {
 			aliases: ['math'],
 			description: 'Calculates given input.',
 			category: 'Fun',
-			usage: '<input>'
+			usage: '<input> || <easy>'
 		});
 	}
 
 	async run(message, args) {
+		if (args[0] === 'easy') {
+			await Calculator(message); // this throws the unknown interaction thingy error, fix before uploading
+			return;
+		}
+
 		if (!args[0]) {
 			this.client.utils.messageDelete(message, 10000);
 
@@ -41,10 +48,9 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Calculation**`, [
-				`**◎ Input:** \`\`\`js\n${args.join('')}\`\`\``,
-				`**◎ Output:** \`\`\`js\n${resp}\`\`\``
-			])
+			.addField(`**${this.client.user.username} - Calculation**`,
+				`**◎ Input:** \`\`\`js\n${args.join('')}\`\`\`
+				**◎ Output:** \`\`\`js\n${resp}\`\`\``)
 			.setTimestamp();
 		message.channel.send(embed);
 	}
