@@ -2787,10 +2787,10 @@ vue-eslint-parser@~7.1.0:
     esquery "^1.0.1"
     lodash "^4.17.15"
 
-weky@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/weky/-/weky-1.9.0.tgz#c198a8fbc7c1cf66e6aabeb7f09928665f8f51bc"
-  integrity sha512-9CEf7kuSdUevFe2EYBHJ9zxHS9z5FyCgKMfT7SKL9kz6KguK+j/CgLkaSw08PzGzW951Bgo+nROhasFm86DChA==
+weky@^1.9.3:
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/weky/-/weky-1.9.3.tgz#2ee25f1e5898f2906bd19387c031f614b887f5a2"
+  integrity sha512-nUJ3GJUv/oxh8keNFpWkSlf+gQDhN+vK/voIIdOPZq/3sf3FCrKTDD6CH+TFuJ1oBNRAOG4oGpEyTHFTbXbdKg==
   dependencies:
     discord-buttons "^3.0.1"
     mathjs "^9.4.1"
