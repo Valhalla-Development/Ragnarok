@@ -2,7 +2,7 @@ const Command = require('../../Structures/Command');
 const { MessageButton, MessageActionRow } = require('discord-buttons');
 const { MessageEmbed } = require('discord.js');
 const comCooldown = new Set();
-const comCooldownSeconds = 20;
+const comCooldownSeconds = 10;
 
 module.exports = class extends Command {
 
@@ -52,7 +52,7 @@ module.exports = class extends Command {
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Free V-Bucks**`,
-				`**◎ Success:** Would you like to claim your **FREE* V-Bucks?`);
+				`**◎ Success:** Would you like to claim your **FREE** V-Bucks?`);
 
 		const embedNew = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
