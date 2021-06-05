@@ -187,7 +187,6 @@ module.exports = class extends Command {
 					balance.total += winAmt;
 					this.client.setBalance.run(balance);
 					collector.stop('win');
-
 					return;
 				}
 				m.edit({ component: rowNew, embed: lose });
@@ -195,7 +194,6 @@ module.exports = class extends Command {
 				balance.total -= coinFlip;
 				this.client.setBalance.run(balance);
 				collector.stop('lose');
-
 				return;
 			} else if (b.id === 'tails') {
 				if (answer === 'tails') {
@@ -204,7 +202,6 @@ module.exports = class extends Command {
 					balance.total += winAmt;
 					this.client.setBalance.run(balance);
 					collector.stop('win');
-
 					return;
 				}
 				m.edit({ component: rowNew, embed: lose });
@@ -212,7 +209,6 @@ module.exports = class extends Command {
 				balance.total -= coinFlip;
 				this.client.setBalance.run(balance);
 				collector.stop('lose');
-
 				return;
 			}
 			if (b.id === 'cancel') {
@@ -227,7 +223,6 @@ module.exports = class extends Command {
 			if (reason === 'cancel' || reason === 'time') {
 				this.client.utils.messageDelete(message, 0);
 				this.client.utils.messageDelete(m, 0);
-				collector.stop();
 
 				const limitE = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
