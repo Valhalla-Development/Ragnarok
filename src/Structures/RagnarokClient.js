@@ -13,8 +13,6 @@ const { Manager } = require('erela.js');
 const Spotify = require('erela.js-spotify');
 const prettyMilliseconds = require('pretty-ms');
 const { SlashCreator } = require('slash-create');
-const disbut = require('discord-buttons');
-
 
 module.exports = class RagnarokClient extends Client {
 
@@ -34,7 +32,7 @@ module.exports = class RagnarokClient extends Client {
 
 		this.logger = require('./Logger.js');
 
-		disbut(this);
+		require('discord-buttons')(this);
 
 		// Slash Commands
 		const creator = new SlashCreator({
