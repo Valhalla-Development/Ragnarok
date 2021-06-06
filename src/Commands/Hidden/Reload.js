@@ -6,6 +6,7 @@ module.exports = class extends Command {
 	constructor(...args) {
 		super(...args, {
 			description: 'Reloads specified command.',
+			aliases: ['rl'],
 			category: 'Hidden',
 			ownerOnly: true
 		});
