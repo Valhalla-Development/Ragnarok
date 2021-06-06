@@ -3,6 +3,7 @@ const Command = require('../../Structures/Command');
 const { version } = require('../../../package.json');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
+const { MessageButton, MessageActionRow } = require('discord-buttons');
 
 module.exports = class extends Command {
 
@@ -71,7 +72,22 @@ module.exports = class extends Command {
 					cmd.category === category).size})**`, this.client.commands.filter(cmd =>
 					cmd.category === category).map(cmd => `\`${this.client.utils.capitalise(cmd.name)}\``).join(', '));
 			}
-			message.channel.send(embed);
+
+			const buttonA = new MessageButton()
+				.setStyle('url')
+				.setLabel('Invite Me')
+				.setURL('https://discordapp.com/oauth2/authorize?client_id=508756879564865539&scope=bot%20applications.commands&permissions=1580723711');
+
+			const buttonB = new MessageButton()
+				.setStyle('url')
+				.setLabel('Support Server')
+				.setURL('https://discord.gg/Q3ZhdRJ');
+
+			const row = new MessageActionRow()
+				.addComponent(buttonA)
+				.addComponent(buttonB);
+
+			await message.channel.send({ component: row, embed: embed });
 			return;
 		}
 	}
