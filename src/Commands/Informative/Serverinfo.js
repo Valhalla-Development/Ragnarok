@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Guild } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const moment = require('moment');
 
 const filterLevels = {
@@ -48,11 +48,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
-		let owner;
-		const guildOwner = message.guild.fetchOwner().then(d => {
-			owner = d.user
-		})
-		return message.channel.send(guildOwner)
+		const guildOwner = await message.guild.fetchOwner();
 		const roles = message.guild.roles.cache
 			.sort((a, b) => b.position - a.position)
 			.map(role => role.toString())
@@ -66,31 +62,30 @@ module.exports = class extends Command {
 			.setDescription(`**Guild information for __${message.guild.name}__**`)
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail(message.guild.iconURL({ dynamic: true }))
-			.addField('General', [
-				`**◎ Name:** ${message.guild.name}`,
-				`**◎ ID:** ${message.guild.id}`,
-				`**◎ Owner:** ${message.guild.fetchOwner().tag} (${message.guild.ownerID})`,
-				`**◎ Region:** ${regions[message.guild.region]}`,
-				`**◎ Boost Tier:** ${message.guild.premiumTier ? `Tier ${message.guild.premiumTier}` : 'None'}`,
-				`**◎ Explicit Filter:** ${filterLevels[message.guild.explicitContentFilter]}`,
-				`**◎ Verification Level:** ${verificationLevels[message.guild.verificationLevel]}`,
-				`**◎ Time Created:** ${moment(message.guild.createdTimestamp).format('LT')} ${moment(message.guild.createdTimestamp).format('LL')} - ${moment(message.guild.createdTimestamp).fromNow()}`,
-				'\u200b'
-			])
-			.addField('Statistics', [
-				`**◎ Role Count:** ${roles.length}`,
-				`**◎ Emoji Count:** ${emojis.size}`,
-				`**◎ Regular Emoji Count:** ${emojis.filter(emoji => !emoji.animated).size}`,
-				`**◎ Animated Emoji Count:** ${emojis.filter(emoji => emoji.animated).size}`,
-				`**◎ Member Count:** ${message.guild.memberCount}`,
-				`**◎ Humans:** ${members.filter(member => !member.user.bot).size}`,
-				`**◎ Bots:** ${members.filter(member => member.user.bot).size}`,
-				`**◎ Text Channels:** ${channels.filter(channel => channel.type === 'text').size}`,
-				`**◎ Voice Channels:** ${channels.filter(channel => channel.type === 'voice').size}`,
-				`**◎ Boost Count:** ${message.guild.premiumSubscriptionCount || '0'}`,
-				'\u200b'
-			])
-			.addField(`Roles [${roles.length}]`, roles.length < 10 ? roles.join(', ') : roles.length > 10 ? this.client.utils.trimArray(roles) : 'None')
+			.addField('General',
+				`**◎ Name:** ${message.guild.name}
+				**◎ ID:** ${message.guild.id}
+				**◎ Owner:** ${guildOwner.user.tag}
+				**◎ Region:** ${regions[message.guild.region]}
+				**◎ Boost Tier:** ${message.guild.premiumTier ? `Tier ${message.guild.premiumTier}` : 'None'}
+				**◎ Explicit Filter:** ${filterLevels[message.guild.explicitContentFilter]}
+				**◎ Verification Level:** ${verificationLevels[message.guild.verificationLevel]}
+				**◎ Time Created:** ${moment(message.guild.createdTimestamp).format('LT')} ${moment(message.guild.createdTimestamp).format('LL')} - ${moment(message.guild.createdTimestamp).fromNow()}
+				\u200b`)
+			.addField('Statistics',
+				`**◎ Role Count:** ${roles.length}
+				**◎ Emoji Count:** ${emojis.size}
+				**◎ Regular Emoji Count:** ${emojis.filter(emoji => !emoji.animated).size}
+				**◎ Animated Emoji Count:** ${emojis.filter(emoji => emoji.animated).size}
+				**◎ Member Count:** ${message.guild.memberCount}
+				**◎ Humans:** ${members.filter(member => !member.user.bot).size}
+				**◎ Bots:** ${members.filter(member => member.user.bot).size}
+				**◎ Text Channels:** ${channels.filter(channel => channel.type === 'text').size}
+				**◎ Voice Channels:** ${channels.filter(channel => channel.type === 'voice').size}
+				**◎ Boost Count:** ${message.guild.premiumSubscriptionCount || '0'}
+				\u200b
+				Roles [${roles.length}] 
+				${roles.length < 10 ? roles.join(', ') : roles.length > 10 ? this.client.utils.trimArray(roles) : 'None'}`)
 			.setTimestamp();
 		message.channel.send(embed);
 	}
