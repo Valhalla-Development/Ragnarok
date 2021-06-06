@@ -96,7 +96,7 @@ module.exports = class extends Command {
 		let cnt;
 
 		const text = args.join(' ');
-		const user = message.guild.member(message.author);
+		const user = message.guild.members.cache.get(message.author.id);
 
 		if (status) {
 			if (user.permissions.has(Permissions.FLAGS.MANAGE_GUILD) || user.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
