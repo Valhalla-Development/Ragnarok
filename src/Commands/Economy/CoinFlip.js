@@ -7,7 +7,7 @@ const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { MessageButton, MessageActionRow } = require('discord-buttons');
 const comCooldown = new Set();
-const comCooldownSeconds = 20;
+const comCooldownSeconds = 10;
 
 module.exports = class extends Command {
 
