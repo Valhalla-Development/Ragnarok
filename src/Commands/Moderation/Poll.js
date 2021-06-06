@@ -2,6 +2,7 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
+const disbutreact = require('discord-buttons-react');
 
 module.exports = class extends Command {
 
@@ -34,15 +35,17 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**Poll Created By ${message.author.username}**`,
-				`${args.join(' ')}`)
-			.setFooter('React to Vote.');
+				`${args.join(' ')}`);
 
-		await message.channel.send(embed).then((msg) => {
-			msg.react('✅');
-			msg.react('❌');
-		}).catch((error) => {
-			this.client.logger.error(error);
-		});
+		const ReactionButton1 = new disbutreact.ReactionButton()
+			.setStyle('blurple')
+			.setEmoji('✅');
+
+		const ReactionButton2 = new disbutreact.ReactionButton()
+			.setStyle('blurple')
+			.setEmoji('❌');
+
+		message.channel.createMessageReactionButton(embed, [ReactionButton1, ReactionButton2]);
 	}
 
 };
