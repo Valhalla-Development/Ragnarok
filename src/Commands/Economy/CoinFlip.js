@@ -102,7 +102,6 @@ module.exports = class extends Command {
 		const flip = ['heads', 'tails'];
 		const answer = flip[Math.floor(Math.random() * flip.length)];
 		const houseBet = coinFlip;
-		const winAmt = Number(coinFlip) + Number(houseBet);
 
 		const buttonA = new MessageButton()
 			.setStyle('blurple')
@@ -157,7 +156,7 @@ module.exports = class extends Command {
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Coin Flip**`,
-				`**◎** ${message.author} won! <:coin:706659001164628008> \`${winAmt.toLocaleString('en')}\` has been credited to your bank!`);
+				`**◎** ${message.author} won! <:coin:706659001164628008> \`${houseBet.toLocaleString('en')}\` has been credited to your bank!`);
 
 		const lose = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
@@ -183,8 +182,8 @@ module.exports = class extends Command {
 			if (b.id === 'heads') {
 				if (answer === 'heads') {
 					m.edit({ component: rowNew, embed: win });
-					balance.bank += winAmt;
-					balance.total += winAmt;
+					balance.bank += houseBet;
+					balance.total += houseBet;
 					this.client.setBalance.run(balance);
 					collector.stop('win');
 					return;
@@ -198,8 +197,8 @@ module.exports = class extends Command {
 			} else if (b.id === 'tails') {
 				if (answer === 'tails') {
 					m.edit({ component: rowNew, embed: win });
-					balance.bank += winAmt;
-					balance.total += winAmt;
+					balance.bank += houseBet;
+					balance.total += houseBet;
 					this.client.setBalance.run(balance);
 					collector.stop('win');
 					return;
