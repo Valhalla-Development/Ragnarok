@@ -16,7 +16,7 @@ module.exports = class extends Event {
 
 		const chnCheck = this.client.channels.cache.get(logs);
 		if (!chnCheck) {
-			db.prepare('DELETE FROM logging WHERE guildid = ?').run(member.guild.id);
+			db.prepare('DELETE FROM logging WHERE guildid = ?').run(channel.guild.id);
 		}
 
 		const logembed = new MessageEmbed()
