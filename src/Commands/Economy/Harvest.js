@@ -1,9 +1,10 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-mixed-operators */
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const paginationEmbed = require('discord.js-pagination');
 
 module.exports = class extends Command {
 
@@ -25,7 +26,6 @@ module.exports = class extends Command {
 		if (!foundBoostList) {
 			foundBoostList = {};
 		}
-
 
 		if (!foundBoostList.farmPlot) {
 			this.client.utils.messageDelete(message, 10000);
@@ -102,7 +102,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (args[0] === undefined) {
+		if (!args[0]) {
 			const arr = [];
 
 			foundPlotList.forEach(key => {
@@ -111,18 +111,23 @@ module.exports = class extends Command {
 				}
 			});
 
-			const pages = [];
+			const Embeds = [];
+			const TestPages = arr.length;
+			const TotalPage = Math.ceil(TestPages / 5);
+			// Luke gets credit for this magic
+			let PageNo = 1;
 
-			while (arr.length) {
-				const embed = new MessageEmbed()
+			for (const Page of arr) {
+				const Embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Harvest**`,
-						`**◎ Success:** The following crops are ready to be harvested!\n${arr.splice(0, 5).join(`\n`)}`)
-					.setFooter(`To harvest, you can run ${prefix}harvest all`);
-				pages.push(embed);
+						`**◎ Success:** The following crops are ready to be harvested!
+						${arr.splice(0, 5).join(`\n`)}`)
+					.setFooter(`To harvest, you can run ${prefix}harvest all${TotalPage > 1 ? ` | Page: ${PageNo++}/${TotalPage}` : ''}`);
+				Embeds.push(Embed);
 			}
-			paginationEmbed(message, pages);
+			TotalPage > 1 ? message.channel.createSlider(message.author.id, Embeds) : message.channel.send(Embeds);
 			return;
 		}
 
@@ -163,17 +168,23 @@ module.exports = class extends Command {
 
 			this.client.setBalance.run(balance);
 
-			const pages = [];
+			const Embeds = [];
+			const TestPages = arr.length;
+			const TotalPage = Math.ceil(TestPages / 5);
+			// Luke gets credit for this magic
+			let PageNo = 1;
 
-			while (arr.length) {
-				const embed = new MessageEmbed()
+			for (const Page of arr) {
+				const Embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Harvest**`,
-						`**◎ Success:** You have harvested the following crops:\n${arr.splice(0, 5).join(`\n`)}\n\n In total, the current value is <:coin:706659001164628008>\`${totalToAdd.toLocaleString('en')}\`\nThis value of each crop will continue to depreciate, I recommend you sell your crops.`);
-				pages.push(embed);
+						`**◎ Success:** You have harvested the following crops:
+						${arr.splice(0, 5).join(`\n`)}\n\n In total, the current value is <:coin:706659001164628008>\`${totalToAdd.toLocaleString('en')}\`\nThis value of each crop will continue to depreciate, I recommend you sell your crops.`)
+					.setFooter(`To harvest, you can run ${prefix}harvest all${TotalPage > 1 ? ` | Page: ${PageNo++}/${TotalPage}` : ''}`);
+				Embeds.push(Embed);
 			}
-			paginationEmbed(message, pages);
+			TotalPage > 1 ? message.channel.createSlider(message.author.id, Embeds) : message.channel.send(Embeds);
 		}
 
 		function harvestCrops() {
