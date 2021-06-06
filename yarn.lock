@@ -770,6 +770,14 @@ discord-blackjack@^2.0.0:
     discord.js "^12.5.3"
     shuffle-array "^1.0.1"
 
+discord-buttons-react@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/discord-buttons-react/-/discord-buttons-react-0.0.4.tgz#cbda7aff763720f2bfc8fdd31a03b85f14f50b6c"
+  integrity sha512-u8Sk0TF49/AHuNwujZK29L6QaggZAwbSM7P+I+9IuItSg8xQSbpMvuhuUdixI4/63aTYRKauGb09t3wFmVpHnw==
+  dependencies:
+    discord-buttons "^3.0.1"
+    quick.db "^7.1.3"
+
 discord-buttons@^3.0.1, discord-buttons@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/discord-buttons/-/discord-buttons-3.1.1.tgz#fc7314ab72a0a2aeee342855cf8eb5956aa4c2b2"
@@ -790,10 +798,12 @@ discord-giveaways@^4.5.1:
     deepmerge "^4.2.2"
     serialize-javascript "^5.0.1"
 
-discord.js-pagination@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/discord.js-pagination/-/discord.js-pagination-1.0.3.tgz#b637d9b547f6de0187c58b22ad07dc9e532583f2"
-  integrity sha512-n6wuNo3CclZdwRfc5LMInjcrN23iKnKQTtlpX3VXGRtNofawBeQroYhl7xotSmpkIlL2Uqwo13T11+hHdNJ/bQ==
+discord-slider@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/discord-slider/-/discord-slider-1.1.6.tgz#20ec7f9825ee1c5205f3b37f047361f06a3e7fb3"
+  integrity sha512-MnN+ZYjZ73IAaE4E+8An7p7SfST7Mf89PaxRLSx1pAdypXjLuOiD0kZGyMJFhmpGHILUvR6G4Zu+dwKYkZ9flw==
+  dependencies:
+    discord-buttons "^3.0.1"
 
 discord.js@^12.4.1, discord.js@^12.5.3:
   version "12.5.3"
@@ -809,10 +819,10 @@ discord.js@^12.4.1, discord.js@^12.5.3:
     tweetnacl "^1.0.3"
     ws "^7.4.4"
 
-discord.js@^13.0.0-dev.cbd7f2b9aa44a9240947ed716d0e72257ac499f7:
-  version "13.0.0-dev.fdad14099779e61cb84dcd1cb2497e0e853a6144"
-  resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-13.0.0-dev.fdad14099779e61cb84dcd1cb2497e0e853a6144.tgz#536791b22a90ed3e0bac943f0dd1d0c6fedfcd7c"
-  integrity sha512-lhK0y/52bRLfzAWvZXR+IMqjHk45H/UDCIOWhy9OK3NvsrkjtSdlcUYkbyNBpf4QtISHiCz24XCz/cPNd+tWfA==
+discord.js@^13.0.0-dev.f7e420bf290f5404e8b99b8896c63e178f77bbfc:
+  version "13.0.0-dev.f7e420bf290f5404e8b99b8896c63e178f77bbfc"
+  resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-13.0.0-dev.f7e420bf290f5404e8b99b8896c63e178f77bbfc.tgz#f6b9b41e27e6bdebeea24e47915363b0b5434f2e"
+  integrity sha512-R09rwMUVnkhDIY6SVG7swOpilMHZKQTaIKRHkuQk1Fgde9BYthZnPzpM+vaThOIfoBAOwrbb8FoOm1RHCGPDcg==
   dependencies:
     "@discordjs/collection" "^0.1.6"
     "@discordjs/form-data" "^3.0.1"
@@ -1049,11 +1059,6 @@ event-target-shim@^5.0.0:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/event-target-shim/-/event-target-shim-5.0.1.tgz#5d4d3ebdf9583d63a5333ce2deb7480ab2b05789"
   integrity sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==
-
-eventemitter3@^4.0.7:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
-  integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
 expand-template@^2.0.3:
   version "2.0.3"
@@ -1598,11 +1603,6 @@ lodash.clonedeep@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
   integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
 
-lodash.isequal@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
-  integrity sha1-QVxEePK8wwEgwizhDtMib30+GOA=
-
 lodash.merge@^4.6.0, lodash.merge@^4.6.2:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
@@ -1612,11 +1612,6 @@ lodash.truncate@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.truncate/-/lodash.truncate-4.4.2.tgz#5a350da0b1113b837ecfffd5812cbe58d6eae193"
   integrity sha1-WjUNoLERO4N+z//VgSy+WNbq4ZM=
-
-lodash.uniq@^4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
-  integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
 lodash@^4.17.15, lodash@^4.17.20:
   version "4.17.21"
@@ -2239,11 +2234,6 @@ request@^2.88.2:
     tunnel-agent "^0.6.0"
     uuid "^3.3.2"
 
-require-all@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/require-all/-/require-all-3.0.0.tgz#473d49704be310115ce124f77383b1ebd8671312"
-  integrity sha1-Rz1JcEvjEBFc4ST3c4Ox69hnExI=
-
 require-from-string@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/require-from-string/-/require-from-string-2.0.2.tgz#89a7fdd938261267318eafe14f9c32e598c36909"
@@ -2337,6 +2327,13 @@ setimmediate@^1.0.5:
   resolved "https://registry.yarnpkg.com/setimmediate/-/setimmediate-1.0.5.tgz#290cbb232e306942d7d7ea9b83732ab7856f8285"
   integrity sha1-KQy7Iy4waULX1+qbg3Mqt4VvgoU=
 
+shandler@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/shandler/-/shandler-2.0.1.tgz#8ad12e3c28645f7850bfb8f3636595c7d863cac9"
+  integrity sha512-sRTeMBqPRy+ZsXHvK/6/RKe7Zxya2qHFAaXgNJW7YJb78LpbVqRKxR0INstoEH29RcyqdetnHYNIz1Hk5L7jhA==
+  dependencies:
+    discord.js "^12.5.3"
+
 shebang-command@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/shebang-command/-/shebang-command-2.0.0.tgz#ccd0af4f8835fbdc265b82461aaf0c36663f34ea"
@@ -2381,18 +2378,6 @@ simple-get@^3.0.3:
     decompress-response "^4.2.0"
     once "^1.3.1"
     simple-concat "^1.0.0"
-
-slash-create@^3.2.3:
-  version "3.2.3"
-  resolved "https://registry.yarnpkg.com/slash-create/-/slash-create-3.2.3.tgz#a452dabcb2455a310c617cb77fb726f444b6d9a4"
-  integrity sha512-XlSfm5sXIrk2tNkV2I2l4CWYCFuLeziTzbJoprWGZBT19bUHTm7iQ2qGQS3S+2InUigstjHlMcMMcksnOCw15g==
-  dependencies:
-    "@discordjs/collection" "^0.1.6"
-    eventemitter3 "^4.0.7"
-    lodash.isequal "^4.5.0"
-    lodash.uniq "^4.5.0"
-    require-all "^3.0.0"
-    tweetnacl "^1.0.3"
 
 slice-ansi@^4.0.0:
   version "4.0.0"
