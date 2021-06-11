@@ -28,6 +28,7 @@ module.exports = class extends Command {
 				.addField(`**${this.client.user.username} - DoctorWho**`,
 					`**◎ Error:** I could not fetch the post!`);
 			message.channel.send(noPost).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.stopTyping();
 			return;
 		}
 
