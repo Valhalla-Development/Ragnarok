@@ -168,13 +168,13 @@ module.exports = class extends Command {
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Rock Paper Scissors**`,
-				`**◎** ${message.author} Won! <:coin:706659001164628008> \`${houseBet.toLocaleString('en')}\` has been credited to your bank!`);
+				`**◎** ${message.author} won <:coin:706659001164628008> \`${houseBet.toLocaleString('en')}\` has been credited to your bank!`);
 
 		const lose = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Rock Paper Scissors**`,
-				`**◎** ${message.author} Lost! <:coin:706659001164628008> \`${rps.toLocaleString('en')}\``);
+				`**◎** ${message.author} lost <:coin:706659001164628008> \`${rps.toLocaleString('en')}\``);
 
 		const tie = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
