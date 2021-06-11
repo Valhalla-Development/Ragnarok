@@ -31,7 +31,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Steal**`,
 					`**◎ Error:** An example of this command is: \`${prefix}steal @user\``);
-			message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: wrongUsage }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -43,7 +43,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Steal**`,
 					`**◎ Error:** You can not rob yourself. <:wut:745408596233289839>`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -60,7 +60,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** ${user} does not have an economy account. They will instantly open one when they speak.`);
-			message.channel.send(errorE).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: errorE }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -75,7 +75,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Steal**`,
 						`**◎ Error:** The targeted user does not have enough cash to steal!`);
-				message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embed: wrongUsage }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -124,7 +124,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Steal**`,
 						`**◎ Success:** ${succMessage[Math.floor(Math.random() * succMessage.length)]}`);
-				message.channel.send(depArg);
+				message.channel.send({ embed: depArg });
 				return;
 			} else {
 				maxPerc = balance.bank / 100 * 0.1;
@@ -163,7 +163,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Steal**`,
 						`**◎ Fail:** ${failMessage[Math.floor(Math.random() * failMessage.length)]}`);
-				message.channel.send(depArg);
+				message.channel.send({ embed: depArg });
 				return;
 			}
 		} else {
@@ -174,7 +174,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Steal**`,
 					`**◎ Error:** Please wait \`${ms(balance.stealcool - new Date().getTime(), { long: true })}\`, before using this command again!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 	}

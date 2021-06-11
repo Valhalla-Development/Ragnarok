@@ -41,7 +41,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Success:** <#${channel.id}> is no longer in slowmode.`);
-			channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -52,7 +52,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Error:** You did not include a valid time! Correct usage is:\n\`${prefix}slow [channel] <time>\` an example would be: \`${prefix}slow #general 10s\` or \`${prefix}slow 10s\``);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -66,7 +66,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Error:** You did not include a valid time! Correct usage is:\n\`${prefix}slow [channel] <time>\` an example would be: \`${prefix}slow #general 10s\` or \`${prefix}slow 10s\``);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -77,7 +77,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Error:** The maximum cooldown is 6 hours.`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		} else if (toSecond < 1) {
 			this.client.utils.messageDelete(message, 10000);
@@ -86,7 +86,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Error:** The minimum cooldown is 1 second.`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -97,7 +97,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Slow**`,
 				`**◎ Success:** <#${channel.id}> is now in slowmode. Regular users can send messages every \`${toSecond}\` seconds.`);
-		channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+		channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 		return;
 	}
 

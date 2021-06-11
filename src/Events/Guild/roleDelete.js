@@ -17,7 +17,7 @@ module.exports = class extends Event {
 			.setDescription(`**◎ Role Deleted: \`${role.name}\`.**`)
 			.setColor(this.client.utils.color(role.guild.me.displayHexColor))
 			.setTimestamp();
-		this.client.channels.cache.get(logs).send(logembed);
+		this.client.channels.cache.get(logs).send({ embed: logembed });
 	}
 
 };

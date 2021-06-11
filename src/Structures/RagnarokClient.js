@@ -141,7 +141,7 @@ module.exports = class RagnarokClient extends Client {
 						.addField(`**${grabClient.user.username} - Music**`,
 							`**◎ Success:** <:MusicLogo:684822003110117466> Queue has ended.`)
 						.setColor(textChannel.guild.me.displayHexColor || '36393F');
-					grabClient.channels.cache.get(player.textChannel).send(embed);
+					grabClient.channels.cache.get(player.textChannel).send({ embed: embed });
 					player.destroy(player.guild.id);
 					return;
 				})
@@ -154,7 +154,7 @@ module.exports = class RagnarokClient extends Client {
 						.setAuthor('Now Playing:', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 						.setColor(textChannel.guild.me.displayHexColor || '36393F')
 						.setDescription(`Now playing: \`${track.title}\`\nDuration: \`${prettyMilliseconds(track.duration, { colonNotation: true })}\`\nRequested by: ${track.requester}`);
-					grabClient.channels.cache.get(player.textChannel).send(embed);
+					grabClient.channels.cache.get(player.textChannel).send({ embed: embed });
 				})
 				.on('trackEnd', (player) => {
 					if (player.trackRepeat) {
@@ -166,7 +166,7 @@ module.exports = class RagnarokClient extends Client {
 							.addField(`**${grabClient.user.username} - Music**`,
 								`**◎ Success:** <:MusicLogo:684822003110117466> Track has ended.`)
 							.setColor(textChannel.guild.me.displayHexColor || '36393F');
-						grabClient.channels.cache.get(player.textChannel).send(embed);
+						grabClient.channels.cache.get(player.textChannel).send({ embed: embed });
 						return;
 					}
 					player.destroy(player.guild.id);
@@ -178,7 +178,7 @@ module.exports = class RagnarokClient extends Client {
 							.addField(`**${grabClient.user.username} - Music**`,
 								`**◎ Error:** <:MusicLogo:684822003110117466> An error occured, skipping playback.`)
 							.setColor(textChannel.guild.me.displayHexColor || '36393F');
-						grabClient.channels.cache.get(player.textChannel).send(embed);
+						grabClient.channels.cache.get(player.textChannel).send({ embed: embed });
 						player.stop();
 						return;
 					}
@@ -186,7 +186,7 @@ module.exports = class RagnarokClient extends Client {
 						.addField(`**${grabClient.user.username} - Music**`,
 							`**◎ Error:** <:MusicLogo:684822003110117466> An error occured, ending playback.`)
 						.setColor(textChannel.guild.me.displayHexColor || '36393F');
-					grabClient.channels.cache.get(player.textChannel).send(embed);
+					grabClient.channels.cache.get(player.textChannel).send({ embed: embed });
 					player.destroy(player.guild.id);
 				})
 				.on('trackError', (player) => {
@@ -196,7 +196,7 @@ module.exports = class RagnarokClient extends Client {
 							.addField(`**${grabClient.user.username} - Music**`,
 								`**◎ Error:** <:MusicLogo:684822003110117466> An error occured, skipping playback.`)
 							.setColor(textChannel.guild.me.displayHexColor || '36393F');
-						grabClient.channels.cache.get(player.textChannel).send(embed);
+						grabClient.channels.cache.get(player.textChannel).send({ embed: embed });
 						player.stop();
 						return;
 					}
@@ -204,7 +204,7 @@ module.exports = class RagnarokClient extends Client {
 						.addField(`**${grabClient.user.username} - Music**`,
 							`**◎ Error:** <:MusicLogo:684822003110117466> An error occured, ending playback.`)
 						.setColor(textChannel.guild.me.displayHexColor || '36393F');
-					grabClient.channels.cache.get(player.textChannel).send(embed);
+					grabClient.channels.cache.get(player.textChannel).send({ embed: embed });
 					player.destroy(player.guild.id);
 				});
 		}

@@ -27,7 +27,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - DoctorWho**`,
 					`**◎ Error:** I could not fetch the post!`);
-			message.channel.send(noPost).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: noPost }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			message.channel.stopTyping();
 			return;
 		}
@@ -49,7 +49,7 @@ module.exports = class extends Command {
 			)
 			.setImage(postURL)
 			.setFooter(`👍 ${post.data.ups} | 💬 ${post.data.num_comments}`);
-		message.channel.send(embed);
+		message.channel.send({ embed: embed });
 
 		message.channel.stopTyping();
 		this.client.utils.deletableCheck(msg, 0);

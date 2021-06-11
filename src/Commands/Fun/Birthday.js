@@ -47,7 +47,7 @@ module.exports = class extends Command {
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on **${nextBirthday + year}**`)
 				.setFooter('This server currently has this feature disabled, you will not receive a message in this server.');
-			message.channel.send(embed);
+			message.channel.send({ embed: embed });
 			return;
 		}
 
@@ -58,7 +58,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Error:** Birthdays are currently disabled on this server, an admin may need to enable this function.\nThey can do this by running \`${prefix}config birthday\``);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -67,7 +67,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎** ${user} does not have a birthday set!`);
-			message.channel.send(embed);
+			message.channel.send({ embed: embed });
 			return;
 		}
 
@@ -78,7 +78,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Error:** Incorrect usage! You have 3 commands you can run.\n\n\`${prefix}birthday <MM/DD/YYYY>\` - Sets your birthday\n\`${prefix}birthday -r <MM/DD/YYYY>\` - Changes your birthday\n\`${prefix}birthday -d\` - Deletes your birthday`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -103,7 +103,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Birthday**`,
 						`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on **${nextBirthday + year}**`);
-				message.channel.send(embed);
+				message.channel.send({ embed: embed });
 				return;
 			}
 		}
@@ -113,7 +113,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Error:** Incorrect usage! You have 3 commands you can run.\n\n\`${prefix}birthday <MM/DD/YYYY>\` - Sets your birthday\n\`${prefix}birthday -r <MM/DD/YYYY>\` - Changes your birthday\n\`${prefix}birthday -d\` - Deletes your birthday`);
-			message.channel.send(embed);
+			message.channel.send({ embed: embed });
 			return;
 		}
 
@@ -125,7 +125,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Birthday**`,
 						`**◎ Error:** I could not find your birthday in the database!`);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -137,7 +137,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Success:** I have removed your birthday from the database!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -149,7 +149,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Birthday**`,
 						`**◎ Error:** I could not find your birthday in the database!`);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -160,7 +160,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Birthday**`,
 						`**◎ Error:** Incorrect usage, an example of this command would be:\n\`${prefix}birthday -r 11/04/2018\``);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -173,7 +173,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Birthday**`,
 						`**◎ Error:** Please input a valid date! Input should be \`MM/DD/YYYY\`\nAn example would be:\n\`11/04/2018\``);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -187,7 +187,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Birthday**`,
 						`**◎ Error:** You tried to set your birthday to: \`${args[1]}\` ... that date is in the future <:wut:745408596233289839>`);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -195,7 +195,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Success:** You have successfully set your birthday to \`${args[1]}\``);
-			message.channel.send(embed);
+			message.channel.send({ embed: embed });
 
 			await db.prepare('UPDATE birthdays SET birthday = (@birthday), lastRun = (@lastRun) WHERE userid = (@userid);').run({
 				userid: message.author.id,
@@ -226,7 +226,7 @@ module.exports = class extends Command {
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on **${nextBirthday + year}**`)
 				.setFooter(`Run '${prefix}birthday help' if you wish to change your birthday`);
-			message.channel.send(embed);
+			message.channel.send({ embed: embed });
 			return;
 		}
 
@@ -237,7 +237,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Error:** Incorrect usage! You have 3 commands you can run.\n\n\`${prefix}birthday <MM/DD/YYYY>\` - Sets your birthday\n\`${prefix}birthday -r <MM/DD/YYYY>\` - Changes your birthday\n\`${prefix}birthday -d\` - Deletes your birthday`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -251,7 +251,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Error:** You tried to set your birthday to: \`${args[0]}\` ... that date is in the future <:wut:745408596233289839>`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -264,7 +264,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Error:** Please input a valid date! Input should be \`MM/DD/YYYY\`\nAn example would be:\n\`11/04/2018\``);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -279,7 +279,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Birthday**`,
 				`**◎ Success:** You have successfully set your birthday to \`${args[0]}\``);
-		message.channel.send(embed);
+		message.channel.send({ embed: embed });
 	}
 
 };

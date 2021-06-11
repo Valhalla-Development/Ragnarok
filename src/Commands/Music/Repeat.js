@@ -27,7 +27,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Repeat**`,
 					`**◎ Error:** Sorry, I could not find a role name \`DJ\`, if you prefer, you could set a custom role as the DJ, check the command command \`${prefix}config\` for more information.`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Repeat**`,
 					`**◎ Error:** Sorry! You do not have the **${dlRole}** role.`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -52,7 +52,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Repeat**`,
 					`**◎ Error:** <:MusicLogo:684822003110117466> No song is currently playing.`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -63,7 +63,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Repeat**`,
 					`**◎ Error:** You need to be in a voice channel to use this command!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -76,14 +76,14 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Repeat**`,
 						`**◎ Success:** <:MusicLogo:684822003110117466> Repeat enabled.`);
-				message.channel.send(embed);
+				message.channel.send({ embed: embed });
 			} else {
 				player.setTrackRepeat(false);
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Repeat**`,
 						`**◎ Success:** <:MusicLogo:684822003110117466> Repeat disabled.`);
-				message.channel.send(embed);
+				message.channel.send({ embed: embed });
 			}
 		} else if (args[0] === 'queue') {
 			if (!player || player.queue.size === 0) {
@@ -93,7 +93,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Repeat**`,
 						`**◎ Error:** <:MusicLogo:684822003110117466> No song is currently playing.`);
-				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -103,7 +103,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Repeat**`,
 						`**◎ Success:** <:MusicLogo:684822003110117466> Repeat queue enabled.`);
-				message.channel.send(embed);
+				message.channel.send({ embed: embed });
 				return;
 			}
 			player.setQueueRepeat(false);
@@ -111,7 +111,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Repeat**`,
 					`**◎ Success:** <:MusicLogo:684822003110117466> Repeat queue disabled.`);
-			message.channel.send(embed);
+			message.channel.send({ embed: embed });
 			return;
 		}
 	}

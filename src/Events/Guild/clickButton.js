@@ -26,7 +26,7 @@ module.exports = class extends Event {
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:`);
-				channel.send(botPerm).then((m) => this.client.utils.deletableCheck(m, 10000));
+				channel.send({ embed: botPerm }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -36,11 +36,12 @@ module.exports = class extends Event {
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
-				channel.send(nomodRole).then((m) => this.client.utils.deletableCheck(m, 10000));
+				channel.send({ embed: nomodRole }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
 			// Make sure this is the user's only ticket.
+			await button.clicker.fetch();
 			const foundTicket = db.prepare(`SELECT authorid FROM tickets WHERE guildid = ${guild.id} AND authorid = (@authorid)`);
 			const checkTicketEx = db.prepare(`SELECT chanid FROM tickets WHERE guildid = ${guild.id} AND authorid = ${button.clicker.user.id}`).get();
 
@@ -70,7 +71,7 @@ module.exports = class extends Event {
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Ticket**`,
 							`**◎ Error:** It seems you already have a ticket open. | ${cha}`);
-					button.clicker.user.send(alreadyTicket);
+					button.clicker.user.send({ embed: alreadyTicket });
 					return;
 				} catch {
 					return;
@@ -118,12 +119,12 @@ module.exports = class extends Event {
 					.setColor(this.client.utils.color(button.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
-				channel.send(newTicketE).then((m) => this.client.utils.deletableCheck(m, 4000));
+				channel.send({ embed: newTicketE }).then((m) => this.client.utils.deletableCheck(m, 4000));
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(button.guild.me.displayHexColor))
 					.setTitle('New Ticket')
 					.setDescription(`Hello \`${button.clicker.user.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
-				c.send(embed);
+				c.send({ embed: embed });
 
 				if (id) {
 					if (!fetch.log) {
@@ -136,7 +137,7 @@ module.exports = class extends Event {
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Ticket**`,
 							`**◎ Ticket Created:** ${button.clicker.user} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
-					logchan.send(loggingembed);
+					logchan.send({ embed: loggingembed });
 				}
 			}).catch(console.error);
 		}

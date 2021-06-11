@@ -336,7 +336,7 @@ module.exports = class extends Event {
 								`**◎ User:** ${member}
 								**◎ Reason:** Mute time ended.`)
 							.setTimestamp();
-						findChannel.send(embed);
+						findChannel.send({ embed: embed });
 
 						db.prepare('DELETE FROM mute WHERE id = ?').run(`${member.guild.id}-${r.userid}`);
 
@@ -349,7 +349,7 @@ module.exports = class extends Event {
 						}
 
 						if (dbid) {
-							grabClient.channels.cache.get(dblogs).send(embed);
+							grabClient.channels.cache.get(dblogs).send({ embed: embed });
 						}
 					}
 				});*/
@@ -387,7 +387,7 @@ module.exports = class extends Event {
 							`**◎ User:** ${r.username}
 							**◎ Reason:** Ban time ended.`)
 						.setTimestamp();
-					findChannel.send(embed);
+					findChannel.send({ embed: embed });
 
 					db.prepare('DELETE FROM mute WHERE id = ?').run(`${guild.id}-${r.userid}`);
 
@@ -399,7 +399,7 @@ module.exports = class extends Event {
 					}
 
 					if (dbid) {
-						this.client.channels.cache.get(dblogs).send(embed);
+						this.client.channels.cache.get(dblogs).send({ embed: embed });
 					}
 				}
 			});

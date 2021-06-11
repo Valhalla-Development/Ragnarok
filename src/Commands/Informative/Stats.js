@@ -70,7 +70,7 @@ module.exports = class extends Command {
 			.addField('Announcement',
 				`\`\`\`${annc}\`\`\``)
 			.setTimestamp();
-		message.channel.send(embed);
+		message.channel.send({ embed: embed });
 		message.channel.stopTyping();
 	}
 

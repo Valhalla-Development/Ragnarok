@@ -35,7 +35,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Harvest**`,
 					`**◎ Error:** You do not have a farming plot! You will be awarded one once you purhcase farming tools with: \`${prefix}shop buy\``);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -72,7 +72,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Harvest**`,
 					`**◎ Error:** You have nothing to harvest!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -98,7 +98,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Harvest**`,
 					`**◎ Error:** You do not have enough space to harvest anything!\nYou can upgrade your storage with the command \`${prefix}shop upgrade\``);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -127,7 +127,7 @@ module.exports = class extends Command {
 					.setFooter(`To harvest, you can run ${prefix}harvest all${TotalPage > 1 ? ` | Page: ${PageNo++}/${TotalPage}` : ''}`);
 				Embeds.push(Embed);
 			}
-			TotalPage > 1 ? message.channel.createSlider(message.author.id, Embeds) : message.channel.send(Embeds);
+			TotalPage > 1 ? message.channel.createSlider(message.author.id, Embeds) : message.channel.send({ embed: Embeds });
 			return;
 		}
 
@@ -184,7 +184,7 @@ module.exports = class extends Command {
 					.setFooter(`To harvest, you can run ${prefix}harvest all${TotalPage > 1 ? ` | Page: ${PageNo++}/${TotalPage}` : ''}`);
 				Embeds.push(Embed);
 			}
-			TotalPage > 1 ? message.channel.createSlider(message.author.id, Embeds) : message.channel.send(Embeds);
+			TotalPage > 1 ? message.channel.createSlider(message.author.id, Embeds) : message.channel.send({ embed: Embeds });
 		}
 
 		function harvestCrops() {

@@ -35,7 +35,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Level**`,
 					`**◎ Error:** Level system is disabled for this guild!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -279,7 +279,7 @@ module.exports = class extends Command {
 		ctx.save();
 
 		const attachment = new MessageAttachment(canvas.toBuffer(), 'level.jpg');
-		message.channel.send(attachment).catch((err) => this.client.logger.error(err));
+		message.channel.send({ files: [attachment] }).catch((err) => this.client.logger.error(err));
 	}
 
 };

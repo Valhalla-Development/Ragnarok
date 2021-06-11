@@ -28,7 +28,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** An example of this command is: \`${prefix}give @user 100\`\nAlternatively, you can run \`${prefix}give @user all\``);
-			message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: wrongUsage }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -54,7 +54,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Give - Admin**`,
 						`**◎ Success:** System gave <:coin:706659001164628008> \`${Number(args[2]).toLocaleString('en')}\` to ${user}\nNew total: <:coin:706659001164628008> \`${amt.toLocaleString('en')}\``);
-				message.channel.send(embed);
+				message.channel.send({ embed: embed });
 				return;
 			}
 		}
@@ -67,7 +67,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** You can not give yourself money. <:wut:745408596233289839>`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -81,7 +81,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** ${user} does not have an economy account. They will instantly open one when they speak.`);
-			message.channel.send(errorE).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: errorE }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -94,7 +94,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** Uh oh! You currently have no money in your bank!`);
-			message.channel.send(noBal).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: noBal }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -114,7 +114,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Success:** You have paid ${user} the sum of: <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`.`);
-			message.channel.send(depAll);
+			message.channel.send({ embed: depAll });
 
 			balance.bank = 0;
 			balance.total = totaCalc2;
@@ -130,7 +130,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** An example of this command is: \`${prefix}give @user 100\`\nAlternatively, you can run \`${prefix}give @user all\``);
-			message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: wrongUsage }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -142,7 +142,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** Please enter a value of at least \`1\`. Please try again with a valid amount.`);
-			message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: wrongUsage }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -154,7 +154,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** You only have <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`. Please try again with a valid amount.`);
-			message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: wrongUsage }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -177,7 +177,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Give**`,
 				`**◎ Success:** You have paid ${user} the sum of: <:coin:706659001164628008> \`${numberCov.toLocaleString('en')}\`.`);
-		message.channel.send(depArg);
+		message.channel.send({ embed: depArg });
 	}
 
 };

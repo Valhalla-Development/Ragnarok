@@ -24,7 +24,7 @@ module.exports = class extends Command {
 
 		const img = await new DIG.Rip().getImage(avatar);
 		const attach = new MessageAttachment(img, 'rip.png');
-		message.channel.send(attach);
+		message.channel.send({ files: [attach] });
 		return;
 	}
 

@@ -30,7 +30,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - ForceClose**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
-			message.channel.send(nomodRole).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: nomodRole }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -41,7 +41,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - ForceClose**`,
 					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
-			message.channel.send(donthaveRole).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: donthaveRole }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -55,7 +55,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle(':x: Closing Ticket! :x:')
 				.setDescription(`**This ticket will automatically close in 10 seconds.**\nType a message to cancel the timer.`);
-			getChan.send(forceclosetimer).then((timerMsg) => {
+			getChan.send({ embed: forceclosetimer }).then((timerMsg) => {
 				getChan.awaitMessages((resp) => resp.author.id === message.author.id || foundTicket.authorid, {
 					max: 1,
 					time: 10000,
@@ -82,7 +82,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - ForceClose**`,
 							`**◎ Success:** <@${message.author.id}> has forcefully closed ticket \`#${message.channel.name}\``);
-					logchan.send(loggingembed);
+					logchan.send({ embed: loggingembed });
 				});
 			});
 		} else {
@@ -90,7 +90,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - ForceClose**`,
 					`**◎ Error:** I could not find the ticket!`);
-			message.channel.send(errEmbed);
+			message.channel.send({ embed: errEmbed });
 		}
 	}
 

@@ -38,7 +38,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - TicketEmbed**`,
 					`**◎ Error:** Tickets are not enabled on this server!`);
-			message.channel.send(disabledTic).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: disabledTic }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -56,14 +56,14 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - TicketEmbed**`,
 							`**◎ Success:** Tickets embed has been cleared from the database.`);
-					message.channel.send(cleared).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embed: cleared }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 				const danelSucc = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - TicketEmbed**`,
 						`**◎ Error:** I found no embed data in the database!`);
-				message.channel.send(danelSucc).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embed: danelSucc }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -88,7 +88,7 @@ module.exports = class extends Command {
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - TicketEmbed**`,
 									`**◎ Error:** You already have a Ticket embed in this server!\n Please delete the other, or clear it from the database via \`${prefix}tembed clear\``);
-							message.channel.send(alreadytick).then((m) => this.client.utils.deletableCheck(m, 10000));
+							message.channel.send({ embed: alreadytick }).then((m) => this.client.utils.deletableCheck(m, 10000));
 							return;
 						}
 					}).catch(() => {

@@ -24,7 +24,7 @@ module.exports = class extends Command {
 
 		const img = await new DIG.Delete().getImage(avatar);
 		const attach = new MessageAttachment(img, 'Delete.png');
-		message.channel.send(attach);
+		message.channel.send({ files: [attach] });
 		return;
 	}
 

@@ -62,7 +62,7 @@ module.exports = class extends Event {
 			if (oldChannel.name !== newChannel.name) {
 				updateM = `**◎ Category Name Updated:**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
 				logembed.setDescription(updateM);
-				this.client.channels.cache.get(logs).send(logembed);
+				this.client.channels.cache.get(logs).send({ embed: logembed });
 			}
 		}
 
@@ -70,7 +70,7 @@ module.exports = class extends Event {
 			if (oldChannel.name !== newChannel.name) {
 				updateM = `**◎ Voice Channel Name Updated:**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
 				logembed.setDescription(updateM);
-				this.client.channels.cache.get(logs).send(logembed);
+				this.client.channels.cache.get(logs).send({ embed: logembed });
 			}
 		}
 
@@ -78,7 +78,7 @@ module.exports = class extends Event {
 			if (oldChannel.name !== newChannel.name) {
 				updateM = `**◎ Channel Name Updated:**\nOld:\n\`#${oldChannel.name}\`\nNew:\n<#${newChannel.id}>`;
 				logembed.setDescription(updateM);
-				this.client.channels.cache.get(logs).send(logembed);
+				this.client.channels.cache.get(logs).send({ embed: logembed });
 			}
 		}
 
@@ -95,7 +95,7 @@ module.exports = class extends Event {
 			}
 			updateM = `**◎ NSFW Status Updated:**\nOld:\n\`${oldNs}\`\nNew:\n\`${newNs}\``;
 			logembed.setDescription(updateM);
-			this.client.channels.cache.get(logs).send(logembed);
+			this.client.channels.cache.get(logs).send({ embed: logembed });
 		} else {
 			return;
 		}
@@ -113,7 +113,7 @@ module.exports = class extends Event {
 			}
 			updateM = `**◎ Channel Topic Updated:**\nOld:\n\`${oldTopic}\`\nNew:\n\`${newTopic}\``;
 			logembed.setDescription(updateM);
-			this.client.channels.cache.get(logs).send(logembed);
+			this.client.channels.cache.get(logs).send({ embed: logembed });
 		} else {
 			return;
 		}

@@ -28,7 +28,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Eval**`,
 					`**◎ Error:** Please input some text!`);
-			message.channel.send(incorrectFormat).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: incorrectFormat }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -58,19 +58,19 @@ module.exports = class extends Command {
 								`**◎ Link:** ${link}`)
 							.setURL(link)
 							.setFooter('Embed field limit reached, posting to pastie.io');
-						message.channel.send(hastEmb);
+						message.channel.send({ embed: hastEmb });
 					}).catch(() => {
 						return;
 					});
 				return;
 			}
-			await message.channel.send(success);
+			await message.channel.send({ embed: success });
 		} catch (err) {
 			const error = new MessageEmbed()
 				.addField(`${this.client.user.username} - Eval`,
 					`**◎ Error:** \`\`\`x1\n${this.clean(err)}\n\`\`\``)
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
-			message.channel.send(error);
+			message.channel.send({ embed: error });
 			return;
 		}
 	}

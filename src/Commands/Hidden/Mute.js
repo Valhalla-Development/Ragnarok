@@ -38,7 +38,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** I could not find the mute role! Please create it, it **must** be named \`Muted\`\n You can set a custom Mute role with: \`${prefix}config mute role <@role>\``);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -52,7 +52,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** Run \`${prefix}help mute\` If you are unsure.`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -64,7 +64,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** You cannot Mute yourself!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -76,7 +76,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** You cannot Mute someone with a higher role than yourself!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -88,7 +88,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** You cannot Mute <@${user.id}>`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -100,7 +100,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** You cannot Mute me. :slight_frown:`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -113,7 +113,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** You must specify a mute time!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -125,7 +125,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** You did not use the correct formatting for the time! The valid options are \`d\`, \`h\`, \`m\` or \`s\``);
-			message.channel.send(incorrectFormat).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: incorrectFormat }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -137,7 +137,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** Please input a valid duration!`);
-			message.channel.send(invalidDur).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: invalidDur }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -149,7 +149,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** Please input a value higher than 30 seconds!`);
-			message.channel.send(valueLow).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: valueLow }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -163,7 +163,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Mute**`,
 					`**◎ Error:** This user is already muted!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -191,7 +191,7 @@ module.exports = class extends Command {
 				**◎ Time:** ${mutetime}
 				**◎ Moderator:** ${message.author}`)
 			.setTimestamp();
-		message.channel.send(embed);
+		message.channel.send({ embed: embed });
 
 		const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
 		if (!dbid) return;
@@ -202,7 +202,7 @@ module.exports = class extends Command {
 		}
 
 		if (dbid) {
-			this.client.channels.cache.get(dblogs).send(embed);
+			this.client.channels.cache.get(dblogs).send({ embed: embed });
 		}
 	}
 

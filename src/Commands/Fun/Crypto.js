@@ -32,7 +32,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Crypto**`,
 					`**◎ Error:** Please enter a valid cryptocurrency!`);
-			message.channel.send(noinEmbed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: noinEmbed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -46,7 +46,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Crypto**`,
 					`**◎ Error:** Please enter a valid cryptocurrency!`);
-			message.channel.send(noinEmbed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: noinEmbed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -62,7 +62,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Crypto**`,
 					`**◎ Error:** Please enter a valid cryptocurrency!`);
-			message.channel.send(noinEmbed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: noinEmbed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -92,7 +92,7 @@ module.exports = class extends Command {
 			\u3000 Low (24hr): \`${low24}\`
 			\u3000 Price Change (24hr): \`${pricech24}\`
 			\u3000 Price Change Percentage (24hr): \`${priceper24}\``);
-		message.channel.send(successEmb);
+		message.channel.send({ embed: successEmb });
 	}
 
 };

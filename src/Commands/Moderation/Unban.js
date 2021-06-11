@@ -27,7 +27,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Un-Ban**`,
 					`**◎ Error:** Run \`${prefix}help unban\` If you are unsure.`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -48,7 +48,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Un-Ban**`,
 						`**◎ Error:** An error occured, is the user banned?`);
-				message.channel.send(embed1).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embed: embed1 }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			const bUser = bans.find(b => b.user.id === args[0]);
@@ -59,10 +59,10 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Un-Ban**`,
 						`**◎ Error:** The user specified is not banned!`);
-				message.channel.send(embed2).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embed: embed2 }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
-			message.guild.members.unban(bUser.user).then(() => message.channel.send(embed));
+			message.guild.members.unban(bUser.user).then(() => message.channel.send({ embed: embed }));
 		});
 
 		const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
@@ -74,7 +74,7 @@ module.exports = class extends Command {
 		}
 
 		if (dbid) {
-			this.client.channels.cache.get(dblogs).send(embed);
+			this.client.channels.cache.get(dblogs).send({ embed: embed });
 		}
 	}
 

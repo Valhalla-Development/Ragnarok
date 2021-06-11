@@ -32,10 +32,10 @@ module.exports = class extends Event {
 			if (statusList.includes(oldPresence.status) && statusList.includes(newPresence.status)) return;
 			if (newPresence.status === 'offline') {
 				channelid.send(`${Ragnar}`);
-				channelid.send(offlineEmbed);
+				channelid.send({ embed: offlineEmbed });
 			} else {
 				channelid.send(`${Ragnar}`);
-				channelid.send(onlineEmbed);
+				channelid.send({ embed: onlineEmbed });
 			}
 		}
 	}

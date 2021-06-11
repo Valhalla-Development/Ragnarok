@@ -52,7 +52,7 @@ module.exports = class extends Command {
 					`\u3000 \`${prefix}leave\` : Ends music playback, and makes the bot leave the voice channel`,
 					`\u3000`
 				]);
-			message.channel.send(embed);
+			message.channel.send({ embed: embed });
 		}
 	}
 

@@ -25,7 +25,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Announcement**`,
 					`**◎ Error:** Please use:**:\n\n${prefix}announcement <message>`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -34,7 +34,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Announcement**`,
 				`**◎ Success:** Announcement message has been set to:\n\`\`\`${args.join(' ')}\`\`\``);
-		message.channel.send(complete);
+		message.channel.send({ embed: complete });
 	}
 
 };

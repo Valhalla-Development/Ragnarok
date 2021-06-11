@@ -29,7 +29,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
 					`**◎ Error:** You currently have no money in your bank!`);
-			message.channel.send(noBalance).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: noBalance }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -46,7 +46,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
 					`**◎ Success:** You have withdrawn <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`.`);
-			message.channel.send(depAll);
+			message.channel.send({ embed: depAll });
 			return;
 		}
 
@@ -58,7 +58,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
 					`**◎ Error:** An example of this command is: \`${prefix}withdraw 100\`\nAlternatively, you can run \`${prefix}withdraw all\``);
-			message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: wrongUsage }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -70,7 +70,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
 					`**◎ Error:** You only have <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`. Please try again with a valid amount.`);
-			message.channel.send(wrongUsage).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: wrongUsage }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -88,7 +88,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Withdraw**`,
 				`**◎ Success:** You have withdrawn <:coin:706659001164628008> \`${numberCov.toLocaleString('en')}\`.`);
-		message.channel.send(depAll);
+		message.channel.send({ embed: depAll });
 	}
 
 };

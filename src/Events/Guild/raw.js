@@ -154,7 +154,7 @@ module.exports = class extends Event {
 												.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
 												.setTitle('New Ticket')
 												.setDescription(`Hello \`${member.user.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
-											c.send(embed);
+											c.send({ embed: embed });
 											// And display any errors in the console.
 											const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${guild.id};`).get();
 											if (!logget) {
@@ -171,7 +171,7 @@ module.exports = class extends Event {
 													`**◎ ${member} has opened a new ticket \`#${c.name}**\``
 												])
 												.setTimestamp();
-											logchan.send(loggingembed);
+											logchan.send({ embed: loggingembed });
 										}).catch(console.error);
 									} else {
 										const newTicket = db.prepare('INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);');
@@ -215,7 +215,7 @@ module.exports = class extends Event {
 													.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
 													.setTitle('New Ticket')
 													.setDescription(`Hello \`${member.user.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. \n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
-												c.send(embed);
+												c.send({ embed: embed });
 												// And display any errors in the console.
 												const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${guild.id};`).get();
 												if (!logget) {
@@ -233,7 +233,7 @@ module.exports = class extends Event {
 														`**◎ ${member} has opened a new ticket \`#${c.name}**\``
 													])
 													.setTimestamp();
-												logchan.send(loggingembed);
+												logchan.send({ embed: loggingembed });
 											}).catch(console.error);
 									}
 								}
@@ -332,7 +332,7 @@ module.exports = class extends Event {
 												.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
 												.addField(`**${grabClient.user.username} - Volume**`,
 													`**◎ Error:** The role you tried to add, no longer exists!`).then((m) => grabClient.utils.messageDelete(m, 10000));
-											msg.channel.send(embed);
+											msg.channel.send({ embed: embed });
 											return;
 										}
 										member.roles.remove(roleArray[roleIndex]);
@@ -343,7 +343,7 @@ module.exports = class extends Event {
 												.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
 												.addField(`**${grabClient.user.username} - Volume**`,
 													`**◎ Error:** The role you tried to add, no longer exists!`).then((m) => grabClient.utils.messageDelete(m, 10000));
-											msg.channel.send(embed);
+											msg.channel.send({ embed: embed });
 											return;
 										}
 										member.roles.add(roleArray[roleIndex]);

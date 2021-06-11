@@ -16,7 +16,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Uptime**`,
 				`**◎ My uptime is:** \`${ms(this.client.uptime, { long: true })}\``);
-		message.channel.send(botembed);
+		message.channel.send({ embed: botembed });
 	}
 
 };

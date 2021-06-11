@@ -20,7 +20,7 @@ module.exports = class extends Event {
 			.setAuthor(invite.guild, invite.guild.iconURL())
 			.setDescription(`**◎ Invite Deleted:**\n**◎ Invite Code:** \`${invite.code}\``)
 			.setTimestamp();
-		this.client.channels.cache.get(logs).send(logembed);
+		this.client.channels.cache.get(logs).send({ embed: logembed });
 	}
 
 };

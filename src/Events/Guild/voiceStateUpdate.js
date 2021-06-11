@@ -19,7 +19,7 @@ module.exports = class extends Event {
 					.setColor(this.client.utils.color(oldState.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Music**`,
 						`**◎ Error:** No users in voice channel, ending playback.`);
-				this.client.channels.cache.get(player.textChannel).send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+				this.client.channels.cache.get(player.textChannel).send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				player.destroy();
 			}
 		}

@@ -21,7 +21,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reload**`,
 					`**◎ Error:** Please specify a command to reload!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -34,7 +34,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reload**`,
 					`**◎ Success:** Could not find command name \`${cmd}\``);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Reload**`,
 				`**◎ Success:** Realoading \`${command.name}\``);
-		message.channel.send(embed).then(async (m) => {
+		message.channel.send({ embed: embed }).then(async (m) => {
 			const startRestart = new Date();
 
 			delete require.cache[require.resolve(`../${command.category}/${ucFirst(command.name)}.js`)];

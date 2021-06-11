@@ -83,7 +83,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Trakt.tv**`,
 					`**◎ Error:** Couldn't find the movie/show you were looking for.**\nTry again or try on Trakt.TV here: https://trakt.tv/search?query=${searchQuery}`);
-			message.channel.send(embed);
+			message.channel.send({ embed: embed });
 			this.client.utils.deletableCheck(msg, 0);
 			message.channel.stopTyping();
 		};
@@ -122,17 +122,18 @@ module.exports = class extends Command {
 							reqRating = Math.round(movieInfo[0].movie.rating * 10);
 							reqVotes = toThousand(movieInfo[0].movie.votes);
 
-							message.channel.send(
-								getTraktEmbed(
-									reqTitle,
-									reqDesc,
-									reqImage,
-									reqLink,
-									reqSearch,
-									reqRating,
-									reqVotes
-								)
-							);
+							message.channel.send({
+								embed:
+									getTraktEmbed(
+										reqTitle,
+										reqDesc,
+										reqImage,
+										reqLink,
+										reqSearch,
+										reqRating,
+										reqVotes
+									)
+							});
 							this.client.utils.deletableCheck(msg, 0);
 							message.channel.stopTyping();
 						}
@@ -174,17 +175,18 @@ module.exports = class extends Command {
 							reqRating = Math.round(showInfo[0].show.rating * 10);
 							reqVotes = toThousand(showInfo[0].show.votes);
 
-							message.channel.send(
-								getTraktEmbed(
-									reqTitle,
-									reqDesc,
-									reqImage,
-									reqLink,
-									reqSearch,
-									reqRating,
-									reqVotes
-								)
-							);
+							message.channel.send({
+								embed:
+									getTraktEmbed(
+										reqTitle,
+										reqDesc,
+										reqImage,
+										reqLink,
+										reqSearch,
+										reqRating,
+										reqVotes
+									)
+							});
 							this.client.utils.deletableCheck(msg, 0);
 							message.channel.stopTyping();
 						}
@@ -201,7 +203,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Trakt.tv**`,
 					`**◎ Error:** Please specify what movie/show you are trying to find.`);
-			message.channel.send(errEmbed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: errEmbed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			this.client.utils.deletableCheck(msg, 0);
 			message.channel.stopTyping();
 		} else {
@@ -238,17 +240,18 @@ module.exports = class extends Command {
 									reqRating = Math.round(info[0].movie.rating * 10);
 									reqVotes = toThousand(info[0].movie.votes);
 
-									message.channel.send(
-										getTraktEmbed(
-											reqTitle,
-											reqDesc,
-											reqImage,
-											reqLink,
-											reqSearch,
-											reqRating,
-											reqVotes
-										)
-									);
+									message.channel.send({
+										embed:
+											getTraktEmbed(
+												reqTitle,
+												reqDesc,
+												reqImage,
+												reqLink,
+												reqSearch,
+												reqRating,
+												reqVotes
+											)
+									});
 									this.client.utils.deletableCheck(msg, 0);
 									message.channel.stopTyping();
 								}
@@ -284,17 +287,18 @@ module.exports = class extends Command {
 									reqRating = Math.round(info[0].show.rating * 10);
 									reqVotes = toThousand(info[0].show.votes);
 
-									message.channel.send(
-										getTraktEmbed(
-											reqTitle,
-											reqDesc,
-											reqImage,
-											reqLink,
-											reqSearch,
-											reqRating,
-											reqVotes
-										)
-									);
+									message.channel.send({
+										embed:
+											getTraktEmbed(
+												reqTitle,
+												reqDesc,
+												reqImage,
+												reqLink,
+												reqSearch,
+												reqRating,
+												reqVotes
+											)
+									});
 									this.client.utils.deletableCheck(msg, 0);
 									message.channel.stopTyping();
 								}

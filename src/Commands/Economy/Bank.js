@@ -23,7 +23,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Bank**`,
 					`**◎ Error:** You do not have any cash to deposit!`);
-			message.channel.send(limitE).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: limitE }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 			.setThumbnail('attachment://Bank.png')
 			.addField(`**${this.client.user.username} - Bank**`,
 				`**◎ Success:** You have deposited <:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\` to your bank.`);
-		message.channel.send(depAll);
+		message.channel.send({ embed: depAll });
 
 		balance.cash = 0;
 		balance.bank = bankCalc;

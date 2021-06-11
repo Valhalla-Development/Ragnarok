@@ -87,7 +87,7 @@ module.exports = class extends Command {
 				Roles [${roles.length}] 
 				${roles.length < 10 ? roles.join(', ') : roles.length > 10 ? this.client.utils.trimArray(roles) : 'None'}`)
 			.setTimestamp();
-		message.channel.send(embed);
+		message.channel.send({ embed: embed });
 	}
 
 };

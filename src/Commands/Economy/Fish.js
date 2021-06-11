@@ -26,7 +26,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Fish**`,
 					`**◎ Error:** You do not have a fishing rod! You must buy one from the shop.`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -40,7 +40,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Fish**`,
 					`**◎ Error:** You do not have a fishing rod! You must buy one from the shop.`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -80,7 +80,7 @@ module.exports = class extends Command {
 					.setThumbnail('attachment://Treasure.png')
 					.addField(`**${this.client.user.username} - Fish**`,
 						`**◎ Success:** You found hidden treasure! You are extremely lucky, there is only a \`0.18%\` of finding this! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-				message.channel.send(embed);
+				message.channel.send({ embed: embed });
 				return;
 			} else if (fishChance >= 0.0018 && fishChance < 0.0318) { // 3%
 				fishPrice = this.client.ecoPrices.pufferfish;
@@ -112,7 +112,7 @@ module.exports = class extends Command {
 					.setThumbnail('attachment://Pufferfish.png')
 					.addField(`**${this.client.user.username} - Fish**`,
 						`**◎ Success:** You caught a Pufferfish! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-				message.channel.send(embed);
+				message.channel.send({ embed: embed });
 				return;
 			} else if (fishChance >= 0.0318 && fishChance < 0.0918) { // 6%
 				fishPrice = this.client.ecoPrices.swordfish;
@@ -144,7 +144,7 @@ module.exports = class extends Command {
 					.setThumbnail('attachment://Swordfish.png')
 					.addField(`**${this.client.user.username} - Fish**`,
 						`**◎ Success:** You caught a Swordfish! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-				message.channel.send(embed);
+				message.channel.send({ embed: embed });
 				return;
 			} else if (fishChance >= 0.0918 && fishChance < 0.3718) { // 28%
 				fishPrice = this.client.ecoPrices.kingSalmon;
@@ -176,7 +176,7 @@ module.exports = class extends Command {
 					.setThumbnail('attachment://KingSalmon.png')
 					.addField(`**${this.client.user.username} - Fish**`,
 						`**◎ Success:** You caught a King Salmon! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-				message.channel.send(embed);
+				message.channel.send({ embed: embed });
 				return;
 			} else if (fishChance >= 0.3718 && fishChance < 0.8718) { // 50%
 				fishPrice = this.client.ecoPrices.trout;
@@ -208,7 +208,7 @@ module.exports = class extends Command {
 					.setThumbnail('attachment://Trout.png')
 					.addField(`**${this.client.user.username} - Fish**`,
 						`**◎ Success:** You caught a Trout! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-				message.channel.send(embed);
+				message.channel.send({ embed: embed });
 				return;
 			} else { // 12.82&
 				const endTime = new Date().getTime() + this.client.ecoPrices.fishFailtime;
@@ -222,7 +222,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Fish**`,
 						`**◎ Fail:** Your catch escaped the line!`);
-				message.channel.send(embed);
+				message.channel.send({ embed: embed });
 				return;
 			}
 		} else {
@@ -233,7 +233,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Fish**`,
 					`**◎ Error:** Please wait another \`${ms(balance.fishcool - new Date().getTime(), { long: true })}\` before using this command.`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 	}

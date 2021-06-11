@@ -62,7 +62,7 @@ module.exports = class extends Command {
 				**◎ Server Join Data:** ${moment(member.joinedAt).format('LL LTS')}
 				${roles.length ? `**◎ Roles [${roles.length}]:**` : '**◎ Roles:** None'} ${roles.length < 10 ? roles.join(', ') : roles.length > 9 ? this.client.utils.trimArray(roles) : 'None'}
 				\u200b`);
-		message.channel.send(embed);
+		message.channel.send({ embed: embed });
 	}
 
 };

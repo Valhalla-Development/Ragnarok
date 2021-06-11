@@ -21,7 +21,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Nuke**`,
 					`**◎ Error:** This command has been disabled for this server!`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (!message.guild.member(this.client.user).permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Nuke**`,
 					`**◎ Error:** I need the \`MANAGE_CHANNELS\` permissions to execute this command.`);
-			message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 

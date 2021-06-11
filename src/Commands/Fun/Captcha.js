@@ -24,7 +24,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Captcha**`,
 					`**◎ Error:** You must supply some text!`);
-			message.channel.send(invalidInput).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: invalidInput }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (args.length > 5) {
@@ -32,7 +32,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Captcha**`,
 					`**◎ Error:** You can only have 5 words!`);
-			message.channel.send(tooLong).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embed: tooLong }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -41,7 +41,7 @@ module.exports = class extends Command {
 			.splice(1)
 			.join(' ');
 
-		const user = message.guild.member(message.mentions.users.first());
+		const user = message.guild.members.cache.get(message.mentions.users.first());
 		if (user) return;
 
 		/* (SCRAP THIS FOR NOW: This only works for the first tag, not the second etc.)
@@ -86,7 +86,7 @@ module.exports = class extends Command {
 			'captcha-image.jpg'
 		);
 
-		message.channel.send(attachment);
+		message.channel.send({ files: [attachment] });
 	}
 
 };

@@ -42,7 +42,7 @@ module.exports = class extends Command {
 				`**◎ 8:** A command that will create a role and give it to the richest person in the server, can be enabled or disabled by server managers`,
 				`\u3000`
 			]);
-		message.channel.send(embed);
+		message.channel.send({ embed: embed });
 	}
 
 };

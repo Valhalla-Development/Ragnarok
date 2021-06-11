@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Permissions } = require('discord.js');
 const RagnarokEmbed = require('../../Structures/RagnarokEmbed');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -16,7 +16,7 @@ module.exports = class extends Event {
 					.setColor(this.client.utils.color(newMessage.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ads Protection**`,
 						`**◎ Error:** I do not have the \`MANAGE_MESSAGES\` permissions. Disabling Ads Protection.`);
-				newMessage.channel.send(npPerms).then((m) => newMessage.utils.messageDelete(m, 0));
+				newMessage.channel.send({ embed: npPerms }).then((m) => newMessage.utils.messageDelete(m, 0));
 				db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(newMessage.guild.id);
 				return;
 			}
@@ -53,11 +53,11 @@ module.exports = class extends Event {
 			.setTitle('Message Updated')
 			.splitFields([
 				`**◎ Before:**\n${oldMessage.content}`,
-				`**◎ After:**\n${newMessage.content}`
+				`**◎ After:**\n${newMessage.content}`// do magic here, nitro lets you post 6k characters, trim it bub
 			])
 			.setTimestamp()
 			.setURL(oldMessage.url);
-		this.client.channels.cache.get(logs).send(embed);
+		this.client.channels.cache.get(logs).send({ embed: embed });
 	}
 
 };
