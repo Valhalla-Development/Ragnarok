@@ -61,7 +61,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reload**`,
 					`**◎ Success:** Command **${command.name}** has been successfully reloaded!\nCommand took \`${timeInMs}\`ms to reload.`);
-			m.edit(embedUpd);
+			m.edit({ embed: embedUpd });
 			return;
 		});
 
