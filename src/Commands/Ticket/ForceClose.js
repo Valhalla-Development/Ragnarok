@@ -66,7 +66,7 @@ module.exports = class extends Command {
 					const cancelTimer = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.setDescription('Canceling Ticket Close');
-					timerMsg.edit(cancelTimer).then((m) => this.client.utils.deletableCheck(m, 10000));
+					timerMsg.edit({ embed: cancelTimer }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				}).catch(async () => {
 					if (getChan) {
 						getChan.delete();
