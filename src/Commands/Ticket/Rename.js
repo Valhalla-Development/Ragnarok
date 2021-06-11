@@ -36,8 +36,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (
-			!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
+		if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const donthaveRole = new MessageEmbed()
@@ -87,6 +86,12 @@ module.exports = class extends Command {
 					message.channel.send(donthaveRole).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Rename**`,
+						`**◎ Success:** <@${message.author.id}> renamed ticket to \`${argResult}\``);
+				getChan.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
+
 				getChan.setName(`ticket-${argResult}-${foundTicket.ticketid}`);
 				const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
 				const logchan = message.guild.channels.cache.find(
@@ -110,6 +115,7 @@ module.exports = class extends Command {
 			foundTicket = db.prepare(`SELECT * from tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`).get({
 				ticketid: channelArgs[channelArgs.length - 1]
 			});
+
 			if (comCooldown.has(`${message.author.id}-${foundTicket.chanid}`)) {
 				this.client.utils.messageDelete(message, 10000);
 
@@ -144,6 +150,12 @@ module.exports = class extends Command {
 					message.channel.send(donthaveRole).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
+
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Rename**`,
+						`**◎ Success:** <@${message.author.id}> renamed ticket from to \`${argResult}`);
+				message.channel.send(embed).then((m) => this.client.utils.deletableCheck(m, 10000));
 
 				message.channel.setName(`ticket-${argResult}-${foundTicket.ticketid}`);
 				const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();

@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Permissions } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -64,6 +64,20 @@ module.exports = class extends Command {
 		});
 		if (foundTicket) {
 			const getChan = message.guild.channels.cache.find((chan) => chan.id === foundTicket.chanid);
+
+			const user = message.guild.members.cache.get(rUser.id);
+
+			if (!user.permissionsIn(getChan).has([Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.VIEW_CHANNEL])) {
+				this.client.utils.messageDelete(message, 10000);
+
+				const nouser = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Remove**`,
+						`**◎ Error:** This user is not in this channel!`);
+				message.channel.send(nouser).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
+			}
+
 			getChan.createOverwrite(rUser, {
 				VIEW_CHANNEL: false
 			}).catch(console.error);
