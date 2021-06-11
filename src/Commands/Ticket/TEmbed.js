@@ -2,15 +2,16 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
+const { MessageButton } = require('discord-buttons');
 
 module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			description: 'Posts an embed where users can create a ticket with a reaction.',
+			description: 'Posts an embed where users can create a ticket with a click of a button!',
 			category: 'Ticket',
 			userPerms: ['MANAGE_MESSAGES'],
-			botPerms: ['ADD_REACTIONS']
+			botPerms: ['MANAGE_CHANNELS']
 		});
 	}
 
@@ -23,8 +24,13 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setTitle('Create a Ticket')
-			.setDescription('To create a ticket react with 📩')
+			.setDescription('To create a ticket click 📩')
 			.setFooter('Ragnarok Bot', this.client.user.avatarURL());
+
+		const button = new MessageButton()
+			.setStyle('green')
+			.setLabel('📩')
+			.setID('createTicket');
 
 		const foundtEmbed = db.prepare(`SELECT * FROM ticketConfig WHERE guildid=${message.guild.id}`).get();
 		if (!foundtEmbed) {
@@ -35,6 +41,7 @@ module.exports = class extends Command {
 			message.channel.send(disabledTic).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
+
 		const checkEmbedEx = db.prepare(`SELECT ticketembed FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
 		if (checkEmbedEx) {
 			if (args[0] === 'clear') {
@@ -61,8 +68,7 @@ module.exports = class extends Command {
 			}
 
 			if (checkEmbedEx.ticketembed === null) {
-				await message.channel.send(embed).then(async (a) => {
-					a.react('📩');
+				await message.channel.send({ component: button, embed: embed }).then(async (a) => {
 					const update = db.prepare(
 						'UPDATE ticketConfig SET ticketembed = (@ticketembed), ticketembedchan = (@ticketEChan) WHERE guildid = (@guildid);'
 					);
@@ -86,8 +92,7 @@ module.exports = class extends Command {
 							return;
 						}
 					}).catch(() => {
-						message.channel.send(embed).then(async (a) => {
-							a.react('📩');
+						message.channel.send({ component: button, embed: embed }).then(async (a) => {
 							const update = db.prepare(
 								'UPDATE ticketConfig SET ticketembed = (@ticketembed), ticketembedchan = (@ticketEChan) WHERE guildid = (@guildid);'
 							);
@@ -100,8 +105,7 @@ module.exports = class extends Command {
 						});
 					});
 				} catch (err) {
-					message.channel.send(embed).then(async (a) => {
-						a.react('📩');
+					message.channel.send({ component: button, embed: embed }).then(async (a) => {
 						const update = db.prepare(
 							'UPDATE ticketConfig SET ticketembed = (@ticketembed), ticketembedchan = (@ticketEChan) WHERE guildid = (@guildid);'
 						);
