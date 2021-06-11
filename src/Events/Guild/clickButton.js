@@ -97,15 +97,15 @@ module.exports = class extends Event {
 				permissionOverwrites: [
 					{
 						id: role.id,
-						allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
 					},
 					{
 						id: role2.id,
-						deny: 'VIEW_CHANNEL'
+						deny: Permissions.FLAGS.VIEW_CHANNEL
 					},
 					{
 						id: button.clicker.user.id,
-						allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
 					}
 				]
 			}).then((c) => {
