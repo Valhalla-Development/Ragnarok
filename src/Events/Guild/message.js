@@ -1,7 +1,7 @@
 /* eslint-disable no-inline-comments */
 /* eslint-disable no-mixed-operators */
 const Event = require('../../Structures/Event');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Permissions } = require('discord.js');
 const moment = require('moment');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -12,47 +12,31 @@ const xpCooldownSeconds = 60;
 const urlRegexSafe = require('url-regex-safe');
 const dadCooldown = new Set();
 const dadCooldownSeconds = 60;
-const cleverbot = require('cleverbot-free');
+const fetch = require('node-fetch');
 
 module.exports = class extends Event {
 
 	async run(message) {
-		// Cleverbot
-		async function cleverBot(grabClient) {
-			const cleverArgs = message.content.slice().trim().split(/ +/g);
+		async function chatBot(grabClient) {
+			const apiArgs = message.content.slice().trim().split(/ +/g);
+			apiArgs.splice(0, 1);
+
 			if (message.guild) {
 				if (message.author.bot) return;
 				if (message.content.startsWith(`<@${grabClient.user.id}>`) || message.content.startsWith(`<@!${grabClient.user.id}>`)) {
-					if (cleverArgs[1] === undefined) return;
+					if (!apiArgs) return;
 
 					message.channel.startTyping();
 
-					await cleverbot(cleverArgs.join(' ')).then(response => {
-						message.channel.send(response);
-					}).catch(() => {
-						message.channel.stopTyping();
-					});
-
+					console.log(apiArgs.join('%'));
+					await fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=1`)
+						.then(res => res.json())
+						.then(json => message.reply(json.message, { allowedMentions: { repliedUser: false } }));
 					message.channel.stopTyping();
-					return;
 				}
-			} else {
-				if (message.author.bot) return;
-				if (cleverArgs[0] === undefined) return;
-
-				message.channel.startTyping();
-
-				await cleverbot(cleverArgs.join(' ')).then(response => {
-					message.channel.send(response);
-				}).catch(() => {
-					message.channel.stopTyping();
-				});
-
-				message.channel.stopTyping();
-				return;
 			}
 		}
-		cleverBot(this.client);
+		chatBot(this.client);
 
 		if (!message.guild || message.author.bot) return;
 
@@ -76,6 +60,58 @@ module.exports = class extends Event {
 		// eslint-disable-next-line no-unused-vars
 		const [cmd, ...args] = message.content.slice(prefixcommand.length).trim().split(/ +/g);
 		const command = this.client.commands.get(cmd.toLowerCase()) || this.client.commands.get(this.client.aliases.get(cmd.toLowerCase()));
+
+		// AFK Module
+		function afkModule(client) {
+			const regex = /<@![0-9]{0,18}>/g;
+			const found = message.content.match(regex);
+			const pingCheck = db.prepare('SELECT * FROM afk WHERE guildid = ?').get(message.guild.id);
+
+			if (found && pingCheck) {
+				if (message.author.id === found[0].slice(3, 21)) {
+					const deleteTicket = db.prepare(`DELETE FROM afk WHERE guildid = ${message.guild.id} AND user = (@user)`);
+					deleteTicket.run({
+						user: message.author.id
+					});
+
+					const embed = new MessageEmbed()
+						.setColor(client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${client.user.username} - AFK**`,
+							`**◎** ${message.author} is no longer AFK.`);
+					message.channel.send(embed);
+					return;
+				}
+
+				const afkGrab = db.prepare('SELECT * FROM afk WHERE user = ? AND guildid = ?').get(found[0].slice(3, 21), message.guild.id);
+				if (afkGrab) {
+					client.utils.messageDelete(message, 0);
+
+					const error = new MessageEmbed()
+						.setColor(client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${client.user.username} - AFK**`,
+							`**◎** Please do not ping ${found}, they are currently AFK with the reason:\n\n\`${afkGrab.reason}\``);
+					message.channel.send(error).then((m) => client.utils.deletableCheck(m, 10000));
+					return;
+				}
+			}
+
+			const afkGrab = db.prepare('SELECT * FROM afk WHERE user = ? AND guildid = ?').get(message.author.id, message.guild.id);
+			if (afkGrab) {
+				if (command && command.name === 'afk') return;
+				const deleteTicket = db.prepare(`DELETE FROM afk WHERE guildid = ${message.guild.id} AND user = (@user)`);
+				deleteTicket.run({
+					user: message.author.id
+				});
+
+				const embed = new MessageEmbed()
+					.setColor(client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${client.user.username} - AFK**`,
+						`**◎** ${message.author} is no longer AFK.`);
+				message.channel.send(embed);
+				return;
+			}
+		}
+		afkModule(this.client);
 
 		// Prefix command
 		if (message.content.toLowerCase() === `${this.client.prefix}prefix`) {
