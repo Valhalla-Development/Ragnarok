@@ -12,8 +12,7 @@ if (!db.get('giveaways')) db.set('giveaways', []);
 const { Manager } = require('erela.js');
 const Spotify = require('erela.js-spotify');
 const prettyMilliseconds = require('pretty-ms');
-const SHClient = require('shandler');
-const path = require('path');
+const button = require('discord-buttons');
 
 module.exports = class RagnarokClient extends Client {
 
@@ -33,23 +32,11 @@ module.exports = class RagnarokClient extends Client {
 
 		this.logger = require('./Logger.js');
 
-		require('discord-buttons')(this);
+		button(this);
 
 		require('discord-buttons-react')(this);
 
 		require('discord-slider')(this);
-
-		// Slash Handler
-		const slashOpt = {
-			commandsDir: path.join(__dirname, '../Slash-Commands'), // commands folder path (required)
-			showLogs: false, // "extra"|"normal"|null (default: "extra")
-			cLogs: true, // logs most of the resolved promises
-			autoDelete: true, // Automatically syncs the global application commands
-			autoRegister: true // Automatically register commands
-		};
-
-		// eslint-disable-next-line no-new
-		new SHClient(this, slashOpt);
 
 		// Music
 		const clientID = options.musicClientID;
