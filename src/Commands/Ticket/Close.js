@@ -5,6 +5,7 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 const fetchAll = require('discord-fetch-all');
 const comCooldown = new Set();
 const comCooldownSeconds = 20;
+const { MessageButton, MessageActionRow } = require('discord-buttons');
 
 module.exports = class extends Command {
 
@@ -24,7 +25,7 @@ module.exports = class extends Command {
 		const foundTicket = db.prepare(`SELECT * FROM tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`).get({
 			ticketid: channelArgs[channelArgs.length - 1]
 		});
-		const reason = args.slice(0).join(' ');
+		const closeReason = args.slice(0).join(' ');
 
 		// Make sure it's inside the ticket channel.
 		if (foundTicket && message.channel.id !== foundTicket.chanid) {
@@ -49,18 +50,44 @@ module.exports = class extends Command {
 		}
 
 		if (!comCooldown.has(message.author.id)) {
-		// Ask for confirmation within 10 seconds.
-			const user = this.client.users.cache.find((a) => a.id === foundTicket.authorid);
-			const confirmEmbed = new MessageEmbed()
+			const user = this.client.users.cache.find((a) => a.id === foundTicket.authorid); // do something if the user is not found (they left)
+
+			const buttonA = new MessageButton()
+				.setStyle('green')
+				.setLabel('Close')
+				.setID('close');
+
+			const buttonB = new MessageButton()
+				.setStyle('red')
+				.setLabel('Cancel')
+				.setID('cancel');
+
+			const row = new MessageActionRow()
+				.addComponent(buttonA)
+				.addComponent(buttonB);
+
+			const initial = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
-					`**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!\nTo confirm, type \`${prefix}confirm\`. This will time out in 20 seconds and be cancelled.`);
-			message.channel.send(confirmEmbed).then((msg) => {
-				message.channel.awaitMessages((response) => response.content === `${prefix}confirm`, {
-					max: 1,
-					time: 20000,
-					errors: ['time']
-				}).then(async () => {
+					`**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!`)
+				.setFooter(`If this fails for any reason, you can forcefully close with: ${prefix}forceclose`);
+
+			const m = await message.channel.send({ component: row, embed: initial });
+			const filter = (but) => but.clicker.user.id === message.author.id;
+
+			const collector = m.createButtonCollector(filter, { time: 15000 });
+
+			if (!comCooldown.has(message.author.id)) {
+				comCooldown.add(message.author.id);
+			}
+			setTimeout(() => {
+				if (comCooldown.has(message.author.id)) {
+					comCooldown.delete(message.author.id);
+				}
+			}, comCooldownSeconds * 1000);
+
+			collector.on('collect', async b => {
+				if (b.id === 'close') {
 					message.channel.startTyping();
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -76,7 +103,7 @@ module.exports = class extends Command {
 					});
 
 					const mapfile = allMessages.map(e => ({ time: new Date(e.createdTimestamp).toUTCString(), username: e.author.username, message: e.content }));
-					const file = mapfile.filter((m) => m.message !== '');
+					const file = mapfile.filter((f) => f.message !== '');
 					file.unshift({ tickeData: `Ticket Creator: ${user.username} || Ticket Reason: ${foundTicket.reason}` });
 
 					const buffer = Buffer.from(JSON.stringify(file, null, 3));
@@ -92,7 +119,7 @@ module.exports = class extends Command {
 						ticketid: channelArgs[channelArgs.length - 1]
 					});
 
-					if (!reason) {
+					if (!closeReason) {
 						user.send(`Your ticket in guild: \`${message.guild.name}\` was closed.\nI have attached the chat transcript.`, attachment).then(() => {
 						// eslint-disable-next-line arrow-body-style
 						}).catch(() => {
@@ -102,7 +129,7 @@ module.exports = class extends Command {
 							return;
 						});
 					} else {
-						user.send(`Your ticket in guild: \`${message.guild.name}\` was closed for the following reason:\n\`${reason}\`\nI have attached the chat transcript.`, attachment).then(() => {
+						user.send(`Your ticket in guild: \`${message.guild.name}\` was closed for the following reason:\n\`${closeReason}\`\nI have attached the chat transcript.`, attachment).then(() => {
 						// eslint-disable-next-line arrow-body-style
 						}).catch(() => {
 							if (comCooldown.has(message.author.id)) {
@@ -131,7 +158,7 @@ module.exports = class extends Command {
 					const loggingembed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-					if (!reason) {
+					if (!closeReason) {
 						loggingembed
 							.addField(`**${this.client.user.username} - Close**`,
 								`**◎ Success:** <@${message.author.id}> has closed ticket \`#${message.channel.name}\``);
@@ -143,26 +170,37 @@ module.exports = class extends Command {
 					} else {
 						loggingembed
 							.addField(`**${this.client.user.username} - Close**`,
-								`**◎ Success:** <@${message.author.id}> has closed ticket \`#${message.channel.name}\`\nReason: \`${reason}\``);
+								`**◎ Success:** <@${message.author.id}> has closed ticket \`#${message.channel.name}\`\nReason: \`${closeReason}\``);
 						logchan.send(loggingembed);
 						logchan.send(attachment);
 						if (comCooldown.has(message.author.id)) {
 							comCooldown.delete(message.author.id);
 						}
 					}
-				}).catch(() => {
-					this.client.utils.deletableCheck(msg, 0);
-					if (comCooldown.has(message.author.id)) {
-						comCooldown.delete(message.author.id);
-					}
-				});
+					collector.stop('close');
+				}
+				if (b.id === 'cancel') {
+					collector.stop('cancel');
+				}
 			});
-			comCooldown.add(message.author.id);
-			setTimeout(() => {
+			collector.on('end', (_, reason) => {
 				if (comCooldown.has(message.author.id)) {
 					comCooldown.delete(message.author.id);
 				}
-			}, comCooldownSeconds * 1000);
+
+				if (reason === 'cancel' || reason === 'time') {
+					this.client.utils.messageDelete(message, 0);
+					this.client.utils.messageDelete(m, 0);
+
+					const limitE = new MessageEmbed()
+						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Close**`,
+							`**◎ Success:** Ticket close cancelled.`);
+					message.channel.send(limitE).then((ca) => this.client.utils.deletableCheck(ca, 10000));
+					return;
+				}
+			});
 		} else {
 			this.client.utils.messageDelete(message, 10000);
 
