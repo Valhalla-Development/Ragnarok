@@ -202,15 +202,25 @@ module.exports = class extends Event {
 		const balancetable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'balance\';').get();
 		if (!balancetable['count(*)']) {
 			this.client.logger.ready('balance table created!');
-			db.prepare('CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly INTEGER, daily INTEGER, weekly INTEGER, monthly INTEGER, stealcool INTEGER, fishcool INTEGER, farmcool INTEGER, boosts BLOB, items BLOB, cash INTEGER, bank INTEGER, total INTEGER, claimNewUser INTEGER, farmPlot BLOB, dmHarvest TEXT, harvestedCrops BLOB);').run();
+			db.prepare('CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly INTEGER, daily INTEGER, weekly INTEGER, monthly INTEGER, stealcool INTEGER, fishcool INTEGER, farmcool INTEGER, boosts BLOB, items BLOB, cash INTEGER, bank INTEGER, total INTEGER, claimNewUser INTEGER, farmPlot BLOB, dmHarvest TEXT, harvestedCrops BLOB, lottery BLOB);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_balance_id ON balance (id);').run();
 			db.pragma('synchronous = 1');
 			db.pragma('journal_mode = wal');
 		}
 
 		this.client.getBalance = db.prepare('SELECT * FROM balance WHERE id = ?');
-		this.client.setBalance = db.prepare('INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, stealcool, fishcool, farmcool, boosts, items, cash, bank, total, claimNewUser, farmPlot, dmHarvest, harvestedCrops) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @stealcool, @fishcool, @farmcool, @boosts, @items, @cash, @bank, @total, @claimNewUser, @farmPlot, @dmHarvest, @harvestedCrops);');
-		this.client.setUserBalance = db.prepare('INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, stealcool, fishcool, farmcool, boosts, items, cash, bank, total, claimNewUser, farmPlot, dmHarvest, harvestedCrops) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @stealcool, @fishcool, @farmcool, @boosts, @items, @cash, @bank, @total, @claimNewUser, @farmPlot, @dmHarvest, @harvestedCrops);');
+		this.client.setBalance = db.prepare('INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, stealcool, fishcool, farmcool, boosts, items, cash, bank, total, claimNewUser, farmPlot, dmHarvest, harvestedCrops, lottery) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @stealcool, @fishcool, @farmcool, @boosts, @items, @cash, @bank, @total, @claimNewUser, @farmPlot, @dmHarvest, @harvestedCrops, @lottery);');
+		this.client.setUserBalance = db.prepare('INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, stealcool, fishcool, farmcool, boosts, items, cash, bank, total, claimNewUser, farmPlot, dmHarvest, harvestedCrops, lottery) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @stealcool, @fishcool, @farmcool, @boosts, @items, @cash, @bank, @total, @claimNewUser, @farmPlot, @dmHarvest, @harvestedCrops, @lottery);');
+
+		// balance config Table
+		const balancconftable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'balanceConfig\';').get();
+		if (!balancconftable['count(*)']) {
+			this.client.logger.ready('balanceConfig table created!');
+			db.prepare('CREATE TABLE balanceConfig (guildid TEXT PRIMARY KEY, status TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_balanceConfig_id ON balanceConfig (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
 
 		// scores table
 		const table = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'scores\';').get();
@@ -264,27 +274,18 @@ module.exports = class extends Event {
 			db.pragma('journal_mode = wal');
 		}
 
+		// AFK Table
+		const afkTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'afk\';').get();
+		if (!afkTable['count(*)']) {
+			this.client.logger.ready('afk table created!');
+			db.prepare('CREATE TABLE afk (guildid TEXT PRIMARY KEY, user TEXT, reason TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_afk_id ON afk (guildid);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
 		// Initiate the Erela manager.
 		this.client.manager.init(this.client.user.id);
-
-		// Slash Commands
-		const { GatewayServer } = require('slash-create');
-		const path = require('path');
-
-		this.client.slashClient
-			.withServer(
-				new GatewayServer(
-					(handler) => this.client.ws.on('INTERACTION_CREATE', handler)
-				)
-			)
-			.registerCommandsIn(path.join(__dirname, '../../Slash-Commands'))
-			.syncCommands();
-		this.client.slashClient
-			.on('warn', m => this.client.logger.warn('slash-create warn:', m));
-		this.client.slashClient
-			.on('commandError', m => this.client.logger.error('slash-create commanderror:', m));
-		this.client.slashClient
-			.on('error', m => this.client.logger.error('slash-create error:', m));
 
 		// Cooldowns
 		const job = new CronJob('*/10 * * * * *', () => {
@@ -331,10 +332,9 @@ module.exports = class extends Event {
 						const embed = new MessageEmbed()
 							.setThumbnail(grabClient.user.displayAvatarURL())
 							.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
-							.addField('Action | Un-Mute', [
-								`**◎ User:** ${member}`,
-								`**◎ Reason:** Mute time ended.`
-							])
+							.addField('Action | Un-Mute',
+								`**◎ User:** ${member}
+								**◎ Reason:** Mute time ended.`)
 							.setTimestamp();
 						findChannel.send(embed);
 
@@ -383,10 +383,9 @@ module.exports = class extends Event {
 					const embed = new MessageEmbed()
 						.setThumbnail(this.client.user.displayAvatarURL())
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
-						.addField('Action | Un-Ban', [
-							`**◎ User:** ${r.username}`,
-							`**◎ Reason:** Ban time ended.`
-						])
+						.addField('Action | Un-Ban',
+							`**◎ User:** ${r.username}
+							**◎ Reason:** Ban time ended.`)
 						.setTimestamp();
 					findChannel.send(embed);
 
