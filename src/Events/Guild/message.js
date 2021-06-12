@@ -28,7 +28,6 @@ module.exports = class extends Event {
 
 					message.channel.startTyping();
 
-					console.log(apiArgs.join('%'));
 					await fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=1`)
 						.then(res => res.json())
 						.then(json => message.reply(json.message, { allowedMentions: { repliedUser: false } }));
