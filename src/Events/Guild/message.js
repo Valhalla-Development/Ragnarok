@@ -477,7 +477,7 @@ module.exports = class extends Event {
 			}
 
 			const userPermCheck = command.userPerms ? this.client.defaultPerms.add(command.userPerms) : this.client.defaultPerms;
-			if (!this.client.owners.includes(message.author.id) || userPermCheck) {
+			if (!this.client.utils.checkOwner(message.author.id) && userPermCheck) {
 				const missing = message.channel.permissionsFor(message.member).missing(userPermCheck);
 				if (missing.length) {
 					const embed = new MessageEmbed()
@@ -490,7 +490,7 @@ module.exports = class extends Event {
 			}
 
 			const botPermCheck = command.botPerms ? this.client.defaultPerms.add(command.botPerms) : this.client.defaultPerms;
-			if (!this.client.owners.includes(message.author.id) || botPermCheck) {
+			if (botPermCheck) {
 				const missing = message.channel.permissionsFor(this.client.user).missing(botPermCheck);
 				if (missing.length) {
 					const embed = new MessageEmbed()
