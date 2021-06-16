@@ -7,6 +7,7 @@ const isAbsoluteUrl = require('is-absolute-url');
 const { MessageButton, MessageActionRow } = require('discord-buttons');
 const comCooldown = new Set();
 const comCooldownSeconds = 10;
+const Canvas = require('canvas');
 
 module.exports = class extends Command {
 
@@ -303,7 +304,9 @@ module.exports = class extends Command {
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Welcome:**
 							\u3000 \`${prefix}config welcome channel <#channel>\` : Sets the welcome channel
-							\u3000 \`${prefix}config welcome channel off\` : Disables the welcome message`);
+							\u3000 \`${prefix}config welcome channel off\` : Disables the welcome message
+							\u3000 \`${prefix}config welcome image <url-to-image>\` : Sets custom welcome image
+							\u3000 \`${prefix}config welcome image off\` : Disables the custom welcome image`);
 					message.channel.send({ embeds: [embed] });
 					return;
 				}
@@ -326,7 +329,7 @@ module.exports = class extends Command {
 		}
 
 		if (args[0] === 'old') {
-			const embed = new MessageEmbed()// add new config welcome image command here bub
+			const embed = new MessageEmbed()
 				.setThumbnail(this.client.user.displayAvatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setAuthor(`${this.client.user.username} - Config`)
@@ -383,6 +386,8 @@ module.exports = class extends Command {
 					**◎ Welcome:**
 					\u3000 \`${prefix}config welcome channel <#channel>\` : Sets the welcome channel
 					\u3000 \`${prefix}config welcome channel off\` : Disables the welcome message
+					\u3000 \`${prefix}config welcome image <url-to-image>\` : Sets custom welcome image
+					\u3000 \`${prefix}config welcome image off\` : Disables the custom welcome image
 					\u3000`)
 				.setTimestamp();
 			message.channel.send({ embeds: [embed] });
@@ -1652,7 +1657,7 @@ module.exports = class extends Command {
 					}
 
 					await fetch(args[2])
-						.then(res => {
+						.then(async res => {
 							if (res.ok) {
 								if (!status) {
 									this.client.utils.messageDelete(message, 10000);
@@ -1664,6 +1669,19 @@ module.exports = class extends Command {
 									message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 									return;
 								} else {
+									try {
+										await Canvas.loadImage(args[2]);
+									} catch {
+										this.client.utils.messageDelete(message, 10000);
+
+										const invalidExt = new MessageEmbed()
+											.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+											.addField(`**${this.client.user.username} - Config**`,
+												`**◎ Error:** I was unable to process \`${args[2]}\`\nIs it a valid image?`);
+										message.channel.send({ embeds: [invalidExt] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+										return;
+									}
+
 									const update = db.prepare('UPDATE setwelcome SET image = (@image) WHERE guildid = (@guildid);');
 									update.run({
 										guildid: `${message.guild.id}`,
