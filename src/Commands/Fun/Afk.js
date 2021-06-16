@@ -14,6 +14,8 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
+		this.client.utils.messageDelete(message, 10000);
+
 		const afkGrab = db.prepare('SELECT * FROM afk WHERE user = ? AND guildid = ?').get(message.author.id, message.guild.id);
 
 		const reason = args[0] ? args.join(' ') : 'AFK';
@@ -25,13 +27,11 @@ module.exports = class extends Command {
 				guildid: message.guild.id
 			});
 
-			this.client.utils.messageDelete(message, 10000);
-
 			const badChannel = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - AFK**`,
-					`**◎ Success:** ${message.author} is now AFK for the following reason:\n\n\`${reason}\``);
-			message.channel.send({ embed: badChannel });
+					`**◎ Success:** ${message.author} is now AFK for the following reason:\n\n${reason}`);
+			message.channel.send({ embeds: [badChannel] });
 			return;
 		} else {
 			await db.prepare('INSERT INTO afk (reason, user, guildid) values (@reason, @user, @guildid);').run({
@@ -40,13 +40,11 @@ module.exports = class extends Command {
 				guildid: message.guild.id
 			});
 
-			this.client.utils.messageDelete(message, 10000);
-
 			const badChannel = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - AFK**`,
-					`**◎ Success:** ${message.author} is now AFK for the following reason:\n\n\`${reason}\``);
-			message.channel.send({ embed: badChannel });
+					`**◎ Success:** ${message.author} is now AFK for the following reason:\n\n${reason}`);
+			message.channel.send({ embeds: [badChannel] });
 			return;
 		}
 	}
