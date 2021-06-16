@@ -12,21 +12,12 @@ module.exports = class extends Command {
 			description: 'Starts a giveaway.',
 			category: 'Moderation',
 			usage: '<start/stop/reroll> <time> <winners amount> <prize>',
+			userPerms: [Permissions.FLAGS.MANAGE_MESSAGES],
 			botPerms: ['ADD_REACTIONS']
 		});
 	}
 
 	async run(message, args) {
-		if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES) && !message.member.roles.cache.some((r) => r.name === 'Giveaways')) {
-			this.client.utils.messageDelete(message, 10000);
-
-			const invalidPerm = new MessageEmbed()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Giveaway**`,
-					`**◎ Error:** You need to have the manage messages permissions or the giveaway role for this command.`);
-			message.channel.send({ embed: invalidPerm }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 
@@ -42,13 +33,13 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			this.client.utils.messageDelete(message, 10000);
 
-			message.channel.send({ embed: usageE }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [usageE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (args[0] !== 'start' && args[0] !== 'reroll' && args[0] !== 'stop') {
 			this.client.utils.messageDelete(message, 10000);
 
-			message.channel.send({ embed: usageE }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [usageE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -60,7 +51,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** \`${prefix}giveaway start <time> <winners amount> <prize>\``);
-				message.channel.send({ embed: incorrectStart }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [incorrectStart] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			if (!args[1].match('[dhm]')) {
@@ -70,7 +61,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** You did not use the correct formatting for the time! The valid options are \`d\`, \`h\`, or \`m\``);
-				message.channel.send({ embed: incorrectFormat }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			if (ms(args[1]) > '7889400000') {
@@ -80,7 +71,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Please input a value lower than 3 months!`);
-				message.channel.send({ embed: valueHigh }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [valueHigh] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			if (ms(args[1]) < '60000') {
@@ -90,7 +81,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Please input a value higher than 1 minute!`);
-				message.channel.send({ embed: valueLow }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [valueLow] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			if (isNaN(ms(args[1]))) {
@@ -100,7 +91,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Please input a valid duration!`);
-				message.channel.send({ embed: invalidDur }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [invalidDur] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			if (isNaN(args[2]) || (parseInt(args[2]) <= 0)) {
@@ -110,7 +101,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Please input a valid number!`);
-				message.channel.send({ embed: invalidNum }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [invalidNum] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -150,7 +141,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** \`${prefix}giveaway reroll <message id>\``);
-				message.channel.send({ embed: incorrectReroll }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [incorrectReroll] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.messageID === args[1]);
@@ -161,7 +152,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Unable to find a giveaway with ID: \`${args.slice(1).join(' ')}\`.`);
-				message.channel.send({ embed: noGiveaway }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [noGiveaway] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			this.client.giveawaysManager.reroll(giveaway.messageID)
@@ -170,7 +161,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Giveaway**`,
 							`**◎ Success:** Giveaway rerolled!`);
-					message.channel.send({ embed: rerolled });
+					message.channel.send({ embeds: [rerolled] });
 				})
 				.catch((e) => {
 					this.client.utils.messageDelete(message, 10000);
@@ -180,7 +171,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Giveaway**`,
 								`**◎ Error:** This giveaway has not ended!`);
-						message.channel.send({ embed: notEnded }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [notEnded] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					} else {
 						this.client.utils.messageDelete(message, 10000);
 
@@ -189,7 +180,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Giveaway**`,
 								`**◎ Error:** An error occured!`);
-						message.channel.send({ embed: error }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [error] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					}
 				});
 		}
@@ -203,7 +194,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** \`${prefix}giveaway stop <message id>\``);
-				message.channel.send({ embed: incorrectStop }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [incorrectStop] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.messageID === args[1]);
@@ -214,7 +205,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Unable to find a giveaway with ID: \`${args.slice(1).join(' ')}\`.`);
-				message.channel.send({ embed: noGiveaway }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [noGiveaway] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			this.client.giveawaysManager.edit(giveaway.messageID, {
@@ -226,7 +217,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Success:** Giveaway will end in less than ${this.client.giveawaysManager.options.updateCountdownEvery / 1000} seconds.`);
-				message.channel.send({ embed: stopped }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [stopped] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			}).catch((e) => {
 				this.client.utils.messageDelete(message, 10000);
 
@@ -235,7 +226,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Giveaway**`,
 							`**◎ Error:** This giveaway has already ended!`);
-					message.channel.send({ embed: alreadyEnded }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [alreadyEnded] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				} else {
 					this.client.utils.messageDelete(message, 10000);
 
@@ -244,7 +235,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Giveaway**`,
 							`**◎ Error:** An error occured!`);
-					message.channel.send({ embed: error }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [error] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				}
 			});
 		}
