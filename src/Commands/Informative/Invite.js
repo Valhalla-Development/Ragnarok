@@ -26,7 +26,7 @@ module.exports = class extends Command {
 		const row = new MessageActionRow()
 			.addComponent(buttonA);
 
-		await message.channel.send({ component: row, embed: embed });
+		await message.channel.send({ component: row, embeds: [embed] });
 	}
 
 };

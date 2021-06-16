@@ -24,7 +24,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Discord.js**`,
 					`**◎ Error:** You must input a search term!`);
-			message.channel.send({ embed: noInput }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [noInput] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -33,7 +33,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setDescription(`**${this.client.user.username} - Discord.js**`)
 				.setImage('https://i.imgflip.com/2guzlr.jpg');
-			message.channel.send({ embed: noInput });
+			message.channel.send({ embeds: [noInput] });
 			return;
 		}
 
@@ -60,13 +60,13 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Discord.js**`,
 					`**◎ Error:** I couldn't find anything for \`${args[0]}\``);
-			message.channel.send({ embed: noInput }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [noInput] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
 		const embed = new MessageEmbed(res).setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-		message.channel.send({ embed: embed });
+		message.channel.send({ embeds: [embed] });
 	}
 
 };

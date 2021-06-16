@@ -26,7 +26,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Emit**`,
 					`**◎ Available Commands:**\n\`${prefix}emit guildMemberAdd\`\n\`${prefix}emit guildMemberRemove\``);
-			message.channel.send({ embed: noArgs }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [noArgs] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (args[0] === 'guildMemberAdd') {

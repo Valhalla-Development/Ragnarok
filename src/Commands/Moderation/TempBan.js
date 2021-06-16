@@ -30,7 +30,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** Run \`${prefix}help ban\` If you are unsure.`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** You cannot Ban yourself!`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -54,7 +54,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** You cannot ban someone with a higher role than yourself!`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -66,7 +66,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** You cannot ban <@${user.id}>`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -78,7 +78,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You cannot ban me. :slight_frown:`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -91,7 +91,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** You must specify a ban time!`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -103,7 +103,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** You did not use the correct formatting for the time! The valid options are \`d\`, \`h\`, \`m\` or \`s\``);
-			message.channel.send({ embed: incorrectFormat }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -115,7 +115,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** Please input a valid duration!`);
-			message.channel.send({ embed: invalidDur }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [invalidDur] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -127,7 +127,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** Please input a value higher than 30 seconds!`);
-			message.channel.send({ embed: valueLow }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [valueLow] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -142,7 +142,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** An error occured!`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		});
 
@@ -168,7 +168,7 @@ module.exports = class extends Command {
 				**◎ Moderator:**: ${message.author.tag}`)
 			.setFooter('User Ban Logs')
 			.setTimestamp();
-		message.channel.send({ embed: embed });
+		message.channel.send({ embeds: [embed] });
 
 		const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
 		if (!dbid) return;
@@ -179,7 +179,7 @@ module.exports = class extends Command {
 		}
 
 		if (dbid) {
-			this.client.channels.cache.get(dblogs).send({ embed: embed });
+			this.client.channels.cache.get(dblogs).send({ embeds: [embed] });
 		}
 	}
 

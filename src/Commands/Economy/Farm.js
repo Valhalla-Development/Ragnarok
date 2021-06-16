@@ -43,7 +43,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Farm**`,
 						`**◎ Error:** Please wait another \`${ms(balance.farmcool - new Date().getTime(), { long: true })}\` before using this command.`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 		}
@@ -82,7 +82,7 @@ module.exports = class extends Command {
 					.addField(`**${this.client.user.username} - Farm**`,
 						`**◎ Error:** Your farm bag is full! You can sell your produce with \`${prefix}shop sell\``)
 					.setFooter(`Consider purchasing farming tools to increase your limit.`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 		}
@@ -128,7 +128,7 @@ module.exports = class extends Command {
 			embed.addField(`**${this.client.user.username} - Farm**`,
 				`**◎ Success:** You found a ${name}! You are extremely lucky, there is only a \`0.18%\` of finding this! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
 
-			message.channel.send({ embed: embed });
+			message.channel.send({ embeds: [embed] });
 			return;
 		} else if (farmChance >= 0.0018 && farmChance < 0.0318) { // 3%
 			const embed = new MessageEmbed()
@@ -164,7 +164,7 @@ module.exports = class extends Command {
 
 			embed.addField(`**${this.client.user.username} - Farm**`,
 				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-			message.channel.send({ embed: embed });
+			message.channel.send({ embeds: [embed] });
 			return;
 		} else if (farmChance >= 0.0318 && farmChance < 0.0918) { // 6%
 			const embed = new MessageEmbed()
@@ -201,7 +201,7 @@ module.exports = class extends Command {
 
 			embed.addField(`**${this.client.user.username} - Farm**`,
 				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-			message.channel.send({ embed: embed });
+			message.channel.send({ embeds: [embed] });
 			return;
 		} else if (farmChance >= 0.0918 && farmChance < 0.3718) { // 28%
 			const embed = new MessageEmbed()
@@ -238,7 +238,7 @@ module.exports = class extends Command {
 
 			embed.addField(`**${this.client.user.username} - Farm**`,
 				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-			message.channel.send({ embed: embed });
+			message.channel.send({ embeds: [embed] });
 			return;
 		} else if (farmChance >= 0.3718 && farmChance < 0.8718) {
 			const embed = new MessageEmbed()
@@ -275,7 +275,7 @@ module.exports = class extends Command {
 
 			embed.addField(`**${this.client.user.username} - Farm**`,
 				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-			message.channel.send({ embed: embed });
+			message.channel.send({ embeds: [embed] });
 			return;
 		} else { // 12.82%
 			const embed = new MessageEmbed()
@@ -292,7 +292,7 @@ module.exports = class extends Command {
 
 			embed.addField(`**${this.client.user.username} - Farm**`,
 				`**◎ Fail:** You farmed nothing!`);
-			message.channel.send({ embed: embed });
+			message.channel.send({ embeds: [embed] });
 			return;
 		}
 	}

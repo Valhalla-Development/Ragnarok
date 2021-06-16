@@ -29,7 +29,7 @@ module.exports = class extends Command {
 				`**◎ 4:** If using any bot in this guild, please keep testing to ${channel}.`,
 				`\u3000`
 			]);
-		message.channel.send({ embed: embed });
+		message.channel.send({ embeds: [embed] });
 	}
 
 };

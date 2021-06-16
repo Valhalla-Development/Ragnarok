@@ -35,7 +35,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Error:** You can't use the close command outside of a ticket channel.`);
-			message.channel.send({ embed: badChannel }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [badChannel] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (!foundTicket) {
@@ -45,7 +45,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Error:** You can't use the close command outside of a ticket channel.`);
-			message.channel.send({ embed: errEmbed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [errEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -72,7 +72,7 @@ module.exports = class extends Command {
 					`**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!`)
 				.setFooter(`If this fails for any reason, you can forcefully close with: ${prefix}forceclose`);
 
-			const m = await message.channel.send({ component: row, embed: initial });
+			const m = await message.channel.send({ component: row, embeds: [initial] });
 			const filter = (but) => but.clicker.user.id === message.author.id;
 
 			const collector = m.createButtonCollector(filter, { time: 15000 });
@@ -93,7 +93,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Ticket**`,
 							`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.\n\n**NOTE** If this is taking too long, I may have timed out, you can run \`${prefix}forceclose\` to close the ticket forcefully, this will not include a chat log.`);
-					message.channel.send({ embed: embed });
+					message.channel.send({ embeds: [embed] });
 
 					const allMessages = await fetchAll.messages(message.channel, {
 						reverseArray: true,
@@ -162,7 +162,7 @@ module.exports = class extends Command {
 						loggingembed
 							.addField(`**${this.client.user.username} - Close**`,
 								`**◎ Success:** <@${message.author.id}> has closed ticket \`#${message.channel.name}\``);
-						logchan.send({ embed: loggingembed });
+						logchan.send({ embeds: [loggingembed] });
 						logchan.send({ files: [attachment] });
 						if (comCooldown.has(message.author.id)) {
 							comCooldown.delete(message.author.id);
@@ -171,7 +171,7 @@ module.exports = class extends Command {
 						loggingembed
 							.addField(`**${this.client.user.username} - Close**`,
 								`**◎ Success:** <@${message.author.id}> has closed ticket \`#${message.channel.name}\`\nReason: \`${closeReason}\``);
-						logchan.send({ embed: loggingembed });
+						logchan.send({ embeds: [loggingembed] });
 						logchan.send({ files: [attachment] });
 						if (comCooldown.has(message.author.id)) {
 							comCooldown.delete(message.author.id);
@@ -197,7 +197,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Close**`,
 							`**◎ Success:** Ticket close cancelled.`);
-					message.channel.send({ embed: limitE }).then((ca) => this.client.utils.deletableCheck(ca, 10000));
+					message.channel.send({ embeds: [limitE] }).then((ca) => this.client.utils.deletableCheck(ca, 10000));
 					return;
 				}
 			});
@@ -208,7 +208,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Error:** Please only run \`${prefix}close\` once!`);
-			message.channel.send({ embed: badChannel }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [badChannel] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 	}

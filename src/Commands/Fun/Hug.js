@@ -35,7 +35,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle(`${message.author.username} hugged themself...! (weirdo)`)
 				.setImage('https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif');
-			message.channel.send({ embed: ghembed });
+			message.channel.send({ embeds: [ghembed] });
 			return;
 		}
 
@@ -44,7 +44,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle(`${message.author.username} hugged themself...! (weirdo)`)
 				.setImage('https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif');
-			message.channel.send({ embed: ghembed });
+			message.channel.send({ embeds: [ghembed] });
 			return;
 		}
 		const mentionUser = message.mentions.members.first().user.id === message.author.id;
@@ -54,14 +54,14 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle(`${message.author.username} gave ${message.mentions.members.first().user.username} a hug! How sweet!`)
 				.setImage(hug[hugresult]);
-			message.channel.send({ embed: hembed });
+			message.channel.send({ embeds: [hembed] });
 			return;
 		}
 		const ghembed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setTitle(`${message.author.username} hugged themself...! (weirdo)`)
 			.setImage('https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif');
-		message.channel.send({ embed: ghembed });
+		message.channel.send({ embeds: [ghembed] });
 	}
 
 };

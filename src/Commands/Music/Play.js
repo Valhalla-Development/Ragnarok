@@ -37,7 +37,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Play**`,
 					`**◎ Error:** Sorry, I could not find a role name \`DJ\`, if you prefer, you could set a custom role as the DJ, check the command command \`${prefix}config\` for more information.`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -49,7 +49,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Play**`,
 					`**◎ Error:** You need to be in a voice channel to use this command!`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -61,7 +61,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Play**`,
 					`**◎ Error:** I cannot connect to your voice channel, make sure I have permissions!`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -72,7 +72,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Play**`,
 					`**◎ Error:** I cannot connect to your voice channel, make sure I have permissions!`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -89,7 +89,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Play**`,
 					`**◎ Error:** There is a 30 second cooldown for this command!\nDJ's are exempt from the cooldown.`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -100,7 +100,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Play**`,
 					`**◎ Error:** Please provide an URL or a search term.`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -125,7 +125,7 @@ module.exports = class extends Command {
 					.setAuthor('Error', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setDescription(`No tracks found.`);
-				message.channel.send({ embed: noTrack }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [noTrack] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			player.set('textChannel', message.channel);
@@ -138,7 +138,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Play**`,
 								`**◎ Error:** Duration is over 15 minutes! Cancelling playback`);
-						message.channel.send({ embed: embed1 }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed1] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						if (!player.queue.current) {
 							player.destroy(message.guild.id);
 						}
@@ -155,7 +155,7 @@ module.exports = class extends Command {
 							.setAuthor('Enqueueing.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.setDescription(`\`${res.tracks[0].title}\`\nDuration: \`${prettyMilliseconds(res.tracks[0].duration, { colonNotation: true })}\`\nRequested by: ${message.author}`);
-						message.channel.send({ embed: trackloade });
+						message.channel.send({ embeds: [trackloade] });
 					}
 					break;
 				}
@@ -170,7 +170,7 @@ module.exports = class extends Command {
 						.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 						.setFooter("Type the track number you wish to play. You have 30 seconds to respond.\nType 'cancel' to cancel the selection");
 
-					await message.channel.send({ embed: embed }).then((searchEmbed) => {
+					await message.channel.send({ embeds: [embed] }).then((searchEmbed) => {
 						const collector = message.channel.createMessageCollector((m) => m.author.id === message.author.id && new RegExp('^([1-5]|cancel)$', 'i').test(m.content), {
 							time: 30000,
 							max: 1
@@ -186,7 +186,7 @@ module.exports = class extends Command {
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Play**`,
 										`**◎ Error:** Duration is over 10 minutes! Cancelling playback`);
-								message.channel.send({ embed: embed1 }).then((msg) => this.client.utils.deletableCheck(msg, 10000));
+								message.channel.send({ embeds: [embed1] }).then((msg) => this.client.utils.deletableCheck(msg, 10000));
 								if (!player.queue.current) {
 									player.destroy(message.guild.id);
 								}
@@ -205,7 +205,7 @@ module.exports = class extends Command {
 									.setAuthor('Enqueuing Track.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.setDescription(`\`${track.title}\`\nDuration: \`${prettyMilliseconds(track.duration, { colonNotation: true })}\`\nRequested by: ${message.author}`);
-								message.channel.send({ embed: trackloade });
+								message.channel.send({ embeds: [trackloade] });
 							}
 						});
 
@@ -222,7 +222,7 @@ module.exports = class extends Command {
 									.setAuthor(' Cancelled', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.setDescription(`Search results cancelled.\nReason: \`${upperReason}\``);
-								message.channel.send({ embed: cancelE }).then((m) => this.client.utils.deletableCheck(m, 10000));
+								message.channel.send({ embeds: [cancelE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 								this.client.utils.deletableCheck(searchEmbed, 10000);
 								if (!player.queue.current) {
 									player.destroy(message.guild.id);
@@ -236,7 +236,7 @@ module.exports = class extends Command {
 				case 'PLAYLIST_LOADED': {
 					this.client.utils.messageDelete(message, 10000);
 					message.channel.startTyping();
-					message.channel.send('Enqueuing Tracks...').then((enq) => {
+					message.channel.send({ content: 'Enqueuing Tracks...' }).then((enq) => {
 						res.tracks.forEach((track) => player.queue.add(track));
 						const duration = prettyMilliseconds(res.tracks.reduce((acc, cur) => ({
 							duration: acc.duration + cur.duration
@@ -251,7 +251,7 @@ module.exports = class extends Command {
 								.setAuthor('Enqueuing Playlist.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.setDescription(`Enqueuing \`${res.tracks.length}\` tracks in playlist \`${res.playlist.name}\`\nTotal duration: \`${duration}\``);
-							message.channel.send({ embed: playlistload });
+							message.channel.send({ embeds: [playlistload] });
 						}
 						this.client.utils.deletableCheck(enq, 0);
 						message.channel.stopTyping();
@@ -271,7 +271,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Play**`,
 					`**◎ Success:** <@${message.author.id}> You can now use the play command again.`);
-			message.channel.send({ embed: embed1 }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed1] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			talkedRecently.delete(message.author.id);
 		}, 30000);
 	}

@@ -16,7 +16,7 @@ module.exports = class extends Event {
 					.setColor(this.client.utils.color(newMessage.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ads Protection**`,
 						`**◎ Error:** I do not have the \`MANAGE_MESSAGES\` permissions. Disabling Ads Protection.`);
-				newMessage.channel.send({ embed: npPerms }).then((m) => newMessage.utils.messageDelete(m, 0));
+				newMessage.channel.send({ embeds: [npPerms] }).then((m) => newMessage.utils.messageDelete(m, 0));
 				db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(newMessage.guild.id);
 				return;
 			}
@@ -57,7 +57,7 @@ module.exports = class extends Event {
 			])
 			.setTimestamp()
 			.setURL(oldMessage.url);
-		this.client.channels.cache.get(logs).send({ embed: embed });
+		this.client.channels.cache.get(logs).send({ embeds: [embed] });
 	}
 
 };

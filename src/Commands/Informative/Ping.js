@@ -12,7 +12,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
-		const msg = await message.channel.send('Pinging...');
+		const msg = await message.channel.send({ content: 'Pinging...' });
 
 		const latency = msg.createdTimestamp - message.createdTimestamp;
 
@@ -23,7 +23,7 @@ module.exports = class extends Command {
 			.addField(`**${this.client.user.username} - Ping**`,
 				`**◎ Bot Latency:** \`${latency}ms\`
 				**◎ API Latency:** \`${Math.round(this.client.ws.ping)}ms\``);
-		message.channel.send({ embed: embed });
+		message.channel.send({ embeds: [embed] });
 	}
 
 };

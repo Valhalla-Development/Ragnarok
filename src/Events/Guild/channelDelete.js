@@ -25,21 +25,21 @@ module.exports = class extends Event {
 			updateM = `**◎ Text Channel Deleted:**\n\`#${channel.name}\``;
 			logembed
 				.setDescription(updateM);
-			this.client.channels.cache.get(logs).send({ embed: logembed });
+			this.client.channels.cache.get(logs).send({ embeds: [logembed] });
 		}
 
 		if (channel.type === 'voice') {
 			updateM = `**◎ Voice Channel Deleted:**\n\`${channel.name}\``;
 			logembed
 				.setDescription(updateM);
-			this.client.channels.cache.get(logs).send({ embed: logembed });
+			this.client.channels.cache.get(logs).send({ embeds: [logembed] });
 		}
 
 		if (channel.type === 'category') {
 			updateM = `**◎ Category Deleted:**\n\`${channel.name}\``;
 			logembed
 				.setDescription(updateM);
-			this.client.channels.cache.get(logs).send({ embed: logembed });
+			this.client.channels.cache.get(logs).send({ embeds: [logembed] });
 		}
 	}
 

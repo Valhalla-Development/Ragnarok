@@ -60,7 +60,7 @@ module.exports = class extends Command {
 			.addField(`**${this.client.user.username} - Free V-Bucks**`,
 				`**◎ Success:** Virus activated!.`);
 
-		const m = await message.channel.send({ embed: embed, component: row });
+		const m = await message.channel.send({ embeds: [embed], component: row });
 		const filter = (but) => but.clicker.user.id === message.author.id;
 
 		const collector = m.createButtonCollector(filter, { time: 10000 });
@@ -76,7 +76,7 @@ module.exports = class extends Command {
 
 		collector.on('collect', b => {
 			if (b.id === 'yes') {
-				m.edit({ component: rowNew, embed: embedNew });
+				m.edit({ component: rowNew, embeds: [embedNew] });
 				collector.stop('yes');
 				return;
 			}

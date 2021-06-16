@@ -36,7 +36,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Help**`,
 						`**◎ Error:** Invalid command name: \`${command}\``);
-				message.channel.send({ embed: embed1 }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed1] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -57,7 +57,7 @@ module.exports = class extends Command {
 				**◎ Category:** ${cmd.category}
 				**◎ Usage:** ${cmd.usage}
 				${reqPerm}`);
-			message.channel.send({ embed: embed });
+			message.channel.send({ embeds: [embed] });
 			return;
 		} else {
 			embed.setDescription(
@@ -87,7 +87,7 @@ module.exports = class extends Command {
 				.addComponent(buttonA)
 				.addComponent(buttonB);
 
-			await message.channel.send({ component: row, embed: embed });
+			await message.channel.send({ component: row, embeds: [embed] });
 			return;
 		}
 	}

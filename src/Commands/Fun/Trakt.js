@@ -24,7 +24,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
-		const msg = await message.channel.send('Fetching data...');
+		const msg = await message.channel.send({ content: 'Fetching data...' });
 		message.channel.startTyping();
 
 		const trakt = new Trakt({
@@ -83,7 +83,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Trakt.tv**`,
 					`**◎ Error:** Couldn't find the movie/show you were looking for.**\nTry again or try on Trakt.TV here: https://trakt.tv/search?query=${searchQuery}`);
-			message.channel.send({ embed: embed });
+			message.channel.send({ embeds: [embed] });
 			this.client.utils.deletableCheck(msg, 0);
 			message.channel.stopTyping();
 		};
@@ -203,7 +203,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Trakt.tv**`,
 					`**◎ Error:** Please specify what movie/show you are trying to find.`);
-			message.channel.send({ embed: errEmbed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [errEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			this.client.utils.deletableCheck(msg, 0);
 			message.channel.stopTyping();
 		} else {

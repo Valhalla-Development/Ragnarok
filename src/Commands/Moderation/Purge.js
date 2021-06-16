@@ -21,7 +21,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
 					`**◎ Error:** You need to specify the amount of messages to purge!`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (isNaN(args[0])) {
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
 					`**◎ Error:** The provided argument is not a valid number.`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (args[0] < 1) {
@@ -41,7 +41,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
 					`**◎ Error:** You need to specify the amount of messages to purge!`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -78,7 +78,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Purge**`,
 						`**◎ Success:** Successfully deleted ${args[0]} messages!`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			}).catch((error) => {
 				this.client.logger.error(error);
 			});
@@ -89,7 +89,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
 					`**◎ Error:** You can not delete messages older than 14 days.`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 		}
 	}
 

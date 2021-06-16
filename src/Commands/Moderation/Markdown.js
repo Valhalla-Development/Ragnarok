@@ -26,11 +26,11 @@ module.exports = class extends Command {
 				`**◎ Error:** Please input text, example: \`${prefix}markdown <language> <text> !\``);
 
 		if (args[0] === undefined) {
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (args[1] === undefined) {
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 

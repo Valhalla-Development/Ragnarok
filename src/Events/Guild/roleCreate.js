@@ -17,7 +17,7 @@ module.exports = class extends Event {
 			.setDescription(`**◎ Role Created: \`${role.name}\`.**`)
 			.setColor(this.client.utils.color(role.guild.me.displayHexColor))
 			.setTimestamp();
-		this.client.channels.cache.get(logs).send({ embed: logembed });
+		this.client.channels.cache.get(logs).send({ embeds: [logembed] });
 	}
 
 };

@@ -24,7 +24,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** You must specify a user to report!`);
-			message.channel.send({ embed: noTarget }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [noTarget] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (!reason) {
@@ -35,7 +35,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** You must specify a reason!`);
-			message.channel.send({ embed: noTarget }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [noReason] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (!reports) {
@@ -46,7 +46,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** Reports are disabled on this server! If you are an administrator, create the channel and name it \`reports\``);
-			message.channel.send({ embed: noReason }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [noReason] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -60,14 +60,14 @@ module.exports = class extends Command {
 				{ name: '🔨 - Reason', value: reason })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setTimestamp();
-		reports.send({ embed: reportembed });
+		reports.send({ embeds: [reportembed] });
 
 		const success = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Report**`,
 				`**◎ Success:** ${target}** was reported by **${message.author}`);
-		message.channel.send({ embed: success }).then((m) => this.client.utils.deletableCheck(m, 10000));
+		message.channel.send({ embeds: [success] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 	}
 
 };

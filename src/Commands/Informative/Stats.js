@@ -27,7 +27,7 @@ module.exports = class extends Command {
 			annc = 'N/A';
 		}
 
-		const msg = await message.channel.send('Generating...');
+		const msg = await message.channel.send({ content: 'Generating...' });
 		message.channel.startTyping();
 		const memory = await si.mem();
 		const totalMemory = Math.floor(memory.total / 1024 / 1024);
@@ -70,7 +70,7 @@ module.exports = class extends Command {
 			.addField('Announcement',
 				`\`\`\`${annc}\`\`\``)
 			.setTimestamp();
-		message.channel.send({ embed: embed });
+		message.channel.send({ embeds: [embed] });
 		message.channel.stopTyping();
 	}
 

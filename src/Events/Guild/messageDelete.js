@@ -37,7 +37,7 @@ module.exports = class extends Event {
 					`**◎ No Data:** A message sent by <@${message.author.id}> was deleted but no content was found.**`
 				])
 				.setTimestamp();
-			this.client.channels.cache.get(logs).send({ embed: noLogE });
+			this.client.channels.cache.get(logs).send({ embeds: [noLogE] });
 			return;
 		}
 
@@ -56,7 +56,7 @@ module.exports = class extends Event {
 		if (message.content.length) {
 			embed.splitFields(`**◎ Deleted Message:** ${message.content}`);
 		}
-		this.client.channels.cache.get(logs).send({ embed: embed });
+		this.client.channels.cache.get(logs).send({ embeds: [embed] });
 	}
 
 };

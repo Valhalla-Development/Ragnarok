@@ -24,12 +24,12 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setTitle('Create a Ticket')
-			.setDescription('To create a ticket click 📩')
+			.setDescription('By clicking the button, a ticket will be opened for you.')
 			.setFooter('Ragnarok Bot', this.client.user.avatarURL());
 
 		const button = new MessageButton()
 			.setStyle('green')
-			.setLabel('📩')
+			.setLabel('📩 Open a ticket 📩')
 			.setID('createTicket');
 
 		const foundtEmbed = db.prepare(`SELECT * FROM ticketConfig WHERE guildid=${message.guild.id}`).get();
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - TicketEmbed**`,
 					`**◎ Error:** Tickets are not enabled on this server!`);
-			message.channel.send({ embed: disabledTic }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [disabledTic] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -56,19 +56,19 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - TicketEmbed**`,
 							`**◎ Success:** Tickets embed has been cleared from the database.`);
-					message.channel.send({ embed: cleared }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [cleared] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 				const danelSucc = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - TicketEmbed**`,
 						`**◎ Error:** I found no embed data in the database!`);
-				message.channel.send({ embed: danelSucc }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [danelSucc] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
 			if (checkEmbedEx.ticketembed === null) {
-				await message.channel.send({ component: button, embed: embed }).then(async (a) => {
+				await message.channel.send({ component: button, embeds: [embed] }).then(async (a) => {
 					const update = db.prepare(
 						'UPDATE ticketConfig SET ticketembed = (@ticketembed), ticketembedchan = (@ticketEChan) WHERE guildid = (@guildid);'
 					);
@@ -88,11 +88,11 @@ module.exports = class extends Command {
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - TicketEmbed**`,
 									`**◎ Error:** You already have a Ticket embed in this server!\n Please delete the other, or clear it from the database via \`${prefix}tembed clear\``);
-							message.channel.send({ embed: alreadytick }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							message.channel.send({ embeds: [alreadytick] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 							return;
 						}
 					}).catch(() => {
-						message.channel.send({ component: button, embed: embed }).then(async (a) => {
+						message.channel.send({ component: button, embeds: [embed] }).then(async (a) => {
 							const update = db.prepare(
 								'UPDATE ticketConfig SET ticketembed = (@ticketembed), ticketembedchan = (@ticketEChan) WHERE guildid = (@guildid);'
 							);
@@ -105,7 +105,7 @@ module.exports = class extends Command {
 						});
 					});
 				} catch (err) {
-					message.channel.send({ component: button, embed: embed }).then(async (a) => {
+					message.channel.send({ component: button, embeds: [embed] }).then(async (a) => {
 						const update = db.prepare(
 							'UPDATE ticketConfig SET ticketembed = (@ticketembed), ticketembedchan = (@ticketEChan) WHERE guildid = (@guildid);'
 						);

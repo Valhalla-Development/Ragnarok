@@ -25,7 +25,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - A4K**`,
 					`**◎ Error:** Incorrect usage! Please use \`${prefix}a4k <search>\``);
-			message.channel.send({ embed: incorrectFormat }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -42,14 +42,14 @@ module.exports = class extends Command {
 					[**◎ ${res[1].data.title}**](${res[1].data.url})\n  \`\`\`${res[1].data.selftext.substring(0, 150)}...\`\`\`\n
 					[**◎ ${res[2].data.title}**](${res[2].data.url})\n  \`\`\`${res[2].data.selftext.substring(0, 150)}...\`\`\`\n
 					[**__Search Results...__**](https://www.reddit.com/r/AirReps/search/?q=${searchTerm}&restrict_sr=1)`);
-				message.channel.send({ embed: embed });
+				message.channel.send({ embeds: [embed] });
 			}).catch(() => {
 				this.client.utils.messageDelete(message, 10000);
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - AirReps**`,
 						`**◎ Error:** No results found!`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			});
 	}
 

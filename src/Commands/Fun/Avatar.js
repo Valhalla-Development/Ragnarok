@@ -19,7 +19,7 @@ module.exports = class extends Command {
 			.setAuthor(`${user.username}'s Avatar`)
 			.setImage(user.avatarURL({ dynamic: true, size: 1024 }))
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor));
-		message.channel.send({ embed: embed });
+		message.channel.send({ embeds: [embed] });
 	}
 
 };

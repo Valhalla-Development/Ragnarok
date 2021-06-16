@@ -32,7 +32,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Coin Flip**`,
 					`**◎ Error:** You do not have any balance!`);
-			message.channel.send({ embed: limitE }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [limitE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -43,7 +43,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Coin Flip**`,
 					`**◎ Error:** Please input an amount you wish to bet.`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -54,7 +54,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Coin Flip**`,
 					`**◎ Error:** You can only run one instance of this game!.`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -70,7 +70,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Coin Flip**`,
 					`**◎ Error:** An example of this command is: \`${prefix}rps 100\`\nAlternatively, you can run \`${prefix}rps all\``);
-			message.channel.send({ embed: wrongUsage }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -82,7 +82,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Coin Flip**`,
 					`**◎ Error:** Please enter a value of at least <:coin:706659001164628008> \`10\`. Please try again with a valid amount.`);
-			message.channel.send({ embed: wrongUsage }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -94,7 +94,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Coin Flip**`,
 					`**◎ Error:** You do not have enough to bet <:coin:706659001164628008> \`${Number(rps).toLocaleString('en')}\`, you have <:coin:706659001164628008> \`${Number(balance.bank).toLocaleString('en')}\` available in your bank.`);
-			message.channel.send({ embed: wrongUsage }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -182,7 +182,7 @@ module.exports = class extends Command {
 			.addField(`**${this.client.user.username} - Rock Paper Scissors**`,
 				`**◎** ${message.author} Tied! Your wager has been returned to your bank.`);
 
-		message.channel.send({ components: [group1], embed: initial }).then((m) => {
+		message.channel.send({ components: [group1], embeds: [initial] }).then((m) => {
 			const filter = (button) => button.clicker.user.id === message.author.id;
 
 			const collector = m.createButtonCollector(filter, {
@@ -206,44 +206,44 @@ module.exports = class extends Command {
 				switch (ai) {
 					case 'rock':
 						if (button.id === 'rock') {
-							m.edit({ component: group2, embed: tie });
+							m.edit({ component: group2, embeds: [tie] });
 							collector.stop('tie');
 						}
 						if (button.id === 'paper') {
-							m.edit({ component: group2, embed: win });
+							m.edit({ component: group2, embeds: [win] });
 							collector.stop('win');
 						}
 						if (button.id === 'scissors') {
-							m.edit({ component: group2, embed: lose });
+							m.edit({ component: group2, embeds: [lose] });
 							collector.stop('lose');
 						}
 						break;
 					case 'paper':
 						if (button.id === 'rock') {
-							m.edit({ component: group2, embed: lose });
+							m.edit({ component: group2, embeds: [lose] });
 							collector.stop('lose');
 						}
 						if (button.id === 'paper') {
-							m.edit({ component: group2, embed: tie });
+							m.edit({ component: group2, embeds: [tie] });
 							collector.stop('tie');
 						}
 						if (button.id === 'scissors') {
-							m.edit({ component: group2, embed: win });
+							m.edit({ component: group2, embeds: [win] });
 							collector.stop('win');
 						}
 						collector.stop('gameEnd');
 						break;
 					case 'scissors':
 						if (button.id === 'rock') {
-							m.edit({ component: group2, embed: win });
+							m.edit({ component: group2, embeds: [win] });
 							collector.stop('win');
 						}
 						if (button.id === 'paper') {
-							m.edit({ component: group2, embed: lose });
+							m.edit({ component: group2, embeds: [lose] });
 							collector.stop('lose');
 						}
 						if (button.id === 'scissors') {
-							m.edit({ component: group2, embed: tie });
+							m.edit({ component: group2, embeds: [tie] });
 							collector.stop('tie');
 						}
 						collector.stop('gameEnd');
@@ -275,7 +275,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Coin Flip**`,
 							`**◎ Success:** Your bet was cancelled, your money has been returned.`);
-					message.channel.send({ embed: limitE }).then((ca) => this.client.utils.deletableCheck(ca, 10000));
+					message.channel.send({ embeds: [limitE] }).then((ca) => this.client.utils.deletableCheck(ca, 10000));
 					return;
 				}
 			});

@@ -30,7 +30,7 @@ module.exports = class extends Event {
 
 					await fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=1`)
 						.then(res => res.json())
-						.then(json => message.reply(json.message, { allowedMentions: { repliedUser: false } }));
+						.then(json => message.reply({ content: json.message, allowedMentions: { repliedUser: false } }));
 					message.channel.stopTyping();
 				}
 			}
@@ -77,7 +77,7 @@ module.exports = class extends Event {
 						.setColor(client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${client.user.username} - AFK**`,
 							`**◎** ${message.author} is no longer AFK.`);
-					message.channel.send({ embed: embed });
+					message.channel.send({ embeds: [embed] });
 					return;
 				}
 
@@ -88,8 +88,8 @@ module.exports = class extends Event {
 					const error = new MessageEmbed()
 						.setColor(client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${client.user.username} - AFK**`,
-							`**◎** Please do not ping ${found}, they are currently AFK with the reason:\n\n\`${afkGrab.reason}\``);
-					message.channel.send({ embed: error }).then((m) => client.utils.deletableCheck(m, 10000));
+							`**◎** Please do not ping ${found}, they are currently AFK with the reason:\n\n${afkGrab.reason}`);
+					message.channel.send({ embeds: [error] }).then((m) => client.utils.deletableCheck(m, 10000));
 					return;
 				}
 			}
@@ -106,7 +106,7 @@ module.exports = class extends Event {
 					.setColor(client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${client.user.username} - AFK**`,
 						`**◎** ${message.author} is no longer AFK.`);
-				message.channel.send({ embed: embed });
+				message.channel.send({ embeds: [embed] });
 				return;
 			}
 		}
@@ -117,13 +117,13 @@ module.exports = class extends Event {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setDescription(`**◎ This guild's prefix is:** \`${prefixcommand}\``);
-			message.channel.send({ embed: embed });
+			message.channel.send({ embeds: [embed] });
 			return;
 		}
 
 		// Easter Egg/s
 		if (message.content.includes('(╯°□°）╯︵ ┻━┻')) {
-			message.channel.send('Leave my table alone!\n┬─┬ ノ( ゜-゜ノ)');
+			message.channel.send({ content: 'Leave my table alone!\n┬─┬ ノ( ゜-゜ノ)' });
 		}
 
 		// Balance (balance)
@@ -203,7 +203,7 @@ module.exports = class extends Event {
 						.setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
 						.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
 						.setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
-					message.channel.send({ embed: lvlup }).then((m) => grabClient.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [lvlup] }).then((m) => grabClient.utils.deletableCheck(m, 10000));
 				}
 			}
 			if (!xpCooldown.has(message.author.id)) {
@@ -240,9 +240,9 @@ module.exports = class extends Event {
 					});
 				} else if (
 					message.content.toLowerCase().startsWith('im dad') || message.content.toLowerCase().startsWith('i\'m dad')) {
-					message.channel.send('No, I\'m Dad!');
+					message.channel.send({ content: 'No, I\'m Dad!' });
 				} else {
-					message.channel.send(`Hi ${oargresult}, I'm Dad!`);
+					message.channel.send({ content: `Hi ${oargresult}, I'm Dad!` });
 				}
 			}
 			if (!dadCooldown.has(message.author.id)) {
@@ -263,7 +263,7 @@ module.exports = class extends Event {
 						.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${grabClient.user.username} - Ads Protection**`,
 							`**◎ Error:** I do not have the \`MANAGE_MESSAGES\` permissions. Disabling Ads Protection.`);
-					message.channel.send({ embed: npPerms }).then((m) => grabClient.utils.messageDelete(m, 0));
+					message.channel.send({ embeds: [npPerms] }).then((m) => grabClient.utils.messageDelete(m, 0));
 					db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(message.guild.id);
 					return;
 				}
@@ -411,7 +411,7 @@ module.exports = class extends Event {
 									if (validExtensions.includes(fileExtension)) {
 										embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.length > 1048 ? res.content.substring(0, 1048) : res.content}`);
 										embed.setImage(res.embeds[0].url);
-										message.channel.send({ embed: embed });
+										message.channel.send({ embeds: [embed] });
 									}
 									return;
 								} else {
@@ -429,7 +429,7 @@ module.exports = class extends Event {
 								} else {
 									embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
 									embed.setImage(attachmentUrl);
-									message.channel.send({ embed: embed });
+									message.channel.send({ embeds: [embed] });
 									return;
 								}
 							}
@@ -441,12 +441,12 @@ module.exports = class extends Event {
 								} else {
 									embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}`);
 									embed.setImage(attachmentUrl);
-									message.channel.send({ embed: embed });
+									message.channel.send({ embeds: [embed] });
 									return;
 								}
 							} else {
 								embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
-								message.channel.send({ embed: embed });
+								message.channel.send({ embeds: [embed] });
 								return;
 							}
 						}
@@ -461,7 +461,7 @@ module.exports = class extends Event {
 		// Chat Filter
 		/* if (this.client.filterList.some(word => message.content.toLowerCase().includes(` ${word} `))) {
 		this.client.utils.messageDelete(message, 0);
-			message.channel.send('BOI THAT"S A BLOCKED WORD!');
+			message.channel.send({content:'BOI THAT"S A BLOCKED WORD!'});
 		}*/
 
 		const mentionRegex = RegExp(`^<@!?${this.client.user.id}>$`);
@@ -483,7 +483,7 @@ module.exports = class extends Event {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
 							`**◎ Error:** You are missing \`${this.client.utils.formatArray(missing.map(this.client.utils.formatPerms))}\` permissions, they are required for this command.`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 			}
@@ -496,7 +496,7 @@ module.exports = class extends Event {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
 							`**◎ Error:** I am missing \`${this.client.utils.formatArray(missing.map(this.client.utils.formatPerms))}\` permissions, they are required for this command.`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 			}
@@ -545,7 +545,7 @@ module.exports = class extends Event {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setFooter(`ID: ${message.channel.id}`)
 			.setTimestamp();
-		this.client.channels.cache.get(logs).send({ embed: logembed });
+		this.client.channels.cache.get(logs).send({ embeds: [logembed] });
 	}
 
 };

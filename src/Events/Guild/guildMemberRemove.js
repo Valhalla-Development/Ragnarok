@@ -30,7 +30,7 @@ module.exports = class extends Event {
 				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
 				.setFooter(`ID: ${member.user.id}`)
 				.setTimestamp();
-			grabClient.channels.cache.get(logs).send({ embed: logembed });
+			grabClient.channels.cache.get(logs).send({ embeds: [logembed] });
 		}
 		logging(this.client);
 

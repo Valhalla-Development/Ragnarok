@@ -66,7 +66,7 @@ module.exports = class extends Command {
 				`**◎ Name:** ${message.guild.name}
 				**◎ ID:** ${message.guild.id}
 				**◎ Owner:** ${guildOwner.user.tag}
-				**◎ Region:** ${regions[message.guild.region]}
+				**◎ Region:** ${regions[message.guild.region] ? regions[message.guild.region] : 'Unknown'}
 				**◎ Boost Tier:** ${message.guild.premiumTier ? `Tier ${message.guild.premiumTier}` : 'None'}
 				**◎ Explicit Filter:** ${filterLevels[message.guild.explicitContentFilter]}
 				**◎ Verification Level:** ${verificationLevels[message.guild.verificationLevel]}
@@ -87,7 +87,7 @@ module.exports = class extends Command {
 				Roles [${roles.length}] 
 				${roles.length < 10 ? roles.join(', ') : roles.length > 10 ? this.client.utils.trimArray(roles) : 'None'}`)
 			.setTimestamp();
-		message.channel.send({ embed: embed });
+		message.channel.send({ embeds: [embed] });
 	}
 
 };

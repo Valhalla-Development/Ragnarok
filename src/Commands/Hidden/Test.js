@@ -30,7 +30,7 @@ module.exports = class extends Command {
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setDescription(`**◎** You drew a \`${c1}\` and \`${c2}\`, your total is: \`${cardtotal}\`.\nHit (:thumbsup:) or Stand (:thumbsdown:)?`);
-		message.channel.send({ embed: embed }).then(async (msg) => {
+		message.channel.send({ embeds: [embed] }).then(async (msg) => {
 			await msg.react('👍');
 			await msg.react('👎');
 

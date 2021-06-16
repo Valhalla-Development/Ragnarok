@@ -44,7 +44,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addFields({ name: 'Top 10', value: userNames, inline: true },
 				{ name: 'Total', value: total, inline: true });
-		message.channel.send({ embed: embed });
+		message.channel.send({ embeds: [embed] });
 		return;
 	}
 

@@ -22,7 +22,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Suggest**`,
 					`**◎ Error:** Please input some text!`);
-			message.channel.send({ embed: noinEmbed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [noinEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -33,7 +33,7 @@ module.exports = class extends Command {
 			.setTitle('Suggestion')
 			.setDescription(`**◎ User: <@${message.author.id}> - **\`${message.author.tag}\`\n**Suggestion:** ${argresult}`)
 			.setFooter(`${message.guild.name} - ${message.guild.id}`);
-		this.client.guilds.cache.get(supportGuild).channels.cache.get(suggestChan).send({ embed: embed });
+		this.client.guilds.cache.get(supportGuild).channels.cache.get(suggestChan).send({ embeds: [embed] });
 
 		this.client.utils.messageDelete(message, 10000);
 
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Suggest**`,
 				`**◎ Success:** Suggestion has been successfully sent!`);
-		message.channel.send({ embed: loggedEmbed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+		message.channel.send({ embeds: [loggedEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 	}
 
 };

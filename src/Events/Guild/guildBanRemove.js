@@ -24,7 +24,7 @@ module.exports = class extends Event {
 				**◎ Moderator:**: ${mod}`)
 			.setFooter('User Ban Logs')
 			.setTimestamp();
-		this.client.channels.cache.get(logs).send({ embed: embed });
+		this.client.channels.cache.get(logs).send({ embeds: [embed] });
 	}
 
 };

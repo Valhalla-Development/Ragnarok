@@ -24,7 +24,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Captcha**`,
 					`**◎ Error:** You must supply some text!`);
-			message.channel.send({ embed: invalidInput }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [invalidInput] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (args.length > 5) {
@@ -32,7 +32,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Captcha**`,
 					`**◎ Error:** You can only have 5 words!`);
-			message.channel.send({ embed: tooLong }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [tooLong] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 

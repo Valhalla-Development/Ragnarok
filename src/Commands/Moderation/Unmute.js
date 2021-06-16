@@ -27,7 +27,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Unmute**`,
 					`**◎ Error:** You must mention someone to unmute them!`);
-			message.channel.send({ embed: nomodRole }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -46,7 +46,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Unmute**`,
 					`**◎ Error:** This user is not muted!`);
-			message.channel.send({ embed: nomodRole }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -59,7 +59,7 @@ module.exports = class extends Command {
 				`**◎ User:** <@${user.user.id}>
 				**◎ Staff Member:** ${mod}`)
 			.setTimestamp();
-		message.channel.send({ embed: embed });
+		message.channel.send({ embeds: [embed] });
 
 		const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
 		if (!dbid) return;
@@ -70,7 +70,7 @@ module.exports = class extends Command {
 		}
 
 		if (dbid) {
-			this.client.channels.cache.get(dblogs).send({ embed: embed });
+			this.client.channels.cache.get(dblogs).send({ embeds: [embed] });
 		}
 	}
 

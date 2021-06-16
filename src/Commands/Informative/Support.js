@@ -11,7 +11,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
-		message.channel.send('**◎ Support Server Invite**: https://discord.gg/Q3ZhdRJ');
+		message.channel.send({ content: '**◎ Support Server Invite**: https://discord.gg/Q3ZhdRJ' });
 	}
 
 };

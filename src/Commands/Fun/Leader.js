@@ -23,7 +23,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Leader**`,
 					`**◎ Error:** Level system is disabled for this guild!`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -59,7 +59,7 @@ module.exports = class extends Command {
 			.addFields({ name: 'Top 10', value: userNames, inline: true },
 				{ name: 'Level', value: levels, inline: true },
 				{ name: 'XP', value: xp, inline: true });
-		message.channel.send({ embed: embed });
+		message.channel.send({ embeds: [embed] });
 		return;
 	}
 

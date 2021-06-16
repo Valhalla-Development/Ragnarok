@@ -26,7 +26,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
-		const msg = await message.channel.send('Generating...');
+		const msg = await message.channel.send({ content: 'Generating...' });
 		message.channel.startTyping();
 
 		const res = await fetch(`https://www.reddit.com/r/${subreddits[Math.floor(Math.random() * subreddits.length)]}/hot.json`);
@@ -49,7 +49,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Dog**`,
 					`**◎ Error:** I could not find a post.`);
-			message.channel.send({ embed: noPost }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [noPost] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			message.channel.stopTyping();
 			return;
 		}
@@ -67,7 +67,7 @@ module.exports = class extends Command {
 			.setAuthor(`${post.data.title}`, message.author.displayAvatarURL({ dynamic: true }), `https://reddit.com${post.data.permalink}`)
 			.setImage(postURL)
 			.setFooter(`👍 ${post.data.ups} | 💬 ${post.data.num_comments}`);
-		message.channel.send({ embed: embed });
+		message.channel.send({ embeds: [embed] });
 
 		message.channel.stopTyping();
 		this.client.utils.deletableCheck(msg, 0);

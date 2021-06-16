@@ -31,7 +31,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Remove**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
-			message.channel.send({ embed: nomodRole }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Remove**`,
 					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
-			message.channel.send({ embed: donthaveRole }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [donthaveRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -54,7 +54,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Remove**`,
 					`**◎ Error:** Sorry! I could not find the specified user!`);
-			message.channel.send({ embed: nouser }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [nouser] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -74,7 +74,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Remove**`,
 						`**◎ Error:** This user is not in this channel!`);
-				message.channel.send({ embed: nouser }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [nouser] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -85,14 +85,14 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Remove**`,
 					`**◎ Success:** ${rUser} has been removed from the ticket!`);
-			getChan.send({ embed: removed });
+			getChan.send({ embeds: [removed] });
 			const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
 			const logchan = message.guild.channels.cache.find((chan) => chan.id === logget.log);
 			if (!logchan) return;
 			const loggingembed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setDescription(`<@${message.author.id}> removed ${rUser} from ticket <#${getChan.id}>`);
-			logchan.send({ embed: loggingembed });
+			logchan.send({ embeds: [loggingembed] });
 		} else {
 			this.client.utils.messageDelete(message, 10000);
 
@@ -100,7 +100,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Remove**`,
 					`**◎ Error:** This ticket could not be found.`);
-			message.channel.send({ embed: errEmbed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [errEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 		}
 	}
 
