@@ -4,7 +4,7 @@ const moment = require('moment');
 
 const flags = {
 	DISCORD_EMPLOYEE: '<:DiscordStaff:748651259849998377>',
-	DISCORD_CERTIFIED_MODERATOR: 'Certified Moderator',
+	DISCORD_CERTIFIED_MODERATOR: '<:CertifiedModerator:854722328382406676>',
 	PARTNERED_SERVER_OWNER: '<:DiscordPartner:748985364022165694>',
 	BUGHUNTER_LEVEL_1: '<:DiscordBugHunter1:748651259724300364>',
 	BUGHUNTER_LEVEL_2: '<:DiscordBugHunter2:748651259741077574>',
@@ -15,8 +15,9 @@ const flags = {
 	EARLY_SUPPORTER: '<:DiscordNitroEarlySupporter:748651259816312992>',
 	TEAM_USER: 'Team User',
 	SYSTEM: 'System',
-	VERIFIED_BOT: 'Verified Bot',
-	EARLY_VERIFIED_BOT_DEVELOPER: '<:VerifiedBotDeveloper:748651259858255973>'
+	VERIFIED_BOT: '<:VerifiedBot:854725852101476382>',
+	EARLY_VERIFIED_BOT_DEVELOPER: '<:VerifiedBotDeveloper:748651259858255973>',
+	BOT_ACCOUNT: '<:Bot:854724408458870814>'
 };
 
 const status = {
@@ -44,6 +45,7 @@ module.exports = class extends Command {
 			.map(role => role.toString())
 			.slice(0, -1);
 		const userFlags = member.user.flags.toArray();
+		if (member.user.bot && !userFlags.includes('VERIFIED_BOT')) userFlags.push('BOT_ACCOUNT');
 
 		const embed = new MessageEmbed()
 			.setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 512 }))
@@ -62,7 +64,7 @@ module.exports = class extends Command {
 				**◎ Server Join Data:** ${moment(member.joinedAt).format('LL LTS')}
 				${roles.length ? `**◎ Roles [${roles.length}]:**` : '**◎ Roles:** None'} ${roles.length < 10 ? roles.join(', ') : roles.length > 9 ? this.client.utils.trimArray(roles) : 'None'}
 				\u200b`);
-		message.channel.send({ embed: embed });
+		message.channel.send({ embeds: [embed] });
 	}
 
 };
