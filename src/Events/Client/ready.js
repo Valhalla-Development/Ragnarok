@@ -182,7 +182,7 @@ module.exports = class extends Event {
 		const setwelcome = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'setwelcome\';').get();
 		if (!setwelcome['count(*)']) {
 			this.client.logger.ready('setwelcome table created!');
-			db.prepare('CREATE TABLE setwelcome (guildid TEXT PRIMARY KEY, channel TEXT);').run();
+			db.prepare('CREATE TABLE setwelcome (guildid TEXT PRIMARY KEY, channel TEXT, image TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_setwelcome_id ON setwelcome (guildid);').run();
 			db.pragma('synchronous = 1');
 			db.pragma('journal_mode = wal');
@@ -336,7 +336,7 @@ module.exports = class extends Event {
 								`**◎ User:** ${member}
 								**◎ Reason:** Mute time ended.`)
 							.setTimestamp();
-						findChannel.send({ embed: embed });
+						findChannel.send({ embeds: [embed] });
 
 						db.prepare('DELETE FROM mute WHERE id = ?').run(`${member.guild.id}-${r.userid}`);
 
@@ -349,7 +349,7 @@ module.exports = class extends Event {
 						}
 
 						if (dbid) {
-							grabClient.channels.cache.get(dblogs).send({ embed: embed });
+							grabClient.channels.cache.get(dblogs).send({ embeds: [embed] });
 						}
 					}
 				});*/
@@ -387,7 +387,7 @@ module.exports = class extends Event {
 							`**◎ User:** ${r.username}
 							**◎ Reason:** Ban time ended.`)
 						.setTimestamp();
-					findChannel.send({ embed: embed });
+					findChannel.send({ embeds: [embed] });
 
 					db.prepare('DELETE FROM mute WHERE id = ?').run(`${guild.id}-${r.userid}`);
 
@@ -399,7 +399,7 @@ module.exports = class extends Event {
 					}
 
 					if (dbid) {
-						this.client.channels.cache.get(dblogs).send({ embed: embed });
+						this.client.channels.cache.get(dblogs).send({ embeds: [embed] });
 					}
 				}
 			});
