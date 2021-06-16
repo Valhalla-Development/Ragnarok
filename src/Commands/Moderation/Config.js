@@ -2,6 +2,8 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed, Permissions } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
+const fetch = require('node-fetch');
+const isAbsoluteUrl = require('is-absolute-url');
 
 module.exports = class extends Command {
 
@@ -23,7 +25,7 @@ module.exports = class extends Command {
 
 		// config help
 		if (args[0] === undefined) {
-			const embed = new MessageEmbed()
+			const embed = new MessageEmbed()// add new config welcome image command here bub
 				.setThumbnail(this.client.user.displayAvatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setAuthor(`${this.client.user.username} - Config`)
@@ -83,7 +85,7 @@ module.exports = class extends Command {
 					`\u3000`
 				])
 				.setTimestamp();
-			message.channel.send({ embed: embed });
+			message.channel.send({ embeds: [embed] });
 			return;
 		}
 
@@ -102,7 +104,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Available options are:\n\`${prefix}config birthday channel <#channel>\` : Sets the channel where birthday alerts are sent.\n\`${prefix}config birthday role [@role]\` : Sets the (optional) role is pinged when it is someones birthday.\nor \`${prefix}config birthday off\``);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 
@@ -114,7 +116,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Birthday function is already disabled!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -124,7 +126,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Birthday function disabled!`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(message.guild.id);
 					return;
 				}
@@ -139,7 +141,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Please mention a channel!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -150,7 +152,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Ensure you are tagging a valid channel, I had difficulty locating ${lchan}`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					} else if (!status) {
 						const insert = db.prepare('INSERT INTO birthdayConfig (guildid, channel) VALUES (@guildid, @channel);');
 						insert.run({
@@ -163,7 +165,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Birthday channel is now set to ${lchan}`);
-						message.channel.send({ embed: embed });
+						message.channel.send({ embeds: [embed] });
 					} else {
 						const update = db.prepare('UPDATE birthdayConfig SET channel = (@channel) WHERE guildid = (@guildid);');
 						update.run({
@@ -176,7 +178,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Birthday channel updated to ${lchan}`);
-						message.channel.send({ embed: embed });
+						message.channel.send({ embeds: [embed] });
 					}
 				}
 
@@ -188,7 +190,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Please set a channel before setting the role! You can do this by running: \`${prefix}config birthday channel #channel\``);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -201,7 +203,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** A role must be mentioned`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -217,7 +219,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Birthday Role updated to ${role}`);
-					message.channel.send({ embed: embed });
+					message.channel.send({ embeds: [embed] });
 				}
 			}
 		}
@@ -237,7 +239,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Available options are: \`${prefix}config level enable\` or \`${prefix}config level disable\``);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 
@@ -249,7 +251,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Level system is already disabled!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -259,7 +261,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Level system disabled!`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					const insert = db.prepare('INSERT INTO level (guildid, status) VALUES (@guildid, @status);');
 					insert.run({
 						guildid: `${message.guild.id}`,
@@ -275,7 +277,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Level system is already enabled!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -285,7 +287,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Level system enabled!`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					db.prepare('DELETE FROM level WHERE guildid = ?').run(message.guild.id);
 					return;
 				}
@@ -309,7 +311,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Member count module is already enabled on this guild! To disable it, please use \`${prefix}config membercount <off>\``);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -370,7 +372,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Member count was enabled`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 
 					// if args = off
 				} else if (args[1] === 'off') {
@@ -382,7 +384,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Member protection is not enabled on this guild! To activate it, please use \`${prefix}config membercount <on>\``);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -403,7 +405,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Member count was turned off!`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				} else if (args[1] !== 'off' || args[1] !== 'on') {
 					this.client.utils.messageDelete(message, 10000);
@@ -412,7 +414,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Correct usage: \`${prefix}config membercount <on/off>\``);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 			}
@@ -430,7 +432,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** You must mention a role to remove from the menu.`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 
@@ -451,7 +453,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Roles successfully set in the assignable role menu!`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				} else {
 					const foundRoleList = JSON.parse(foundRoleMenu.roleList);
 					message.mentions.roles.forEach((role) => {
@@ -470,7 +472,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Roles successfully set in the assignable role menu!`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				}
 				return;
 			}
@@ -482,7 +484,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** You must mention a role to remove from the menu.`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 
@@ -509,7 +511,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** Specified roles have successfully been cleared from the rolemenu!`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			if (args[1] === 'clear') {
@@ -520,7 +522,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** All roles have successfully been cleared from the rolemenu!`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -530,7 +532,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Config**`,
 					`**◎ Error:** Please use \`${prefix}config\` to see available commands!`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -552,7 +554,7 @@ module.exports = class extends Command {
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Hastebin URL blocker is already enabled on this guild! To disable it, please use \`${prefix}config haste url <off>\``);
-							message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 							return;
 						}
 						const insert = db.prepare('INSERT INTO hastebin (guildid, status) VALUES (@guildid, @status);');
@@ -567,7 +569,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Hastebin URL blocker was enabled.`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 
 						// if args = off
 					} else if (args[2] === 'off') {
@@ -579,7 +581,7 @@ module.exports = class extends Command {
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Hastebin URL blocker is not enabled on this guild! To activate it, please use \`${prefix}config haste url <on>\``);
-							message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 							return;
 						}
 
@@ -590,7 +592,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Hastebin URL blocker was disabled!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					} else if (args[2] !== 'off' || args[2] !== 'on') {
 						this.client.utils.messageDelete(message, 10000);
@@ -599,7 +601,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Correct usage \`${prefix}config haste inv <on/off>\``);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 				}
@@ -623,7 +625,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Dad bot is already enabled on this guild! To disable it, please use \`${prefix}config dadbot <off>\``);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 					const insert = db.prepare('INSERT INTO dadbot (guildid, status) VALUES (@guildid, @status);');
@@ -638,7 +640,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Dad bot was enabled`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 
 					// if args = off
 				} else if (args[1] === 'off') {
@@ -650,7 +652,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Dad bot is not enabled on this guild! To activate it, please use \`${prefix}config dadbot <on>\``);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -661,7 +663,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Dad bot was disabled!`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				} else if (args[1] !== 'off' || args[1] !== 'on') {
 					this.client.utils.messageDelete(message, 10000);
@@ -670,7 +672,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Correct usage \`${prefix}config dadbot <on/off>\``);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 			}
@@ -686,7 +688,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ads Protection**`,
 						`**◎ Error:** I need to have the \`MANAGE_MESSAGES\` permission for this function.`);
-				message.channel.send({ embed: npPerms }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [npPerms] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -706,7 +708,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Advert protection is already enabled on this guild! To disable it, please use \`${prefix}config adsprot <off>\``);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -721,7 +723,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Advert protection was enabled`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 
 					// if args = off
 				} else if (args[1] === 'off') {
@@ -733,7 +735,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Advert protection is not enabled on this guild! To activate it, please use \${prefix}config adsprot <on>\``);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -744,7 +746,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Advert protection was disabled`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				} else if (args[1] !== 'off' || args[1] !== 'on') {
 					this.client.utils.messageDelete(message, 10000);
@@ -753,7 +755,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Please use \`${prefix}config adsprot <on/off>\``);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 			}
@@ -773,7 +775,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Please use \`${prefix}config autorole <role>\` __the role is case sensitive!__`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 				if (args[1] === 'off') {
@@ -784,7 +786,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Autorole disabled!`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 				if (!message.guild.roles.cache.some((r) => [`${args[1]}`].includes(r.name))) {
@@ -794,7 +796,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** That role does not exist! Roles are case sensitive. (You do not tag the role, simply write the name of the role)`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 				if (role) {
@@ -809,7 +811,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Autorole updated to \`${args[1]}\`!`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 
@@ -824,7 +826,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** Autorole set to \`${args[1]}\`!`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 		}
@@ -839,7 +841,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** I need the permission \`View Audit Log\` for this command!`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			this.client.getTable = db.prepare('SELECT * FROM logging WHERE guildid = ?');
@@ -857,7 +859,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Please mention a channel!`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 
@@ -870,7 +872,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Logging is already disabled!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -880,7 +882,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Logging disabled!`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					db.prepare('DELETE FROM logging WHERE guildid = ?').run(message.guild.id);
 					return;
 				}
@@ -891,7 +893,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Check if the entered channel's name is correct and then type the command again.`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 				if (lchan.type === 'voice' || lchan.type === 'category') {
@@ -901,7 +903,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Check if the entered text channel's name is correct and then type the command again.`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 				if (!status) {
@@ -916,7 +918,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Logging set to ${lchan}`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 
@@ -932,7 +934,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** Logging updated to ${lchan}`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 		}
@@ -957,7 +959,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Please type the name of the category!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -970,7 +972,7 @@ module.exports = class extends Command {
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Ticket Category is already disabled!`);
-							message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 							return;
 						}
 
@@ -980,7 +982,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Ticket Category disabled!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						db.prepare('UPDATE ticketConfig SET category = (@cat) WHERE guildid = (@guildid);').run({
 							guildid: `${message.guild.id}`,
 							cat: null
@@ -994,7 +996,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Check if the entered categories name is correct and then type the command again. (The name is case sensitive!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 					if (!status) {
@@ -1009,7 +1011,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Ticket Category set to \`${category.name}\``);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -1024,7 +1026,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Ticket Category updated to \`${category.name}\``);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 			} else if (args[1] === 'log') {
@@ -1043,7 +1045,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Please mention a channel!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -1056,7 +1058,7 @@ module.exports = class extends Command {
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Ticket Logging is already disabled!`);
-							message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 							return;
 						}
 
@@ -1066,7 +1068,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Ticket Logging disabled!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						db.prepare('UPDATE ticketConfig SET log = (@log) WHERE guildid = (@guildid)').run({
 							guildid: message.guild.id,
 							log: null
@@ -1080,7 +1082,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Check if the entered categories name is correct and then type the command again. (The name is case sensitive!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 					if (!status) {
@@ -1095,7 +1097,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Ticket Logging set to ${lchan}`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -1110,7 +1112,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Ticket Logging updated to ${lchan}`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 			} else if (args[1] === 'role') {
@@ -1126,7 +1128,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** A role must be mentioned`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 				if (args[2] === 'off') {
@@ -1141,7 +1143,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Custom Support Role disabled!`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 				if (!status) {
@@ -1156,7 +1158,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Support Role updated to ${suppRole}`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 
@@ -1171,7 +1173,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** Support Role updated to ${suppRole}`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 		}
@@ -1188,7 +1190,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** Wait 1 minute before changing the prefix again.`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			} else {
 				talkedRecently.add(message.author.id);
 				setTimeout(() => {
@@ -1209,7 +1211,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** Custom prefix disabled!`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			if (args[1] === '[' || args[1] === '{' || args[1] === ']' || args[1] === '}' || args[1] === ':') {
@@ -1219,7 +1221,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** Please choose another prefix.`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -1230,7 +1232,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** Incorrect usage!`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -1246,7 +1248,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** Prefix updated!`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
@@ -1261,7 +1263,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Config**`,
 					`**◎ Success:** Prefix set!`);
-			message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -1275,9 +1277,124 @@ module.exports = class extends Command {
 					.addField('Ragnarok',
 						`**◎ Set Welcome:** To set the welcome channel, the command is \`${prefix}config welcome channel <#channel>\`\nTo disable the welcome, use \`${prefix}config welcome channel off\``)
 					.setTimestamp();
-				message.channel.send({ embed: embed });
+				message.channel.send({ embeds: [embed] });
 				return;
 			}
+			if (args[1] === 'image') {
+				this.client.getTable = db.prepare('SELECT * FROM setwelcome WHERE guildid = ?');
+
+				let status;
+				if (message.guild.id) {
+					status = this.client.getTable.get(message.guild.id);
+
+					if (args[2] === 'off') {
+						if (!status.image) {
+							this.client.utils.messageDelete(message, 10000);
+
+							const embed = new MessageEmbed()
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.addField(`**${this.client.user.username} - Config**`,
+									`**◎ Error:** You have no custom image enabled!`);
+							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							return;
+						} else {
+							const update = db.prepare('UPDATE setwelcome SET image = (@image) WHERE guildid = (@guildid);');
+							update.run({
+								guildid: `${message.guild.id}`,
+								image: null
+							});
+
+							this.client.utils.messageDelete(message, 10000);
+
+							const embed = new MessageEmbed()
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.addField(`**${this.client.user.username} - Config**`,
+									`**◎ Success:** Custom image has been disabled!`);
+							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							return;
+						}
+					}
+
+					if (!args[2]) {
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Error:** Incorrect Usage! An example of this command would be: \`${prefix}config welcome image <url-to-image>\` or to disable: \`${prefix}config welcome image off\``);
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+
+					const urlExtension = args[2].substring(args[2].lastIndexOf('.') + 1);
+					const validExtensions = ['jpg', 'jpeg', 'png'];
+
+					if (!validExtensions.includes(urlExtension)) {
+						this.client.utils.messageDelete(message, 10000);
+
+						const invalidExt = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Error:** \`.${urlExtension}\` is not a valid image type!\n\n**Acceptable files:**\n\`${validExtensions.join(', ')}\``);
+						message.channel.send({ embeds: [invalidExt] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+
+					if (!isAbsoluteUrl(args[2])) {
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Error:** Please enter a valid URL, the URL must be absolute! An example of an absolute URL would be: https://www.google.com`);
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+
+					await fetch(args[2])
+						.then(res => {
+							if (res.ok) {
+								if (!status) {
+									this.client.utils.messageDelete(message, 10000);
+
+									const embed = new MessageEmbed()
+										.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+										.addField(`**${this.client.user.username} - Config**`,
+											`**◎ Error:** You must enable the welcome module first! You can do this by running the following command. \`${prefix}config welcome channel <#channel>\``);
+									message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+									return;
+								} else {
+									const update = db.prepare('UPDATE setwelcome SET image = (@image) WHERE guildid = (@guildid);');
+									update.run({
+										guildid: `${message.guild.id}`,
+										image: args[2]
+									});
+									this.client.utils.messageDelete(message, 0);
+
+									const embed = new MessageEmbed()
+										.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+										.setImage(args[2])
+										.addField(`**${this.client.user.username} - Config**`,
+											`**◎ Success:** Image has been updated to the following.`);
+									message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+									return;
+								}
+							} else {
+								this.client.utils.messageDelete(message, 10000);
+
+								const embed = new MessageEmbed()
+									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+									.addField(`**${this.client.user.username} - Config**`,
+										`**◎ Error:** Please enter a valid image URL! The end of the URL must end with one of the supported extensions. (\`.jpg, .jpeg, .png\`)`);
+								message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+								return;
+							}
+						});
+
+					return;
+				}
+			}
+
 			if (args[1] === 'channel') {
 				this.client.getTable = db.prepare('SELECT * FROM setwelcome WHERE guildid = ?');
 
@@ -1294,7 +1411,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Please mention a channel!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -1307,7 +1424,7 @@ module.exports = class extends Command {
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Welcome channel is already disabled!`);
-							message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						} else {
 							this.client.utils.messageDelete(message, 10000);
 
@@ -1315,7 +1432,7 @@ module.exports = class extends Command {
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Success:** Welcome channel disabled!`);
-							message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 							db.prepare('DELETE FROM setwelcome WHERE guildid = (@guildid)').run({
 								guildid: message.guild.id
 							});
@@ -1327,7 +1444,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Check if the entered categories name is correct and then type the command again. (The name is case sensitive!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					} else if (!status) {
 						const insert = db.prepare('INSERT INTO setwelcome (guildid, channel) VALUES (@guildid, @channel);');
 						insert.run({
@@ -1340,7 +1457,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Welcome channel is now set to ${lchan}`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					} else {
 						const update = db.prepare('UPDATE setwelcome SET channel = (@channel) WHERE guildid = (@guildid);');
 						update.run({
@@ -1353,7 +1470,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Welcome channel updated to ${lchan}`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					}
 				}
 			}
@@ -1367,7 +1484,7 @@ module.exports = class extends Command {
 					.addField('Ragnarok',
 						`**◎ Music:** To set the music role, the command is \`${prefix}config music role <@role>\`\nTo disable the role, use \`${prefix}config music role off\``)
 					.setTimestamp();
-				message.channel.send({ embed: embed });
+				message.channel.send({ embeds: [embed] });
 				return;
 			}
 			if (args[1] === 'role') {
@@ -1386,7 +1503,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** A role must be mentioned`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 					if (args[2] === 'off') {
@@ -1401,7 +1518,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Custom DJ Role disabled!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -1417,7 +1534,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** DJ Role updated to ${djRole}`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -1432,7 +1549,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** DJ Role updated to ${djRole}`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				}
 			}
 		}
@@ -1446,7 +1563,7 @@ module.exports = class extends Command {
 					.addField('Ragnarok',
 						`**◎ Mute:** To set the Mute role, the command is \`${prefix}config mute role <@role>\`\nTo disable the role, use \`${prefix}config mute role off\``)
 					.setTimestamp();
-				message.channel.send({ embed: embed });
+				message.channel.send({ embeds: [embed] });
 				return;
 			}
 			if (args[1] === 'role') {
@@ -1465,7 +1582,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** A role must be mentioned`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 					if (args[2] === 'off') {
@@ -1480,7 +1597,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Custom Mute Role disabled!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -1496,7 +1613,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Mute Role updated to ${muteRole}`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -1511,7 +1628,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Mute Role updated to ${muteRole}`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 			}
@@ -1527,7 +1644,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** I need the permission \`Manage Guild\` for this command!`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			this.client.getTable = db.prepare('SELECT * FROM invmanager WHERE guildid = ?');
@@ -1545,7 +1662,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Please mention a channel!`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 
@@ -1558,7 +1675,7 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Invite Manager is already disabled!`);
-						message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 
@@ -1568,7 +1685,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Invite Manager disabled!`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					db.prepare('DELETE FROM invmanager WHERE guildid = ?').run(message.guild.id);
 					return;
 				}
@@ -1579,7 +1696,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Check if the entered channel's name is correct and then type the command again.`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 				if (lchan.type === 'voice' || lchan.type === 'category') {
@@ -1589,7 +1706,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Check if the entered text channel's name is correct and then type the command again.`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 				if (!status) {
@@ -1609,7 +1726,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Invite Manager channel set to ${lchan}`);
-					message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 
@@ -1630,7 +1747,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** Invite Manager updated to ${lchan}`);
-				message.channel.send({ embed: embed }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 		}
