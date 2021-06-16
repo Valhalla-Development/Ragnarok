@@ -587,6 +587,13 @@ ajv@^8.0.1:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
+aki-api@^5.2.1:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/aki-api/-/aki-api-5.2.1.tgz#07b411d2db36f137350d663e2703f3348d027d19"
+  integrity sha512-hKncCXEBsP6JOkaUoXVQtLlIZw8VQsWroZNEjtNWW+CVWt6zmXrKEDJtZ00ycg4TzQemRZPH6PhvJnP9Lq3lIw==
+  dependencies:
+    axios "^0.21.1"
+
 ansi-colors@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/ansi-colors/-/ansi-colors-4.1.1.tgz#cbb9ae256bf750af1eab344f229aa27fe94ba348"
@@ -687,6 +694,13 @@ axios@^0.20.0:
   version "0.20.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.20.0.tgz#057ba30f04884694993a8cd07fa394cff11c50bd"
   integrity sha512-ANA4rr2BDcmmAQLOKft2fufrtuvlqR+cXNNinUmvfeSNCOF98PZL+7M/v1zIdGo7OLjEA9J2gXJL+j4zGsl0bA==
+  dependencies:
+    follow-redirects "^1.10.0"
+
+axios@^0.21.1:
+  version "0.21.1"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
+  integrity sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
   dependencies:
     follow-redirects "^1.10.0"
 
@@ -1102,10 +1116,10 @@ discord.js@^12.4.1, discord.js@^12.5.3:
     tweetnacl "^1.0.3"
     ws "^7.4.4"
 
-discord.js@^13.0.0-dev.41673b738232f64da2ded3b15be0f798135ae351:
-  version "13.0.0-dev.41673b738232f64da2ded3b15be0f798135ae351"
-  resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-13.0.0-dev.41673b738232f64da2ded3b15be0f798135ae351.tgz#9cf83033716d9c463bcf8d79332cacde5930d45d"
-  integrity sha512-19RNqRL0Rw6JS7yccDL3+tpyb/Y+ASYpgqUCIHDYAQH0njeHLMCKvSJyjH+Sm5GNdX7PNNXbfp5MSi7neB8Opg==
+discord.js@^13.0.0-dev.02693bc02f45980d8165820a103220f0027b96b7:
+  version "13.0.0-dev.02693bc02f45980d8165820a103220f0027b96b7"
+  resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-13.0.0-dev.02693bc02f45980d8165820a103220f0027b96b7.tgz#5baa6c758b970a1e6175d06373d4ab33eb6a4164"
+  integrity sha512-nzbmF5MLSjpdr8DS7SpC9q291NQ8XkHlledM4lz+uFJ4YgnMmTpi6e0FgF7v2kpTJPqTsXDRY3rWBv6Dat+08A==
   dependencies:
     "@discordjs/collection" "^0.1.6"
     "@discordjs/form-data" "^3.0.1"
@@ -1735,6 +1749,11 @@ ip@^1.1.5:
   resolved "https://registry.yarnpkg.com/ip/-/ip-1.1.5.tgz#bdded70114290828c0a039e72ef25f5aaec4354a"
   integrity sha1-vd7XARQpCCjAoDnnLvJfWq7ENUo=
 
+is-absolute-url@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/is-absolute-url/-/is-absolute-url-3.0.3.tgz#96c6a22b6a23929b11ea0afb1836c36ad4a5d698"
+  integrity sha512-opmNIX7uFnS96NtPmhWQgQx6/NYFgsUXYMllcfzwWKUMwfo8kku1TvE6hkNcH+Q1ts5cMVrsY7j0bxXQDciu9Q==
+
 is-extendable@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/is-extendable/-/is-extendable-0.1.1.tgz#62b110e289a471418e3ec36a617d472e301dfc89"
@@ -2257,6 +2276,11 @@ optionator@^0.9.1:
     prelude-ls "^1.2.1"
     type-check "^0.4.0"
     word-wrap "^1.2.3"
+
+ordinal@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/ordinal/-/ordinal-1.0.3.tgz#1a3c7726a61728112f50944ad7c35c06ae3a0d4d"
+  integrity sha512-cMddMgb2QElm8G7vdaa02jhUNbTSrhsgAGUz1OokD83uJTwSUn+nKoNoKVVaRa08yF6sgfO7Maou1+bgLd9rdQ==
 
 p-cancelable@^2.0.0:
   version "2.1.1"
@@ -3113,10 +3137,10 @@ vue-eslint-parser@~7.1.0:
     esquery "^1.0.1"
     lodash "^4.17.15"
 
-weky@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/weky/-/weky-2.0.1.tgz#f407f913336518d439535aea15c23bc55ca2695a"
-  integrity sha512-ZykpZyDuPw+3SrD/u7dA0+uUC59wlM281U3giv6pm00QUREt2e7HgFbFya6fUPuU+QeKorQV2KSQ5Kfz+VWbXg==
+weky@^2.0.3:
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/weky/-/weky-2.0.7.tgz#44bb8ee25384e02638bc628702461f2d5a17b440"
+  integrity sha512-OgHCj8GUUDgcoIxyKZpxUMs5iEIqpV1MZ304LGcTW8Byx6yzNZS8BU9H6bOkimrlHDhk3J6SV1w7or0UWeH8xQ==
   dependencies:
     discord-buttons "^3.0.1"
     mathjs "^9.4.2"
