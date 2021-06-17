@@ -159,10 +159,6 @@ module.exports = class extends Command {
 			}, comCooldownSeconds * 1000);
 
 			collector.on('collect', b => {
-				if (comCooldown.has(message.author.id)) {
-					comCooldown.delete(message.author.id);
-				}
-
 				this.client.utils.messageDelete(m, 0);
 
 				if (b.id === 'ads') {
@@ -322,10 +318,6 @@ module.exports = class extends Command {
 					return;
 				}
 			});
-		}
-
-		if (comCooldown.has(message.author.id)) {
-			comCooldown.delete(message.author.id);
 		}
 
 		if (args[0] === 'old') {
