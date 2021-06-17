@@ -83,9 +83,15 @@ module.exports = class extends Command {
 				.setLabel('Support Server')
 				.setURL('https://discord.gg/Q3ZhdRJ');
 
+			const buttonC = new MessageButton()
+				.setStyle('url')
+				.setLabel('Vote For Me')
+				.setURL('https://www.web2ink.com/wp-content/uploads/2020/03/coming-soon-advantage-plan..jpg');
+
 			const row = new MessageActionRow()
 				.addComponent(buttonA)
-				.addComponent(buttonB);
+				.addComponent(buttonB)
+				.addComponent(buttonC);
 
 			await message.channel.send({ component: row, embeds: [embed] });
 			return;
