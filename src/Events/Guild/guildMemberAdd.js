@@ -1,8 +1,10 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed, MessageAttachment } = require('discord.js');
+const { MessageEmbed, MessageAttachment, Permissions } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const Canvas = require('canvas');
+const ordinal = require('ordinal');
+const fetch = require('node-fetch');
 
 module.exports = class extends Event {
 
@@ -15,17 +17,13 @@ module.exports = class extends Event {
 		);
 
 		// AirReps Alert
-		if (member.guild.id === '657235952116170794') {
-			if (member.guild.memberCount === 9000) {
-				if (member.guild.roles.cache.find((r) => r.name === '9000th Member')) return;
-				this.client.channels.cache.get('657241621112553474').send(`We just hit 9000 members!\n`);
-				member.guild.roles.create({
-					data: {
-						name: '9000th Member',
-						color: 'BLUE'
-					},
-					reason: '9000th Member'
-				}).then((role) => member.roles.add(role)).catch(console.error);
+		if (member.guild.id === '495602800802398212') {
+			if (member.guild.memberCount === 31) {
+				if (member.guild.roles.cache.find((r) => r.name === '10,000th Member')) return;
+				this.client.channels.cache.get('657241621112553474').send(`We just hit 10,000 members!\n`);
+				member.guild.roles.create(
+					{ name: '10,000th Member', reason: '10,000th Member', color: 'BLUE' }
+				).then((role) => member.roles.add(role)).catch(console.error);
 			}
 		}
 
@@ -45,15 +43,45 @@ module.exports = class extends Event {
 				return;
 			}
 
+			let img;
+			if (setwelcome.image) {
+				await fetch(setwelcome.image)
+					.then(res => {
+						if (res.ok) {
+							img = setwelcome.image;
+						} else {
+							img = './Storage/Canvas/Images/welcome.jpg';
+						}
+					});
+			} else {
+				img = './Storage/Canvas/Images/welcome.jpg';
+			}
+			// this fails on https://imgbb.com/ for some reason, bug test, maybe you can do the loadimage on the config and catch the error?
 			const canvas = Canvas.createCanvas(700, 300);
 			const ctx = canvas.getContext('2d');
 
-			const background = await Canvas.loadImage(
-				'./Storage/Canvas/Images/welcome.jpg'
-			);
+			const background = await Canvas.loadImage(img);
 
 			ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
+			// bars
+			ctx.globalAlpha = 0.4;
+			ctx.rect(-1, 7, 702, 52);
+			ctx.fillStyle = '#000000';
+			ctx.fill();
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = '#ffffff';
+			ctx.stroke();
+
+			ctx.rect(-1, 240, 702, 52);
+			ctx.fillStyle = '#000000';
+			ctx.fill();
+			ctx.lineWidth = 1;
+			ctx.strokeStyle = '#ffffff';
+			ctx.stroke();
+			ctx.globalAlpha = 1;
+
+			// text
 			ctx.font = '42px Note';
 			ctx.fillStyle = '#ffffff';
 			ctx.textAlign = 'center';
@@ -63,6 +91,11 @@ module.exports = class extends Event {
 			ctx.fillStyle = '#ffffff';
 			ctx.textAlign = 'center';
 			ctx.fillText(`${member.user.username}`, canvas.width / 2, 280);
+
+			ctx.font = 'bold 20px Courier';
+			ctx.fillStyle = '#ffffff';
+			ctx.textAlign = 'left';
+			ctx.fillText(`${ordinal(member.guild.memberCount - member.guild.members.cache.filter((m) => m.user.bot).size)} member!`, 5, 232);
 
 			ctx.beginPath();
 			ctx.arc(350, 150, 85, 0, Math.PI * 2, true);
@@ -77,7 +110,7 @@ module.exports = class extends Event {
 
 			const attachment = new MessageAttachment(canvas.toBuffer(), 'welcome.jpg');
 
-			clientGrab.channels.cache.get(sendchannel).send(attachment).catch((err) => clientGrab.logger.error(err));
+			clientGrab.channels.cache.get(sendchannel).send({ files: [attachment] }).catch((err) => clientGrab.logger.error(err));
 		}
 		welcomeMessage(this.client);
 
@@ -101,7 +134,7 @@ module.exports = class extends Event {
 			const inviteID = db.prepare(`SELECT channel FROM invmanager WHERE guildid = ${member.guild.id};`).get();
 			if (!inviteID) return;
 
-			if (!member.guild.me.hasPermission('MANAGE_GUILD')) {
+			if (!member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
 				db.prepare('DELETE FROM invmanager WHERE guildid = ?').run(member.guild.id);
 				return;
 			}
@@ -130,7 +163,7 @@ module.exports = class extends Event {
 					`**◎ ${member.user} joined**; Invited by ${inviter} (${uses} invites)`)
 				.setFooter(`ID: ${member.user.id}`)
 				.setTimestamp();
-			logChannel.send(embed);
+			logChannel.send({ embeds: [embed] });
 		}
 		inviteManager(this.client);
 
@@ -148,7 +181,7 @@ module.exports = class extends Event {
 				.setDescription(`**◎ Member Joined:** <@${member.user.id}> - ${member.user.tag}`)
 				.setFooter(`ID: ${member.user.id}`)
 				.setTimestamp();
-			grabClient.channels.cache.get(logs).send(logembed);
+			grabClient.channels.cache.get(logs).send({ embeds: [logembed] });
 		}
 		logging(this.client);
 
