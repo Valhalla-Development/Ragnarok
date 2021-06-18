@@ -226,14 +226,14 @@ module.exports = class extends Event {
 		const table = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'scores\';').get();
 		if (!table['count(*)']) {
 			this.client.logger.ready('scores table created!');
-			db.prepare('CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER);').run();
+			db.prepare('CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, country TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_scores_id ON scores (id);').run();
 			db.pragma('synchronous = 1');
 			db.pragma('journal_mode = wal');
 		}
 
 		this.client.getScore = db.prepare('SELECT * FROM scores WHERE user = ? AND guild = ?');
-		this.client.setScore = db.prepare('INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);');
+		this.client.setScore = db.prepare('INSERT OR REPLACE INTO scores (id, user, guild, points, level, country) VALUES (@id, @user, @guild, @points, @level, @country);');
 
 		// adsprot table
 		const adsprottable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'adsprot\';').get();
@@ -361,7 +361,7 @@ module.exports = class extends Event {
 				const guild = this.client.guilds.cache.get(r.guildid);
 				if (!guild) return;
 
-				guild.fetchBans().then(bans => {
+				guild.bans.fetch().then(bans => {
 					const userCheck = bans.filter(ban => ban.user.id === r.userid);
 					if (!userCheck.first()) {
 						db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
@@ -371,7 +371,8 @@ module.exports = class extends Event {
 
 				if (Date.now() > r.endtime) {
 					try {
-						guild.members.unban(r.userid);
+						guild.members.unban(r.userid, 'tempban');
+						db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
 					} catch {
 						db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
 						return;
@@ -388,8 +389,6 @@ module.exports = class extends Event {
 							**◎ Reason:** Ban time ended.`)
 						.setTimestamp();
 					findChannel.send({ embeds: [embed] });
-
-					db.prepare('DELETE FROM mute WHERE id = ?').run(`${guild.id}-${r.userid}`);
 
 					const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`).get();
 					const dblogs = dbid.channel;
