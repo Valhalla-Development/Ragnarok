@@ -40,7 +40,7 @@ module.exports = class extends Command {
 			.setFooter('User Un-Ban Logs')
 			.setTimestamp();
 
-		message.guild.fetchBans().then((bans) => {
+		message.guild.bans.fetch().then((bans) => {
 			if (bans.size === 0) {
 				this.client.utils.messageDelete(message, 10000);
 
