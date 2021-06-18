@@ -8,6 +8,8 @@ const { MessageAttachment, MessageEmbed } = require('discord.js');
 const abbreviate = require('number-abbreviate');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
+const { parse } = require('twemoji-parser');
+const countryList = require('countries-list');
 const Canvas = require('canvas');
 Canvas.registerFont('./Storage/Canvas/Fonts/Shapirit.otf', {
 	family: 'Shapirit'
@@ -20,12 +22,15 @@ module.exports = class extends Command {
 			aliases: ['rank'],
 			description: 'Displays level of message author/tagged user.',
 			category: 'Fun',
-			usage: '[@user]',
+			usage: '[@user] [country <country-code> [off]]',
 			botPerms: ['ATTACH_FILES']
 		});
 	}
 
-	async run(message) {
+	async run(message, args) {
+		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
+		const { prefix } = prefixgrab;
+
 		const levelDb = db.prepare(`SELECT status FROM level WHERE guildid = ${message.guild.id};`).get();
 
 		if (levelDb) {
@@ -40,7 +45,84 @@ module.exports = class extends Command {
 		}
 
 		this.client.getScore = db.prepare('SELECT * FROM scores WHERE user = ? AND guild = ?');
-		this.client.setScore = db.prepare('INSERT OR REPLACE INTO scores (id, user, guild, points, level) VALUES (@id, @user, @guild, @points, @level);');
+		this.client.setScore = db.prepare('INSERT OR REPLACE INTO scores (id, user, guild, points, level, country) VALUES (@id, @user, @guild, @points, @level, @country);');
+
+		if (args[0] === 'country') {
+			if (!args[1]) {
+				this.client.utils.messageDelete(message, 10000);
+
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Level**`,
+						`**◎ Error:** Incorrect usage! An example of this command would be: \`${prefix}level country UK\``);
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
+			}
+
+			let score;
+			if (message.guild) {
+				score = this.client.getScore.get(message.author.id, message.guild.id);
+			}
+
+			if (!score) {
+				const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
+				const newData = {
+					id: `${message.guild.id}-${message.author.id}`,
+					user: message.author.id,
+					guild: message.guild.id,
+					points: xpAdd,
+					level: 0,
+					country: null
+				};
+				await this.client.setScore.run(newData);
+			}
+
+			if (args[1] === 'off') {
+				if (score && !score.country) {
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Level**`,
+							`**◎ Error:** You do not have a country set.`);
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				} else {
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Level**`,
+							`**◎ Success:** I have disabled your country flag!`);
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+
+					score.country = null;
+					await this.client.setScore.run(score);
+					return;
+				}
+			}
+
+			try {
+				const fetchCountry = countryList.countries[args[1].toUpperCase()];
+				const url = await parse(fetchCountry.emoji);
+
+				score.country = url[0].url;
+				await this.client.setScore.run(score);
+
+				this.client.utils.messageDelete(message, 10000);
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Level**`,
+						`**◎ Success:** You selected \`${fetchCountry.name}\``);
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
+			} catch {
+				this.client.utils.messageDelete(message, 10000);
+
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Config**`,
+						`**◎ Error:** Did you input a valid country code? Your input was: \`${args[1].toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`);
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
+			}
+		}
 
 		const user = message.mentions.users.first() || message.author;
 		if (user.bot) return;
@@ -64,7 +146,8 @@ module.exports = class extends Command {
 				user: message.author.id,
 				guild: message.guild.id,
 				points: xpAdd,
-				level: 0
+				level: 0,
+				country: null
 			};
 			await this.client.setScore.run(newData);
 		}
@@ -182,6 +265,20 @@ module.exports = class extends Command {
 			ctx.save();
 		}
 		drawXP(880, 165.4, xpLevel);
+
+		function drawEmote(x, y, img) {
+			ctx.drawImage(img, x, y, 50, 50);
+		}
+
+		if (score && score.country) {
+			try {
+				const img = await Canvas.loadImage(score.country);
+				// Draw Contry Emoji
+				drawEmote(450, 54.3, img);
+			} catch {
+			// do nothing
+			}
+		}
 
 		// Draw level
 		function drawLevel(x, y, txt, num, style) {
