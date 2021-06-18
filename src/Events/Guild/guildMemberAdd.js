@@ -177,7 +177,7 @@ module.exports = class extends Event {
 
 			const logembed = new MessageEmbed()
 				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
-				.setAuthor(member.guild, member.user.avatarURL())
+				.setAuthor(member.guild.name, member.user.avatarURL())
 				.setDescription(`**◎ Member Joined:** <@${member.user.id}> - ${member.user.tag}`)
 				.setFooter(`ID: ${member.user.id}`)
 				.setTimestamp();

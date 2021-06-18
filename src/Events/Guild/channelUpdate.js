@@ -53,7 +53,7 @@ module.exports = class extends Event {
 
 		const logembed = new MessageEmbed()
 			.setColor(this.client.utils.color(oldChannel.guild.me.displayHexColor))
-			.setAuthor(oldChannel.guild, oldChannel.guild.iconURL())
+			.setAuthor(oldChannel.guild.name, oldChannel.guild.iconURL())
 			.setTitle('Channel Updated')
 			.setFooter(`ID: ${newChannel.id}`)
 			.setTimestamp();

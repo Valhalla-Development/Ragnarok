@@ -5,14 +5,14 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 
 module.exports = class extends Event {
 
-	async run(guild, user) {
-		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`).get();
+	async run(ban) {
+		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${ban.guild.id};`).get();
 		if (!id) return;
 
 		const logs = id.channel;
 		if (!logs) return;
 
-		const entry = await guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD' }).then((audit) => audit.entries.first());
+		const entry = await ban.guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD' }).then((audit) => audit.entries.first());
 
 		const mod = entry.executor.id;
 
@@ -27,9 +27,9 @@ module.exports = class extends Event {
 
 		const embed = new MessageEmbed()
 			.setThumbnail(this.client.user.displayAvatarURL())
-			.setColor(this.client.utils.color(guild.me.displayHexColor))
+			.setColor(this.client.utils.color(ban.guild.me.displayHexColor))
 			.addField('User Banned',
-				`**◎ User:** ${user.tag}
+				`**◎ User:** ${ban.user.tag}
 				**◎ Reason:**: ${reason}
 				**◎ Moderator:**: ${mod}`)
 			.setFooter('User Ban Logs')
