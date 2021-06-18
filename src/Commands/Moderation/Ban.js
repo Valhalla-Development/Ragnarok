@@ -2,6 +2,7 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed, Permissions } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
+const { MessageButton } = require('discord-buttons');
 
 module.exports = class extends Command {
 
@@ -123,9 +124,60 @@ module.exports = class extends Command {
 			.setFooter('User Ban Logs')
 			.setTimestamp();
 
+		const buttonA = new MessageButton()
+			.setStyle('green')
+			.setLabel('Unban')
+			.setID('unban');
+
 		if (id && id.channel && id.channel === message.channel.id) return;
 
-		message.channel.send({ embeds: [embed] });
+		const m = await message.channel.send({ component: buttonA, embeds: [embed] });
+		const filter = (but) => but.clicker.user.id === message.author.id;
+
+		const collector = m.createButtonCollector(filter, { time: 10000 });
+
+		collector.on('collect', b => {
+			if (b.id === 'unban') {
+				message.guild.bans.fetch().then((bans) => {
+					if (bans.size === 0) {
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed1 = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Un-Ban**`,
+								`**◎ Error:** An error occured, is the user banned?`);
+						message.channel.send({ embeds: [embed1] }).then((me) => this.client.utils.deletableCheck(me, 10000));
+						return;
+					}
+					const bUser = bans.find(ba => ba.user.id === user.user.id);
+					if (!bUser) {
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed2 = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Un-Ban**`,
+								`**◎ Error:** The user specified is not banned!`);
+						message.channel.send({ embeds: [embed2] }).then((me) => this.client.utils.deletableCheck(me, 10000));
+						return;
+					}
+
+					const unbanEmbed = new MessageEmbed()
+						.setThumbnail(this.client.user.displayAvatarURL())
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField('Action | Un-Ban',
+							`**◎ User ID:** ${user.user.id}
+				**◎ Moderator:**: ${message.author.tag}`)
+						.setFooter('User Un-Ban Logs')
+						.setTimestamp();
+					message.guild.members.unban(bUser.user).then(() => message.channel.send({ embeds: [unbanEmbed] }));
+					collector.stop('unbanned');
+				});
+			}
+		});
+		collector.on('end', () => {
+			buttonA.setDisabled();
+			m.edit({ component: buttonA, embeds: [embed] });
+		});
 
 		if (id) {
 			const logch = id.channel;
