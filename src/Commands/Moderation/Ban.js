@@ -87,6 +87,20 @@ module.exports = class extends Command {
 		let reason = args.slice(1).join(' ');
 		if (!reason) reason = 'No reason given.';
 
+		const authoMes = new MessageEmbed()
+			.setThumbnail(this.client.user.displayAvatarURL())
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.addField(`You have been banned from: \`${message.guild.name}\``,
+				`**◎ Reason:**: ${reason}
+				**◎ Moderator:**: ${message.author.tag}`)
+			.setFooter('You have been banned')
+			.setTimestamp();
+		try {
+			user.send({ embeds: [authoMes] });
+		} catch {
+			// Do nothing
+		}
+
 		// Kick the user and send the embed
 		message.guild.members.ban(user, { reason: `${reason}` }).catch(() => {
 			this.client.utils.messageDelete(message, 10000);
@@ -108,6 +122,9 @@ module.exports = class extends Command {
 				**◎ Moderator:**: ${message.author.tag}`)
 			.setFooter('User Ban Logs')
 			.setTimestamp();
+
+		if (id && id.channel && id.channel === message.channel.id) return;
+
 		message.channel.send({ embeds: [embed] });
 
 		if (id) {

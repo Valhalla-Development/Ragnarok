@@ -29,7 +29,7 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
-					`**◎ Error:** Run \`${prefix}help ban\` If you are unsure.`);
+					`**◎ Error:** Run \`${prefix}help tempban\` If you are unsure.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -134,8 +134,23 @@ module.exports = class extends Command {
 		let reason = args.slice(2).join(' ');
 		if (!reason) reason = 'No reason given.';
 
+		const authoMes = new MessageEmbed()
+			.setThumbnail(this.client.user.displayAvatarURL())
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.addField(`You have been temporarily banned from: \`${message.guild.name}\``,
+				`**◎ Reason:**: ${reason}
+				**◎ Time:** ${bantime}
+				**◎ Moderator:**: ${message.author.tag}`)
+			.setFooter('You have been temporarily banned')
+			.setTimestamp();
+		try {
+			user.send({ embeds: [authoMes] });
+		} catch {
+			// Do nothing
+		}
+
 		// Kick the user and send the embed
-		await message.guild.members.ban(user, { reason: `${reason}` }).catch(() => {
+		await message.guild.members.ban(user, { reason: `${reason}-tempban` }).catch(() => {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
@@ -168,9 +183,12 @@ module.exports = class extends Command {
 				**◎ Moderator:**: ${message.author.tag}`)
 			.setFooter('User Ban Logs')
 			.setTimestamp();
-		message.channel.send({ embeds: [embed] });
 
 		const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
+		if (dbid && dbid.channel && dbid.channel === message.channel.id) return;
+
+		message.channel.send({ embeds: [embed] });
+
 		if (!dbid) return;
 		const dblogs = dbid.channel;
 		const chnCheck = this.client.channels.cache.get(dblogs);
