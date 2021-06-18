@@ -37,6 +37,18 @@ module.exports = class extends Command {
 			this.client.emit('guildMemberRemove', message.member);
 			return;
 		}
+		if (args[0] === 'guildBanAdd') {
+			this.client.emit('guildBanAdd', message.member);
+			return;
+		}
+		if (args[0] === 'channelUpdate') {
+			this.client.emit('channelUpdate', message.member);
+			return;
+		}
+		if (args[0] === 'guildBanRemove') {
+			this.client.emit('guildBanRemove', message.member);
+			return;
+		}
 	}
 
 };
