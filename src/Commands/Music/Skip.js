@@ -63,9 +63,10 @@ module.exports = class extends Command {
 
 		if (message.member.roles.cache.has(role.id) || message.author.id === message.guild.ownerID) {
 			if (player.trackRepeat) {
+				player.seek(0);
+
 				this.client.utils.messageDelete(message, 10000);
 
-				player.stop();
 				const success1 = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Skip**`,
@@ -104,6 +105,8 @@ module.exports = class extends Command {
 			setTimeout(() => {
 				if (skip.total >= Math.round(userCount / 2)) {
 					if (player.trackRepeat) {
+						player.seek(0);
+
 						this.client.utils.messageDelete(message, 10000);
 
 						const success1 = new MessageEmbed()
