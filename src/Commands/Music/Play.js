@@ -5,6 +5,7 @@ const talkedRecently = new Set();
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const prettyMilliseconds = require('pretty-ms');
+const { MessageButton, MessageActionRow } = require('discord-buttons');
 
 module.exports = class extends Command {
 
@@ -109,7 +110,6 @@ module.exports = class extends Command {
 			voiceChannel: message.member.voice.channel.id,
 			textChannel: message.channel.id
 		});
-
 		await this.client.manager.search(args.join(' '), message.author).then(async (res) => {
 			talkedRecently.add(message.author.id);
 
@@ -122,13 +122,14 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const noTrack = new MessageEmbed()
-					.setAuthor('Error', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
+					.setAuthor('Error', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setDescription(`No tracks found.`);
 				message.channel.send({ embeds: [noTrack] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 			player.set('textChannel', message.channel);
+
 			switch (res.loadType) {
 				case 'TRACK_LOADED': {
 					this.client.utils.messageDelete(message, 10000);
@@ -152,7 +153,7 @@ module.exports = class extends Command {
 
 					if (player.queue.size) {
 						const trackloade = new MessageEmbed()
-							.setAuthor('Enqueueing.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
+							.setAuthor('Enqueueing.', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.setDescription(`\`${res.tracks[0].title}\`\nDuration: \`${prettyMilliseconds(res.tracks[0].duration, { colonNotation: true })}\`\nRequested by: ${message.author}`);
 						message.channel.send({ embeds: [trackloade] });
@@ -161,96 +162,193 @@ module.exports = class extends Command {
 				}
 
 				case 'SEARCH_RESULT': {
+					const buttonA = new MessageButton()
+						.setStyle('green')
+						.setEmoji('1️⃣')
+						.setID('one');
+
+					const buttonB = new MessageButton()
+						.setStyle('green')
+						.setEmoji('2️⃣')
+						.setID('two');
+
+					const buttonC = new MessageButton()
+						.setStyle('green')
+						.setEmoji('3️⃣')
+						.setID('three');
+
+					const buttonD = new MessageButton()
+						.setStyle('green')
+						.setEmoji('4️⃣')
+						.setID('four');
+
+					const buttonE = new MessageButton()
+						.setStyle('green')
+						.setEmoji('5️⃣')
+						.setID('five');
+
+					const buttonF = new MessageButton()
+						.setStyle('red')
+						.setLabel('Cancel')
+						.setID('cancel');
+
+					const row = new MessageActionRow()
+						.addComponent(buttonA)
+						.addComponent(buttonB)
+						.addComponent(buttonC)
+						.addComponent(buttonD)
+						.addComponent(buttonE);
+
 					let index = 1;
-					const tracks = res.tracks.slice(0, 5);
+					const getTracks = res.tracks.filter(t => t.duration <= 900000);
+					const tracks = getTracks.slice(0, 5);
+
+					if (!tracks.length) {
+						this.client.utils.messageDelete(message, 10000);
+
+						const noTrack = new MessageEmbed()
+							.setAuthor('Error', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.setDescription(`No tracks found.`);
+						message.channel.send({ embeds: [noTrack] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Play**`,
-							tracks.map((video) => `**◎ ${index++} -** ${video.title} - \`${prettyMilliseconds(video.duration, { colonNotation: true })}\``))
-						.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-						.setFooter("Type the track number you wish to play. You have 30 seconds to respond.\nType 'cancel' to cancel the selection");
+							`${tracks.map((video) => `**◎ ${index++} -** ${video.title} - \`${prettyMilliseconds(video.duration, { colorNotation: true })}\``).join('\n')}`)
+						.setThumbnail('https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+						.setFooter('Click the corresponding button for the track you wish to play. You have 30 seconds to respond.');
 
-					await message.channel.send({ embeds: [embed] }).then((searchEmbed) => {
-						const collector = message.channel.createMessageCollector((m) => m.author.id === message.author.id && new RegExp('^([1-5]|cancel)$', 'i').test(m.content), {
-							time: 30000,
-							max: 1
-						});
+					const searchEmbed = await message.channel.send({ components: [row], button: buttonF, embeds: [embed] });
+					const filter = (but) => but.clicker.user.id !== this.client.user.id;
 
-						collector.on('collect', (m) => {
-							if (/cancel/i.test(m.content)) return collector.stop('cancelled');
-							const track = tracks[Number(m.content) - 1];
-							if (track.duration >= 600000) {
-								this.client.utils.deletableCheck(searchEmbed, 0);
-								this.client.utils.deletableCheck(m, 0);
-								const embed1 = new MessageEmbed()
-									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-									.addField(`**${this.client.user.username} - Play**`,
-										`**◎ Error:** Duration is over 10 minutes! Cancelling playback`);
-								message.channel.send({ embeds: [embed1] }).then((msg) => this.client.utils.deletableCheck(msg, 10000));
-								if (!player.queue.current) {
-									player.destroy(message.guild.id);
-								}
-								return;
+					const collector = searchEmbed.createButtonCollector(filter, { time: 30000 });
+
+					collector.on('collect', async (b) => {
+						if (b.clicker.user.id !== message.author.id) {
+							const wrongUser = new MessageEmbed()
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.addField(`**${this.client.user.username} - Play**`,
+									`**◎ Error:** Only the message author can choose a track!`);
+							b.reply.send({ embeds: [wrongUser] }, true);
+							return;
+						}
+
+						if (b.id === 'cancel') {
+							collector.stop('cancel');
+						}
+
+						let track;
+						if (b.id === 'one') {
+							track = tracks[Number(1) - 1];
+						}
+						if (b.id === 'two') {
+							track = tracks[Number(2) - 1];
+						}
+						if (b.id === 'three') {
+							track = tracks[Number(3) - 1];
+						}
+						if (b.id === 'four') {
+							track = tracks[Number(4) - 1];
+						}
+						if (b.id === 'five') {
+							track = tracks[Number(5) - 1];
+						}
+
+						if (track.duration >= 600000) {
+							collector.stop('duration');
+							return;
+						}
+
+						player.queue.add(track);
+
+						if (!player.playing && !player.paused && !player.queue.size) {
+							player.setVoiceChannel(message.member.voice.channel.id);
+							player.play();
+						}
+
+						if (player.queue.size) {
+							const trackloade = new MessageEmbed()
+								.setAuthor('Enqueuing Track.', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.setDescription(`\`${track.title}\`\nDuration: \`${prettyMilliseconds(track.duration, { colonNotation: true })}\`\nRequested by: ${message.author}`);
+							message.channel.send({ embeds: [trackloade] });
+						}
+
+						collector.stop('playing');
+					});
+
+					collector.on('end', (_, reason) => {
+						this.client.utils.deletableCheck(searchEmbed, 0);
+
+						if (reason === 'duration') {
+							const embed1 = new MessageEmbed()
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.addField(`**${this.client.user.username} - Play**`,
+									`**◎ Error:** Duration is over 10 minutes! Cancelling playback`);
+							message.channel.send({ embeds: [embed1] }).then((msg) => this.client.utils.deletableCheck(msg, 10000));
+							if (!player.queue.current) {
+								player.destroy(message.guild.id);
 							}
-							this.client.utils.deletableCheck(searchEmbed, 0);
-							this.client.utils.deletableCheck(m, 0);
-							player.queue.add(track);
-							if (!player.playing && !player.paused && !player.queue.size) {
-								player.setVoiceChannel(message.member.voice.channel.id);
-								player.play();
+							return;
+						}
+
+						if (['time', 'cancel'].includes(reason)) {
+							if (talkedRecently.has(message.author.id)) {
+								talkedRecently.delete(message.author.id);
 							}
 
-							if (player.queue.size) {
-								const trackloade = new MessageEmbed()
-									.setAuthor('Enqueuing Track.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-									.setDescription(`\`${track.title}\`\nDuration: \`${prettyMilliseconds(track.duration, { colonNotation: true })}\`\nRequested by: ${message.author}`);
-								message.channel.send({ embeds: [trackloade] });
+							const upperReason = reason.charAt(0).toUpperCase() + reason.substring(1);
+							const cancelE = new MessageEmbed()
+								.setAuthor(' Cancelled', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.setDescription(`Search results cancelled.\nReason: \`${upperReason}\``);
+							message.channel.send({ embeds: [cancelE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							this.client.utils.deletableCheck(searchEmbed, 10000);
+							if (!player.queue.current) {
+								player.destroy(message.guild.id);
 							}
-						});
-
-						collector.on('end', (_, reason) => {
-							if (['time', 'cancelled'].includes(reason)) {
-								this.client.utils.deletableCheck(searchEmbed, 0);
-
-								if (talkedRecently.has(message.author.id)) {
-									talkedRecently.delete(message.author.id);
-								}
-
-								const upperReason = reason.charAt(0).toUpperCase() + reason.substring(1);
-								const cancelE = new MessageEmbed()
-									.setAuthor(' Cancelled', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
-									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-									.setDescription(`Search results cancelled.\nReason: \`${upperReason}\``);
-								message.channel.send({ embeds: [cancelE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-								this.client.utils.deletableCheck(searchEmbed, 10000);
-								if (!player.queue.current) {
-									player.destroy(message.guild.id);
-								}
-								return;
-							}
-						});
+							return;
+						}
 					});
 					break;
 				}
+
 				case 'PLAYLIST_LOADED': {
 					this.client.utils.messageDelete(message, 10000);
 					message.channel.startTyping();
 					message.channel.send({ content: 'Enqueuing Tracks...' }).then((enq) => {
-						res.tracks.forEach((track) => player.queue.add(track));
-						const duration = prettyMilliseconds(res.tracks.reduce((acc, cur) => ({
+						const filterDur = res.tracks.filter(t => t.duration <= 900000);
+
+						if (!filterDur.length) {
+							this.client.utils.messageDelete(message, 10000);
+
+							const noTrack = new MessageEmbed()
+								.setAuthor('Error', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.setDescription(`No tracks found.`);
+							message.channel.send({ embeds: [noTrack] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							return;
+						}
+
+						filterDur.forEach((track) => player.queue.add(track));
+
+						const duration = prettyMilliseconds(filterDur.reduce((acc, cur) => ({
 							duration: acc.duration + cur.duration
 						})).duration, { colonNotation: true });
-						if (!player.playing && !player.paused && player.queue.size === res.tracks.length) {
+
+						if (!player.playing && !player.paused && player.queue.size === filterDur.length - 1) {
 							player.setVoiceChannel(message.member.voice.channel.id);
 							player.play();
 						}
 
 						if (player.queue.size) {
 							const playlistload = new MessageEmbed()
-								.setAuthor('Enqueuing Playlist.', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
+								.setAuthor('Enqueuing Playlist.', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-								.setDescription(`Enqueuing \`${res.tracks.length}\` tracks in playlist \`${res.playlist.name}\`\nTotal duration: \`${duration}\``);
+								.setDescription(`Enqueuing \`${filterDur.length}\` tracks in playlist \`${res.playlist.name}\`\nTotal duration: \`${duration}\``);
 							message.channel.send({ embeds: [playlistload] });
 						}
 						this.client.utils.deletableCheck(enq, 0);
