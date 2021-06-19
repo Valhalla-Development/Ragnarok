@@ -151,7 +151,7 @@ module.exports = class RagnarokClient extends Client {
 					}
 					const textChannel = player.get('textChannel');
 					const embed = new MessageEmbed()
-						.setAuthor('Now Playing:', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
+						.setAuthor('Now Playing:', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
 						.setColor(textChannel.guild.me.displayHexColor || '36393F')
 						.setDescription(`Now playing: \`${track.title}\`\nDuration: \`${prettyMilliseconds(track.duration, { colonNotation: true })}\`\nRequested by: ${track.requester}`);
 					grabClient.channels.cache.get(player.textChannel).send({ embeds: [embed] });
@@ -162,6 +162,8 @@ module.exports = class RagnarokClient extends Client {
 					}
 					const textChannel = player.get('textChannel');
 					if (!player.queue.size) {
+						player.destroy(player.guild.id);
+
 						const embed = new MessageEmbed()
 							.addField(`**${grabClient.user.username} - Music**`,
 								`**◎ Success:** <:MusicLogo:684822003110117466> Track has ended.`)
@@ -169,7 +171,6 @@ module.exports = class RagnarokClient extends Client {
 						grabClient.channels.cache.get(player.textChannel).send({ embeds: [embed] });
 						return;
 					}
-					player.destroy(player.guild.id);
 				})
 				.on('trackStuck', (player) => {
 					const textChannel = player.get('textChannel');
