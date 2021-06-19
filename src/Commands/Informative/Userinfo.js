@@ -21,10 +21,19 @@ const flags = {
 };
 
 const status = {
-	online: '<:Online:748655722740580403>',
-	idle: '<:Idle:748655722639917117>',
-	dnd: '<:DND:748655722979393657>',
-	offline: '<:Offline:748655722677403850>'
+	online: '<:Online:748655722740580403> Online',
+	idle: '<:Idle:748655722639917117> Idle',
+	dnd: '<:DND:748655722979393657> DnD',
+	offline: '<:Offline:748655722677403850> Offline'
+};
+
+const types = {
+	PLAYING: 'Playing',
+	STREAMING: 'Streaming',
+	LISTENING: 'Listening',
+	WATCHING: 'Watching',
+	CUSTOM: 'Custom',
+	COMPETING: 'Competing'
 };
 
 module.exports = class extends Command {
@@ -47,23 +56,35 @@ module.exports = class extends Command {
 		const userFlags = member.user.flags.toArray();
 		if (member.user.bot && !userFlags.includes('VERIFIED_BOT')) userFlags.push('BOT_ACCOUNT');
 
+		const presence = [];
+
+		if (member.user.presence.activities[0]) {
+			presence.push(`**${types[member.user.presence.activities[0].type]}:** ${member.user.presence.activities[0].name}`);
+
+			if (member.user.presence.activities[0].details) {
+				presence.push(`**Details:** ${member.user.presence.activities[0].details}`);
+			}
+			if (member.user.presence.activities[0].state) {
+				presence.push(`**State:** ${member.user.presence.activities[0].state}`);
+			}
+		}
+
 		const embed = new MessageEmbed()
-			.setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 512 }))
-			.setColor(this.client.utils.color(member.displayHexColor))
-			.addField('User',
-				`**◎ Username:** ${member.user.username}#${member.user.discriminator}
-				**◎ ID:** ${member.id}
-				**◎ Flags:** ${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}
-				**◎ Avatar:** [Link to avatar](${member.user.displayAvatarURL({ dynamic: true })})
-				**◎ Time Created:** ${moment(member.user.createdTimestamp).format('LT')} ${moment(member.user.createdTimestamp).format('LL')} - ${moment(member.user.createdTimestamp).fromNow()}
-				**◎ Status:** ${status[member.user.presence.status]}
-				**◎ Game:** ${member.user.presence.activities[0] ? member.user.presence.activities[0].name : 'Not playing a game.'}
-				\u200b`)
-			.addField('Member',
-				`**◎ Highest Role:** ${member.roles.highest.id === message.guild.id ? 'None' : member.roles.highest}
-				**◎ Server Join Data:** ${moment(member.joinedAt).format('LL LTS')}
-				${roles.length ? `**◎ Roles [${roles.length}]:**` : '**◎ Roles:** None'} ${roles.length < 10 ? roles.join(', ') : roles.length > 9 ? this.client.utils.trimArray(roles) : 'None'}
-				\u200b`);
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+			.setAuthor(`Viewing information for ${member.user.username}`, member.user.displayAvatarURL({ dynamic: true }))
+			.addField(`Member information`,
+				`**◎ 👑 User:** ${member.user}
+				**◎ 🆔 ID:** ${member.user.id}
+				**◎ 📆 Created At** ${moment(member.user.createdTimestamp).format('ddd, MMM Do YYYY h:mm a')} - ${moment(member.user.createdTimestamp).fromNow()}
+				**◎ 📆 Joined At** ${moment(member.joinedAt).format('ddd, MMM Do YYYY h:mm a')} - ${moment(member.joinedAt).fromNow()}
+				**◎ 🗺️ Flags:** ${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}
+				**◎ <a:Booster:855593231294267412> Server Booster:** ${member.premiumSinceTimestamp ? `${moment(member.premiumSinceTimestamp).format('ddd, MMM Do YYYY h:mm a')} - ${moment(member.premiumSinceTimestamp).fromNow()}` : 'No'}`)
+
+			.addFields({ name: `**Roles: [${roles.length}]**`, value: `${roles.length < 10 ? roles.join('\n') : roles.length >= 10 ? this.client.utils.trimArray(roles, 10).join('\n') : 'None'}`, inline: true },
+				{ name: `**Status:**`, value: `${status[member.user.presence.status]}`, inline: true },
+				{ name: `**Presence:**`, value: `${presence.length ? presence.join('\n') : 'None'}`, inline: true })
+			.setFooter(`${this.client.user.username}`, message.guild.iconURL({ dynamic: true }));
 		message.channel.send({ embeds: [embed] });
 	}
 
