@@ -1,7 +1,7 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-unused-vars */
 const Command = require('../../Structures/Command');
-const { MessageEmbed, MessageAttachment } = require('discord.js');
+const { MessageEmbed, MessageAttachment, Permissions } = require('discord.js');
 const { inspect } = require('util');
 const { Type } = require('@extreme_hero/deeptype');
 const SQLite = require('better-sqlite3');
