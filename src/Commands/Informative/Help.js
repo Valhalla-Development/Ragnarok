@@ -86,7 +86,7 @@ module.exports = class extends Command {
 			const buttonC = new MessageButton()
 				.setStyle('url')
 				.setLabel('Vote For Me')
-				.setURL('https://www.web2ink.com/wp-content/uploads/2020/03/coming-soon-advantage-plan..jpg');
+				.setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
 
 			const row = new MessageActionRow()
 				.addComponent(buttonA)
