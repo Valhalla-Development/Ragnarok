@@ -1,7 +1,7 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable no-inline-comments */
 const Command = require('../../Structures/Command');
-const { MessageEmbed, MessageAttachment } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const ms = require('ms');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -98,9 +98,6 @@ module.exports = class extends Command {
 			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
 
 			if (goldChance < 0.80) { // 80% of this happening
-				const goldNuggetImage = new MessageAttachment('./Storage/Images/Economy/GoldNugget.png', 'GoldNugget.png');
-
-				embed.attachFiles(goldNuggetImage);
 				embed.setThumbnail('attachment://GoldNugget.png');
 
 				name = 'Gold Nugget';
@@ -128,17 +125,14 @@ module.exports = class extends Command {
 			embed.addField(`**${this.client.user.username} - Farm**`,
 				`**◎ Success:** You found a ${name}! You are extremely lucky, there is only a \`0.18%\` of finding this! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
 
-			message.channel.send({ embeds: [embed] });
+			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/GoldNugget.png'] });
 			return;
 		} else if (farmChance >= 0.0018 && farmChance < 0.0318) { // 3%
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			const barleyImage = new MessageAttachment('./Storage/Images/Economy/Barley.png', 'Barley.png');
-
 			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
-			embed.attachFiles(barleyImage);
 			embed.setThumbnail('attachment://Barley.png');
 
 			name = 'Barley';
@@ -164,16 +158,13 @@ module.exports = class extends Command {
 
 			embed.addField(`**${this.client.user.username} - Farm**`,
 				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-			message.channel.send({ embeds: [embed] });
+			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Barley.png'] });
 			return;
 		} else if (farmChance >= 0.0318 && farmChance < 0.0918) { // 6%
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			const spinachImage = new MessageAttachment('./Storage/Images/Economy/Spinach.png', 'Spinach.png');
-
-			embed.attachFiles(spinachImage);
 			embed.setThumbnail('attachment://Spinach.png');
 
 			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
@@ -201,16 +192,13 @@ module.exports = class extends Command {
 
 			embed.addField(`**${this.client.user.username} - Farm**`,
 				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-			message.channel.send({ embeds: [embed] });
+			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Spinach.png'] });
 			return;
 		} else if (farmChance >= 0.0918 && farmChance < 0.3718) { // 28%
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			const strawberryImage = new MessageAttachment('./Storage/Images/Economy/Strawberry.png', 'Strawberry.png');
-
-			embed.attachFiles(strawberryImage);
 			embed.setThumbnail('attachment://Strawberry.png');
 
 			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
@@ -238,16 +226,13 @@ module.exports = class extends Command {
 
 			embed.addField(`**${this.client.user.username} - Farm**`,
 				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-			message.channel.send({ embeds: [embed] });
+			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Strawberry.png'] });
 			return;
 		} else if (farmChance >= 0.3718 && farmChance < 0.8718) {
 			const embed = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			const lettuceImage = new MessageAttachment('./Storage/Images/Economy/Lettuce.png', 'Lettuce.png');
-
-			embed.attachFiles(lettuceImage);
 			embed.setThumbnail('attachment://Lettuce.png');
 
 			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
@@ -275,7 +260,7 @@ module.exports = class extends Command {
 
 			embed.addField(`**${this.client.user.username} - Farm**`,
 				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-			message.channel.send({ embeds: [embed] });
+			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Lettuce.png'] });
 			return;
 		} else { // 12.82%
 			const embed = new MessageEmbed()

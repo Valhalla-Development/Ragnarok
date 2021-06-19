@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, MessageAttachment } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -29,16 +29,13 @@ module.exports = class extends Command {
 
 		const bankCalc = balance.cash + balance.bank;
 
-		const bankImage = new MessageAttachment('./Storage/Images/Economy/Bank.png', 'Bank.png');
-
 		const depAll = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.attachFiles(bankImage)
 			.setThumbnail('attachment://Bank.png')
 			.addField(`**${this.client.user.username} - Bank**`,
 				`**◎ Success:** You have deposited <:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\` to your bank.`);
-		message.channel.send({ embeds: [depAll] });
+		message.channel.send({ embeds: [depAll], files: ['./Storage/Images/Economy/Bank.png'] });
 
 		balance.cash = 0;
 		balance.bank = bankCalc;

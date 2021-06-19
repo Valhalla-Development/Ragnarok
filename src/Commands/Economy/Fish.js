@@ -1,7 +1,7 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable no-inline-comments */
 const Command = require('../../Structures/Command');
-const { MessageEmbed, MessageAttachment } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const ms = require('ms');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -71,16 +71,13 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const treasureImage = new MessageAttachment('./Storage/Images/Economy/Treasure.png', 'Treasure.png');
-
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.attachFiles(treasureImage)
 					.setThumbnail('attachment://Treasure.png')
 					.addField(`**${this.client.user.username} - Fish**`,
 						`**◎ Success:** You found hidden treasure! You are extremely lucky, there is only a \`0.18%\` of finding this! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-				message.channel.send({ embeds: [embed] });
+				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Treasure.png'] });
 				return;
 			} else if (fishChance >= 0.0018 && fishChance < 0.0318) { // 3%
 				fishPrice = this.client.ecoPrices.pufferfish;
@@ -103,16 +100,13 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const pufferfishImage = new MessageAttachment('./Storage/Images/Economy/Pufferfish.png', 'Pufferfish.png');
-
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.attachFiles(pufferfishImage)
 					.setThumbnail('attachment://Pufferfish.png')
 					.addField(`**${this.client.user.username} - Fish**`,
 						`**◎ Success:** You caught a Pufferfish! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-				message.channel.send({ embeds: [embed] });
+				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Pufferfish.png'] });
 				return;
 			} else if (fishChance >= 0.0318 && fishChance < 0.0918) { // 6%
 				fishPrice = this.client.ecoPrices.swordfish;
@@ -135,16 +129,13 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const swordfishImage = new MessageAttachment('./Storage/Images/Economy/Swordfish.png', 'Swordfish.png');
-
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.attachFiles(swordfishImage)
 					.setThumbnail('attachment://Swordfish.png')
 					.addField(`**${this.client.user.username} - Fish**`,
 						`**◎ Success:** You caught a Swordfish! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-				message.channel.send({ embeds: [embed] });
+				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Swordfish.png'] });
 				return;
 			} else if (fishChance >= 0.0918 && fishChance < 0.3718) { // 28%
 				fishPrice = this.client.ecoPrices.kingSalmon;
@@ -167,16 +158,13 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const kingSalmonImage = new MessageAttachment('./Storage/Images/Economy/KingSalmon.png', 'KingSalmon.png');
-
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.attachFiles(kingSalmonImage)
 					.setThumbnail('attachment://KingSalmon.png')
 					.addField(`**${this.client.user.username} - Fish**`,
 						`**◎ Success:** You caught a King Salmon! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-				message.channel.send({ embeds: [embed] });
+				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/KingSalmon.png'] });
 				return;
 			} else if (fishChance >= 0.3718 && fishChance < 0.8718) { // 50%
 				fishPrice = this.client.ecoPrices.trout;
@@ -199,16 +187,13 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const troutImage = new MessageAttachment('./Storage/Images/Economy/Trout.png', 'Trout.png');
-
 				const embed = new MessageEmbed()
 					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.attachFiles(troutImage)
 					.setThumbnail('attachment://Trout.png')
 					.addField(`**${this.client.user.username} - Fish**`,
 						`**◎ Success:** You caught a Trout! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
-				message.channel.send({ embeds: [embed] });
+				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Trout.png'] });
 				return;
 			} else { // 12.82&
 				const endTime = new Date().getTime() + this.client.ecoPrices.fishFailtime;
