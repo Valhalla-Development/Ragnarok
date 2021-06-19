@@ -83,8 +83,8 @@ module.exports = class extends Command {
 
 			.addFields({ name: `**Roles: [${roles.length}]**`, value: `${roles.length < 10 ? roles.join('\n') : roles.length >= 10 ? this.client.utils.trimArray(roles, 10).join('\n') : 'None'}`, inline: true },
 				{ name: `**Status:**`, value: `${status[member.user.presence.status]}`, inline: true },
-				{ name: `**Presence:**`, value: `${presence.length ? presence.join('\n') : 'None'}`, inline: true })
-			.setFooter(`${this.client.user.username}`, message.guild.iconURL({ dynamic: true }));
+				{ name: `**Activity:**`, value: `${presence.length ? presence.join('\n') : 'None'}`, inline: true })
+			.setFooter(`${this.client.user.username}`, this.client.user.displayAvatarURL({ dynamic: true }));
 		message.channel.send({ embeds: [embed] });
 	}
 

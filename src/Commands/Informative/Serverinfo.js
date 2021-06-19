@@ -39,6 +39,7 @@ module.exports = class extends Command {
 		const { prefix } = prefixgrab;
 
 		const roles = message.guild.roles.cache
+			.sort((a, b) => b.position - a.position)
 			.map(role => role.toString())
 			.slice(0, -1);
 
@@ -53,7 +54,7 @@ module.exports = class extends Command {
 				.setAuthor(`Viewing information for ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
 				.addField(`**Server Roles [${roles.length}]**`,
 					`${roles.length < 30 ? roles.join(', ') : roles.length >= 30 ? this.client.utils.trimArray(roles, 30) : 'None'}`)
-				.setFooter(`${this.client.user.username}`, message.guild.iconURL({ dynamic: false }));
+				.setFooter(`${this.client.user.username}`, this.client.user.displayAvatarURL({ dynamic: true }));
 			message.channel.send({ embeds: [embed] });
 			return;
 		}
@@ -64,7 +65,7 @@ module.exports = class extends Command {
 				.setAuthor(`Viewing information for ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
 				.addField(`**Server Roles [${roles.length}]**`,
 					`${emojiMap.length < 20 ? emojiMap.join(' ') : emojiMap.length >= 20 ? this.client.utils.trimArray(emojiMap, 20) : 'None'}`)
-				.setFooter(`${this.client.user.username}`, message.guild.iconURL({ dynamic: true }));
+				.setFooter(`${this.client.user.username}`, this.client.user.displayAvatarURL({ dynamic: true }));
 			message.channel.send({ embeds: [embed] });
 			return;
 		}
@@ -97,7 +98,7 @@ module.exports = class extends Command {
 				{ name: `**Guild Perks**`, value: `<a:Booster:855593231294267412> | Boost Tier: ${tiers[message.guild.premiumTier]}\n<a:Booster:855593231294267412> | Boosts: ${message.guild.premiumSubscriptionCount}`, inline: true },
 				{ name: `**Server Roles [${roles.length}]**`, value: `To view all server roles, run\n\`${prefix}serverinfo roles\``, inline: true },
 				{ name: `**Server Emojis [${emojis.size}]**`, value: `To view all server emojis, run\n\`${prefix}serverinfo emojis\``, inline: true })
-			.setFooter(`${this.client.user.username}`, message.guild.iconURL({ dynamic: false }));
+			.setFooter(`${this.client.user.username}`, this.client.user.displayAvatarURL({ dynamic: true }));
 		message.channel.send({ embeds: [embed] });
 	}
 
