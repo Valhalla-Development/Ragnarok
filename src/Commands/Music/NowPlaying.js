@@ -53,9 +53,9 @@ module.exports = class extends Command {
 
 		const { title, duration, requester } = player.queue.current;
 		const embed = new MessageEmbed()
-			.setAuthor('Current Song Playing', 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
+			.setAuthor('Current Song Playing', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
+			.setThumbnail('https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
 			.setDescription(stripIndents`
             ${player.playing ? '▶️' : '⏸️'} **${title}** \`${prettyMilliseconds(duration, { colonNotation: true })}\` Requested by: [${requester}]`);
 		message.channel.send({ embeds: [embed] });

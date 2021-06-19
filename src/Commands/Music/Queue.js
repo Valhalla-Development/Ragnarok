@@ -120,7 +120,7 @@ module.exports = class extends Command {
 		}
 
 		embed.setDescription(`🎧 Now Playing:\n [${queue.current.title}](${queue.current.uri}) [<@${queue.current.requester.id}>] - \`${prettyMilliseconds(queue.current.duration, { colonNotation: true })}\`\n${tracks.map((track, i) => `**◎ ${start + ++i} -** [${track.title}](${track.uri}) [${track.requester}] - \`${prettyMilliseconds(track.duration, { colonNotation: true })}\``).join('\n')}`);
-		embed.setThumbnail('https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png');
+		embed.setThumbnail('https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png');
 
 		const maxPages = Math.ceil(queue.length / multiple);
 

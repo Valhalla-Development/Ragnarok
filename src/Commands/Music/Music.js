@@ -20,7 +20,7 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setThumbnail(this.client.user.displayAvatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.setAuthor(`${this.client.user.username}- Music Commands`, 'https://upload.wikimedia.org/wikipedia/commons/7/73/YouTube_Music.png')
+				.setAuthor(`${this.client.user.username}- Music Commands`, 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
 				.setDescription([
 					`**◎ Play:**`,
 					`\u3000 \`${prefix}play <search term/link>\` : Searches term / plays supplied link`,
