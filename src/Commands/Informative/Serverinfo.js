@@ -1,40 +1,27 @@
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const moment = require('moment');
+const SQLite = require('better-sqlite3');
+const db = new SQLite('./Storage/DB/db.sqlite');
 
-const filterLevels = {
-	DISABLED: 'Off',
-	MEMBERS_WITHOUT_ROLES: 'No Role',
-	ALL_MEMBERS: 'Everyone'
-};
 const verificationLevels = {
 	NONE: 'None',
 	LOW: 'Low',
 	MEDIUM: 'Medium',
-	HIGH: '(╯°□°）╯︵ ┻━┻',
-	VERY_HIGH: '┻━┻ ﾐヽ(ಠ益ಠ)ノ彡┻━┻'
+	HIGH: 'High',
+	VERY_HIGH: 'Very High'
 };
-const regions = {
-	brazil: 'Brazil',
-	europe: 'Europe',
-	hongkong: 'Hong Kong',
-	india: 'India',
-	japan: 'Japan',
-	russia: 'Russia',
-	singapore: 'Singapore',
-	southafrica: 'South Africa',
-	sydney: 'Sydney',
-	london: 'London',
-	frankfurt: 'Frankfurt',
-	dubai: 'Dubai',
-	amsterdam: 'Amsterdam',
-	'south-korea': 'South Korea',
-	'eu-west': 'EU West',
-	'eu-central': 'EU Central',
-	'us-central': 'US Central',
-	'us-east': 'US East',
-	'us-west': 'US West',
-	'us-south': 'US South'
+
+const tiers = {
+	NONE: '0',
+	TIER_1: '1',
+	TIER_2: '2',
+	TIER_3: '3'
+};
+
+const mfa = {
+	NONE: 'None',
+	ELEVATED: 'Elevated'
 };
 
 module.exports = class extends Command {
@@ -47,46 +34,70 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(message) {
-		const guildOwner = await message.guild.fetchOwner();
+	async run(message, args) {
+		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
+		const { prefix } = prefixgrab;
+
 		const roles = message.guild.roles.cache
-			.sort((a, b) => b.position - a.position)
 			.map(role => role.toString())
 			.slice(0, -1);
 
-		const members = message.guild.members.cache;
-		const channels = message.guild.channels.cache;
 		const emojis = message.guild.emojis.cache;
 
+		const emojiMap = emojis.sort((a, b) => b.position - a.position)
+			.map(emoji => emoji.toString());
+
+		if (args[0] === 'roles') {
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setAuthor(`Viewing information for ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
+				.addField(`**Server Roles [${roles.length}]**`,
+					`${roles.length < 30 ? roles.join(', ') : roles.length >= 30 ? this.client.utils.trimArray(roles, 30) : 'None'}`)
+				.setFooter(`${this.client.user.username}`, message.guild.iconURL({ dynamic: false }));
+			message.channel.send({ embeds: [embed] });
+			return;
+		}
+
+		if (args[0] === 'emojis') {
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setAuthor(`Viewing information for ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
+				.addField(`**Server Roles [${roles.length}]**`,
+					`${emojiMap.length < 20 ? emojiMap.join(' ') : emojiMap.length >= 20 ? this.client.utils.trimArray(emojiMap, 20) : 'None'}`)
+				.setFooter(`${this.client.user.username}`, message.guild.iconURL({ dynamic: true }));
+			message.channel.send({ embeds: [embed] });
+			return;
+		}
+
+		const guildOwner = await message.guild.fetchOwner();
+		const members = message.guild.members.cache;
+		const channels = message.guild.channels.cache;
+
+		const textChan = channels.filter(channel => channel.type === 'text');
+		const voiceChan = channels.filter(channel => channel.type === 'voice');
+
+		const online = members.filter(p => p.presence.status === 'online').size;
+		const idle = members.filter(p => p.presence.status === 'idle').size;
+		const dnd = members.filter(p => p.presence.status === 'dnd').size;
+		const offline = members.filter(p => p.presence.status === 'offline').size;
+
 		const embed = new MessageEmbed()
-			.setDescription(`**Guild information for __${message.guild.name}__**`)
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail(message.guild.iconURL({ dynamic: true }))
-			.addField('General',
-				`**◎ Name:** ${message.guild.name}
-				**◎ ID:** ${message.guild.id}
-				**◎ Owner:** ${guildOwner.user.tag}
-				**◎ Region:** ${regions[message.guild.region] ? regions[message.guild.region] : 'Unknown'}
-				**◎ Boost Tier:** ${message.guild.premiumTier ? `Tier ${message.guild.premiumTier}` : 'None'}
-				**◎ Explicit Filter:** ${filterLevels[message.guild.explicitContentFilter]}
-				**◎ Verification Level:** ${verificationLevels[message.guild.verificationLevel]}
-				**◎ Time Created:** ${moment(message.guild.createdTimestamp).format('LT')} ${moment(message.guild.createdTimestamp).format('LL')} - ${moment(message.guild.createdTimestamp).fromNow()}
+			.setAuthor(`Viewing information for ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
+			.addField(`Guild information`,
+				`**◎ 👑 Owner:** ${guildOwner.user}
+				**◎ 🆔 ID:** ${message.guild.id}
+				**◎ 📅 Created At:** ${moment(message.guild.createdTimestamp).format('ddd, MMM Do YYYY h:mm a')} - ${moment(message.guild.createdTimestamp).fromNow()}
+				**◎ 🔐 Verification Level:** ${verificationLevels[message.guild.verificationLevel]}
+				**◎ 🔏 MFA Level:** ${mfa[message.guild.mfaLevel]} 
 				\u200b`)
-			.addField('Statistics',
-				`**◎ Role Count:** ${roles.length}
-				**◎ Emoji Count:** ${emojis.size}
-				**◎ Regular Emoji Count:** ${emojis.filter(emoji => !emoji.animated).size}
-				**◎ Animated Emoji Count:** ${emojis.filter(emoji => emoji.animated).size}
-				**◎ Member Count:** ${message.guild.memberCount}
-				**◎ Humans:** ${members.filter(member => !member.user.bot).size}
-				**◎ Bots:** ${members.filter(member => member.user.bot).size}
-				**◎ Text Channels:** ${channels.filter(channel => channel.type === 'text').size}
-				**◎ Voice Channels:** ${channels.filter(channel => channel.type === 'voice').size}
-				**◎ Boost Count:** ${message.guild.premiumSubscriptionCount || '0'}
-				\u200b
-				Roles [${roles.length}] 
-				${roles.length < 10 ? roles.join(', ') : roles.length > 10 ? this.client.utils.trimArray(roles) : 'None'}`)
-			.setTimestamp();
+			.addFields({ name: `**Guild Members** [${members.size.toLocaleString('en')}]`, value: `<:Online:748655722740580403> | Online: ${online.toLocaleString('en')}\n<:Idle:748655722639917117> | Away: ${idle.toLocaleString('en')}\n<:DND:748655722979393657> | DnD: ${dnd.toLocaleString('en')}\n<:Offline:748655722677403850> | Offline: ${offline.toLocaleString('en')}`, inline: true },
+				{ name: `**Guild Channels** [${textChan.size + voiceChan.size}]`, value: `<:TextChannel:855591004236546058> | Text: ${textChan.size}\n<:VoiceChannel:855591004300115998> | Voice: ${voiceChan.size}`, inline: true },
+				{ name: `**Guild Perks**`, value: `<a:Booster:855593231294267412> | Boost Tier: ${tiers[message.guild.premiumTier]}\n<a:Booster:855593231294267412> | Boosts: ${message.guild.premiumSubscriptionCount}`, inline: true },
+				{ name: `**Server Roles [${roles.length}]**`, value: `To view all server roles, run\n\`${prefix}serverinfo roles\``, inline: true },
+				{ name: `**Server Emojis [${emojis.size}]**`, value: `To view all server emojis, run\n\`${prefix}serverinfo emojis\``, inline: true })
+			.setFooter(`${this.client.user.username}`, message.guild.iconURL({ dynamic: false }));
 		message.channel.send({ embeds: [embed] });
 	}
 
