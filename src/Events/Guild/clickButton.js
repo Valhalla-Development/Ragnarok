@@ -8,9 +8,9 @@ const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 module.exports = class extends Event {
 
 	async run(button) {
-		await button.defer();
-
 		if (button.id === 'createTicket') {
+			await button.defer();
+			await button.clicker.fetch();
 			// Ticket Embed
 			const guild = this.client.guilds.cache.get(button.guild.id);
 			const fetch = db.prepare(`SELECT * FROM ticketConfig WHERE guildid = ${guild.id}`).get();
