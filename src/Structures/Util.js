@@ -21,7 +21,7 @@ module.exports = class Util {
 		return `${path.dirname(require.main.filename)}${path.sep}`;
 	}
 
-	trimArray(arr, maxLen = 10) {
+	trimArray(arr, maxLen) {
 		if (arr.length > maxLen) {
 			const len = arr.length - maxLen;
 			arr = arr.slice(0, maxLen);
