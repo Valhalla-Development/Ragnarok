@@ -185,7 +185,8 @@ module.exports = class extends Event {
 						user: message.author.id,
 						guild: message.guild.id,
 						points: 0,
-						level: 0
+						level: 0,
+						country: null
 					};
 				}
 				const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
