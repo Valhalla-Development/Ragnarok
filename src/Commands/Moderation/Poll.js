@@ -45,7 +45,7 @@ module.exports = class extends Command {
 			.setStyle('blurple')
 			.setEmoji('❌');
 
-		message.channel.createMessageReactionButton(embed, [ReactionButton1, ReactionButton2]);
+		message.channel.createMessageReactionButton({ embeds: [embed] }, [ReactionButton1, ReactionButton2]);
 	}
 
 };
