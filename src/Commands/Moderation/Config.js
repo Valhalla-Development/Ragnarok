@@ -140,14 +140,13 @@ module.exports = class extends Command {
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Config**`,
-					`**◎** Click the corresponding button for which module you would like to configure.`)
-				.setFooter(`If you would like to use the old config menu, run:${prefix}config old`);
+					`**◎** Click the corresponding button for which module you would like to configure.`);
 
 			const m = await message.channel.send({ components: [row, row2, row3], embeds: [initial] });
 
-			const filter = (but) => but.clicker.user.id === message.author.id;
+			const filter = (but) => but.clicker.user.id !== this.client.user.id;
 
-			const collector = m.createButtonCollector(filter, { time: 10000 });
+			const collector = m.createButtonCollector(filter, { time: 15000 });
 
 			if (!comCooldown.has(message.author.id)) {
 				comCooldown.add(message.author.id);
@@ -158,8 +157,18 @@ module.exports = class extends Command {
 				}
 			}, comCooldownSeconds * 1000);
 
-			collector.on('collect', b => {
-				this.client.utils.messageDelete(m, 0);
+			collector.on('collect', async b => {
+				if (b.clicker.user.id !== message.author.id) {
+					const wrongUser = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Config**`,
+							`**◎ Error:** Only the command executor can select an option!`);
+					b.reply.send({ embeds: [wrongUser] }, true);
+					return;
+				}
+
+				await b.defer();
+				collector.resetTimer();
 
 				if (b.id === 'ads') {
 					const embed = new MessageEmbed()
@@ -167,7 +176,7 @@ module.exports = class extends Command {
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Advert Protection:**
 							\u3000\`${prefix}config adsprot <on/off>\` : Toggles advert protection`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 				if (b.id === 'autorole') {
@@ -176,7 +185,7 @@ module.exports = class extends Command {
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ AutoRole:**
 							\u3000\`${prefix}config autorole <@role>\` : Sets the role users are given when they join the guild`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 				if (b.id === 'birthday') {
@@ -186,7 +195,7 @@ module.exports = class extends Command {
 							`**◎ Birthday:**
 							\u3000\`${prefix}config birthday channel <#channel>\` : Sets the channel where birthday alerts are sent.
 					        \u3000\`${prefix}config birthday role [@role]\` : Sets the (optional) role is pinged when it is someones birthday.`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 				if (b.id === 'dad') {
@@ -195,7 +204,7 @@ module.exports = class extends Command {
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Dad Bot:**
 							\u3000\`${prefix}config dadbot <on/off>\` : Toggles the Dad bot module`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 				if (b.id === 'haste') {
@@ -204,7 +213,7 @@ module.exports = class extends Command {
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Hastebin:**
 							\u3000\`${prefix}config haste url <on/off>\` : Toggles the Hastebin URL blocker`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 				if (b.id === 'invite') {
@@ -213,7 +222,7 @@ module.exports = class extends Command {
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Invite Manager:**
 							\u3000\`${prefix}config invmanager <#channel/off>\` : Toggles the Invite Manager module`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 				if (b.id === 'level') {
@@ -222,7 +231,7 @@ module.exports = class extends Command {
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Level System:**
 							\u3000\`${prefix}config level <enable/disable>\` : Toggles the Level module`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 				if (b.id === 'logging') {
@@ -231,7 +240,7 @@ module.exports = class extends Command {
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Logging:**
 							\u3000\`${prefix}config logging <#channel/off>\` : Sets/disables the logging channel`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 				if (b.id === 'membercount') {
@@ -240,7 +249,7 @@ module.exports = class extends Command {
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ MemberCount:**
 							\u3000\`${prefix}config membercount <on/off>\` : Toggles the member count module`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 				if (b.id === 'music') {
@@ -250,7 +259,7 @@ module.exports = class extends Command {
 							`**◎ Music:**
 							\u3000\`${prefix}config music role <@role>\` : Sets the DJ role
 							\u3000\`${prefix}config music role off\` : Disables the DJ role`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 				if (b.id === 'mute') {
@@ -260,7 +269,7 @@ module.exports = class extends Command {
 							`**◎ Mute:**
 							\u3000\`${prefix}config mute role <@role>\` : Sets the Mute role
 							\u3000\`${prefix}config mute role off\` : Disables the Mute role`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 				if (b.id === 'prefix') {
@@ -269,7 +278,7 @@ module.exports = class extends Command {
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Prefix:**
 							\u3000\`${prefix}config prefix <prefix>\` : Sets the guild prefix`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 				if (b.id === 'rolemenu') {
@@ -280,7 +289,7 @@ module.exports = class extends Command {
 							\u3000\`${prefix}config rolemenu add <@role>\` : Sets the rolemenu roles
 							\u3000\`${prefix}config rolemenu remove <@role>\` : Removes a role from rolemenu
 							\u3000\`${prefix}config rolemenu clear\` : Removes all roles from rolemenu`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 				if (b.id === 'tickets') {
@@ -291,7 +300,7 @@ module.exports = class extends Command {
 							\u3000\`${prefix}config ticket cat <cat name>\` : Sets the ticket category
 							\u3000\`${prefix}config ticket log <#channel>\` : Enables ticket logging
 							\u3000\`${prefix}config ticket role <@role>\` : Sets custom support role for ticket system`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 				if (b.id === 'welcome') {
@@ -303,7 +312,7 @@ module.exports = class extends Command {
 							\u3000 \`${prefix}config welcome channel off\` : Disables the welcome message
 							\u3000 \`${prefix}config welcome image <url-to-image>\` : Sets custom welcome image
 							\u3000 \`${prefix}config welcome image off\` : Disables the custom welcome image`);
-					message.channel.send({ embeds: [embed] });
+					m.edit({ embeds: [embed] });
 					return;
 				}
 			});
@@ -318,72 +327,6 @@ module.exports = class extends Command {
 					return;
 				}
 			});
-		}
-
-		if (args[0] === 'old') {
-			const embed = new MessageEmbed()
-				.setThumbnail(this.client.user.displayAvatarURL())
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.setAuthor(`${this.client.user.username} - Config`)
-				.setDescription(
-					`**◎ Advert Protection:**
-					\u3000 \`${prefix}config adsprot <on/off>\` : Toggles advert protection
-					\u3000
-					**◎ Autorole:**
-					\u3000 \`${prefix}config autorole <@role>\` : Sets the role users are given when they join the guild
-					\u3000
-					**◎ Birthday:**
-					\u3000 \`${prefix}config birthday channel <#channel>\` : Sets the channel where birthday alerts are sent.
-					\u3000 \`${prefix}config birthday role [@role]\` : Sets the (optional) role is pinged when it is someones birthday.
-					\u3000
-					**◎ Dad Bot:**
-					\u3000 \`${prefix}config dadbot <on/off>\` : Toggles the Dad bot module
-					\u3000
-					**◎ Hastebin Options:**
-					\u3000 \`${prefix}config haste url <on/off>\` : Toggles the Hastebin URL blocker
-					\u3000
-					**◎ Invite Manager:**
-					\u3000 \`${prefix}config invmanager <#channel/off>\` : Toggles the Invite Manager module
-					\u3000
-					**◎ Level System:**
-					\u3000 \`${prefix}config level <enable/disable>\` : Toggles the Level module
-					\u3000
-					**◎ Logging:**
-					\u3000 \`${prefix}config logging <#channel/off>\` : Sets/disables the logging channel
-					\u3000
-					**◎ Membercount:**
-					\u3000 \`${prefix}config membercount <on/off>\` : Toggles the member count module
-					\u3000
-					**◎ Music:**
-					\u3000 \`${prefix}config music role <@role>\` : Sets the DJ role
-					\u3000 \`${prefix}config music role off\` : Disables the DJ role
-					\u3000
-					**◎ Mute:**
-					\u3000 \`${prefix}config mute role <@role>\` : Sets the Mute role
-					\u3000 \`${prefix}config mute role off\` : Disables the Mute role
-					\u3000
-					**◎ Prefix:**
-					\u3000 \`${prefix}config prefix <prefix>\` : Sets the guild prefix
-					\u3000
-					**◎ Rolemenu:**
-					\u3000 \`${prefix}config rolemenu add <@role>\` : Sets the rolemenu roles
-					\u3000 \`${prefix}config rolemenu remove <@role>\` : Removes a role from rolemenu
-					\u3000 \`${prefix}config rolemenu clear\` : Removes all roles from rolemenu
-					\u3000
-					**◎ Tickets:**
-					\u3000 \`${prefix}config ticket cat <cat name>\` : Sets the ticket category
-					\u3000 \`${prefix}config ticket log <#channel>\` : Enables ticket logging
-					\u3000 \`${prefix}config ticket role <@role>\` : Sets custom support role for ticket system
-					\u3000
-					**◎ Welcome:**
-					\u3000 \`${prefix}config welcome channel <#channel>\` : Sets the welcome channel
-					\u3000 \`${prefix}config welcome channel off\` : Disables the welcome message
-					\u3000 \`${prefix}config welcome image <url-to-image>\` : Sets custom welcome image
-					\u3000 \`${prefix}config welcome image off\` : Disables the custom welcome image
-					\u3000`)
-				.setTimestamp();
-			message.channel.send({ embeds: [embed] });
-			return;
 		}
 
 		// Birthday config
