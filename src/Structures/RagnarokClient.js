@@ -132,6 +132,36 @@ module.exports = class RagnarokClient extends Client {
 				.on('nodeReconnect', () => grabClient.logger.ready('Connection restored to Erela Node.'))
 				.on('nodeDisconnect', () => grabClient.logger.warn('Lost connection to Erela Node.'))
 				.on('nodeError', (node, error) => grabClient.logger.error(`Node error: ${error.message}`))
+				.on('playerMove', async (player, oldChannel, newChannel) => {
+					const textChannel = player.get('textChannel');
+
+					if (!newChannel) {
+						player.destroy();
+						const embed = new MessageEmbed()
+							.addField(`**${grabClient.user.username} - Music**`,
+								`**◎ Error:** <:MusicLogo:684822003110117466> I was removed from the voice channel. Ending playback.`)
+							.setColor(textChannel.guild.me.displayHexColor || '36393F');
+						grabClient.channels.cache.get(player.textChannel).send({ embeds: [embed] });
+						return;
+					}
+					await player.setVoiceChannel(newChannel);
+
+					const getOld = grabClient.channels.cache.get(oldChannel);
+					const getNew = grabClient.channels.cache.get(newChannel);
+
+					if (getNew.members.size <= 1) return;
+
+					const embed = new MessageEmbed()
+						.addField(`**${grabClient.user.username} - Music**`,
+							`**◎ Success:** <:MusicLogo:684822003110117466> I was moved from <:VoiceChannel:855591004300115998>\`${getOld.name}\` to <:VoiceChannel:855591004300115998>\`${getNew.name}\`\nResuming playback.`)
+						.setColor(textChannel.guild.me.displayHexColor || '36393F');
+					grabClient.channels.cache.get(player.textChannel).send({ embeds: [embed] });
+
+					player.pause(true);
+					await setTimeout(() => {
+						player.pause(false);
+					}, 1000);
+				})
 				.on('queueEnd', (player) => {
 					if (player.queueRepeat) {
 						return;
