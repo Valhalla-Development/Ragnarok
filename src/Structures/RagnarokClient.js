@@ -13,6 +13,7 @@ const { Manager } = require('erela.js');
 const Spotify = require('erela.js-spotify');
 const prettyMilliseconds = require('pretty-ms');
 const button = require('discord-buttons');
+const { stripIndents } = require('common-tags');
 
 module.exports = class RagnarokClient extends Client {
 
@@ -180,10 +181,15 @@ module.exports = class RagnarokClient extends Client {
 						return;
 					}
 					const textChannel = player.get('textChannel');
+
+					const { title, duration, requester, uri, thumbnail } = track;
+
 					const embed = new MessageEmbed()
-						.setAuthor('Now Playing:', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+						.setAuthor('Now Playing', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
 						.setColor(textChannel.guild.me.displayHexColor || '36393F')
-						.setDescription(`Now playing: \`${track.title}\`\nDuration: \`${prettyMilliseconds(track.duration, { colonNotation: true })}\`\nRequested by: ${track.requester}`);
+						.setThumbnail(`${thumbnail}`)
+						.setDescription(stripIndents`
+            [${title}](${uri})\n\nDuration: \`${prettyMilliseconds(duration, { colonNotation: true })}\`\n\n Requested by: ${requester.tag}`);
 					grabClient.channels.cache.get(player.textChannel).send({ embeds: [embed] });
 				})
 				.on('trackEnd', (player) => {
