@@ -4,6 +4,7 @@ const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const prettyMilliseconds = require('pretty-ms');
+const progressbar = require('string-progressbar');
 
 module.exports = class extends Command {
 
@@ -51,13 +52,24 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const { title, duration, requester } = player.queue.current;
+		const { title, duration, requester, uri, thumbnail } = player.queue.current;
+
+		const total = duration;
+		const current = player.position;
+
+		let formCurrent = prettyMilliseconds(current, { colonNotation: true });
+		if (formCurrent.includes('.')) {
+			formCurrent = formCurrent.substr(0, formCurrent.lastIndexOf('.'));
+		}
+
+		const bar = await progressbar.splitBar(total, current, 18);
+
 		const embed = new MessageEmbed()
-			.setAuthor('Current Song Playing', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+			.setAuthor('Now Playing', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.setThumbnail('https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+			.setThumbnail(`${thumbnail}`)
 			.setDescription(stripIndents`
-            ${player.playing ? '▶️' : '⏸️'} **${title}** \`${prettyMilliseconds(duration, { colonNotation: true })}\` Requested by: [${requester}]`);
+            [${title}](${uri})\n\n${player.playing ? '▶️' : '⏸️'} ${bar[0]}\n\n\`${formCurrent} / ${prettyMilliseconds(duration, { colonNotation: true })}\`\n\n Requested by: ${requester.tag}`);
 		message.channel.send({ embeds: [embed] });
 		return;
 	}
