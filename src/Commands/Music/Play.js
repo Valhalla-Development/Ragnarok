@@ -238,6 +238,7 @@ module.exports = class extends Command {
 
 						if (b.id === 'cancel') {
 							collector.stop('cancel');
+							return;
 						}
 
 						let track;
@@ -264,6 +265,7 @@ module.exports = class extends Command {
 
 						player.queue.add(track);
 
+
 						if (!player.playing && !player.paused && !player.queue.size) {
 							player.setVoiceChannel(message.member.voice.channel.id);
 							player.play();
@@ -282,6 +284,7 @@ module.exports = class extends Command {
 
 					collector.on('end', (_, reason) => {
 						this.client.utils.deletableCheck(searchEmbed, 0);
+						this.client.utils.deletableCheck(message, 0);
 
 						if (reason === 'duration') {
 							const embed1 = new MessageEmbed()
