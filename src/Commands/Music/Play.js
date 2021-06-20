@@ -217,7 +217,7 @@ module.exports = class extends Command {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Play**`,
-							`${tracks.map((video) => `**◎ ${index++} -** ${video.title} - \`${prettyMilliseconds(video.duration, { colorNotation: true })}\``).join('\n')}`)
+							`${tracks.map((video) => `**◎ ${index++} -** [${video.title}](${video.uri}) - \`${prettyMilliseconds(video.duration, { colonNotation: true })}\``).join('\n\n')}`)
 						.setThumbnail('https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
 						.setFooter('Click the corresponding button for the track you wish to play. You have 30 seconds to respond.');
 
@@ -234,6 +234,10 @@ module.exports = class extends Command {
 									`**◎ Error:** Only the command executor can choose a track!`);
 							b.reply.send({ embeds: [wrongUser] }, true);
 							return;
+						}
+
+						if (talkedRecently.has(message.author.id)) {
+							talkedRecently.delete(message.author.id);
 						}
 
 						if (b.id === 'cancel') {
@@ -322,8 +326,21 @@ module.exports = class extends Command {
 				case 'PLAYLIST_LOADED': {
 					this.client.utils.messageDelete(message, 10000);
 					message.channel.startTyping();
-					message.channel.send({ content: 'Enqueuing Tracks...' }).then((enq) => {
-						const filterDur = res.tracks.filter(t => t.duration <= 900000);
+
+					if (res.tracks.length > 10) {
+						if (!message.member.roles.cache.has(role.id) || !message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+							message.channel.stopTyping();
+
+							const embed = new MessageEmbed()
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.addField(`**${this.client.user.username} - Play**`,
+									`**◎ Error:** Only members with the ${role} role may load a playlist with more than 10 tracks!`);
+							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							return;
+						}
+					}
+					message.channel.send({ content: 'Enqueuing Tracks...' }).then(async (enq) => {
+						const filterDur = await res.tracks.filter(t => t.duration <= 900000);
 
 						if (!filterDur.length) {
 							this.client.utils.messageDelete(message, 10000);
