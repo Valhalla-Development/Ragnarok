@@ -7,7 +7,7 @@
   "author": "Ragnar Lothbrok <30740511+RagnarLothbrok-Odin@users.noreply.github.com>",
   "license": "MIT",
   "dependencies": {
-    "@discordjs/opus": "^0.5.3",
+    "@discordjs/voice": "^0.5.0",
     "@extreme_hero/deeptype": "^1.0.1",
     "aki-api": "^5.2.1",
     "better-sqlite3": "^7.4.1",
