@@ -21,37 +21,36 @@ module.exports = class extends Command {
 				.setThumbnail(this.client.user.displayAvatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setAuthor(`${this.client.user.username}- Music Commands`, 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
-				.setDescription([
-					`**◎ Play:**`,
-					`\u3000 \`${prefix}play <search term/link>\` : Searches term / plays supplied link`,
-					`\u3000`,
-					`**◎ Pause:**`,
-					`\u3000 \`${prefix}pause\` : Pauses music playback`,
-					`\u3000`,
-					`**◎ Resume:**`,
-					`\u3000 \`${prefix}resume\` : Resumes music playback`,
-					`\u3000`,
-					`**◎ Now Playing:**`,
-					`\u3000 \`${prefix}nowplaying\` : Displays current song playing`,
-					`\u3000`,
-					`**◎ Queue:**`,
-					`\u3000 \`${prefix}queue\` : Displays current song queue`,
-					`\u3000 \`${prefix}queue clear\` : Clears the song queue`,
-					`\u3000`,
-					`**◎ Skip:**`,
-					`\u3000 \`${prefix}skip\` : Skips current song`,
-					`\u3000`,
-					`**◎ Repeat:**`,
-					`\u3000 \`${prefix}repeat\` : Repeats current song playing`,
-					`\u3000 \`${prefix}repeat queue\` : Repeats current song queue`,
-					`\u3000`,
-					`**◎ Volume:**`,
-					`\u3000 \`${prefix}volume <1-100>\` : Sets the music playback volume`,
-					`\u3000`,
-					`**◎ Leave:**`,
-					`\u3000 \`${prefix}leave\` : Ends music playback, and makes the bot leave the voice channel`,
-					`\u3000`
-				]);
+				.setDescription(
+					`**◎ Play:**
+					\u3000 \`${prefix}play <search term/link>\` : Searches term / plays supplied link
+					\u3000
+					**◎ Pause:**
+					\u3000 \`${prefix}pause\` : Pauses music playback
+					\u3000
+					**◎ Resume:**
+					\u3000 \`${prefix}resume\` : Resumes music playback
+					\u3000
+					**◎ Now Playing:**
+					\u3000 \`${prefix}nowplaying\` : Displays current song playing
+					\u3000
+					**◎ Queue:**
+					\u3000 \`${prefix}queue\` : Displays current song queue
+					\u3000 \`${prefix}queue clear\` : Clears the song queue
+					\u3000
+					**◎ Skip:**
+					\u3000 \`${prefix}skip\` : Skips current song
+					\u3000
+					**◎ Repeat:**
+					\u3000 \`${prefix}repeat\` : Repeats current song playing
+					\u3000 \`${prefix}repeat queue\` : Repeats current song queue
+					\u3000
+					**◎ Volume:**
+					\u3000 \`${prefix}volume <1-100>\` : Sets the music playback volume
+					\u3000
+					**◎ Leave:**
+					\u3000 \`${prefix}leave\` : Ends music playback, and makes the bot leave the voice channel
+					\u3000`);
 			message.channel.send({ embeds: [embed] });
 		}
 	}
