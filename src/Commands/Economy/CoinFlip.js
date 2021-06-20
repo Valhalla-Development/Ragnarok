@@ -178,7 +178,8 @@ module.exports = class extends Command {
 			}
 		}, comCooldownSeconds * 1000);
 
-		collector.on('collect', b => {
+		collector.on('collect', async b => {
+			await b.defer();
 			if (b.id === 'heads') {
 				if (answer === 'heads') {
 					m.edit({ component: rowNew, embeds: [win] });
