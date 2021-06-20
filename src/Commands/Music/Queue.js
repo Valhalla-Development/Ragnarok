@@ -119,7 +119,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		embed.setDescription(`🎧 Now Playing:\n [${queue.current.title}](${queue.current.uri}) [<@${queue.current.requester.id}>] - \`${prettyMilliseconds(queue.current.duration, { colonNotation: true })}\`\n${tracks.map((track, i) => `**◎ ${start + ++i} -** [${track.title}](${track.uri}) [${track.requester}] - \`${prettyMilliseconds(track.duration, { colonNotation: true })}\``).join('\n')}`);
+		embed.setDescription(`🎧 __Now Playing:__\n [${queue.current.title}](${queue.current.uri}) | \`${prettyMilliseconds(queue.current.duration, { colonNotation: true })}\` Requested by: ${queue.current.requester.tag} \n\n__Up Next:__\n${tracks.map((track, i) => `${start + ++i}.  [${track.title}](${track.uri}) | \`${prettyMilliseconds(track.duration, { colonNotation: true })}\` Requested by: ${track.requester.tag}`).join('\n\n')}`);
 		embed.setThumbnail('https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png');
 
 		const maxPages = Math.ceil(queue.length / multiple);
