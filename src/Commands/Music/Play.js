@@ -231,7 +231,7 @@ module.exports = class extends Command {
 							const wrongUser = new MessageEmbed()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Play**`,
-									`**◎ Error:** Only the message author can choose a track!`);
+									`**◎ Error:** Only the command executor can choose a track!`);
 							b.reply.send({ embeds: [wrongUser] }, true);
 							return;
 						}
