@@ -136,7 +136,9 @@ module.exports = class extends Command {
 
 		const collector = m.createButtonCollector(filter, { time: 10000 });
 
-		collector.on('collect', b => {
+		collector.on('collect', async b => {
+			await b.defer();
+
 			if (b.id === 'unban') {
 				message.guild.bans.fetch().then((bans) => {
 					if (bans.size === 0) {
