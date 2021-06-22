@@ -74,7 +74,9 @@ module.exports = class extends Command {
 			}
 		}, comCooldownSeconds * 1000);
 
-		collector.on('collect', b => {
+		collector.on('collect', async b => {
+			await b.defer();
+
 			if (b.id === 'yes') {
 				m.edit({ component: rowNew, embeds: [embedNew] });
 				collector.stop('yes');
