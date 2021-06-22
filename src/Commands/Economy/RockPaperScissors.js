@@ -199,6 +199,8 @@ module.exports = class extends Command {
 			}, comCooldownSeconds * 1000);
 
 			collector.on('collect', async (button) => {
+				await button.defer();
+
 				if (button.id === 'cancel') {
 					collector.stop('cancel');
 				}
