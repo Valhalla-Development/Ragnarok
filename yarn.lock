@@ -23,14 +23,7 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/runtime@^7.14.0":
-  version "7.14.5"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.14.5.tgz#665450911c6031af38f81db530f387ec04cd9a98"
-  integrity sha512-121rumjddw9c3NCQ55KGkyE1h/nzWhU/owjhw0l4mQrkzz4x9SGS1X8gFLraHwX7td3Yo4QTL+qj0NcIzN87BA==
-  dependencies:
-    regenerator-runtime "^0.13.4"
-
-"@babel/runtime@^7.7.2":
+"@babel/runtime@^7.14.6", "@babel/runtime@^7.7.2":
   version "7.14.6"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.14.6.tgz#535203bc0892efc7dec60bdc27b2ecf6e409062d"
   integrity sha512-/PCB2uJ7oM44tz8YhC4Z/6PeOKXp4K588f+5M3clr1M4zbqztlo0XEfJ2LEzj/FgwfgGcIdl8n7YYjTCI0BYwg==
@@ -538,7 +531,7 @@ acorn@^7.1.1, acorn@^7.4.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
-agent-base@6:
+agent-base@6, agent-base@^6.0.2:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-6.0.2.tgz#49fff58577cfee3f37176feab4c22e00f86d7f77"
   integrity sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==
@@ -986,10 +979,10 @@ debug@4, debug@^4.0.1, debug@^4.1.0, debug@^4.1.1:
   dependencies:
     ms "2.1.2"
 
-decimal.js@^10.2.1:
-  version "10.2.1"
-  resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.2.1.tgz#238ae7b0f0c793d3e3cea410108b35a2c01426a3"
-  integrity sha512-KaL7+6Fw6i5A2XSnsbhm/6B+NuEA7TZ4vqxnd5tXz9sbKtrN9Srj8ab4vKVdK8YAqZO9P1kg45Y6YLoduPf+kw==
+decimal.js@^10.3.0:
+  version "10.3.0"
+  resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.3.0.tgz#96fd481189818e0d5810c18ac147824b9e4c0026"
+  integrity sha512-MrQRs2gyD//7NeHi9TtsfClkf+cFAewDz+PZHR8ILKglLmBMyVX3ymQ+oeznE3tjrS7beTN+6JXb2C3JDHm7ug==
 
 decompress-response@^4.2.0:
   version "4.2.1"
@@ -1058,15 +1051,7 @@ discord-blackjack@^2.0.4:
     discord.js "^12.5.3"
     shuffle-array "^1.0.1"
 
-discord-buttons-react@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/discord-buttons-react/-/discord-buttons-react-0.0.4.tgz#cbda7aff763720f2bfc8fdd31a03b85f14f50b6c"
-  integrity sha512-u8Sk0TF49/AHuNwujZK29L6QaggZAwbSM7P+I+9IuItSg8xQSbpMvuhuUdixI4/63aTYRKauGb09t3wFmVpHnw==
-  dependencies:
-    discord-buttons "^3.0.1"
-    quick.db "^7.1.3"
-
-discord-buttons@^3.0.1, discord-buttons@^3.2.1:
+discord-buttons@^3.0.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/discord-buttons/-/discord-buttons-3.2.1.tgz#568eebc322d36b010ea67e891b01208c897d8e66"
   integrity sha512-UN5xOLG0TwTX6Qr/hjdSyP63HxOYxs5saxfdJ/vijSqjfa/yVPgxO2InKF0l8rpsDOVMsLWGDFLI3+Ax97/LOg==
@@ -1095,13 +1080,6 @@ discord-image-generation@^1.4.9:
     gifencoder "^2.0.1"
     jimp "^0.16.1"
 
-discord-slider@^1.1.6:
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/discord-slider/-/discord-slider-1.1.6.tgz#20ec7f9825ee1c5205f3b37f047361f06a3e7fb3"
-  integrity sha512-MnN+ZYjZ73IAaE4E+8An7p7SfST7Mf89PaxRLSx1pAdypXjLuOiD0kZGyMJFhmpGHILUvR6G4Zu+dwKYkZ9flw==
-  dependencies:
-    discord-buttons "^3.0.1"
-
 discord.js@^12.4.1, discord.js@^12.5.3:
   version "12.5.3"
   resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-12.5.3.tgz#56820d473c24320871df9ea0bbc6b462f21cf85c"
@@ -1116,10 +1094,10 @@ discord.js@^12.4.1, discord.js@^12.5.3:
     tweetnacl "^1.0.3"
     ws "^7.4.4"
 
-discord.js@^13.0.0-dev.1f8f3ab0f8dbd346154bbfa14a98726b8df25d57:
-  version "13.0.0-dev.1f8f3ab0f8dbd346154bbfa14a98726b8df25d57"
-  resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-13.0.0-dev.1f8f3ab0f8dbd346154bbfa14a98726b8df25d57.tgz#8f28b46c8c8384a139d7dbed3fd8dc8cdc665645"
-  integrity sha512-2O3OVYCY5lUtF30s0zAIlayJkkl0ilZGtDksHGC0lIQ5HJi89Wc7ud6X5hY+uMrSgwG6Nz8jMM2qvtHRd47/2g==
+discord.js@^13.0.0-dev.1816a93b1b1b2bae47e8651e76fa53699de8421d:
+  version "13.0.0-dev.1816a93b1b1b2bae47e8651e76fa53699de8421d"
+  resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-13.0.0-dev.1816a93b1b1b2bae47e8651e76fa53699de8421d.tgz#7b1902de4327731eeb05ee985e911f52cf01e0fc"
+  integrity sha512-8EojZBoQmqpNFI+syq3tJZn2v6tLHcAQUTMz6MFyBkpQa3jZyL22bgJN15KgoF5Kt+fChd5LyH9n4sk8J9vSLQ==
   dependencies:
     "@discordjs/collection" "^0.1.6"
     "@discordjs/form-data" "^3.0.1"
@@ -1999,14 +1977,14 @@ make-fetch-happen@^8.0.14:
     socks-proxy-agent "^5.0.0"
     ssri "^8.0.0"
 
-mathjs@^9.4.2:
-  version "9.4.2"
-  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-9.4.2.tgz#4a7908f23bed3fda5c4435b8d72e0cb100c1c453"
-  integrity sha512-xu0AU6bpjxbDgCB824s/yDpAe0KR1TMUYz/yY7rYyRcEH56OuG8JPgxJhqlUyhhRpY++ZFDnRxRNGChYx1FLKQ==
+mathjs@^9.4.2, mathjs@^9.4.3:
+  version "9.4.3"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-9.4.3.tgz#ca07e90e219d7ca4a0629c3032d8a8507d663453"
+  integrity sha512-UgIalR0ICCu1Me4kVPEXb8Xtw7S62XMpP7qSXfImQsoIc1pOX/IxZkLw33VdFYlmXpma3zcRoMq5auwB2fg1AA==
   dependencies:
-    "@babel/runtime" "^7.14.0"
+    "@babel/runtime" "^7.14.6"
     complex.js "^2.0.13"
-    decimal.js "^10.2.1"
+    decimal.js "^10.3.0"
     escape-latex "^1.2.0"
     fraction.js "^4.1.1"
     javascript-natural-sort "^0.7.1"
@@ -2209,9 +2187,9 @@ nopt@^5.0.0:
     abbrev "1"
 
 normalize-url@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-6.0.1.tgz#a4f27f58cf8c7b287b440b8a8201f42d0b00d256"
-  integrity sha512-VU4pzAuh7Kip71XEmO9aNREYAdMHFGTVj/i+CaTImS8x0i1d3jUZkXhqluy/PRgjPLMgsLQulYY3PJ/aSbSjpQ==
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-6.1.0.tgz#40d0885b535deffe3f3147bec877d05fe4c5668a"
+  integrity sha512-DlL+XwOy3NxAQ8xuC0okPgK46iuVNAK01YN7RueYBqqFeGsBjV9XmCAzAdgt+667bCl5kPh9EqKKDwnaPG1I7A==
 
 npmlog@^4.0.1, npmlog@^4.1.2:
   version "4.1.2"
@@ -2759,11 +2737,11 @@ smart-buffer@^4.1.0:
   integrity sha512-iVICrxOzCynf/SNaBQCw34eM9jROU/s5rzIhpOvzhzuYHfJR/DhZfDkXiZSgKXfgv26HT3Yni3AV/DGw0cGnnw==
 
 socks-proxy-agent@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/socks-proxy-agent/-/socks-proxy-agent-5.0.0.tgz#7c0f364e7b1cf4a7a437e71253bed72e9004be60"
-  integrity sha512-lEpa1zsWCChxiynk+lCycKuC502RxDWLKJZoIhnxrWNjLSDGYRFflHA1/228VkRcnv9TIb8w98derGbpKxJRgA==
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/socks-proxy-agent/-/socks-proxy-agent-5.0.1.tgz#032fb583048a29ebffec2e6a73fca0761f48177e"
+  integrity sha512-vZdmnjb9a2Tz6WEQVIurybSwElwPxMZaIc7PzqbJTrezcKNznv6giT7J7tZDZ1BojVaa1jvO/UiUdhDVB0ACoQ==
   dependencies:
-    agent-base "6"
+    agent-base "^6.0.2"
     debug "4"
     socks "^2.3.3"
 
@@ -2801,6 +2779,11 @@ ssri@^8.0.0, ssri@^8.0.1:
   integrity sha512-97qShzy1AiyxvPNIkLWoGua7xoQzzPjQ0HAH4B0rWKo7SZ6USuPcrUiAFrws0UH8RrbWmgq3LMTObhPIHbbBeQ==
   dependencies:
     minipass "^3.1.1"
+
+string-progressbar@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/string-progressbar/-/string-progressbar-1.0.4.tgz#cc5fd91de411649cb3662ea93c314b65ebd0e83f"
+  integrity sha512-OpkcFxlFjn7kz5jTWmPGY+FFJVN21lQ9k0fkK0XS5GVvlCgS1stgDNEoMyqnkbZEcVP3Gv6IxqgG7tnD7ChBSw==
 
 string-width@^1.0.1:
   version "1.0.2"
