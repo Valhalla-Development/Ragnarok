@@ -1,9 +1,8 @@
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
 const Command = require('../../Structures/Command');
 const { version } = require('../../../package.json');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const { MessageButton, MessageActionRow } = require('discord-buttons');
 
 module.exports = class extends Command {
 
@@ -74,26 +73,24 @@ module.exports = class extends Command {
 			}
 
 			const buttonA = new MessageButton()
-				.setStyle('url')
+				.setStyle('LINK')
 				.setLabel('Invite Me')
 				.setURL('https://discordapp.com/oauth2/authorize?client_id=508756879564865539&scope=bot%20applications.commands&permissions=1580723711');
 
 			const buttonB = new MessageButton()
-				.setStyle('url')
+				.setStyle('LINK')
 				.setLabel('Support Server')
 				.setURL('https://discord.gg/Q3ZhdRJ');
 
 			const buttonC = new MessageButton()
-				.setStyle('url')
+				.setStyle('LINK')
 				.setLabel('Vote For Me')
 				.setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
 
 			const row = new MessageActionRow()
-				.addComponent(buttonA)
-				.addComponent(buttonB)
-				.addComponent(buttonC);
+				.addComponents(buttonA, buttonB, buttonC);
 
-			await message.channel.send({ component: row, embeds: [embed] });
+			await message.channel.send({ components: [row], embeds: [embed] });
 			return;
 		}
 	}
