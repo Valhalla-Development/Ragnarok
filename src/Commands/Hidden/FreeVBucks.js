@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageButton, MessageActionRow } = require('discord-buttons');
+const { MessageButton, MessageActionRow } = require('discord.js');
 const { MessageEmbed } = require('discord.js');
 const comCooldown = new Set();
 const comCooldownSeconds = 10;
@@ -19,34 +19,32 @@ module.exports = class extends Command {
 		this.client.utils.messageDelete(message, 10000);
 
 		const buttonA = new MessageButton()
-			.setStyle('green')
+			.setStyle('PRIMARY')
 			.setLabel('Yes!')
-			.setID('yes');
+			.setCustomID('yes');
 
 		const buttonB = new MessageButton()
-			.setStyle('red')
+			.setStyle('DANGER')
 			.setLabel('No!')
-			.setID('no');
+			.setCustomID('no');
 
 		const row = new MessageActionRow()
-			.addComponent(buttonA)
-			.addComponent(buttonB);
+			.addComponents(buttonA, buttonB);
 
 		const buttonANew = new MessageButton()
-			.setStyle('green')
+			.setStyle('PRIMARY')
 			.setLabel('Yes!')
-			.setID('yes')
-			.setDisabled();
+			.setCustomID('yes')
+			.setDisabled(true);
 
 		const buttonBNew = new MessageButton()
-			.setStyle('red')
+			.setStyle('DANGER')
 			.setLabel('No!')
-			.setID('no')
-			.setDisabled();
+			.setCustomID('no')
+			.setDisabled(true);
 
 		const rowNew = new MessageActionRow()
-			.addComponent(buttonANew)
-			.addComponent(buttonBNew);
+			.addComponents(buttonANew, buttonBNew);
 
 		const embed = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
@@ -60,10 +58,10 @@ module.exports = class extends Command {
 			.addField(`**${this.client.user.username} - Free V-Bucks**`,
 				`**◎ Success:** Virus activated!.`);
 
-		const m = await message.channel.send({ embeds: [embed], component: row });
-		const filter = (but) => but.clicker.user.id === message.author.id;
+		const m = await message.channel.send({ embeds: [embed], components: [row] });
+		const filter = (but) => but.user.id === message.author.id;
 
-		const collector = m.createButtonCollector(filter, { time: 10000 });
+		const collector = m.createMessageComponentInteractionCollector(filter, { time: 10000 });
 
 		if (!comCooldown.has(message.author.id)) {
 			comCooldown.add(message.author.id);
@@ -75,10 +73,8 @@ module.exports = class extends Command {
 		}, comCooldownSeconds * 1000);
 
 		collector.on('collect', async b => {
-			await b.defer();
-
-			if (b.id === 'yes') {
-				m.edit({ component: rowNew, embeds: [embedNew] });
+			if (b.customID === 'yes') {
+				b.update({ components: [rowNew], embeds: [embedNew] });
 				collector.stop('yes');
 				return;
 			}
