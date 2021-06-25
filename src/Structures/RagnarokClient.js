@@ -12,7 +12,6 @@ if (!db.get('giveaways')) db.set('giveaways', []);
 const { Manager } = require('erela.js');
 const Spotify = require('erela.js-spotify');
 const prettyMilliseconds = require('pretty-ms');
-const button = require('discord-buttons');
 const { stripIndents } = require('common-tags');
 
 module.exports = class RagnarokClient extends Client {
@@ -32,12 +31,6 @@ module.exports = class RagnarokClient extends Client {
 		this.owners = options.ownerID;
 
 		this.logger = require('./Logger.js');
-
-		button(this);
-
-		require('discord-buttons-react')(this);
-
-		require('discord-slider')(this);
 
 		// Music
 		const clientID = options.musicClientID;
@@ -367,6 +360,7 @@ module.exports = class RagnarokClient extends Client {
 	async start(token = this.token) {
 		this.utils.loadCommands();
 		this.utils.loadEvents();
+		this.utils.loadFunctions();
 		super.login(token);
 	}
 
