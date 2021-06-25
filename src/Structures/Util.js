@@ -117,4 +117,14 @@ module.exports = class Util {
 		});
 	}
 
+	async loadFunctions() {
+		this.client.functions = {};
+		return glob(`${this.directory}Functions/*.js`).then(functions => {
+			functions.forEach((m) => {
+				const File = require(m);
+				this.client.functions[File.name] = new File(this)[File.name];
+			});
+		});
+	}
+
 };
