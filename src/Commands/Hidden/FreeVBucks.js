@@ -19,7 +19,7 @@ module.exports = class extends Command {
 		this.client.utils.messageDelete(message, 10000);
 
 		const buttonA = new MessageButton()
-			.setStyle('PRIMARY')
+			.setStyle('SUCCESS')
 			.setLabel('Yes!')
 			.setCustomID('yes');
 
@@ -32,7 +32,7 @@ module.exports = class extends Command {
 			.addComponents(buttonA, buttonB);
 
 		const buttonANew = new MessageButton()
-			.setStyle('PRIMARY')
+			.setStyle('SUCCESS')
 			.setLabel('Yes!')
 			.setCustomID('yes')
 			.setDisabled(true);
@@ -50,13 +50,13 @@ module.exports = class extends Command {
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Free V-Bucks**`,
-				`**◎ Success:** Would you like to claim your **FREE** V-Bucks?`);
+				`**◎ Success:** ${message.author}, Would you like to claim your **FREE** V-Bucks?`);
 
 		const embedNew = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Free V-Bucks**`,
-				`**◎ Success:** Virus activated!.`);
+				`**◎ Success:** ${message.author}, Virus activated!.`);
 
 		const m = await message.channel.send({ embeds: [embed], components: [row] });
 		const filter = (but) => but.user.id === message.author.id;
