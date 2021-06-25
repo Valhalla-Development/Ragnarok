@@ -5,9 +5,9 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const { MessageButton, MessageActionRow } = require('discord-buttons');
+const { MessageButton, MessageActionRow } = require('discord.js');
 const comCooldown = new Set();
-const comCooldownSeconds = 10;
+const comCooldownSeconds = 20;
 
 module.exports = class extends Command {
 
@@ -104,47 +104,43 @@ module.exports = class extends Command {
 		const houseBet = coinFlip;
 
 		const buttonA = new MessageButton()
-			.setStyle('blurple')
+			.setStyle('PRIMARY')
 			.setLabel('Heads!')
-			.setID('heads');
+			.setCustomID('heads');
 
 		const buttonB = new MessageButton()
-			.setStyle('blurple')
+			.setStyle('PRIMARY')
 			.setLabel('Tails!')
-			.setID('tails');
+			.setCustomID('tails');
 
 		const buttonC = new MessageButton()
-			.setStyle('red')
+			.setStyle('DANGER')
 			.setLabel('Cancel')
-			.setID('cancel');
+			.setCustomID('cancel');
 
 		const row = new MessageActionRow()
-			.addComponent(buttonA)
-			.addComponent(buttonB)
-			.addComponent(buttonC);
+			.addComponents(buttonA, buttonB, buttonC);
 
 		const buttonANew = new MessageButton()
-			.setStyle('blurple')
+			.setStyle('PRIMARY')
 			.setLabel('Heads!')
-			.setID('heads')
-			.setDisabled();
+			.setCustomID('heads')
+			.setDisabled(true);
 
 		const buttonBNew = new MessageButton()
-			.setStyle('blurple')
+			.setStyle('PRIMARY')
 			.setLabel('Tails!')
-			.setID('tails')
-			.setDisabled();
+			.setCustomID('tails')
+			.setDisabled(true);
 
 		const buttonCNew = new MessageButton()
-			.setStyle('red')
+			.setStyle('DANGER')
 			.setLabel('Cancel')
-			.setID('cancel')
-			.setDisabled();
+			.setCustomID('cancel')
+			.setDisabled(true);
 
 		const rowNew = new MessageActionRow()
-			.addComponent(buttonANew)
-			.addComponent(buttonBNew)
-			.addComponent(buttonCNew);
+			.addComponents(buttonANew, buttonBNew, buttonCNew);
 
 		const initial = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
@@ -164,10 +160,10 @@ module.exports = class extends Command {
 			.addField(`**${this.client.user.username} - Coin Flip**`,
 				`**◎** ${message.author} lost <:coin:706659001164628008> \`${coinFlip.toLocaleString('en')}\``);
 
-		const m = await message.channel.send({ component: row, embeds: [initial] });
-		const filter = (but) => but.clicker.user.id === message.author.id;
+		const m = await message.channel.send({ components: [row], embeds: [initial] });
+		const filter = (but) => but.user.id === message.author.id;
 
-		const collector = m.createButtonCollector(filter, { time: 10000 });
+		const collector = m.createMessageComponentInteractionCollector(filter, { time: 20000 });
 
 		if (!comCooldown.has(message.author.id)) {
 			comCooldown.add(message.author.id);
@@ -179,39 +175,38 @@ module.exports = class extends Command {
 		}, comCooldownSeconds * 1000);
 
 		collector.on('collect', async b => {
-			await b.defer();
-			if (b.id === 'heads') {
+			if (b.customID === 'heads') {
 				if (answer === 'heads') {
-					m.edit({ component: rowNew, embeds: [win] });
+					b.update({ components: [rowNew], embeds: [win] });
 					balance.bank += houseBet;
 					balance.total += houseBet;
 					this.client.setBalance.run(balance);
 					collector.stop('win');
 					return;
 				}
-				m.edit({ component: rowNew, embeds: [lose] });
+				b.update({ components: [rowNew], embeds: [lose] });
 				balance.bank -= coinFlip;
 				balance.total -= coinFlip;
 				this.client.setBalance.run(balance);
 				collector.stop('lose');
 				return;
-			} else if (b.id === 'tails') {
+			} else if (b.customID === 'tails') {
 				if (answer === 'tails') {
-					m.edit({ component: rowNew, embeds: [win] });
+					b.update({ components: [rowNew], embeds: [win] });
 					balance.bank += houseBet;
 					balance.total += houseBet;
 					this.client.setBalance.run(balance);
 					collector.stop('win');
 					return;
 				}
-				m.edit({ component: rowNew, embeds: [lose] });
+				b.update({ components: [rowNew], embeds: [lose] });
 				balance.bank -= coinFlip;
 				balance.total -= coinFlip;
 				this.client.setBalance.run(balance);
 				collector.stop('lose');
 				return;
 			}
-			if (b.id === 'cancel') {
+			if (b.customID === 'cancel') {
 				collector.stop('cancel');
 			}
 		});
