@@ -1,7 +1,6 @@
 /* eslint-disable new-cap */
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
-const { sudo } = require('weky');
 
 module.exports = class extends Command {
 
@@ -41,13 +40,9 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const msg = args.slice(1).join(' ');
-		const xd = new sudo({
-			message: message,
-			text: msg,
-			member: user
-		});
-		xd.start();
+		const text = args.slice(1).join(' ');
+
+		this.client.functions.sudo(message, text, user);
 	}
 
 };
