@@ -1,10 +1,9 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Permissions } = require('discord.js');
+const { MessageEmbed, Permissions, MessageButton, MessageActionRow } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const fetch = require('node-fetch');
 const isAbsoluteUrl = require('is-absolute-url');
-const { MessageButton, MessageActionRow } = require('discord-buttons');
 const comCooldown = new Set();
 const comCooldownSeconds = 10;
 const Canvas = require('canvas');
@@ -41,100 +40,88 @@ module.exports = class extends Command {
 		// config help
 		if (args[0] === undefined) {
 			const buttonA = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Ad Prot')
-				.setID('ads');
+				.setCustomID('ads');
 
 			const buttonB = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Autorole')
-				.setID('autorole');
+				.setCustomID('autorole');
 
 			const buttonC = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Birthday')
-				.setID('birthday');
+				.setCustomID('birthday');
 
 			const buttonD = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Dad')
-				.setID('dad');
+				.setCustomID('dad');
 
 			const buttonE = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Haste')
-				.setID('haste');
+				.setCustomID('haste');
 
 			const buttonF = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Invite')
-				.setID('invite');
+				.setCustomID('invite');
 
 			const buttonG = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Level')
-				.setID('level');
+				.setCustomID('level');
 
 			const buttonH = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Logging')
-				.setID('logging');
+				.setCustomID('logging');
 
 			const buttonI = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Membercount')
-				.setID('membercount');
+				.setCustomID('membercount');
 
 			const buttonJ = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Music')
-				.setID('music');
+				.setCustomID('music');
 
 			const buttonK = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Mute')
-				.setID('mute');
+				.setCustomID('mute');
 
 			const buttonL = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Prefix')
-				.setID('prefix');
+				.setCustomID('prefix');
 
 			const buttonM = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Rolemenu')
-				.setID('rolemenu');
+				.setCustomID('rolemenu');
 
 			const buttonN = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Tickets')
-				.setID('tickets');
+				.setCustomID('tickets');
 
 			const buttonO = new MessageButton()
-				.setStyle('green')
+				.setStyle('PRIMARY')
 				.setLabel('Welcome')
-				.setID('welcome');
+				.setCustomID('welcome');
 
 			const row = new MessageActionRow()
-				.addComponent(buttonA)
-				.addComponent(buttonB)
-				.addComponent(buttonC)
-				.addComponent(buttonD)
-				.addComponent(buttonE);
+				.addComponents(buttonA, buttonB, buttonC, buttonD, buttonE);
 
 			const row2 = new MessageActionRow()
-				.addComponent(buttonF)
-				.addComponent(buttonG)
-				.addComponent(buttonH)
-				.addComponent(buttonI)
-				.addComponent(buttonJ);
+				.addComponents(buttonF, buttonG, buttonH, buttonI, buttonJ);
 
 			const row3 = new MessageActionRow()
-				.addComponent(buttonK)
-				.addComponent(buttonL)
-				.addComponent(buttonM)
-				.addComponent(buttonN)
-				.addComponent(buttonO);
+				.addComponents(buttonK, buttonL, buttonM, buttonN, buttonO);
 
 			const initial = new MessageEmbed()
 				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
@@ -144,9 +131,9 @@ module.exports = class extends Command {
 
 			const m = await message.channel.send({ components: [row, row2, row3], embeds: [initial] });
 
-			const filter = (but) => but.clicker.user.id !== this.client.user.id;
+			const filter = (but) => but.user.id !== this.client.user.id;
 
-			const collector = m.createButtonCollector(filter, { time: 15000 });
+			const collector = m.createMessageComponentInteractionCollector(filter, { time: 15000 });
 
 			if (!comCooldown.has(message.author.id)) {
 				comCooldown.add(message.author.id);
@@ -158,7 +145,7 @@ module.exports = class extends Command {
 			}, comCooldownSeconds * 1000);
 
 			collector.on('collect', async b => {
-				if (b.clicker.user.id !== message.author.id) {
+				if (b.user.id !== message.author.id) {
 					const wrongUser = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -167,121 +154,120 @@ module.exports = class extends Command {
 					return;
 				}
 
-				await b.defer();
 				collector.resetTimer();
 
-				if (b.id === 'ads') {
+				if (b.customID === 'ads') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Advert Protection:**
 							\u3000\`${prefix}config adsprot <on/off>\` : Toggles advert protection`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.id === 'autorole') {
+				if (b.customID === 'autorole') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ AutoRole:**
 							\u3000\`${prefix}config autorole <@role>\` : Sets the role users are given when they join the guild`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.id === 'birthday') {
+				if (b.customID === 'birthday') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Birthday:**
 							\u3000\`${prefix}config birthday channel <#channel>\` : Sets the channel where birthday alerts are sent.
 					        \u3000\`${prefix}config birthday role [@role]\` : Sets the (optional) role is pinged when it is someones birthday.`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.id === 'dad') {
+				if (b.customID === 'dad') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Dad Bot:**
 							\u3000\`${prefix}config dadbot <on/off>\` : Toggles the Dad bot module`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.id === 'haste') {
+				if (b.customID === 'haste') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Hastebin:**
 							\u3000\`${prefix}config haste url <on/off>\` : Toggles the Hastebin URL blocker`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.id === 'invite') {
+				if (b.customID === 'invite') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Invite Manager:**
 							\u3000\`${prefix}config invmanager <#channel/off>\` : Toggles the Invite Manager module`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.id === 'level') {
+				if (b.customID === 'level') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Level System:**
 							\u3000\`${prefix}config level <enable/disable>\` : Toggles the Level module`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.id === 'logging') {
+				if (b.customID === 'logging') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Logging:**
 							\u3000\`${prefix}config logging <#channel/off>\` : Sets/disables the logging channel`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.id === 'membercount') {
+				if (b.customID === 'membercount') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ MemberCount:**
 							\u3000\`${prefix}config membercount <on/off>\` : Toggles the member count module`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.id === 'music') {
+				if (b.customID === 'music') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Music:**
 							\u3000\`${prefix}config music role <@role>\` : Sets the DJ role
 							\u3000\`${prefix}config music role off\` : Disables the DJ role`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.id === 'mute') {
+				if (b.customID === 'mute') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Mute:**
 							\u3000\`${prefix}config mute role <@role>\` : Sets the Mute role
 							\u3000\`${prefix}config mute role off\` : Disables the Mute role`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.id === 'prefix') {
+				if (b.customID === 'prefix') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Prefix:**
 							\u3000\`${prefix}config prefix <prefix>\` : Sets the guild prefix`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.id === 'rolemenu') {
+				if (b.customID === 'rolemenu') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -289,10 +275,10 @@ module.exports = class extends Command {
 							\u3000\`${prefix}config rolemenu add <@role>\` : Sets the rolemenu roles
 							\u3000\`${prefix}config rolemenu remove <@role>\` : Removes a role from rolemenu
 							\u3000\`${prefix}config rolemenu clear\` : Removes all roles from rolemenu`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.id === 'tickets') {
+				if (b.customID === 'tickets') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -300,10 +286,10 @@ module.exports = class extends Command {
 							\u3000\`${prefix}config ticket cat <cat name>\` : Sets the ticket category
 							\u3000\`${prefix}config ticket log <#channel>\` : Enables ticket logging
 							\u3000\`${prefix}config ticket role <@role>\` : Sets custom support role for ticket system`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.id === 'welcome') {
+				if (b.customID === 'welcome') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -312,7 +298,7 @@ module.exports = class extends Command {
 							\u3000 \`${prefix}config welcome channel off\` : Disables the welcome message
 							\u3000 \`${prefix}config welcome image <url-to-image>\` : Sets custom welcome image
 							\u3000 \`${prefix}config welcome image off\` : Disables the custom welcome image`);
-					m.edit({ embeds: [embed] });
+					b.update({ embeds: [embed] });
 					return;
 				}
 			});
@@ -629,7 +615,7 @@ module.exports = class extends Command {
 					}
 
 					const channelA = this.client.channels.cache.find((a) => a.id === status.channela);
-					const channelB = this.client.channels.cache.find((b) => b.id === status.channelb);
+					const channelB = this.client.channels.cache.find((b) => b.customID === status.channelb);
 					const channelC = this.client.channels.cache.find((c) => c.id === status.channelc);
 
 					const catA = message.guild.channels.cache.find((d) => d.name === 'Member Count');
