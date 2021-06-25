@@ -1,23 +1,26 @@
 const Event = require('../../Structures/Event');
+const { MessageEmbed, Permissions } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const { Permissions, MessageEmbed } = require('discord.js');
 const { customAlphabet } = require('nanoid');
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 
 module.exports = class extends Event {
 
-	async run(button) {
-		if (button.id === 'createTicket') {
-			await button.defer();
-			await button.clicker.fetch();
+	async run(interaction) {
+		if (!interaction.isButton()) return;
+
+		if (interaction.customID === 'createTicket') {
+			interaction.user.send('hi');
+			await interaction.deferUpdate();
+
 			// Ticket Embed
-			const guild = this.client.guilds.cache.get(button.guild.id);
+			const guild = this.client.guilds.cache.get(interaction.guild.id);
 			const fetch = db.prepare(`SELECT * FROM ticketConfig WHERE guildid = ${guild.id}`).get();
 			const channel = guild.channels.cache.get(fetch.ticketembedchan);
 
 			if (!fetch.ticketembed) {
-				button.message.delete();
+				interaction.message.delete();
 				return;
 			}
 
@@ -41,16 +44,15 @@ module.exports = class extends Event {
 			}
 
 			// Make sure this is the user's only ticket.
-			await button.clicker.fetch();
 			const foundTicket = db.prepare(`SELECT authorid FROM tickets WHERE guildid = ${guild.id} AND authorid = (@authorid)`);
-			const checkTicketEx = db.prepare(`SELECT chanid FROM tickets WHERE guildid = ${guild.id} AND authorid = ${button.clicker.user.id}`).get();
+			const checkTicketEx = db.prepare(`SELECT chanid FROM tickets WHERE guildid = ${guild.id} AND authorid = ${interaction.user.id}`).get();
 
 			if (checkTicketEx) {
 				if (checkTicketEx.chanid === null) {
-					db.prepare(`DELETE FROM tickets WHERE guildid = ${guild.id} AND authorid = ${button.clicker.user.id}`).run();
+					db.prepare(`DELETE FROM tickets WHERE guildid = ${guild.id} AND authorid = ${interaction.user.id}`).run();
 				}
 				if (!guild.channels.cache.find((ch) => ch.id === checkTicketEx.chanid)) {
-					db.prepare(`DELETE FROM tickets WHERE guildid = ${guild.id} AND authorid = ${button.clicker.user.id}`).run();
+					db.prepare(`DELETE FROM tickets WHERE guildid = ${guild.id} AND authorid = ${interaction.user.id}`).run();
 				}
 			}
 
@@ -64,14 +66,14 @@ module.exports = class extends Event {
 			}
 
 			// Already has a ticket
-			if (foundTicket.get({ authorid: button.clicker.user.id })) {
+			if (foundTicket.get({ authorid: interaction.user.id })) {
 				try {
 					const cha = guild.channels.cache.get(checkTicketEx.chanid);
 					const alreadyTicket = new MessageEmbed()
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Ticket**`,
 							`**◎ Error:** It seems you already have a ticket open. | ${cha}`);
-					button.clicker.user.send({ embeds: [alreadyTicket] });
+					interaction.user.send({ embeds: [alreadyTicket] });
 					return;
 				} catch {
 					return;
@@ -82,19 +84,19 @@ module.exports = class extends Event {
 			const id = db.prepare(`SELECT category FROM ticketConfig WHERE guildid = ${guild.id};`).get();
 			const reason = 'No reason provided.';
 			const randomString = nanoid();
-			const nickName = guild.members.cache.get(button.clicker.user.id).displayName;
+			const nickName = guild.members.cache.get(interaction.user.id).displayName;
 
 			const newTicket = db.prepare('INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);');
 			newTicket.run({
 				guildid: guild.id,
 				ticketid: randomString,
-				authorid: button.clicker.user.id,
+				authorid: interaction.user.id,
 				reason
 			});
 			// Create the channel with the name "ticket-" then the user's ID.
-			const role = button.guild.roles.cache.find((x) => x.name === 'Support Team') || button.guild.roles.cache.find((r) => r.id === fetch.role);
+			const role = interaction.guild.roles.cache.find((x) => x.name === 'Support Team') || interaction.guild.roles.cache.find((r) => r.id === fetch.role);
 			const role2 = channel.guild.roles.everyone;
-			button.guild.channels.create(`ticket-${nickName}-${randomString}`, {
+			interaction.guild.channels.create(`ticket-${nickName}-${randomString}`, {
 				permissionOverwrites: [
 					{
 						id: role.id,
@@ -105,7 +107,7 @@ module.exports = class extends Event {
 						deny: Permissions.FLAGS.VIEW_CHANNEL
 					},
 					{
-						id: button.clicker.user.id,
+						id: interaction.user.id,
 						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
 					}
 				]
@@ -116,14 +118,14 @@ module.exports = class extends Event {
 					ticketid: randomString
 				});
 				const newTicketE = new MessageEmbed()
-					.setColor(this.client.utils.color(button.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(interaction.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
 				channel.send({ embeds: [newTicketE] }).then((m) => this.client.utils.deletableCheck(m, 4000));
 				const embed = new MessageEmbed()
-					.setColor(this.client.utils.color(button.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(interaction.guild.me.displayHexColor))
 					.setTitle('New Ticket')
-					.setDescription(`Hello \`${button.clicker.user.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
+					.setDescription(`Hello \`${interaction.user.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
 				c.send({ embeds: [embed] });
 
 				if (id) {
@@ -136,7 +138,7 @@ module.exports = class extends Event {
 					const loggingembed = new MessageEmbed()
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Ticket**`,
-							`**◎ Ticket Created:** ${button.clicker.user} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
+							`**◎ Ticket Created:** ${interaction.user} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
 					logchan.send({ embeds: [loggingembed] });
 				}
 			}).catch(console.error);
