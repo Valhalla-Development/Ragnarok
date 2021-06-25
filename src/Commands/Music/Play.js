@@ -1,11 +1,10 @@
 /* eslint-disable consistent-return */
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Permissions } = require('discord.js');
+const { MessageEmbed, Permissions, MessageButton, MessageActionRow } = require('discord.js');
 const talkedRecently = new Set();
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const prettyMilliseconds = require('pretty-ms');
-const { MessageButton, MessageActionRow } = require('discord-buttons');
 
 module.exports = class extends Command {
 
@@ -171,41 +170,40 @@ module.exports = class extends Command {
 
 				case 'SEARCH_RESULT': {
 					const buttonA = new MessageButton()
-						.setStyle('green')
+						.setStyle('SUCCESS')
 						.setEmoji('1️⃣')
-						.setID('one');
+						.setCustomID('one');
 
 					const buttonB = new MessageButton()
-						.setStyle('green')
+						.setStyle('SUCCESS')
 						.setEmoji('2️⃣')
-						.setID('two');
+						.setCustomID('two');
 
 					const buttonC = new MessageButton()
-						.setStyle('green')
+						.setStyle('SUCCESS')
 						.setEmoji('3️⃣')
-						.setID('three');
+						.setCustomID('three');
 
 					const buttonD = new MessageButton()
-						.setStyle('green')
+						.setStyle('SUCCESS')
 						.setEmoji('4️⃣')
-						.setID('four');
+						.setCustomID('four');
 
 					const buttonE = new MessageButton()
-						.setStyle('green')
+						.setStyle('SUCCESS')
 						.setEmoji('5️⃣')
-						.setID('five');
+						.setCustomID('five');
 
 					const buttonF = new MessageButton()
-						.setStyle('red')
+						.setStyle('DANGER')
 						.setLabel('Cancel')
-						.setID('cancel');
+						.setCustomID('cancel');
 
 					const row = new MessageActionRow()
-						.addComponent(buttonA)
-						.addComponent(buttonB)
-						.addComponent(buttonC)
-						.addComponent(buttonD)
-						.addComponent(buttonE);
+						.addComponents(buttonA, buttonB, buttonC, buttonD, buttonE);
+
+					const row1 = new MessageActionRow()
+						.addComponents(buttonF);
 
 					let index = 1;
 					const getTracks = res.tracks.filter(t => t.duration <= 900000);
@@ -229,15 +227,13 @@ module.exports = class extends Command {
 						.setThumbnail('https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
 						.setFooter('Click the corresponding button for the track you wish to play. You have 30 seconds to respond.');
 
-					const searchEmbed = await message.channel.send({ components: [row], button: buttonF, embeds: [embed] });
-					const filter = (but) => but.clicker.user.id !== this.client.user.id;
+					const searchEmbed = await message.channel.send({ components: [row, row1], embeds: [embed] });
+					const filter = (but) => but.user.id !== this.client.user.id;
 
-					const collector = searchEmbed.createButtonCollector(filter, { time: 30000 });
+					const collector = searchEmbed.createMessageComponentInteractionCollector(filter, { time: 30000 });
 
 					collector.on('collect', async (b) => {
-						await b.defer();
-
-						if (b.clicker.user.id !== message.author.id) {
+						if (b.user.id !== message.author.id) {
 							const wrongUser = new MessageEmbed()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Play**`,
@@ -254,25 +250,25 @@ module.exports = class extends Command {
 							}
 						}
 
-						if (b.id === 'cancel') {
+						if (b.customID === 'cancel') {
 							collector.stop('cancel');
 							return;
 						}
 
 						let track;
-						if (b.id === 'one') {
+						if (b.customID === 'one') {
 							track = tracks[Number(1) - 1];
 						}
-						if (b.id === 'two') {
+						if (b.customID === 'two') {
 							track = tracks[Number(2) - 1];
 						}
-						if (b.id === 'three') {
+						if (b.customID === 'three') {
 							track = tracks[Number(3) - 1];
 						}
-						if (b.id === 'four') {
+						if (b.customID === 'four') {
 							track = tracks[Number(4) - 1];
 						}
-						if (b.id === 'five') {
+						if (b.customID === 'five') {
 							track = tracks[Number(5) - 1];
 						}
 
