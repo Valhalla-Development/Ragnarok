@@ -28,7 +28,7 @@ module.exports = class extends Event {
 
 					message.channel.startTyping();
 
-					await fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=1`)
+					await fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=${message.author.id}`)
 						.then(res => res.json())
 						.then(json => message.reply({ content: json.message, allowedMentions: { repliedUser: false } }));
 					message.channel.stopTyping();
