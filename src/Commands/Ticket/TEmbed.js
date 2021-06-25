@@ -2,7 +2,7 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const { MessageButton } = require('discord-buttons');
+const { MessageButton, MessageActionRow } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -28,9 +28,12 @@ module.exports = class extends Command {
 			.setFooter('Ragnarok Bot', this.client.user.avatarURL());
 
 		const button = new MessageButton()
-			.setStyle('green')
+			.setStyle('SUCCESS')
 			.setLabel('📩 Open a ticket 📩')
-			.setID('createTicket');
+			.setCustomID('createTicket');
+
+		const row = new MessageActionRow()
+			.addComponents(button);
 
 		const foundtEmbed = db.prepare(`SELECT * FROM ticketConfig WHERE guildid=${message.guild.id}`).get();
 		if (!foundtEmbed) {
@@ -68,7 +71,7 @@ module.exports = class extends Command {
 			}
 
 			if (checkEmbedEx.ticketembed === null) {
-				await message.channel.send({ component: button, embeds: [embed] }).then(async (a) => {
+				await message.channel.send({ components: [row], embeds: [embed] }).then(async (a) => {
 					const update = db.prepare(
 						'UPDATE ticketConfig SET ticketembed = (@ticketembed), ticketembedchan = (@ticketEChan) WHERE guildid = (@guildid);'
 					);
@@ -92,7 +95,7 @@ module.exports = class extends Command {
 							return;
 						}
 					}).catch(() => {
-						message.channel.send({ component: button, embeds: [embed] }).then(async (a) => {
+						message.channel.send({ components: [row], embeds: [embed] }).then(async (a) => {
 							const update = db.prepare(
 								'UPDATE ticketConfig SET ticketembed = (@ticketembed), ticketembedchan = (@ticketEChan) WHERE guildid = (@guildid);'
 							);
@@ -105,7 +108,7 @@ module.exports = class extends Command {
 						});
 					});
 				} catch (err) {
-					message.channel.send({ component: button, embeds: [embed] }).then(async (a) => {
+					message.channel.send({ components: [row], embeds: [embed] }).then(async (a) => {
 						const update = db.prepare(
 							'UPDATE ticketConfig SET ticketembed = (@ticketembed), ticketembedchan = (@ticketEChan) WHERE guildid = (@guildid);'
 						);
