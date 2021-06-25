@@ -4,7 +4,7 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const { MessageButton, MessageActionRow } = require('discord-buttons');
+const { MessageButton, MessageActionRow } = require('discord.js');
 const comCooldown = new Set();
 const comCooldownSeconds = 10;
 
@@ -99,54 +99,54 @@ module.exports = class extends Command {
 		}
 
 		const Rock = new MessageButton()
-			.setStyle('blurple')
+			.setStyle('PRIMARY')
 			.setEmoji('🪨')
 			.setLabel('Rock')
-			.setID('rock');
+			.setCustomID('rock');
 
 		const Paper = new MessageButton()
-			.setStyle('blurple')
+			.setStyle('PRIMARY')
 			.setEmoji('🧻')
 			.setLabel('Paper')
-			.setID('paper');
+			.setCustomID('paper');
 
 		const Scissors = new MessageButton()
-			.setStyle('blurple')
+			.setStyle('PRIMARY')
 			.setEmoji('✂️')
 			.setLabel('Scissors')
-			.setID('scissors');
+			.setCustomID('scissors');
 
 		const Cancel = new MessageButton()
-			.setStyle('red')
+			.setStyle('DANGER')
 			.setLabel('Cancel')
-			.setID('cancel');
+			.setCustomID('cancel');
 
 		const RockNew = new MessageButton()
-			.setStyle('blurple')
+			.setStyle('PRIMARY')
 			.setEmoji('🪨')
 			.setLabel('Rock')
-			.setID('rock')
-			.setDisabled();
+			.setCustomID('rock')
+			.setDisabled(true);
 
 		const PaperNew = new MessageButton()
-			.setStyle('blurple')
+			.setStyle('PRIMARY')
 			.setEmoji('🧻')
 			.setLabel('Paper')
-			.setID('paper')
-			.setDisabled();
+			.setCustomID('paper')
+			.setDisabled(true);
 
 		const ScissorsNew = new MessageButton()
-			.setStyle('blurple')
+			.setStyle('PRIMARY')
 			.setEmoji('✂️')
 			.setLabel('Scissors')
-			.setID('scissors')
-			.setDisabled();
+			.setCustomID('scissors')
+			.setDisabled(true);
 
 		const CancelNew = new MessageButton()
-			.setStyle('red')
+			.setStyle('DANGER')
 			.setLabel('Cancel')
-			.setID('cancel')
-			.setDisabled();
+			.setCustomID('cancel')
+			.setDisabled(true);
 
 		const houseBet = Number(rps);
 
@@ -182,105 +182,100 @@ module.exports = class extends Command {
 			.addField(`**${this.client.user.username} - Rock Paper Scissors**`,
 				`**◎** ${message.author} Tied! Your wager has been returned to your bank.`);
 
-		message.channel.send({ components: [group1], embeds: [initial] }).then((m) => {
-			const filter = (button) => button.clicker.user.id === message.author.id;
+		const m = await message.channel.send({ components: [group1], embeds: [initial] });
+		const filter = (but) => but.user.id === message.author.id;
 
-			const collector = m.createButtonCollector(filter, {
-				time: 30000
-			});
+		const collector = m.createMessageComponentInteractionCollector(filter, { time: 30000 });
 
-			if (!comCooldown.has(message.author.id)) {
-				comCooldown.add(message.author.id);
+		if (!comCooldown.has(message.author.id)) {
+			comCooldown.add(message.author.id);
+		}
+		setTimeout(() => {
+			if (comCooldown.has(message.author.id)) {
+				comCooldown.delete(message.author.id);
 			}
-			setTimeout(() => {
-				if (comCooldown.has(message.author.id)) {
-					comCooldown.delete(message.author.id);
-				}
-			}, comCooldownSeconds * 1000);
+		}, comCooldownSeconds * 1000);
 
-			collector.on('collect', async (button) => {
-				await button.defer();
+		collector.on('collect', async (button) => {
+			if (button.customID === 'cancel') {
+				collector.stop('cancel');
+			}
 
-				if (button.id === 'cancel') {
-					collector.stop('cancel');
-				}
+			switch (ai) {
+				case 'rock':
+					if (button.customID === 'rock') {
+						button.update({ components: [group2], embeds: [tie] });
+						collector.stop('tie');
+					}
+					if (button.customID === 'paper') {
+						button.update({ components: [group2], embeds: [win] });
+						collector.stop('win');
+					}
+					if (button.customID === 'scissors') {
+						button.update({ components: [group2], embeds: [lose] });
+						collector.stop('lose');
+					}
+					break;
+				case 'paper':
+					if (button.customID === 'rock') {
+						button.update({ components: [group2], embeds: [lose] });
+						collector.stop('lose');
+					}
+					if (button.customID === 'paper') {
+						button.update({ components: [group2], embeds: [tie] });
+						collector.stop('tie');
+					}
+					if (button.customID === 'scissors') {
+						button.update({ components: [group2], embeds: [win] });
+						collector.stop('win');
+					}
+					collector.stop('gameEnd');
+					break;
+				case 'scissors':
+					if (button.customID === 'rock') {
+						button.update({ components: [group2], embeds: [win] });
+						collector.stop('win');
+					}
+					if (button.customID === 'paper') {
+						button.update({ components: [group2], embeds: [lose] });
+						collector.stop('lose');
+					}
+					if (button.customID === 'scissors') {
+						button.update({ components: [group2], embeds: [tie] });
+						collector.stop('tie');
+					}
+					collector.stop('gameEnd');
+					break;
+			}
+		});
+		collector.on('end', async (_, reason) => {
+			if (comCooldown.has(message.author.id)) {
+				comCooldown.delete(message.author.id);
+			}
 
-				switch (ai) {
-					case 'rock':
-						if (button.id === 'rock') {
-							m.edit({ component: group2, embeds: [tie] });
-							collector.stop('tie');
-						}
-						if (button.id === 'paper') {
-							m.edit({ component: group2, embeds: [win] });
-							collector.stop('win');
-						}
-						if (button.id === 'scissors') {
-							m.edit({ component: group2, embeds: [lose] });
-							collector.stop('lose');
-						}
-						break;
-					case 'paper':
-						if (button.id === 'rock') {
-							m.edit({ component: group2, embeds: [lose] });
-							collector.stop('lose');
-						}
-						if (button.id === 'paper') {
-							m.edit({ component: group2, embeds: [tie] });
-							collector.stop('tie');
-						}
-						if (button.id === 'scissors') {
-							m.edit({ component: group2, embeds: [win] });
-							collector.stop('win');
-						}
-						collector.stop('gameEnd');
-						break;
-					case 'scissors':
-						if (button.id === 'rock') {
-							m.edit({ component: group2, embeds: [win] });
-							collector.stop('win');
-						}
-						if (button.id === 'paper') {
-							m.edit({ component: group2, embeds: [lose] });
-							collector.stop('lose');
-						}
-						if (button.id === 'scissors') {
-							m.edit({ component: group2, embeds: [tie] });
-							collector.stop('tie');
-						}
-						collector.stop('gameEnd');
-						break;
-				}
-			});
-			collector.on('end', (_, reason) => {
-				if (comCooldown.has(message.author.id)) {
-					comCooldown.delete(message.author.id);
-				}
+			if (reason === 'win') {
+				balance.bank += houseBet;
+				balance.total += houseBet;
+				this.client.setBalance.run(balance);
+			}
+			if (reason === 'lose') {
+				balance.bank -= rps;
+				balance.total -= rps;
+				this.client.setBalance.run(balance);
+			}
 
-				if (reason === 'win') {
-					balance.bank += houseBet;
-					balance.total += houseBet;
-					this.client.setBalance.run(balance);
-				}
-				if (reason === 'lose') {
-					balance.bank -= rps;
-					balance.total -= rps;
-					this.client.setBalance.run(balance);
-				}
+			if (reason === 'cancel' || reason === 'time') {
+				await this.client.utils.messageDelete(message, 0);
+				await this.client.utils.messageDelete(m, 0);
 
-				if (reason === 'cancel' || reason === 'time') {
-					this.client.utils.messageDelete(message, 0);
-					this.client.utils.messageDelete(m, 0);
-
-					const limitE = new MessageEmbed()
-						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Coin Flip**`,
-							`**◎ Success:** Your bet was cancelled, your money has been returned.`);
-					message.channel.send({ embeds: [limitE] }).then((ca) => this.client.utils.deletableCheck(ca, 10000));
-					return;
-				}
-			});
+				const limitE = new MessageEmbed()
+					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Coin Flip**`,
+						`**◎ Success:** Your bet was cancelled, your money has been returned.`);
+				message.channel.send({ embeds: [limitE] }).then((ca) => this.client.utils.deletableCheck(ca, 10000));
+				return;
+			}
 		});
 	}
 
