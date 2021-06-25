@@ -79,7 +79,14 @@ module.exports = class extends Command {
 
 		if (message.member.roles.cache.has(role.id) || message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
 			if (talkedRecently.has(message.author.id)) {
-				talkedRecently.delete(message.author.id);
+				this.client.utils.messageDelete(message, 10000);
+
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Play**`,
+						`**◎ Error:** Please only run one instance of this command!`);
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
 			}
 		}
 
@@ -110,9 +117,10 @@ module.exports = class extends Command {
 			voiceChannel: message.member.voice.channel.id,
 			textChannel: message.channel.id
 		});
-		await this.client.manager.search(args.join(' '), message.author).then(async (res) => {
-			talkedRecently.add(message.author.id);
 
+		await talkedRecently.add(message.author.id);
+
+		await this.client.manager.search(args.join(' '), message.author).then(async (res) => {
 			if (res.loadType === 'NO_MATCHES' || res.loadType === 'LOAD_FAILED') {
 				this.client.utils.messageDelete(message, 10000);
 				if (talkedRecently.has(message.author.id)) {
@@ -227,6 +235,8 @@ module.exports = class extends Command {
 					const collector = searchEmbed.createButtonCollector(filter, { time: 30000 });
 
 					collector.on('collect', async (b) => {
+						await b.defer();
+
 						if (b.clicker.user.id !== message.author.id) {
 							const wrongUser = new MessageEmbed()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -236,8 +246,12 @@ module.exports = class extends Command {
 							return;
 						}
 
-						if (talkedRecently.has(message.author.id)) {
-							talkedRecently.delete(message.author.id);
+						this.client.utils.messageDelete(searchEmbed, 10000);
+
+						if (message.member.roles.cache.has(role.id) || message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+							if (talkedRecently.has(message.author.id)) {
+								talkedRecently.delete(message.author.id);
+							}
 						}
 
 						if (b.id === 'cancel') {
@@ -262,7 +276,7 @@ module.exports = class extends Command {
 							track = tracks[Number(5) - 1];
 						}
 
-						if (track.duration >= 600000) {
+						if (track.duration >= 900000) {
 							collector.stop('duration');
 							return;
 						}
@@ -289,6 +303,12 @@ module.exports = class extends Command {
 					collector.on('end', (_, reason) => {
 						this.client.utils.deletableCheck(searchEmbed, 0);
 						this.client.utils.deletableCheck(message, 0);
+
+						if (message.member.roles.cache.has(role.id) || message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+							if (talkedRecently.has(message.author.id)) {
+								talkedRecently.delete(message.author.id);
+							}
+						}
 
 						if (reason === 'duration') {
 							const embed1 = new MessageEmbed()
