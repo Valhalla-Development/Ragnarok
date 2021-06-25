@@ -5,7 +5,7 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 const fetchAll = require('discord-fetch-all');
 const comCooldown = new Set();
 const comCooldownSeconds = 20;
-const { MessageButton, MessageActionRow } = require('discord-buttons');
+const { MessageButton, MessageActionRow } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -50,21 +50,22 @@ module.exports = class extends Command {
 		}
 
 		if (!comCooldown.has(message.author.id)) {
+			message.channel.startTyping();
+
 			const user = this.client.users.cache.find((a) => a.id === foundTicket.authorid); // do something if the user is not found (they left)
 
 			const buttonA = new MessageButton()
-				.setStyle('green')
+				.setStyle('SUCCESS')
 				.setLabel('Close')
-				.setID('close');
+				.setCustomID('close');
 
 			const buttonB = new MessageButton()
-				.setStyle('red')
+				.setStyle('DANGER')
 				.setLabel('Cancel')
-				.setID('cancel');
+				.setCustomID('cancel');
 
 			const row = new MessageActionRow()
-				.addComponent(buttonA)
-				.addComponent(buttonB);
+				.addComponents(buttonA, buttonB);
 
 			const initial = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -72,10 +73,13 @@ module.exports = class extends Command {
 					`**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!`)
 				.setFooter(`If this fails for any reason, you can forcefully close with: ${prefix}forceclose`);
 
-			const m = await message.channel.send({ component: row, embeds: [initial] });
-			const filter = (but) => but.clicker.user.id === message.author.id;
+			const m = await message.channel.send({ components: [row], embeds: [initial] });
 
-			const collector = m.createButtonCollector(filter, { time: 15000 });
+			message.channel.stopTyping();
+
+			const filter = (but) => but.user.id === message.author.id;
+
+			const collector = m.createMessageComponentInteractionCollector(filter, { time: 15000 });
 
 			if (!comCooldown.has(message.author.id)) {
 				comCooldown.add(message.author.id);
@@ -87,9 +91,9 @@ module.exports = class extends Command {
 			}, comCooldownSeconds * 1000);
 
 			collector.on('collect', async b => {
-				await b.defer();
+				await b.deferUpdate();
 
-				if (b.id === 'close') {
+				if (b.customID === 'close') {
 					message.channel.startTyping();
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -108,8 +112,9 @@ module.exports = class extends Command {
 					const file = mapfile.filter((f) => f.message !== '');
 					file.unshift({ tickeData: `Ticket Creator: ${user.username} || Ticket Reason: ${foundTicket.reason}` });
 
-					const buffer = Buffer.from(JSON.stringify(file, null, 3));
-					const attachment = new MessageAttachment(buffer, `${user.username}-ticketLog.json`);
+					const toString = JSON.stringify(file, null, 3);
+					const buffer = Buffer.from(toString);
+					const attachment = new MessageAttachment(buffer, `ticketLog.json`);
 
 					message.channel.stopTyping();
 
@@ -122,7 +127,7 @@ module.exports = class extends Command {
 					});
 
 					if (!closeReason) {
-						user.send(`Your ticket in guild: \`${message.guild.name}\` was closed.\nI have attached the chat transcript.`, attachment).then(() => {
+						user.send({ content: `Your ticket in guild: \`${message.guild.name}\` was closed.\nI have attached the chat transcript.`, files: [attachment] }).then(() => {
 						// eslint-disable-next-line arrow-body-style
 						}).catch(() => {
 							if (comCooldown.has(message.author.id)) {
@@ -131,7 +136,7 @@ module.exports = class extends Command {
 							return;
 						});
 					} else {
-						user.send(`Your ticket in guild: \`${message.guild.name}\` was closed for the following reason:\n\`${closeReason}\`\nI have attached the chat transcript.`, attachment).then(() => {
+						user.send({ content: `Your ticket in guild: \`${message.guild.name}\` was closed for the following reason:\n\`${closeReason}\`\nI have attached the chat transcript.`, files: [attachment] }).then(() => {
 						// eslint-disable-next-line arrow-body-style
 						}).catch(() => {
 							if (comCooldown.has(message.author.id)) {
@@ -181,7 +186,7 @@ module.exports = class extends Command {
 					}
 					collector.stop('close');
 				}
-				if (b.id === 'cancel') {
+				if (b.customID === 'cancel') {
 					collector.stop('cancel');
 				}
 			});
