@@ -49,22 +49,38 @@ module.exports = class extends Command {
 			.map(emoji => emoji.toString());
 
 		if (args[0] === 'roles') {
+			const roleArr = [];
+
+			const join = roles.join(', ');
+			if (join.length > 4000) {
+				const trim = join.substring(0, 4000);
+				const lastOf = trim.substring(0, trim.lastIndexOf('<'));
+				roleArr.push(lastOf);
+			}
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setAuthor(`Viewing information for ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
-				.addField(`**Server Roles [${roles.length}]**`,
-					`${roles.length < 30 ? roles.join(', ') : roles.length >= 30 ? this.client.utils.trimArray(roles, 30) : 'None'}`)
+				.setDescription(`**Server Roles [${roles.length}]**\n${!roleArr.length ? roles.join(', ') : `${roleArr.join(', ')}... ${roles.length - roleArr[0].split(', ').length + 1} more!`}`)
 				.setFooter(`${this.client.user.username}`, this.client.user.displayAvatarURL({ dynamic: true }));
 			message.channel.send({ embeds: [embed] });
 			return;
 		}
 
 		if (args[0] === 'emojis') {
+			const emojiArr = [];
+
+			const join = emojiMap.join(', ');
+			if (join.length > 4000) {
+				const trim = join.substring(0, 4000);
+				const lastOf = trim.substring(0, trim.lastIndexOf('<'));
+				emojiArr.push(lastOf);
+			}
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setAuthor(`Viewing information for ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
-				.addField(`**Server Roles [${roles.length}]**`,
-					`${emojiMap.length < 20 ? emojiMap.join(' ') : emojiMap.length >= 20 ? this.client.utils.trimArray(emojiMap, 20) : 'None'}`)
+				.setDescription(`**Server Emojis [${emojiMap.length}]**\n${!emojiArr.length ? emojiMap.join(', ') : `${emojiArr.join(', ')}... ${emojiMap.length - emojiArr[0].split(', ').length + 1} more!`}`)
 				.setFooter(`${this.client.user.username}`, this.client.user.displayAvatarURL({ dynamic: true }));
 			message.channel.send({ embeds: [embed] });
 			return;
