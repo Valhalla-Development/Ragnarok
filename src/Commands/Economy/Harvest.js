@@ -127,7 +127,7 @@ module.exports = class extends Command {
 					.setFooter(`To harvest, you can run ${prefix}harvest all${TotalPage > 1 ? ` | Page: ${PageNo++}/${TotalPage}` : ''}`);
 				Embeds.push(Embed);
 			}
-			TotalPage > 1 ? message.channel.createSlider(message.author.id, Embeds) : message.channel.send({ embeds: [Embeds] });
+			TotalPage > 1 ? this.client.functions.pagination(message, Embeds) : message.channel.send({ embeds: [Embeds] });
 			return;
 		}
 
@@ -184,7 +184,7 @@ module.exports = class extends Command {
 					.setFooter(`To harvest, you can run ${prefix}harvest all${TotalPage > 1 ? ` | Page: ${PageNo++}/${TotalPage}` : ''}`);
 				Embeds.push(Embed);
 			}
-			TotalPage > 1 ? message.channel.createSlider(message.author.id, Embeds) : message.channel.send({ embeds: [Embeds] });
+			TotalPage > 1 ? this.client.functions.pagination(message, Embeds) : message.channel.send({ embeds: [Embeds] });
 		}
 
 		function harvestCrops() {
