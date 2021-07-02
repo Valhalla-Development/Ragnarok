@@ -28,7 +28,7 @@ module.exports = class extends Command {
 		if (command) {
 			const cmd = this.client.commands.get(command) || this.client.commands.get(this.client.aliases.get(command));
 
-			if (!cmd) {
+			if (!cmd || cmd.category === 'Hidden') {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed1 = new MessageEmbed()
@@ -43,7 +43,7 @@ module.exports = class extends Command {
 			if (cmd.ownerOnly) {
 				reqPerm = `**◎ Owner Only:** Yes`;
 			}
-			if (cmd.userPerms.bitfield === 0) {
+			if (cmd.userPerms.bitfield === 0n) {
 				reqPerm = '**◎ Permission Required:** None.';
 			} else {
 				reqPerm = `**◎ Permission(s) Required:** \`${this.client.utils.formatArray(cmd.userPerms)}\``;
