@@ -76,7 +76,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		if (message.member.roles.cache.has(role.id) || message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+		if (!message.member.roles.cache.has(role.id) || !message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
 			if (talkedRecently.has(message.author.id)) {
 				this.client.utils.messageDelete(message, 10000);
 
@@ -150,6 +150,9 @@ module.exports = class extends Command {
 						if (!player.queue.current) {
 							player.destroy(message.guild.id);
 						}
+						if (talkedRecently.has(message.author.id)) {
+							talkedRecently.delete(message.author.id);
+						}
 						return;
 					}
 					player.queue.add(res.tracks[0]);
@@ -217,6 +220,9 @@ module.exports = class extends Command {
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.setDescription(`No tracks found.`);
 						message.channel.send({ embeds: [noTrack] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						if (talkedRecently.has(message.author.id)) {
+							talkedRecently.delete(message.author.id);
+						}
 						return;
 					}
 
@@ -315,6 +321,9 @@ module.exports = class extends Command {
 							if (!player.queue.current) {
 								player.destroy(message.guild.id);
 							}
+							if (talkedRecently.has(message.author.id)) {
+								talkedRecently.delete(message.author.id);
+							}
 							return;
 						}
 
@@ -352,6 +361,9 @@ module.exports = class extends Command {
 								.addField(`**${this.client.user.username} - Play**`,
 									`**◎ Error:** Only members with the ${role} role may load a playlist with more than 10 tracks!`);
 							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							if (talkedRecently.has(message.author.id)) {
+								talkedRecently.delete(message.author.id);
+							}
 							return;
 						}
 					}
@@ -366,6 +378,9 @@ module.exports = class extends Command {
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.setDescription(`No tracks found.`);
 							message.channel.send({ embeds: [noTrack] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							if (talkedRecently.has(message.author.id)) {
+								talkedRecently.delete(message.author.id);
+							}
 							return;
 						}
 
