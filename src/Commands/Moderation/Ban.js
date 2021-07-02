@@ -1,8 +1,7 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Permissions } = require('discord.js');
+const { MessageEmbed, Permissions, MessageButton } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const { MessageButton } = require('discord-buttons');
 
 module.exports = class extends Command {
 
@@ -125,21 +124,19 @@ module.exports = class extends Command {
 			.setTimestamp();
 
 		const buttonA = new MessageButton()
-			.setStyle('green')
+			.setStyle('SUCCESS')
 			.setLabel('Unban')
-			.setID('unban');
+			.setCustomID('unban');
 
 		if (id && id.channel && id.channel === message.channel.id) return;
 
-		const m = await message.channel.send({ component: buttonA, embeds: [embed] });
-		const filter = (but) => but.clicker.user.id === message.author.id;
+		const m = await message.channel.send({ components: [buttonA], embeds: [embed] });
+		const filter = (but) => but.user.id === message.author.id;
 
-		const collector = m.createButtonCollector(filter, { time: 10000 });
+		const collector = m.createMessageComponentInteractionCollector(filter, { time: 10000 });
 
 		collector.on('collect', async b => {
-			await b.defer();
-
-			if (b.id === 'unban') {
+			if (b.customID === 'unban') {
 				message.guild.bans.fetch().then((bans) => {
 					if (bans.size === 0) {
 						this.client.utils.messageDelete(message, 10000);
@@ -177,8 +174,8 @@ module.exports = class extends Command {
 			}
 		});
 		collector.on('end', () => {
-			buttonA.setDisabled();
-			m.edit({ component: buttonA, embeds: [embed] });
+			buttonA.setDisabled(true);
+			m.update({ components: [buttonA], embeds: [embed] });
 		});
 
 		if (id) {
