@@ -6,6 +6,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
+			aliases: ['ded'],
 			description: 'Generate a Rip image!',
 			category: 'Generators',
 			usage: '[@tag]'
