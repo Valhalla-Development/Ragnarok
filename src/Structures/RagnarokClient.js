@@ -190,7 +190,7 @@ module.exports = class RagnarokClient extends Client {
 						return;
 					}
 					const textChannel = player.get('textChannel');
-					if (!player.queue.size) {
+					if (player.queue.size < 0) {
 						player.destroy(player.guild.id);
 
 						const embed = new MessageEmbed()
