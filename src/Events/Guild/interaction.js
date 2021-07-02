@@ -11,7 +11,6 @@ module.exports = class extends Event {
 		if (!interaction.isButton()) return;
 
 		if (interaction.customID === 'createTicket') {
-			interaction.user.send('hi');
 			await interaction.deferUpdate();
 
 			// Ticket Embed
