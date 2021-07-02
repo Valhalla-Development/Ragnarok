@@ -6,6 +6,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
+			aliases: ['notstonk'],
 			description: 'Generate a Not Stonk image!',
 			category: 'Generators',
 			usage: '[@tag]'
