@@ -17,26 +17,6 @@ const fetch = require('node-fetch');
 module.exports = class extends Event {
 
 	async run(message) {
-		async function chatBot(grabClient) {
-			const apiArgs = message.content.slice().trim().split(/ +/g);
-			apiArgs.splice(0, 1);
-
-			if (message.guild) {
-				if (message.author.bot) return;
-				if (message.content.startsWith(`<@${grabClient.user.id}>`) || message.content.startsWith(`<@!${grabClient.user.id}>`)) {
-					if (!apiArgs) return;
-
-					message.channel.startTyping();
-
-					await fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=${message.author.id}`)
-						.then(res => res.json())
-						.then(json => message.reply({ content: json.message, allowedMentions: { repliedUser: false } }));
-					message.channel.stopTyping();
-				}
-			}
-		}
-		chatBot(this.client);
-
 		if (!message.guild || message.author.bot) return;
 
 		// Custom prefixes
@@ -467,7 +447,30 @@ module.exports = class extends Event {
 
 		const mentionRegex = RegExp(`^<@!?${this.client.user.id}>$`);
 
-		if (message.content.match(mentionRegex)) message.channel.send(`**◎ My prefix for ${message.guild.name} is \`${this.client.prefix}\`.**`);
+		if (message.content.match(mentionRegex)) {
+			message.channel.send(`**◎ My prefix for ${message.guild.name} is \`${this.client.prefix}\`.**`);
+			return;
+		}
+
+		async function chatBot(grabClient) {
+			const apiArgs = message.content.slice().trim().split(/ +/g);
+			apiArgs.splice(0, 1);
+
+			if (message.guild) {
+				if (message.author.bot) return;
+				if (message.content.startsWith(`<@${grabClient.user.id}>`) || message.content.startsWith(`<@!${grabClient.user.id}>`)) {
+					if (!apiArgs.length) return;
+
+					message.channel.startTyping();
+
+					await fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=${message.author.id}`)
+						.then(res => res.json())
+						.then(json => message.reply({ content: json.message, allowedMentions: { repliedUser: false } }));
+					message.channel.stopTyping();
+				}
+			}
+		}
+		chatBot(this.client);
 
 		if (!message.content.startsWith(prefixcommand)) return;
 
