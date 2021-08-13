@@ -49,7 +49,7 @@ module.exports = class extends Command {
 				);
 			}
 
-			const dropdown = new MessageSelectMenu().addOptions(menuArr).setCustomId('rolemenu');
+			const dropdown = new MessageSelectMenu().addOptions(menuArr).setcustomId('rolemenu');
 
 			const row = new MessageActionRow().addComponents(dropdown);
 

@@ -21,12 +21,12 @@ module.exports = class extends Command {
 		const buttonA = new MessageButton()
 			.setStyle('SUCCESS')
 			.setLabel('Yes!')
-			.setCustomId('yes');
+			.setcustomId('yes');
 
 		const buttonB = new MessageButton()
 			.setStyle('DANGER')
 			.setLabel('No!')
-			.setCustomId('no');
+			.setcustomId('no');
 
 		const row = new MessageActionRow()
 			.addComponents(buttonA, buttonB);
@@ -34,13 +34,13 @@ module.exports = class extends Command {
 		const buttonANew = new MessageButton()
 			.setStyle('SUCCESS')
 			.setLabel('Yes!')
-			.setCustomId('yes')
+			.setcustomId('yes')
 			.setDisabled(true);
 
 		const buttonBNew = new MessageButton()
 			.setStyle('DANGER')
 			.setLabel('No!')
-			.setCustomId('no')
+			.setcustomId('no')
 			.setDisabled(true);
 
 		const rowNew = new MessageActionRow()
@@ -73,7 +73,7 @@ module.exports = class extends Command {
 		}, comCooldownSeconds * 1000);
 
 		collector.on('collect', async b => {
-			if (b.customID === 'yes') {
+			if (b.customId === 'yes') {
 				b.update({ components: [rowNew], embeds: [embedNew] });
 				collector.stop('yes');
 				return;

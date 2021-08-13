@@ -8,19 +8,19 @@ module.exports = class pagination {
 
 	async pagination(message, embeds, emojiNext, emojiHome, emojiBack) {
 		const back = new MessageButton()
-			.setCustomId('back')
+			.setcustomId('back')
 			.setEmoji(emojiBack || '◀️')
 			.setStyle('PRIMARY')
 			.setDisabled(true);
 
 		const home = new MessageButton()
-			.setCustomId('home')
+			.setcustomId('home')
 			.setEmoji(emojiHome || '🏠')
 			.setStyle('PRIMARY')
 			.setDisabled(true);
 
 		const next = new MessageButton()
-			.setCustomId('next')
+			.setcustomId('next')
 			.setEmoji(emojiNext || '▶️')
 			.setStyle('PRIMARY');
 
@@ -38,7 +38,7 @@ module.exports = class pagination {
 		collector.on('collect', async b => {
 			collector.resetTimer();
 
-			if (b.customID === 'back') {
+			if (b.customId === 'back') {
 				if (currentPage !== 0) {
 					if (currentPage === embeds.length - 1) {
 						next.setDisabled(false);
@@ -58,7 +58,7 @@ module.exports = class pagination {
 				}
 			}
 
-			if (b.customID === 'next') {
+			if (b.customId === 'next') {
 				if (currentPage < embeds.length - 1) {
 					currentPage++;
 
@@ -76,7 +76,7 @@ module.exports = class pagination {
 				}
 			}
 
-			if (b.customID === 'home') {
+			if (b.customId === 'home') {
 				currentPage = 0;
 				home.setDisabled(true);
 				back.setDisabled(true);

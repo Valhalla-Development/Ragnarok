@@ -126,7 +126,7 @@ module.exports = class extends Command {
 		const buttonA = new MessageButton()
 			.setStyle('SUCCESS')
 			.setLabel('Unban')
-			.setCustomId('unban');
+			.setcustomId('unban');
 
 		if (id && id.channel && id.channel === message.channel.id) return;
 
@@ -136,7 +136,7 @@ module.exports = class extends Command {
 		const collector = m.createMessageComponentInteractionCollector(filter, { time: 10000 });
 
 		collector.on('collect', async b => {
-			if (b.customID === 'unban') {
+			if (b.customId === 'unban') {
 				message.guild.bans.fetch().then((bans) => {
 					if (bans.size === 0) {
 						this.client.utils.messageDelete(message, 10000);

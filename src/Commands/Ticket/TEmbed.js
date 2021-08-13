@@ -30,7 +30,7 @@ module.exports = class extends Command {
 		const button = new MessageButton()
 			.setStyle('SUCCESS')
 			.setLabel('📩 Open a ticket 📩')
-			.setCustomId('createTicket');
+			.setcustomId('createTicket');
 
 		const row = new MessageActionRow()
 			.addComponents(button);

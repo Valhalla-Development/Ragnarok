@@ -106,17 +106,17 @@ module.exports = class extends Command {
 		const buttonA = new MessageButton()
 			.setStyle('PRIMARY')
 			.setLabel('Heads!')
-			.setCustomId('heads');
+			.setcustomId('heads');
 
 		const buttonB = new MessageButton()
 			.setStyle('PRIMARY')
 			.setLabel('Tails!')
-			.setCustomId('tails');
+			.setcustomId('tails');
 
 		const buttonC = new MessageButton()
 			.setStyle('DANGER')
 			.setLabel('Cancel')
-			.setCustomId('cancel');
+			.setcustomId('cancel');
 
 		const row = new MessageActionRow()
 			.addComponents(buttonA, buttonB, buttonC);
@@ -124,19 +124,19 @@ module.exports = class extends Command {
 		const buttonANew = new MessageButton()
 			.setStyle('PRIMARY')
 			.setLabel('Heads!')
-			.setCustomId('heads')
+			.setcustomId('heads')
 			.setDisabled(true);
 
 		const buttonBNew = new MessageButton()
 			.setStyle('PRIMARY')
 			.setLabel('Tails!')
-			.setCustomId('tails')
+			.setcustomId('tails')
 			.setDisabled(true);
 
 		const buttonCNew = new MessageButton()
 			.setStyle('DANGER')
 			.setLabel('Cancel')
-			.setCustomId('cancel')
+			.setcustomId('cancel')
 			.setDisabled(true);
 
 		const rowNew = new MessageActionRow()
@@ -175,7 +175,7 @@ module.exports = class extends Command {
 		}, comCooldownSeconds * 1000);
 
 		collector.on('collect', async b => {
-			if (b.customID === 'heads') {
+			if (b.customId === 'heads') {
 				if (answer === 'heads') {
 					b.update({ components: [rowNew], embeds: [win] });
 					balance.bank += houseBet;
@@ -190,7 +190,7 @@ module.exports = class extends Command {
 				this.client.setBalance.run(balance);
 				collector.stop('lose');
 				return;
-			} else if (b.customID === 'tails') {
+			} else if (b.customId === 'tails') {
 				if (answer === 'tails') {
 					b.update({ components: [rowNew], embeds: [win] });
 					balance.bank += houseBet;
@@ -206,7 +206,7 @@ module.exports = class extends Command {
 				collector.stop('lose');
 				return;
 			}
-			if (b.customID === 'cancel') {
+			if (b.customId === 'cancel') {
 				collector.stop('cancel');
 			}
 		});

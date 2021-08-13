@@ -57,12 +57,12 @@ module.exports = class extends Command {
 			const buttonA = new MessageButton()
 				.setStyle('SUCCESS')
 				.setLabel('Close')
-				.setCustomId('close');
+				.setcustomId('close');
 
 			const buttonB = new MessageButton()
 				.setStyle('DANGER')
 				.setLabel('Cancel')
-				.setCustomId('cancel');
+				.setcustomId('cancel');
 
 			const row = new MessageActionRow()
 				.addComponents(buttonA, buttonB);
@@ -93,7 +93,7 @@ module.exports = class extends Command {
 			collector.on('collect', async b => {
 				await b.deferUpdate();
 
-				if (b.customID === 'close') {
+				if (b.customId === 'close') {
 					message.channel.startTyping();
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -186,7 +186,7 @@ module.exports = class extends Command {
 					}
 					collector.stop('close');
 				}
-				if (b.customID === 'cancel') {
+				if (b.customId === 'cancel') {
 					collector.stop('cancel');
 				}
 			});

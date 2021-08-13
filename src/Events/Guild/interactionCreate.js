@@ -8,7 +8,8 @@ const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 module.exports = class extends Event {
 
 	async run(interaction) {
-		if (interaction.customID === 'createTicket') {
+		console.log(interaction.customId);
+		if (interaction.customId === 'createTicket') {
 			await interaction.deferUpdate();
 
 			// Ticket Embed
@@ -141,7 +142,7 @@ module.exports = class extends Event {
 			}).catch(console.error);
 		}
 
-		if (interaction.customID === 'rolemenu') {
+		if (interaction.customId === 'rolemenu') {
 			await interaction.deferUpdate();
 
 			const guild = this.client.guilds.cache.get(interaction.guild.id);

@@ -102,50 +102,50 @@ module.exports = class extends Command {
 			.setStyle('PRIMARY')
 			.setEmoji('🪨')
 			.setLabel('Rock')
-			.setCustomId('rock');
+			.setcustomId('rock');
 
 		const Paper = new MessageButton()
 			.setStyle('PRIMARY')
 			.setEmoji('🧻')
 			.setLabel('Paper')
-			.setCustomId('paper');
+			.setcustomId('paper');
 
 		const Scissors = new MessageButton()
 			.setStyle('PRIMARY')
 			.setEmoji('✂️')
 			.setLabel('Scissors')
-			.setCustomId('scissors');
+			.setcustomId('scissors');
 
 		const Cancel = new MessageButton()
 			.setStyle('DANGER')
 			.setLabel('Cancel')
-			.setCustomId('cancel');
+			.setcustomId('cancel');
 
 		const RockNew = new MessageButton()
 			.setStyle('PRIMARY')
 			.setEmoji('🪨')
 			.setLabel('Rock')
-			.setCustomId('rock')
+			.setcustomId('rock')
 			.setDisabled(true);
 
 		const PaperNew = new MessageButton()
 			.setStyle('PRIMARY')
 			.setEmoji('🧻')
 			.setLabel('Paper')
-			.setCustomId('paper')
+			.setcustomId('paper')
 			.setDisabled(true);
 
 		const ScissorsNew = new MessageButton()
 			.setStyle('PRIMARY')
 			.setEmoji('✂️')
 			.setLabel('Scissors')
-			.setCustomId('scissors')
+			.setcustomId('scissors')
 			.setDisabled(true);
 
 		const CancelNew = new MessageButton()
 			.setStyle('DANGER')
 			.setLabel('Cancel')
-			.setCustomId('cancel')
+			.setcustomId('cancel')
 			.setDisabled(true);
 
 		const houseBet = Number(rps);
@@ -197,50 +197,50 @@ module.exports = class extends Command {
 		}, comCooldownSeconds * 1000);
 
 		collector.on('collect', async (button) => {
-			if (button.customID === 'cancel') {
+			if (button.customId === 'cancel') {
 				collector.stop('cancel');
 			}
 
 			switch (ai) {
 				case 'rock':
-					if (button.customID === 'rock') {
+					if (button.customId === 'rock') {
 						button.update({ components: [group2], embeds: [tie] });
 						collector.stop('tie');
 					}
-					if (button.customID === 'paper') {
+					if (button.customId === 'paper') {
 						button.update({ components: [group2], embeds: [win] });
 						collector.stop('win');
 					}
-					if (button.customID === 'scissors') {
+					if (button.customId === 'scissors') {
 						button.update({ components: [group2], embeds: [lose] });
 						collector.stop('lose');
 					}
 					break;
 				case 'paper':
-					if (button.customID === 'rock') {
+					if (button.customId === 'rock') {
 						button.update({ components: [group2], embeds: [lose] });
 						collector.stop('lose');
 					}
-					if (button.customID === 'paper') {
+					if (button.customId === 'paper') {
 						button.update({ components: [group2], embeds: [tie] });
 						collector.stop('tie');
 					}
-					if (button.customID === 'scissors') {
+					if (button.customId === 'scissors') {
 						button.update({ components: [group2], embeds: [win] });
 						collector.stop('win');
 					}
 					collector.stop('gameEnd');
 					break;
 				case 'scissors':
-					if (button.customID === 'rock') {
+					if (button.customId === 'rock') {
 						button.update({ components: [group2], embeds: [win] });
 						collector.stop('win');
 					}
-					if (button.customID === 'paper') {
+					if (button.customId === 'paper') {
 						button.update({ components: [group2], embeds: [lose] });
 						collector.stop('lose');
 					}
-					if (button.customID === 'scissors') {
+					if (button.customId === 'scissors') {
 						button.update({ components: [group2], embeds: [tie] });
 						collector.stop('tie');
 					}

@@ -48,77 +48,77 @@ module.exports = class extends Command {
 			const buttonA = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Ad Prot')
-				.setCustomId('ads');
+				.setcustomId('ads');
 
 			const buttonB = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Autorole')
-				.setCustomId('autorole');
+				.setcustomId('autorole');
 
 			const buttonC = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Birthday')
-				.setCustomId('birthday');
+				.setcustomId('birthday');
 
 			const buttonD = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Dad')
-				.setCustomId('dad');
+				.setcustomId('dad');
 
 			const buttonE = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Haste')
-				.setCustomId('haste');
+				.setcustomId('haste');
 
 			const buttonF = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Invite')
-				.setCustomId('invite');
+				.setcustomId('invite');
 
 			const buttonG = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Level')
-				.setCustomId('level');
+				.setcustomId('level');
 
 			const buttonH = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Logging')
-				.setCustomId('logging');
+				.setcustomId('logging');
 
 			const buttonI = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Membercount')
-				.setCustomId('membercount');
+				.setcustomId('membercount');
 
 			const buttonJ = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Music')
-				.setCustomId('music');
+				.setcustomId('music');
 
 			const buttonK = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Mute')
-				.setCustomId('mute');
+				.setcustomId('mute');
 
 			const buttonL = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Prefix')
-				.setCustomId('prefix');
+				.setcustomId('prefix');
 
 			const buttonM = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Rolemenu')
-				.setCustomId('rolemenu');
+				.setcustomId('rolemenu');
 
 			const buttonN = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Tickets')
-				.setCustomId('tickets');
+				.setcustomId('tickets');
 
 			const buttonO = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Welcome')
-				.setCustomId('welcome');
+				.setcustomId('welcome');
 
 			const row = new MessageActionRow()
 				.addComponents(buttonA, buttonB, buttonC, buttonD, buttonE);
@@ -162,7 +162,7 @@ module.exports = class extends Command {
 
 				collector.resetTimer();
 
-				if (b.customID === 'ads') {
+				if (b.customId === 'ads') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -171,7 +171,7 @@ module.exports = class extends Command {
 					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.customID === 'autorole') {
+				if (b.customId === 'autorole') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -180,7 +180,7 @@ module.exports = class extends Command {
 					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.customID === 'birthday') {
+				if (b.customId === 'birthday') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -190,7 +190,7 @@ module.exports = class extends Command {
 					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.customID === 'dad') {
+				if (b.customId === 'dad') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -199,7 +199,7 @@ module.exports = class extends Command {
 					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.customID === 'haste') {
+				if (b.customId === 'haste') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -208,7 +208,7 @@ module.exports = class extends Command {
 					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.customID === 'invite') {
+				if (b.customId === 'invite') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -217,7 +217,7 @@ module.exports = class extends Command {
 					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.customID === 'level') {
+				if (b.customId === 'level') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -226,7 +226,7 @@ module.exports = class extends Command {
 					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.customID === 'logging') {
+				if (b.customId === 'logging') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -235,7 +235,7 @@ module.exports = class extends Command {
 					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.customID === 'membercount') {
+				if (b.customId === 'membercount') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -244,7 +244,7 @@ module.exports = class extends Command {
 					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.customID === 'music') {
+				if (b.customId === 'music') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -254,7 +254,7 @@ module.exports = class extends Command {
 					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.customID === 'mute') {
+				if (b.customId === 'mute') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -264,7 +264,7 @@ module.exports = class extends Command {
 					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.customID === 'prefix') {
+				if (b.customId === 'prefix') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -273,7 +273,7 @@ module.exports = class extends Command {
 					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.customID === 'rolemenu') {
+				if (b.customId === 'rolemenu') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -284,7 +284,7 @@ module.exports = class extends Command {
 					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.customID === 'tickets') {
+				if (b.customId === 'tickets') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -295,7 +295,7 @@ module.exports = class extends Command {
 					b.update({ embeds: [embed] });
 					return;
 				}
-				if (b.customID === 'welcome') {
+				if (b.customId === 'welcome') {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
@@ -621,7 +621,7 @@ module.exports = class extends Command {
 					}
 
 					const channelA = this.client.channels.cache.find((a) => a.id === status.channela);
-					const channelB = this.client.channels.cache.find((b) => b.customID === status.channelb);
+					const channelB = this.client.channels.cache.find((b) => b.customId === status.channelb);
 					const channelC = this.client.channels.cache.find((c) => c.id === status.channelc);
 
 					const catA = message.guild.channels.cache.find((d) => d.name === 'Member Count');
@@ -738,7 +738,7 @@ module.exports = class extends Command {
 
 										setTimeout(() => {
 											// I added this timeout because I couldn’t be bothered fixing, please don’t remove or I cry
-											const dropdown = new MessageSelectMenu().addOptions(menuArr).setCustomId('rolemenu');
+											const dropdown = new MessageSelectMenu().addOptions(menuArr).setcustomId('rolemenu');
 
 											const row = new MessageActionRow().addComponents(dropdown);
 

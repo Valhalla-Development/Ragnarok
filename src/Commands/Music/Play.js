@@ -175,32 +175,32 @@ module.exports = class extends Command {
 					const buttonA = new MessageButton()
 						.setStyle('SUCCESS')
 						.setEmoji('1️⃣')
-						.setCustomId('one');
+						.setcustomId('one');
 
 					const buttonB = new MessageButton()
 						.setStyle('SUCCESS')
 						.setEmoji('2️⃣')
-						.setCustomId('two');
+						.setcustomId('two');
 
 					const buttonC = new MessageButton()
 						.setStyle('SUCCESS')
 						.setEmoji('3️⃣')
-						.setCustomId('three');
+						.setcustomId('three');
 
 					const buttonD = new MessageButton()
 						.setStyle('SUCCESS')
 						.setEmoji('4️⃣')
-						.setCustomId('four');
+						.setcustomId('four');
 
 					const buttonE = new MessageButton()
 						.setStyle('SUCCESS')
 						.setEmoji('5️⃣')
-						.setCustomId('five');
+						.setcustomId('five');
 
 					const buttonF = new MessageButton()
 						.setStyle('DANGER')
 						.setLabel('Cancel')
-						.setCustomId('cancel');
+						.setcustomId('cancel');
 
 					const row = new MessageActionRow()
 						.addComponents(buttonA, buttonB, buttonC, buttonD, buttonE);
@@ -256,25 +256,25 @@ module.exports = class extends Command {
 							}
 						}
 
-						if (b.customID === 'cancel') {
+						if (b.customId === 'cancel') {
 							collector.stop('cancel');
 							return;
 						}
 
 						let track;
-						if (b.customID === 'one') {
+						if (b.customId === 'one') {
 							track = tracks[Number(1) - 1];
 						}
-						if (b.customID === 'two') {
+						if (b.customId === 'two') {
 							track = tracks[Number(2) - 1];
 						}
-						if (b.customID === 'three') {
+						if (b.customId === 'three') {
 							track = tracks[Number(3) - 1];
 						}
-						if (b.customID === 'four') {
+						if (b.customId === 'four') {
 							track = tracks[Number(4) - 1];
 						}
-						if (b.customID === 'five') {
+						if (b.customId === 'five') {
 							track = tracks[Number(5) - 1];
 						}
 
