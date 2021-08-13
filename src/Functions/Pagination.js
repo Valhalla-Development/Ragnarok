@@ -8,19 +8,19 @@ module.exports = class pagination {
 
 	async pagination(message, embeds, emojiNext, emojiHome, emojiBack) {
 		const back = new MessageButton()
-			.setCustomID('back')
+			.setCustomId('back')
 			.setEmoji(emojiBack || '◀️')
 			.setStyle('PRIMARY')
 			.setDisabled(true);
 
 		const home = new MessageButton()
-			.setCustomID('home')
+			.setCustomId('home')
 			.setEmoji(emojiHome || '🏠')
 			.setStyle('PRIMARY')
 			.setDisabled(true);
 
 		const next = new MessageButton()
-			.setCustomID('next')
+			.setCustomId('next')
 			.setEmoji(emojiNext || '▶️')
 			.setStyle('PRIMARY');
 

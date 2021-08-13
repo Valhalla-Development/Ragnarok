@@ -126,7 +126,7 @@ module.exports = class extends Command {
 		const buttonA = new MessageButton()
 			.setStyle('SUCCESS')
 			.setLabel('Unban')
-			.setCustomID('unban');
+			.setCustomId('unban');
 
 		if (id && id.channel && id.channel === message.channel.id) return;
 

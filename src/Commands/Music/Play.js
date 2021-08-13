@@ -175,32 +175,32 @@ module.exports = class extends Command {
 					const buttonA = new MessageButton()
 						.setStyle('SUCCESS')
 						.setEmoji('1️⃣')
-						.setCustomID('one');
+						.setCustomId('one');
 
 					const buttonB = new MessageButton()
 						.setStyle('SUCCESS')
 						.setEmoji('2️⃣')
-						.setCustomID('two');
+						.setCustomId('two');
 
 					const buttonC = new MessageButton()
 						.setStyle('SUCCESS')
 						.setEmoji('3️⃣')
-						.setCustomID('three');
+						.setCustomId('three');
 
 					const buttonD = new MessageButton()
 						.setStyle('SUCCESS')
 						.setEmoji('4️⃣')
-						.setCustomID('four');
+						.setCustomId('four');
 
 					const buttonE = new MessageButton()
 						.setStyle('SUCCESS')
 						.setEmoji('5️⃣')
-						.setCustomID('five');
+						.setCustomId('five');
 
 					const buttonF = new MessageButton()
 						.setStyle('DANGER')
 						.setLabel('Cancel')
-						.setCustomID('cancel');
+						.setCustomId('cancel');
 
 					const row = new MessageActionRow()
 						.addComponents(buttonA, buttonB, buttonC, buttonD, buttonE);

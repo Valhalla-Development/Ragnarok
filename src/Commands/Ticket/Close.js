@@ -57,12 +57,12 @@ module.exports = class extends Command {
 			const buttonA = new MessageButton()
 				.setStyle('SUCCESS')
 				.setLabel('Close')
-				.setCustomID('close');
+				.setCustomId('close');
 
 			const buttonB = new MessageButton()
 				.setStyle('DANGER')
 				.setLabel('Cancel')
-				.setCustomID('cancel');
+				.setCustomId('cancel');
 
 			const row = new MessageActionRow()
 				.addComponents(buttonA, buttonB);

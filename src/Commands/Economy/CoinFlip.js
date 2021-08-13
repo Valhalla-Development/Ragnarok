@@ -106,17 +106,17 @@ module.exports = class extends Command {
 		const buttonA = new MessageButton()
 			.setStyle('PRIMARY')
 			.setLabel('Heads!')
-			.setCustomID('heads');
+			.setCustomId('heads');
 
 		const buttonB = new MessageButton()
 			.setStyle('PRIMARY')
 			.setLabel('Tails!')
-			.setCustomID('tails');
+			.setCustomId('tails');
 
 		const buttonC = new MessageButton()
 			.setStyle('DANGER')
 			.setLabel('Cancel')
-			.setCustomID('cancel');
+			.setCustomId('cancel');
 
 		const row = new MessageActionRow()
 			.addComponents(buttonA, buttonB, buttonC);
@@ -124,19 +124,19 @@ module.exports = class extends Command {
 		const buttonANew = new MessageButton()
 			.setStyle('PRIMARY')
 			.setLabel('Heads!')
-			.setCustomID('heads')
+			.setCustomId('heads')
 			.setDisabled(true);
 
 		const buttonBNew = new MessageButton()
 			.setStyle('PRIMARY')
 			.setLabel('Tails!')
-			.setCustomID('tails')
+			.setCustomId('tails')
 			.setDisabled(true);
 
 		const buttonCNew = new MessageButton()
 			.setStyle('DANGER')
 			.setLabel('Cancel')
-			.setCustomID('cancel')
+			.setCustomId('cancel')
 			.setDisabled(true);
 
 		const rowNew = new MessageActionRow()
