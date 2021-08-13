@@ -8,8 +8,6 @@ const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 module.exports = class extends Event {
 
 	async run(interaction) {
-		if (!interaction.isButton()) return;
-
 		if (interaction.customID === 'createTicket') {
 			await interaction.deferUpdate();
 
@@ -141,6 +139,15 @@ module.exports = class extends Event {
 					logchan.send({ embeds: [loggingembed] });
 				}
 			}).catch(console.error);
+		}
+
+		if (interaction.customID === 'rolemenu') {
+			await interaction.deferUpdate();
+
+			const guild = this.client.guilds.cache.get(interaction.guild.id);
+			const fetch = db.prepare(`SELECT * FROM rolemenu WHERE guildid = ${guild.id}`).get();
+			const channel = guild.channels.cache.get(fetch.activeRoleMenuID.channel);
+			console.log(channel.id);
 		}
 	}
 
