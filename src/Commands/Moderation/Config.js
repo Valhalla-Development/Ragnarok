@@ -48,77 +48,77 @@ module.exports = class extends Command {
 			const buttonA = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Ad Prot')
-				.setcustomId('ads');
+				.setCustomId('ads');
 
 			const buttonB = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Autorole')
-				.setcustomId('autorole');
+				.setCustomId('autorole');
 
 			const buttonC = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Birthday')
-				.setcustomId('birthday');
+				.setCustomId('birthday');
 
 			const buttonD = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Dad')
-				.setcustomId('dad');
+				.setCustomId('dad');
 
 			const buttonE = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Haste')
-				.setcustomId('haste');
+				.setCustomId('haste');
 
 			const buttonF = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Invite')
-				.setcustomId('invite');
+				.setCustomId('invite');
 
 			const buttonG = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Level')
-				.setcustomId('level');
+				.setCustomId('level');
 
 			const buttonH = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Logging')
-				.setcustomId('logging');
+				.setCustomId('logging');
 
 			const buttonI = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Membercount')
-				.setcustomId('membercount');
+				.setCustomId('membercount');
 
 			const buttonJ = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Music')
-				.setcustomId('music');
+				.setCustomId('music');
 
 			const buttonK = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Mute')
-				.setcustomId('mute');
+				.setCustomId('mute');
 
 			const buttonL = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Prefix')
-				.setcustomId('prefix');
+				.setCustomId('prefix');
 
 			const buttonM = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Rolemenu')
-				.setcustomId('rolemenu');
+				.setCustomId('rolemenu');
 
 			const buttonN = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Tickets')
-				.setcustomId('tickets');
+				.setCustomId('tickets');
 
 			const buttonO = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Welcome')
-				.setcustomId('welcome');
+				.setCustomId('welcome');
 
 			const row = new MessageActionRow()
 				.addComponents(buttonA, buttonB, buttonC, buttonD, buttonE);
@@ -701,33 +701,37 @@ module.exports = class extends Command {
 						return;
 					}
 
-					message.mentions.roles.forEach((role) => {
+					const mentions = message.mentions.roles.map(role => ({ name: role.name, id: role.id }));
+
+					mentions.forEach((role) => {
 						if (!foundRoleList.includes(role.id)) {
 							foundRoleList.push(role.id);
 						}
+					});
 
-						if (foundRoleMenu.activeRoleMenuID) {
-							const activeMenu = JSON.parse(foundRoleMenu.activeRoleMenuID);
+					if (foundRoleMenu.activeRoleMenuID) {
+						const activeMenu = JSON.parse(foundRoleMenu.activeRoleMenuID);
 
-							if (activeMenu) {
-								const ch = message.guild.channels.cache.get(activeMenu.channel);
+						if (activeMenu) {
+							const ch = message.guild.channels.cache.get(activeMenu.channel);
 
-								try {
-									ch.messages.fetch(activeMenu.message).then(ms => {
-										const roleArray = JSON.parse(foundRoleMenu.roleList);
+							try {
+								ch.messages.fetch(activeMenu.message).then(ms => {
+									const roleArray = JSON.parse(foundRoleMenu.roleList);
 
-										const menuArr = [];
+									const menuArr = [];
 
-										for (const buttonObject of roleArray) {
-											const currentRoles = message.guild.roles.cache.get(buttonObject);
-											menuArr.push(
-												{
-													label: `${currentRoles.name}`,
-													description: `Click this to get the ${currentRoles.name} role!`,
-													value: `${currentRoles.id}`
-												}
-											);
-										}
+									for (const buttonObject of roleArray) {
+										const currentRoles = message.guild.roles.cache.get(buttonObject);
+										menuArr.push(
+											{
+												label: `${currentRoles.name}`,
+												description: `Click this to get the ${currentRoles.name} role!`,
+												value: `${currentRoles.id}`
+											}
+										);
+									}
+									mentions.forEach((role) => {
 										menuArr.push(
 											{
 												label: `${role.name}`,
@@ -735,37 +739,37 @@ module.exports = class extends Command {
 												value: `${role.id}`
 											}
 										);
+									});
 
-										setTimeout(() => {
-											// I added this timeout because I couldn’t be bothered fixing, please don’t remove or I cry
-											const dropdown = new MessageSelectMenu().addOptions(menuArr).setcustomId('rolemenu');
+									setTimeout(() => {
+										// I added this timeout because I couldn’t be bothered fixing, please don’t remove or I cry
+										const dropdown = new MessageSelectMenu().addOptions(menuArr).setCustomId('rolemenu');
 
-											const row = new MessageActionRow().addComponents(dropdown);
+										const row = new MessageActionRow().addComponents(dropdown);
 
-											const roleMenuEmbed = new MessageEmbed()
-												.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-												.setTitle('Assign a Role')
-												.setDescription(`Select a role from the dropdown menu`);
-											ms.edit({ embeds: [roleMenuEmbed], components: [row] });
-										});
-									}, 1000);
+										const roleMenuEmbed = new MessageEmbed()
+											.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+											.setTitle('Assign a Role')
+											.setDescription(`Select a role from the dropdown menu`);
+										ms.edit({ embeds: [roleMenuEmbed], components: [row] });
+									});
+								}, 1000);
 
 
-									const embed = new MessageEmbed()
-										.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-										.addField(`**${this.client.user.username} - Config**`,
-											`**◎ Success:** Roles successfully set in the assignable role menu!\nYour current menu has been updated.`);
-									message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-								} catch {
-									const embed = new MessageEmbed()
-										.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-										.addField(`**${this.client.user.username} - Config**`,
-											`**◎ Success:** Roles successfully set in the assignable role menu!\n**However** I was unable to update the current rolemenu, you will have to run \`${prefix}rolemenu\` to create a menu again.`);
-									message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-								}
+								const embed = new MessageEmbed()
+									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+									.addField(`**${this.client.user.username} - Config**`,
+										`**◎ Success:** Roles successfully set in the assignable role menu!\nYour current menu has been updated.`);
+								message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							} catch {
+								const embed = new MessageEmbed()
+									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+									.addField(`**${this.client.user.username} - Config**`,
+										`**◎ Success:** Roles successfully set in the assignable role menu!\n**However** I was unable to update the current rolemenu, you will have to run \`${prefix}rolemenu\` to create a menu again.`);
+								message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 							}
 						}
-					});
+					}
 
 					const updateRoleMenu = db.prepare(`UPDATE rolemenu SET roleList = (@roleList) WHERE guildid=${message.guild.id}`);
 					updateRoleMenu.run({
