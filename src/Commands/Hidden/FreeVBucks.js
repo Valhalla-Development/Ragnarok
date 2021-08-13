@@ -21,12 +21,12 @@ module.exports = class extends Command {
 		const buttonA = new MessageButton()
 			.setStyle('SUCCESS')
 			.setLabel('Yes!')
-			.setcustomId('yes');
+			.setCustomId('yes');
 
 		const buttonB = new MessageButton()
 			.setStyle('DANGER')
 			.setLabel('No!')
-			.setcustomId('no');
+			.setCustomId('no');
 
 		const row = new MessageActionRow()
 			.addComponents(buttonA, buttonB);
@@ -34,13 +34,13 @@ module.exports = class extends Command {
 		const buttonANew = new MessageButton()
 			.setStyle('SUCCESS')
 			.setLabel('Yes!')
-			.setcustomId('yes')
+			.setCustomId('yes')
 			.setDisabled(true);
 
 		const buttonBNew = new MessageButton()
 			.setStyle('DANGER')
 			.setLabel('No!')
-			.setcustomId('no')
+			.setCustomId('no')
 			.setDisabled(true);
 
 		const rowNew = new MessageActionRow()

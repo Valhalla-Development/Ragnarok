@@ -102,50 +102,50 @@ module.exports = class extends Command {
 			.setStyle('PRIMARY')
 			.setEmoji('🪨')
 			.setLabel('Rock')
-			.setcustomId('rock');
+			.setCustomId('rock');
 
 		const Paper = new MessageButton()
 			.setStyle('PRIMARY')
 			.setEmoji('🧻')
 			.setLabel('Paper')
-			.setcustomId('paper');
+			.setCustomId('paper');
 
 		const Scissors = new MessageButton()
 			.setStyle('PRIMARY')
 			.setEmoji('✂️')
 			.setLabel('Scissors')
-			.setcustomId('scissors');
+			.setCustomId('scissors');
 
 		const Cancel = new MessageButton()
 			.setStyle('DANGER')
 			.setLabel('Cancel')
-			.setcustomId('cancel');
+			.setCustomId('cancel');
 
 		const RockNew = new MessageButton()
 			.setStyle('PRIMARY')
 			.setEmoji('🪨')
 			.setLabel('Rock')
-			.setcustomId('rock')
+			.setCustomId('rock')
 			.setDisabled(true);
 
 		const PaperNew = new MessageButton()
 			.setStyle('PRIMARY')
 			.setEmoji('🧻')
 			.setLabel('Paper')
-			.setcustomId('paper')
+			.setCustomId('paper')
 			.setDisabled(true);
 
 		const ScissorsNew = new MessageButton()
 			.setStyle('PRIMARY')
 			.setEmoji('✂️')
 			.setLabel('Scissors')
-			.setcustomId('scissors')
+			.setCustomId('scissors')
 			.setDisabled(true);
 
 		const CancelNew = new MessageButton()
 			.setStyle('DANGER')
 			.setLabel('Cancel')
-			.setcustomId('cancel')
+			.setCustomId('cancel')
 			.setDisabled(true);
 
 		const houseBet = Number(rps);
