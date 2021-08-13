@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Permissions, MessageButton, MessageActionRow } = require('discord.js');
+const { MessageEmbed, Permissions, MessageButton, MessageActionRow, MessageSelectMenu } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const fetch = require('node-fetch');
@@ -26,6 +26,12 @@ module.exports = class extends Command {
 
 		const { prefix } = prefixgrab;
 
+		if (args[0]) {
+			if (comCooldown.has(message.author.id)) {
+				comCooldown.delete(message.author.id);
+			}
+		}
+
 		if (comCooldown.has(message.author.id)) {
 			this.client.utils.messageDelete(message, 10000);
 
@@ -42,77 +48,77 @@ module.exports = class extends Command {
 			const buttonA = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Ad Prot')
-				.setCustomID('ads');
+				.setCustomId('ads');
 
 			const buttonB = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Autorole')
-				.setCustomID('autorole');
+				.setCustomId('autorole');
 
 			const buttonC = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Birthday')
-				.setCustomID('birthday');
+				.setCustomId('birthday');
 
 			const buttonD = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Dad')
-				.setCustomID('dad');
+				.setCustomId('dad');
 
 			const buttonE = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Haste')
-				.setCustomID('haste');
+				.setCustomId('haste');
 
 			const buttonF = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Invite')
-				.setCustomID('invite');
+				.setCustomId('invite');
 
 			const buttonG = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Level')
-				.setCustomID('level');
+				.setCustomId('level');
 
 			const buttonH = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Logging')
-				.setCustomID('logging');
+				.setCustomId('logging');
 
 			const buttonI = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Membercount')
-				.setCustomID('membercount');
+				.setCustomId('membercount');
 
 			const buttonJ = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Music')
-				.setCustomID('music');
+				.setCustomId('music');
 
 			const buttonK = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Mute')
-				.setCustomID('mute');
+				.setCustomId('mute');
 
 			const buttonL = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Prefix')
-				.setCustomID('prefix');
+				.setCustomId('prefix');
 
 			const buttonM = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Rolemenu')
-				.setCustomID('rolemenu');
+				.setCustomId('rolemenu');
 
 			const buttonN = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Tickets')
-				.setCustomID('tickets');
+				.setCustomId('tickets');
 
 			const buttonO = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Welcome')
-				.setCustomID('welcome');
+				.setCustomId('welcome');
 
 			const row = new MessageActionRow()
 				.addComponents(buttonA, buttonB, buttonC, buttonD, buttonE);
@@ -667,6 +673,7 @@ module.exports = class extends Command {
 					message.mentions.roles.forEach((role) => {
 						roleList.push(role.id);
 					});
+
 					const newRoleMenu = db.prepare('INSERT INTO rolemenu (guildid, roleList) VALUES (@guildid, @roleList);');
 					newRoleMenu.run({
 						guildid: `${message.guild.id}`,
@@ -678,31 +685,99 @@ module.exports = class extends Command {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Success:** Roles successfully set in the assignable role menu!`);
+							`**◎ Success:** Roles successfully set in the assignable role menu!\nYou can now rum \`${prefix}rolemenu\` to create a menu.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				} else {
 					const foundRoleList = JSON.parse(foundRoleMenu.roleList);
+
+					if (foundRoleList.length >= 25) {
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Config**`,
+								`**◎ Error:** You can only have 25 roles!\nYou can remove roles with \`${prefix}config rolemenu remove <@role>\``);
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+
 					message.mentions.roles.forEach((role) => {
 						if (!foundRoleList.includes(role.id)) {
 							foundRoleList.push(role.id);
 						}
+
+						if (foundRoleMenu.activeRoleMenuID) {
+							const activeMenu = JSON.parse(foundRoleMenu.activeRoleMenuID);
+
+							if (activeMenu) {
+								const ch = message.guild.channels.cache.get(activeMenu.channel);
+
+								try {
+									ch.messages.fetch(activeMenu.message).then(ms => {
+										const roleArray = JSON.parse(foundRoleMenu.roleList);
+
+										const menuArr = [];
+
+										for (const buttonObject of roleArray) {
+											const currentRoles = message.guild.roles.cache.get(buttonObject);
+											menuArr.push(
+												{
+													label: `${currentRoles.name}`,
+													description: `Click this to get the ${currentRoles.name} role!`,
+													value: `${currentRoles.id}`
+												}
+											);
+										}
+										menuArr.push(
+											{
+												label: `${role.name}`,
+												description: `Click this to get the ${role.name} role!`,
+												value: `${role.id}`
+											}
+										);
+
+										setTimeout(() => {
+											// I added this timeout because I couldn’t be bothered fixing, please don’t remove or I cry
+											const dropdown = new MessageSelectMenu().addOptions(menuArr).setCustomId('rolemenu');
+
+											const row = new MessageActionRow().addComponents(dropdown);
+
+											const roleMenuEmbed = new MessageEmbed()
+												.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+												.setTitle('Assign a Role')
+												.setDescription(`Select a role from the dropdown menu`);
+											ms.edit({ embeds: [roleMenuEmbed], components: [row] });
+										});
+									}, 1000);
+
+
+									const embed = new MessageEmbed()
+										.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+										.addField(`**${this.client.user.username} - Config**`,
+											`**◎ Success:** Roles successfully set in the assignable role menu!\nYour current menu has been updated.`);
+									message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+								} catch {
+									const embed = new MessageEmbed()
+										.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+										.addField(`**${this.client.user.username} - Config**`,
+											`**◎ Success:** Roles successfully set in the assignable role menu!\n**However** I was unable to update the current rolemenu, you will have to run \`${prefix}rolemenu\` to create a menu again.`);
+									message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+								}
+							}
+						}
 					});
+
 					const updateRoleMenu = db.prepare(`UPDATE rolemenu SET roleList = (@roleList) WHERE guildid=${message.guild.id}`);
 					updateRoleMenu.run({
 						roleList: JSON.stringify(foundRoleList)
 					});
-
-					this.client.utils.messageDelete(message, 10000);
-
-					const embed = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Success:** Roles successfully set in the assignable role menu!`);
-					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				}
 				return;
 			}
+
+
 			if (args[1] === 'remove') {
+				// do another try catch thing to remove role from the current menu if it exists
 				if (message.mentions.roles.size <= 0) {
 					this.client.utils.messageDelete(message, 10000);
 
