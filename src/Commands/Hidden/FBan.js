@@ -18,6 +18,15 @@ module.exports = class extends Command {
 
 		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0]);
 
+		if (!user) {
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Ban**`,
+					`**◎ Error:** Please specify a user you wish to ban!.`);
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
 		let reason = args.slice(1).join(' ');
 		if (!reason) reason = 'No reason given.';
 
