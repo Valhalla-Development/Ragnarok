@@ -4,7 +4,7 @@ const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const Canvas = require('canvas');
 const ordinal = require('ordinal');
-const fetch = require('node-fetch');
+const fetch = require('node-fetch-cjs');
 
 module.exports = class extends Event {
 
@@ -45,7 +45,7 @@ module.exports = class extends Event {
 
 			let img;
 			if (setwelcome.image) {
-				await fetch(setwelcome.image)
+				await fetch.default(setwelcome.image)
 					.then(res => {
 						if (res.ok) {
 							img = setwelcome.image;

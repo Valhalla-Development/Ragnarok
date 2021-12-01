@@ -2,7 +2,7 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const fetch = require('node-fetch');
+const fetch = require('node-fetch-cjs');
 
 module.exports = class extends Command {
 
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 
 		const searchTerm = args.join('%20');
 
-		fetch(`https://www.reddit.com/r/Addons4Kodi/search.json?q=${searchTerm}&restrict_sr=1&limit=3`)
+		fetch.default(`https://www.reddit.com/r/Addons4Kodi/search.json?q=${searchTerm}&restrict_sr=1&limit=3`)
 			.then(res => res.json())
 			.then(res => res.data.children)
 			.then(res => {

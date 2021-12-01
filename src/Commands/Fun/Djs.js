@@ -1,6 +1,6 @@
 /* eslint-disable prefer-destructuring */
 const Command = require('../../Structures/Command');
-const fetch = require('node-fetch');
+const fetch = require('node-fetch-cjs');
 const { MessageEmbed } = require('discord.js');
 const { URLSearchParams } = require('url');
 
@@ -52,7 +52,7 @@ module.exports = class extends Command {
 			force: 'false'
 		});
 
-		const res = await fetch(`${API_URL}?${qs}`).then(r => r.json());
+		const res = await fetch.default(`${API_URL}?${qs}`).then(r => r.json());
 		if (!res) {
 			this.client.utils.messageDelete(message, 10000);
 

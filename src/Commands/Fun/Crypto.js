@@ -1,6 +1,6 @@
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
-const fetch = require('node-fetch');
+const fetch = require('node-fetch-cjs');
 const cryptocurrencies = require('cryptocurrencies');
 
 module.exports = class extends Command {
@@ -50,7 +50,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const rawResponse = await fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${args[1] ? args[1].toLowerCase() : 'usd'}&ids=${cryptoType.toLowerCase()}`);
+		const rawResponse = await fetch.default(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${args[1] ? args[1].toLowerCase() : 'usd'}&ids=${cryptoType.toLowerCase()}`);
 
 		const content = await rawResponse.json();
 

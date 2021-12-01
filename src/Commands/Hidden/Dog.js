@@ -1,6 +1,6 @@
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
-const fetch = require('node-fetch');
+const fetch = require('node-fetch-cjs');
 
 const subreddits = [
 	'dog',
@@ -27,9 +27,9 @@ module.exports = class extends Command {
 
 	async run(message) {
 		const msg = await message.channel.send({ content: 'Generating...' });
-		message.channel.startTyping();
+		message.channel.sendTyping();
 
-		const res = await fetch(`https://www.reddit.com/r/${subreddits[Math.floor(Math.random() * subreddits.length)]}/hot.json`);
+		const res = await fetch.default(`https://www.reddit.com/r/${subreddits[Math.floor(Math.random() * subreddits.length)]}/hot.json`);
 		const { data } = await res.json();
 
 		function clean(url) {
@@ -50,7 +50,6 @@ module.exports = class extends Command {
 				.addField(`**${this.client.user.username} - Dog**`,
 					`**◎ Error:** I could not find a post.`);
 			message.channel.send({ embeds: [noPost] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			message.channel.stopTyping();
 			return;
 		}
 
@@ -69,7 +68,6 @@ module.exports = class extends Command {
 			.setFooter(`👍 ${post.data.ups} | 💬 ${post.data.num_comments}`);
 		message.channel.send({ embeds: [embed] });
 
-		message.channel.stopTyping();
 		this.client.utils.deletableCheck(msg, 0);
 	}
 

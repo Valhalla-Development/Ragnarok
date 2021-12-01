@@ -1,6 +1,6 @@
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
-const fetch = require('node-fetch');
+const fetch = require('node-fetch-cjs');
 const trim = (str, max) => str.length > max ? `${str.slice(0, max - 3)}...` : str;
 
 module.exports = class extends Command {
@@ -35,10 +35,10 @@ module.exports = class extends Command {
 		}
 
 		const msg = await message.channel.send({ content: 'Generating...' });
-		message.channel.startTyping();
+		message.channel.sendTyping();
 
 		const query = args.slice(0).join('+');
-		const body = await fetch(`http://api.urbandictionary.com/v0/define?term=${query}`).then((response) => response.json());
+		const body = await fetch.default(`http://api.urbandictionary.com/v0/define?term=${query}`).then((response) => response.json());
 
 		if (body.list.length < 1) {
 			this.client.utils.messageDelete(msg, 0);
@@ -49,7 +49,6 @@ module.exports = class extends Command {
 					`**◎ Error:** I found no results for: \`${args.join(' ')}\``);
 			message.channel.send({ embeds: [noResult] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 
-			message.channel.stopTyping();
 			return;
 		}
 
@@ -67,7 +66,6 @@ module.exports = class extends Command {
 
 		message.channel.send({ embeds: [embed] });
 
-		message.channel.stopTyping();
 		this.client.utils.messageDelete(msg, 0);
 	}
 

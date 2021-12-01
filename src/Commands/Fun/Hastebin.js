@@ -2,7 +2,7 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed, Permissions } = require('discord.js');
 const Hastebin = require('hastebin.js');
 const haste = new Hastebin({ url: 'https://pastie.io' });
-const fetch = require('node-fetch');
+const fetch = require('node-fetch-cjs');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const urlRegexSafe = require('url-regex-safe');
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 				message.channel.send({ embeds: [invalidExt] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
-			await fetch(file)
+			await fetch.default(file)
 				.then((res) => res.text())
 				.then((body) => {
 					if (!body) {

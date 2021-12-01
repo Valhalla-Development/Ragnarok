@@ -1,6 +1,6 @@
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
-const fetch = require('node-fetch');
+const fetch = require('node-fetch-cjs');
 
 module.exports = class extends Command {
 
@@ -14,9 +14,9 @@ module.exports = class extends Command {
 
 	async run(message) {
 		const msg = await message.channel.send({ content: 'Generating...' });
-		message.channel.startTyping();
+		message.channel.sendTyping();
 
-		const res = await fetch(`https://www.reddit.com/r/DoctorWhumour.json?sort=top&t=week`);
+		const res = await fetch.default(`https://www.reddit.com/r/DoctorWhumour.json?sort=top&t=week`);
 		const { data } = await res.json();
 
 		const safe = message.channel.nsfw ? data.children : data.children.filter((post) => !post.data.over_18);
@@ -28,7 +28,6 @@ module.exports = class extends Command {
 				.addField(`**${this.client.user.username} - DoctorWho**`,
 					`**◎ Error:** I could not fetch the post!`);
 			message.channel.send({ embeds: [noPost] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			message.channel.stopTyping();
 			return;
 		}
 
@@ -51,7 +50,6 @@ module.exports = class extends Command {
 			.setFooter(`👍 ${post.data.ups} | 💬 ${post.data.num_comments}`);
 		message.channel.send({ embeds: [embed] });
 
-		message.channel.stopTyping();
 		this.client.utils.deletableCheck(msg, 0);
 	}
 

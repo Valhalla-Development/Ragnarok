@@ -1,6 +1,6 @@
 /* eslint-disable prefer-destructuring */
 const Command = require('../../Structures/Command');
-const fetch = require('node-fetch');
+const fetch = require('node-fetch-cjs');
 const { MessageEmbed } = require('discord.js');
 
 module.exports = class extends Command {
@@ -25,7 +25,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const res = await fetch(`https://registry.npmjs.org/${args.join('-')}`).then(r =>
+		const res = await fetch.default(`https://registry.npmjs.org/${args.join('-')}`).then(r =>
 			r.json());
 
 		if (res.error) {
