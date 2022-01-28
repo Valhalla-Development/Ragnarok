@@ -152,18 +152,18 @@ module.exports = class extends Command {
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Coin Flip**`,
-				`**◎** ${message.author} won! <:coin:706659001164628008> \`${houseBet.toLocaleString('en')}\` has been credited to your bank!`);
+				`**◎** ${message.author} won! <:coin:706659001164628008> \`${Number(houseBet).toLocaleString('en')}\` has been credited to your bank!`);
 
 		const lose = new MessageEmbed()
 			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Coin Flip**`,
-				`**◎** ${message.author} lost <:coin:706659001164628008> \`${coinFlip.toLocaleString('en')}\``);
+				`**◎** ${message.author} lost <:coin:706659001164628008> \`${Number(coinFlip).toLocaleString('en')}\``);
 
 		const m = await message.channel.send({ components: [row], embeds: [initial] });
 		const filter = (but) => but.user.id === message.author.id;
 
-		const collector = m.createMessageComponentInteractionCollector(filter, { time: 20000 });
+		const collector = m.createMessageComponentCollector(filter, { time: 20000 });
 
 		if (!comCooldown.has(message.author.id)) {
 			comCooldown.add(message.author.id);
