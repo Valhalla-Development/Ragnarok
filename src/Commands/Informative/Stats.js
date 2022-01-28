@@ -28,7 +28,7 @@ module.exports = class extends Command {
 		}
 
 		const msg = await message.channel.send({ content: 'Generating...' });
-		message.channel.startTyping();
+		message.channel.sendTyping();
 		const memory = await si.mem();
 		const totalMemory = Math.floor(memory.total / 1024 / 1024);
 		const cachedMem = memory.buffcache / 1024 / 1024;
@@ -61,7 +61,7 @@ module.exports = class extends Command {
 			.addField('System',
 				`**◎ OS:** ${osVersion}
 				**◎ Uptime:** ${ms(os.uptime() * 1000, { long: true })}
-				**◎ Memory Usage:** ${realMemUsed} / ${totalMemory}MB - ${memPercent.toFixed(1)}%
+				**◎ Memory Usage:** ${realMemUsed.toLocaleString('en')} / ${totalMemory.toLocaleString('en')}MB - ${memPercent.toFixed(1)}%
 				**◎ CPU:**
 				\u3000 Cores: ${os.cpus().length}
 				\u3000 Model: ${core.model}
@@ -71,7 +71,6 @@ module.exports = class extends Command {
 				`\`\`\`${annc}\`\`\``)
 			.setTimestamp();
 		message.channel.send({ embeds: [embed] });
-		message.channel.stopTyping();
 	}
 
 };
