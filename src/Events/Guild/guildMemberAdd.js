@@ -56,7 +56,7 @@ module.exports = class extends Event {
 			} else {
 				img = './Storage/Canvas/Images/welcome.jpg';
 			}
-			// this fails on https://imgbb.com/ for some reason, bug test, maybe you can do the loadimage on the config and catch the error?
+
 			const canvas = Canvas.createCanvas(700, 300);
 			const ctx = canvas.getContext('2d');
 
