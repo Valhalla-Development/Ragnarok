@@ -61,7 +61,7 @@ module.exports = class extends Command {
 		const m = await message.channel.send({ embeds: [embed], components: [row] });
 		const filter = (but) => but.user.id === message.author.id;
 
-		const collector = m.createMessageComponentInteractionCollector(filter, { time: 10000 });
+		const collector = m.createMessageComponentCollector(filter, { time: 10000 });
 
 		if (!comCooldown.has(message.author.id)) {
 			comCooldown.add(message.author.id);
