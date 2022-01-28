@@ -25,7 +25,7 @@ module.exports = class extends Command {
 
 	async run(message, args) {
 		const msg = await message.channel.send({ content: 'Fetching data...' });
-		message.channel.startTyping();
+		message.channel.sendTyping();
 
 		const trakt = new Trakt({
 			client_id: traktKey,
@@ -85,7 +85,6 @@ module.exports = class extends Command {
 					`**◎ Error:** Couldn't find the movie/show you were looking for.**\nTry again or try on Trakt.TV here: https://trakt.tv/search?query=${searchQuery}`);
 			message.channel.send({ embeds: [embed] });
 			this.client.utils.deletableCheck(msg, 0);
-			message.channel.stopTyping();
 		};
 
 		if (args[0] === 'movie') {
@@ -135,7 +134,6 @@ module.exports = class extends Command {
 									)
 							});
 							this.client.utils.deletableCheck(msg, 0);
-							message.channel.stopTyping();
 						}
 					);
 				})
@@ -188,7 +186,6 @@ module.exports = class extends Command {
 									)
 							});
 							this.client.utils.deletableCheck(msg, 0);
-							message.channel.stopTyping();
 						}
 					);
 				})
@@ -205,7 +202,6 @@ module.exports = class extends Command {
 					`**◎ Error:** Please specify what movie/show you are trying to find.`);
 			message.channel.send({ embeds: [errEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			this.client.utils.deletableCheck(msg, 0);
-			message.channel.stopTyping();
 		} else {
 			args = args.join(' ');
 			getTrakt(args, 'movie,show')
@@ -253,7 +249,6 @@ module.exports = class extends Command {
 											)
 									});
 									this.client.utils.deletableCheck(msg, 0);
-									message.channel.stopTyping();
 								}
 							);
 							break;
@@ -300,7 +295,6 @@ module.exports = class extends Command {
 											)
 									});
 									this.client.utils.deletableCheck(msg, 0);
-									message.channel.stopTyping();
 								}
 							);
 							break;
