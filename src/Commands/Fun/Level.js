@@ -10,6 +10,7 @@ const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { parse } = require('twemoji-parser');
 const countryList = require('countries-list');
+const fetch = require('node-fetch-cjs');
 const Canvas = require('canvas');
 Canvas.registerFont('./Storage/Canvas/Fonts/Shapirit.otf', {
 	family: 'Shapirit'
@@ -45,7 +46,7 @@ module.exports = class extends Command {
 		}
 
 		this.client.getScore = db.prepare('SELECT * FROM scores WHERE user = ? AND guild = ?');
-		this.client.setScore = db.prepare('INSERT OR REPLACE INTO scores (id, user, guild, points, level, country) VALUES (@id, @user, @guild, @points, @level, @country);');
+		this.client.setScore = db.prepare('INSERT OR REPLACE INTO scores (id, user, guild, points, level, country, image) VALUES (@id, @user, @guild, @points, @level, @country, @image);');
 
 		if (args[0] === 'country') {
 			if (!args[1]) {
@@ -72,7 +73,8 @@ module.exports = class extends Command {
 					guild: message.guild.id,
 					points: xpAdd,
 					level: 0,
-					country: null
+					country: null,
+					image: null
 				};
 				await this.client.setScore.run(newData);
 			}
@@ -124,17 +126,163 @@ module.exports = class extends Command {
 			}
 		}
 
-		const user = message.mentions.users.first() || message.author;
-		if (user.bot) return;
+		if (args[0] === 'image') {
+			let score;
+			if (message.guild) {
+				score = this.client.getScore.get(message.author.id, message.guild.id);
+			}
 
-		let colorGrab;
-		if (message.mentions.users.first()) {
-			colorGrab = this.client.utils.color(message.mentions.members.first().displayHexColor);
-		} else {
-			colorGrab = this.client.utils.color(message.member.displayHexColor);
+			if (!score) {
+				const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
+				const newData = {
+					id: `${message.guild.id}-${message.author.id}`,
+					user: message.author.id,
+					guild: message.guild.id,
+					points: xpAdd,
+					level: 0,
+					country: null,
+					image: null
+				};
+				await this.client.setScore.run(newData);
+			}
+
+			if (message.guild.id) {
+				if (args[1] === 'off') {
+					if (!score.image) {
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Level**`,
+								`**◎ Error:** You have no custom image enabled!`);
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					} else {
+						const update = db.prepare('UPDATE scores SET image = (@image) WHERE user = (@user);');
+						update.run({
+							user: `${message.author.id}`,
+							image: null
+						});
+
+						this.client.utils.messageDelete(message, 10000);
+
+						const embed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.addField(`**${this.client.user.username} - Level**`,
+								`**◎ Success:** Custom image has been disabled!`);
+						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						return;
+					}
+				}
+
+				if (!args[1]) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Level**`,
+							`**◎ Error:** Incorrect Usage! An example of this command would be: \`${prefix}level image <url-to-image>\` or to disable: \`${prefix}level image off\``);
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				const urlExtension = args[1].substring(args[1].lastIndexOf('.') + 1);
+				const validExtensions = ['jpg', 'jpeg', 'png'];
+
+				if (!validExtensions.includes(urlExtension)) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const invalidExt = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Level**`,
+							`**◎ Error:** \`.${urlExtension}\` is not a valid image type!\n\n**Acceptable files:**\n\`${validExtensions.join(', ')}\``);
+					message.channel.send({ embeds: [invalidExt] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				const urlRegex = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
+
+				if (!urlRegex.test(args[1])) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Level**`,
+							`**◎ Error:** Please enter a valid URL, the URL must be absolute! An example of an absolute URL would be: https://www.google.com`);
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				await fetch.default(args[1])
+					.then(async res => {
+						if (res.ok) {
+							try {
+								await Canvas.loadImage(args[1]);
+							} catch {
+								this.client.utils.messageDelete(message, 10000);
+
+								const invalidExt = new MessageEmbed()
+									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+									.addField(`**${this.client.user.username} - Level**`,
+										`**◎ Error:** I was unable to process \`${args[1]}\`\nIs it a valid image?`);
+								message.channel.send({ embeds: [invalidExt] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+								return;
+							}
+
+							const update = db.prepare('UPDATE scores SET image = (@image) WHERE user = (@user);');
+							update.run({
+								user: `${message.author.id}`,
+								image: args[1]
+							});
+							this.client.utils.messageDelete(message, 0);
+
+							const embed = new MessageEmbed()
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.setImage(args[1])
+								.addField(`**${this.client.user.username} - Level**`,
+									`**◎ Success:** Image has been updated to the following.`);
+							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							return;
+						} else {
+							this.client.utils.messageDelete(message, 10000);
+
+							const embed = new MessageEmbed()
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.addField(`**${this.client.user.username} - Level**`,
+									`**◎ Error:** Please enter a valid image URL! The end of the URL must end with one of the supported extensions. (\`.jpg, .jpeg, .png\`)`);
+							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							return;
+						}
+					});
+
+				return;
+			}
 		}
 
+		let user;
+		try {
+			user = message.mentions.users.size ? message.mentions.members.first().user : args[0] ? message.guild.members.cache.find(usr => usr.displayName === args.join(' ')).user : message.author;
+		} catch {
+			user = null;
+		}
+
+		if (user === null) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const limitE = new MessageEmbed()
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Balance**`,
+					`**◎ Error:** I could not find the specified user!`);
+			message.channel.send({ embeds: [limitE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		if (user.bot) return;
+
+		const colorGrab = this.client.utils.color(message.guild.members.cache.find(grabUser => grabUser.id === user.id).displayHexColor);
 		let score;
+
 		if (message.guild) {
 			score = this.client.getScore.get(user.id, message.guild.id);
 		}
@@ -147,9 +295,24 @@ module.exports = class extends Command {
 				guild: message.guild.id,
 				points: xpAdd,
 				level: 0,
-				country: null
+				country: null,
+				image: null
 			};
 			await this.client.setScore.run(newData);
+		}
+
+		let levelImg;
+		if (score.image) {
+			await fetch.default(score.image)
+				.then(res => {
+					if (res.ok) {
+						levelImg = score.image;
+					} else {
+						levelImg = './Storage/Canvas/Images/level.png';
+					}
+				});
+		} else {
+			levelImg = './Storage/Canvas/Images/level.png';
 		}
 
 		let level;
@@ -182,13 +345,17 @@ module.exports = class extends Command {
 			xpPercent = inLevel / toLevel * 100;
 		}
 
+		// const percentageCalc = (currentxpLvl / nxtLvlXp) * 100;
+
 		const userRank = db.prepare('SELECT count(*) FROM scores WHERE points >= ? AND guild = ? AND user ORDER BY points DESC').all(points, message.guild.id);
 		const canvas = Canvas.createCanvas(934, 282);
 		const ctx = canvas.getContext('2d');
 
 		// Presence colors
 		let userStatusColor;
-		if (user.presence.status === 'online') {
+		if (!user.presence) {
+			userStatusColor = '#737F8D';
+		} else if (user.presence.status === 'online') {
 			userStatusColor = '#43B581';
 		} else if (user.presence.status === 'idle') {
 			userStatusColor = '#FAA61A';
@@ -197,9 +364,7 @@ module.exports = class extends Command {
 		} else if (user.presence.status === 'offline') {
 			userStatusColor = '#737F8D';
 		}
-		const background = await Canvas.loadImage(
-			'./Storage/Canvas/Images/level.png'
-		);
+		const background = await Canvas.loadImage(levelImg);
 
 		ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
@@ -215,9 +380,7 @@ module.exports = class extends Command {
 		class ProgressBar {
 
 			constructor(dimension, color, percentage) {
-				({
-					x: this.x, y: this.y, width: this.w, height: this.h
-				} = dimension);
+				({ x: this.x, y: this.y, width: this.w, height: this.h } = dimension);
 				this.color = color;
 				this.percentage = percentage / 100;
 				this.p;
@@ -279,6 +442,18 @@ module.exports = class extends Command {
 			// do nothing
 			}
 		}
+
+		// Draw Percentage
+		function drawPercent(x, y, input) {
+			ctx.font = '34px Shapirit';
+			ctx.textAlign = 'center';
+			ctx.strokeStyle = 'blue';
+			ctx.lineWidth = 0.5;
+			ctx.fillText(input, x, y);
+			ctx.strokeText(input, x, y);
+		}
+
+		drawPercent(570, 212, `${xpPercent.toFixed(1)}%`);
 
 		// Draw level
 		function drawLevel(x, y, txt, num, style) {
@@ -374,6 +549,37 @@ module.exports = class extends Command {
 		ctx.fillStyle = userStatusColor;
 		ctx.fill();
 		ctx.save();
+
+		function roundRect(x, y, w, h, radius) {
+			var r = x + w;
+			var b = y + h;
+			ctx.beginPath();
+			ctx.globalAlpha = 0.3;
+			ctx.fillStyle = 'black';
+			ctx.strokeStyle = 'black';
+			ctx.lineWidth = '0.75';
+			ctx.moveTo(x + radius, y);
+			ctx.lineTo(r - radius, y);
+			ctx.quadraticCurveTo(r, y, r, y + radius);
+			ctx.lineTo(r, y + h - radius);
+			ctx.quadraticCurveTo(r, b, r - radius, b);
+			ctx.lineTo(x + radius, b);
+			ctx.quadraticCurveTo(x, b, x, b - radius);
+			ctx.lineTo(x, y + radius);
+			ctx.quadraticCurveTo(x, y, x + radius, y);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fill();
+		}
+
+		// rectangle around rank and level
+		roundRect(511.5, 48.6, 376, 59, 10);
+
+		// rectangle around username and xp
+		roundRect(259.8, 133, 628.4, 42, 10);
+
+		// reactangle around progress bar
+		roundRect(259.8, 182.62, 628.4, 36.5, 20);
 
 		const attachment = new MessageAttachment(canvas.toBuffer(), 'level.jpg');
 		message.channel.send({ files: [attachment] }).catch((err) => this.client.logger.error(err));
