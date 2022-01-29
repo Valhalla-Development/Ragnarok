@@ -16,8 +16,8 @@ module.exports = class extends Command {
 		});
 	}
 
-	async run(message) {
-		const user = message.mentions.users.first() || message.author;
+	async run(message, args) {
+		const user = message.mentions.users.size ? message.mentions.members.first().user : args[0] ? message.guild.members.cache.find(usr => usr.displayName === args.join(' ')).user : message.author;
 		if (user.bot) return;
 
 		const balance = this.client.getBalance.get(`${user.id}-${message.guild.id}`);
@@ -30,7 +30,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Balance**`,
 					`**◎ Error:** ${user} does not have any balance!`);
-			message.channel.send(limitE).then((m) => this.client.utils.deletableCheck(m, 10000));
+			message.channel.send({ embeds: [limitE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
@@ -44,6 +44,7 @@ module.exports = class extends Command {
 			let foundItemList = JSON.parse(balance.items);
 			let foundBoostList = JSON.parse(balance.boosts);
 			let foundPlotList = JSON.parse(balance.farmPlot);
+			let foundHarvestList = JSON.parse(balance.harvestedCrops);
 
 			if (!foundItemList) {
 				foundItemList = {};
@@ -55,6 +56,10 @@ module.exports = class extends Command {
 
 			if (!foundPlotList) {
 				foundPlotList = [];
+			}
+
+			if (!foundHarvestList) {
+				foundHarvestList = [];
 			}
 
 			let currentTotalSeeds = 0;
@@ -105,25 +110,11 @@ module.exports = class extends Command {
 
 			let currentTotalFarm = 0;
 
-			if (foundPlotList.corn) {
-				currentTotalFarm += Number(foundPlotList.corn);
-			} else {
-				currentTotalFarm += Number(0);
-			}
-			if (foundPlotList.corn) {
-				currentTotalFarm += Number(foundPlotList.corn);
-			} else {
-				currentTotalFarm += Number(0);
-			}
-			if (foundPlotList.potato) {
-				currentTotalFarm += Number(foundPlotList.potato);
-			} else {
-				currentTotalFarm += Number(0);
-			}
-			if (foundPlotList.tomato) {
-				currentTotalFarm += Number(foundPlotList.tomato);
-			} else {
-				currentTotalFarm += Number(0);
+			if (foundHarvestList) {
+				currentTotalFarm += Number(foundHarvestList.filter(key => key.cropType === 'corn').length);
+				currentTotalFarm += Number(foundHarvestList.filter(key => key.cropType === 'wheat').length);
+				currentTotalFarm += Number(foundHarvestList.filter(key => key.cropType === 'potato').length);
+				currentTotalFarm += Number(foundHarvestList.filter(key => key.cropType === 'tomato').length);
 			}
 
 			const embed1 = new MessageEmbed()
@@ -144,7 +135,7 @@ module.exports = class extends Command {
 					\n**Daily:** ${Date.now() > balance.daily ? `\`Available!\`` : `\`${ms(balance.daily - date, { long: true })}\``}
 					\n**Weekly:** ${Date.now() > balance.weekly ? `\`Available!\`` : `\`${ms(balance.weekly - date, { long: true })}\``}
 					\n**Monthly:** ${Date.now() > balance.monthly ? `\`Available!\`` : `\`${ms(balance.monthly - date, { long: true })}\``}` });
-			message.channel.send(embed1);// `\n\u3000 **Hourly:** \`${Date.now() > balance.hourly ? `\`Available!\`` : `\`${ms(balance.hourly - date, { long: true })}\``}` })
+			message.channel.send({ embeds: [embed1] });
 			return;
 		}
 		const embed1 = new MessageEmbed()
@@ -155,7 +146,7 @@ module.exports = class extends Command {
 				{ name: 'Bank', value: `<:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\``, inline: true },
 				{ name: 'Total', value: `<:coin:706659001164628008> \`${balance.total.toLocaleString('en')}\``, inline: true })
 			.setTimestamp();
-		message.channel.send(embed1);
+		message.channel.send({ embeds: [embed1] });
 	}
 
 };
