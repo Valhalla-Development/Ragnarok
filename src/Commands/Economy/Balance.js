@@ -17,7 +17,25 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
-		const user = message.mentions.users.size ? message.mentions.members.first().user : args[0] ? message.guild.members.cache.find(usr => usr.displayName === args.join(' ')).user : message.author;
+		let user;
+		try {
+			user = message.mentions.users.size ? message.mentions.members.first().user : args[0] ? message.guild.members.cache.find(usr => usr.displayName === args.join(' ')).user : message.author;
+		} catch {
+			user = null;
+		}
+
+		if (user === null) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const limitE = new MessageEmbed()
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Balance**`,
+					`**◎ Error:** I could not find the specified user!`);
+			message.channel.send({ embeds: [limitE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
 		if (user.bot) return;
 
 		const balance = this.client.getBalance.get(`${user.id}-${message.guild.id}`);
@@ -26,7 +44,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const limitE = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Balance**`,
 					`**◎ Error:** ${user} does not have any balance!`);
@@ -118,7 +136,7 @@ module.exports = class extends Command {
 			}
 
 			const embed1 = new MessageEmbed()
-				.setAuthor(`${user.username}'s Balance`, user.avatarURL())
+				.setAuthor({ name: `${user.username}'s Balance`, iconURL: user.avatarURL() })
 				.setDescription(`Leaderboard Rank: \`${rankPos}\``)
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addFields({ name: 'Cash', value: `<:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\``, inline: true },
@@ -139,7 +157,7 @@ module.exports = class extends Command {
 			return;
 		}
 		const embed1 = new MessageEmbed()
-			.setAuthor(`${user.username}'s Balance`, user.avatarURL())
+			.setAuthor({ name: `${user.username}'s Balance`, iconURL: user.avatarURL() })
 			.setDescription(`Leaderboard Rank: \`${rankPos}\``)
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addFields({ name: 'Cash', value: `<:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\``, inline: true },
