@@ -133,7 +133,7 @@ module.exports = class extends Command {
 		const m = await message.channel.send({ components: [buttonA], embeds: [embed] });
 		const filter = (but) => but.user.id === message.author.id;
 
-		const collector = m.createMessageComponentInteractionCollector(filter, { time: 10000 });
+		const collector = m.createMessageComponentCollector(filter, { time: 10000 });
 
 		collector.on('collect', async b => {
 			if (b.customId === 'unban') {

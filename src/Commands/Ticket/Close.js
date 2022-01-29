@@ -50,7 +50,7 @@ module.exports = class extends Command {
 		}
 
 		if (!comCooldown.has(message.author.id)) {
-			message.channel.startTyping();
+			message.channel.sendTyping();
 
 			const user = this.client.users.cache.find((a) => a.id === foundTicket.authorid); // do something if the user is not found (they left)
 
@@ -75,11 +75,9 @@ module.exports = class extends Command {
 
 			const m = await message.channel.send({ components: [row], embeds: [initial] });
 
-			message.channel.stopTyping();
-
 			const filter = (but) => but.user.id === message.author.id;
 
-			const collector = m.createMessageComponentInteractionCollector(filter, { time: 15000 });
+			const collector = m.createMessageComponentCollector(filter, { time: 15000 });
 
 			if (!comCooldown.has(message.author.id)) {
 				comCooldown.add(message.author.id);
@@ -94,7 +92,7 @@ module.exports = class extends Command {
 				await b.deferUpdate();
 
 				if (b.customId === 'close') {
-					message.channel.startTyping();
+					message.channel.sendTyping();
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Ticket**`,
@@ -115,8 +113,6 @@ module.exports = class extends Command {
 					const toString = JSON.stringify(file, null, 3);
 					const buffer = Buffer.from(toString);
 					const attachment = new MessageAttachment(buffer, `ticketLog.json`);
-
-					message.channel.stopTyping();
 
 					if (message.channel) {
 						message.channel.delete();

@@ -236,7 +236,7 @@ module.exports = class extends Command {
 					const searchEmbed = await message.channel.send({ components: [row, row1], embeds: [embed] });
 					const filter = (but) => but.user.id !== this.client.user.id;
 
-					const collector = searchEmbed.createMessageComponentInteractionCollector(filter, { time: 30000 });
+					const collector = searchEmbed.createMessageComponentCollector(filter, { time: 30000 });
 
 					collector.on('collect', async (b) => {
 						if (b.user.id !== message.author.id) {
@@ -284,7 +284,6 @@ module.exports = class extends Command {
 						}
 
 						player.queue.add(track);
-
 
 						if (!player.playing && !player.paused && !player.queue.size) {
 							player.setVoiceChannel(message.member.voice.channel.id);
@@ -350,12 +349,10 @@ module.exports = class extends Command {
 
 				case 'PLAYLIST_LOADED': {
 					this.client.utils.messageDelete(message, 10000);
-					message.channel.startTyping();
+					message.channel.sendTyping();
 
 					if (res.tracks.length > 10) {
 						if (!message.member.roles.cache.has(role.id) || !message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
-							message.channel.stopTyping();
-
 							const embed = new MessageEmbed()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Play**`,
@@ -403,7 +400,6 @@ module.exports = class extends Command {
 							message.channel.send({ embeds: [playlistload] });
 						}
 						this.client.utils.deletableCheck(enq, 0);
-						message.channel.stopTyping();
 					});
 					break;
 				}
