@@ -17,7 +17,18 @@ module.exports = class extends Command {
 
 	async run(message, args) {
 		if (args[0] === 'easy') {
-			await Calculator(message); // this throws the unknown interaction thingy error, fix before uploading
+			await Calculator({
+				message: message,
+				embed: {
+					title: 'Calculator | Ragnarok',
+					color: this.client.utils.color(message.guild.me.displayHexColor),
+					footer: ' ',
+					timestamp: false
+				},
+				disabledQuery: 'Calculator is disabled!',
+				invalidQuery: 'The provided equation is invalid!',
+				othersMessage: 'Only <@{{author}}> can use the buttons!'
+			});
 			return;
 		}
 
