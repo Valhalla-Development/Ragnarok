@@ -16,15 +16,16 @@ module.exports = class extends Command {
 	async run(message, args) {
 		this.client.utils.messageDelete(message, 10000);
 
-		const afkGrab = db.prepare('SELECT * FROM afk WHERE user = ? AND guildid = ?').get(message.author.id, message.guild.id);
+		const afkGrab = db.prepare('SELECT * FROM afk WHERE id = ?').get(`${message.author.id}-${message.guild.id}`);
 
 		const reason = args[0] ? args.join(' ') : 'AFK';
 
 		if (afkGrab) {
-			await db.prepare('UPDATE afk SET reason = (@reason) WHERE (user, guildid) = (@user, @guildid);').run({
+			await db.prepare('UPDATE afk SET reason = (@reason) WHERE (user, guildid, id) = (@user, @guildid, @id);').run({
 				reason: reason,
 				user: message.author.id,
-				guildid: message.guild.id
+				guildid: message.guild.id,
+				id: `${message.author.id}-${message.guild.id}`
 			});
 
 			const badChannel = new MessageEmbed()
@@ -34,10 +35,11 @@ module.exports = class extends Command {
 			message.channel.send({ embeds: [badChannel] });
 			return;
 		} else {
-			await db.prepare('INSERT INTO afk (reason, user, guildid) values (@reason, @user, @guildid);').run({
+			await db.prepare('INSERT INTO afk (reason, user, guildid, id) values (@reason, @user, @guildid, @id);').run({
 				reason: reason,
 				user: message.author.id,
-				guildid: message.guild.id
+				guildid: message.guild.id,
+				id: `${message.author.id}-${message.guild.id}`
 			});
 
 			const badChannel = new MessageEmbed()
