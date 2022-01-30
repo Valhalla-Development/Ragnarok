@@ -65,7 +65,7 @@ module.exports = class extends Command {
 		const bar = await progressbar.splitBar(total, current, 18);
 
 		const embed = new MessageEmbed()
-			.setAuthor('Now Playing', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+			.setAuthor({ name: 'Now Playing', iconURL: 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png' })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail(`${thumbnail}`)
 			.setDescription(stripIndents`

@@ -24,7 +24,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const wrongUsage = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** An example of this command is: \`${prefix}give @user 100\`\nAlternatively, you can run \`${prefix}give @user all\``);
@@ -50,7 +50,7 @@ module.exports = class extends Command {
 
 				const amt = otherB.total + Number(args[2]);
 				const embed = new MessageEmbed()
-					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Give - Admin**`,
 						`**◎ Success:** System gave <:coin:706659001164628008> \`${Number(args[2]).toLocaleString('en')}\` to ${user}\nNew total: <:coin:706659001164628008> \`${amt.toLocaleString('en')}\``);
@@ -63,7 +63,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** You can not give yourself money. <:wut:745408596233289839>`);
@@ -77,7 +77,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const errorE = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** ${user} does not have an economy account. They will instantly open one when they speak.`);
@@ -90,7 +90,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const noBal = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** Uh oh! You currently have no money in your bank!`);
@@ -110,7 +110,7 @@ module.exports = class extends Command {
 			const totaCalc2 = balance.total - balance.bank;
 
 			const depAll = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Success:** You have paid ${user} the sum of: <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`.`);
@@ -126,7 +126,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const wrongUsage = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** An example of this command is: \`${prefix}give @user 100\`\nAlternatively, you can run \`${prefix}give @user all\``);
@@ -138,7 +138,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const wrongUsage = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** Please enter a value of at least \`1\`. Please try again with a valid amount.`);
@@ -150,7 +150,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const wrongUsage = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** You only have <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`. Please try again with a valid amount.`);
@@ -173,7 +173,7 @@ module.exports = class extends Command {
 		this.client.setBalance.run(balance);
 
 		const depArg = new MessageEmbed()
-			.setAuthor(`${message.author.username}`, message.author.avatarURL())
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Give**`,
 				`**◎ Success:** You have paid ${user} the sum of: <:coin:706659001164628008> \`${numberCov.toLocaleString('en')}\`.`);

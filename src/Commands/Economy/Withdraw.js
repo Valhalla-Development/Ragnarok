@@ -25,7 +25,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const noBalance = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
 					`**◎ Error:** You currently have no money in your bank!`);
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 			this.client.setBalance.run(balance);
 
 			const depAll = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
 					`**◎ Success:** You have withdrawn <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`.`);
@@ -54,7 +54,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const wrongUsage = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
 					`**◎ Error:** An example of this command is: \`${prefix}withdraw 100\`\nAlternatively, you can run \`${prefix}withdraw all\``);
@@ -66,7 +66,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const wrongUsage = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
 					`**◎ Error:** You only have <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`. Please try again with a valid amount.`);
@@ -84,7 +84,7 @@ module.exports = class extends Command {
 		this.client.setBalance.run(balance);
 
 		const depAll = new MessageEmbed()
-			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Withdraw**`,
 				`**◎ Success:** You have withdrawn <:coin:706659001164628008> \`${numberCov.toLocaleString('en')}\`.`);

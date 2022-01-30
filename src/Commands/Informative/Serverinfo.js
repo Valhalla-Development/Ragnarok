@@ -60,9 +60,9 @@ module.exports = class extends Command {
 
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.setAuthor(`Viewing information for ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
+				.setAuthor({ name: `Viewing information for ${message.guild.name}`, iconURL: message.guild.iconURL({ dynamic: true }) })
 				.setDescription(`**Server Roles [${roles.length}]**\n${!roleArr.length ? roles.join(', ') : `${roleArr.join(', ')}... ${roles.length - roleArr[0].split(', ').length + 1} more!`}`)
-				.setFooter(`${this.client.user.username}`, this.client.user.displayAvatarURL({ dynamic: true }));
+				.setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) });
 			message.channel.send({ embeds: [embed] });
 			return;
 		}
@@ -79,9 +79,9 @@ module.exports = class extends Command {
 
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.setAuthor(`Viewing information for ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
+				.setAuthor({ name: `Viewing information for ${message.guild.name}`, iconURL: message.guild.iconURL({ dynamic: true }) })
 				.setDescription(`**Server Emojis [${emojiMap.length}]**\n${!emojiArr.length ? emojiMap.join(', ') : `${emojiArr.join(', ')}... ${emojiMap.length - emojiArr[0].split(', ').length + 1} more!`}`)
-				.setFooter(`${this.client.user.username}`, this.client.user.displayAvatarURL({ dynamic: true }));
+				.setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) });
 			message.channel.send({ embeds: [embed] });
 			return;
 		}
@@ -101,7 +101,7 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail(message.guild.iconURL({ dynamic: true }))
-			.setAuthor(`Viewing information for ${message.guild.name}`, message.guild.iconURL({ dynamic: true }))
+			.setAuthor({ name: `Viewing information for ${message.guild.name}`, iconURL: message.guild.iconURL({ dynamic: true }) })
 			.addField(`Guild information`,
 				`**◎ 👑 Owner:** ${guildOwner.user}
 				**◎ 🆔 ID:** ${message.guild.id}
@@ -114,7 +114,7 @@ module.exports = class extends Command {
 				{ name: `**Guild Perks**`, value: `<a:Booster:855593231294267412> | Boost Tier: ${tiers[message.guild.premiumTier]}\n<a:Booster:855593231294267412> | Boosts: ${message.guild.premiumSubscriptionCount}`, inline: true },
 				{ name: `**Server Roles [${roles.length}]**`, value: `To view all server roles, run\n\`${prefix}serverinfo roles\``, inline: true },
 				{ name: `**Server Emojis [${emojis.size}]**`, value: `To view all server emojis, run\n\`${prefix}serverinfo emojis\``, inline: true })
-			.setFooter(`${this.client.user.username}`, this.client.user.displayAvatarURL({ dynamic: true }));
+			.setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) });
 		message.channel.send({ embeds: [embed] });
 	}
 

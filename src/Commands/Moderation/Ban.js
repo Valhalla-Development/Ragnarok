@@ -93,7 +93,7 @@ module.exports = class extends Command {
 			.addField(`You have been banned from: \`${message.guild.name}\``,
 				`**◎ Reason:**: ${reason}
 				**◎ Moderator:**: ${message.author.tag}`)
-			.setFooter('You have been banned')
+			.setFooter({ text: 'You have been banned' })
 			.setTimestamp();
 		try {
 			user.send({ embeds: [authoMes] });
@@ -120,7 +120,7 @@ module.exports = class extends Command {
 				`**◎ User:** ${user.user.tag}
 				**◎ Reason:**: ${reason}
 				**◎ Moderator:**: ${message.author.tag}`)
-			.setFooter('User Ban Logs')
+			.setFooter({ text: 'User Ban Logs' })
 			.setTimestamp();
 
 		const buttonA = new MessageButton()
@@ -166,7 +166,7 @@ module.exports = class extends Command {
 						.addField('Action | Un-Ban',
 							`**◎ User ID:** ${user.user.id}
 				**◎ Moderator:**: ${message.author.tag}`)
-						.setFooter('User Un-Ban Logs')
+						.setFooter({ text: 'User Un-Ban Logs' })
 						.setTimestamp();
 					message.guild.members.unban(bUser.user).then(() => message.channel.send({ embeds: [unbanEmbed] }));
 					collector.stop('unbanned');

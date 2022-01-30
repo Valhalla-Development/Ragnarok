@@ -37,7 +37,7 @@ module.exports = class extends Command {
 			.addField('Action | Un-Ban',
 				`**◎ User ID:** ${args[0]}
 				**◎ Moderator:**: ${message.author.tag}`)
-			.setFooter('User Un-Ban Logs')
+			.setFooter({ text: 'User Un-Ban Logs' })
 			.setTimestamp();
 
 		message.guild.bans.fetch().then((bans) => {

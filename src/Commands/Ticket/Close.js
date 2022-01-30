@@ -71,7 +71,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!`)
-				.setFooter(`If this fails for any reason, you can forcefully close with: ${prefix}forceclose`);
+				.setFooter({ text: `If this fails for any reason, you can forcefully close with: ${prefix}forceclose` });
 
 			const m = await message.channel.send({ components: [row], embeds: [initial] });
 
@@ -196,7 +196,7 @@ module.exports = class extends Command {
 					this.client.utils.messageDelete(m, 0);
 
 					const limitE = new MessageEmbed()
-						.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Close**`,
 							`**◎ Success:** Ticket close cancelled.`);

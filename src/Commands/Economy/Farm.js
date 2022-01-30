@@ -39,7 +39,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed = new MessageEmbed()
-					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Farm**`,
 						`**◎ Error:** Please wait another \`${ms(balance.farmcool - new Date().getTime(), { long: true })}\` before using this command.`);
@@ -77,11 +77,11 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed = new MessageEmbed()
-					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Farm**`,
 						`**◎ Error:** Your farm bag is full! You can sell your produce with \`${prefix}shop sell\``)
-					.setFooter(`Consider purchasing farming tools to increase your limit.`);
+					.setFooter({ text: `Consider purchasing farming tools to increase your limit.` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -91,11 +91,11 @@ module.exports = class extends Command {
 		const farmChance = Math.random();
 		if (farmChance < 0.0018) { // 0.18%
 			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
 			const goldChance = Math.random();
-			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
+			embed.setFooter({ text: `Planting crops yields a larger return! Check it out with - ${prefix}plant` });
 
 			if (goldChance < 0.80) { // 80% of this happening
 				embed.setThumbnail('attachment://GoldNugget.png');
@@ -129,10 +129,10 @@ module.exports = class extends Command {
 			return;
 		} else if (farmChance >= 0.0018 && farmChance < 0.0318) { // 3%
 			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
+			embed.setFooter({ text: `Planting crops yields a larger return! Check it out with - ${prefix}plant` });
 			embed.setThumbnail('attachment://Barley.png');
 
 			name = 'Barley';
@@ -162,12 +162,12 @@ module.exports = class extends Command {
 			return;
 		} else if (farmChance >= 0.0318 && farmChance < 0.0918) { // 6%
 			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
 			embed.setThumbnail('attachment://Spinach.png');
 
-			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
+			embed.setFooter({ text: `Planting crops yields a larger return! Check it out with - ${prefix}plant` });
 
 			name = 'Spinach';
 
@@ -196,12 +196,12 @@ module.exports = class extends Command {
 			return;
 		} else if (farmChance >= 0.0918 && farmChance < 0.3718) { // 28%
 			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
 			embed.setThumbnail('attachment://Strawberry.png');
 
-			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
+			embed.setFooter({ text: `Planting crops yields a larger return! Check it out with - ${prefix}plant` });
 
 			name = 'Strawberries';
 
@@ -230,12 +230,12 @@ module.exports = class extends Command {
 			return;
 		} else if (farmChance >= 0.3718 && farmChance < 0.8718) {
 			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
 			embed.setThumbnail('attachment://Lettuce.png');
 
-			embed.setFooter(`Planting crops yields a larger return! Check it out with - ${prefix}plant`);
+			embed.setFooter({ text: `Planting crops yields a larger return! Check it out with - ${prefix}plant` });
 
 			name = 'Lettuce';
 
@@ -264,10 +264,10 @@ module.exports = class extends Command {
 			return;
 		} else { // 12.82%
 			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			embed.setFooter(`Purchase farming tools to never fail farming! - ${prefix}shop buy tools`);
+			embed.setFooter({ text: `Purchase farming tools to never fail farming! - ${prefix}shop buy tools` });
 
 			const endTime = new Date().getTime() + this.client.ecoPrices.farmFailTime;
 

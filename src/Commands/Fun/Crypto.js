@@ -28,7 +28,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const noinEmbed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Crypto**`,
 					`**◎ Error:** Please enter a valid cryptocurrency!`);
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const noinEmbed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Crypto**`,
 					`**◎ Error:** Please enter a valid cryptocurrency!`);
@@ -58,7 +58,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const noinEmbed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Crypto**`,
 					`**◎ Error:** Please enter a valid cryptocurrency!`);
@@ -81,7 +81,7 @@ module.exports = class extends Command {
 		if (image) {
 			successEmb.setThumbnail(content[0].image);
 		}
-		successEmb.setAuthor(`${message.author.tag}`, message.author.avatarURL());
+		successEmb.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() });
 		successEmb.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 		successEmb.addField(`**Crypto - ${this.client.utils.capitalise(content[0].id)} ${args[1] ? `(${args[1].toUpperCase()})` : '(USD)'}**`,
 			`**◎ Name:** \`${this.client.utils.capitalise(content[0].id)}\` **(${content[0].symbol.toUpperCase()})**

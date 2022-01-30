@@ -24,7 +24,7 @@ module.exports = class extends Event {
 			.addField('User Unbanned',
 				`**◎ User:** ${ban.user.tag}
 				**◎ Moderator:**: ${mod}`)
-			.setFooter('User Ban Logs')
+			.setFooter({ text: 'User Ban Logs' })
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send({ embeds: [embed] });
 	}

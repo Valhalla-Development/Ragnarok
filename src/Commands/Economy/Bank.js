@@ -19,7 +19,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const limitE = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: message.author.tag, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Bank**`,
 					`**◎ Error:** You do not have any cash to deposit!`);
@@ -30,7 +30,7 @@ module.exports = class extends Command {
 		const bankCalc = balance.cash + balance.bank;
 
 		const depAll = new MessageEmbed()
-			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+			.setAuthor({ name: message.author.tag, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail('attachment://Bank.png')
 			.addField(`**${this.client.user.username} - Bank**`,

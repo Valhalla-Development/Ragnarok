@@ -18,7 +18,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const noinEmbed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Suggest**`,
 					`**◎ Error:** Please input some text!`);
@@ -32,13 +32,13 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(this.client.guilds.cache.get(supportGuild).me.displayHexColor))
 			.setTitle('Suggestion')
 			.setDescription(`**◎ User: <@${message.author.id}> - **\`${message.author.tag}\`\n**Suggestion:** ${argresult}`)
-			.setFooter(`${message.guild.name} - ${message.guild.id}`);
+			.setFooter({ text: `${message.guild.name} - ${message.guild.id}` });
 		this.client.guilds.cache.get(supportGuild).channels.cache.get(suggestChan).send({ embeds: [embed] });
 
 		this.client.utils.messageDelete(message, 10000);
 
 		const loggedEmbed = new MessageEmbed()
-			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Suggest**`,
 				`**◎ Success:** Suggestion has been successfully sent!`);

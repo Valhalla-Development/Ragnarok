@@ -47,13 +47,13 @@ module.exports = class extends Command {
 			.addComponents(buttonANew, buttonBNew);
 
 		const embed = new MessageEmbed()
-			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Free V-Bucks**`,
 				`**◎ Success:** ${message.author}, Would you like to claim your **FREE** V-Bucks?`);
 
 		const embedNew = new MessageEmbed()
-			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Free V-Bucks**`,
 				`**◎ Success:** ${message.author}, Virus activated!.`);

@@ -69,9 +69,9 @@ module.exports = class extends Command {
 		}
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.setAuthor(`${post.data.title}`, message.author.displayAvatarURL({ dynamic: true }), `https://reddit.com${post.data.permalink}`)
+			.setAuthor({ name: `${post.data.title}`, url: `https://reddit.com${post.data.permalink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
 			.setImage(postURL)
-			.setFooter(`👍 ${post.data.ups} | 💬 ${post.data.num_comments}`);
+			.setFooter({ text: `👍 ${post.data.ups} | 💬 ${post.data.num_comments}` });
 		message.channel.send({ embeds: [embed] });
 
 		this.client.utils.deletableCheck(msg, 0);

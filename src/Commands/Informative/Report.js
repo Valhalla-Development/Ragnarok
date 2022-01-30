@@ -20,7 +20,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const noTarget = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** You must specify a user to report!`);
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const noReason = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** You must specify a reason!`);
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const noReason = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Report**`,
 					`**◎ Error:** Reports are disabled on this server! If you are an administrator, create the channel and name it \`reports\``);
@@ -52,7 +52,7 @@ module.exports = class extends Command {
 
 		const reportembed = new MessageEmbed()
 			.setThumbnail(target.user.avatarURL())
-			.setAuthor('Report', 'https://cdn.discordapp.com/emojis/465245981613621259.png?v=1')
+			.setAuthor({ name: 'Report', iconURL: 'https://cdn.discordapp.com/emojis/465245981613621259.png?v=1' })
 			.setDescription(`New report by ${message.author.username}`)
 			.addFields({ name: '⚠ - Reported Member', value: `${target.user.tag}\n(${target.user.id})`, inline: true },
 				{ name: '⚠ - Reported by', value: `${message.author.tag}\n(${message.author.id})`, inline: true },
@@ -63,7 +63,7 @@ module.exports = class extends Command {
 		reports.send({ embeds: [reportembed] });
 
 		const success = new MessageEmbed()
-			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Report**`,
 				`**◎ Success:** ${target}** was reported by **${message.author}`);

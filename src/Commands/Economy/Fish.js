@@ -22,7 +22,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Fish**`,
 					`**◎ Error:** You do not have a fishing rod! You must buy one from the shop.`);
@@ -36,7 +36,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Fish**`,
 					`**◎ Error:** You do not have a fishing rod! You must buy one from the shop.`);
@@ -72,7 +72,7 @@ module.exports = class extends Command {
 				});
 
 				const embed = new MessageEmbed()
-					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://Treasure.png')
 					.addField(`**${this.client.user.username} - Fish**`,
@@ -101,7 +101,7 @@ module.exports = class extends Command {
 				});
 
 				const embed = new MessageEmbed()
-					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://Pufferfish.png')
 					.addField(`**${this.client.user.username} - Fish**`,
@@ -130,7 +130,7 @@ module.exports = class extends Command {
 				});
 
 				const embed = new MessageEmbed()
-					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://Swordfish.png')
 					.addField(`**${this.client.user.username} - Fish**`,
@@ -159,7 +159,7 @@ module.exports = class extends Command {
 				});
 
 				const embed = new MessageEmbed()
-					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://KingSalmon.png')
 					.addField(`**${this.client.user.username} - Fish**`,
@@ -188,7 +188,7 @@ module.exports = class extends Command {
 				});
 
 				const embed = new MessageEmbed()
-					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://Trout.png')
 					.addField(`**${this.client.user.username} - Fish**`,
@@ -203,7 +203,7 @@ module.exports = class extends Command {
 				this.client.setBalance.run(balance);
 
 				const embed = new MessageEmbed()
-					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Fish**`,
 						`**◎ Fail:** Your catch escaped the line!`);
@@ -214,7 +214,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Fish**`,
 					`**◎ Error:** Please wait another \`${ms(balance.fishcool - new Date().getTime(), { long: true })}\` before using this command.`);

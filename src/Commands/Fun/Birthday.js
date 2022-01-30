@@ -46,7 +46,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on **${nextBirthday + year}**`)
-				.setFooter('This server currently has this feature disabled, you will not receive a message in this server.');
+				.setFooter({ text: 'This server currently has this feature disabled, you will not receive a message in this server.' });
 			message.channel.send({ embeds: [embed] });
 			return;
 		}
@@ -225,7 +225,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on **${nextBirthday + year}**`)
-				.setFooter(`Run '${prefix}birthday help' if you wish to change your birthday`);
+				.setFooter({ text: `Run '${prefix}birthday help' if you wish to change your birthday` });
 			message.channel.send({ embeds: [embed] });
 			return;
 		}

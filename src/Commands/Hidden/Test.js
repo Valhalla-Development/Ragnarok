@@ -27,7 +27,7 @@ module.exports = class extends Command {
 
 		i += c1 + c2;
 		const embed = new MessageEmbed()
-			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setDescription(`**◎** You drew a \`${c1}\` and \`${c2}\`, your total is: \`${cardtotal}\`.\nHit (:thumbsup:) or Stand (:thumbsdown:)?`);
 		message.channel.send({ embeds: [embed] }).then(async (msg) => {

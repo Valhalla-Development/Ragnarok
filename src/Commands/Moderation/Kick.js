@@ -105,7 +105,7 @@ module.exports = class extends Command {
 				`**◎ User:** ${user.user.tag}
 				**◎ Reason:**: ${reason}
 				**◎ Moderator:**: ${message.author.tag}`)
-			.setFooter('User Kick Logs')
+			.setFooter({ text: 'User Kick Logs' })
 			.setTimestamp();
 		message.channel.send({ embeds: [embed] });
 

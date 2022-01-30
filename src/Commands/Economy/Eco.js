@@ -15,7 +15,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.setAuthor(`${message.guild.name} - Eco`, message.guild.iconURL({ dynamic: true }))
+			.setAuthor({ name: `${message.guild.name} - Eco`, iconURL: message.guild.iconURL({ dynamic: true }) })
 			.setDescription([
 				`** NOTE: This is a beta release for the economy system! Prices-rates are subject to change at any moment!**`,
 				`** These are the planned features for full-release**`,

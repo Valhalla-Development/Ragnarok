@@ -101,7 +101,7 @@ module.exports = class extends Command {
 		const { queue } = player;
 
 		const embed = new MessageEmbed();
-		embed.setAuthor(`${message.guild.name}'s Queue (${player.queue.size})`);
+		embed.setAuthor({ name: `${message.guild.name}'s Queue (${player.queue.size})` });
 		embed.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
 		// change for the amount of tracks per page
@@ -124,7 +124,7 @@ module.exports = class extends Command {
 
 		const maxPages = Math.ceil(queue.length / multiple);
 
-		embed.setFooter(`Page ${page > maxPages ? maxPages : page} of ${maxPages}`);
+		embed.setFooter({ text: `Page ${page > maxPages ? maxPages : page} of ${maxPages}` });
 
 		message.channel.send({ embeds: [embed] });
 	}

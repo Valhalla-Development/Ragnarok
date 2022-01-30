@@ -72,7 +72,7 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-			.setAuthor(`Viewing information for ${member.user.username}`, member.user.displayAvatarURL({ dynamic: true }))
+			.setAuthor({ name: `Viewing information for ${member.user.username}`, iconURL: member.user.displayAvatarURL({ dynamic: true }) })
 			.addField(`Member information`,
 				`**◎ 👑 User:** ${member.user}
 				**◎ 🆔 ID:** ${member.user.id}
@@ -84,7 +84,7 @@ module.exports = class extends Command {
 			.addFields({ name: `**Roles: [${roles.length}]**`, value: `${roles.length < 10 ? roles.join('\n') : roles.length >= 10 ? this.client.utils.trimArray(roles, 10).join('\n') : 'None'}`, inline: true },
 				{ name: `**Status:**`, value: `${status[member.user.presence.status]}`, inline: true },
 				{ name: `**Activity:**`, value: `${presence.length ? presence.join('\n') : 'None'}`, inline: true })
-			.setFooter(`${this.client.user.username}`, this.client.user.displayAvatarURL({ dynamic: true }));
+			.setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) });
 		message.channel.send({ embeds: [embed] });
 	}
 

@@ -25,10 +25,10 @@ module.exports = class extends Event {
 			}
 
 			const logembed = new MessageEmbed()
-				.setAuthor('Member Left', member.user.avatarURL())
+				.setAuthor({ name: 'Member Left', iconURL: member.user.avatarURL() })
 				.setDescription(`${member.user.tag}`)
 				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
-				.setFooter(`ID: ${member.user.id}`)
+				.setFooter({ text: `ID: ${member.user.id}` })
 				.setTimestamp();
 			grabClient.channels.cache.get(logs).send({ embeds: [logembed] });
 		}

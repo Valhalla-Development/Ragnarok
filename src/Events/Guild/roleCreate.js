@@ -13,7 +13,7 @@ module.exports = class extends Event {
 		if (!logs) return;
 
 		const logembed = new MessageEmbed()
-			.setAuthor(role.guild, role.guild.iconURL())
+			.setAuthor({ name: role.guild, iconURL: role.guild.iconURL() })
 			.setDescription(`**◎ Role Created: \`${role.name}\`.**`)
 			.setColor(this.client.utils.color(role.guild.me.displayHexColor))
 			.setTimestamp();

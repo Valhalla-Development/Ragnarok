@@ -36,7 +36,7 @@ module.exports = class extends Event {
 
 		const logembed = new MessageEmbed()
 			.setColor(this.client.utils.color(invite.guild.me.displayHexColor))
-			.setAuthor(invite.guild, invite.guild.iconURL())
+			.setAuthor({ name: invite.guild, iconURL: invite.guild.iconURL() })
 			.setDescription(`**◎ Invite Created:**\n**◎ Created By:** ${invite.inviter}\n**◎ Expires:** \`${expiry}\`\n**◎ Location:** ${invite.channel}\n**◎ Invite:** [https://discord.gg/${invite.code}](https://discord.gg/${invite.code}${invite.code})`)
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send({ embeds: [logembed] });

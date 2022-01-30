@@ -25,7 +25,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setTitle('Create a Ticket')
 			.setDescription('By clicking the button, a ticket will be opened for you.')
-			.setFooter('Ragnarok Bot', this.client.user.avatarURL());
+			.setFooter({ text: 'Ragnarok Bot', iconURL: this.client.user.avatarURL() });
 
 		const button = new MessageButton()
 			.setStyle('SUCCESS')

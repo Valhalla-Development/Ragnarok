@@ -16,7 +16,7 @@ module.exports = class extends Command {
 		const user = message.mentions.users.first() || message.author;
 
 		const embed = new MessageEmbed()
-			.setAuthor(`${user.username}'s Avatar`)
+			.setAuthor({ name: `${user.username}'s Avatar`, iconURL: user.avatarURL() })
 			.setImage(user.avatarURL({ dynamic: true, size: 1024 }))
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 		message.channel.send({ embeds: [embed] });

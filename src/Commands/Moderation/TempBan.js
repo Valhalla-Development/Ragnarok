@@ -141,7 +141,7 @@ module.exports = class extends Command {
 				`**◎ Reason:**: ${reason}
 				**◎ Time:** ${bantime}
 				**◎ Moderator:**: ${message.author.tag}`)
-			.setFooter('You have been temporarily banned')
+			.setFooter({ text: 'You have been temporarily banned' })
 			.setTimestamp();
 		try {
 			user.send({ embeds: [authoMes] });
@@ -181,7 +181,7 @@ module.exports = class extends Command {
 				**◎ Reason:**: ${reason}
 				**◎ Time:** ${bantime}
 				**◎ Moderator:**: ${message.author.tag}`)
-			.setFooter('User Ban Logs')
+			.setFooter({ text: 'User Ban Logs' })
 			.setTimestamp();
 
 		const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();

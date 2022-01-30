@@ -72,10 +72,7 @@ module.exports = class extends Command {
 				)}\n**Rating: ${rating}%** - ${votes} votes\n\n${link}\n\n**Not the content you were looking for?**\nTry: https://trakt.tv/search?query=${searchQuery}`
 			)
 			.setImage(image)
-			.setFooter(
-				'Trakt.TV',
-				'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png'
-			)
+			.setFooter({ text: 'Trakt.TV', iconURL: 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png' })
 			.setTimestamp();
 
 		const notFound = (searchQuery) => {

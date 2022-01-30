@@ -56,7 +56,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.setFooter('Urban Dictionary', 'https://i.lensdump.com/i/88BhFP.png')
+			.setFooter({ text: 'Urban Dictionary', iconURL: 'https://i.lensdump.com/i/88BhFP.png' })
 			.setTimestamp()
 			.setTitle(answer.word)
 			.setURL(answer.permalink)

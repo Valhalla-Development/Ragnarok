@@ -25,7 +25,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Items**`,
 					`**◎ Error:** You do not have any items.`);
@@ -193,7 +193,7 @@ module.exports = class extends Command {
 		}
 
 		const embed = new MessageEmbed()
-			.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Items**`,
 				`**◎ Fish:**
@@ -216,7 +216,7 @@ module.exports = class extends Command {
 				\u3000 Seed Bag - ${!foundBoostList.seedBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalSeeds)}\`/\`${foundBoostList.seedBag}\``}
 				\u3000 Farm Bag - ${!foundBoostList.farmBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.farmBag}\``}`);
 		if (fullPrice > 0) {
-			embed.setFooter(`Total Value: ${fullPrice.toLocaleString('en')}`);
+			embed.setFooter({ text: `Total Value: ${fullPrice.toLocaleString('en')}` });
 		}
 		message.channel.send({ embeds: [embed] });
 	}

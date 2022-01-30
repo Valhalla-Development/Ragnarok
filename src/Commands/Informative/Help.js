@@ -21,9 +21,9 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.setAuthor(`${message.guild.name} Help`, message.guild.iconURL({ dynamic: true }))
+			.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 			.setThumbnail(this.client.user.displayAvatarURL())
-			.setFooter(`This guild's prefix is ${prefix} - Bot Version ${version}`, this.client.user.avatarURL({ dynamic: true }));
+			.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
 
 		if (command) {
 			const cmd = this.client.commands.get(command) || this.client.commands.get(this.client.aliases.get(command));
@@ -49,7 +49,7 @@ module.exports = class extends Command {
 				reqPerm = `**◎ Permission(s) Required:** \`${this.client.utils.formatArray(cmd.userPerms)}\``;
 			}
 
-			embed.setAuthor(`${this.client.utils.capitalise(cmd.name)} Command Help`, this.client.user.displayAvatarURL());
+			embed.setAuthor({ name: `${this.client.utils.capitalise(cmd.name)} Command Help`, iconURL: this.client.user.displayAvatarURL() });
 			embed.setDescription(
 				`**◎ Aliases:** ${cmd.aliases.length ? cmd.aliases.map(alias => `\`${alias}\``).join(' ') : 'No Aliases'}
 				**◎ Description:** ${cmd.description}

@@ -158,10 +158,10 @@ module.exports = class extends Event {
 
 			const embed = new MessageEmbed()
 				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
-				.setAuthor(member.guild, member.user.avatarURL())
+				.setAuthor({ name: member.guild, iconURL: member.user.avatarURL() })
 				.addField(`**Invite Manager**`,
 					`**◎ ${member.user} joined**; Invited by ${inviter} (${uses} invites)`)
-				.setFooter(`ID: ${member.user.id}`)
+				.setFooter({ text: `ID: ${member.user.id}` })
 				.setTimestamp();
 			logChannel.send({ embeds: [embed] });
 		}
@@ -177,9 +177,9 @@ module.exports = class extends Event {
 
 			const logembed = new MessageEmbed()
 				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
-				.setAuthor(member.guild.name, member.user.avatarURL())
+				.setAuthor({ name: member.guild.name, iconURL: member.user.avatarURL() })
 				.setDescription(`**◎ Member Joined:** <@${member.user.id}> - ${member.user.tag}`)
-				.setFooter(`ID: ${member.user.id}`)
+				.setFooter({ text: `ID: ${member.user.id}` })
 				.setTimestamp();
 			grabClient.channels.cache.get(logs).send({ embeds: [logembed] });
 		}

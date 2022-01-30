@@ -18,7 +18,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.setAuthor(`${message.guild.name} - Rules`, message.guild.iconURL({ dynamic: true }))
+			.setAuthor({ name: `${message.guild.name} - Rules`, iconURL: message.guild.iconURL({ dynamic: true }) })
 			.setDescription([
 				`**◎ 1:** Any and all forms of racism will **NOT** be tolerated.`,
 				`\u3000`,

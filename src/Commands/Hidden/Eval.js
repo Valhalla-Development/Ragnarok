@@ -47,7 +47,7 @@ module.exports = class extends Command {
 					`**◎ Output:** \`\`\`js\n${this.clean(inspect(evaled, { depth: 0 }))}\n\`\`\`
 					**◎ Type:** \`\`\`ts\n${new Type(evaled).is}\n\`\`\``)
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.setFooter(`Time Taken: ${(((stop[0] * 1e9) + stop[1])) / 1e6}s`);
+				.setFooter({ text: `Time Taken: ${(((stop[0] * 1e9) + stop[1])) / 1e6}s` });
 
 			if (success.fields[0].value.length > 1024) {
 				await haste.post(this.clean(inspect(evaled, { depth: 1 })), 'js')
@@ -57,7 +57,7 @@ module.exports = class extends Command {
 							.addField(`**${this.client.user.username} - Eval**`,
 								`**◎ Link:** ${link}`)
 							.setURL(link)
-							.setFooter('Embed field limit reached, posting to pastie.io');
+							.setFooter({ text: 'Embed field limit reached, posting to pastie.io' });
 						message.channel.send({ embeds: [hastEmb] });
 					}).catch(() => {
 						return;

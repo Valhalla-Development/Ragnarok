@@ -129,7 +129,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const noTrack = new MessageEmbed()
-					.setAuthor('Error', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+					.setAuthor({ name: 'Error', iconURL: 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png' })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setDescription(`No tracks found.`);
 				message.channel.send({ embeds: [noTrack] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -163,7 +163,7 @@ module.exports = class extends Command {
 
 					if (player.queue.size) {
 						const trackloade = new MessageEmbed()
-							.setAuthor('Enqueueing.', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+							.setAuthor({ name: 'Enqueueing.', iconURL: 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png' })
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.setDescription(`\`${res.tracks[0].title}\`\nDuration: \`${prettyMilliseconds(res.tracks[0].duration, { colonNotation: true })}\`\nRequested by: ${message.author}`);
 						message.channel.send({ embeds: [trackloade] });
@@ -216,7 +216,7 @@ module.exports = class extends Command {
 						this.client.utils.messageDelete(message, 10000);
 
 						const noTrack = new MessageEmbed()
-							.setAuthor('Error', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+							.setAuthor({ name: 'Error', iconURL: 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png' })
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.setDescription(`No tracks found.`);
 						message.channel.send({ embeds: [noTrack] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -231,7 +231,7 @@ module.exports = class extends Command {
 						.addField(`**${this.client.user.username} - Play**`,
 							`${tracks.map((video) => `**◎ ${index++} -** [${video.title}](${video.uri}) - \`${prettyMilliseconds(video.duration, { colonNotation: true })}\``).join('\n\n')}`)
 						.setThumbnail('https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
-						.setFooter('Click the corresponding button for the track you wish to play. You have 30 seconds to respond.');
+						.setFooter({ text: 'Click the corresponding button for the track you wish to play. You have 30 seconds to respond.' });
 
 					const searchEmbed = await message.channel.send({ components: [row, row1], embeds: [embed] });
 					const filter = (but) => but.user.id !== this.client.user.id;
@@ -292,7 +292,7 @@ module.exports = class extends Command {
 
 						if (player.queue.size) {
 							const trackloade = new MessageEmbed()
-								.setAuthor('Enqueuing Track.', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+								.setAuthor({ name: 'Enqueuing Track.', iconURL: 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png' })
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.setDescription(`\`${track.title}\`\nDuration: \`${prettyMilliseconds(track.duration, { colonNotation: true })}\`\nRequested by: ${message.author}`);
 							message.channel.send({ embeds: [trackloade] });
@@ -333,7 +333,7 @@ module.exports = class extends Command {
 
 							const upperReason = reason.charAt(0).toUpperCase() + reason.substring(1);
 							const cancelE = new MessageEmbed()
-								.setAuthor(' Cancelled', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+								.setAuthor({ name: ' Cancelled', iconURL: 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png' })
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.setDescription(`Search results cancelled.\nReason: \`${upperReason}\``);
 							message.channel.send({ embeds: [cancelE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -371,7 +371,7 @@ module.exports = class extends Command {
 							this.client.utils.messageDelete(message, 10000);
 
 							const noTrack = new MessageEmbed()
-								.setAuthor('Error', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+								.setAuthor({ name: 'Error', iconURL: 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png' })
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.setDescription(`No tracks found.`);
 							message.channel.send({ embeds: [noTrack] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -394,7 +394,7 @@ module.exports = class extends Command {
 
 						if (player.queue.size) {
 							const playlistload = new MessageEmbed()
-								.setAuthor('Enqueuing Playlist.', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+								.setAuthor({ name: 'Enqueuing Playlist.', iconURL: 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png' })
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.setDescription(`Enqueuing \`${filterDur.length}\` tracks in playlist \`${res.playlist.name}\`\nTotal duration: \`${duration}\``);
 							message.channel.send({ embeds: [playlistload] });

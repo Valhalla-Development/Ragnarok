@@ -14,9 +14,9 @@ module.exports = class extends Event {
 
 		const logembed = new MessageEmbed()
 			.setColor(this.client.utils.color(channel.guild.me.displayHexColor))
-			.setAuthor(channel.guild, channel.guild.iconURL())
+			.setAuthor({ name: channel.guild, iconURL: channel.guild.iconURL() })
 			.setTitle('Channel Deleted')
-			.setFooter(`ID: ${channel.id}`)
+			.setFooter({ text: `ID: ${channel.id}` })
 			.setTimestamp();
 
 		let updateM;

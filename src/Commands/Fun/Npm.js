@@ -44,7 +44,7 @@ module.exports = class extends Command {
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail('https://static.npmjs.com/338e4905a2684ca96e08c7780fc68412.png')
-			.setAuthor(res.name, 'https://i.imgur.com/ErKf5Y0.png', `https://www.npmjs.com/package/${res._id}`)
+			.setAuthor({ name: res.name, iconURL: 'https://i.imgur.com/ErKf5Y0.png', url: `https://www.npmjs.com/package/${res._id}` })
 			.addField('Package Info\n',
 				`**❯ Author:** ${version.maintainers[0].name || 'None'}
 				**❯ Repository:** ${res.repository ? res.repository.url : 'None'}
