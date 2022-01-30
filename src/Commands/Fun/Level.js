@@ -368,6 +368,40 @@ module.exports = class extends Command {
 
 		ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
+		// Function to create rounded rectangles
+		function roundRect(x, y, w, h, radius) {
+			ctx.save();
+			var r = x + w;
+			var b = y + h;
+			ctx.beginPath();
+			ctx.globalAlpha = 0.45;
+			ctx.fillStyle = 'black';
+			ctx.strokeStyle = 'black';
+			ctx.lineWidth = '0.75';
+			ctx.moveTo(x + radius, y);
+			ctx.lineTo(r - radius, y);
+			ctx.quadraticCurveTo(r, y, r, y + radius);
+			ctx.lineTo(r, y + h - radius);
+			ctx.quadraticCurveTo(r, b, r - radius, b);
+			ctx.lineTo(x + radius, b);
+			ctx.quadraticCurveTo(x, b, x, b - radius);
+			ctx.lineTo(x, y + radius);
+			ctx.quadraticCurveTo(x, y, x + radius, y);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fill();
+			ctx.restore();
+		}
+
+		// rectangle around rank and level
+		roundRect(511.5, 48.6, 376, 59, 10);
+
+		// rectangle around username and xp
+		roundRect(259.8, 133, 628.4, 42, 10);
+
+		// reactangle around progress bar
+		roundRect(259.8, 182.62, 628.4, 36.5, 20);
+
 		// Levels / Ranks
 		const levelNumber = level;
 		const levelText = 'LEVEL';
@@ -549,37 +583,6 @@ module.exports = class extends Command {
 		ctx.fillStyle = userStatusColor;
 		ctx.fill();
 		ctx.save();
-
-		function roundRect(x, y, w, h, radius) {
-			var r = x + w;
-			var b = y + h;
-			ctx.beginPath();
-			ctx.globalAlpha = 0.3;
-			ctx.fillStyle = 'black';
-			ctx.strokeStyle = 'black';
-			ctx.lineWidth = '0.75';
-			ctx.moveTo(x + radius, y);
-			ctx.lineTo(r - radius, y);
-			ctx.quadraticCurveTo(r, y, r, y + radius);
-			ctx.lineTo(r, y + h - radius);
-			ctx.quadraticCurveTo(r, b, r - radius, b);
-			ctx.lineTo(x + radius, b);
-			ctx.quadraticCurveTo(x, b, x, b - radius);
-			ctx.lineTo(x, y + radius);
-			ctx.quadraticCurveTo(x, y, x + radius, y);
-			ctx.closePath();
-			ctx.stroke();
-			ctx.fill();
-		}
-
-		// rectangle around rank and level
-		roundRect(511.5, 48.6, 376, 59, 10);
-
-		// rectangle around username and xp
-		roundRect(259.8, 133, 628.4, 42, 10);
-
-		// reactangle around progress bar
-		roundRect(259.8, 182.62, 628.4, 36.5, 20);
 
 		const attachment = new MessageAttachment(canvas.toBuffer(), 'level.jpg');
 		message.channel.send({ files: [attachment] }).catch((err) => this.client.logger.error(err));
