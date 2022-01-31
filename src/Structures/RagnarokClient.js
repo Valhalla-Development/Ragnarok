@@ -178,7 +178,7 @@ module.exports = class RagnarokClient extends Client {
 					const { title, duration, requester, uri, thumbnail } = track;
 
 					const embed = new MessageEmbed()
-						.setAuthor('Now Playing', 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png')
+						.setAuthor({ name: 'Now Playing', iconURL: 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png' })
 						.setColor(textChannel.guild.me.displayHexColor || '36393F')
 						.setThumbnail(`${thumbnail}`)
 						.setDescription(stripIndents`
@@ -270,7 +270,6 @@ module.exports = class RagnarokClient extends Client {
 
 		// Create a new instance of your new class
 		const manager = new GiveawayManagerWithOwnDatabase(this, {
-			updateCountdownEvery: 5000,
 			default: {
 				botsCanWin: false,
 				exemptPermissions: ['MANAGE_MESSAGES', 'ADMINISTRATOR'],
