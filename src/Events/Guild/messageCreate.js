@@ -1,7 +1,7 @@
 /* eslint-disable no-inline-comments */
 /* eslint-disable no-mixed-operators */
 const Event = require('../../Structures/Event');
-const { MessageEmbed, Permissions } = require('discord.js');
+const { MessageEmbed, Permissions, Formatters } = require('discord.js');
 const moment = require('moment');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -12,7 +12,7 @@ const xpCooldownSeconds = 60;
 const urlRegexSafe = require('url-regex-safe');
 const dadCooldown = new Set();
 const dadCooldownSeconds = 60;
-const fetch = require('node-fetch');
+const fetch = require('node-fetch-cjs');
 
 module.exports = class extends Event {
 
@@ -63,8 +63,6 @@ module.exports = class extends Event {
 
 				const afkGrab = db.prepare('SELECT * FROM afk WHERE user = ? AND guildid = ?').get(found[0].slice(3, 21), message.guild.id);
 				if (afkGrab) {
-					client.utils.messageDelete(message, 0);
-
 					const error = new MessageEmbed()
 						.setColor(client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${client.user.username} - AFK**`,
@@ -166,7 +164,8 @@ module.exports = class extends Event {
 						guild: message.guild.id,
 						points: 0,
 						level: 0,
-						country: null
+						country: null,
+						image: null
 					};
 				}
 				const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
@@ -180,7 +179,7 @@ module.exports = class extends Event {
 					if (score.level === 0) return;
 					if (xpCooldown.has(message.author.id)) return;
 					const lvlup = new MessageEmbed()
-						.setAuthor(`Congratulations ${message.author.username}`)
+						.setAuthor({ name: `Congratulations ${message.author.username}` })
 						.setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
 						.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
 						.setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
@@ -375,9 +374,9 @@ module.exports = class extends Event {
 					return;
 				}
 				const embed = new MessageEmbed()
-					.setAuthor(`${message.author.username}`, message.author.displayAvatarURL({ dynamic: true }))
+					.setAuthor({ name: `${message.author.username}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
 					.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
-					.setFooter(`Req. by ${message.author.username}`)
+					.setFooter({ text: `Req. by ${message.author.username}` })
 					.setTimestamp();
 				if (message.guild.id === guildID) {
 					const findGuild = grabClient.guilds.cache.get(guildID);
@@ -461,12 +460,11 @@ module.exports = class extends Event {
 				if (message.content.startsWith(`<@${grabClient.user.id}>`) || message.content.startsWith(`<@!${grabClient.user.id}>`)) {
 					if (!apiArgs.length) return;
 
-					message.channel.startTyping();
+					message.channel.sendTyping();
 
-					await fetch(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=${message.author.id}`)
+					await fetch.default(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=${message.author.id}`)
 						.then(res => res.json())
 						.then(json => message.reply({ content: json.message, allowedMentions: { repliedUser: false } }));
-					message.channel.stopTyping();
 				}
 			}
 		}
@@ -513,11 +511,11 @@ module.exports = class extends Event {
 		if (this.client.logging === true) {
 			if (!oargresult || oargresult === '') {
 				const LoggingNoArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] Command \`${cmd}\` was executed by \x1b[31m${message.author.tag}\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
-				this.client.channels.cache.get('694680953133596682').send(`${cmd} - was executed by ${message.author.tag} - In guild: ${message.guild.name}`, { code: 'css' });
+				this.client.channels.cache.get('694680953133596682').send(Formatters.codeBlock('css', `${cmd} - was executed by ${message.author.tag} - In guild: ${message.guild.name}`));
 				console.log(LoggingNoArgs);
 			} else {
 				const LoggingArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] Command \`${cmd} ${oargresult}\` was executed by \x1b[31m${message.author.tag}\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
-				this.client.channels.cache.get('694680953133596682').send(`${cmd} ${oargresult} - was executed by ${message.author.tag} - In guild: ${message.guild.name}`, { code: 'css' });
+				this.client.channels.cache.get('694680953133596682').send(Formatters.codeBlock('css', `${cmd} ${oargresult} - was executed by ${message.author.tag} - In guild: ${message.guild.name}`));
 				console.log(LoggingArgs);
 			}
 		}
@@ -544,10 +542,10 @@ module.exports = class extends Event {
 			}
 		}
 		const logembed = new MessageEmbed()
-			.setAuthor(message.author.tag, message.guild.iconURL())
+			.setAuthor({ name: message.author.tag, iconURL: message.guild.iconURL() })
 			.setDescription(`**◎ Used** \`${cmd}\` **command in ${message.channel}**\n\`${prefixcommand}${cmd} ${oargresult}\``)
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.setFooter(`ID: ${message.channel.id}`)
+			.setFooter({ text: `ID: ${message.channel.id}` })
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send({ embeds: [logembed] });
 	}
