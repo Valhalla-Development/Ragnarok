@@ -58,14 +58,16 @@ module.exports = class extends Command {
 
 		const presence = [];
 
-		if (member.user.presence.activities[0]) {
-			presence.push(`**${types[member.user.presence.activities[0].type]}:** ${member.user.presence.activities[0].name}`);
+		if (member.presence) {
+			if (member.presence.activities[0]) {
+				presence.push(`**${types[member.presence.activities[0].type]}:** ${member.presence.activities[0].name}`);
 
-			if (member.user.presence.activities[0].details) {
-				presence.push(`**Details:** ${member.user.presence.activities[0].details}`);
-			}
-			if (member.user.presence.activities[0].state) {
-				presence.push(`**State:** ${member.user.presence.activities[0].state}`);
+				if (member.presence.activities[0].details) {
+					presence.push(`**Details:** ${member.presence.activities[0].details}`);
+				}
+				if (member.presence.activities[0].state) {
+					presence.push(`**State:** ${member.presence.activities[0].state}`);
+				}
 			}
 		}
 
@@ -82,9 +84,8 @@ module.exports = class extends Command {
 				**◎ <a:Booster:855593231294267412> Server Booster:** ${member.premiumSinceTimestamp ? `${moment(member.premiumSinceTimestamp).format('ddd, MMM Do YYYY h:mm a')} - ${moment(member.premiumSinceTimestamp).fromNow()}` : 'No'}`)
 
 			.addFields({ name: `**Roles: [${roles.length}]**`, value: `${roles.length < 10 ? roles.join('\n') : roles.length >= 10 ? this.client.utils.trimArray(roles, 10).join('\n') : 'None'}`, inline: true },
-				{ name: `**Status:**`, value: `${status[member.user.presence.status]}`, inline: true },
-				{ name: `**Activity:**`, value: `${presence.length ? presence.join('\n') : 'None'}`, inline: true })
-			.setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) });
+				{ name: `**Status:**`, value: `${member.presence ? status[member.presence.status] : status.offline}`, inline: true },
+				{ name: `**Activity:**`, value: `${presence.length ? presence.join('\n') : 'None'}`, inline: true });
 		message.channel.send({ embeds: [embed] });
 	}
 
