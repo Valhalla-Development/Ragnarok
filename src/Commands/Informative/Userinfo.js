@@ -57,16 +57,26 @@ module.exports = class extends Command {
 		if (member.user.bot && !userFlags.includes('VERIFIED_BOT')) userFlags.push('BOT_ACCOUNT');
 
 		const presence = [];
+		let time;
 
 		if (member.presence) {
 			if (member.presence.activities[0]) {
-				presence.push(`**${types[member.presence.activities[0].type]}:** ${member.presence.activities[0].name}`);
+				if (member.presence.activities[0].timestamps.start) {
+					const text = moment(member.presence.activities[0].timestamps.start).fromNow();
+					const lastOf = text.lastIndexOf(' ');
+					time = text.substring(0, lastOf);
+				}
+
+				presence.push(`**${types[member.presence.activities[0].type]}:** ${member.presence.activities[0].name}${time ? ` (for ${time})` : ''}`);
 
 				if (member.presence.activities[0].details) {
 					presence.push(`**Details:** ${member.presence.activities[0].details}`);
 				}
 				if (member.presence.activities[0].state) {
 					presence.push(`**State:** ${member.presence.activities[0].state}`);
+				}
+				if (member.presence.activities[0].platform) {
+					presence.push(`**Platform:** ${member.presence.activities[0].platform.toUpperCase()}`);
 				}
 			}
 		}
