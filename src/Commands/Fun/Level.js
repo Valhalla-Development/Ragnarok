@@ -353,15 +353,18 @@ module.exports = class extends Command {
 
 		// Presence colors
 		let userStatusColor;
-		if (!user.presence) {
+
+		const fetchUser = await message.guild.members.fetch(user.id);
+
+		if (!fetchUser.presence) {
 			userStatusColor = '#737F8D';
-		} else if (user.presence.status === 'online') {
+		} else if (fetchUser.presence.status === 'online') {
 			userStatusColor = '#43B581';
-		} else if (user.presence.status === 'idle') {
+		} else if (fetchUser.presence.status === 'idle') {
 			userStatusColor = '#FAA61A';
-		} else if (user.presence.status === 'dnd') {
+		} else if (fetchUser.presence.status === 'dnd') {
 			userStatusColor = '#F04747';
-		} else if (user.presence.status === 'offline') {
+		} else if (fetchUser.presence.status === 'offline') {
 			userStatusColor = '#737F8D';
 		}
 		const background = await Canvas.loadImage(levelImg);
