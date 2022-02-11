@@ -367,6 +367,9 @@ module.exports = class extends Command {
 		const background = await Canvas.loadImage(levelImg);
 
 		ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+		ctx.fillRect(0, 0, 934, 282);
+		ctx.save();
 
 		// Function to create rounded rectangles
 		function roundRect(x, y, w, h, radius) {
