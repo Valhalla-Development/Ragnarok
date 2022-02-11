@@ -87,16 +87,15 @@ module.exports = class extends Command {
 		}
 
 		const guildOwner = await message.guild.fetchOwner();
-		const members = message.guild.members.cache;
 		const channels = message.guild.channels.cache;
 
 		const textChan = channels.filter(channel => channel.type === 'text');
 		const voiceChan = channels.filter(channel => channel.type === 'voice');
 
-		const online = members.filter(p => p.presence.status === 'online').size;
-		const idle = members.filter(p => p.presence.status === 'idle').size;
-		const dnd = members.filter(p => p.presence.status === 'dnd').size;
-		const offline = members.filter(p => p.presence.status === 'offline').size;
+		const online = message.guild.members.cache.filter(m => m.presence?.status === 'online').size;
+		const idle = message.guild.members.cache.filter(m => m.presence?.status === 'idle').size;
+		const dnd = message.guild.members.cache.filter(m => m.presence?.status === 'dnd').size;
+		const offline = message.guild.members.cache.filter(m => m.presence?.status === 'offline').size;
 
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -109,7 +108,7 @@ module.exports = class extends Command {
 				**◎ 🔐 Verification Level:** ${verificationLevels[message.guild.verificationLevel]}
 				**◎ 🔏 MFA Level:** ${mfa[message.guild.mfaLevel]} 
 				\u200b`)
-			.addFields({ name: `**Guild Members** [${members.size.toLocaleString('en')}]`, value: `<:Online:748655722740580403> | Online: ${online.toLocaleString('en')}\n<:Idle:748655722639917117> | Away: ${idle.toLocaleString('en')}\n<:DND:748655722979393657> | DnD: ${dnd.toLocaleString('en')}\n<:Offline:748655722677403850> | Offline: ${offline.toLocaleString('en')}`, inline: true },
+			.addFields({ name: `**Guild Members** [${message.guild.memberCount.toLocaleString('en')}]`, value: `<:Online:748655722740580403> | Online: ${online.toLocaleString('en')}\n<:Idle:748655722639917117> | Away: ${idle.toLocaleString('en')}\n<:DND:748655722979393657> | DnD: ${dnd.toLocaleString('en')}\n<:Offline:748655722677403850> | Offline: ${offline.toLocaleString('en')}`, inline: true },
 				{ name: `**Guild Channels** [${textChan.size + voiceChan.size}]`, value: `<:TextChannel:855591004236546058> | Text: ${textChan.size}\n<:VoiceChannel:855591004300115998> | Voice: ${voiceChan.size}`, inline: true },
 				{ name: `**Guild Perks**`, value: `<a:Booster:855593231294267412> | Boost Tier: ${tiers[message.guild.premiumTier]}\n<a:Booster:855593231294267412> | Boosts: ${message.guild.premiumSubscriptionCount}`, inline: true },
 				{ name: `**Server Roles [${roles.length}]**`, value: `To view all server roles, run\n\`${prefix}serverinfo roles\``, inline: true },
