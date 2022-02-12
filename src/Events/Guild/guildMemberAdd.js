@@ -142,7 +142,7 @@ module.exports = class extends Event {
 			if (member.user.bot) return;
 
 			const cachedInvites = grabClient.invites.get(member.guild.id);
-			const newInvites = await member.guild.fetchInvites();
+			const newInvites = await member.guild.invites.fetch();
 
 			grabClient.invites.set(member.guild.id, newInvites);
 
