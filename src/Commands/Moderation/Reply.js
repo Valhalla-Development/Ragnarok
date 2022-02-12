@@ -50,22 +50,30 @@ module.exports = class extends Command {
 		}
 
 		const channel = message.guild.channels.cache.get(args[0]);
-		const fetchMessage = channel.messages.fetch(args[1]);
 
-		try {
-			fetchMessage.then(async (msg) => {
-				msg.reply(args.slice(2).join(' '));
-			});
-		} catch {
+		if (!channel) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reply**`,
-					`**◎ Error:** An error occured while trying to reply to the message!`);
+					`**◎ Error:** I was unable to find the specified channel!`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
+
+		channel.messages.fetch(args[1]).then(async (msg) => {
+			msg.reply(args.slice(2).join(' '));
+		}).catch(() => {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Reply**`,
+					`**◎ Error:** An error occured while trying to reply to the message!\nHas the message been deleted?`);
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		});
 	}
 
 };
