@@ -22,7 +22,7 @@ module.exports = class extends Command {
 		if (channel) {
 			const ch = message.guild.channels.cache.get(channel.id);
 
-			if (ch.type !== 'text' && ch.type !== 'news') {
+			if (ch.type !== 'GUILD_TEXT' && ch.type !== 'GUILD_NEWS') {
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Say**`,

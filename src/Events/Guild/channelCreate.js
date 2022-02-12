@@ -6,7 +6,7 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 module.exports = class extends Event {
 
 	async run(channel) {
-		if (channel.type === 'dm') return;
+		if (channel.type === 'DM') return;
 
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${channel.guild.id};`).get();
 		if (!id) return;
@@ -28,21 +28,21 @@ module.exports = class extends Event {
 
 		let updateM;
 
-		if (channel.type === 'text') {
+		if (channel.type === 'GUILD_TEXT') {
 			updateM = `**◎ Text Channel Created:**\n<#${channel.id}>`;
 			logembed
 				.setDescription(updateM);
 			this.client.channels.cache.get(logs).send({ embeds: [logembed] });
 		}
 
-		if (channel.type === 'voice') {
+		if (channel.type === 'GUILD_VOICE') {
 			updateM = `**◎ Voice Channel Created:**\n\`${channel.name}\``;
 			logembed
 				.setDescription(updateM);
 			this.client.channels.cache.get(logs).send({ embeds: [logembed] });
 		}
 
-		if (channel.type === 'category') {
+		if (channel.type === 'GUILD_CATEGORY') {
 			updateM = `**◎ Category Created:**\n\`${channel.name}\``;
 			logembed
 				.setDescription(updateM);

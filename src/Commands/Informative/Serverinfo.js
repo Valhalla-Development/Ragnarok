@@ -89,8 +89,8 @@ module.exports = class extends Command {
 		const guildOwner = await message.guild.fetchOwner();
 		const channels = message.guild.channels.cache;
 
-		const textChan = channels.filter(channel => channel.type === 'text');
-		const voiceChan = channels.filter(channel => channel.type === 'voice');
+		const textChan = channels.filter(channel => channel.type === 'GUILD_TEXT');
+		const voiceChan = channels.filter(channel => channel.type === 'GUILD_VOICE');
 
 		const online = message.guild.members.cache.filter(m => m.presence?.status === 'online').size;
 		const idle = message.guild.members.cache.filter(m => m.presence?.status === 'idle').size;

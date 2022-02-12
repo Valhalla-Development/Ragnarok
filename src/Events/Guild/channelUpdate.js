@@ -58,7 +58,7 @@ module.exports = class extends Event {
 			.setFooter({ text: `ID: ${newChannel.id}` })
 			.setTimestamp();
 
-		if (oldChannel.type === 'category') {
+		if (oldChannel.type === 'GUILD_CATEGORY') {
 			if (oldChannel.name !== newChannel.name) {
 				updateM = `**◎ Category Name Updated:**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
 				logembed.setDescription(updateM);
@@ -66,7 +66,7 @@ module.exports = class extends Event {
 			}
 		}
 
-		if (oldChannel.type === 'voice') {
+		if (oldChannel.type === 'GUILD_VOICE') {
 			if (oldChannel.name !== newChannel.name) {
 				updateM = `**◎ Voice Channel Name Updated:**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
 				logembed.setDescription(updateM);
@@ -74,7 +74,7 @@ module.exports = class extends Event {
 			}
 		}
 
-		if (oldChannel.type === 'text') {
+		if (oldChannel.type === 'GUILD_TEXT') {
 			if (oldChannel.name !== newChannel.name) {
 				updateM = `**◎ Channel Name Updated:**\nOld:\n\`#${oldChannel.name}\`\nNew:\n<#${newChannel.id}>`;
 				logembed.setDescription(updateM);

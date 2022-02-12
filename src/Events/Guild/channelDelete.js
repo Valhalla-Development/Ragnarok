@@ -21,21 +21,21 @@ module.exports = class extends Event {
 
 		let updateM;
 
-		if (channel.type === 'text') {
+		if (channel.type === 'GUILD_TEXT') {
 			updateM = `**◎ Text Channel Deleted:**\n\`#${channel.name}\``;
 			logembed
 				.setDescription(updateM);
 			this.client.channels.cache.get(logs).send({ embeds: [logembed] });
 		}
 
-		if (channel.type === 'voice') {
+		if (channel.type === 'GUILD_VOICE') {
 			updateM = `**◎ Voice Channel Deleted:**\n\`${channel.name}\``;
 			logembed
 				.setDescription(updateM);
 			this.client.channels.cache.get(logs).send({ embeds: [logembed] });
 		}
 
-		if (channel.type === 'category') {
+		if (channel.type === 'GUILD_CATEGORY') {
 			updateM = `**◎ Category Deleted:**\n\`${channel.name}\``;
 			logembed
 				.setDescription(updateM);
