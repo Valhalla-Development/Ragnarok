@@ -5,6 +5,8 @@ const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const blackjack = require('discord-blackjack');
+const comCooldown = new Set();
+const comCooldownSeconds = 30;
 
 module.exports = class extends Command {
 
@@ -12,7 +14,8 @@ module.exports = class extends Command {
 		super(...args, {
 			aliases: ['bj'],
 			description: 'Play a game of blackjack with the house',
-			category: 'Economy'
+			category: 'Economy',
+			usage: '<amount/all>'
 		});
 	}
 
@@ -41,6 +44,17 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - BlackJack**`,
 					`**◎ Error:** Please input an amount you wish to bet.`);
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		if (comCooldown.has(message.author.id)) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Blackjack**`,
+					`**◎ Error:** You can only run one instance of this game!.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -99,7 +113,52 @@ module.exports = class extends Command {
 			.addField(`**${this.client.user.username} - Blackjack**`,
 				`**◎** ${message.author} lost <:coin:706659001164628008> \`${Number(betAmt).toLocaleString('en')}\``);
 
+		const tie = new MessageEmbed()
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.addField(`**${this.client.user.username} - Blackjack**`,
+				`**◎** ${message.author} tied. Your wager has been returned to you.`);
+
+		const dbWin = new MessageEmbed()
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.addField(`**${this.client.user.username} - Blackjack**`,
+				`**◎** ${message.author} tied. Your wager has been returned to you.`);
+
+		const dbLose = new MessageEmbed()
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.addField(`**${this.client.user.username} - Blackjack**`,
+				`**◎** ${message.author} tied. Your wager has been returned to you.`);
+
+		const dbTie = new MessageEmbed()
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.addField(`**${this.client.user.username} - Blackjack**`,
+				`**◎** ${message.author} tied. Your wager has been returned to you.`);
+
+		const cancel = new MessageEmbed()
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.addField(`**${this.client.user.username} - Blackjack**`,
+				`**◎** ${message.author} cancelled the game.`);
+
+		const timeout = new MessageEmbed()
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.addField(`**${this.client.user.username} - Blackjack**`,
+				`**◎** ${message.author} tied. Your wager has been returned to you.`);
+
 		const game = await blackjack(message, { resultEmbed: true });
+
+		if (!comCooldown.has(message.author.id)) {
+			comCooldown.add(message.author.id);
+		}
+		setTimeout(() => {
+			if (comCooldown.has(message.author.id)) {
+				comCooldown.delete(message.author.id);
+			}
+		}, comCooldownSeconds * 1000);
 
 		switch (game.result) {
 			case 'WIN':
@@ -107,12 +166,64 @@ module.exports = class extends Command {
 				balance.bank += Number(houseBet);
 				balance.total += Number(houseBet);
 				this.client.setBalance.run(balance);
+
+				if (comCooldown.has(message.author.id)) {
+					comCooldown.delete(message.author.id);
+				}
 				break;
 			case 'LOSE':
 				message.channel.send({ embeds: [lose] });
 				balance.bank -= Number(betAmt);
 				balance.total -= Number(betAmt);
 				this.client.setBalance.run(balance);
+
+				if (comCooldown.has(message.author.id)) {
+					comCooldown.delete(message.author.id);
+				}
+				break;
+
+			case 'TIE':
+				message.channel.send({ embeds: [tie] });
+
+				if (comCooldown.has(message.author.id)) {
+					comCooldown.delete(message.author.id);
+				}
+				break;
+			case 'DOUBLE WIN':
+				message.channel.send({ embeds: [dbWin] });
+
+				if (comCooldown.has(message.author.id)) {
+					comCooldown.delete(message.author.id);
+				}
+				break;
+			case 'DOUBLE LOSE':
+				message.channel.send({ embeds: [dbLose] });
+
+				if (comCooldown.has(message.author.id)) {
+					comCooldown.delete(message.author.id);
+				}
+				break;
+			case 'DOUBLE TIE':
+				message.channel.send({ embeds: [dbTie] });
+
+				if (comCooldown.has(message.author.id)) {
+					comCooldown.delete(message.author.id);
+				}
+				break;
+			case 'CANCEL':
+				message.channel.send({ embeds: [cancel] });
+
+				if (comCooldown.has(message.author.id)) {
+					comCooldown.delete(message.author.id);
+				}
+				break;
+			case 'TIMEOUT':
+				message.channel.send({ embeds: [timeout] });
+
+				if (comCooldown.has(message.author.id)) {
+					comCooldown.delete(message.author.id);
+				}
+				break;
 		}
 	}
 
