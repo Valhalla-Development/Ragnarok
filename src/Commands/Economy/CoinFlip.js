@@ -178,30 +178,30 @@ module.exports = class extends Command {
 			if (b.customId === 'heads') {
 				if (answer === 'heads') {
 					b.update({ components: [rowNew], embeds: [win] });
-					balance.bank += houseBet;
-					balance.total += houseBet;
+					balance.bank += Number(houseBet);
+					balance.total += Number(houseBet);
 					this.client.setBalance.run(balance);
 					collector.stop('win');
 					return;
 				}
 				b.update({ components: [rowNew], embeds: [lose] });
-				balance.bank -= coinFlip;
-				balance.total -= coinFlip;
+				balance.bank -= Number(coinFlip);
+				balance.total -= Number(coinFlip);
 				this.client.setBalance.run(balance);
 				collector.stop('lose');
 				return;
 			} else if (b.customId === 'tails') {
 				if (answer === 'tails') {
 					b.update({ components: [rowNew], embeds: [win] });
-					balance.bank += houseBet;
-					balance.total += houseBet;
+					balance.bank += Number(houseBet);
+					balance.total += Number(houseBet);
 					this.client.setBalance.run(balance);
 					collector.stop('win');
 					return;
 				}
 				b.update({ components: [rowNew], embeds: [lose] });
-				balance.bank -= coinFlip;
-				balance.total -= coinFlip;
+				balance.bank -= Number(coinFlip);
+				balance.total -= Number(coinFlip);
 				this.client.setBalance.run(balance);
 				collector.stop('lose');
 				return;
