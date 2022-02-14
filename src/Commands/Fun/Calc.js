@@ -2,7 +2,7 @@
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const math = require('mathjs');
-const { Calculator } = require('weky');
+const { Calculator } = require('sudo-minigames');
 
 module.exports = class extends Command {
 
