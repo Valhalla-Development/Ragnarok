@@ -119,24 +119,6 @@ module.exports = class extends Command {
 			.addField(`**${this.client.user.username} - Blackjack**`,
 				`**◎** ${message.author} tied. Your wager has been returned to you.`);
 
-		const dbWin = new MessageEmbed()
-			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Blackjack**`,
-				`**◎** ${message.author} tied. Your wager has been returned to you.`);
-
-		const dbLose = new MessageEmbed()
-			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Blackjack**`,
-				`**◎** ${message.author} tied. Your wager has been returned to you.`);
-
-		const dbTie = new MessageEmbed()
-			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Blackjack**`,
-				`**◎** ${message.author} tied. Your wager has been returned to you.`);
-
 		const cancel = new MessageEmbed()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -149,8 +131,6 @@ module.exports = class extends Command {
 			.addField(`**${this.client.user.username} - Blackjack**`,
 				`**◎** ${message.author} tied. Your wager has been returned to you.`);
 
-		const game = await blackjack(message, { resultEmbed: true });
-
 		if (!comCooldown.has(message.author.id)) {
 			comCooldown.add(message.author.id);
 		}
@@ -159,6 +139,8 @@ module.exports = class extends Command {
 				comCooldown.delete(message.author.id);
 			}
 		}, comCooldownSeconds * 1000);
+
+		const game = await blackjack(message, { resultEmbed: true, transition: 'delete', split: 'false', doubledown: 'false' });
 
 		switch (game.result) {
 			case 'WIN':
@@ -184,27 +166,6 @@ module.exports = class extends Command {
 
 			case 'TIE':
 				message.channel.send({ embeds: [tie] });
-
-				if (comCooldown.has(message.author.id)) {
-					comCooldown.delete(message.author.id);
-				}
-				break;
-			case 'DOUBLE WIN':
-				message.channel.send({ embeds: [dbWin] });
-
-				if (comCooldown.has(message.author.id)) {
-					comCooldown.delete(message.author.id);
-				}
-				break;
-			case 'DOUBLE LOSE':
-				message.channel.send({ embeds: [dbLose] });
-
-				if (comCooldown.has(message.author.id)) {
-					comCooldown.delete(message.author.id);
-				}
-				break;
-			case 'DOUBLE TIE':
-				message.channel.send({ embeds: [dbTie] });
 
 				if (comCooldown.has(message.author.id)) {
 					comCooldown.delete(message.author.id);
