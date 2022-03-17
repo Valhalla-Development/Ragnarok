@@ -35,7 +35,7 @@ module.exports = class extends Command {
 			.setColor(message.guild.me.displayHexColor || '36393F')
 			.addField(`**Poll Create By ${message.author.username}**`,
 				`${args.join(' ')}`)
-			.setFooter('React to Vote.');
+			.setFooter({ text: 'React to Vote.' });
 
 		await message.channel.send({ embeds: [embed] }).then((msg) => {
 			msg.react('✅');
