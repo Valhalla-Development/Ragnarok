@@ -118,18 +118,15 @@ module.exports = class extends Command {
 							reqRating = Math.round(movieInfo[0].movie.rating * 10);
 							reqVotes = toThousand(movieInfo[0].movie.votes);
 
-							message.channel.send({
-								embed:
-									getTraktEmbed(
-										reqTitle,
-										reqDesc,
-										reqImage,
-										reqLink,
-										reqSearch,
-										reqRating,
-										reqVotes
-									)
-							});
+							message.channel.send({ embeds: [getTraktEmbed(
+								reqTitle,
+								reqDesc,
+								reqImage,
+								reqLink,
+								reqSearch,
+								reqRating,
+								reqVotes
+							)] });
 							this.client.utils.deletableCheck(msg, 0);
 						}
 					);
@@ -170,18 +167,15 @@ module.exports = class extends Command {
 							reqRating = Math.round(showInfo[0].show.rating * 10);
 							reqVotes = toThousand(showInfo[0].show.votes);
 
-							message.channel.send({
-								embed:
-									getTraktEmbed(
-										reqTitle,
-										reqDesc,
-										reqImage,
-										reqLink,
-										reqSearch,
-										reqRating,
-										reqVotes
-									)
-							});
+							message.channel.send({ embeds: [getTraktEmbed(
+								reqTitle,
+								reqDesc,
+								reqImage,
+								reqLink,
+								reqSearch,
+								reqRating,
+								reqVotes
+							)] });
 							this.client.utils.deletableCheck(msg, 0);
 						}
 					);
@@ -233,18 +227,15 @@ module.exports = class extends Command {
 									reqRating = Math.round(info[0].movie.rating * 10);
 									reqVotes = toThousand(info[0].movie.votes);
 
-									message.channel.send({
-										embed:
-											getTraktEmbed(
-												reqTitle,
-												reqDesc,
-												reqImage,
-												reqLink,
-												reqSearch,
-												reqRating,
-												reqVotes
-											)
-									});
+									message.channel.send({ embeds: [getTraktEmbed(
+										reqTitle,
+										reqDesc,
+										reqImage,
+										reqLink,
+										reqSearch,
+										reqRating,
+										reqVotes
+									)] });
 									this.client.utils.deletableCheck(msg, 0);
 								}
 							);
@@ -279,18 +270,15 @@ module.exports = class extends Command {
 									reqRating = Math.round(info[0].show.rating * 10);
 									reqVotes = toThousand(info[0].show.votes);
 
-									message.channel.send({
-										embed:
-											getTraktEmbed(
-												reqTitle,
-												reqDesc,
-												reqImage,
-												reqLink,
-												reqSearch,
-												reqRating,
-												reqVotes
-											)
-									});
+									message.channel.send({ embeds: [getTraktEmbed(
+										reqTitle,
+										reqDesc,
+										reqImage,
+										reqLink,
+										reqSearch,
+										reqRating,
+										reqVotes
+									)] });
 									this.client.utils.deletableCheck(msg, 0);
 								}
 							);
