@@ -226,7 +226,7 @@ module.exports = class extends Event {
 		const table = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'scores\';').get();
 		if (!table['count(*)']) {
 			this.client.logger.ready('scores table created!');
-			db.prepare('CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, country TEXT);').run();
+			db.prepare('CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, country TEXT, image TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_scores_id ON scores (id);').run();
 			db.pragma('synchronous = 1');
 			db.pragma('journal_mode = wal');
@@ -278,8 +278,8 @@ module.exports = class extends Event {
 		const afkTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'afk\';').get();
 		if (!afkTable['count(*)']) {
 			this.client.logger.ready('afk table created!');
-			db.prepare('CREATE TABLE afk (guildid TEXT PRIMARY KEY, user TEXT, reason TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_afk_id ON afk (guildid);').run();
+			db.prepare('CREATE TABLE afk (id TEXT PRIMARY KEY, guildid TEXT, user TEXT, reason TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_afk_id ON afk (id);').run();
 			db.pragma('synchronous = 1');
 			db.pragma('journal_mode = wal');
 		}
