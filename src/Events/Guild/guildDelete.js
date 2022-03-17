@@ -73,18 +73,6 @@ module.exports = class extends Event {
 			db.prepare('DELETE FROM music WHERE guildid = ?').run(guild.id);
 		}
 
-		// mute table
-		const delmut = db.prepare('SELECT count(*) FROM mute WHERE guildid = ?;').get(guild.id);
-		if (delmut['count(*)']) {
-			db.prepare('DELETE FROM mute WHERE guildid = ?').run(guild.id);
-		}
-
-		// mute role table
-		const delmuterole = db.prepare('SELECT count(*) FROM muterole WHERE guildid = ?;').get(guild.id);
-		if (delmuterole['count(*)']) {
-			db.prepare('DELETE FROM muterole WHERE guildid = ?').run(guild.id);
-		}
-
 		// rolemenu table
 		const delrol = db.prepare('SELECT count(*) FROM rolemenu WHERE guildid = ?;').get(guild.id);
 		if (delrol['count(*)']) {

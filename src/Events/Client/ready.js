@@ -68,26 +68,6 @@ module.exports = class extends Event {
 			db.pragma('journal_mode = wal');
 		}
 
-		// Mute table
-		const mutetable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'mute\';').get();
-		if (!mutetable['count(*)']) {
-			this.client.logger.ready('mute table created!');
-			db.prepare('CREATE TABLE mute (id TEXT PRIMARY KEY, guildid TEXT, userid TEXT, endtime TEXT, channel TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_mute_id ON mute (id);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
-		// Mute Role table
-		const muteRole = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'muterole\';').get();
-		if (!muteRole['count(*)']) {
-			this.client.logger.ready('muterole table created!');
-			db.prepare('CREATE TABLE muterole (guildid TEXT PRIMARY KEY, role TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_muterole_id ON muterole (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
 		// Invite Manager table
 		const inviteManager = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'invmanager\';').get();
 		if (!inviteManager['count(*)']) {
@@ -289,71 +269,6 @@ module.exports = class extends Event {
 
 		// Cooldowns
 		const job = new CronJob('*/10 * * * * *', () => {
-		/*
-				// Mutes
-				const grabMutes = db.prepare('SELECT * FROM mute').all();
-
-
-				grabMutes.forEach(r => {
-					const guild = grabClient.guilds.cache.get(r.guildid);
-					if (!guild) return;
-
-					const member = guild.members.cache.get(r.userid);
-					if (!member) {
-						db.prepare('DELETE FROM mute WHERE id = ?').run(`${member.guild.id}-${r.userid}`);
-						return;
-					}
-
-					if (Date.now() > r.endtime) {
-						const muteRoleGrab = db.prepare(`SELECT role FROM muterole WHERE guildid = ${member.guild.id}`).get();
-
-						let muteRole;
-						if (muteRoleGrab) {
-							muteRole = member.guild.roles.cache.find((ro) => ro.id === muteRoleGrab.role);
-						} else {
-							muteRole = member.guild.roles.cache.find((x) => x.name === 'Muted');
-						}
-						const role = member.roles.cache.find((rol) => rol.id === muteRole.id);
-						if (!role) {
-							db.prepare('DELETE FROM mute WHERE id = ?').run(`${member.guild.id}-${r.userid}`);
-							return;
-						}
-
-						try {
-							member.roles.remove(role.id);
-						} catch {
-							db.prepare('DELETE FROM mute WHERE id = ?').run(`${member.guild.id}-${r.userid}`);
-							return;
-						}
-
-						const channelGrab = db.prepare(`SELECT channel FROM mute WHERE id = ?`).get(`${member.guild.id}-${r.userid}`);
-						const findChannel = grabClient.channels.cache.get(channelGrab.channel);
-
-						const embed = new MessageEmbed()
-							.setThumbnail(grabClient.user.displayAvatarURL())
-							.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
-							.addField('Action | Un-Mute',
-								`**◎ User:** ${member}
-								**◎ Reason:** Mute time ended.`)
-							.setTimestamp();
-						findChannel.send({ embeds: [embed] });
-
-						db.prepare('DELETE FROM mute WHERE id = ?').run(`${member.guild.id}-${r.userid}`);
-
-						const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${member.guild.id};`).get();
-						if (!dbid) return;
-						const dblogs = dbid.channel;
-						const chnCheck = grabClient.channels.cache.get(dblogs);
-						if (!chnCheck) {
-							db.prepare('DELETE FROM logging WHERE guildid = ?').run(member.guild.id);
-						}
-
-						if (dbid) {
-							grabClient.channels.cache.get(dblogs).send({ embeds: [embed] });
-						}
-					}
-				});*/
-
 			// Bans
 			const grabBans = db.prepare('SELECT * FROM ban').all();
 
