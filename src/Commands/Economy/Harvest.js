@@ -5,6 +5,7 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
+const prettyMilliseconds = require('pretty-ms');
 
 module.exports = class extends Command {
 
@@ -21,6 +22,7 @@ module.exports = class extends Command {
 
 		const balance = await this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
 
+		console.log(balance);
 		let foundBoostList = await JSON.parse(balance.boosts);
 
 		if (!foundBoostList) {
@@ -31,7 +33,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Harvest**`,
 					`**◎ Error:** You do not have a farming plot! You will be awarded one once you purhcase farming tools with: \`${prefix}shop buy\``);
@@ -68,11 +70,63 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Harvest**`,
 					`**◎ Error:** You have nothing to harvest!`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		if (!args[0]) {
+			if (foundPlotList.length) {
+				const arr = [];
+
+				foundPlotList.forEach(key => {
+					if (key.cropStatus === 'harvest') {
+						arr.push(`\u3000Crop Type: \`${this.client.utils.capitalise(key.cropType)}\` - Crop Decay: \`${key.decay.toFixed(4)}%\``);
+					}
+				});
+
+				const Embeds = [];
+				const TestPages = arr.length;
+				const TotalPage = Math.ceil(TestPages / 5);
+				// Luke gets credit for this magic
+				let PageNo = 1;
+
+				const filter = foundPlotList.filter(e => e.cropGrowTime !== 'na');
+
+				filter.forEach(key => {
+					const then = prettyMilliseconds(new Date().getTime() - key.cropGrowTime.toFixed(0), { millisecondsDecimalDigits: true });
+					const test = then.replace(/-/g, '');
+					const thenTime = test.substring(0, test.indexOf('s') + 1);
+
+					if (key.cropType === 'corn') {
+						arr.push(`\u3000Crop Type: \`Corn\` - Time until grown: \`${thenTime}\``);
+					}
+					if (key.cropType === 'wheat') {
+						arr.push(`\u3000Crop Type: \`Wheat\` - Time until grown: \`${thenTime}\``);
+					}
+					if (key.cropType === 'potato') {
+						arr.push(`\u3000Crop Type: \`Potato\` - Time until grown: \`${thenTime}\``);
+					}
+					if (key.cropType === 'tomato') {
+						arr.push(`\u3000Crop Type: \`Tomato\` - Time until grown: \`${thenTime}\``);
+					}
+				});
+
+				for (const Page of arr) {
+					const Embed = new MessageEmbed()
+						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Harvest**`,
+							`**◎ Success:** Current crop status:
+						${arr.splice(0, 5).join(`\n`)}`)
+						.setFooter({ text: `To harvest, you can run ${prefix}harvest all${TotalPage > 1 ? ` | Page: ${PageNo++}/${TotalPage}` : ''}` });
+					Embeds.push(Embed);
+				}
+				TotalPage > 1 ? this.client.functions.pagination(message, Embeds) : message.channel.send({ embeds: [Embeds[0]] });
+			}
 			return;
 		}
 
@@ -94,40 +148,11 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
-				.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Harvest**`,
 					`**◎ Error:** You do not have enough space to harvest anything!\nYou can upgrade your storage with the command \`${prefix}shop upgrade\``);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
-
-		if (!args[0]) {
-			const arr = [];
-
-			foundPlotList.forEach(key => {
-				if (key.cropStatus === 'harvest') {
-					arr.push(`\u3000Crop Type: \`${this.client.utils.capitalise(key.cropType)}\` - Crop Decay: \`${key.decay.toFixed(4)}%\``);
-				}
-			});
-
-			const Embeds = [];
-			const TestPages = arr.length;
-			const TotalPage = Math.ceil(TestPages / 5);
-			// Luke gets credit for this magic
-			let PageNo = 1;
-
-			for (const Page of arr) {
-				const Embed = new MessageEmbed()
-					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Harvest**`,
-						`**◎ Success:** The following crops are ready to be harvested!
-						${arr.splice(0, 5).join(`\n`)}`)
-					.setFooter(`To harvest, you can run ${prefix}harvest all${TotalPage > 1 ? ` | Page: ${PageNo++}/${TotalPage}` : ''}`);
-				Embeds.push(Embed);
-			}
-			TotalPage > 1 ? this.client.functions.pagination(message, Embeds) : message.channel.send({ embeds: [Embeds] });
 			return;
 		}
 
@@ -176,12 +201,12 @@ module.exports = class extends Command {
 
 			for (const Page of arr) {
 				const Embed = new MessageEmbed()
-					.setAuthor(`${message.author.tag}`, message.author.avatarURL())
+					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Harvest**`,
 						`**◎ Success:** You have harvested the following crops:
 						${arr.splice(0, 5).join(`\n`)}\n\n In total, the current value is <:coin:706659001164628008>\`${totalToAdd.toLocaleString('en')}\`\nThis value of each crop will continue to depreciate, I recommend you sell your crops.`)
-					.setFooter(`To harvest, you can run ${prefix}harvest all${TotalPage > 1 ? ` | Page: ${PageNo++}/${TotalPage}` : ''}`);
+					.setFooter({ text: `To harvest, you can run ${prefix}harvest all${TotalPage > 1 ? ` | Page: ${PageNo++}/${TotalPage}` : ''}` });
 				Embeds.push(Embed);
 			}
 			TotalPage > 1 ? this.client.functions.pagination(message, Embeds) : message.channel.send({ embeds: [Embeds] });
