@@ -92,11 +92,6 @@ module.exports = class extends Command {
 		const textChan = channels.filter(channel => channel.type === 'GUILD_TEXT');
 		const voiceChan = channels.filter(channel => channel.type === 'GUILD_VOICE');
 
-		const online = message.guild.members.cache.filter(m => m.presence?.status === 'online').size;
-		const idle = message.guild.members.cache.filter(m => m.presence?.status === 'idle').size;
-		const dnd = message.guild.members.cache.filter(m => m.presence?.status === 'dnd').size;
-		const offline = message.guild.members.cache.filter(m => m.presence?.status === 'offline').size;
-
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail(message.guild.iconURL({ dynamic: true }))
@@ -106,13 +101,13 @@ module.exports = class extends Command {
 				**◎ 🆔 ID:** ${message.guild.id}
 				**◎ 📅 Created At:** ${moment(message.guild.createdTimestamp).format('ddd, MMM Do YYYY h:mm a')} - ${moment(message.guild.createdTimestamp).fromNow()}
 				**◎ 🔐 Verification Level:** ${verificationLevels[message.guild.verificationLevel]}
-				**◎ 🔏 MFA Level:** ${mfa[message.guild.mfaLevel]} 
+				**◎ 🔏 MFA Level:** ${mfa[message.guild.mfaLevel]}
+				**◎ 🧑‍🤝‍🧑 Guild Members:** ${message.guild.memberCount - message.guild.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}
+				**◎ 🤖 Guild Bots:** ${message.guild.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}
 				\u200b`)
-			.addFields({ name: `**Guild Members** [${message.guild.memberCount.toLocaleString('en')}]`, value: `<:Online:748655722740580403> | Online: ${online.toLocaleString('en')}\n<:Idle:748655722639917117> | Away: ${idle.toLocaleString('en')}\n<:DND:748655722979393657> | DnD: ${dnd.toLocaleString('en')}\n<:Offline:748655722677403850> | Offline: ${offline.toLocaleString('en')}`, inline: true },
-				{ name: `**Guild Channels** [${textChan.size + voiceChan.size}]`, value: `<:TextChannel:855591004236546058> | Text: ${textChan.size}\n<:VoiceChannel:855591004300115998> | Voice: ${voiceChan.size}`, inline: true },
+			.addFields({ name: `**Guild Channels** [${textChan.size + voiceChan.size}]`, value: `<:TextChannel:855591004236546058> | Text: ${textChan.size}\n<:VoiceChannel:855591004300115998> | Voice: ${voiceChan.size}`, inline: true },
 				{ name: `**Guild Perks**`, value: `<a:Booster:855593231294267412> | Boost Tier: ${tiers[message.guild.premiumTier]}\n<a:Booster:855593231294267412> | Boosts: ${message.guild.premiumSubscriptionCount}`, inline: true },
-				{ name: `**Server Roles [${roles.length}]**`, value: `To view all server roles, run\n\`${prefix}serverinfo roles\``, inline: true },
-				{ name: `**Server Emojis [${emojis.size}]**`, value: `To view all server emojis, run\n\`${prefix}serverinfo emojis\``, inline: true })
+				{ name: `**Assets**`, value: `**Server Roles [${roles.length}]**: To view all roles, run\n\`${prefix}serverinfo roles\`\n**Server Emojis [${emojis.size}]**: To view all emojis, run\n\`${prefix}serverinfo emojis\``, inline: false })
 			.setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) });
 		message.channel.send({ embeds: [embed] });
 	}
