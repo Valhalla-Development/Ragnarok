@@ -83,10 +83,10 @@ module.exports = class extends Command {
 		if (foundItemList.goldBar) goldBarPrice = this.client.ecoPrices.goldBar * Number(foundItemList.goldBar);
 
 		foundHarvestList.forEach((obj) => {
-			if (obj.cropType === 'corn') cornPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.decay.toFixed(4) / 100));
-			if (obj.cropType === 'wheat') wheatPrice += Math.floor(this.client.ecoPrices.wheat * (1 - obj.decay.toFixed(4) / 100));
-			if (obj.cropType === 'potato') potatoesPrice += Math.floor(this.client.ecoPrices.potatoes * (1 - obj.decay.toFixed(4) / 100));
-			if (obj.cropType === 'tomato') tomatoesPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.decay.toFixed(4) / 100));
+			if (obj.cropType === 'corn') cornPrice += Math.floor(this.client.ecoPrices.corn * (1 - (obj.decay.toFixed(4) / 100)));
+			if (obj.cropType === 'wheat') wheatPrice += Math.floor(this.client.ecoPrices.wheat * (1 - (obj.decay.toFixed(4) / 100)));
+			if (obj.cropType === 'potato') potatoesPrice += Math.floor(this.client.ecoPrices.potatoes * (1 - (obj.decay.toFixed(4) / 100)));
+			if (obj.cropType === 'tomato') tomatoesPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - (obj.decay.toFixed(4) / 100)));
 		});
 
 		if (foundItemList.goldNugget) goldNuggetPrice = this.client.ecoPrices.goldNugget * Number(foundItemList.goldNugget);
