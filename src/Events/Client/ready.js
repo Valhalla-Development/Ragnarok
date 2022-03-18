@@ -484,7 +484,6 @@ module.exports = class extends Event {
 					}
 
 					obj.decay += Number(this.client.ecoPrices.decayRate);
-					console.log('now');
 					db.prepare('UPDATE balance SET harvestedCrops = (@harvestedCrops) WHERE id = (@id);').run({
 						harvestedCrops: JSON.stringify(harvestList),
 						id: `${user.id}-${guild.id}`
