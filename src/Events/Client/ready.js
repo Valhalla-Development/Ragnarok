@@ -415,7 +415,14 @@ module.exports = class extends Event {
 					foundPlotList = [];
 				}
 
+				let harvestList = JSON.parse(r.harvestedCrops);
+
+				if (!harvestList) {
+					harvestList = [];
+				}
+
 				foundPlotList.forEach(key => {
+					// Check if crop is ready to harvest and update db if so
 					if (Date.now() > key.cropGrowTime) {
 						key.cropStatus = 'harvest';
 						key.cropGrowTime = 'na';
@@ -427,6 +434,7 @@ module.exports = class extends Event {
 						});
 					}
 
+					// Check if crop is ready to decay and update db if so
 					if (key.cropStatus === 'harvest') {
 						if (key.decay >= 100) {
 							foundPlotList = foundPlotList.filter(a => a.decay <= 100);
@@ -453,6 +461,34 @@ module.exports = class extends Event {
 							id: `${user.id}-${guild.id}`
 						});
 					}
+				});
+
+				// Decay harvested crops over time
+				harvestList.forEach(obj => {
+					if (obj.decay >= 100) {
+						harvestList = harvestList.filter(a => a.decay <= 100);
+
+						if (harvestList.length <= 0) {
+							db.prepare('UPDATE balance SET harvestedCrops = (@harvestedCrops) WHERE id = (@id);').run({
+								harvestedCrops: null,
+								id: `${user.id}-${guild.id}`
+							});
+							return;
+						}
+
+						db.prepare('UPDATE balance SET harvestedCrops = (@harvestedCrops) WHERE id = (@id);').run({
+							harvestedCrops: JSON.stringify(harvestList),
+							id: `${user.id}-${guild.id}`
+						});
+						return;
+					}
+
+					obj.decay += Number(this.client.ecoPrices.decayRate);
+					console.log('now');
+					db.prepare('UPDATE balance SET harvestedCrops = (@harvestedCrops) WHERE id = (@id);').run({
+						harvestedCrops: JSON.stringify(harvestList),
+						id: `${user.id}-${guild.id}`
+					});
 				});
 			});
 		}, null, true);
