@@ -45,34 +45,8 @@ module.exports = class extends Event {
 			const regex = /<@![0-9]{0,18}>/g;
 			const found = message.content.match(regex);
 			const pingCheck = db.prepare('SELECT * FROM afk WHERE guildid = ?').get(message.guild.id);
-
-			if (found && pingCheck) {
-				if (message.author.id === found[0].slice(3, 21)) {
-					const deleteTicket = db.prepare(`DELETE FROM afk WHERE guildid = ${message.guild.id} AND user = (@user)`);
-					deleteTicket.run({
-						user: message.author.id
-					});
-
-					const embed = new MessageEmbed()
-						.setColor(client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${client.user.username} - AFK**`,
-							`**◎** ${message.author} is no longer AFK.`);
-					message.channel.send({ embeds: [embed] });
-					return;
-				}
-
-				const afkGrab = db.prepare('SELECT * FROM afk WHERE user = ? AND guildid = ?').get(found[0].slice(3, 21), message.guild.id);
-				if (afkGrab) {
-					const error = new MessageEmbed()
-						.setColor(client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${client.user.username} - AFK**`,
-							`**◎** Please do not ping ${found}, they are currently AFK with the reason:\n\n${afkGrab.reason}`);
-					message.channel.send({ embeds: [error] }).then((m) => client.utils.deletableCheck(m, 10000));
-					return;
-				}
-			}
-
 			const afkGrab = db.prepare('SELECT * FROM afk WHERE user = ? AND guildid = ?').get(message.author.id, message.guild.id);
+
 			if (afkGrab) {
 				if (command && command.name === 'afk') return;
 				const deleteTicket = db.prepare(`DELETE FROM afk WHERE guildid = ${message.guild.id} AND user = (@user)`);
@@ -86,6 +60,18 @@ module.exports = class extends Event {
 						`**◎** ${message.author} is no longer AFK.`);
 				message.channel.send({ embeds: [embed] });
 				return;
+			}
+
+			if (found && pingCheck) {
+				const afkCheck = db.prepare('SELECT * FROM afk WHERE user = ? AND guildid = ?').get(found[0].slice(3, 21), message.guild.id);
+				if (afkCheck) {
+					const error = new MessageEmbed()
+						.setColor(client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${client.user.username} - AFK**`,
+							`**◎** Please do not ping ${found}, they are currently AFK with the reason:\n\n${afkCheck.reason}`);
+					message.channel.send({ embeds: [error] }).then((m) => client.utils.deletableCheck(m, 10000));
+					return;
+				}
 			}
 		}
 		afkModule(this.client);
