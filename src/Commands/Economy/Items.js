@@ -64,10 +64,10 @@ module.exports = class extends Command {
 		let treasurePrice;
 
 		let goldBarPrice;
-		let cornPrice;
-		let wheatPrice;
-		let potatoesPrice;
-		let tomatoesPrice;
+		let cornPrice = 0;
+		let wheatPrice = 0;
+		let potatoesPrice = 0;
+		let tomatoesPrice = 0;
 		let goldNuggetPrice;
 		let barleyPrice;
 		let spinachPrice;
@@ -81,10 +81,14 @@ module.exports = class extends Command {
 		if (foundItemList.treasure) treasurePrice = this.client.ecoPrices.treasure * Number(foundItemList.treasure);
 
 		if (foundItemList.goldBar) goldBarPrice = this.client.ecoPrices.goldBar * Number(foundItemList.goldBar);
-		if (foundHarvestList.filter(key => key.cropType === 'corn').length) cornPrice = this.client.ecoPrices.corn * Number(foundHarvestList.filter(key => key.cropType === 'corn').length);
-		if (foundHarvestList.filter(key => key.cropType === 'wheat').length) wheatPrice = this.client.ecoPrices.wheat * Number(foundHarvestList.filter(key => key.cropType === 'wheat').length);
-		if (foundHarvestList.filter(key => key.cropType === 'potato').length) potatoesPrice = this.client.ecoPrices.potatoes * Number(foundHarvestList.filter(key => key.cropType === 'potato').length);
-		if (foundHarvestList.filter(key => key.cropType === 'tomato').length) tomatoesPrice = this.client.ecoPrices.tomatoes * Number(foundHarvestList.filter(key => key.cropType === 'tomato').length);
+
+		foundHarvestList.forEach((obj) => {
+			if (obj.cropType === 'corn') cornPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.decay.toFixed(4) / 100));
+			if (obj.cropType === 'wheat') wheatPrice += Math.floor(this.client.ecoPrices.wheat * (1 - obj.decay.toFixed(4) / 100));
+			if (obj.cropType === 'potato') potatoesPrice += Math.floor(this.client.ecoPrices.potatoes * (1 - obj.decay.toFixed(4) / 100));
+			if (obj.cropType === 'tomato') tomatoesPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.decay.toFixed(4) / 100));
+		});
+
 		if (foundItemList.goldNugget) goldNuggetPrice = this.client.ecoPrices.goldNugget * Number(foundItemList.goldNugget);
 		if (foundItemList.barley) barleyPrice = this.client.ecoPrices.barley * Number(foundItemList.barley);
 		if (foundItemList.spinach) spinachPrice = this.client.ecoPrices.spinach * Number(foundItemList.spinach);
@@ -178,7 +182,7 @@ module.exports = class extends Command {
 			];
 		} else {
 			fields = [
-				`**◎ Crops:**`,
+				`**◎ Crops:** (The value of your crops will go down over time, sell them!)`,
 				`\u3000 Corn: Own ${!foundHarvestList.filter(key => key.cropType === 'corn').length ? `\`0\`` : `\`${foundHarvestList.filter(key => key.cropType === 'corn').length}\` - <:coin:706659001164628008> \`${cornPrice.toLocaleString('en')}\``}`,
 				`\u3000 Wheat: Own ${!foundHarvestList.filter(key => key.cropType === 'wheat').length ? `\`0\`` : `\`${foundHarvestList.filter(key => key.cropType === 'wheat').length}\` - <:coin:706659001164628008> \`${wheatPrice.toLocaleString('en')}\``}`,
 				`\u3000 Potatoes: Own ${!foundHarvestList.filter(key => key.cropType === 'potato').length ? `\`0\`` : `\`${foundHarvestList.filter(key => key.cropType === 'potato').length}\` - <:coin:706659001164628008> \`${potatoesPrice.toLocaleString('en')}\``}`,
