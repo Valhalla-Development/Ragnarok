@@ -78,9 +78,11 @@ module.exports = class extends Event {
 
 		// Prefix command
 		if (message.content.toLowerCase() === `${this.client.prefix}prefix`) {
+			const prefixSet = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
+
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.setDescription(`**◎ This guild's prefix is:** \`${prefixcommand}\``);
+				.setDescription(`**◎ This guild's prefix is:** \`${prefixSet.prefix}\``);
 			message.channel.send({ embeds: [embed] });
 			return;
 		}
