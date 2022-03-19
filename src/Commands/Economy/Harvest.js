@@ -22,7 +22,6 @@ module.exports = class extends Command {
 
 		const balance = await this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
 
-		console.log(balance);
 		let foundBoostList = await JSON.parse(balance.boosts);
 
 		if (!foundBoostList) {
@@ -66,7 +65,7 @@ module.exports = class extends Command {
 			harvestable = foundPlotList.filter(key => key.cropStatus === 'harvest');
 		}
 
-		if (!foundPlotList.length || !harvestable.length) {
+		if (!foundPlotList.length && !harvestable.length) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
@@ -82,19 +81,16 @@ module.exports = class extends Command {
 			if (foundPlotList.length) {
 				const arr = [];
 
-				foundPlotList.forEach(key => {
-					if (key.cropStatus === 'harvest') {
-						arr.push(`\u3000Crop Type: \`${this.client.utils.capitalise(key.cropType)}\` - Crop Decay: \`${key.decay.toFixed(4)}%\``);
-					}
-				});
-
 				const Embeds = [];
-				const TestPages = arr.length;
-				const TotalPage = Math.ceil(TestPages / 5);
 				// Luke gets credit for this magic
 				let PageNo = 1;
 
 				const filter = foundPlotList.filter(e => e.cropGrowTime !== 'na');
+				const filterHarvest = foundPlotList.filter(e => e.cropStatus === 'harvest');
+
+				filterHarvest.forEach(key => {
+					arr.push(`\u3000Crop Type: \`${this.client.utils.capitalise(key.cropType)}\` - Crop Decay: \`${key.decay.toFixed(4)}%\``);
+				});
 
 				filter.forEach(key => {
 					const then = prettyMilliseconds(new Date().getTime() - key.cropGrowTime.toFixed(0), { millisecondsDecimalDigits: true });
@@ -114,6 +110,9 @@ module.exports = class extends Command {
 						arr.push(`\u3000Crop Type: \`Tomato\` - Time until grown: \`${thenTime}\``);
 					}
 				});
+
+				const TestPages = arr.length;
+				const TotalPage = Math.ceil(TestPages / 5);
 
 				for (const Page of arr) {
 					const Embed = new MessageEmbed()
