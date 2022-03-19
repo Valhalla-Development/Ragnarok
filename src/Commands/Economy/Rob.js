@@ -155,7 +155,8 @@ module.exports = class extends Command {
 					`You challenged ${user} to a 1v1 and lost${stealAmount > 1 ? ` <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.` : `.`}`,
 					`You hired someone to mug ${user}${stealAmount > 1 ? ` but they mugged you instead and took <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.` : ` ${user} fought him off.`}`,
 					`You tried to stab ${user}, but they said 'no u'${stealAmount > 1 ? ` and you stabbed yourself. You lost <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.` : ` and walked away.`}`,
-					`You tried to steal from ${user} but they caught you${stealAmount > 1 ? ` and they took <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\` from you.` : `, they simply said 'pathetic' and walked away.`}`
+					`You tried to steal from ${user} but they caught you${stealAmount > 1 ? ` and they took <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\` from you.` : `, they simply said 'pathetic' and walked away.`}`,
+					`You asked ${user} for financial advice and lost <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`
 				];
 
 				const depArg = new MessageEmbed()
