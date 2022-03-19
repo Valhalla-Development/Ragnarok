@@ -5,6 +5,7 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 const Canvas = require('canvas');
 const ordinal = require('ordinal');
 const fetch = require('node-fetch-cjs');
+const moment = require('moment');
 
 module.exports = class extends Event {
 
@@ -178,7 +179,7 @@ module.exports = class extends Event {
 			const logembed = new MessageEmbed()
 				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
 				.setAuthor({ name: member.guild.name, iconURL: member.user.avatarURL() })
-				.setDescription(`**◎ Member Joined:** <@${member.user.id}> - ${member.user.tag}`)
+				.setDescription(`**◎ Member Joined:** <@${member.user.id}> - ${member.user.tag}\n**◎ Account Created:** \`${moment(member.user.createdTimestamp).format('ddd, MMM Do YYYY')}\` - ${moment(member.user.createdTimestamp).fromNow()}`)
 				.setFooter({ text: `ID: ${member.user.id}` })
 				.setTimestamp();
 			grabClient.channels.cache.get(logs).send({ embeds: [logembed] });
