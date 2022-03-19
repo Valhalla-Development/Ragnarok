@@ -63,6 +63,8 @@ module.exports = class extends Command {
 
 		if (foundPlotList.length) {
 			harvestable = foundPlotList.filter(key => key.cropStatus === 'harvest');
+		} else {
+			harvestable = [];
 		}
 
 		if (!foundPlotList.length && !harvestable.length) {
