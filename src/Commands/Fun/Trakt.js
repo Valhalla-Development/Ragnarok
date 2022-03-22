@@ -98,16 +98,10 @@ module.exports = class extends Command {
 								if (!fanartData.hdmovielogo) {
 									reqImage = '';
 								} else {
-									const randomIndex = Math.floor(
-										Math.random() * fanartData.hdmovielogo.length
-									);
 									reqImage = fanartData.hdmovielogo[0].url;
 								}
 							} else {
-								const randomIndex = Math.floor(
-									Math.random() * fanartData.movieposter.length
-								);
-								reqImage = fanartData.movieposter[randomIndex].url;
+								reqImage = fanartData.movieposter[0].url;
 							}
 							reqTitle = movieInfo[0].movie.title;
 							reqDesc = movieInfo[0].movie.overview;
@@ -145,20 +139,15 @@ module.exports = class extends Command {
 						}?api_key=${fanartKey}`,
 						(err, resp, body) => {
 							const fanartData = JSON.parse(body);
+
 							if (!fanartData.tvposter) {
 								if (!fanartData.hdtvlogo) {
 									reqImage = '';
 								} else {
-									const randomIndex = Math.floor(
-										Math.random() * fanartData.hdtvlogo.length
-									);
 									reqImage = fanartData.hdtvlogo[0].url;
 								}
 							} else {
-								const randomIndex = Math.floor(
-									Math.random() * fanartData.tvposter.length
-								);
-								reqImage = fanartData.tvposter[randomIndex].url;
+								reqImage = fanartData.tvposter[0].url;
 							}
 							reqTitle = showInfo[0].show.title;
 							reqDesc = showInfo[0].show.overview;
@@ -209,16 +198,10 @@ module.exports = class extends Command {
 										if (!fanartData.hdmovielogo) {
 											reqImage = '';
 										} else {
-											const randomIndex = Math.floor(
-												Math.random() * fanartData.hdmovielogo.length
-											);
 											reqImage = fanartData.hdmovielogo[0].url;
 										}
 									} else {
-										const randomIndex = Math.floor(
-											Math.random() * fanartData.movieposter.length
-										);
-										reqImage = fanartData.movieposter[randomIndex].url;
+										reqImage = fanartData.movieposter[0].url;
 									}
 									reqTitle = info[0].movie.title;
 									reqDesc = info[0].movie.overview;
@@ -252,16 +235,10 @@ module.exports = class extends Command {
 										if (!fanartData.hdtvlogo) {
 											reqImage = '';
 										} else {
-											const randomIndex = Math.floor(
-												Math.random() * fanartData.hdtvlogo.length
-											);
 											reqImage = fanartData.hdtvlogo[0].url;
 										}
 									} else {
-										const randomIndex = Math.floor(
-											Math.random() * fanartData.tvposter.length
-										);
-										reqImage = fanartData.tvposter[randomIndex].url;
+										reqImage = fanartData.tvposter[0].url;
 									}
 									reqTitle = info[0].show.title;
 									reqDesc = info[0].show.overview;
