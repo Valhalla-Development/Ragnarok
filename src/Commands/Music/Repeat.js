@@ -7,6 +7,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
+			aliases: ['loop'],
 			description: 'Repeats song/playlist.',
 			category: 'Music',
 			usage: '[queue]'
