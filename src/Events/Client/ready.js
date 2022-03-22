@@ -234,6 +234,7 @@ module.exports = class extends Event {
 			db.pragma('synchronous = 1');
 			db.pragma('journal_mode = wal');
 		}
+
 		// Ticket Config Table
 		const ticketConfigTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'ticketConfig\';').get();
 		if (!ticketConfigTable['count(*)']) {
@@ -260,6 +261,16 @@ module.exports = class extends Event {
 			this.client.logger.ready('afk table created!');
 			db.prepare('CREATE TABLE afk (id TEXT PRIMARY KEY, guildid TEXT, user TEXT, reason TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_afk_id ON afk (id);').run();
+			db.pragma('synchronous = 1');
+			db.pragma('journal_mode = wal');
+		}
+
+		// starboard table
+		const starTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'starboard\';').get();
+		if (!starTable['count(*)']) {
+			this.client.logger.ready('starboard table created!');
+			db.prepare('CREATE TABLE starboard (guildid TEXT PRIMARY KEY, channel TEXT);').run();
+			db.prepare('CREATE UNIQUE INDEX idx_starboard_id ON starboard (guildid);').run();
 			db.pragma('synchronous = 1');
 			db.pragma('journal_mode = wal');
 		}
@@ -489,6 +500,20 @@ module.exports = class extends Event {
 						id: `${user.id}-${guild.id}`
 					});
 				});
+			});
+
+			// Starboard
+			const grabStarboard = db.prepare('SELECT * FROM starboard').all();
+
+			grabStarboard.forEach(s => {
+				const guild = this.client.guilds.cache.get(s.guildid);
+				if (!guild) return;
+
+				const channel = guild.channels.cache.get(s.channel);
+				if (!channel) return;
+
+				// Cache messages
+				channel.messages.fetch({ limit: 10 });
 			});
 		}, null, true);
 		job.start();
