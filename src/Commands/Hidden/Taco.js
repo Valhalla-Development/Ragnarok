@@ -1,0 +1,22 @@
+const Command = require('../../Structures/Command');
+const { MessageEmbed } = require('discord.js');
+
+module.exports = class extends Command {
+
+	constructor(...args) {
+		super(...args, {
+			description: 'Payment for TomakataABC, for contributing to the bot.',
+			category: 'Hidden'
+		});
+	}
+
+	async run(message) {
+		const embed = new MessageEmbed()
+			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setImage('attachment://taco.png')
+			.addField(`Please take this **taco**. A gift from me, to you!`,
+				`_ _`);
+		message.channel.send({ embeds: [embed], files: ['./Storage/Images/taco.png'] });
+	}
+
+};
