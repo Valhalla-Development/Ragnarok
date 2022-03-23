@@ -73,6 +73,10 @@ module.exports = class extends Event {
 			return;
 		}
 
+		if (message.channel.id !== starChannel.id) {
+			if (message.author.id === user.id) return;
+		}
+
 		// Filter only messages with an embed
 		const filtered = fetchedMessages.filter(m => m.embeds.length > 0);
 
