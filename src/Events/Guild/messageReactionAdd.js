@@ -30,10 +30,6 @@ module.exports = class extends Event {
 		// Define the starboard channel
 		const starChannel = message.guild.channels.cache.find(channel => channel.id === id.channel);
 
-		// We fetch the ID of the message already on the starboard.
-		const starMsg = await starChannel.messages.fetch(message.id);
-		if (!starMsg) return;
-
 		// Check if bot has perms to send messages in starboard channel
 		if (!message.guild.me.permissionsIn(starChannel).has('SEND_MESSAGES')) {
 			const embed = new MessageEmbed()
@@ -46,14 +42,14 @@ module.exports = class extends Event {
 
 		if (messageReaction.emoji.name !== '⭐') return;
 
-		if (message.author.id === user.id) {
+		/* if (message.author.id === user.id) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Starboard**`,
 					`**◎ Error:** You cannot star your own messages.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
-		}
+		}*/
 
 		// Here we fetch 100 messages from the starboard channel.
 		const fetchedMessages = await starChannel.messages.fetch({ limit: 10 });
@@ -63,6 +59,10 @@ module.exports = class extends Event {
 			if (user.id !== this.client.user.id) {
 				if (message && message.embeds[0]) {
 					if (message.embeds[0].footer.text.startsWith('⭐')) {
+						// We fetch the ID of the message already on the starboard.
+						const starMsg = await starChannel.messages.fetch(message.id);
+						if (!starMsg) return;
+
 						const foundStar = message.embeds[0];
 						// Do some magic to get the fotter message id
 						const getThatID = foundStar.footer.text;
@@ -93,14 +93,17 @@ module.exports = class extends Event {
 		// We check the messages within the fetch object to see if the message that was reacted to is already a message in the starboard
 		const stars = filtered.find(m => m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(message.id));
 
-
 		// Now we setup an if statement for if the message is found within the starboard.
 		if (stars) {
+			// We fetch the ID of the message already on the starboard.
+			const starMsg = await starChannel.messages.fetch(stars.id);
+			if (!starMsg) return;
+
 			// Regex to check how many stars the embed has.
 			const star = /^\⭐\s([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(stars.embeds[0].footer.text);
-			const image = foundStar.image ? foundStar.image.url : '';
 			// A variable that allows us to use the color of the pre-existing embed.
 			const foundStar = stars.embeds[0];
+			const image = foundStar.image ? foundStar.image.url : '';
 			// Do some magic to get the fotter message id
 			const getThatID = foundStar.footer.text;
 			// Split that sum-bitch
