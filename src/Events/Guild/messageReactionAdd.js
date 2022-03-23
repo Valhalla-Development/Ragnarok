@@ -43,6 +43,7 @@ module.exports = class extends Event {
 		if (messageReaction.emoji.name !== '⭐') return;
 
 		if (message.author.id === user.id) {
+			if (message.channel.id === starChannel.id) return;
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Starboard**`,
