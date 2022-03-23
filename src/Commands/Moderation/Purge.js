@@ -45,50 +45,23 @@ module.exports = class extends Command {
 			return;
 		}
 
-		// test it bub
-		/* let total = 0;
-		function purge(message, count = 2) {
-			if (count > 1000) return 'Nope!';
-			if (count >= 100) {
-				message.channel.bulkDelete(100).then((x) => {
-					total += x.size;
-					return purge(count -= 100);
-				});
-			} else {
-				message.channel.bulkDelete(count).then((x) => {
-					total += x.size;
-					return `Purged ${total}`;
-				});
-			}
-		}*/
-
-		let amt;
-		if (args[0] > 100) {
-			amt = 100;
-		} else {
-			amt = await message.channel.messages.fetch({ limit: parseInt(args[0]) });
-		}
+		let messageCount = args[0];
+		if (messageCount > 100) messageCount = 99;
 
 		try {
-			await message.channel.bulkDelete(amt);
-			message.channel.bulkDelete(args[0]).then(() => {
-				this.client.utils.messageDelete(message, 10000);
-
-				const embed = new MessageEmbed()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Purge**`,
-						`**◎ Success:** Successfully deleted ${args[0]} messages!`);
-				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			}).catch((error) => {
-				this.client.logger.error(error);
-			});
-		} catch (e) {
-			this.client.utils.messageDelete(message, 10000);
+			const fetch = await message.channel.messages.fetch({ limit: Number(messageCount) + 1 });
+			await message.channel.bulkDelete(fetch, true);
 
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
-					`**◎ Error:** You can not delete messages older than 14 days.`);
+					`**◎ Success:** ${Number(messageCount)} message${Number(messageCount) > 1 ? 's' : ''} were removed.`);
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+		} catch {
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Purge**`,
+					`**◎ Error:** An error occured.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 		}
 	}
