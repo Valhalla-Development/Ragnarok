@@ -42,14 +42,14 @@ module.exports = class extends Event {
 
 		if (messageReaction.emoji.name !== '⭐') return;
 
-		/* if (message.author.id === user.id) {
+		if (message.author.id === user.id) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Starboard**`,
 					`**◎ Error:** You cannot star your own messages.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
-		}*/
+		}
 
 		// Here we fetch 100 messages from the starboard channel.
 		const fetchedMessages = await starChannel.messages.fetch({ limit: 10 });
