@@ -10,8 +10,7 @@ const moment = require('moment');
 module.exports = class extends Event {
 
 	async run(member) {
-		this.client.user.setActivity(
-			`${this.client.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
+		this.client.user.setActivity(`${this.client.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
 			{
 				type: 'WATCHING'
 			}
