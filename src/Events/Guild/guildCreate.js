@@ -23,7 +23,7 @@ module.exports = class extends Event {
 		// Invite Manager
 		this.client.invites.set(guild.id, await guild.invites.fetch());
 
-		this.client.logger.ready(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
+		console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
 		this.client.user.setActivity(`${this.client.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
 			{
 				type: 'WATCHING'

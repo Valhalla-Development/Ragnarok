@@ -41,7 +41,7 @@ module.exports = class extends Event {
 		// Birthday table
 		const birthdaystable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'birthdays\';').get();
 		if (!birthdaystable['count(*)']) {
-			this.client.logger.ready('birthdays table created!');
+			console.log('birthdays table created!');
 			db.prepare('CREATE TABLE birthdays (userid TEXT PRIMARY KEY, birthday TEXT, lastRun BLOB);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_birthdays_id ON birthdays (userid);').run();
 			db.pragma('synchronous = 1');
@@ -51,7 +51,7 @@ module.exports = class extends Event {
 		// Birthday Config table
 		const birthdayconfigtable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'birthdayConfig\';').get();
 		if (!birthdayconfigtable['count(*)']) {
-			this.client.logger.ready('birthday config table created!');
+			console.log('birthday config table created!');
 			db.prepare('CREATE TABLE birthdayConfig (guildid TEXT PRIMARY KEY, channel TEXT, role TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_birthdayConfig_id ON birthdayConfig (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -61,7 +61,7 @@ module.exports = class extends Event {
 		// Ban table
 		const bantable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'ban\';').get();
 		if (!bantable['count(*)']) {
-			this.client.logger.ready('ban table created!');
+			console.log('ban table created!');
 			db.prepare('CREATE TABLE ban (id TEXT PRIMARY KEY, guildid TEXT, userid TEXT, endtime TEXT, channel TEXT, username TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_ban_id ON ban (id);').run();
 			db.pragma('synchronous = 1');
@@ -71,7 +71,7 @@ module.exports = class extends Event {
 		// Invite Manager table
 		const inviteManager = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'invmanager\';').get();
 		if (!inviteManager['count(*)']) {
-			this.client.logger.ready('invmanager table created!');
+			console.log('invmanager table created!');
 			db.prepare('CREATE TABLE invmanager (guildid TEXT PRIMARY KEY, channel TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_invmanager_id ON invmanager (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -81,7 +81,7 @@ module.exports = class extends Event {
 		// Level table
 		const levelstatustable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'level\';').get();
 		if (!levelstatustable['count(*)']) {
-			this.client.logger.ready('level table created!');
+			console.log('level table created!');
 			db.prepare('CREATE TABLE level (guildid TEXT PRIMARY KEY, status TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_level_id ON level (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -91,7 +91,7 @@ module.exports = class extends Event {
 		// Hastebin Table
 		const hastetb = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'hastebin\';').get();
 		if (!hastetb['count(*)']) {
-			this.client.logger.ready('hastebin table created!');
+			console.log('hastebin table created!');
 			db.prepare('CREATE TABLE hastebin (guildid TEXT PRIMARY KEY, status TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_hastebin_id ON hastebin (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -101,7 +101,7 @@ module.exports = class extends Event {
 		// Dad Bot Table
 		const dadbot = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'dadbot\';').get();
 		if (!dadbot['count(*)']) {
-			this.client.logger.ready('dadbot table created!');
+			console.log('dadbot table created!');
 			db.prepare('CREATE TABLE dadbot (guildid TEXT PRIMARY KEY, status TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_dadbot_id ON dadbot (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -111,7 +111,7 @@ module.exports = class extends Event {
 		// Membercount Table
 		const memcount = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'membercount\';').get();
 		if (!memcount['count(*)']) {
-			this.client.logger.ready('membercount table created!');
+			console.log('membercount table created!');
 			db.prepare('CREATE TABLE membercount (guildid TEXT PRIMARY KEY, status TEXT, channela TEXT, channelb TEXT, channelc TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_membercount_id ON membercount (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -121,7 +121,7 @@ module.exports = class extends Event {
 		// Announcement Table
 		const announcement = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'announcement\';').get();
 		if (!announcement['count(*)']) {
-			this.client.logger.ready('announcement table created!');
+			console.log('announcement table created!');
 			db.prepare('CREATE TABLE announcement (msg TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_announcement_id ON announcement (msg);').run();
 			db.pragma('synchronous = 1');
@@ -131,7 +131,7 @@ module.exports = class extends Event {
 		// Music Table
 		const music = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'music\';').get();
 		if (!music['count(*)']) {
-			this.client.logger.ready('music table created!');
+			console.log('music table created!');
 			db.prepare('CREATE TABLE music (guildid TEXT PRIMARY KEY, role TEXT, channel BLOB);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_music_id ON music (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -141,7 +141,7 @@ module.exports = class extends Event {
 		// RoleMenu Table
 		const rolemenu = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'rolemenu\';').get();
 		if (!rolemenu['count(*)']) {
-			this.client.logger.ready('rolemenu table created!');
+			console.log('rolemenu table created!');
 			db.prepare('CREATE TABLE rolemenu (guildid TEXT PRIMARY KEY, activeRoleMenuID TEXT, roleList BLOB);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_rolemenu_id ON rolemenu (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -151,7 +151,7 @@ module.exports = class extends Event {
 		// setprefix table
 		const setprefix = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'setprefix\';').get();
 		if (!setprefix['count(*)']) {
-			this.client.logger.ready('setprefix table created!');
+			console.log('setprefix table created!');
 			db.prepare('CREATE TABLE setprefix (guildid TEXT PRIMARY KEY, prefix TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_setprefix_id ON setprefix (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -161,7 +161,7 @@ module.exports = class extends Event {
 		// setwelcome table
 		const setwelcome = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'setwelcome\';').get();
 		if (!setwelcome['count(*)']) {
-			this.client.logger.ready('setwelcome table created!');
+			console.log('setwelcome table created!');
 			db.prepare('CREATE TABLE setwelcome (guildid TEXT PRIMARY KEY, channel TEXT, image TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_setwelcome_id ON setwelcome (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -171,7 +171,7 @@ module.exports = class extends Event {
 		// autorole table
 		const autorole = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'autorole\';').get();
 		if (!autorole['count(*)']) {
-			this.client.logger.ready('autorole table created!');
+			console.log('autorole table created!');
 			db.prepare('CREATE TABLE autorole (guildid TEXT PRIMARY KEY, role TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_autorole_id ON autorole (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -181,7 +181,7 @@ module.exports = class extends Event {
 		// balance table
 		const balancetable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'balance\';').get();
 		if (!balancetable['count(*)']) {
-			this.client.logger.ready('balance table created!');
+			console.log('balance table created!');
 			db.prepare('CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly INTEGER, daily INTEGER, weekly INTEGER, monthly INTEGER, stealcool INTEGER, fishcool INTEGER, farmcool INTEGER, boosts BLOB, items BLOB, cash INTEGER, bank INTEGER, total INTEGER, claimNewUser INTEGER, farmPlot BLOB, dmHarvest TEXT, harvestedCrops BLOB, lottery BLOB);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_balance_id ON balance (id);').run();
 			db.pragma('synchronous = 1');
@@ -195,7 +195,7 @@ module.exports = class extends Event {
 		// balance config Table
 		const balancconftable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'balanceConfig\';').get();
 		if (!balancconftable['count(*)']) {
-			this.client.logger.ready('balanceConfig table created!');
+			console.log('balanceConfig table created!');
 			db.prepare('CREATE TABLE balanceConfig (guildid TEXT PRIMARY KEY, status TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_balanceConfig_id ON balanceConfig (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -205,7 +205,7 @@ module.exports = class extends Event {
 		// scores table
 		const table = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'scores\';').get();
 		if (!table['count(*)']) {
-			this.client.logger.ready('scores table created!');
+			console.log('scores table created!');
 			db.prepare('CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, country TEXT, image TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_scores_id ON scores (id);').run();
 			db.pragma('synchronous = 1');
@@ -218,7 +218,7 @@ module.exports = class extends Event {
 		// adsprot table
 		const adsprottable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'adsprot\';').get();
 		if (!adsprottable['count(*)']) {
-			this.client.logger.ready('adsprot table created!');
+			console.log('adsprot table created!');
 			db.prepare('CREATE TABLE adsprot (guildid TEXT PRIMARY KEY, status TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_adsprot_id ON adsprot (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -228,7 +228,7 @@ module.exports = class extends Event {
 		// logging table
 		const loggingtable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'logging\';').get();
 		if (!loggingtable['count(*)']) {
-			this.client.logger.ready('logging table created!');
+			console.log('logging table created!');
 			db.prepare('CREATE TABLE logging (guildid TEXT PRIMARY KEY, channel TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_logging_id ON logging (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -238,7 +238,7 @@ module.exports = class extends Event {
 		// Ticket Config Table
 		const ticketConfigTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'ticketConfig\';').get();
 		if (!ticketConfigTable['count(*)']) {
-			this.client.logger.ready('ticketConfig table created!');
+			console.log('ticketConfig table created!');
 			db.prepare('CREATE TABLE ticketConfig (guildid TEXT PRIMARY KEY, category TEXT, log TEXT, role TEXT, ticketembed TEXT, ticketembedchan TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_ticketConfig_id ON ticketConfig (guildid);').run();
 			db.pragma('synchronous = 1');
@@ -248,7 +248,7 @@ module.exports = class extends Event {
 		// Stored Tickets Table
 		const ticketsTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'tickets\';').get();
 		if (!ticketsTable['count(*)']) {
-			this.client.logger.ready('tickets table created!');
+			console.log('tickets table created!');
 			db.prepare('CREATE TABLE tickets (guildid TEXT, ticketid TEXT PRIMARY KEY, authorid TEXT, reason TEXT, chanid TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_tickets_id ON tickets (ticketid);').run();
 			db.pragma('synchronous = 1');
@@ -258,7 +258,7 @@ module.exports = class extends Event {
 		// AFK Table
 		const afkTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'afk\';').get();
 		if (!afkTable['count(*)']) {
-			this.client.logger.ready('afk table created!');
+			console.log('afk table created!');
 			db.prepare('CREATE TABLE afk (id TEXT PRIMARY KEY, guildid TEXT, user TEXT, reason TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_afk_id ON afk (id);').run();
 			db.pragma('synchronous = 1');
@@ -268,7 +268,7 @@ module.exports = class extends Event {
 		// starboard table
 		const starTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'starboard\';').get();
 		if (!starTable['count(*)']) {
-			this.client.logger.ready('starboard table created!');
+			console.log('starboard table created!');
 			db.prepare('CREATE TABLE starboard (guildid TEXT PRIMARY KEY, channel TEXT);').run();
 			db.prepare('CREATE UNIQUE INDEX idx_starboard_id ON starboard (guildid);').run();
 			db.pragma('synchronous = 1');

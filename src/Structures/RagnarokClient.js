@@ -30,8 +30,6 @@ module.exports = class RagnarokClient extends Client {
 
 		this.owners = options.ownerID;
 
-		this.logger = require('./Logger.js');
-
 		// Music
 		const clientID = options.musicClientID;
 		const clientSecret = options.musicClientSecret;
@@ -120,12 +118,12 @@ module.exports = class RagnarokClient extends Client {
 					if (guild) guild.shard.send(payload);
 				}
 			})
-				.on('nodeCreate', () => grabClient.logger.ready('Successfully created a new Erela Node.'))
-				.on('nodeDestroy', () => grabClient.logger.ready('Successfully destroyed the Erela Node.'))
-				.on('nodeConnect', () => grabClient.logger.ready('Successfully created a new Erela Node.'))
-				.on('nodeReconnect', () => grabClient.logger.ready('Connection restored to Erela Node.'))
-				.on('nodeDisconnect', () => grabClient.logger.warn('Lost connection to Erela Node.'))
-				.on('nodeError', (node, error) => grabClient.logger.error(`Node error: ${error.message}`))
+				.on('nodeCreate', () => console.log('Successfully created a new Erela Node.'))
+				.on('nodeDestroy', () => console.log('Successfully destroyed the Erela Node.'))
+				.on('nodeConnect', () => console.log('Successfully created a new Erela Node.'))
+				.on('nodeReconnect', () => console.log('Connection restored to Erela Node.'))
+				.on('nodeDisconnect', () => console.log('Lost connection to Erela Node.'))
+				.on('nodeError', (node, error) => console.error(`Node error: ${error.message}`))
 				.on('playerMove', async (player, oldChannel, newChannel) => {
 					const textChannel = player.get('textChannel');
 
@@ -294,30 +292,30 @@ module.exports = class RagnarokClient extends Client {
 		}
 
 		// Error Notifiers
-		this.on('disconnect', () => this.logger.warn('Bot is disconnecting . . .'))
-			.on('reconnecting', () => this.logger.log('Bot reconnecting . . .'))
-			.on('error', (e) => this.logger.error(e))
-			.on('debug', (info) => {
-				// this.logger.debug(info)
+		this.on('disconnect', () => console.log('Bot is disconnecting . . .'))
+			.on('reconnecting', () => console.log('Bot reconnecting . . .'))
+			.on('error', (e) => console.error(e))
+			/* .on('debug', (info) => {
+				// console.log(info)
 				const loading = info.match(/\[WS => Shard (\d+)] \[CONNECT]/),
 					sessions = info.match(/Remaining: (\d+)$/),
 					reconnect = info.match(/\[WS => Shard (\d+)] \[RECONNECT] Discord asked us to reconnect/),
 					swept = info.match(/Swept \d+ messages older than \d+ seconds in \d+ text-based channels/),
 					discard = info.match(/\[WS => (Shard (\d+)|Manager)]/);
 				if (loading) {
-					this.logger.log(`Loading . . .`);
+					console.log(`Loading . . .`);
 					return;
 				}
 				if (sessions) {
-					this.logger.debug(`Session ${1000 - parseInt(sessions[1], 10)} of 1000`);
+					console.log(`Session ${1000 - parseInt(sessions[1], 10)} of 1000`);
 					return;
 				}
 				if (reconnect) {
-					this.logger.log(`Discord asked shard ${reconnect[1]} to reconnect`);
+					console.log(`Discord asked shard ${reconnect[1]} to reconnect`);
 					return;
 				}
 				if (swept) {
-					this.logger.log(info);
+					console.log(info);
 					return;
 				}
 				if (discard) return;
@@ -326,13 +324,13 @@ module.exports = class RagnarokClient extends Client {
 					return;
 				}
 				if (info.startsWith('429 hit on route')) return;
-			})
-			.on('warn', (info) => this.logger.warn(info))
-			.on('shardReady', () => this.logger.ready(`Connected!`))
-			.on('shardResume', () => this.logger.ready(`Connected!`));
+			})*/
+			.on('warn', (info) => console.log(info));
+		// .on('shardReady', () => console.log(`Connected!`))
+		// .on('shardResume', () => console.log(`Connected!`));
 
 		process.on('unhandledRejection', (error) => {
-			this.logger.error(error);
+			console.error(error);
 			sendError(this, error.stack);
 		});
 	}
