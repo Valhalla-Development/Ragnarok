@@ -13,6 +13,7 @@ const urlRegexSafe = require('url-regex-safe');
 const dadCooldown = new Set();
 const dadCooldownSeconds = 60;
 const fetch = require('node-fetch-cjs');
+const chalk = require('chalk');
 
 module.exports = class extends Event {
 
@@ -497,13 +498,23 @@ module.exports = class extends Event {
 
 		// Logging
 		if (this.client.logging === true) {
+			const nowInMs = Date.now();
+			const nowInSecond = Math.round(nowInMs / 1000);
+
+			const logembed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
+
 			if (!oargresult || oargresult === '') {
-				const LoggingNoArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] Command \`${cmd}\` was executed by \x1b[31m${message.author.tag}\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
-				this.client.channels.cache.get('694680953133596682').send(Formatters.codeBlock('css', `${cmd} - was executed by ${message.author.tag} - In guild: ${message.guild.name}`));
+				logembed.addField(`Guild: ${message.guild.name} | Date: <t:${nowInSecond}>`,
+					Formatters.codeBlock('kotlin', `'${cmd}' was executed by ${message.author.tag}`));
+				const LoggingNoArgs = `[${chalk.red(moment().format('LLLL'))}] '${chalk.greenBright(cmd)}' was executed by ${chalk.red(message.author.tag)} (Guild: ${chalk.red(message.guild.name)})`;
+				this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
 				console.log(LoggingNoArgs);
 			} else {
-				const LoggingArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] Command \`${cmd} ${oargresult}\` was executed by \x1b[31m${message.author.tag}\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
-				this.client.channels.cache.get('694680953133596682').send(Formatters.codeBlock('css', `${cmd} ${oargresult} - was executed by ${message.author.tag} - In guild: ${message.guild.name}`));
+				logembed.addField(`Guild: ${message.guild.name} | Date: <t:${nowInSecond}>`,
+					Formatters.codeBlock('kotlin', `'${cmd} ${oargresult}' was executed by ${message.author.tag}`));
+				const LoggingArgs = `[${chalk.red(moment().format('LLLL'))}] '${chalk.greenBright(cmd, oargresult)}' was executed by ${chalk.red(message.author.tag)} (Guild: ${chalk.red(message.guild.name)})`;
+				this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
 				console.log(LoggingArgs);
 			}
 		}
@@ -529,9 +540,10 @@ module.exports = class extends Event {
 				return;
 			}
 		}
+
 		const logembed = new MessageEmbed()
 			.setAuthor({ name: message.author.tag, iconURL: message.guild.iconURL() })
-			.setDescription(`**◎ Used** \`${cmd}\` **command in ${message.channel}**\n\`${prefixcommand}${cmd} ${oargresult}\``)
+			.setDescription(`**◎ Used** \`${cmd}\` **command in ${message.channel}**\n${Formatters.codeBlock('yaml', `${prefixcommand}${cmd} ${oargresult}`)}`)
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setFooter({ text: `ID: ${message.channel.id}` })
 			.setTimestamp();
