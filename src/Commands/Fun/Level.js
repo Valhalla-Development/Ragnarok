@@ -591,7 +591,7 @@ module.exports = class extends Command {
 		ctx.save();
 
 		const attachment = new MessageAttachment(canvas.toBuffer(), 'level.jpg');
-		message.channel.send({ files: [attachment] }).catch((err) => this.client.logger.error(err));
+		message.channel.send({ files: [attachment] }).catch((err) => console.error(err));
 	}
 
 };
