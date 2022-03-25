@@ -13,7 +13,6 @@ const urlRegexSafe = require('url-regex-safe');
 const dadCooldown = new Set();
 const dadCooldownSeconds = 60;
 const fetch = require('node-fetch-cjs');
-const chalk = require('chalk');
 
 module.exports = class extends Event {
 
