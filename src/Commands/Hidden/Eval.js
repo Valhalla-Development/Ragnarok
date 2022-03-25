@@ -8,6 +8,7 @@ const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const Hastebin = require('hastebin.js');
 const haste = new Hastebin({ url: 'https://pastie.io' });
+const moment = require('moment');
 
 module.exports = class extends Command {
 
