@@ -1,11 +1,12 @@
 const Command = require('../../Structures/Command');
-const { MessageAttachment, MessageEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const fetchAll = require('discord-fetch-all');
 const comCooldown = new Set();
 const comCooldownSeconds = 20;
 const { MessageButton, MessageActionRow } = require('discord.js');
+const discordTranscripts = require('discord-html-transcripts');
+const fetch = require('node-fetch-cjs');
 
 module.exports = class extends Command {
 
@@ -52,8 +53,6 @@ module.exports = class extends Command {
 		if (!comCooldown.has(message.author.id)) {
 			message.channel.sendTyping();
 
-			const user = this.client.users.cache.find((a) => a.id === foundTicket.authorid); // do something if the user is not found (they left)
-
 			const buttonA = new MessageButton()
 				.setStyle('SUCCESS')
 				.setLabel('Close')
@@ -99,47 +98,91 @@ module.exports = class extends Command {
 							`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.\n\n**NOTE** If this is taking too long, I may have timed out, you can run \`${prefix}forceclose\` to close the ticket forcefully, this will not include a chat log.`);
 					message.channel.send({ embeds: [embed] });
 
-					const allMessages = await fetchAll.messages(message.channel, {
-						reverseArray: true,
-						userOnly: false,
-						botOnly: false,
-						pinnedOnly: false
+					// Generate random string
+					const random = (length = 40) => {
+						// Declare all characters
+						const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+						// Pick characers randomly
+						let str = '';
+						for (let i = 0; i < length; i++) {
+							str += chars.charAt(Math.floor(Math.random() * chars.length));
+						}
+
+						return str;
+					};
+
+					const staticFileNameGen = random();
+					const staticFileName = `${message.channel.name}-_-${staticFileNameGen}.html`;
+					const { channel } = message;
+
+					channel.name = staticFileName;
+
+					const fixedName = message.channel.name.substr(0, message.channel.name.indexOf('-_-'));
+
+					const attachment = await discordTranscripts.createTranscript(channel, {
+						limit: -1,
+						returnBuffer: true,
+						fileName: staticFileName
+					});
+					const buffered = Buffer.from(attachment).toString();
+
+					const authorizationSecret = 'pmzg!SD#9H8E#PzGMhe5dr&Qo5EQReLy@cqf87QB';
+
+					const response = await fetch.default('https://ragnarok-discord.000webhostapp.com/index.php', {
+						method: 'POST',
+						body: buffered,
+						headers: { secretkey: authorizationSecret }
 					});
 
-					const mapfile = allMessages.map(e => ({ time: new Date(e.createdTimestamp).toUTCString(), username: e.author.username, message: e.content }));
-					const file = mapfile.filter((f) => f.message !== '');
-					file.unshift({ tickeData: `Ticket Creator: ${user.username} || Ticket Reason: ${foundTicket.reason}` });
+					const data = await response.status;
 
-					const toString = JSON.stringify(file, null, 3);
-					const buffer = Buffer.from(toString);
-					const attachment = new MessageAttachment(buffer, `ticketLog.json`);
+					let transLinkText;
+
+					if (data !== 200) {
+						transLinkText = '**Error:** I was unable to upload the transcript, apologies. You may download the file directly and open it to view the contents.';
+					} else {
+						transLinkText = `[**Click me to view the chat transcript.**](https://ragnarok-discord.000webhostapp.com/transcripts/${staticFileName})`;
+					}
 
 					if (message.channel) {
 						message.channel.delete();
 					}
+
 					const deleteTicket = db.prepare(`DELETE FROM tickets WHERE guildid = ${message.guild.id} AND ticketid = (@ticketid)`);
 					deleteTicket.run({
 						ticketid: channelArgs[channelArgs.length - 1]
 					});
 
-					if (!closeReason) {
-						user.send({ content: `Your ticket in guild: \`${message.guild.name}\` was closed.\nI have attached the chat transcript.`, files: [attachment] }).then(() => {
-						// eslint-disable-next-line arrow-body-style
-						}).catch(() => {
-							if (comCooldown.has(message.author.id)) {
-								comCooldown.delete(message.author.id);
-							}
-							return;
-						});
-					} else {
-						user.send({ content: `Your ticket in guild: \`${message.guild.name}\` was closed for the following reason:\n\`${closeReason}\`\nI have attached the chat transcript.`, files: [attachment] }).then(() => {
-						// eslint-disable-next-line arrow-body-style
-						}).catch(() => {
-							if (comCooldown.has(message.author.id)) {
-								comCooldown.delete(message.author.id);
-							}
-							return;
-						});
+					const user = this.client.users.cache.find((a) => a.id === foundTicket.authorid);
+
+					if (!user) {
+						if (!closeReason) {
+							const dmE = new MessageEmbed()
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.addField(`**${this.client.user.username} - Close**`,
+									`Your ticket in guild: \`${message.guild.name}\` was closed.\n${transLinkText}`);
+							user.send({ embeds: [dmE], files: [{ attachment: attachment, name: `${fixedName}.html` }] }).then(() => {
+								// eslint-disable-next-line arrow-body-style
+							}).catch(() => {
+								if (comCooldown.has(message.author.id)) {
+									comCooldown.delete(message.author.id);
+								}
+								return;
+							});
+						} else {
+							const dmE = new MessageEmbed()
+								.addField(`**${this.client.user.username} - Close**`,
+									`Your ticket in guild: \`${message.guild.name}\` was closed for the following reason:\n\`${closeReason}\`\n${transLinkText}`);
+							user.send({ embeds: [dmE], files: [{ attachment: attachment, name: `${fixedName}.html` }] }).then(() => {
+								// eslint-disable-next-line arrow-body-style
+							}).catch(() => {
+								if (comCooldown.has(message.author.id)) {
+									comCooldown.delete(message.author.id);
+								}
+								return;
+							});
+						}
 					}
 
 					const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
@@ -164,18 +207,18 @@ module.exports = class extends Command {
 					if (!closeReason) {
 						loggingembed
 							.addField(`**${this.client.user.username} - Close**`,
-								`**◎ Success:** <@${message.author.id}> has closed ticket \`#${message.channel.name}\``);
+								`**◎ Success:** <@${message.author.id}> has closed ticket \`#${fixedName}\`\n${transLinkText}`);
 						logchan.send({ embeds: [loggingembed] });
-						logchan.send({ files: [attachment] });
+						logchan.send({ files: [{ attachment: attachment, name: `${fixedName}.html` }] });
 						if (comCooldown.has(message.author.id)) {
 							comCooldown.delete(message.author.id);
 						}
 					} else {
 						loggingembed
 							.addField(`**${this.client.user.username} - Close**`,
-								`**◎ Success:** <@${message.author.id}> has closed ticket \`#${message.channel.name}\`\nReason: \`${closeReason}\``);
+								`**◎ Success:** <@${message.author.id}> has closed ticket \`#${fixedName}\`\nReason: \`${closeReason}\`\n${transLinkText}`);
 						logchan.send({ embeds: [loggingembed] });
-						logchan.send({ files: [attachment] });
+						logchan.send({ files: [{ attachment: attachment, name: `${fixedName}.html` }] });
 						if (comCooldown.has(message.author.id)) {
 							comCooldown.delete(message.author.id);
 						}
