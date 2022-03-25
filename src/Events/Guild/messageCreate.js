@@ -507,13 +507,13 @@ module.exports = class extends Event {
 			if (!oargresult || oargresult === '') {
 				logembed.addField(`Guild: ${message.guild.name} | Date: <t:${nowInSecond}>`,
 					Formatters.codeBlock('kotlin', `'${cmd}' was executed by ${message.author.tag}`));
-				const LoggingNoArgs = `[${chalk.red(moment().format('LLLL'))}] '${chalk.greenBright(cmd)}' was executed by ${chalk.red(message.author.tag)} (Guild: ${chalk.red(message.guild.name)})`;
+				const LoggingNoArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] '\x1b[92m${cmd}\x1b[0m' was executed by \x1b[31m${message.author.tag}\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
 				this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
 				console.log(LoggingNoArgs);
 			} else {
 				logembed.addField(`Guild: ${message.guild.name} | Date: <t:${nowInSecond}>`,
 					Formatters.codeBlock('kotlin', `'${cmd} ${oargresult}' was executed by ${message.author.tag}`));
-				const LoggingArgs = `[${chalk.red(moment().format('LLLL'))}] '${chalk.greenBright(cmd, oargresult)}' was executed by ${chalk.red(message.author.tag)} (Guild: ${chalk.red(message.guild.name)})`;
+				const LoggingArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] '\x1b[92m${cmd} ${oargresult}\x1b[0m' was executed by \x1b[31m${message.author.tag}\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
 				this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
 				console.log(LoggingArgs);
 			}
