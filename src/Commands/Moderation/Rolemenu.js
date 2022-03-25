@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require('discord.js');
+const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -18,7 +18,6 @@ module.exports = class extends Command {
 		this.client.utils.messageDelete(message, 0);
 
 		const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${message.guild.id}`).get();
-
 		if (!foundRoleMenu || !foundRoleMenu.roleList || JSON.parse(foundRoleMenu.roleList).length <= 0) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -36,33 +35,50 @@ module.exports = class extends Command {
 
 			const roleArray = JSON.parse(foundRoleMenu.roleList);
 
-			const menuArr = [];
+			// Check if roles in the array exist in the server, if it does not, remove it from the array
+			const roleArrayCleaned = roleArray.filter((role) => {
+				if (message.guild.roles.cache.has(role)) {
+					return true;
+				} else {
+					return false;
+				}
+			});
 
-			for (const buttonObject of roleArray) {
-				const role = message.guild.roles.cache.get(buttonObject);
-				menuArr.push(
-					{
-						label: `${role.name}`,
-						description: `Click this to get the ${role.name} role!`,
-						value: `${role.id}`
-					}
-				);
+			// If there is no length to roleArrayCleaned, delete from database and send a message
+			if (roleArrayCleaned.length <= 0) {
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - RoleMenu**`,
+						`**◎ Error:** The roles for the menu have been removed from the server. Please try again later.`);
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				db.prepare(`DELETE FROM rolemenu WHERE guildid=${message.guild.id}`).run();
+				return;
 			}
 
-			const dropdown = new MessageSelectMenu().addOptions(menuArr).setCustomId('rolemenu');
+			const row = new MessageActionRow();
 
-			const row = new MessageActionRow().addComponents(dropdown);
+			for (const buttonObject of roleArrayCleaned) {
+				const role = message.guild.roles.cache.get(buttonObject);
+
+				row.addComponents(
+					new MessageButton()
+						.setCustomId(`rm-${role.id}`)
+						.setLabel(`${role.name}`)
+						.setStyle('SUCCESS')
+				);
+			}
 
 			const roleMenuEmbed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle('Assign a Role')
-				.setDescription(`Select a role from the dropdown menu`);
+				.setDescription(`Select the role you wish to assign to yourself.`);
 			message.channel.send({ embeds: [roleMenuEmbed], components: [row] }).then(async (reactEmbed) => {
 				activeMenu.channel = message.channel.id;
 				activeMenu.message = reactEmbed.id;
 
-				db.prepare('UPDATE rolemenu SET activeRoleMenuID = (@activeRoleMenuID) WHERE guildid = (@guildid);').run({
+				db.prepare('UPDATE rolemenu SET activeRoleMenuID = (@activeRoleMenuID), roleList = (@roleList) WHERE guildid = (@guildid);').run({
 					activeRoleMenuID: JSON.stringify(activeMenu),
+					roleList: JSON.stringify(roleArrayCleaned),
 					guildid: `${message.guild.id}`
 				});
 			});
