@@ -287,7 +287,7 @@ module.exports = class RagnarokClient extends Client {
 				const channel = client.channels.cache.get('685973401772621843');
 				if (!channel) return;
 
-				channel.send(message, { code: 'js' });
+				channel.send(`\`\`\`js\n${message}\`\`\``);
 			}
 		}
 
