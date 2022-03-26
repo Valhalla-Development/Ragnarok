@@ -74,7 +74,7 @@ module.exports = class extends Event {
 		if (!logs) return;
 
 		const logembed = new MessageEmbed()
-			.setAuthor({ name: role.guild, iconURL: role.guild.iconURL() })
+			.setAuthor({ name: `${role.guild.name}`, iconURL: role.guild.iconURL() })
 			.setDescription(`**◎ Role Deleted: \`${role.name}\`.**`)
 			.setColor(this.client.utils.color(role.guild.me.displayHexColor))
 			.setTimestamp();
