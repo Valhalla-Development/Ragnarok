@@ -8,7 +8,8 @@ const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 module.exports = class extends Event {
 
 	async run(interaction) {
-		console.log(interaction.customId);
+		if (!interaction.isButton()) return;
+
 		if (interaction.customId === 'createTicket') {
 			await interaction.deferUpdate();
 
@@ -142,13 +143,76 @@ module.exports = class extends Event {
 			}).catch(console.error);
 		}
 
-		if (interaction.customId === 'rolemenu') {
-			await interaction.deferUpdate();
-
+		if (interaction.customId.startsWith('rm-')) {
 			const guild = this.client.guilds.cache.get(interaction.guild.id);
-			const fetch = db.prepare(`SELECT * FROM rolemenu WHERE guildid = ${guild.id}`).get();
-			const channel = guild.channels.cache.get(fetch.activeRoleMenuID.channel);
-			console.log(channel.id);
+			const user = guild.members.cache.get(interaction.user.id);
+
+			const lastRole = interaction.customId.lastIndexOf('-');
+
+			const roleTrim = interaction.customId.substring(interaction.customId.length, lastRole + 1);
+
+			const role = guild.roles.cache.get(roleTrim);
+
+			// Fetch the db
+			const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${interaction.guild.id}`).get();
+
+			// Parse the data
+			const roleArray = JSON.parse(foundRoleMenu.roleList);
+
+			// Check if roles in the array exist in the server, if it does not, remove it from the array
+			const roleArrayCleaned = roleArray.filter((roleCheck) => {
+				if (interaction.guild.roles.cache.has(roleCheck)) {
+					return true;
+				} else {
+					return false;
+				}
+			});
+
+			if (!roleArrayCleaned.includes(role.id)) {
+				const alreadyRole = new MessageEmbed()
+					.setColor(this.client.utils.color(guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Role Menu**`,
+						`**◎ Error:** The role you selected no longer exists on the server.`);
+				interaction.reply({ embeds: [alreadyRole], ephemeral: true });
+
+				db.prepare('UPDATE rolemenu SET activeRoleMenuID = (@activeRoleMenuID), roleList = (@roleList) WHERE guildid = (@guildid);').run({
+					roleList: JSON.stringify(roleArrayCleaned),
+					guildid: `${interaction.guild.id}`
+				});
+				return;
+			}
+
+			// check if user has role already
+			if (user.roles.cache.has(role.id)) {
+				user.roles.remove(role).then(() => {
+					const alreadyRole = new MessageEmbed()
+						.setColor(this.client.utils.color(guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Role Menu**`,
+							`**◎ Success:** I have removed the ${role} role from you.`);
+					interaction.reply({ embeds: [alreadyRole], ephemeral: true });
+				}).catch(() => {
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Rolemenu**`,
+							`**◎ Error:** An error occured.`);
+					interaction.reply({ embeds: [embed], ephemeral: true });
+				});
+			} else {
+				// add role to user
+				user.roles.add(role).then(() => {
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Rolemenu**`,
+							`**◎ Success:** I have added the ${role} role to you!`);
+					interaction.reply({ embeds: [embed], ephemeral: true });
+				}).catch(() => {
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Rolemenu**`,
+							`**◎ Error:** An error occured.`);
+					interaction.reply({ embeds: [embed], ephemeral: true });
+				});
+			}
 		}
 	}
 
