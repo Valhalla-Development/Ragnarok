@@ -116,7 +116,12 @@ module.exports = class extends Command {
 					`You hired someone to mug ${user}, you received <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
 					`${user} said they watch anime, you kicked them in the face and took <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
 					`You snuck up on ${user} and pick-pocketed <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
-					`*slaps ${user} with a large trout*, they dropped <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`
+					`*slaps ${user} with a large trout*, they dropped <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
+					`You tricked ${user} into giving you <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
+					`You petrified ${user}, they ran away and dropped <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
+					`You went to ${user}'s house and stole his college fund worth <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
+					`You noticed ${user} was drunk so you stole <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\` from them.`,
+					`${user} tried to mug you, but you had an uno reverse card. You stole <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\` from them.`
 				];
 
 				const depArg = new MessageEmbed()
@@ -156,7 +161,13 @@ module.exports = class extends Command {
 					`You hired someone to mug ${user}${stealAmount > 1 ? ` but they mugged you instead and took <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.` : ` ${user} fought him off.`}`,
 					`You tried to stab ${user}, but they said 'no u'${stealAmount > 1 ? ` and you stabbed yourself. You lost <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.` : ` and walked away.`}`,
 					`You tried to steal from ${user} but they caught you${stealAmount > 1 ? ` and they took <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\` from you.` : `, they simply said 'pathetic' and walked away.`}`,
-					`You asked ${user} for financial advice and lost <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`
+					`You asked ${user} for financial advice and lost <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
+					`${user} had a gun and you did not... They stole <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\` from you.`,
+					`You tried to mug ${user} but they were too drunk to fight back. They stole <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
+					`You tried to mug ${user} but they shot you. You lost <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
+					`${user} was drunk and you tried to mug them. You stabbed yourself and lost <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
+					`You tried to mug ${user} but they were too drunk to fight back. You tried to stab them, but they said 'no u' and you stabbed yourself. You lost <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
+					`${user} was a ninja and you tried to steal from them. They threw you out the window and stole <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`
 				];
 
 				const depArg = new MessageEmbed()
