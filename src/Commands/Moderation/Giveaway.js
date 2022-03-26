@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-expressions */
 const Command = require('../../Structures/Command');
 const ms = require('ms');
 const SQLite = require('better-sqlite3');
@@ -106,29 +108,27 @@ module.exports = class extends Command {
 			}
 
 			this.client.giveawaysManager.start(message.channel, {
-				time: ms(args[1]),
-				prize: args.slice(3).join(' '),
+				duration: ms(args[1]),
 				winnerCount: parseInt(args[2]),
-				hostedBy: `**${message.guild.name}**`,
+				prize: args.slice(3).join(' '),
+				lastChance: {
+					enabled: true,
+					content: '⚠️ **LAST CHANCE TO ENTER !** ⚠️',
+					threshold: 5000,
+					embedColor: '#FF0000'
+				},
 				messages: {
-					giveaway: '<:yay:725153188667195432>  **GIVEAWAY**  <:yay:725153188667195432>',
-					giveawayEnded: '<:yay:725153188667195432>  **GIVEAWAY ENDED**  <:yay:725153188667195432>',
-					timeRemaining: 'Time remaining: **{duration}**!',
+					giveaway: '🎉🎉 **GIVEAWAY** 🎉🎉',
+					giveawayEnded: '🎉🎉 **GIVEAWAY ENDED** 🎉🎉',
+					drawing: 'Drawing: {timestamp}',
+					dropMessage: 'Be the first to react with 🎉 !',
 					inviteToParticipate: 'React with 🎉 to participate!',
-					winMessage: 'Congratulations, {winners}! You won **{prize}**!',
-					embedFooter: 'Giveaways',
+					winMessage: 'Congratulations, {winners}! You won **{this.prize}**!\n{this.messageURL}',
+					embedFooter: '{this.winnerCount} winner(s)',
 					noWinner: 'Giveaway cancelled, no valid participations.',
-					hostedBy: `Hosted by: {user}`,
-					winners: 'winner(s)',
-					endedAt: 'Ended at',
-					units: {
-						seconds: 'seconds',
-						minutes: 'minutes',
-						hours: 'hours',
-						days: 'days',
-						pluralS: false
-					}
-
+					hostedBy: `Hosted by: **${message.guild.name}**`,
+					winners: 'Winner(s):',
+					endedAt: 'Ended at'
 				}
 			});
 		}
@@ -144,7 +144,8 @@ module.exports = class extends Command {
 				message.channel.send({ embeds: [incorrectReroll] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
-			const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.messageID === args[1]);
+			const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.guildId === message.guildId && g.messageId === args[0]);
+
 			if (!giveaway) {
 				this.client.utils.messageDelete(message, 10000);
 
@@ -197,7 +198,8 @@ module.exports = class extends Command {
 				message.channel.send({ embeds: [incorrectStop] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
-			const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.messageID === args[1]);
+			const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.guildId === message.guildId && g.messageId === args[0]);
+
 			if (!giveaway) {
 				this.client.utils.messageDelete(message, 10000);
 
