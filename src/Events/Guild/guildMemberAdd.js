@@ -158,7 +158,7 @@ module.exports = class extends Event {
 
 			const embed = new MessageEmbed()
 				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
-				.setAuthor({ name: member.guild, iconURL: member.user.avatarURL() })
+				.setAuthor({ name: `${member.guild.name}`, iconURL: member.user.avatarURL() })
 				.addField(`**Invite Manager**`,
 					`**◎ ${member.user} joined**; Invited by ${inviter} (${uses} invites)`)
 				.setFooter({ text: `ID: ${member.user.id}` })
@@ -177,7 +177,7 @@ module.exports = class extends Event {
 
 			const logembed = new MessageEmbed()
 				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
-				.setAuthor({ name: member.guild.name, iconURL: member.user.avatarURL() })
+				.setAuthor({ name: `${member.guild.name}`, iconURL: member.user.avatarURL() })
 				.setDescription(`**◎ Member Joined:** <@${member.user.id}> - ${member.user.tag}\n**◎ Account Created:** \`${moment(member.user.createdTimestamp).format('ddd, MMM Do YYYY')}\` - ${moment(member.user.createdTimestamp).fromNow()}`)
 				.setFooter({ text: `ID: ${member.user.id}` })
 				.setTimestamp();

@@ -541,7 +541,7 @@ module.exports = class extends Event {
 		}
 
 		const logembed = new MessageEmbed()
-			.setAuthor({ name: message.author.tag, iconURL: message.guild.iconURL() })
+			.setAuthor({ name: `${message.author.tag}`, iconURL: message.guild.iconURL() })
 			.setDescription(`**◎ Used** \`${cmd}\` **command in ${message.channel}**\n${Formatters.codeBlock('yaml', `${prefixcommand}${cmd} ${oargresult}`)}`)
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setFooter({ text: `ID: ${message.channel.id}` })

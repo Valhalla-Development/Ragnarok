@@ -333,7 +333,7 @@ module.exports = class extends Command {
 
 							const upperReason = reason.charAt(0).toUpperCase() + reason.substring(1);
 							const cancelE = new MessageEmbed()
-								.setAuthor({ name: ' Cancelled', iconURL: 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png' })
+								.setAuthor({ name: 'Cancelled', iconURL: 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png' })
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.setDescription(`Search results cancelled.\nReason: \`${upperReason}\``);
 							message.channel.send({ embeds: [cancelE] }).then((m) => this.client.utils.deletableCheck(m, 10000));

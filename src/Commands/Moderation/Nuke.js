@@ -37,7 +37,7 @@ module.exports = class extends Command {
 
 		const { channel } = message;
 
-		await channel.clone({ name: channel.name, reason: 'Nuked!' }).then((chn) => {
+		await channel.clone({ name: `${channel.name}`, reason: 'Nuked!' }).then((chn) => {
 			chn.setParent(channel.parentID);
 			chn.setPosition(channel.rawPosition);
 			channel.delete();

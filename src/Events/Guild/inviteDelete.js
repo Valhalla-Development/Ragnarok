@@ -17,7 +17,7 @@ module.exports = class extends Event {
 
 		const logembed = new MessageEmbed()
 			.setColor(this.client.utils.color(invite.guild.me.displayHexColor))
-			.setAuthor({ name: invite.guild, iconURL: invite.guild.iconURL() })
+			.setAuthor({ name: `${invite.guild.name}`, iconURL: invite.guild.iconURL() })
 			.setDescription(`**◎ Invite Deleted:**\n**◎ Invite Code:** \`${invite.code}\``)
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send({ embeds: [logembed] });
