@@ -278,155 +278,38 @@ module.exports = class extends Event {
 		// Initiate the Erela manager.
 		this.client.manager.init(this.client.user.id);
 
+		// Starboard
+		const grabStarboard = db.prepare('SELECT * FROM starboard').all();
+
+		grabStarboard.forEach(s => {
+			const guild = this.client.guilds.cache.get(s.guildid);
+			if (!guild) return;
+
+			const channel = guild.channels.cache.get(s.channel);
+			if (!channel) return;
+
+			// Cache messages
+			channel.messages.fetch({ limit: 10 });
+		});
+
 		// Cooldowns
-		const job = new CronJob('*/10 * * * * *', () => {
-			// Bans
-			const grabBans = db.prepare('SELECT * FROM ban').all();
-
-			grabBans.forEach(r => {
-				const guild = this.client.guilds.cache.get(r.guildid);
-				if (!guild) return;
-
-				guild.bans.fetch().then(bans => {
-					const userCheck = bans.filter(ban => ban.user.id === r.userid);
-					if (!userCheck.first()) {
-						db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
-						return;
-					}
-				});
-
-				if (Date.now() > r.endtime) {
-					try {
-						guild.members.unban(r.userid, 'tempban');
-						db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
-					} catch {
-						db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
-						return;
-					}
-
-					const channelGrab = db.prepare(`SELECT channel FROM ban WHERE id = ?`).get(`${guild.id}-${r.userid}`);
-					const findChannel = this.client.channels.cache.get(channelGrab.channel);
-
-					const embed = new MessageEmbed()
-						.setThumbnail(this.client.user.displayAvatarURL())
-						.setColor(this.client.utils.color(guild.me.displayHexColor))
-						.addField('Action | Un-Ban',
-							`**◎ User:** ${r.username}
-							**◎ Reason:** Ban time ended.`)
-						.setTimestamp();
-					findChannel.send({ embeds: [embed] });
-
-					const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`).get();
-					const dblogs = dbid.channel;
-					const chnCheck = this.client.channels.cache.get(dblogs);
-					if (!chnCheck) {
-						db.prepare('DELETE FROM logging WHERE guildid = ?').run(guild.id);
-					}
-
-					if (dbid) {
-						this.client.channels.cache.get(dblogs).send({ embeds: [embed] });
-					}
-				}
-			});
-
-			// Birthdays
-			const grabBdays = db.prepare('SELECT * FROM birthdays').all();
-			const grabBdaysConfig = db.prepare('SELECT * FROM birthdayConfig').all();
-
-			grabBdaysConfig.forEach(a => {
-				const guild = this.client.guilds.cache.get(a.guildid);
-				if (!guild) {
-					db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(a.guildid);
-					return;
-				}
-				// Cache users
-				guild.members.fetch();
-
-				const channel = guild.channels.cache.get(a.channel);
-				if (!channel) {
-					db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(a.guildid);
-					return;
-				}
-				grabBdays.forEach(b => {
-					const userids = b.userid;
-					const foundUsers = guild.members.cache.filter(member => member.id === userids);
-
-					foundUsers.forEach(c => {
-						const user = guild.members.cache.get(c.user.id);
-						const grabUser = db.prepare(`SELECT * FROM birthdays WHERE userid = ${c.user.id};`).get();
-
-						const now = moment();
-
-						let foundLastRun = JSON.parse(grabUser.lastRun);
-
-						if (!foundLastRun) {
-							foundLastRun = [];
-						}
-
-						if (foundLastRun.includes(`${guild.id}-${now.year().toString()}`)) return;
-
-						const checkDate = new Date();
-						checkDate.setFullYear('2018');
-						checkDate.setHours('0');
-						checkDate.setMilliseconds('0');
-						checkDate.setSeconds('0');
-						checkDate.setMinutes('0');
-
-						const savedDate = new Date(grabUser.birthday);
-						savedDate.setFullYear('2018');
-						savedDate.setHours('0');
-						savedDate.setMilliseconds('0');
-						savedDate.setSeconds('0');
-						savedDate.setMinutes('0');
-
-						if (checkDate.getTime() === savedDate.getTime()) {
-							let msg;
-
-							const role = guild.roles.cache.get(a.role);
-
-							if (role) {
-								msg = `It's ${user}'s birthday! ${role} Say Happy Birthday! 🍰`;
-							} else {
-								msg = `It's ${user}'s birthday! Say Happy Birthday! 🍰`;
-							}
-							channel.send(msg);
-
-							const lastYear = now.year() - 1;
-							if (foundLastRun.includes(`${guild.id}-${lastYear}`)) {
-								const findString = foundLastRun.indexOf(`${guild.id}-${lastYear}`);
-								foundLastRun[findString] = `${guild.id}-${now.year().toString()}`;
-							} else {
-								foundLastRun.push(`${guild.id}-${now.year().toString()}`);
-							}
-
-							db.prepare('UPDATE birthdays SET lastRun = (@lastRun);').run({
-								lastRun: JSON.stringify(foundLastRun)
-							});
-							return;
-						}
-					});
-				});
-			});
-
+		const tenSecondTimer = new CronJob('*/10 * * * * *', () => {
+			// Run every 10 seconds
 			// Economy
-			const grabEconomy = db.prepare('SELECT * FROM balance').all();
+			// Fetch all balance from db
+			const grabBal = db.prepare('SELECT * FROM balance').all();
+			// Filter grabBal where farmPlot or harvestedCrops are null
+			const grabBalFilter = grabBal.filter(a => a.farmPlot !== null || a.harvestedCrops !== null);
 
-			grabEconomy.forEach(r => {
-				const guild = this.client.guilds.cache.get(r.guild);
-				if (!guild) return;
-
-				guild.members.fetch();
-
-				const user = guild.members.cache.get(r.user);
-				if (!user) return;
-
-				let foundPlotList = JSON.parse(r.farmPlot);
+			// For each grabBalFilter
+			grabBalFilter.forEach(a => {
+				let foundPlotList = JSON.parse(a.farmPlot);
 
 				if (!foundPlotList) {
 					foundPlotList = [];
 				}
 
-				let harvestList = JSON.parse(r.harvestedCrops);
+				let harvestList = JSON.parse(a.harvestedCrops);
 
 				if (!harvestList) {
 					harvestList = [];
@@ -441,26 +324,26 @@ module.exports = class extends Event {
 
 						db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
 							farmPlot: JSON.stringify(foundPlotList),
-							id: `${user.id}-${guild.id}`
+							id: `${a.user}-${a.guild}`
 						});
 					}
 
 					// Check if crop is ready to decay and update db if so
 					if (key.cropStatus === 'harvest') {
 						if (key.decay >= 100) {
-							foundPlotList = foundPlotList.filter(a => a.decay <= 100);
+							foundPlotList = foundPlotList.filter(c => c.decay <= 100);
 
 							if (foundPlotList.length <= 0) {
 								db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
 									farmPlot: null,
-									id: `${user.id}-${guild.id}`
+									id: `${a.user}-${a.guild}`
 								});
 								return;
 							}
 
 							db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
 								farmPlot: JSON.stringify(foundPlotList),
-								id: `${user.id}-${guild.id}`
+								id: `${a.user}-${a.guild}`
 							});
 							return;
 						}
@@ -469,7 +352,7 @@ module.exports = class extends Event {
 
 						db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
 							farmPlot: JSON.stringify(foundPlotList),
-							id: `${user.id}-${guild.id}`
+							id: `${a.user}-${a.guild}`
 						});
 					}
 				});
@@ -477,46 +360,164 @@ module.exports = class extends Event {
 				// Decay harvested crops over time
 				harvestList.forEach(obj => {
 					if (obj.decay >= 100) {
-						harvestList = harvestList.filter(a => a.decay <= 100);
-
-						if (harvestList.length <= 0) {
-							db.prepare('UPDATE balance SET harvestedCrops = (@harvestedCrops) WHERE id = (@id);').run({
-								harvestedCrops: null,
-								id: `${user.id}-${guild.id}`
-							});
-							return;
-						}
-
-						db.prepare('UPDATE balance SET harvestedCrops = (@harvestedCrops) WHERE id = (@id);').run({
-							harvestedCrops: JSON.stringify(harvestList),
-							id: `${user.id}-${guild.id}`
-						});
+						harvestList = harvestList.filter(c => c.decay <= 100);
 						return;
 					}
 
 					obj.decay += Number(this.client.ecoPrices.decayRate);
+				});
+
+				if (harvestList.length <= 0) {
 					db.prepare('UPDATE balance SET harvestedCrops = (@harvestedCrops) WHERE id = (@id);').run({
-						harvestedCrops: JSON.stringify(harvestList),
-						id: `${user.id}-${guild.id}`
+						harvestedCrops: null,
+						id: `${a.user}-${a.guild}`
+					});
+					return;
+				}
+
+				db.prepare('UPDATE balance SET harvestedCrops = (@harvestedCrops) WHERE id = (@id);').run({
+					harvestedCrops: JSON.stringify(harvestList),
+					id: `${a.user}-${a.guild}`
+				});
+				return;
+			});
+		}, null, true);
+
+		const twentySecondTimer = new CronJob('*/20 * * * * *', () => {
+			// Run every 20 seconds
+			// Birthdays
+			const grabBdays = db.prepare('SELECT * FROM birthdays').all();
+			const grabBdaysConfig = db.prepare('SELECT * FROM birthdayConfig').all();
+
+			grabBdaysConfig.forEach(a => {
+				this.client.guilds.fetch(a.guildid).then(guild => {
+					if (!guild) {
+						db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(a.guildid);
+						return;
+					}
+
+					const channel = guild.channels.cache.get(a.channel);
+					if (!channel) {
+						db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(a.guildid);
+						return;
+					}
+
+					grabBdays.forEach(b => {
+						guild.members.fetch(b.userid).then(usr => {
+							const grabUser = db.prepare(`SELECT * FROM birthdays WHERE userid = ${usr.user.id};`).get();
+
+							const now = moment();
+
+							let foundLastRun = JSON.parse(grabUser.lastRun);
+
+							if (!foundLastRun) {
+								foundLastRun = [];
+							}
+
+							if (foundLastRun.includes(`${guild.id}-${now.year().toString()}`)) return;
+
+							const checkDate = new Date();
+							checkDate.setFullYear('2018');
+							checkDate.setHours('0');
+							checkDate.setMilliseconds('0');
+							checkDate.setSeconds('0');
+							checkDate.setMinutes('0');
+
+							const savedDate = new Date(grabUser.birthday);
+							savedDate.setFullYear('2018');
+							savedDate.setHours('0');
+							savedDate.setMilliseconds('0');
+							savedDate.setSeconds('0');
+							savedDate.setMinutes('0');
+
+							if (checkDate.getTime() === savedDate.getTime()) {
+								let msg;
+
+								const role = guild.roles.cache.get(a.role);
+
+								if (role) {
+									msg = `It's ${usr}'s birthday! ${role} Say Happy Birthday! 🍰`;
+								} else {
+									msg = `It's ${usr}'s birthday! Say Happy Birthday! 🍰`;
+								}
+								channel.send(msg);
+
+								const lastYear = now.year() - 1;
+								if (foundLastRun.includes(`${guild.id}-${lastYear}`)) {
+									const findString = foundLastRun.indexOf(`${guild.id}-${lastYear}`);
+									foundLastRun[findString] = `${guild.id}-${now.year().toString()}`;
+								} else {
+									foundLastRun.push(`${guild.id}-${now.year().toString()}`);
+								}
+
+								db.prepare('UPDATE birthdays SET lastRun = (@lastRun);').run({
+									lastRun: JSON.stringify(foundLastRun)
+								});
+								return;
+							}
+						});
 					});
 				});
 			});
+		}, null, true);
 
-			// Starboard
-			const grabStarboard = db.prepare('SELECT * FROM starboard').all();
+		const thirtySecondTimer = new CronJob('*/30 * * * * *', () => {
+			// Run every 2 minutes
+			// Bans
+			const grabBans = db.prepare('SELECT * FROM ban').all();
+			// HERE IT FETCHES THE GUILD IN A FOR EACH, SO IF THE grabBdaysConfig HAS EXAMPLE 10 OF THE SAME GUILD, IT WILL FETCH IT 10 TIMES, SOMEHOW REMOVE DUPLICATES
+			grabBans.forEach(r => {
+				this.client.guilds.fetch(r.guildid).then(guild => {
+					if (!guild) return;
 
-			grabStarboard.forEach(s => {
-				const guild = this.client.guilds.cache.get(s.guildid);
-				if (!guild) return;
+					guild.bans.fetch().then(bans => {
+						const userCheck = bans.filter(ban => ban.user.id === r.userid);
+						if (!userCheck.first()) {
+							db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+							return;
+						}
+					});
 
-				const channel = guild.channels.cache.get(s.channel);
-				if (!channel) return;
+					if (Date.now() > r.endtime) {
+						try {
+							guild.members.unban(r.userid, 'tempban');
+							db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+						} catch {
+							db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+							return;
+						}
 
-				// Cache messages
-				channel.messages.fetch({ limit: 10 });
+						const channelGrab = db.prepare(`SELECT channel FROM ban WHERE id = ?`).get(`${guild.id}-${r.userid}`);
+						const findChannel = this.client.channels.cache.get(channelGrab.channel);
+
+						const embed = new MessageEmbed()
+							.setThumbnail(this.client.user.displayAvatarURL())
+							.setColor(this.client.utils.color(guild.me.displayHexColor))
+							.addField('Action | Un-Ban',
+								`**◎ User:** ${r.username}
+							**◎ Reason:** Ban time ended.`)
+							.setTimestamp();
+						findChannel.send({ embeds: [embed] });
+
+						const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`).get();
+						const dblogs = dbid.channel;
+						const chnCheck = this.client.channels.cache.get(dblogs);
+						if (!chnCheck) {
+							db.prepare('DELETE FROM logging WHERE guildid = ?').run(guild.id);
+						}
+
+						if (dbid) {
+							this.client.channels.cache.get(dblogs).send({ embeds: [embed] });
+						}
+					}
+				});
 			});
 		}, null, true);
-		job.start();
+
+		// Run cron jobs
+		tenSecondTimer.start();
+		twentySecondTimer.start();
+		thirtySecondTimer.start();
 	}
 
 };
