@@ -8,7 +8,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			aliases: ['shh'],
+			aliases: ['shh', 'mute'],
 			description: 'Timeouts tagged user.',
 			category: 'Moderation',
 			userPerms: ['MODERATE_MEMBERS'],
