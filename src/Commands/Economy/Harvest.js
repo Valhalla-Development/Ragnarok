@@ -67,19 +67,19 @@ module.exports = class extends Command {
 			harvestable = [];
 		}
 
-		if (!foundPlotList.length && !harvestable.length) {
-			this.client.utils.messageDelete(message, 10000);
-
-			const embed = new MessageEmbed()
-				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Harvest**`,
-					`**◎ Error:** You have nothing to harvest!`);
-			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
-
 		if (!args[0]) {
+			if (!foundPlotList.length && !harvestable.length) {
+				this.client.utils.messageDelete(message, 10000);
+
+				const embed = new MessageEmbed()
+					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Harvest**`,
+						`**◎ Error:** You have nothing to harvest!`);
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
+			}
+
 			if (foundPlotList.length) {
 				const arr = [];
 
@@ -160,6 +160,18 @@ module.exports = class extends Command {
 		const harvestedFunc = [];
 
 		if (args[0] === 'all') {
+			if (!harvestable.length) {
+				this.client.utils.messageDelete(message, 10000);
+
+				const embed = new MessageEmbed()
+					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Harvest**`,
+						`**◎ Error:** You have nothing to harvest!`);
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
+			}
+
 			let totalToAdd = 0;
 			let sellPrice;
 			const arr = [];
@@ -192,7 +204,7 @@ module.exports = class extends Command {
 			balance.farmPlot = foundPlotList.length ? JSON.stringify(foundPlotList) : null;
 			balance.harvestedCrops = JSON.stringify(foundHarvestedList);
 
-			this.client.setBalance.run(balance);
+			// this.client.setBalance.run(balance);
 
 			const Embeds = [];
 			const TestPages = arr.length;
@@ -210,7 +222,7 @@ module.exports = class extends Command {
 					.setFooter({ text: `To harvest, you can run ${prefix}harvest all${TotalPage > 1 ? ` | Page: ${PageNo++}/${TotalPage}` : ''}` });
 				Embeds.push(Embed);
 			}
-			TotalPage > 1 ? this.client.functions.pagination(message, Embeds) : message.channel.send({ embeds: [Embeds] });
+			TotalPage > 1 ? this.client.functions.pagination(message, Embeds) : message.channel.send({ embeds: [Embeds[0]] });
 		}
 
 		function harvestCrops() {
