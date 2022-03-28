@@ -18,6 +18,8 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
+		this.client.utils.messageDelete(message, 10000);
+
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 
