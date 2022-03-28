@@ -113,7 +113,6 @@ module.exports = class extends Command {
 			return;
 		}
 
-		console.log(typeof cornPrice);
 		let currentTotalSeeds = 0;
 
 		if (foundItemList.cornSeeds) {
@@ -1022,7 +1021,7 @@ module.exports = class extends Command {
 			}
 
 			if (args[1] === 'all') {
-				if (!foundItemList.lettuce && !foundItemList.strawberries && !foundItemList.spinach && !foundItemList.barley && !foundPlotList.tomato && !foundPlotList.potato && !foundPlotList.wheat && !foundPlotList.corn && !foundItemList.trout && !foundItemList.kingSalmon && !foundItemList.swordfish && !foundItemList.pufferfish && !foundItemList.treasure && !foundItemList.goldBar && !foundItemList.goldNugget) {
+				if (!foundItemList.lettuce && !foundItemList.strawberries && !foundItemList.spinach && !foundItemList.barley && !foundHarvestList.filter(key => key.cropType === 'tomato').length && !foundHarvestList.filter(key => key.cropType === 'potato').length && !foundHarvestList.filter(key => key.cropType === 'wheat').length && !foundHarvestList.filter(key => key.cropType === 'corn').length && !foundItemList.trout && !foundItemList.kingSalmon && !foundItemList.swordfish && !foundItemList.pufferfish && !foundItemList.treasure && !foundItemList.goldBar && !foundItemList.goldNugget) {
 					this.client.utils.messageDelete(message, 10000);
 
 					const embed = new MessageEmbed()
@@ -1040,11 +1039,15 @@ module.exports = class extends Command {
 				if (foundItemList.lettuce) fullPrice += Number(foundItemList.lettuce) * this.client.ecoPrices.lettuce;
 				if (foundItemList.strawberries) fullPrice += Number(foundItemList.strawberries) * this.client.ecoPrices.strawberries;
 				if (foundItemList.spinach) fullPrice += Number(foundItemList.spinach) * this.client.ecoPrices.spinach;
-				if (foundItemList.barley)fullPrice += Number(foundItemList.barley) * this.client.ecoPrices.barley;
-				if (foundPlotList.tomato) fullPrice += Number(foundPlotList.tomato) * this.client.ecoPrices.tomatoes;
-				if (foundPlotList.potato) fullPrice += Number(foundPlotList.potato) * this.client.ecoPrices.potatoes;
-				if (foundPlotList.wheat) fullPrice += Number(foundPlotList.wheat) * this.client.ecoPrices.wheat;
-				if (foundPlotList.corn)fullPrice += Number(foundPlotList.corn) * this.client.ecoPrices.corn;
+				if (foundItemList.barley) fullPrice += Number(foundItemList.barley) * this.client.ecoPrices.barley;
+
+				foundHarvestList.forEach((obj) => {
+					if (obj.cropType === 'corn') fullPrice += Math.floor(this.client.ecoPrices.corn * (1 - (obj.decay.toFixed(4) / 100)));
+					if (obj.cropType === 'wheat') fullPrice += Math.floor(this.client.ecoPrices.wheat * (1 - (obj.decay.toFixed(4) / 100)));
+					if (obj.cropType === 'potato') fullPrice += Math.floor(this.client.ecoPrices.potatoes * (1 - (obj.decay.toFixed(4) / 100)));
+					if (obj.cropType === 'tomato') fullPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - (obj.decay.toFixed(4) / 100)));
+				});
+
 				if (foundItemList.trout) fullPrice += Number(foundItemList.trout) * this.client.ecoPrices.trout;
 				if (foundItemList.kingSalmon) fullPrice += Number(foundItemList.kingSalmon) * this.client.ecoPrices.kingSalmon;
 				if (foundItemList.swordfish) fullPrice += Number(foundItemList.swordfish) * this.client.ecoPrices.swordfish;
@@ -1052,7 +1055,6 @@ module.exports = class extends Command {
 				if (foundItemList.treasure) fullPrice += Number(foundItemList.treasure) * this.client.ecoPrices.treasure;
 				if (foundItemList.goldBar) fullPrice += Number(foundItemList.goldBar) * this.client.ecoPrices.goldBar;
 				if (foundItemList.goldNugget) fullPrice += Number(foundItemList.goldNugget) * this.client.ecoPrices.goldNugget;
-
 
 				if (foundItemList.treasure) itemCount += Number(foundItemList.treasure);
 				if (foundItemList.trout) itemCount += Number(foundItemList.trout);
@@ -1063,10 +1065,14 @@ module.exports = class extends Command {
 				if (foundItemList.strawberries) itemCount += Number(foundItemList.strawberries);
 				if (foundItemList.spinach) itemCount += Number(foundItemList.spinach);
 				if (foundItemList.barley) itemCount += Number(foundItemList.barley);
-				if (foundPlotList.tomato) itemCount += Number(foundPlotList.tomato);
-				if (foundPlotList.potato) itemCount += Number(foundPlotList.potato);
-				if (foundPlotList.wheat) itemCount += Number(foundPlotList.wheat);
-				if (foundPlotList.corn) itemCount += Number(foundPlotList.corn);
+
+				if (foundHarvestList) {
+					itemCount += Number(foundHarvestList.filter(key => key.cropType === 'corn').length);
+					itemCount += Number(foundHarvestList.filter(key => key.cropType === 'wheat').length);
+					itemCount += Number(foundHarvestList.filter(key => key.cropType === 'potato').length);
+					itemCount += Number(foundHarvestList.filter(key => key.cropType === 'tomato').length);
+				}
+
 				if (foundItemList.goldBar) itemCount += Number(foundItemList.goldBar);
 				if (foundItemList.goldNugget) itemCount += Number(foundItemList.goldNugget);
 
@@ -1087,13 +1093,10 @@ module.exports = class extends Command {
 				if (foundItemList.spinach) delete foundItemList.spinach;
 				if (foundItemList.strawberries) delete foundItemList.strawberries;
 				if (foundItemList.lettuce) delete foundItemList.lettuce;
-				if (foundPlotList.tomato) delete foundPlotList.tomato;
-				if (foundPlotList.potato) delete foundPlotList.potato;
-				if (foundPlotList.wheat) delete foundPlotList.wheat;
-				if (foundPlotList.corn) delete foundPlotList.corn;
 
-				await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
+				await db.prepare('UPDATE balance SET items = (@items), harvestedCrops = (@harvestedCrops) WHERE id = (@id);').run({
 					items: JSON.stringify(foundItemList),
+					harvestedCrops: null,
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
@@ -1208,7 +1211,7 @@ module.exports = class extends Command {
 			}
 
 			if (args[1] === 'farm' || args[1] === 'crops') {
-				if (!foundItemList.lettuce && !foundItemList.strawberries && !foundItemList.spinach && !foundItemList.barley && !foundPlotList.tomato && !foundPlotList.potato && !foundPlotList.wheat && !foundPlotList.corn) {
+				if (!foundItemList.lettuce && !foundItemList.strawberries && !foundItemList.spinach && !foundItemList.barley && !foundHarvestList.filter(key => key.cropType === 'tomato').length && !foundHarvestList.filter(key => key.cropType === 'potato').length && !foundHarvestList.filter(key => key.cropType === 'wheat').length && !foundHarvestList.filter(key => key.cropType === 'corn').length) {
 					this.client.utils.messageDelete(message, 10000);
 
 					const embed = new MessageEmbed()
@@ -1228,10 +1231,12 @@ module.exports = class extends Command {
 				if (foundItemList.spinach) fullPrice += Number(foundItemList.spinach) * this.client.ecoPrices.spinach;
 				if (foundItemList.barley)fullPrice += Number(foundItemList.barley) * this.client.ecoPrices.barley;
 
-				if (foundPlotList.tomato) fullPrice += Number(foundPlotList.tomato) * this.client.ecoPrices.tomatoes;
-				if (foundPlotList.potato) fullPrice += Number(foundPlotList.potato) * this.client.ecoPrices.potatoes;
-				if (foundPlotList.wheat) fullPrice += Number(foundPlotList.wheat) * this.client.ecoPrices.wheat;
-				if (foundPlotList.corn)fullPrice += Number(foundPlotList.corn) * this.client.ecoPrices.corn;
+				foundHarvestList.forEach((obj) => {
+					if (obj.cropType === 'corn') fullPrice += Math.floor(this.client.ecoPrices.corn * (1 - (obj.decay.toFixed(4) / 100)));
+					if (obj.cropType === 'wheat') fullPrice += Math.floor(this.client.ecoPrices.wheat * (1 - (obj.decay.toFixed(4) / 100)));
+					if (obj.cropType === 'potato') fullPrice += Math.floor(this.client.ecoPrices.potatoes * (1 - (obj.decay.toFixed(4) / 100)));
+					if (obj.cropType === 'tomato') fullPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - (obj.decay.toFixed(4) / 100)));
+				});
 
 
 				if (foundItemList.lettuce) itemCount += Number(foundItemList.lettuce);
@@ -1239,10 +1244,12 @@ module.exports = class extends Command {
 				if (foundItemList.spinach) itemCount += Number(foundItemList.spinach);
 				if (foundItemList.barley) itemCount += Number(foundItemList.barley);
 
-				if (foundPlotList.tomato) itemCount += Number(foundPlotList.tomato);
-				if (foundPlotList.potato) itemCount += Number(foundPlotList.potato);
-				if (foundPlotList.wheat) itemCount += Number(foundPlotList.wheat);
-				if (foundPlotList.corn) itemCount += Number(foundPlotList.corn);
+				if (foundHarvestList) {
+					itemCount += Number(foundHarvestList.filter(key => key.cropType === 'corn').length);
+					itemCount += Number(foundHarvestList.filter(key => key.cropType === 'wheat').length);
+					itemCount += Number(foundHarvestList.filter(key => key.cropType === 'potato').length);
+					itemCount += Number(foundHarvestList.filter(key => key.cropType === 'tomato').length);
+				}
 
 				const totalAdd = balance.total + fullPrice;
 
@@ -1255,13 +1262,9 @@ module.exports = class extends Command {
 				if (foundItemList.strawberries) delete foundItemList.strawberries;
 				if (foundItemList.lettuce) delete foundItemList.lettuce;
 
-				if (foundPlotList.tomato) delete foundPlotList.tomato;
-				if (foundPlotList.potato) delete foundPlotList.potato;
-				if (foundPlotList.wheat) delete foundPlotList.wheat;
-				if (foundPlotList.corn) delete foundPlotList.corn;
-
-				await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
+				await db.prepare('UPDATE balance SET items = (@items), harvestedCrops = (@harvestedCrops) WHERE id = (@id);').run({
 					items: JSON.stringify(foundItemList),
+					harvestedCrops: null,
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
