@@ -23,12 +23,32 @@ module.exports = class extends Command {
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 
+		if (!args[0]) {
+			const incorrectFormat = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Timeout**`,
+					`**◎ Error:** Incorrect usage! Available Commands:
+					\`${prefix}timeout <@user> <time> (reason)\`
+					\`${prefix}timeout clear <@user>\``);
+			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
 		const user = message.mentions.members.first() || message.guild.members.cache.find(usr => usr.id === args[0]);
+
+		if (!user) {
+			const incorrectFormat = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Timeout**`,
+					`**◎ Error:** Incorrect usage! Available Commands:
+					\`${prefix}timeout <@user> <time> (reason)\`
+					\`${prefix}timeout clear <@user>\``);
+			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
 
 		// Check if user is message.author
 		if (user.user.id === message.author.id) {
-			this.client.utils.messageDelete(message, 10000);
-
 			const incorrectFormat = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
@@ -39,8 +59,6 @@ module.exports = class extends Command {
 
 		// Check if user is bannable
 		if (user.permissions.has(Permissions.FLAGS.MANAGE_GUILD) || user.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || !user.bannable) {
-			this.client.utils.messageDelete(message, 10000);
-
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
@@ -51,8 +69,6 @@ module.exports = class extends Command {
 
 		if (args[0] === 'clear') {
 			if (!args[1]) {
-				this.client.utils.messageDelete(message, 10000);
-
 				const incorrectFormat = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Timeout**`,
@@ -63,8 +79,6 @@ module.exports = class extends Command {
 
 			const userClear = message.mentions.members.first() || message.guild.members.cache.find(usr => usr.id === args[0]);
 			if (!userClear) {
-				this.client.utils.messageDelete(message, 10000);
-
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Timeout**`,
@@ -73,11 +87,18 @@ module.exports = class extends Command {
 				return;
 			}
 
+			if (!user.isCommunicationDisabled()) {
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Timeout**`,
+						`**◎ Error:** ${user} is not timed out`);
+				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				return;
+			}
+
 			try {
 				user.timeout(0);
 			} catch {
-				this.client.utils.messageDelete(message, 10000);
-
 				const valueLow = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Timeout**`,
@@ -111,8 +132,6 @@ module.exports = class extends Command {
 		}
 
 		if (!user) {
-			this.client.utils.messageDelete(message, 10000);
-
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
@@ -122,8 +141,6 @@ module.exports = class extends Command {
 		}
 
 		if (user.isCommunicationDisabled()) {
-			this.client.utils.messageDelete(message, 10000);
-
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
@@ -134,8 +151,6 @@ module.exports = class extends Command {
 
 		const timeoutTime = args[1];
 		if (!timeoutTime) {
-			this.client.utils.messageDelete(message, 10000);
-
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
@@ -146,8 +161,6 @@ module.exports = class extends Command {
 
 		// Ensure timeoutTime is a valid option
 		if (!args[1].match('[dhms]')) {
-			this.client.utils.messageDelete(message, 10000);
-
 			const incorrectFormat = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
@@ -158,8 +171,6 @@ module.exports = class extends Command {
 
 		// Checks if timeoutTime is a number
 		if (isNaN(ms(args[1]))) {
-			this.client.utils.messageDelete(message, 10000);
-
 			const invalidDur = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
@@ -170,8 +181,6 @@ module.exports = class extends Command {
 
 		// Check if timeoutTime is higher than 30 seconds
 		if (ms(args[1]) < '30000') {
-			this.client.utils.messageDelete(message, 10000);
-
 			const valueLow = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
@@ -182,8 +191,6 @@ module.exports = class extends Command {
 
 		// Check if timeoutTime is higher than 28 days
 		if (ms(args[1]) > '2419200000') {
-			this.client.utils.messageDelete(message, 10000);
-
 			const valueLow = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
@@ -201,8 +208,6 @@ module.exports = class extends Command {
 		try {
 			user.timeout(ms(args[1]), reason);
 		} catch {
-			this.client.utils.messageDelete(message, 10000);
-
 			const valueLow = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
