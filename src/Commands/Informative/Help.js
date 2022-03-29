@@ -192,7 +192,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Help**`,
 							`**◎ Error:** Only the command executor can select an option!`);
-					b.reply.send({ embeds: [wrongUser] }, true);
+					b.reply({ embeds: [wrongUser], ephemeral: true });
 					return;
 				}
 

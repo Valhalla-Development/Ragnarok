@@ -114,7 +114,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Meme**`,
 						`**◎ Error:** Only the command executor can select an option!`);
-				b.reply.send({ embeds: [wrongUser] }, true);
+				b.reply({ embeds: [wrongUser], ephemeral: true });
 				return;
 			}
 
@@ -141,7 +141,6 @@ module.exports = class extends Command {
 		});
 
 		collector.on('end', (_, reason) => {
-			console.log('ended');
 			if (comCooldown.has(message.author.id)) {
 				comCooldown.delete(message.author.id);
 			}
