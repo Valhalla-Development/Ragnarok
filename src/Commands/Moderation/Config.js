@@ -810,6 +810,17 @@ module.exports = class extends Command {
 
 			// Membercount Command
 			if (args[0] === 'membercount') {
+				if (!message.member.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) {
+					this.client.utils.messageDelete(message, 10000);
+
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Config**`,
+							`**◎ Error:** I need the permission \`Manage Channels\` for this command!`);
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
 				// preparing count
 				this.client.getTable = db.prepare('SELECT * FROM membercount WHERE guildid = ?');
 				let status;
@@ -830,53 +841,40 @@ module.exports = class extends Command {
 						}
 
 						message.guild.channels.create('Member Count', {
-							type: 'category', reason: 'member count category'
+							type: 'GUILD_CATEGORY',
+							permissionOverwrites: [{
+								id: message.channel.guild.roles.everyone.id,
+								deny: 'CONNECT',
+								allow: 'VIEW_CHANNEL'
+							}]
 						}).then((a) => {
 							a.setPosition(0);
 
-							message.guild.channels.create(`Users: ${(message.guild.memberCount - message.guild.members.cache.filter((m) => m.user.bot).size).toLocaleString('en')}`, {
-								type: 'voice',
-								permissionOverwrites: [{
-									id: message.channel.guild.roles.everyone.id,
-									deny: 'CONNECT',
-									allow: 'VIEW_CHANNEL'
-								}],
-								reason: 'user count channel'
-							}).then((b) => {
-								b.setParent(a);
+							const chUsr = message.guild.channels.create(`Users: ${(message.guild.memberCount - message.guild.members.cache.filter((m) => m.user.bot).size).toLocaleString('en')}`, {
+								type: 'GUILD_VOICE',
+								parent: a.id,
+								lockPermissions: true
+							});
 
-								message.guild.channels.create(`Bots: ${message.guild.members.cache.filter((m) => m.user.bot).size}`, {
-									type: 'voice',
-									permissionOverwrites: [{
-										id: message.channel.guild.roles.everyone.id,
-										deny: 'CONNECT',
-										allow: 'VIEW_CHANNEL'
-									}],
-									reason: 'bot count channel'
-								}).then((c) => {
-									c.setParent(a);
+							const chBot = message.guild.channels.create(`Bots: ${message.guild.members.cache.filter((m) => m.user.bot).size}`, {
+								type: 'GUILD_VOICE',
+								parent: a.id,
+								lockPermissions: true
+							});
 
-									message.guild.channels.create(`Total: ${message.guild.memberCount.toLocaleString('en')}`, {
-										type: 'voice',
-										permissionOverwrites: [{
-											id: message.channel.guild.roles.everyone.id,
-											deny: 'CONNECT',
-											allow: 'VIEW_CHANNEL'
-										}],
-										reason: 'total count channel'
-									}).then((d) => {
-										d.setParent(a);
+							const chTot = message.guild.channels.create(`Total: ${message.guild.memberCount.toLocaleString('en')}`, {
+								type: 'GUILD_VOICE',
+								parent: a.id,
+								lockPermissions: true
+							});
 
-										const insert = db.prepare('INSERT INTO membercount (guildid, status, channela, channelb, channelc) VALUES (@guildid, @status, @channela, @channelb, @channelc);');
-										insert.run({
-											guildid: `${message.guild.id}`,
-											status: 'on',
-											channela: b.id,
-											channelb: c.id,
-											channelc: d.id
-										});
-									});
-								});
+							const insert = db.prepare('INSERT INTO membercount (guildid, status, channela, channelb, channelc) VALUES (@guildid, @status, @channela, @channelb, @channelc);');
+							insert.run({
+								guildid: `${message.guild.id}`,
+								status: 'on',
+								channela: chUsr.id,
+								channelb: chBot.id,
+								channelc: chTot.id
 							});
 						});
 
@@ -1581,7 +1579,7 @@ module.exports = class extends Command {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Error:** I need the permission \`View Audit Log\` for this command!`);
+							`**◎ Error:** I need the permission \`Manage Channels\` for this command!`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
