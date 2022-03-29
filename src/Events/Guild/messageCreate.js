@@ -435,7 +435,7 @@ module.exports = class extends Event {
 		const mentionRegex = RegExp(`^<@!?${this.client.user.id}>$`);
 
 		if (message.content.match(mentionRegex)) {
-			message.channel.send(`**◎ My prefix for ${message.guild.name} is \`${this.client.prefix}\`.**`);
+			message.channel.send(`**◎ My prefix for ${message.guild.name} is \`${prefixcommand}\`.**`);
 			return;
 		}
 
@@ -450,9 +450,14 @@ module.exports = class extends Event {
 
 					message.channel.sendTyping();
 
-					await fetch.default(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=${message.author.id}`)
-						.then(res => res.json())
-						.then(json => message.reply({ content: json.message, allowedMentions: { repliedUser: false } }));
+					const res = await fetch.default(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=${message.author.id}`);
+					if (!res.ok) {
+						message.reply({ content: 'I am unable to connect to the chat API. Please try again later.' });
+						return;
+					} else {
+						const json = res.json();
+						message.reply({ content: json.message, allowedMentions: { repliedUser: false } });
+					}
 				}
 			}
 		}
