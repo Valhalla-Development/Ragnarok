@@ -850,31 +850,31 @@ module.exports = class extends Command {
 						}).then((a) => {
 							a.setPosition(0);
 
-							const chUsr = message.guild.channels.create(`Users: ${(message.guild.memberCount - message.guild.members.cache.filter((m) => m.user.bot).size).toLocaleString('en')}`, {
+							message.guild.channels.create(`Users: ${(message.guild.memberCount - message.guild.members.cache.filter((m) => m.user.bot).size).toLocaleString('en')}`, {
 								type: 'GUILD_VOICE',
 								parent: a.id,
 								lockPermissions: true
-							});
-
-							const chBot = message.guild.channels.create(`Bots: ${message.guild.members.cache.filter((m) => m.user.bot).size}`, {
-								type: 'GUILD_VOICE',
-								parent: a.id,
-								lockPermissions: true
-							});
-
-							const chTot = message.guild.channels.create(`Total: ${message.guild.memberCount.toLocaleString('en')}`, {
-								type: 'GUILD_VOICE',
-								parent: a.id,
-								lockPermissions: true
-							});
-
-							const insert = db.prepare('INSERT INTO membercount (guildid, status, channela, channelb, channelc) VALUES (@guildid, @status, @channela, @channelb, @channelc);');
-							insert.run({
-								guildid: `${message.guild.id}`,
-								status: 'on',
-								channela: chUsr.id,
-								channelb: chBot.id,
-								channelc: chTot.id
+							}).then((b) => {
+								message.guild.channels.create(`Bots: ${message.guild.members.cache.filter((m) => m.user.bot).size}`, {
+									type: 'GUILD_VOICE',
+									parent: a.id,
+									lockPermissions: true
+								}).then((c) => {
+									message.guild.channels.create(`Total: ${message.guild.memberCount.toLocaleString('en')}`, {
+										type: 'GUILD_VOICE',
+										parent: a.id,
+										lockPermissions: true
+									}).then((d) => {
+										const insert = db.prepare('INSERT INTO membercount (guildid, status, channela, channelb, channelc) VALUES (@guildid, @status, @channela, @channelb, @channelc);');
+										insert.run({
+											guildid: `${message.guild.id}`,
+											status: 'on',
+											channela: b.id,
+											channelb: c.id,
+											channelc: d.id
+										});
+									});
+								});
 							});
 						});
 
