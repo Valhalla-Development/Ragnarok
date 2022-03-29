@@ -16,17 +16,6 @@ module.exports = class extends Event {
 			}
 		);
 
-		// AirReps Alert
-		if (member.guild.id === '495602800802398212') {
-			if (member.guild.memberCount === 31) {
-				if (member.guild.roles.cache.find((r) => r.name === '10,000th Member')) return;
-				this.client.channels.cache.get('657241621112553474').send(`We just hit 10,000 members!\n`);
-				member.guild.roles.create(
-					{ name: '10,000th Member', reason: '10,000th Member', color: 'BLUE' }
-				).then((role) => member.roles.add(role)).catch(console.error);
-			}
-		}
-
 		// welcome
 		async function welcomeMessage(clientGrab) {
 			// Return if user is my testing alt
