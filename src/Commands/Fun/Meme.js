@@ -1,10 +1,11 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
 const fetch = require('node-fetch-cjs');
+const comCooldown = new Set();
+const comCooldownSeconds = 10;
 
 const subreddits = [
 	'memes',
-	'DeepFriedMemes',
 	'bonehurtingjuice',
 	'surrealmemes',
 	'dankmemes',
@@ -32,6 +33,17 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
+		if (comCooldown.has(message.author.id)) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Meme**`,
+					`**◎ Error:** Please only run this command once.`);
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
 		const msg = await message.channel.send({ content: 'Generating...' });
 		message.channel.sendTyping();
 
@@ -54,7 +66,7 @@ module.exports = class extends Command {
 			const noPost = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Meme**`,
-					`**◎ Error:** I could not find a psot.`);
+					`**◎ Error:** I could not find a post.`);
 			message.channel.send({ embeds: [noPost] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -72,7 +84,68 @@ module.exports = class extends Command {
 			.setAuthor({ name: `${post.data.title}`, url: `https://reddit.com${post.data.permalink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
 			.setImage(postURL)
 			.setFooter({ text: `👍 ${post.data.ups} | 💬 ${post.data.num_comments}` });
-		message.channel.send({ embeds: [embed] });
+
+		const buttonA = new MessageButton()
+			.setStyle('PRIMARY')
+			.setLabel('Next Meme')
+			.setCustomId('nxtmeme');
+
+		const row = new MessageActionRow()
+			.addComponents(buttonA);
+
+		const m = await message.channel.send({ components: [row], embeds: [embed] });
+
+		const filter = (but) => but.user.id !== this.client.user.id;
+
+		const collector = m.createMessageComponentCollector(filter, { time: 15000 });
+
+		if (!comCooldown.has(message.author.id)) {
+			comCooldown.add(message.author.id);
+		}
+		setTimeout(() => {
+			if (comCooldown.has(message.author.id)) {
+				comCooldown.delete(message.author.id);
+			}
+		}, comCooldownSeconds * 1000);
+
+		collector.on('collect', async b => {
+			if (b.user.id !== message.author.id) {
+				const wrongUser = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Meme**`,
+						`**◎ Error:** Only the command executor can select an option!`);
+				b.reply.send({ embeds: [wrongUser] }, true);
+				return;
+			}
+
+			collector.resetTimer();
+
+			if (b.customId === 'nxtmeme') {
+				const postNew = safe[Math.floor(Math.random() * safe.length)];
+				let postURLNew;
+
+				if (post.data.url.slice(-4) === 'gifv') {
+					postURLNew = postNew.data.url.slice(0, -1);
+				} else {
+					postURLNew = postNew.data.url;
+				}
+
+				const newMeme = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setAuthor({ name: `${postNew.data.title}`, url: `https://reddit.com${postNew.data.permalink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+					.setImage(postURLNew)
+					.setFooter({ text: `👍 ${postNew.data.ups} | 💬 ${postNew.data.num_comments}` });
+
+				await b.update({ embeds: [newMeme], components: [row] });
+			}
+		});
+
+		collector.on('end', (_, reason) => {
+			console.log('ended');
+			if (comCooldown.has(message.author.id)) {
+				comCooldown.delete(message.author.id);
+			}
+		});
 
 		this.client.utils.deletableCheck(msg, 0);
 	}
