@@ -33,30 +33,6 @@ module.exports = class extends Event {
 			grabClient.channels.cache.get(logs).send({ embeds: [logembed] });
 		}
 		logging(this.client);
-
-		// Member Count
-		const memStat = db.prepare(`SELECT * FROM membercount WHERE guildid = ${member.guild.id};`).get();
-		if (memStat) {
-			const channelA = this.client.channels.cache.find((a) => a.id === memStat.channela);
-			const channelB = this.client.channels.cache.find((b) => b.id === memStat.channelb);
-			const channelC = this.client.channels.cache.find((c) => c.id === memStat.channelc);
-
-			if (channelA) {
-				channelA.setName(`Users: ${(member.guild.memberCount - member.guild.members.cache.filter((m) => m.user.bot).size).toLocaleString('en')}`);
-			} else {
-				db.prepare('DELETE FROM membercount WHERE guildid = ?').run(member.guild.id);
-			}
-			if (channelB) {
-				channelB.setName(`Bots: ${member.guild.members.cache.filter((m) => m.user.bot).size}`);
-			} else {
-				db.prepare('DELETE FROM membercount WHERE guildid = ?').run(member.guild.id);
-			}
-			if (channelC) {
-				channelC.setName(`Total: ${member.guild.memberCount.toLocaleString('en')}`);
-			} else {
-				db.prepare('DELETE FROM membercount WHERE guildid = ?').run(member.guild.id);
-			}
-		}
 	}
 
 };

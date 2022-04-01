@@ -18,39 +18,6 @@ module.exports = class extends Event {
 		let oldNs;
 		let newNs;
 
-		// Member Count
-
-		// Check if member count is on, if it is, grab the id of said channels and return if it matches
-
-		const memStat = db.prepare(`SELECT * FROM membercount WHERE guildid = ${oldChannel.guild.id};`).get();
-		if (memStat) {
-			const channelA = this.client.channels.cache.find((a) => a.id === memStat.channela);
-			if (!channelA) {
-				db.prepare('DELETE FROM membercount WHERE guildid = ?').run(oldChannel.guild.id);
-				return;
-			}
-			const channelB = this.client.channels.cache.find((b) => b.id === memStat.channelb);
-			if (!channelB) {
-				db.prepare('DELETE FROM membercount WHERE guildid = ?').run(oldChannel.guild.id);
-				return;
-			}
-			const channelC = this.client.channels.cache.find((c) => c.id === memStat.channelc);
-			if (!channelC) {
-				db.prepare('DELETE FROM membercount WHERE guildid = ?').run(oldChannel.guild.id);
-				return;
-			}
-
-			if (oldChannel.id === channelA.id) {
-				return;
-			}
-			if (oldChannel.id === channelB.id) {
-				return;
-			}
-			if (oldChannel.id === channelC.id) {
-				return;
-			}
-		}
-
 		const logembed = new MessageEmbed()
 			.setColor(this.client.utils.color(oldChannel.guild.me.displayHexColor))
 			.setAuthor({ name: `${oldChannel.guild.name}`, iconURL: oldChannel.guild.iconURL() })

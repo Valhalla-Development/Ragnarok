@@ -86,11 +86,6 @@ module.exports = class extends Command {
 				.setLabel('Logging')
 				.setCustomId('logging');
 
-			const buttonI = new MessageButton()
-				.setStyle('PRIMARY')
-				.setLabel('Membercount')
-				.setCustomId('membercount');
-
 			const buttonJ = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Music')
@@ -125,10 +120,10 @@ module.exports = class extends Command {
 				.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 			const row2 = new MessageActionRow()
-				.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+				.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 			const row3 = new MessageActionRow()
-				.addComponents(buttonL, buttonM, buttonN, buttonO);
+				.addComponents(buttonM, buttonN, buttonO);
 
 			const row4 = new MessageActionRow()
 				.addComponents(buttonP);
@@ -173,10 +168,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -192,10 +187,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -216,10 +211,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -240,10 +235,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -265,10 +260,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -289,10 +284,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -313,10 +308,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -337,10 +332,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -354,30 +349,6 @@ module.exports = class extends Command {
 					await b.update({ embeds: [log], components: [rowNew, row2New, row3New, row4New] });
 					return;
 				}
-				if (b.customId === 'membercount') {
-					home.setDisabled(false);
-
-					const rowNew = new MessageActionRow()
-						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
-
-					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
-
-					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
-
-					const mbmc = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ MemberCount:**
-							\u3000\`${prefix}config membercount <on/off>\` : Toggles the member count module`);
-
-					await b.update({ embeds: [mbmc], components: [rowNew, row2New, row3New, row4New] });
-					return;
-				}
 				if (b.customId === 'music') {
 					home.setDisabled(false);
 
@@ -385,10 +356,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -410,10 +381,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -434,10 +405,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -460,10 +431,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -486,10 +457,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -513,10 +484,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
+						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -551,10 +522,8 @@ module.exports = class extends Command {
 				'birthday',
 				'dadbot',
 				'haste',
-				'invmanager',
 				'level',
 				'logging',
-				'membercount',
 				'music',
 				'prefix',
 				'rolemenu',
@@ -774,130 +743,6 @@ module.exports = class extends Command {
 								`**◎ Success:** Level system enabled!`);
 						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						db.prepare('DELETE FROM level WHERE guildid = ?').run(message.guild.id);
-						return;
-					}
-				}
-			}
-
-			// Membercount Command
-			if (args[0] === 'membercount') {
-				if (!message.member.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) {
-					this.client.utils.messageDelete(message, 10000);
-
-					const embed = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Error:** I need the permission \`Manage Channels\` for this command!`);
-					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-					return;
-				}
-
-				// preparing count
-				this.client.getTable = db.prepare('SELECT * FROM membercount WHERE guildid = ?');
-				let status;
-				if (message.guild.id) {
-					status = this.client.getTable.get(message.guild.id);
-
-					if (args[1] === 'on') {
-						// if already on
-						if (status) {
-							this.client.utils.messageDelete(message, 10000);
-
-							const embed = new MessageEmbed()
-								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-								.addField(`**${this.client.user.username} - Config**`,
-									`**◎ Error:** Member count module is already enabled on this guild! To disable it, please use \`${prefix}config membercount <off>\``);
-							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-							return;
-						}
-
-						message.guild.channels.create('Member Count', {
-							type: 'GUILD_CATEGORY',
-							permissionOverwrites: [{
-								id: message.channel.guild.roles.everyone.id,
-								deny: 'CONNECT',
-								allow: 'VIEW_CHANNEL'
-							}]
-						}).then((a) => {
-							a.setPosition(0);
-
-							message.guild.channels.create(`Users: ${(message.guild.memberCount - message.guild.members.cache.filter((m) => m.user.bot).size).toLocaleString('en')}`, {
-								type: 'GUILD_VOICE',
-								parent: a.id,
-								lockPermissions: true
-							}).then((b) => {
-								message.guild.channels.create(`Bots: ${message.guild.members.cache.filter((m) => m.user.bot).size}`, {
-									type: 'GUILD_VOICE',
-									parent: a.id,
-									lockPermissions: true
-								}).then((c) => {
-									message.guild.channels.create(`Total: ${message.guild.memberCount.toLocaleString('en')}`, {
-										type: 'GUILD_VOICE',
-										parent: a.id,
-										lockPermissions: true
-									}).then((d) => {
-										const insert = db.prepare('INSERT INTO membercount (guildid, status, channela, channelb, channelc) VALUES (@guildid, @status, @channela, @channelb, @channelc);');
-										insert.run({
-											guildid: `${message.guild.id}`,
-											status: 'on',
-											channela: b.id,
-											channelb: c.id,
-											channelc: d.id
-										});
-									});
-								});
-							});
-						});
-
-						this.client.utils.messageDelete(message, 10000);
-
-						const embed = new MessageEmbed()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-							.addField(`**${this.client.user.username} - Config**`,
-								`**◎ Success:** Member count was enabled`);
-						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-
-						// if args = off
-					} else if (args[1] === 'off') {
-						// if already off
-						if (!status) {
-							this.client.utils.messageDelete(message, 10000);
-
-							const embed = new MessageEmbed()
-								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-								.addField(`**${this.client.user.username} - Config**`,
-									`**◎ Error:** Member protection is not enabled on this guild! To activate it, please use \`${prefix}config membercount <on>\``);
-							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-							return;
-						}
-
-						const channelA = this.client.channels.cache.find((a) => a.id === status.channela);
-						const channelB = this.client.channels.cache.find((b) => b.customId === status.channelb);
-						const channelC = this.client.channels.cache.find((c) => c.id === status.channelc);
-
-						const catA = message.guild.channels.cache.find((d) => d.name === 'Member Count');
-						if (channelA) channelA.delete();
-						if (channelB) channelB.delete();
-						if (channelC) channelC.delete();
-						if (catA) catA.delete();
-						db.prepare('DELETE FROM membercount WHERE guildid = ?').run(message.guild.id);
-
-						this.client.utils.messageDelete(message, 10000);
-
-						const embed = new MessageEmbed()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-							.addField(`**${this.client.user.username} - Config**`,
-								`**◎ Success:** Member count was turned off!`);
-						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-						return;
-					} else if (args[1] !== 'off' || args[1] !== 'on') {
-						this.client.utils.messageDelete(message, 10000);
-
-						const embed = new MessageEmbed()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-							.addField(`**${this.client.user.username} - Config**`,
-								`**◎ Error:** Correct usage: \`${prefix}config membercount <on/off>\``);
-						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
 				}

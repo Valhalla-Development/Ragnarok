@@ -61,12 +61,6 @@ module.exports = class extends Event {
 			db.prepare('DELETE FROM logging WHERE guildid = ?').run(guild.id);
 		}
 
-		// membercount table
-		const delmem = db.prepare('SELECT count(*) FROM membercount WHERE guildid = ?;').get(guild.id);
-		if (delmem['count(*)']) {
-			db.prepare('DELETE FROM membercount WHERE guildid = ?').run(guild.id);
-		}
-
 		// music table
 		const delmus = db.prepare('SELECT count(*) FROM music WHERE guildid = ?;').get(guild.id);
 		if (delmus['count(*)']) {
