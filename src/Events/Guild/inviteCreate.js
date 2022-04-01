@@ -6,9 +6,6 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 module.exports = class extends Event {
 
 	async run(invite) {
-		// Invite Manager
-		this.client.invites.set(invite.guild.id, await invite.guild.invites.fetch());
-
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${invite.guild.id};`).get();
 		if (!id) return;
 

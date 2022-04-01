@@ -76,11 +76,6 @@ module.exports = class extends Command {
 				.setLabel('Haste')
 				.setCustomId('haste');
 
-			const buttonF = new MessageButton()
-				.setStyle('PRIMARY')
-				.setLabel('Invite')
-				.setCustomId('invite');
-
 			const buttonG = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Level')
@@ -130,10 +125,10 @@ module.exports = class extends Command {
 				.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 			const row2 = new MessageActionRow()
-				.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+				.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 			const row3 = new MessageActionRow()
-				.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+				.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 			const row4 = new MessageActionRow()
 				.addComponents(buttonP);
@@ -178,10 +173,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -197,10 +192,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -221,10 +216,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -245,10 +240,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -270,10 +265,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -294,10 +289,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -311,30 +306,6 @@ module.exports = class extends Command {
 					await b.update({ embeds: [haste], components: [rowNew, row2New, row3New, row4New] });
 					return;
 				}
-				if (b.customId === 'invite') {
-					home.setDisabled(false);
-
-					const rowNew = new MessageActionRow()
-						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
-
-					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
-
-					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
-
-					const inv = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Invite Manager:**
-							\u3000\`${prefix}config invmanager <#channel/off>\` : Toggles the Invite Manager module`);
-
-					await b.update({ embeds: [inv], components: [rowNew, row2New, row3New, row4New] });
-					return;
-				}
 				if (b.customId === 'level') {
 					home.setDisabled(false);
 
@@ -342,10 +313,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -366,10 +337,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -390,10 +361,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -414,10 +385,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -439,10 +410,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -463,10 +434,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -489,10 +460,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -515,10 +486,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -542,10 +513,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, buttonH, buttonI);
+						.addComponents(buttonE, buttonG, buttonH, buttonI, buttonJ);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonJ, buttonL, buttonM, buttonN, buttonO);
+						.addComponents(buttonL, buttonM, buttonN, buttonO);
 
 					const row4New = new MessageActionRow()
 						.addComponents(buttonP);
@@ -2328,123 +2299,6 @@ module.exports = class extends Command {
 								`**◎ Success:** DJ Role updated to ${djRole}`);
 						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					}
-				}
-			}
-
-			// invite manger
-			if (args[0] === 'invmanager') {
-				if (!message.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
-					this.client.utils.messageDelete(message, 10000);
-
-					const embed = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Error:** I need the permission \`Manage Guild\` for this command!`);
-					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-					return;
-				}
-				this.client.getTable = db.prepare('SELECT * FROM invmanager WHERE guildid = ?');
-
-				const lchan = message.mentions.channels.first();
-
-				let status;
-				if (message.guild.id) {
-					status = this.client.getTable.get(message.guild.id);
-
-					if (args[1] === undefined) {
-						this.client.utils.messageDelete(message, 10000);
-
-						const embed = new MessageEmbed()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-							.addField(`**${this.client.user.username} - Config**`,
-								`**◎ Error:** Please mention a channel!`);
-						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-						return;
-					}
-
-					if (args[1] === 'off') {
-						// to turn logging off
-						if (!status) {
-							this.client.utils.messageDelete(message, 10000);
-
-							const embed = new MessageEmbed()
-								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-								.addField(`**${this.client.user.username} - Config**`,
-									`**◎ Error:** Invite Manager is already disabled!`);
-							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-							return;
-						}
-
-						this.client.utils.messageDelete(message, 10000);
-
-						const embed = new MessageEmbed()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-							.addField(`**${this.client.user.username} - Config**`,
-								`**◎ Success:** Invite Manager disabled!`);
-						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-						db.prepare('DELETE FROM invmanager WHERE guildid = ?').run(message.guild.id);
-						return;
-					}
-					if (!lchan) {
-						this.client.utils.messageDelete(message, 10000);
-
-						const embed = new MessageEmbed()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-							.addField(`**${this.client.user.username} - Config**`,
-								`**◎ Error:** Check if the channel's name is correct and then type the command again.`);
-						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-						return;
-					}
-					if (lchan.type === 'GUILD_VOICE' || lchan.type === 'GUILD_CATEGORY') {
-						this.client.utils.messageDelete(message, 10000);
-
-						const embed = new MessageEmbed()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-							.addField(`**${this.client.user.username} - Config**`,
-								`**◎ Error:** Check if the text channel's name is correct and then type the command again.`);
-						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-						return;
-					}
-					if (!status) {
-						const insert = db.prepare('INSERT INTO invmanager (guildid, channel) VALUES (@guildid, @channel);');
-						insert.run({
-							guildid: `${message.guild.id}`,
-							channel: `${lchan.id}`
-						});
-
-						message.guild.invites.fetch()
-							.then(invite => this.client.invites.set(message.guild.id, invite))
-							.catch(error => console.error(error));
-
-						this.client.utils.messageDelete(message, 10000);
-
-						const embed = new MessageEmbed()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-							.addField(`**${this.client.user.username} - Config**`,
-								`**◎ Success:** Invite Manager channel set to ${lchan}`);
-						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-						return;
-					}
-
-					const update = db.prepare('UPDATE invmanager SET channel = (@channel) WHERE guildid = (@guildid);'
-					);
-					update.run({
-						guildid: `${message.guild.id}`,
-						channel: `${lchan.id}`
-					});
-
-					message.guild.invites.fetch()
-						.then(invite => this.client.invites.set(message.guild.id, invite))
-						.catch(error => console.error(error));
-
-					this.client.utils.messageDelete(message, 10000);
-
-					const embed = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Success:** Invite Manager updated to ${lchan}`);
-					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-					return;
 				}
 			}
 

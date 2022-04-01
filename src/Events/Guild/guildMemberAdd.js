@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed, MessageAttachment, Permissions } = require('discord.js');
+const { MessageEmbed, MessageAttachment } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const Canvas = require('canvas');
@@ -117,44 +117,6 @@ module.exports = class extends Event {
 			member.roles.add(myRole);
 		}
 		autoRole();
-
-		// Invite Manager
-		async function inviteManager(grabClient) {
-			const inviteID = db.prepare(`SELECT channel FROM invmanager WHERE guildid = ${member.guild.id};`).get();
-			if (!inviteID) return;
-
-			if (!member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
-				db.prepare('DELETE FROM invmanager WHERE guildid = ?').run(member.guild.id);
-				return;
-			}
-
-			if (member.user.bot) return;
-
-			const cachedInvites = grabClient.invites.get(member.guild.id);
-			const newInvites = await member.guild.invites.fetch();
-
-			grabClient.invites.set(member.guild.id, newInvites);
-
-			const usedInvites = newInvites.find(invite => cachedInvites.get(invite.code).uses < invite.uses);
-
-			if (!usedInvites) return;
-
-			const logChannel = member.guild.channels.cache.find(channel => channel.id === inviteID.channel);
-
-			if (!logChannel) return;
-
-			const { uses, inviter } = usedInvites;
-
-			const embed = new MessageEmbed()
-				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
-				.setAuthor({ name: `${member.guild.name}`, iconURL: member.user.avatarURL() })
-				.addField(`**Invite Manager**`,
-					`**◎ ${member.user} joined**; Invited by ${inviter} (${uses} invites)`)
-				.setFooter({ text: `ID: ${member.user.id}` })
-				.setTimestamp();
-			logChannel.send({ embeds: [embed] });
-		}
-		inviteManager(this.client);
 
 		// Logs
 		function logging(grabClient) {

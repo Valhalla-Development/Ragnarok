@@ -68,16 +68,6 @@ module.exports = class extends Event {
 			db.pragma('journal_mode = wal');
 		}
 
-		// Invite Manager table
-		const inviteManager = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'invmanager\';').get();
-		if (!inviteManager['count(*)']) {
-			console.log('invmanager table created!');
-			db.prepare('CREATE TABLE invmanager (guildid TEXT PRIMARY KEY, channel TEXT);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_invmanager_id ON invmanager (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
 		// Level table
 		const levelstatustable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'level\';').get();
 		if (!levelstatustable['count(*)']) {

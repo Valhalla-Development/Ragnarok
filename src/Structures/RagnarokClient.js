@@ -277,10 +277,6 @@ module.exports = class RagnarokClient extends Client {
 		});
 		this.giveawaysManager = manager;
 
-		// Invite Manager
-		const guildInvites = new Collection();
-		this.invites = guildInvites;
-
 		// Error function for notifiers
 		function sendError(client, message) {
 			if (client.user && client.user.id === '508756879564865539') {
