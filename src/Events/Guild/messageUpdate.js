@@ -53,7 +53,7 @@ module.exports = class extends Event {
 			.setTitle('Message Updated')
 			.splitFields([
 				`**◎ Before:**\n${oldMessage.content}`,
-				`**◎ After:**\n${newMessage.content}`// do magic here, nitro lets you post 6k characters, trim it bub
+				`**◎ After:**\n${newMessage.content}`
 			])
 			.setTimestamp()
 			.setURL(oldMessage.url);
