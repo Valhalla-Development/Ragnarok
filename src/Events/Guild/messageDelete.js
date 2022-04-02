@@ -46,12 +46,12 @@ module.exports = class extends Event {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setAuthor({ name: `${message.author.tag}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) })
 			.setTitle('Message Deleted')
-			.setDescription([
-				`**◎ Message ID:** ${message.id}`,
-				`**◎ Channel:** ${message.channel}`,
-				`**◎ Author:** ${message.guild.members.resolve(message.author) ? message.author : message.author.username}`,
-				`${attachments ? `**◎ Attachments:** ${attachments.join('\n')}` : ''}`
-			])
+			.setDescription(
+				`**◎ Message ID:** ${message.id}
+				**◎ Channel:** ${message.channel}
+				**◎ Author:** ${message.guild.members.resolve(message.author) ? message.author : message.author.username}
+				${attachments ? `**◎ Attachments:** ${attachments.join('\n')}` : ''}`
+			)
 			.setTimestamp();
 		if (message.content.length) {
 			embed.splitFields(`**◎ Deleted Message:** ${message.content}`);
