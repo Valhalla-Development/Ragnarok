@@ -426,12 +426,6 @@ module.exports = class extends Event {
 		}
 		linkTag(this.client);
 
-		// Chat Filter
-		/* if (this.client.filterList.some(word => message.content.toLowerCase().includes(` ${word} `))) {
-		this.client.utils.messageDelete(message, 0);
-			message.channel.send({content:'BOI THAT"S A BLOCKED WORD!'});
-		}*/
-
 		const mentionRegex = RegExp(`^<@!?${this.client.user.id}>$`);
 
 		if (message.content.match(mentionRegex)) {
@@ -450,13 +444,13 @@ module.exports = class extends Event {
 
 					message.channel.sendTyping();
 
-					const res = await fetch.default(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=${message.author.id}`);
-					if (!res.ok) {
-						message.reply({ content: 'I am unable to connect to the chat API. Please try again later.' });
-						return;
-					} else {
+					try {
+						const res = fetch.default(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=${message.author.id}`);
 						const json = res.json();
 						message.reply({ content: json.message, allowedMentions: { repliedUser: false } });
+					} catch {
+						message.reply({ content: 'I am unable to connect to the chat API. Please try again later.' });
+						return;
 					}
 				}
 			}
