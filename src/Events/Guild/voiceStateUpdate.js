@@ -8,12 +8,11 @@ module.exports = class extends Event {
 
 		if (player) {
 			// if oldState channel ID does not equal the player voiceChannel, return
-			if (oldState.channelID !== player.voiceChannel) {
+			if (oldState.channelId !== player.voiceChannel) {
 				return;
 			}
 
 			const userCount = oldState.channel.members.size;
-
 			if (userCount <= 1) {
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(oldState.guild.me.displayHexColor))
