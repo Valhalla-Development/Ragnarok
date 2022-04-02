@@ -103,15 +103,19 @@ module.exports = class extends Command {
 				permissionOverwrites: [
 					{
 						id: role.id,
-						allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
 					},
 					{
 						id: role2.id,
-						deny: 'VIEW_CHANNEL'
+						deny: [Permissions.FLAGS.VIEW_CHANNEL]
 					},
 					{
 						id: message.author.id,
-						allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+					},
+					{
+						id: this.client.user.id,
+						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
 					}
 				]
 			}).then((c) => {
@@ -174,15 +178,19 @@ module.exports = class extends Command {
 				permissionOverwrites: [
 					{
 						id: role.id,
-						allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
 					},
 					{
 						id: role2.id,
-						deny: 'VIEW_CHANNEL'
+						deny: [Permissions.FLAGS.VIEW_CHANNEL]
 					},
 					{
 						id: message.author.id,
-						allow: ['VIEW_CHANNEL', 'SEND_MESSAGES']
+						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+					},
+					{
+						id: this.client.user.id,
+						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
 					}
 				]
 			}).then(async (c) => {

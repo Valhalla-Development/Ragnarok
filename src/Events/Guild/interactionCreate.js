@@ -108,6 +108,10 @@ module.exports = class extends Event {
 					{
 						id: interaction.user.id,
 						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+					},
+					{
+						id: this.client.user.id,
+						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
 					}
 				]
 			}).then((c) => {
@@ -134,6 +138,7 @@ module.exports = class extends Event {
 
 					const logchan = guild.channels.cache.find((chan) => chan.id === fetch.log);
 					if (!logchan) return;
+
 					const loggingembed = new MessageEmbed()
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Ticket**`,
