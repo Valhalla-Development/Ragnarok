@@ -51,8 +51,6 @@ module.exports = class extends Command {
 		}
 
 		if (!comCooldown.has(message.author.id)) {
-			message.channel.sendTyping();
-
 			const buttonA = new MessageButton()
 				.setStyle('SUCCESS')
 				.setLabel('Close')
@@ -146,6 +144,7 @@ module.exports = class extends Command {
 					}
 
 					if (message.channel) {
+						channel.name = fixedName;
 						message.channel.delete();
 					}
 
@@ -155,8 +154,7 @@ module.exports = class extends Command {
 					});
 
 					const user = this.client.users.cache.find((a) => a.id === foundTicket.authorid);
-
-					if (!user) {
+					if (user) {
 						if (!closeReason) {
 							const dmE = new MessageEmbed()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
