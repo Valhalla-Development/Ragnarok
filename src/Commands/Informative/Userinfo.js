@@ -61,7 +61,7 @@ module.exports = class extends Command {
 
 		if (member.presence) {
 			if (member.presence.activities[0]) {
-				if (member.presence.activities[0].timestamps.start) {
+				if (member.presence.activities[0].timestamps && member.presence.activities[0].timestamps.start) {
 					const text = moment(member.presence.activities[0].timestamps.start).fromNow();
 					const lastOf = text.lastIndexOf(' ');
 					time = text.substring(0, lastOf);
@@ -81,6 +81,30 @@ module.exports = class extends Command {
 			}
 		}
 
+		let roleMsg;
+		if (roles) {
+			if (!roles.length) {
+				roleMsg = 'None';
+			} else {
+				roleMsg = roles.length < 10 ? roles.join('\n') : roles.length >= 10 ? this.client.utils.trimArray(roles, 10).join('\n') : 'None';
+			}
+		}
+
+		let statusMsg;
+		if (member.presence) {
+			statusMsg = member.presence ? status[member.presence.status] : status.offline;
+		}
+
+		let activityMsg;
+		if (presence.length) {
+			activityMsg = presence.length ? presence.join('\n') : 'None';
+		} else {
+			activityMsg = 'None';
+		}
+
+		console.log(roleMsg);
+		console.log(statusMsg);
+		console.log(activityMsg);
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
@@ -93,9 +117,9 @@ module.exports = class extends Command {
 				**◎ 🗺️ Flags:** ${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}
 				**◎ <a:Booster:855593231294267412> Server Booster:** ${member.premiumSinceTimestamp ? `${moment(member.premiumSinceTimestamp).format('ddd, MMM Do YYYY h:mm a')} - ${moment(member.premiumSinceTimestamp).fromNow()}` : 'No'}`)
 
-			.addFields({ name: `**Roles: [${roles.length}]**`, value: `${roles.length < 10 ? roles.join('\n') : roles.length >= 10 ? this.client.utils.trimArray(roles, 10).join('\n') : 'None'}`, inline: true },
-				{ name: `**Status:**`, value: `${member.presence ? status[member.presence.status] : status.offline}`, inline: true },
-				{ name: `**Activity:**`, value: `${presence.length ? presence.join('\n') : 'None'}`, inline: true });
+			.addFields({ name: `**Roles: [${roles.length}]**`, value: `${roleMsg}`, inline: true },
+				{ name: `**Status:**`, value: `${statusMsg}`, inline: true },
+				{ name: `**Activity:**`, value: `${activityMsg}`, inline: true });
 		message.channel.send({ embeds: [embed] });
 	}
 
