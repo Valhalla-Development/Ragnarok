@@ -50,6 +50,34 @@ module.exports = class extends Command {
 			return;
 		}
 
+		const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
+
+		let modRole;
+		if (message.guild.roles.cache.find((supId) => supId.id === suppRole.role)) {
+			modRole = message.guild.roles.cache.find((supId) => supId.id === suppRole.role);
+		} else if (message.guild.roles.cache.find((supNa) => supNa.name === 'Support Team')) {
+			modRole = message.guild.roles.cache.find((supNa) => supNa.name === 'Support Team');
+		} else {
+			this.client.utils.messageDelete(message, 10000);
+
+			const nomodRole = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Close**`,
+					`**◎ Error:** This server doesn't have a \`Support Team\` role\nIf you are an administrator, You can set the ticket role with: \`${prefix}config ticket role <@role>\`.`);
+			message.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+		if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const donthaveRole = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Close**`,
+					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
+			message.channel.send({ embeds: [donthaveRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
 		if (!comCooldown.has(message.author.id)) {
 			const buttonA = new MessageButton()
 				.setStyle('SUCCESS')
