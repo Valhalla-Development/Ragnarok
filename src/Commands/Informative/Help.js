@@ -44,7 +44,9 @@ module.exports = class extends Command {
 				`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 				Run \`${prefix}help <command>\` to see command specific instructions
 				All commands must be preceded by \`${prefix}\`
-				Command Parameters: \`<>\` is strict & \`[]\` is optional`)
+				Command Parameters: \`<>\` is strict & \`[]\` is optional
+				
+				You can run \`${prefix}help all\` to see all commands.`)
 			.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
@@ -54,7 +56,9 @@ module.exports = class extends Command {
 				`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 				Run \`${prefix}help <command>\` to see command specific instructions
 				All commands must be preceded by \`${prefix}\`
-				Command Parameters: \`<>\` is strict & \`[]\` is optional`);
+				Command Parameters: \`<>\` is strict & \`[]\` is optional
+							
+				You can run \`${prefix}help all\` to see all commands.`);
 			const categories = this.client.utils.removeDuplicates(this.client.commands.filter(cmd => cmd.category !== 'Hidden').map(cmd => cmd.category));
 
 			for (const category of categories) {
@@ -224,7 +228,9 @@ module.exports = class extends Command {
 							`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 							Run \`${prefix}help <command>\` to see command specific instructions
 							All commands must be preceded by \`${prefix}\`
-							Command Parameters: \`<>\` is strict & \`[]\` is optional`)
+							Command Parameters: \`<>\` is strict & \`[]\` is optional
+
+							You can run \`${prefix}help all\` to see all commands.`)
 						.addField(`**Help - Economy**`, `\`${categories.join(`\`, \``)}\``)
 						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
@@ -252,7 +258,9 @@ module.exports = class extends Command {
 							`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 							Run \`${prefix}help <command>\` to see command specific instructions
 							All commands must be preceded by \`${prefix}\`
-							Command Parameters: \`<>\` is strict & \`[]\` is optional`)
+							Command Parameters: \`<>\` is strict & \`[]\` is optional
+
+							You can run \`${prefix}help all\` to see all commands.`)
 						.addField(`**Help - Fun**`, `\`${categories.join(`\`, \``)}\``)
 						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
@@ -280,7 +288,9 @@ module.exports = class extends Command {
 							`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 							Run \`${prefix}help <command>\` to see command specific instructions
 							All commands must be preceded by \`${prefix}\`
-							Command Parameters: \`<>\` is strict & \`[]\` is optional`)
+							Command Parameters: \`<>\` is strict & \`[]\` is optional
+
+							You can run \`${prefix}help all\` to see all commands.`)
 						.addField(`**Help - Generators**`, `\`${categories.join(`\`, \``)}\``)
 						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
@@ -308,7 +318,9 @@ module.exports = class extends Command {
 							`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 							Run \`${prefix}help <command>\` to see command specific instructions
 							All commands must be preceded by \`${prefix}\`
-							Command Parameters: \`<>\` is strict & \`[]\` is optional`)
+							Command Parameters: \`<>\` is strict & \`[]\` is optional
+
+							You can run \`${prefix}help all\` to see all commands.`)
 						.addField(`**Help - Informative**`, `\`${categories.join(`\`, \``)}\``)
 						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
@@ -336,7 +348,9 @@ module.exports = class extends Command {
 							`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 							Run \`${prefix}help <command>\` to see command specific instructions
 							All commands must be preceded by \`${prefix}\`
-							Command Parameters: \`<>\` is strict & \`[]\` is optional`)
+							Command Parameters: \`<>\` is strict & \`[]\` is optional
+
+							You can run \`${prefix}help all\` to see all commands.`)
 						.addField(`**Help - Moderation**`, `\`${categories.join(`\`, \``)}\``)
 						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
@@ -364,7 +378,9 @@ module.exports = class extends Command {
 							`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 							Run \`${prefix}help <command>\` to see command specific instructions
 							All commands must be preceded by \`${prefix}\`
-							Command Parameters: \`<>\` is strict & \`[]\` is optional`)
+							Command Parameters: \`<>\` is strict & \`[]\` is optional
+
+							You can run \`${prefix}help all\` to see all commands.`)
 						.addField(`**Help - Music**`, `\`${categories.join(`\`, \``)}\``)
 						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
@@ -392,7 +408,9 @@ module.exports = class extends Command {
 							`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 							Run \`${prefix}help <command>\` to see command specific instructions
 							All commands must be preceded by \`${prefix}\`
-							Command Parameters: \`<>\` is strict & \`[]\` is optional`)
+							Command Parameters: \`<>\` is strict & \`[]\` is optional
+
+							You can run \`${prefix}help all\` to see all commands.`)
 						.addField(`**Help - Ticket**`, `\`${categories.join(`\`, \``)}\``)
 						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
