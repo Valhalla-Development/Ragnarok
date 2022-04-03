@@ -21,7 +21,7 @@ module.exports = class extends Command {
 		const buttonA = new MessageButton()
 			.setStyle('LINK')
 			.setLabel('Invite')
-			.setURL('https://discordapp.com/oauth2/authorize?client_id=508756879564865539&scope=bot%20applications.commands&permissions=1580723711');
+			.setURL('https://discordapp.com/oauth2/authorize?client_id=508756879564865539&scope=bot%20applications.commands&permissions=1514550062326');
 
 		const row = new MessageActionRow()
 			.addComponents(buttonA);
