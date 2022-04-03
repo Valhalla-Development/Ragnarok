@@ -3,6 +3,8 @@ const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
 const math = require('mathjs');
 const { Calculator } = require('sudo-minigames');
+const SQLite = require('better-sqlite3');
+const db = new SQLite('./Storage/DB/db.sqlite');
 
 module.exports = class extends Command {
 
@@ -16,6 +18,9 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
+		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
+		const { prefix } = prefixgrab;
+
 		if (args[0] === 'easy') {
 			await Calculator({
 				message: message,
@@ -38,7 +43,7 @@ module.exports = class extends Command {
 			const incorrectFormat = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Calculation**`,
-					`**◎ Error:** Please input a calculation!`);
+					`**◎ Error:** Please input a calculation! Example: \`${prefix}calc 1+1\`\n\nAlternatively, you can run \`${prefix}calc easy\``);
 			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
