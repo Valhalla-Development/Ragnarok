@@ -1,4 +1,4 @@
-const { MessageEmbed, version: djsversion } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const { version } = require('../../../package.json');
 const Command = require('../../Structures/Command');
 const { utc } = require('moment');
@@ -44,29 +44,28 @@ module.exports = class extends Command {
 		this.client.utils.deletableCheck(msg, 0);
 
 		const embed = new MessageEmbed()
-			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.addField('General',
-				`**◎ Client:** ${this.client.user.tag}
-				**◎ Uptime:** ${ms(this.client.uptime, { long: true })}
-				**◎ Commands:** ${this.client.commands.filter(cmd => cmd.category !== 'Hidden').size}
-				**◎ Servers:** ${this.client.guilds.cache.size.toLocaleString()}
-				**◎ Users:** ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')}
-				**◎ Channels:** ${this.client.channels.cache.size.toLocaleString()}
-				**◎ Creation Date:** ${utc(this.client.user.createdTimestamp).format('Do MMMM YYYY')}
-				**◎ Node.js:** ${process.version}
-				**◎ Bot Version:** v${version}
-				**◎ Discord.js:** v${djsversion}
+			.setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
+			.setAuthor({ name: `Viewing statistics for ${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) })
+			.addField('General Information',
+				`**◎ 🤖 Name:** ${this.client.user.tag}
+				**◎ 📈 Uptime:** ${ms(this.client.uptime, { long: true })}
+				**◎ 🧾 Commands:** ${this.client.commands.filter(cmd => cmd.category !== 'Hidden').size}
+				**◎ 🔖 Servers:** ${this.client.guilds.cache.size.toLocaleString()}
+				**◎ 👯 Users:** ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')}
+				**◎ 📝 Channels:** ${this.client.channels.cache.size.toLocaleString()}
+				**◎ 📅 Creation Date:** ${utc(this.client.user.createdTimestamp).format('Do MMMM YYYY')}
+				**◎ 💹 Bot Version:** v${version}
 				\u200b`)
 			.addField('System',
-				`**◎ OS:** ${osVersion}
-				**◎ Uptime:** ${ms(os.uptime() * 1000, { long: true })}
-				**◎ Memory Usage:** ${realMemUsed.toLocaleString('en')} / ${totalMemory.toLocaleString('en')}MB - ${memPercent.toFixed(1)}%
-				**◎ CPU:**
-				\u3000 Cores: ${os.cpus().length}
-				\u3000 Model: ${core.model}
-				\u3000 Speed: ${core.speed}MHz
-				\u3000 Usage: ${cpuUsage.toFixed(1)}%`)
+				`**◎ 💻 OS:** ${osVersion}
+				**◎ 📊 Uptime:** ${ms(os.uptime() * 1000, { long: true })}
+				**◎ 💾 Memory Usage:** ${realMemUsed.toLocaleString('en')} / ${totalMemory.toLocaleString('en')}MB - ${memPercent.toFixed(1)}%
+				**◎ 💻 CPU:**
+				\u3000 \u3000 ⌨️ Cores: ${os.cpus().length}
+				\u3000 \u3000 ⌨️ Model: ${core.model}
+				\u3000 \u3000 ⌨️ Speed: ${core.speed}MHz
+				\u3000 \u3000 ⌨️ Usage: ${cpuUsage.toFixed(1)}%`)
 			.addField('Announcement',
 				`\`\`\`${annc}\`\`\``)
 			.setTimestamp();
