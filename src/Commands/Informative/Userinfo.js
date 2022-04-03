@@ -102,9 +102,6 @@ module.exports = class extends Command {
 			activityMsg = 'None';
 		}
 
-		console.log(roleMsg);
-		console.log(statusMsg);
-		console.log(activityMsg);
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
