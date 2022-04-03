@@ -24,7 +24,7 @@ module.exports = class extends Command {
 			const incorrectFormat = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - A4K**`,
-					`**◎ Error:** Incorrect usage! Please use \`${prefix}a4k <search>\``);
+					`**◎ Error:** Incorrect usage! Please use \`${prefix}airreps <search>\``);
 			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
