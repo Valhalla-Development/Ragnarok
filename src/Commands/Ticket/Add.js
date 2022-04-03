@@ -77,11 +77,10 @@ module.exports = class extends Command {
 				return;
 			}
 
-			getChan
-				.createOverwrite(rUser, {
-					VIEW_CHANNEL: true,
-					SEND_MESSAGES: true
-				}).catch(console.error);
+			getChan.permissionOverwrites.create(rUser, {
+				VIEW_CHANNEL: true,
+				SEND_MESSAGES: true
+			}).catch(console.error);
 			const nouser = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Add**`,

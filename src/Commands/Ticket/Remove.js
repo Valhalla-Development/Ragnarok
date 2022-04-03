@@ -78,7 +78,7 @@ module.exports = class extends Command {
 				return;
 			}
 
-			getChan.createOverwrite(rUser, {
+			getChan.permissionOverwrites.create(rUser, {
 				VIEW_CHANNEL: false
 			}).catch(console.error);
 			const removed = new MessageEmbed()
