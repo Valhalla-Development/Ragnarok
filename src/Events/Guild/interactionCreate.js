@@ -335,11 +335,16 @@ module.exports = class extends Event {
 					const logchan = guild.channels.cache.find((chan) => chan.id === fetch.log);
 					if (!logchan) return;
 
-					const loggingembed = new MessageEmbed()
+					const openEpoch = Math.floor(new Date().getTime() / 1000);
+
+					const logEmbed = new MessageEmbed()
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Ticket**`,
-							`**◎ Ticket Created:** ${interaction.user} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
-					logchan.send({ embeds: [loggingembed] });
+						.setAuthor({ name: 'Ticket Opened', iconURL: guild.iconURL({ dynamic: true }) })
+						.addFields({ name: `**Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${interaction.guild.id}/${c.id})`, inline: true },
+							{ name: `**Opened By**`, value: `${interaction.user}`, inline: true },
+							{ name: `**Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
+							{ name: `**Reason**`, value: `${reason}`, inline: true });
+					logchan.send({ embeds: [logEmbed] });
 				}
 			}).catch(console.error);
 		}

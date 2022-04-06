@@ -144,11 +144,17 @@ module.exports = class extends Command {
 				}
 				const logchan = message.guild.channels.cache.find((chan) => chan.id === logget.log);
 				if (!logchan) return;
-				const loggingembed = new MessageEmbed()
+
+				const openEpoch = Math.floor(new Date().getTime() / 1000);
+
+				const logEmbed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - New**`,
-						`**◎ Ticket Created:** ${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
-				logchan.send({ embeds: [loggingembed] });
+					.setAuthor({ name: 'Ticket Opened', iconURL: message.guild.iconURL({ dynamic: true }) })
+					.addFields({ name: `**Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${message.guild.id}/${c.id})`, inline: true },
+						{ name: `**Opened By**`, value: `${message.author}`, inline: true },
+						{ name: `**Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
+						{ name: `**Reason**`, value: `${reason}`, inline: true });
+				logchan.send({ embeds: [logEmbed] });
 			}).catch(console.error);
 		} else {
 			const newTicket = db.prepare('INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);');
@@ -234,11 +240,17 @@ module.exports = class extends Command {
 
 				const logchan = message.guild.channels.cache.find((chan) => chan.id === logget.log);
 				if (!logchan) return;
-				const loggingembed = new MessageEmbed()
+
+				const openEpoch = Math.floor(new Date().getTime() / 1000);
+
+				const logEmbed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`**${this.client.user.username} - New**`,
-						`**◎ Ticket Created:** ${message.author} has opened a new ticket \`#${c.name}\`\nReason: \`${reason}\``);
-				logchan.send({ embeds: [loggingembed] });
+					.setAuthor({ name: 'Ticket Opened', iconURL: message.guild.iconURL({ dynamic: true }) })
+					.addFields({ name: `**Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${message.guild.id}/${c.id})`, inline: true },
+						{ name: `**Opened By**`, value: `${message.author}`, inline: true },
+						{ name: `**Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
+						{ name: `**Reason**`, value: `${reason}`, inline: true });
+				logchan.send({ embeds: [logEmbed] });
 			}).catch(console.error);
 		}
 	}
