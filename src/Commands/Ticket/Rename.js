@@ -154,7 +154,7 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Rename**`,
-						`**◎ Success:** <@${message.author.id}> renamed ticket from to \`${argResult}`);
+						`**◎ Success:** <@${message.author.id}> renamed ticket from to \`${argResult}\``);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 
 				message.channel.setName(`ticket-${argResult}-${foundTicket.ticketid}`);
