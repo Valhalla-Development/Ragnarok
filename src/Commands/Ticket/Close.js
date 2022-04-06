@@ -166,9 +166,9 @@ module.exports = class extends Command {
 					let transLinkText;
 
 					if (data !== 200) {
-						transLinkText = '**Error:** I was unable to upload the transcript, apologies. You may download the file directly and open it to view the contents.';
+						transLinkText = `\`Unavailable\``;
 					} else {
-						transLinkText = `[**Click me to view the chat transcript.**](https://ragnarok-discord.000webhostapp.com/transcripts/${staticFileName})`;
+						transLinkText = `[**Click Here**](https://ragnarok-discord.000webhostapp.com/transcripts/${staticFileName})`;
 					}
 
 					if (message.channel) {
@@ -181,14 +181,21 @@ module.exports = class extends Command {
 						ticketid: channelArgs[channelArgs.length - 1]
 					});
 
+					const epoch = Math.floor(new Date().getTime() / 1000);
+
 					const user = this.client.users.cache.find((a) => a.id === foundTicket.authorid);
 					if (user) {
 						if (!closeReason) {
 							const dmE = new MessageEmbed()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-								.addField(`**${this.client.user.username} - Close**`,
-									`Your ticket in guild: \`${message.guild.name}\` was closed.\n${transLinkText}`);
-							user.send({ embeds: [dmE], files: [{ attachment: attachment, name: `${fixedName}.html` }] }).then(() => {
+								.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
+								.addFields({ name: `**Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+									{ name: `**Opened By**`, value: `${user}`, inline: true },
+									{ name: `**Closed By**`, value: `${message.author}`, inline: true },
+									{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
+									{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
+									{ name: `_ _`, value: `_ _`, inline: true });
+							user.send({ embeds: [dmE] }).then(() => {
 								// eslint-disable-next-line arrow-body-style
 							}).catch(() => {
 								if (comCooldown.has(message.author.id)) {
@@ -198,9 +205,16 @@ module.exports = class extends Command {
 							});
 						} else {
 							const dmE = new MessageEmbed()
-								.addField(`**${this.client.user.username} - Close**`,
-									`Your ticket in guild: \`${message.guild.name}\` was closed for the following reason:\n\`${closeReason}\`\n${transLinkText}`);
-							user.send({ embeds: [dmE], files: [{ attachment: attachment, name: `${fixedName}.html` }] }).then(() => {
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
+								.addFields({ name: `**Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+									{ name: `**Opened By**`, value: `${user}`, inline: true },
+									{ name: `**Closed By**`, value: `${message.author}`, inline: true },
+									{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
+									{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
+									{ name: `_ _`, value: `_ _`, inline: true },
+									{ name: `**Reason**`, value: `${closeReason}` });
+							user.send({ embeds: [dmE] }).then(() => {
 								// eslint-disable-next-line arrow-body-style
 							}).catch(() => {
 								if (comCooldown.has(message.author.id)) {
@@ -227,24 +241,32 @@ module.exports = class extends Command {
 						return;
 					}
 
-					const loggingembed = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor));
-
 					if (!closeReason) {
-						loggingembed
-							.addField(`**${this.client.user.username} - Close**`,
-								`**◎ Success:** <@${message.author.id}> has closed ticket \`#${fixedName}\`\n${transLinkText}`);
-						logchan.send({ embeds: [loggingembed] });
-						logchan.send({ files: [{ attachment: attachment, name: `${fixedName}.html` }] });
+						const logEmbed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
+							.addFields({ name: `**Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+								{ name: `**Opened By**`, value: `${user}`, inline: true },
+								{ name: `**Closed By**`, value: `${message.author}`, inline: true },
+								{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
+								{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
+								{ name: `_ _`, value: `_ _`, inline: true });
+						logchan.send({ embeds: [logEmbed] });
 						if (comCooldown.has(message.author.id)) {
 							comCooldown.delete(message.author.id);
 						}
 					} else {
-						loggingembed
-							.addField(`**${this.client.user.username} - Close**`,
-								`**◎ Success:** <@${message.author.id}> has closed ticket \`#${fixedName}\`\nReason: \`${closeReason}\`\n${transLinkText}`);
-						logchan.send({ embeds: [loggingembed] });
-						logchan.send({ files: [{ attachment: attachment, name: `${fixedName}.html` }] });
+						const logEmbed = new MessageEmbed()
+							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
+							.addFields({ name: `**Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+								{ name: `**Opened By**`, value: `${user}`, inline: true },
+								{ name: `**Closed By**`, value: `${message.author}`, inline: true },
+								{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
+								{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
+								{ name: `_ _`, value: `_ _`, inline: true },
+								{ name: `**Reason**`, value: `${closeReason}` });
+						logchan.send({ embeds: [logEmbed] });
 						if (comCooldown.has(message.author.id)) {
 							comCooldown.delete(message.author.id);
 						}
