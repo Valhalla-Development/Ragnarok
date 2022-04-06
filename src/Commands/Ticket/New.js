@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Permissions } = require('discord.js');
+const { MessageEmbed, Permissions, MessageButton, MessageActionRow } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
@@ -207,11 +207,25 @@ module.exports = class extends Command {
 					.addField(`**${this.client.user.username} - New**`,
 						`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
 				message.channel.send({ embeds: [newTicketE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+
+				const buttonClose = new MessageButton()
+					.setStyle('SUCCESS')
+					.setLabel('🔒 Close')
+					.setCustomId('closeTicket');
+
+				const buttonCloseReason = new MessageButton()
+					.setStyle('SUCCESS')
+					.setLabel('🔒 Close With Reason')
+					.setCustomId('closeTicketReason');
+
+				const row = new MessageActionRow()
+					.addComponents(buttonClose, buttonCloseReason);
+
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setTitle('New Ticket')
 					.setDescription(`Hello \`${message.author.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. \n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
-				c.send({ embeds: [embed] });
+				c.send({ components: [row], embeds: [embed] });
 				// And display any errors in the console.
 				const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
 				if (!logget) {
