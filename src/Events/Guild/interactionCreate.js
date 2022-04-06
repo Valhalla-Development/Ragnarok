@@ -6,6 +6,7 @@ const { customAlphabet } = require('nanoid');
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 const discordTranscripts = require('discord-html-transcripts');
 const fetchPkg = require('node-fetch-cjs');
+const { Modal, TextInputComponent, showModal } = require('discord-modals');
 
 module.exports = class extends Event {
 
@@ -164,6 +165,27 @@ module.exports = class extends Event {
 						{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
 						{ name: `\u200b`, value: `\u200b`, inline: true });
 				logchan.send({ embeds: [logEmbed] });
+			}
+
+			if (interaction.customId === 'closeTicketReason') {
+				const modal = new Modal()
+					.setCustomId(`modal-${ticket.chanid}`)
+					.setTitle('Close Ticket')
+					.addComponents(
+						new TextInputComponent()
+							.setCustomId(`textinput-${ticket.chanid}`)
+							.setLabel('Reason')
+							.setStyle('LONG')
+							.setMinLength(4)
+							.setMaxLength(400)
+							.setPlaceholder('Input your reason for closing this ticket')
+							.setRequired(true)
+					);
+
+				await showModal(modal, {
+					client: this.client,
+					interaction: interaction
+				});
 			}
 		}
 
