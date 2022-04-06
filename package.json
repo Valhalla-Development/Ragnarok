@@ -26,10 +26,10 @@
 		"erela.js-spotify": "^1.2.0",
 		"glob": "^7.2.0",
 		"hastebin.js": "^1.3.2",
-		"mathjs": "^10.4.1",
-		"moment": "^2.29.1",
+		"mathjs": "^10.4.2",
+		"moment": "^2.29.2",
 		"ms": "^2.1.3",
-		"nanoid": "^3.3.1",
+		"nanoid": "^3.3.2",
 		"node-fetch-cjs": "^3.2.3",
 		"number-abbreviate": "^2.0.0",
 		"number-to-words-en": "^1.2.5",
@@ -47,11 +47,11 @@
 		"url-regex-safe": "^3.0.0"
 	},
 	"devDependencies": {
-		"eslint": "^8.11.0",
+		"eslint": "^8.12.0",
 		"eslint-config-tesseract": "^0.3.0",
-		"prettier": "^2.6.1",
+		"prettier": "^2.6.2",
 		"prettier-eslint": "^13.0.0",
-		"yarn-upgrade-all": "^0.6.1"
+		"yarn-upgrade-all": "^0.7.1"
 	},
 	"yarn-upgrade-all": {
 		"ignore": [
