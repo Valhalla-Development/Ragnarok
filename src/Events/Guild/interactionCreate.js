@@ -11,8 +11,6 @@ module.exports = class extends Event {
 		if (!interaction.isButton()) return;
 
 		if (interaction.customId === 'createTicket') {
-			await interaction.deferUpdate();
-
 			// Ticket Embed
 			const guild = this.client.guilds.cache.get(interaction.guild.id);
 			const fetch = db.prepare(`SELECT * FROM ticketConfig WHERE guildid = ${guild.id}`).get();
@@ -20,6 +18,7 @@ module.exports = class extends Event {
 
 			if (!fetch.ticketembed) {
 				interaction.message.delete();
+				await interaction.deferUpdate();
 				return;
 			}
 
@@ -29,6 +28,7 @@ module.exports = class extends Event {
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:`);
 				channel.send({ embeds: [botPerm] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				await interaction.deferUpdate();
 				return;
 			}
 
@@ -39,6 +39,7 @@ module.exports = class extends Event {
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
 				channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				await interaction.deferUpdate();
 				return;
 			}
 
@@ -72,9 +73,11 @@ module.exports = class extends Event {
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Ticket**`,
 							`**◎ Error:** It seems you already have a ticket open. | ${cha}`);
-					interaction.user.send({ embeds: [alreadyTicket] });
+					interaction.reply({ embeds: [alreadyTicket], ephemeral: true });
 					return;
-				} catch {
+				} catch (e) {
+					await interaction.deferUpdate();
+					console.log(e);
 					return;
 				}
 			}
@@ -124,7 +127,7 @@ module.exports = class extends Event {
 					.setColor(this.client.utils.color(interaction.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
-				channel.send({ embeds: [newTicketE] }).then((m) => this.client.utils.deletableCheck(m, 4000));
+				interaction.reply({ embeds: [newTicketE], ephemeral: true });
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(interaction.guild.me.displayHexColor))
 					.setTitle('New Ticket')
