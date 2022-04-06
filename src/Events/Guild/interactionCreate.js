@@ -1,14 +1,171 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed, Permissions } = require('discord.js');
+const { MessageEmbed, Permissions, MessageButton, MessageActionRow } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
+const discordTranscripts = require('discord-html-transcripts');
+const fetchPkg = require('node-fetch-cjs');
 
 module.exports = class extends Event {
 
 	async run(interaction) {
 		if (!interaction.isButton()) return;
+
+		if (interaction.customId === 'closeTicket' || interaction.customId === 'closeTicketReason') {
+			// Check if the button is inside a valid ticket
+			const guild = this.client.guilds.cache.get(interaction.guild.id);
+			const fetchRole = db.prepare(`SELECT * FROM ticketConfig WHERE guildid = ${guild.id}`).get();
+			if (!fetchRole) return;
+
+			if (fetchRole.role) {
+				if (!guild.roles.cache.find((role) => role.id === fetchRole.role)) {
+					const updateRole = db.prepare(`UPDATE ticketConfig SET role = (@role) WHERE guildid = ${guild.id}`);
+					updateRole.run({
+						role: null
+					});
+				}
+			}
+
+			const fetchTick = db.prepare(`SELECT * FROM tickets`).all();
+			if (!fetchTick) return;
+
+			// Filter fetchTick where chanid === interaction.channel.id
+			const ticket = fetchTick.find(t => t.chanid === interaction.channel.id);
+			if (!ticket) return;
+
+			// Check if bot has perms
+			if (!guild.me.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+				const botPerm = new MessageEmbed()
+					.setColor(this.client.utils.color(guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Ticket**`,
+						`**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:`);
+				interaction.channel.send({ embeds: [botPerm] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				await interaction.deferUpdate();
+				return;
+			}
+
+			// "Support" role
+			if (!guild.roles.cache.find((r) => r.name === 'Support Team') && !fetchRole.role) {
+				const nomodRole = new MessageEmbed()
+					.setColor(this.client.utils.color(guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Ticket**`,
+						`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
+				interaction.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				await interaction.deferUpdate();
+				return;
+			}
+
+			// If no reason
+			if (interaction.customId === 'closeTicket') {
+				interaction.channel.sendTyping();
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Ticket**`,
+						`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.`);
+				interaction.channel.send({ embeds: [embed] });
+
+				// Generate random string
+				const random = (length = 40) => {
+					// Declare all characters
+					const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+					// Pick characers randomly
+					let str = '';
+					for (let i = 0; i < length; i++) {
+						str += chars.charAt(Math.floor(Math.random() * chars.length));
+					}
+
+					return str;
+				};
+
+				const staticFileNameGen = random();
+				const staticFileName = `${interaction.channel.name}-_-${staticFileNameGen}.html`;
+				const { channel } = interaction;
+
+				channel.name = staticFileName;
+
+				const fixedName = interaction.channel.name.substr(0, interaction.channel.name.indexOf('-_-'));
+
+				const attachment = await discordTranscripts.createTranscript(channel, {
+					limit: -1,
+					returnBuffer: true,
+					fileName: staticFileName
+				});
+				const buffered = Buffer.from(attachment).toString();
+
+				const authorizationSecret = 'pmzg!SD#9H8E#PzGMhe5dr&Qo5EQReLy@cqf87QB';
+
+				const response = await fetchPkg.default('https://ragnarok-discord.000webhostapp.com/index.php', {
+					method: 'POST',
+					body: buffered,
+					headers: { secretkey: authorizationSecret }
+				});
+
+				const data = await response.status;
+
+				let transLinkText;
+
+				if (data !== 200) {
+					transLinkText = `\`Unavailable\``;
+				} else {
+					transLinkText = `[**Click Here**](https://ragnarok-discord.000webhostapp.com/transcripts/${staticFileName})`;
+				}
+
+				if (interaction.channel) {
+					channel.name = fixedName;
+					interaction.channel.delete();
+				}
+
+				const channelArgs = interaction.channel.name.split('-');
+
+				const deleteTicket = db.prepare(`DELETE FROM tickets WHERE guildid = ${guild.id} AND ticketid = (@ticketid)`);
+				deleteTicket.run({
+					ticketid: channelArgs[channelArgs.length - 1]
+				});
+
+				const epoch = Math.floor(new Date().getTime() / 1000);
+
+				const user = this.client.users.cache.find((a) => a.id === ticket.authorid);
+				if (user) {
+					const logEmbed = new MessageEmbed()
+						.setColor(this.client.utils.color(guild.me.displayHexColor))
+						.setAuthor({ name: 'Ticket Closed', iconURL: guild.iconURL({ dynamic: true }) })
+						.addFields({ name: `**Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+							{ name: `**Opened By**`, value: `${user}`, inline: true },
+							{ name: `**Closed By**`, value: `${interaction.user}`, inline: true },
+							{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
+							{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
+							{ name: `_ _`, value: `_ _`, inline: true });
+					user.send({ embeds: [logEmbed] }).then(() => {
+						// eslint-disable-next-line arrow-body-style
+					}).catch(() => {
+						return;
+					});
+				}
+
+				const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${guild.id};`).get();
+				if (!logget) {
+					return;
+				}
+
+				const logchan = guild.channels.cache.find((chan) => chan.id === logget.log);
+				if (!logchan) {
+					return;
+				}
+
+				const logEmbed = new MessageEmbed()
+					.setColor(this.client.utils.color(guild.me.displayHexColor))
+					.setAuthor({ name: 'Ticket Closed', iconURL: guild.iconURL({ dynamic: true }) })
+					.addFields({ name: `**Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+						{ name: `**Opened By**`, value: `${user}`, inline: true },
+						{ name: `**Closed By**`, value: `${interaction.user}`, inline: true },
+						{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
+						{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
+						{ name: `_ _`, value: `_ _`, inline: true });
+				logchan.send({ embeds: [logEmbed] });
+			}
+		}
 
 		if (interaction.customId === 'createTicket') {
 			// Ticket Embed
@@ -128,11 +285,25 @@ module.exports = class extends Event {
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
 				interaction.reply({ embeds: [newTicketE], ephemeral: true });
+
+				const buttonClose = new MessageButton()
+					.setStyle('SUCCESS')
+					.setLabel('🔒 Close')
+					.setCustomId('closeTicket');
+
+				const buttonCloseReason = new MessageButton()
+					.setStyle('SUCCESS')
+					.setLabel('🔒 Close With Reason')
+					.setCustomId('closeTicketReason');
+
+				const row = new MessageActionRow()
+					.addComponents(buttonClose, buttonCloseReason);
+
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(interaction.guild.me.displayHexColor))
 					.setTitle('New Ticket')
 					.setDescription(`Hello \`${interaction.user.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
-				c.send({ embeds: [embed] });
+				c.send({ components: [row], embeds: [embed] });
 
 				if (id) {
 					if (!fetch.log) {
@@ -152,6 +323,8 @@ module.exports = class extends Event {
 		}
 
 		if (interaction.customId.startsWith('rm-')) {
+			await interaction.deferUpdate();
+
 			const guild = this.client.guilds.cache.get(interaction.guild.id);
 			const user = guild.members.cache.get(interaction.user.id);
 
