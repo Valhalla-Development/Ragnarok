@@ -1237,6 +1237,11 @@ discord-image-generation@^1.4.13:
     gifencoder "^2.0.1"
     jimp "^0.16.1"
 
+discord-modals@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/discord-modals/-/discord-modals-1.3.4.tgz#3dbd58d4f1642452ae31d1897779bb5d8d4a77a9"
+  integrity sha512-ixTso+fPy86lGO2reGNc7MMeqxoUxVnZP5wP6AngLK0R8xRjNpmo0LxqHqCwfHCrzHpQ8cB4akSt9Ud3jwANTQ==
+
 discord.js@^13.6.0:
   version "13.6.0"
   resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-13.6.0.tgz#d8a8a591dbf25cbcf9c783d5ddf22c4694860475"
