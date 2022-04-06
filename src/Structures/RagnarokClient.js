@@ -13,6 +13,7 @@ const { Manager } = require('erela.js');
 const Spotify = require('erela.js-spotify');
 const prettyMilliseconds = require('pretty-ms');
 const { stripIndents } = require('common-tags');
+const discordModals = require('discord-modals');
 
 module.exports = class RagnarokClient extends Client {
 
@@ -29,6 +30,9 @@ module.exports = class RagnarokClient extends Client {
 		this.utils = new Util(this);
 
 		this.owners = options.ownerID;
+
+		// Modals (remove when v13.7 releases)
+		discordModals(this);
 
 		// Music
 		const clientID = options.musicClientID;
