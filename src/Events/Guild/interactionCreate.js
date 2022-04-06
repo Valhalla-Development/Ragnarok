@@ -136,7 +136,7 @@ module.exports = class extends Event {
 							{ name: `**Closed By**`, value: `${interaction.user}`, inline: true },
 							{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
 							{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
-							{ name: `_ _`, value: `_ _`, inline: true });
+							{ name: `\u200b`, value: `\u200b`, inline: true });
 					user.send({ embeds: [logEmbed] }).then(() => {
 						// eslint-disable-next-line arrow-body-style
 					}).catch(() => {
@@ -162,7 +162,7 @@ module.exports = class extends Event {
 						{ name: `**Closed By**`, value: `${interaction.user}`, inline: true },
 						{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
 						{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
-						{ name: `_ _`, value: `_ _`, inline: true });
+						{ name: `\u200b`, value: `\u200b`, inline: true });
 				logchan.send({ embeds: [logEmbed] });
 			}
 		}

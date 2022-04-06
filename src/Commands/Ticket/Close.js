@@ -194,7 +194,7 @@ module.exports = class extends Command {
 									{ name: `**Closed By**`, value: `${message.author}`, inline: true },
 									{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
 									{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
-									{ name: `_ _`, value: `_ _`, inline: true });
+									{ name: `\u200b`, value: `\u200b`, inline: true });
 							user.send({ embeds: [dmE] }).then(() => {
 								// eslint-disable-next-line arrow-body-style
 							}).catch(() => {
@@ -212,7 +212,7 @@ module.exports = class extends Command {
 									{ name: `**Closed By**`, value: `${message.author}`, inline: true },
 									{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
 									{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
-									{ name: `_ _`, value: `_ _`, inline: true },
+									{ name: `\u200b`, value: `\u200b`, inline: true },
 									{ name: `**Reason**`, value: `${closeReason}` });
 							user.send({ embeds: [dmE] }).then(() => {
 								// eslint-disable-next-line arrow-body-style
@@ -250,7 +250,7 @@ module.exports = class extends Command {
 								{ name: `**Closed By**`, value: `${message.author}`, inline: true },
 								{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
 								{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
-								{ name: `_ _`, value: `_ _`, inline: true });
+								{ name: `\u200b`, value: `\u200b`, inline: true });
 						logchan.send({ embeds: [logEmbed] });
 						if (comCooldown.has(message.author.id)) {
 							comCooldown.delete(message.author.id);
@@ -264,7 +264,7 @@ module.exports = class extends Command {
 								{ name: `**Closed By**`, value: `${message.author}`, inline: true },
 								{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
 								{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
-								{ name: `_ _`, value: `_ _`, inline: true },
+								{ name: `\u200b`, value: `\u200b`, inline: true },
 								{ name: `**Reason**`, value: `${closeReason}` });
 						logchan.send({ embeds: [logEmbed] });
 						if (comCooldown.has(message.author.id)) {
