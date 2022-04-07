@@ -95,8 +95,7 @@ module.exports = class extends Command {
 			const initial = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
-					`**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!`)
-				.setFooter({ text: `If this fails for any reason, you can forcefully close with: ${prefix}forceclose` });
+					`**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!`);
 
 			const m = await message.channel.send({ components: [row], embeds: [initial] });
 
@@ -121,7 +120,7 @@ module.exports = class extends Command {
 					const embed = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Ticket**`,
-							`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.\n\n**NOTE** If this is taking too long, I may have timed out, you can run \`${prefix}forceclose\` to close the ticket forcefully, this will not include a chat log.`);
+							`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.`);
 					message.channel.send({ embeds: [embed] });
 
 					// Generate random string
