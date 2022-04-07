@@ -123,10 +123,7 @@ module.exports = class extends Command {
 				.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 			const row3 = new MessageActionRow()
-				.addComponents(buttonM, buttonN, buttonO);
-
-			const row4 = new MessageActionRow()
-				.addComponents(buttonP);
+				.addComponents(buttonM, buttonN, buttonO, buttonP);
 
 			const initial = new MessageEmbed()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
@@ -134,7 +131,7 @@ module.exports = class extends Command {
 				.addField(`**${this.client.user.username} - Config**`,
 					`**◎** Click the corresponding button for which module you would like to configure.`);
 
-			const m = await message.channel.send({ components: [row, row2, row3, row4], embeds: [initial] });
+			const m = await message.channel.send({ components: [row, row2, row3], embeds: [initial] });
 
 			const filter = (but) => but.user.id !== this.client.user.id;
 
@@ -171,12 +168,9 @@ module.exports = class extends Command {
 						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO);
+						.addComponents(buttonM, buttonN, buttonO, buttonP);
 
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
-
-					await b.update({ embeds: [initial], components: [rowNew, row2New, row3New, row4New] });
+					await b.update({ embeds: [initial], components: [rowNew, row2New, row3New] });
 					return;
 				}
 
@@ -190,10 +184,7 @@ module.exports = class extends Command {
 						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
+						.addComponents(buttonM, buttonN, buttonO, buttonP);
 
 					const ads = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -201,7 +192,7 @@ module.exports = class extends Command {
 							`**◎ Advert Protection:**
 							\u3000\`${prefix}config adsprot <on/off>\` : Toggles advert protection`);
 
-					await b.update({ embeds: [ads], components: [rowNew, row2New, row3New, row4New] });
+					await b.update({ embeds: [ads], components: [rowNew, row2New, row3New] });
 					return;
 				}
 				if (b.customId === 'autorole') {
@@ -214,10 +205,7 @@ module.exports = class extends Command {
 						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
+						.addComponents(buttonM, buttonN, buttonO, buttonP);
 
 					const auto = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -225,7 +213,7 @@ module.exports = class extends Command {
 							`**◎ AutoRole:**
 							\u3000\`${prefix}config autorole <@role>\` : Sets the role users are given when they join the guild`);
 
-					await b.update({ embeds: [auto], components: [rowNew, row2New, row3New, row4New] });
+					await b.update({ embeds: [auto], components: [rowNew, row2New, row3New] });
 					return;
 				}
 				if (b.customId === 'birthday') {
@@ -238,10 +226,7 @@ module.exports = class extends Command {
 						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
+						.addComponents(buttonM, buttonN, buttonO, buttonP);
 
 					const bday = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -250,7 +235,7 @@ module.exports = class extends Command {
 							\u3000\`${prefix}config birthday channel <#channel>\` : Sets the channel where birthday alerts are sent.
 					        \u3000\`${prefix}config birthday role [@role]\` : Sets the (optional) role is pinged when it is someones birthday.`);
 
-					await b.update({ embeds: [bday], components: [rowNew, row2New, row3New, row4New] });
+					await b.update({ embeds: [bday], components: [rowNew, row2New, row3New] });
 					return;
 				}
 				if (b.customId === 'dad') {
@@ -263,10 +248,7 @@ module.exports = class extends Command {
 						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
+						.addComponents(buttonM, buttonN, buttonO, buttonP);
 
 					const dad = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -274,7 +256,7 @@ module.exports = class extends Command {
 							`**◎ Dad Bot:**
 							\u3000\`${prefix}config dadbot <on/off>\` : Toggles the Dad bot module`);
 
-					await b.update({ embeds: [dad], components: [rowNew, row2New, row3New, row4New] });
+					await b.update({ embeds: [dad], components: [rowNew, row2New, row3New] });
 					return;
 				}
 				if (b.customId === 'haste') {
@@ -287,10 +269,7 @@ module.exports = class extends Command {
 						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
+						.addComponents(buttonM, buttonN, buttonO, buttonP);
 
 					const haste = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -298,7 +277,7 @@ module.exports = class extends Command {
 							`**◎ Hastebin:**
 							\u3000\`${prefix}config haste url <on/off>\` : Toggles the Hastebin URL blocker`);
 
-					await b.update({ embeds: [haste], components: [rowNew, row2New, row3New, row4New] });
+					await b.update({ embeds: [haste], components: [rowNew, row2New, row3New] });
 					return;
 				}
 				if (b.customId === 'level') {
@@ -311,10 +290,7 @@ module.exports = class extends Command {
 						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
+						.addComponents(buttonM, buttonN, buttonO, buttonP);
 
 					const lvl = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -322,7 +298,7 @@ module.exports = class extends Command {
 							`**◎ Level System:**
 							\u3000\`${prefix}config level <enable/disable>\` : Toggles the Level module`);
 
-					await b.update({ embeds: [lvl], components: [rowNew, row2New, row3New, row4New] });
+					await b.update({ embeds: [lvl], components: [rowNew, row2New, row3New] });
 					return;
 				}
 				if (b.customId === 'logging') {
@@ -335,10 +311,7 @@ module.exports = class extends Command {
 						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
+						.addComponents(buttonM, buttonN, buttonO, buttonP);
 
 					const log = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -346,7 +319,7 @@ module.exports = class extends Command {
 							`**◎ Logging:**
 							\u3000\`${prefix}config logging <#channel/off>\` : Sets/disables the logging channel`);
 
-					await b.update({ embeds: [log], components: [rowNew, row2New, row3New, row4New] });
+					await b.update({ embeds: [log], components: [rowNew, row2New, row3New] });
 					return;
 				}
 				if (b.customId === 'music') {
@@ -359,10 +332,7 @@ module.exports = class extends Command {
 						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
+						.addComponents(buttonM, buttonN, buttonO, buttonP);
 
 					const mus = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -371,7 +341,7 @@ module.exports = class extends Command {
 							\u3000\`${prefix}config music role <@role>\` : Sets the DJ role
 							\u3000\`${prefix}config music role off\` : Disables the DJ role`);
 
-					await b.update({ embeds: [mus], components: [rowNew, row2New, row3New, row4New] });
+					await b.update({ embeds: [mus], components: [rowNew, row2New, row3New] });
 					return;
 				}
 				if (b.customId === 'prefix') {
@@ -384,10 +354,7 @@ module.exports = class extends Command {
 						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
+						.addComponents(buttonM, buttonN, buttonO, buttonP);
 
 					const prf = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -395,7 +362,7 @@ module.exports = class extends Command {
 							`**◎ Prefix:**
 							\u3000\`${prefix}config prefix <prefix>\` : Sets the guild prefix`);
 
-					await b.update({ embeds: [prf], components: [rowNew, row2New, row3New, row4New] });
+					await b.update({ embeds: [prf], components: [rowNew, row2New, row3New] });
 					return;
 				}
 				if (b.customId === 'rolemenu') {
@@ -408,10 +375,7 @@ module.exports = class extends Command {
 						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
+						.addComponents(buttonM, buttonN, buttonO, buttonP);
 
 					const rlm = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -421,7 +385,7 @@ module.exports = class extends Command {
 							\u3000\`${prefix}config rolemenu remove <@role>\` : Removes a role from rolemenu
 							\u3000\`${prefix}config rolemenu clear\` : Removes all roles from rolemenu`);
 
-					await b.update({ embeds: [rlm], components: [rowNew, row2New, row3New, row4New] });
+					await b.update({ embeds: [rlm], components: [rowNew, row2New, row3New] });
 					return;
 				}
 				if (b.customId === 'tickets') {
@@ -434,10 +398,7 @@ module.exports = class extends Command {
 						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
+						.addComponents(buttonM, buttonN, buttonO, buttonP);
 
 					const tck = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -447,7 +408,7 @@ module.exports = class extends Command {
 							\u3000\`${prefix}config ticket log <#channel>\` : Enables ticket logging
 							\u3000\`${prefix}config ticket role <@role>\` : Sets custom support role for ticket system`);
 
-					await b.update({ embeds: [tck], components: [rowNew, row2New, row3New, row4New] });
+					await b.update({ embeds: [tck], components: [rowNew, row2New, row3New] });
 					return;
 				}
 				if (b.customId === 'welcome') {
@@ -460,10 +421,7 @@ module.exports = class extends Command {
 						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
+						.addComponents(buttonM, buttonN, buttonO, buttonP);
 
 					const wlc = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -474,7 +432,7 @@ module.exports = class extends Command {
 							\u3000 \`${prefix}config welcome image <url-to-image>\` : Sets custom welcome image
 							\u3000 \`${prefix}config welcome image off\` : Disables the custom welcome image`);
 
-					await b.update({ embeds: [wlc], components: [rowNew, row2New, row3New, row4New] });
+					await b.update({ embeds: [wlc], components: [rowNew, row2New, row3New] });
 					return;
 				}
 				if (b.customId === 'starboard') {
@@ -487,17 +445,14 @@ module.exports = class extends Command {
 						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO);
-
-					const row4New = new MessageActionRow()
-						.addComponents(buttonP);
+						.addComponents(buttonM, buttonN, buttonO, buttonP);
 
 					const str = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Starboard:**
 							\u3000 \`${prefix}config starboard <#channel/off>\` : Sets/disables the Starboard channel`);
-					await b.update({ embeds: [str], components: [rowNew, row2New, row3New, row4New] });
+					await b.update({ embeds: [str], components: [rowNew, row2New, row3New] });
 					return;
 				}
 			});
