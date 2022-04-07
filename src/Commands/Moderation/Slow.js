@@ -93,10 +93,11 @@ module.exports = class extends Command {
 		this.client.utils.messageDelete(message, 10000);
 
 		await channel.setRateLimitPerUser(toSecond);
+
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Slow**`,
-				`**◎ Success:** <#${channel.id}> is now in slowmode. Regular users can send messages every \`${toSecond}\` seconds.`);
+				`**◎ Success:** <#${channel.id}> is now in slowmode. Regular users can send messages every \`${ms(ms(time), { long: true })}\``);
 		channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 		return;
 	}
