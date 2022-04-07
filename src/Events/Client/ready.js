@@ -458,17 +458,6 @@ module.exports = class extends Event {
 					});
 
 					if (Date.now() > r.endtime) {
-						try {
-							guild.members.unban(r.userid, 'tempban');
-							db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
-						} catch {
-							db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
-							return;
-						}
-
-						const channelGrab = db.prepare(`SELECT channel FROM ban WHERE id = ?`).get(`${guild.id}-${r.userid}`);
-						const findChannel = this.client.channels.cache.get(channelGrab.channel);
-
 						const embed = new MessageEmbed()
 							.setThumbnail(this.client.user.displayAvatarURL())
 							.setColor(this.client.utils.color(guild.me.displayHexColor))
@@ -476,7 +465,20 @@ module.exports = class extends Event {
 								`**◎ User:** ${r.username}
 							**◎ Reason:** Ban time ended.`)
 							.setTimestamp();
-						findChannel.send({ embeds: [embed] });
+
+						try {
+							guild.members.unban(r.userid, 'tempban');
+
+							const channelGrab = db.prepare(`SELECT channel FROM ban WHERE id = ?`).get(`${guild.id}-${r.userid}`);
+							const findChannel = this.client.channels.cache.get(channelGrab.channel);
+
+							findChannel.send({ embeds: [embed] });
+
+							db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+						} catch {
+							db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+							return;
+						}
 
 						const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`).get();
 						const dblogs = dbid.channel;
