@@ -1135,8 +1135,6 @@ module.exports = class extends Command {
 				if (foundItemList.swordfish) fishCount += Number(foundItemList.swordfish);
 				if (foundItemList.pufferfish) fishCount += Number(foundItemList.pufferfish);
 
-				// if (foundItemList.treasure) i += Number(foundItemList.treasure);
-
 				const totalAdd = balance.total + fullPrice;
 
 				balance.bank += fullPrice;

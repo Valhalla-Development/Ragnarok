@@ -445,7 +445,6 @@ module.exports = class extends Event {
 			// Run every 2 minutes
 			// Bans
 			const grabBans = db.prepare('SELECT * FROM ban').all();
-			// HERE IT FETCHES THE GUILD IN A FOR EACH, SO IF THE grabBdaysConfig HAS EXAMPLE 10 OF THE SAME GUILD, IT WILL FETCH IT 10 TIMES, SOMEHOW REMOVE DUPLICATES
 			grabBans.forEach(r => {
 				this.client.guilds.fetch(r.guildid).then(guild => {
 					if (!guild) return;

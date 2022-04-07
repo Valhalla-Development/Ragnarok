@@ -288,7 +288,8 @@ module.exports = class extends Command {
 		}
 
 		if (!score) {
-			const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
+			// Random amount between 15 - 25
+			const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
 			const newData = {
 				id: `${message.guild.id}-${message.author.id}`,
 				user: message.author.id,
@@ -344,8 +345,6 @@ module.exports = class extends Command {
 			xpLevel = `${abbreviate(inLevel, 2)}/${abbreviate(toLevel, 2)} XP`;
 			xpPercent = inLevel / toLevel * 100;
 		}
-
-		// const percentageCalc = (currentxpLvl / nxtLvlXp) * 100;
 
 		const userRank = db.prepare('SELECT count(*) FROM scores WHERE points >= ? AND guild = ? AND user ORDER BY points DESC').all(points, message.guild.id);
 		const canvas = Canvas.createCanvas(934, 282);

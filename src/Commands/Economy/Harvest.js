@@ -204,7 +204,7 @@ module.exports = class extends Command {
 			balance.farmPlot = foundPlotList.length ? JSON.stringify(foundPlotList) : null;
 			balance.harvestedCrops = JSON.stringify(foundHarvestedList);
 
-			// this.client.setBalance.run(balance);
+			this.client.setBalance.run(balance);
 
 			const Embeds = [];
 			const TestPages = arr.length;
