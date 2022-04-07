@@ -252,175 +252,179 @@ module.exports = class extends Event {
 		adsProt(this.client);
 
 		// Link Mention Function
+		console.log(`${prefixcommand}reply`);
+		console.log(message.content.startsWith(`${prefixcommand}reply`));
 		async function linkTag(grabClient) {
-			const mainReg = /https:\/\/discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
-			const ptbReg = /https:\/\/ptb\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
-			const disReg = /https:\/\/discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
-			const ptReg = /https:\/\/ptb\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
-			const caReg = /https:\/\/canary\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
-			const canApReg = /https:\/\/canary\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
+			if (!message.content.startsWith(`${prefixcommand}reply`) && !message.content.startsWith(`${prefixcommand}sayreply`)) {
+				const mainReg = /https:\/\/discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
+				const ptbReg = /https:\/\/ptb\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
+				const disReg = /https:\/\/discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
+				const ptReg = /https:\/\/ptb\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
+				const caReg = /https:\/\/canary\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
+				const canApReg = /https:\/\/canary\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
 
-			const mainCheck = mainReg.test(message.content.toLowerCase());
-			const ptbCheck = ptbReg.test(message.content.toLowerCase());
-			const disCheck = disReg.test(message.content.toLowerCase());
-			const ptbdisCheck = ptReg.test(message.content.toLowerCase());
-			const canCheck = caReg.test(message.content.toLowerCase());
-			const canACheck = canApReg.test(message.content.toLowerCase());
+				const mainCheck = mainReg.test(message.content.toLowerCase());
+				const ptbCheck = ptbReg.test(message.content.toLowerCase());
+				const disCheck = disReg.test(message.content.toLowerCase());
+				const ptbdisCheck = ptReg.test(message.content.toLowerCase());
+				const canCheck = caReg.test(message.content.toLowerCase());
+				const canACheck = canApReg.test(message.content.toLowerCase());
 
-			const exec = mainReg.exec(message.content.toLowerCase()) || ptbReg.exec(message.content.toLowerCase()) || disReg.exec(message.content.toLowerCase()) || ptReg.exec(message.content.toLowerCase()) || caReg.exec(message.content.toLowerCase()) || canApReg.exec(message.content.toLowerCase());
+				const exec = mainReg.exec(message.content.toLowerCase()) || ptbReg.exec(message.content.toLowerCase()) || disReg.exec(message.content.toLowerCase()) || ptReg.exec(message.content.toLowerCase()) || caReg.exec(message.content.toLowerCase()) || canApReg.exec(message.content.toLowerCase());
 
-			let guildID;
-			let channelID;
-			let messageID;
-			let URL;
+				let guildID;
+				let channelID;
+				let messageID;
+				let URL;
 
-			if (mainCheck || ptbCheck || disCheck || ptbdisCheck || canCheck || canACheck) {
-				const mainGlob = /https:\/\/discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
-				const ptbGlob = /https:\/\/ptb\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
-				const disGlob = /https:\/\/discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
-				const ptGlob = /https:\/\/ptb\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
-				const caGlob = /https:\/\/canary\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
-				const canAGlob = /https:\/\/canary\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
+				if (mainCheck || ptbCheck || disCheck || ptbdisCheck || canCheck || canACheck) {
+					const mainGlob = /https:\/\/discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
+					const ptbGlob = /https:\/\/ptb\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
+					const disGlob = /https:\/\/discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
+					const ptGlob = /https:\/\/ptb\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
+					const caGlob = /https:\/\/canary\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
+					const canAGlob = /https:\/\/canary\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/g;
 
 
-				let lengthMain;
-				let lengthPtb;
+					let lengthMain;
+					let lengthPtb;
 
-				if (mainGlob.test(message.content.toLowerCase()) === true) {
-					lengthMain = message.content.toLowerCase().match(mainGlob).length;
-				} else {
-					lengthMain = 0;
-				}
-				if (ptbGlob.test(message.content.toLowerCase()) === true) {
-					lengthPtb = message.content.toLowerCase().match(ptbGlob).length;
-				} else {
-					lengthPtb = 0;
-				}
-				if (disGlob.test(message.content.toLowerCase()) === true) {
-					lengthMain = message.content.toLowerCase().match(disGlob).length;
-				} else {
-					lengthMain = 0;
-				}
-				if (ptGlob.test(message.content.toLowerCase()) === true) {
-					lengthPtb = message.content.toLowerCase().match(ptGlob).length;
-				} else {
-					lengthPtb = 0;
-				}
-				if (caGlob.test(message.content.toLowerCase()) === true) {
-					lengthMain = message.content.toLowerCase().match(caGlob).length;
-				} else {
-					lengthMain = 0;
-				}
-				if (canAGlob.test(message.content.toLowerCase()) === true) {
-					lengthPtb = message.content.toLowerCase().match(canAGlob).length;
-				} else {
-					lengthPtb = 0;
-				}
+					if (mainGlob.test(message.content.toLowerCase()) === true) {
+						lengthMain = message.content.toLowerCase().match(mainGlob).length;
+					} else {
+						lengthMain = 0;
+					}
+					if (ptbGlob.test(message.content.toLowerCase()) === true) {
+						lengthPtb = message.content.toLowerCase().match(ptbGlob).length;
+					} else {
+						lengthPtb = 0;
+					}
+					if (disGlob.test(message.content.toLowerCase()) === true) {
+						lengthMain = message.content.toLowerCase().match(disGlob).length;
+					} else {
+						lengthMain = 0;
+					}
+					if (ptGlob.test(message.content.toLowerCase()) === true) {
+						lengthPtb = message.content.toLowerCase().match(ptGlob).length;
+					} else {
+						lengthPtb = 0;
+					}
+					if (caGlob.test(message.content.toLowerCase()) === true) {
+						lengthMain = message.content.toLowerCase().match(caGlob).length;
+					} else {
+						lengthMain = 0;
+					}
+					if (canAGlob.test(message.content.toLowerCase()) === true) {
+						lengthPtb = message.content.toLowerCase().match(canAGlob).length;
+					} else {
+						lengthPtb = 0;
+					}
 
-				if (lengthMain + lengthPtb > 1) return;
+					if (lengthMain + lengthPtb > 1) return;
 
-				const mesLink = exec[0];
-				if (mainCheck) {
-					guildID = mesLink.substring(32, mesLink.length - 38);
-					channelID = mesLink.substring(51, mesLink.length - 19);
-					messageID = mesLink.substring(70);
-					URL = `https://discordapp.com/channels/${guildID}/${channelID}/${messageID}`;
-				} else if (ptbCheck) {
-					guildID = mesLink.substring(36, mesLink.length - 38);
-					channelID = mesLink.substring(55, mesLink.length - 19);
-					messageID = mesLink.substring(74);
-					URL = `https://ptb.discordapp.com/channels/${guildID}/${channelID}/${messageID}`;
-				} else if (disCheck) {
-					guildID = mesLink.substring(29, mesLink.length - 38);
-					channelID = mesLink.substring(48, mesLink.length - 19);
-					messageID = mesLink.substring(67);
-					URL = `https://discord.com/channels/${guildID}/${channelID}/${messageID}`;
-				} else if (ptbdisCheck) {
-					guildID = mesLink.substring(33, mesLink.length - 38);
-					channelID = mesLink.substring(52, mesLink.length - 19);
-					messageID = mesLink.substring(71);
-					URL = `https://ptb.discord.com/channels/${guildID}/${channelID}/${messageID}`;
-				} else if (canCheck) {
-					guildID = mesLink.substring(36, mesLink.length - 38);
-					channelID = mesLink.substring(55, mesLink.length - 19);
-					messageID = mesLink.substring(74);
-					URL = `https://canary.discord.com/channels/${guildID}/${channelID}/${messageID}`;
-				} else if (canACheck) {
-					guildID = mesLink.substring(39, mesLink.length - 38);
-					channelID = mesLink.substring(58, mesLink.length - 19);
-					messageID = mesLink.substring(77);
-					URL = `https://canary.discordapp.com/channels/${guildID}/${channelID}/${messageID}`;
-				}
+					const mesLink = exec[0];
+					if (mainCheck) {
+						guildID = mesLink.substring(32, mesLink.length - 38);
+						channelID = mesLink.substring(51, mesLink.length - 19);
+						messageID = mesLink.substring(70);
+						URL = `https://discordapp.com/channels/${guildID}/${channelID}/${messageID}`;
+					} else if (ptbCheck) {
+						guildID = mesLink.substring(36, mesLink.length - 38);
+						channelID = mesLink.substring(55, mesLink.length - 19);
+						messageID = mesLink.substring(74);
+						URL = `https://ptb.discordapp.com/channels/${guildID}/${channelID}/${messageID}`;
+					} else if (disCheck) {
+						guildID = mesLink.substring(29, mesLink.length - 38);
+						channelID = mesLink.substring(48, mesLink.length - 19);
+						messageID = mesLink.substring(67);
+						URL = `https://discord.com/channels/${guildID}/${channelID}/${messageID}`;
+					} else if (ptbdisCheck) {
+						guildID = mesLink.substring(33, mesLink.length - 38);
+						channelID = mesLink.substring(52, mesLink.length - 19);
+						messageID = mesLink.substring(71);
+						URL = `https://ptb.discord.com/channels/${guildID}/${channelID}/${messageID}`;
+					} else if (canCheck) {
+						guildID = mesLink.substring(36, mesLink.length - 38);
+						channelID = mesLink.substring(55, mesLink.length - 19);
+						messageID = mesLink.substring(74);
+						URL = `https://canary.discord.com/channels/${guildID}/${channelID}/${messageID}`;
+					} else if (canACheck) {
+						guildID = mesLink.substring(39, mesLink.length - 38);
+						channelID = mesLink.substring(58, mesLink.length - 19);
+						messageID = mesLink.substring(77);
+						URL = `https://canary.discordapp.com/channels/${guildID}/${channelID}/${messageID}`;
+					}
 
-				if (!guildID) {
-					return;
-				}
-				if (!channelID) {
-					return;
-				}
-				if (!messageID) {
-					return;
-				}
-				const embed = new MessageEmbed()
-					.setAuthor({ name: `${message.author.username}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
-					.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
-					.setFooter({ text: `Req. by ${message.author.username}` })
-					.setTimestamp();
-				if (message.guild.id === guildID) {
-					const findGuild = grabClient.guilds.cache.get(guildID);
-					const findChannel = findGuild.channels.cache.get(channelID);
-					const validExtensions = ['gif', 'png', 'jpeg', 'jpg'];
+					if (!guildID) {
+						return;
+					}
+					if (!channelID) {
+						return;
+					}
+					if (!messageID) {
+						return;
+					}
+					const embed = new MessageEmbed()
+						.setAuthor({ name: `${message.author.username}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+						.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
+						.setFooter({ text: `Req. by ${message.author.username}` })
+						.setTimestamp();
+					if (message.guild.id === guildID) {
+						const findGuild = grabClient.guilds.cache.get(guildID);
+						const findChannel = findGuild.channels.cache.get(channelID);
+						const validExtensions = ['gif', 'png', 'jpeg', 'jpg'];
 
-					await findChannel.messages.fetch(messageID).then((res) => {
-						if (res) {
-							if (res.embeds[0]) { // fail bruh
-								if (res.embeds[0].url) {
-									const fileExtension = res.embeds[0].url.substring(res.embeds[0].url.lastIndexOf('.') + 1);
-									if (validExtensions.includes(fileExtension)) {
-										embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.length > 1048 ? res.content.substring(0, 1048) : res.content}`);
-										embed.setImage(res.embeds[0].url);
-										message.channel.send({ embeds: [embed] });
+						await findChannel.messages.fetch(messageID).then((res) => {
+							if (res) {
+								if (res.embeds[0]) { // fail bruh
+									if (res.embeds[0].url) {
+										const fileExtension = res.embeds[0].url.substring(res.embeds[0].url.lastIndexOf('.') + 1);
+										if (validExtensions.includes(fileExtension)) {
+											embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.length > 1048 ? res.content.substring(0, 1048) : res.content}`);
+											embed.setImage(res.embeds[0].url);
+											message.channel.send({ embeds: [embed] });
+										}
+										return;
+									} else {
+										return;
 									}
-									return;
-								} else {
-									return;
 								}
-							}
 
-							const attachmentCheck = res.attachments.first();
-							if (attachmentCheck && res.content !== '') {
-								const attachmentUrl = res.attachments.first().url;
-								const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
-								if (!validExtensions.includes(fileExtension)) {
-									embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
-									return;
+								const attachmentCheck = res.attachments.first();
+								if (attachmentCheck && res.content !== '') {
+									const attachmentUrl = res.attachments.first().url;
+									const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
+									if (!validExtensions.includes(fileExtension)) {
+										embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
+										return;
+									} else {
+										embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
+										embed.setImage(attachmentUrl);
+										message.channel.send({ embeds: [embed] });
+										return;
+									}
+								}
+								if (attachmentCheck) {
+									const attachmentUrl = res.attachments.first().url;
+									const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
+									if (!validExtensions.includes(fileExtension)) {
+										return;
+									} else {
+										embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}`);
+										embed.setImage(attachmentUrl);
+										message.channel.send({ embeds: [embed] });
+										return;
+									}
 								} else {
 									embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
-									embed.setImage(attachmentUrl);
 									message.channel.send({ embeds: [embed] });
 									return;
 								}
 							}
-							if (attachmentCheck) {
-								const attachmentUrl = res.attachments.first().url;
-								const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
-								if (!validExtensions.includes(fileExtension)) {
-									return;
-								} else {
-									embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}`);
-									embed.setImage(attachmentUrl);
-									message.channel.send({ embeds: [embed] });
-									return;
-								}
-							} else {
-								embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
-								message.channel.send({ embeds: [embed] });
-								return;
-							}
-						}
-					}).catch((e) => {
-						console.error(e);
-					});
+						}).catch((e) => {
+							console.error(e);
+						});
+					}
 				}
 			}
 		}
