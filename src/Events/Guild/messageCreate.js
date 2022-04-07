@@ -252,8 +252,6 @@ module.exports = class extends Event {
 		adsProt(this.client);
 
 		// Link Mention Function
-		console.log(`${prefixcommand}reply`);
-		console.log(message.content.startsWith(`${prefixcommand}reply`));
 		async function linkTag(grabClient) {
 			if (!message.content.startsWith(`${prefixcommand}reply`) && !message.content.startsWith(`${prefixcommand}sayreply`)) {
 				const mainReg = /https:\/\/discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,18}/;
