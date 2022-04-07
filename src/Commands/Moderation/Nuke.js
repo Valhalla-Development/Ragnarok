@@ -24,7 +24,10 @@ module.exports = class extends Command {
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
-		if (!message.guild.member(this.client.user).permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+
+		const user = message.guild.members.cache.get(message.author.id);
+
+		if (!user.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
@@ -38,10 +41,10 @@ module.exports = class extends Command {
 		const { channel } = message;
 
 		await channel.clone({ name: `${channel.name}`, reason: 'Nuked!' }).then((chn) => {
-			chn.setParent(channel.parentID);
-			chn.setPosition(channel.rawPosition);
 			channel.delete();
-			chn.send({ content: 'Channel has been nuked!\nhttps://tenor.com/view/explosion-mushroom-cloud-atomic-bomb-bomb-boom-gif-4464831' });
+			chn.setParent(channel.parentId);
+			chn.setPosition(channel.rawPosition);
+			chn.send({ content: 'Channel has been nuked!\nhttps://tenor.com/view/explosion-mushroom-cloud-atomic-bomb-bomb-boom-gif-4464831' }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		});
 	}
