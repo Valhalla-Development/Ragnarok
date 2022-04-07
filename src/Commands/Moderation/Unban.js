@@ -63,6 +63,8 @@ module.exports = class extends Command {
 				return;
 			}
 			message.guild.members.unban(bUser.user).then(() => message.channel.send({ embeds: [embed] }));
+
+			db.prepare('DELETE FROM ban WHERE id = ?').run(`${message.guild.id}-${bUser.user.id}`);
 		});
 
 		const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
