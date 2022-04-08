@@ -107,28 +107,19 @@ module.exports = class extends Command {
 				return;
 			}
 
+			const duration = ms(args[1]);
+			const winnerCount = parseInt(args[2]);
+			const prize = args.slice(3).join(' ');
+
 			this.client.giveawaysManager.start(message.channel, {
-				duration: ms(args[1]),
-				winnerCount: parseInt(args[2]),
-				prize: args.slice(3).join(' '),
+				duration: duration,
+				winnerCount: winnerCount,
+				prize: prize,
 				lastChance: {
 					enabled: true,
 					content: '⚠️ **LAST CHANCE TO ENTER !** ⚠️',
 					threshold: 5000,
 					embedColor: '#FF0000'
-				},
-				messages: {
-					giveaway: '🎉🎉 **GIVEAWAY** 🎉🎉',
-					giveawayEnded: '🎉🎉 **GIVEAWAY ENDED** 🎉🎉',
-					drawing: 'Drawing: {timestamp}',
-					dropMessage: 'Be the first to react with 🎉 !',
-					inviteToParticipate: 'React with 🎉 to participate!',
-					winMessage: 'Congratulations, {winners}! You won **{this.prize}**!\n{this.messageURL}',
-					embedFooter: '{this.winnerCount} winner(s)',
-					noWinner: 'Giveaway cancelled, no valid participations.',
-					hostedBy: `Hosted by: **${message.guild.name}**`,
-					winners: 'Winner(s):',
-					endedAt: 'Ended at'
 				}
 			});
 		}
