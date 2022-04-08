@@ -20,14 +20,16 @@ module.exports = class extends Event {
 				db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(newMessage.guild.id);
 				return;
 			}
-			const matches = urlRegexSafe({ strict: false }).test(newMessage.content.toLowerCase());
-			if (matches) {
-				if (newMessage.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
-					this.client.utils.messageDelete(newMessage, 0);
-					newMessage.channel.send(`**◎ Your message contained a link and it was deleted, ${newMessage.author}**`)
-						.then((msg) => {
-							this.client.utils.deletableCheck(msg, 10000);
-						});
+			if (!newMessage.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+				const matches = urlRegexSafe({ strict: false }).test(newMessage.content.toLowerCase());
+				if (matches) {
+					if (newMessage.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+						this.client.utils.messageDelete(newMessage, 0);
+						newMessage.channel.send(`**◎ Your message contained a link and it was deleted, ${newMessage.author}**`)
+							.then((msg) => {
+								this.client.utils.deletableCheck(msg, 10000);
+							});
+					}
 				}
 			}
 		}
@@ -38,6 +40,8 @@ module.exports = class extends Event {
 		const logs = id.channel;
 		if (!logs) return;
 
+		if (!oldMessage.content) return;
+
 		if (oldMessage.content.length === 0) {
 			return;
 		}
@@ -47,6 +51,9 @@ module.exports = class extends Event {
 		if (oldMessage.content === newMessage.content) {
 			return;
 		}
+
+		if (oldMessage.content.length + newMessage.content.length > 6000) return;
+
 		const embed = new RagnarokEmbed()
 			.setColor(this.client.utils.color(newMessage.guild.me.displayHexColor))
 			.setAuthor({ name: `${oldMessage.author.tag}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) })
