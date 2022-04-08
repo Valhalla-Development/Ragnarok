@@ -24,7 +24,7 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Announcement**`,
-					`**◎ Error:** Please use:**:\n\n${prefix}announcement <message>`);
+					`**◎ Error:** Please use:**\n\n${prefix}announcement <message>`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
