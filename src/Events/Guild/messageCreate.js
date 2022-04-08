@@ -1,7 +1,8 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-inline-comments */
 /* eslint-disable no-mixed-operators */
 const Event = require('../../Structures/Event');
-const { MessageEmbed, Permissions, Formatters } = require('discord.js');
+const { MessageEmbed, Permissions, Formatters, MessageButton, MessageActionRow } = require('discord.js');
 const moment = require('moment');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -13,10 +14,390 @@ const urlRegexSafe = require('url-regex-safe');
 const dadCooldown = new Set();
 const dadCooldownSeconds = 60;
 const fetch = require('node-fetch-cjs');
+const { customAlphabet } = require('nanoid');
+const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 
 module.exports = class extends Event {
 
 	async run(message) {
+		const modMail = async () => {
+			if (!message.guild) {
+				if (message.author.bot) return;
+
+				// Filter all guilds where the user is in
+				const guilds = this.client.guilds.cache.filter(guild => guild.members.cache.get(message.author.id));
+
+				if (!guilds) {
+					const embed = new MessageEmbed()
+						.setColor('#A10000')
+						.addField(`**${this.client.user.username} - Mod Mail**`,
+							`**◎ Error:** You need to share a server with ${this.client.user} to use Mod Mail.`);
+					message.reply({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				const comCooldown = new Set();
+				const comCooldownSeconds = 30;
+
+				if (comCooldown.has(message.author.id)) {
+					const embed = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.addField(`**${this.client.user.username} - Mod Mail**`,
+							`**◎ Error:** Please do not spam the request.\nYou can canel your previous request by clicking the \`Cancel\` button.`);
+					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
+
+				// Then filter which guilds have tickets enabled in the db
+				const guildsWithTickets = guilds.filter(guild => {
+					const row = db.prepare('SELECT * FROM ticketConfig WHERE guildid = ?').get(guild.id);
+					return row;
+				});
+
+				// Map guilds by: name, id
+				const guildsMap = guildsWithTickets.map(guild => ({
+					name: guild.name,
+					id: guild.id
+				}));
+
+				// Sort guilds by: name in alphabetical order
+				const sortedGuilds = guildsMap.sort((a, b) => {
+					var nameA = a.name.toUpperCase();
+					var nameB = b.name.toUpperCase();
+					if (nameA < nameB) {
+						return -1;
+					}
+					if (nameA > nameB) {
+						return 1;
+					}
+					return 0;
+				});
+
+				// Set embed fields from new map to object and number them
+				const embedFields = sortedGuilds.map((guild, index) => ({
+					name: `${index + 1}. ${guild.name}`,
+					value: `Guild ID: \`${guild.id}\``,
+					inline: true
+				}));
+
+				// Map embedFields to buttons with numbers
+				const buttons = embedFields.map((obj) => {
+					const buttonMap = new MessageButton()
+						.setStyle('SUCCESS')
+						.setLabel(`${obj.name.slice(0, obj.name.indexOf('.'))}`)
+						.setCustomId(`modMail-${obj.value.substring(obj.value.indexOf('`') + 1, obj.value.lastIndexOf('`'))}`);
+					return buttonMap;
+				});
+
+				// Trim buttons to 24
+				const trimmedButtons = buttons.slice(0, 24);
+
+				const cancelButton = new MessageButton()
+					.setStyle('DANGER')
+					.setLabel(`Cancel`)
+					.setCustomId(`cancelModMail`);
+				trimmedButtons.push(cancelButton);
+
+				// Split buttons into arrays of 5
+				const splitButtons = [];
+				for (let i = 0; i < trimmedButtons.length; i += 5) {
+					splitButtons.push(trimmedButtons.slice(i, i + 5));
+				}
+				const finalButtonArray = splitButtons.splice(0, 5);
+
+				// For each finalButtonArray, create a MessageActionRow()
+				const actionRows = [];
+				for (let i = 0; i < finalButtonArray.length; i++) {
+					const actionRow = new MessageActionRow()
+						.addComponents(finalButtonArray[i]);
+					actionRows.push(actionRow);
+				}
+
+				const embed = new MessageEmbed()
+					.setColor('#A10000')
+					.setTitle('Select Server')
+					.setDescription('Select which server you wish to send this message to. You can do so by clicking to corresponding button.')
+					.addFields(...embedFields);
+
+				if (!comCooldown.has(message.author.id)) {
+					comCooldown.add(message.author.id);
+				}
+				setTimeout(() => {
+					if (comCooldown.has(message.author.id)) {
+						comCooldown.delete(message.author.id);
+					}
+				}, comCooldownSeconds * 1000);
+
+				// Send embed
+				try {
+					const m = await message.reply({ components: [...actionRows], embeds: [embed] });
+
+					const filter = (but) => but.user.id !== this.client.user.id;
+
+					const collector = m.createMessageComponentCollector({ filter, time: 15000 });
+
+					collector.on('collect', async b => {
+						if (b.customId === 'cancelModMail') {
+							this.client.utils.deletableCheck(m, 0);
+
+							const noGuild = new MessageEmbed()
+								.setColor('#A10000')
+								.addField(`**${this.client.user.username} - Mod Mail**`,
+									`**◎ Success:** Your request has been cancelled.`);
+							message.reply({ embeds: [noGuild] }).then((d) => this.client.utils.deletableCheck(d, 10000));
+							return;
+						}
+						if (comCooldown.has(message.author.id)) {
+							comCooldown.delete(message.author.id);
+						}
+
+						const trimGuild = b.customId.substring(b.customId.indexOf('-') + 1);
+						const fetchGuild = this.client.guilds.cache.get(trimGuild);
+
+						if (!fetchGuild) {
+							this.client.utils.deletableCheck(m, 0);
+
+							const noGuild = new MessageEmbed()
+								.setColor('#A10000')
+								.addField(`**${this.client.user.username} - Mod Mail**`,
+									`**◎ Error:** I could not find the server you selected. Please try again.`);
+							message.reply({ embeds: [noGuild] }).then((d) => this.client.utils.deletableCheck(d, 10000));
+							return;
+						}
+
+						if (!fetchGuild.me.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+							this.client.utils.deletableCheck(m, 0);
+
+							const botPerm = new MessageEmbed()
+								.setColor(this.client.utils.color(fetchGuild.me.displayHexColor))
+								.addField(`**${this.client.user.username} - Mod Mail**`,
+									`**◎ Error:** It seems \`${fetchGuild.name}\` has removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:\nPlease report this within \`${fetchGuild}\` to a server moderator.`);
+							message.reply({ embeds: [botPerm] }).then((d) => this.client.utils.deletableCheck(d, 10000));
+							return;
+						}
+
+						const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${fetchGuild.id}`).get();
+
+						// "Support" role
+						if (!fetchGuild.roles.cache.find((r) => r.name === 'Support Team') && !suppRole) {
+							this.client.utils.deletableCheck(m, 0);
+
+							const nomodRole = new MessageEmbed()
+								.setColor(this.client.utils.color(fetchGuild.me.displayHexColor))
+								.addField(`**${this.client.user.username} - Mod Mail**`,
+									`**◎ Error:** \`${fetchGuild.name}\` doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nPlease report this within \`${fetchGuild}\` to a server moderator.`);
+							message.reply({ embeds: [nomodRole] }).then((d) => this.client.utils.deletableCheck(d, 10000));
+							return;
+						}
+
+						// Make sure this is the user's only ticket.
+						const foundTicket = db.prepare(`SELECT authorid FROM tickets WHERE guildid = ${fetchGuild.id} AND authorid = (@authorid)`);
+						const checkTicketEx = db.prepare(`SELECT chanid FROM tickets WHERE guildid = ${fetchGuild.id} AND authorid = ${message.author.id}`).get();
+						const roleCheckEx = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${fetchGuild.id}`).get();
+						if (checkTicketEx) {
+							if (checkTicketEx.chanid === null) {
+								db.prepare(`DELETE FROM tickets WHERE guildid = ${fetchGuild.id} AND authorid = ${message.author.id}`).run();
+							}
+							if (!fetchGuild.channels.cache.find((channel) => channel.id === checkTicketEx.chanid)) {
+								db.prepare(`DELETE FROM tickets WHERE guildid = ${fetchGuild.id} AND authorid = ${message.author.id}`).run();
+							}
+						}
+						if (roleCheckEx) {
+							if (!fetchGuild.roles.cache.find((role) => role.id === roleCheckEx.role)) {
+								const updateRole = db.prepare(`UPDATE ticketConfig SET role = (@role) WHERE guildid = ${fetchGuild.id}`);
+								updateRole.run({
+									role: null
+								});
+							}
+						}
+						if (foundTicket.get({ authorid: message.author.id })) {
+							this.client.utils.deletableCheck(m, 0);
+
+							const existTM = new MessageEmbed()
+								.setColor(this.client.utils.color(fetchGuild.me.displayHexColor))
+								.addField(`**${this.client.user.username} - Mod Mail**`,
+									`**◎ Error:** You already have a ticket open in \`${fetchGuild.name}\`!`);
+							message.channel.send({ embeds: [existTM] }).then((d) => this.client.utils.deletableCheck(d, 10000));
+							return;
+						}
+
+						const nickName = fetchGuild.members.cache.get(message.author.id).displayName;
+
+						// Make Ticket
+						const id = db.prepare(`SELECT category FROM ticketConfig WHERE guildid = ${fetchGuild.id};`).get();
+						const reason = message.content;
+						const randomString = nanoid();
+						if (!id) {
+							const newTicket = db.prepare('INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);');
+							newTicket.run({
+								guildid: fetchGuild.id,
+								ticketid: randomString,
+								authorid: message.author.id,
+								reason
+							});
+							// Create the channel with the name "ticket-" then the user's ID.
+							const role = fetchGuild.roles.cache.find((x) => x.name === 'Support Team') || fetchGuild.roles.cache.find((r) => r.id === suppRole.role);
+							const role2 = fetchGuild.roles.everyone;
+							fetchGuild.channels.create(`ticket-${nickName}-${randomString}`, {
+								permissionOverwrites: [
+									{
+										id: role.id,
+										allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+									},
+									{
+										id: role2.id,
+										deny: [Permissions.FLAGS.VIEW_CHANNEL]
+									},
+									{
+										id: message.author.id,
+										allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+									},
+									{
+										id: this.client.user.id,
+										allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+									}
+								]
+							}).then((c) => {
+								const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${fetchGuild.id} AND ticketid = (@ticketid)`);
+								updateTicketChannel.run({
+									chanid: c.id,
+									ticketid: randomString
+								});
+
+								const newTicketE = new MessageEmbed()
+									.setColor(this.client.utils.color(fetchGuild.me.displayHexColor))
+									.addField(`**${this.client.user.username} - New**`,
+										`**◎ Success:** Your ticket has been created in \`${fetchGuild.name}\`, <#${c.id}>.`);
+								message.reply({ embeds: [newTicketE] });
+								const newTicketEm = new MessageEmbed()
+									.setColor(this.client.utils.color(fetchGuild.me.displayHexColor))
+									.setTitle('New Ticket')
+									.setDescription(`Hello \`${message.author.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
+								c.send({ embeds: [newTicketEm] });
+								// And display any errors in the console.
+								const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${fetchGuild.id};`).get();
+								if (!logget) {
+									return;
+								}
+								const logchan = fetchGuild.channels.cache.find((chan) => chan.id === logget.log);
+								if (!logchan) return;
+
+								const openEpoch = Math.floor(new Date().getTime() / 1000);
+
+								const logEmbed = new MessageEmbed()
+									.setColor(this.client.utils.color(fetchGuild.me.displayHexColor))
+									.setAuthor({ name: 'Ticket Opened', iconURL: fetchGuild.iconURL({ dynamic: true }) })
+									.addFields({ name: `**Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${fetchGuild.id}/${c.id})`, inline: true },
+										{ name: `**Opened By**`, value: `${message.author}`, inline: true },
+										{ name: `**Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
+										{ name: `**Reason**`, value: `${reason}`, inline: true });
+								logchan.send({ embeds: [logEmbed] });
+							}).catch(console.error);
+						} else {
+							const newTicket = db.prepare('INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);');
+							newTicket.run({
+								guildid: fetchGuild.id,
+								ticketid: randomString,
+								authorid: message.author.id,
+								reason
+							});
+							const ticategory = id.category;
+
+							const role = fetchGuild.roles.cache.find((x) => x.name === 'Support Team') || fetchGuild.roles.cache.find((r) => r.id === suppRole.role);
+							const role2 = fetchGuild.roles.everyone;
+							// Create the channel with the name "ticket-" then the user's ID.
+							fetchGuild.channels.create(`ticket-${nickName}-${randomString}`, {
+								parent: ticategory,
+								permissionOverwrites: [
+									{
+										id: role.id,
+										allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+									},
+									{
+										id: role2.id,
+										deny: [Permissions.FLAGS.VIEW_CHANNEL]
+									},
+									{
+										id: message.author.id,
+										allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+									},
+									{
+										id: this.client.user.id,
+										allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+									}
+								]
+							}).then(async (c) => {
+								const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${fetchGuild.id} AND ticketid = (@ticketid)`);
+								updateTicketChannel.run({
+									chanid: c.id,
+									ticketid: randomString
+								});
+								// Send a message saying the ticket has been created.
+								const newTicketE = new MessageEmbed()
+									.setColor(this.client.utils.color(fetchGuild.me.displayHexColor))
+									.addField(`**${this.client.user.username} - New**`,
+										`**◎ Success:** Your ticket has been created in \`${fetchGuild.name}\`, <#${c.id}>.`);
+								message.channel.send({ embeds: [newTicketE] });
+
+								const buttonClose = new MessageButton()
+									.setStyle('SUCCESS')
+									.setLabel('🔒 Close')
+									.setCustomId('closeTicket');
+
+								const buttonCloseReason = new MessageButton()
+									.setStyle('SUCCESS')
+									.setLabel('🔒 Close With Reason')
+									.setCustomId('closeTicketReason');
+
+								const row = new MessageActionRow()
+									.addComponents(buttonClose, buttonCloseReason);
+
+								const embedTicket = new MessageEmbed()
+									.setColor(this.client.utils.color(fetchGuild.me.displayHexColor))
+									.setTitle('New Ticket')
+									.setDescription(`Hello \`${message.author.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. \n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
+								c.send({ components: [row], embeds: [embedTicket] });
+								// And display any errors in the console.
+								const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${fetchGuild.id};`).get();
+								if (!logget) {
+									return;
+								}
+
+								const logchan = fetchGuild.channels.cache.find((chan) => chan.id === logget.log);
+								if (!logchan) return;
+
+								const openEpoch = Math.floor(new Date().getTime() / 1000);
+
+								const logEmbed = new MessageEmbed()
+									.setColor(this.client.utils.color(fetchGuild.me.displayHexColor))
+									.setAuthor({ name: 'Ticket Opened', iconURL: fetchGuild.iconURL({ dynamic: true }) })
+									.addFields({ name: `**Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${fetchGuild.id}/${c.id})`, inline: true },
+										{ name: `**Opened By**`, value: `${message.author}`, inline: true },
+										{ name: `**Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
+										{ name: `**Reason**`, value: `${reason}`, inline: true });
+								logchan.send({ embeds: [logEmbed] });
+							}).catch(console.error);
+						}
+						this.client.utils.deletableCheck(m, 0);
+					});
+
+					collector.on('end', (_, reason) => {
+						if (comCooldown.has(message.author.id)) {
+							comCooldown.delete(message.author.id);
+						}
+
+						if (reason === 'time') {
+							this.client.utils.deletableCheck(m, 0);
+							return;
+						}
+					});
+				} catch (e) {
+					return console.log(e);
+				}
+			}
+		};
+		modMail();
+
 		if (!message.guild || message.author.bot) return;
 
 		// Custom prefixes
