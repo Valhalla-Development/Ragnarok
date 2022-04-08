@@ -8,7 +8,7 @@ module.exports = class extends Event {
 
 	async run(message) {
 		if (message.guild) {
-			if (message.author.bot) return;
+			if (!message.author || !message.content || message.author.bot) return;
 
 			const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
 			if (!id) return;
@@ -22,7 +22,6 @@ module.exports = class extends Event {
 			const deletionLog = fetchedLogs.entries.first();
 
 			// Check if message deleted was a command, return if it was
-
 			const cmd = message.content.substring(1).replace(/ .*/, '').toLowerCase();
 			const commandfile = this.client.commands.get(cmd) || this.client.commands.get(this.client.aliases.get(cmd));
 			if (commandfile) {
