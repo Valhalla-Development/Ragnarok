@@ -30,8 +30,8 @@ module.exports = class extends Event {
 			.setColor(this.client.utils.color(ban.guild.me.displayHexColor))
 			.addField('User Banned',
 				`**◎ User:** ${ban.user.tag}
-				**◎ Reason:**: ${reason}
-				**◎ Moderator:**: ${mod}`)
+				**◎ Reason:** ${reason}
+				**◎ Moderator:** ${mod}`)
 			.setFooter({ text: 'User Ban Logs' })
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send({ embeds: [embed] });

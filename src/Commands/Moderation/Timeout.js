@@ -112,7 +112,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField('Action | Timeout Clear',
 					`**◎ User:** ${user.user.tag}
-				**◎ Moderator:**: ${message.author.tag}`)
+				**◎ Moderator:** ${message.author.tag}`)
 				.setFooter({ text: 'User Timeout Logs' })
 				.setTimestamp();
 
@@ -221,9 +221,9 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField('Action | Timeout',
 				`**◎ User:** ${user.user.tag}
-				**◎ Reason:**: ${reason}
+				**◎ Reason:** ${reason}
 				**◎ Time:** <t:${nowInSecond}>
-				**◎ Moderator:**: ${message.author.tag}`)
+				**◎ Moderator:** ${message.author.tag}`)
 			.setFooter({ text: 'User Timeout Logs' })
 			.setTimestamp();
 

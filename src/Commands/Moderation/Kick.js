@@ -103,8 +103,8 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField('User Kicked',
 				`**◎ User:** ${user.user.tag}
-				**◎ Reason:**: ${reason}
-				**◎ Moderator:**: ${message.author.tag}`)
+				**◎ Reason:** ${reason}
+				**◎ Moderator:** ${message.author.tag}`)
 			.setFooter({ text: 'User Kick Logs' })
 			.setTimestamp();
 		message.channel.send({ embeds: [embed] });

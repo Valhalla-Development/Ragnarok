@@ -91,8 +91,8 @@ module.exports = class extends Command {
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`You have been banned from: \`${message.guild.name}\``,
-				`**◎ Reason:**: ${reason}
-				**◎ Moderator:**: ${message.author.tag}`)
+				`**◎ Reason:** ${reason}
+				**◎ Moderator:** ${message.author.tag}`)
 			.setFooter({ text: 'You have been banned' })
 			.setTimestamp();
 		try {
@@ -118,8 +118,8 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField('User Banned',
 				`**◎ User:** ${user.user.tag}
-				**◎ Reason:**: ${reason}
-				**◎ Moderator:**: ${message.author.tag}`)
+				**◎ Reason:** ${reason}
+				**◎ Moderator:** ${message.author.tag}`)
 			.setFooter({ text: 'User Ban Logs' })
 			.setTimestamp();
 
@@ -165,7 +165,7 @@ module.exports = class extends Command {
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField('Action | Un-Ban',
 							`**◎ User ID:** ${user.user.id}
-				**◎ Moderator:**: ${message.author.tag}`)
+				**◎ Moderator:** ${message.author.tag}`)
 						.setFooter({ text: 'User Un-Ban Logs' })
 						.setTimestamp();
 					message.guild.members.unban(bUser.user).then(() => message.channel.send({ embeds: [unbanEmbed] }));

@@ -138,9 +138,9 @@ module.exports = class extends Command {
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`You have been temporarily banned from: \`${message.guild.name}\``,
-				`**◎ Reason:**: ${reason}
+				`**◎ Reason:** ${reason}
 				**◎ Time:** \`${ms(ms(bantime), { long: true })}\`
-				**◎ Moderator:**: ${message.author.tag}`)
+				**◎ Moderator:** ${message.author.tag}`)
 			.setFooter({ text: 'You have been temporarily banned' })
 			.setTimestamp();
 		try {
@@ -178,9 +178,9 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField('Action | Temp-Banned',
 				`**◎ User:** ${user.user.tag}
-				**◎ Reason:**: ${reason}
+				**◎ Reason:** ${reason}
 				**◎ Time:** \`${ms(ms(bantime), { long: true })}\`
-				**◎ Moderator:**: ${message.author.tag}`)
+				**◎ Moderator:** ${message.author.tag}`)
 			.setFooter({ text: 'User Ban Logs' })
 			.setTimestamp();
 

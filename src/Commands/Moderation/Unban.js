@@ -36,7 +36,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField('Action | Un-Ban',
 				`**◎ User ID:** ${args[0]}
-				**◎ Moderator:**: ${message.author.tag}`)
+				**◎ Moderator:** ${message.author.tag}`)
 			.setFooter({ text: 'User Un-Ban Logs' })
 			.setTimestamp();
 

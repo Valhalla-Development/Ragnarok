@@ -35,8 +35,8 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField('User Banned',
 				`**◎ User:** ${user.user.tag}
-				**◎ Reason:**: ${reason}
-				**◎ Moderator:**: ${message.author.tag}`)
+				**◎ Reason:** ${reason}
+				**◎ Moderator:** ${message.author.tag}`)
 			.setFooter({ text: 'User Ban Logs' })
 			.setTimestamp();
 		message.channel.send({ embeds: [embed] });
