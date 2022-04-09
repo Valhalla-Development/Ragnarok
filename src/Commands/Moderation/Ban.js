@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Permissions, MessageButton } = require('discord.js');
+const { MessageEmbed, Permissions, MessageButton, MessageActionRow } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -84,14 +84,14 @@ module.exports = class extends Command {
 			return;
 		}
 
-		let reason = args.slice(1).join(' ');
-		if (!reason) reason = 'No reason given.';
+		let reasonArgs = args.slice(1).join(' ');
+		if (!reasonArgs) reasonArgs = 'No reason given.';
 
 		const authoMes = new MessageEmbed()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`You have been banned from: \`${message.guild.name}\``,
-				`**◎ Reason:** ${reason}
+				`**◎ Reason:** ${reasonArgs}
 				**◎ Moderator:** ${message.author.tag}`)
 			.setFooter({ text: 'You have been banned' })
 			.setTimestamp();
@@ -102,7 +102,7 @@ module.exports = class extends Command {
 		}
 
 		// Kick the user and send the embed
-		message.guild.members.ban(user, { reason: `${reason}` }).catch(() => {
+		message.guild.members.ban(user, { days: 1, reason: `${reasonArgs}` }).catch(() => {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()
@@ -118,7 +118,7 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField('User Banned',
 				`**◎ User:** ${user.user.tag}
-				**◎ Reason:** ${reason}
+				**◎ Reason:** ${reasonArgs}
 				**◎ Moderator:** ${message.author.tag}`)
 			.setFooter({ text: 'User Ban Logs' })
 			.setTimestamp();
@@ -128,9 +128,12 @@ module.exports = class extends Command {
 			.setLabel('Unban')
 			.setCustomId('unban');
 
+		const row = new MessageActionRow()
+			.addComponents(buttonA);
+
 		if (id && id.channel && id.channel === message.channel.id) return;
 
-		const m = await message.channel.send({ components: [buttonA], embeds: [embed] });
+		const m = await message.channel.send({ components: [row], embeds: [embed] });
 		const filter = (but) => but.user.id === message.author.id;
 
 		const collector = m.createMessageComponentCollector(filter, { time: 10000 });
@@ -174,8 +177,7 @@ module.exports = class extends Command {
 			}
 		});
 		collector.on('end', () => {
-			buttonA.setDisabled(true);
-			m.update({ components: [buttonA], embeds: [embed] });
+			this.client.utils.deletableCheck(m, 0);
 		});
 
 		if (id) {
