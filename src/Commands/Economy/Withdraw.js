@@ -74,6 +74,18 @@ module.exports = class extends Command {
 			return;
 		}
 
+		if (args[0] < 1) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const wrongUsage = new MessageEmbed()
+				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Withdraw**`,
+					`**◎ Error:** Please enter a valid amount.`);
+			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
 		const cashA = balance.cash + numberCov;
 		const bankA = balance.bank - numberCov;
 		const totaA = balance.total;
