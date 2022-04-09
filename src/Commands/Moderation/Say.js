@@ -17,7 +17,17 @@ module.exports = class extends Command {
 		this.client.utils.messageDelete(message, 0);
 
 		let input;
-		const channel = message.mentions.channels.first();
+
+		let channel;
+		// Regex to find channel mentions
+		const channelRegex = /<#(\d{17,19})>/g;
+		// Check if args[0] is a channel tag
+		if (channelRegex.test(args[0])) {
+			// Get the channel id
+			const channelId = args[0].match(channelRegex)[0].replace(/[<#>]/g, '');
+			// Get the channel
+			channel = message.guild.channels.cache.get(channelId);
+		}
 
 		if (channel) {
 			const ch = message.guild.channels.cache.get(channel.id);
