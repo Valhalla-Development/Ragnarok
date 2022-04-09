@@ -1245,7 +1245,7 @@ module.exports = class extends Command {
 							const embed = new MessageEmbed()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
-									`**◎ Error:** Advert protection is not enabled on this guild! To activate it, please use \${prefix}config adsprot <on>\``);
+									`**◎ Error:** Advert protection is not enabled on this guild! To activate it, please use \`${prefix}config adsprot <on>\``);
 							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 							return;
 						}
