@@ -370,73 +370,75 @@ module.exports = class extends Event {
 			const grabBdaysConfig = db.prepare('SELECT * FROM birthdayConfig').all();
 
 			grabBdaysConfig.forEach(a => {
-				this.client.guilds.fetch(a.guildid).then(guild => {
-					if (!guild) {
-						db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(a.guildid);
-						return;
+				// Check if bot is in the guild
+				const guild = this.client.guilds.cache.get(a.guildid);
+				if (!guild) {
+					db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(a.guildid);
+					return;
+				}
+
+				const channel = guild.channels.cache.get(a.channel);
+				if (!channel) {
+					db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(a.guildid);
+					return;
+				}
+
+				grabBdays.forEach(b => {
+					// Check if b.userid is in guild
+					const usr = guild.members.cache.get(b.userid);
+					if (!usr) return;
+
+					const grabUser = db.prepare(`SELECT * FROM birthdays WHERE userid = ${usr.user.id};`).get();
+
+					const now = moment();
+
+					let foundLastRun = JSON.parse(grabUser.lastRun);
+
+					if (!foundLastRun) {
+						foundLastRun = [];
 					}
 
-					const channel = guild.channels.cache.get(a.channel);
-					if (!channel) {
-						db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(a.guildid);
-						return;
-					}
+					if (foundLastRun.includes(`${guild.id}-${now.year().toString()}`)) return;
 
-					grabBdays.forEach(b => {
-						guild.members.fetch(b.userid).then(usr => {
-							const grabUser = db.prepare(`SELECT * FROM birthdays WHERE userid = ${usr.user.id};`).get();
+					const checkDate = new Date();
+					checkDate.setFullYear('2018');
+					checkDate.setHours('0');
+					checkDate.setMilliseconds('0');
+					checkDate.setSeconds('0');
+					checkDate.setMinutes('0');
 
-							const now = moment();
+					const savedDate = new Date(grabUser.birthday);
+					savedDate.setFullYear('2018');
+					savedDate.setHours('0');
+					savedDate.setMilliseconds('0');
+					savedDate.setSeconds('0');
+					savedDate.setMinutes('0');
 
-							let foundLastRun = JSON.parse(grabUser.lastRun);
+					if (checkDate.getTime() === savedDate.getTime()) {
+						let msg;
 
-							if (!foundLastRun) {
-								foundLastRun = [];
-							}
+						const role = guild.roles.cache.get(a.role);
 
-							if (foundLastRun.includes(`${guild.id}-${now.year().toString()}`)) return;
+						if (role) {
+							msg = `It's ${usr}'s birthday! ${role} Say Happy Birthday! 🍰`;
+						} else {
+							msg = `It's ${usr}'s birthday! Say Happy Birthday! 🍰`;
+						}
+						channel.send(msg);
 
-							const checkDate = new Date();
-							checkDate.setFullYear('2018');
-							checkDate.setHours('0');
-							checkDate.setMilliseconds('0');
-							checkDate.setSeconds('0');
-							checkDate.setMinutes('0');
+						const lastYear = now.year() - 1;
+						if (foundLastRun.includes(`${guild.id}-${lastYear}`)) {
+							const findString = foundLastRun.indexOf(`${guild.id}-${lastYear}`);
+							foundLastRun[findString] = `${guild.id}-${now.year().toString()}`;
+						} else {
+							foundLastRun.push(`${guild.id}-${now.year().toString()}`);
+						}
 
-							const savedDate = new Date(grabUser.birthday);
-							savedDate.setFullYear('2018');
-							savedDate.setHours('0');
-							savedDate.setMilliseconds('0');
-							savedDate.setSeconds('0');
-							savedDate.setMinutes('0');
-
-							if (checkDate.getTime() === savedDate.getTime()) {
-								let msg;
-
-								const role = guild.roles.cache.get(a.role);
-
-								if (role) {
-									msg = `It's ${usr}'s birthday! ${role} Say Happy Birthday! 🍰`;
-								} else {
-									msg = `It's ${usr}'s birthday! Say Happy Birthday! 🍰`;
-								}
-								channel.send(msg);
-
-								const lastYear = now.year() - 1;
-								if (foundLastRun.includes(`${guild.id}-${lastYear}`)) {
-									const findString = foundLastRun.indexOf(`${guild.id}-${lastYear}`);
-									foundLastRun[findString] = `${guild.id}-${now.year().toString()}`;
-								} else {
-									foundLastRun.push(`${guild.id}-${now.year().toString()}`);
-								}
-
-								db.prepare('UPDATE birthdays SET lastRun = (@lastRun);').run({
-									lastRun: JSON.stringify(foundLastRun)
-								});
-								return;
-							}
+						db.prepare('UPDATE birthdays SET lastRun = (@lastRun);').run({
+							lastRun: JSON.stringify(foundLastRun)
 						});
-					});
+						return;
+					}
 				});
 			});
 		}, null, true);
