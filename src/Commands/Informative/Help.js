@@ -162,7 +162,7 @@ module.exports = class extends Command {
 			const inv = new MessageButton()
 				.setStyle('LINK')
 				.setLabel('Invite Me')
-				.setURL('https://discordapp.com/oauth2/authorize?client_id=508756879564865539&scope=bot%20applications.commands&permissions=1580723711');
+				.setURL('https://discordapp.com/oauth2/authorize?client_id=508756879564865539&scope=bot%20applications.commands&permissions=1514550062326');
 
 			const supp = new MessageButton()
 				.setStyle('LINK')
