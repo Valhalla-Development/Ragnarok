@@ -14,6 +14,9 @@ module.exports = class extends Event {
 		if (!interaction.isButton()) return;
 
 		if (interaction.customId === 'closeTicket' || interaction.customId === 'closeTicketReason') {
+			const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(interaction.guild.id);
+			const { prefix } = prefixgrab;
+
 			// Check if the button is inside a valid ticket
 			const guild = this.client.guilds.cache.get(interaction.guild.id);
 			const fetchRole = db.prepare(`SELECT * FROM ticketConfig WHERE guildid = ${guild.id}`).get();
@@ -51,7 +54,7 @@ module.exports = class extends Event {
 				const nomodRole = new MessageEmbed()
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
-						`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
+						`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
 				interaction.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				await interaction.deferUpdate();
 				return;
@@ -190,9 +193,20 @@ module.exports = class extends Event {
 		}
 
 		if (interaction.customId === 'createTicket') {
+			const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(interaction.guild.id);
+			const { prefix } = prefixgrab;
+
 			// Ticket Embed
 			const guild = this.client.guilds.cache.get(interaction.guild.id);
 			const fetch = db.prepare(`SELECT * FROM ticketConfig WHERE guildid = ${guild.id}`).get();
+			if (!fetch) {
+				const alreadyTicket = new MessageEmbed()
+					.setColor(this.client.utils.color(guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Ticket**`,
+						`**◎ Error:** No ticket configuration found.\n\nPlease ask an administrator to set up the ticket system.`);
+				interaction.reply({ embeds: [alreadyTicket], ephemeral: true });
+				return;
+			}
 			const channel = guild.channels.cache.get(fetch.ticketembedchan);
 
 			if (!fetch.ticketembed) {
@@ -216,7 +230,7 @@ module.exports = class extends Event {
 				const nomodRole = new MessageEmbed()
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
-						`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
+						`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
 				channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				await interaction.deferUpdate();
 				return;
@@ -274,10 +288,12 @@ module.exports = class extends Event {
 				authorid: interaction.user.id,
 				reason
 			});
+			const ticategory = id.category;
 			// Create the channel with the name "ticket-" then the user's ID.
 			const role = interaction.guild.roles.cache.find((x) => x.name === 'Support Team') || interaction.guild.roles.cache.find((r) => r.id === fetch.role);
 			const role2 = channel.guild.roles.everyone;
 			interaction.guild.channels.create(`ticket-${nickName}-${randomString}`, {
+				parent: ticategory,
 				permissionOverwrites: [
 					{
 						id: role.id,
