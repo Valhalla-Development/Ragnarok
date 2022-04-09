@@ -293,7 +293,7 @@ module.exports = class extends Event {
 			const role = interaction.guild.roles.cache.find((x) => x.name === 'Support Team') || interaction.guild.roles.cache.find((r) => r.id === fetch.role);
 			const role2 = channel.guild.roles.everyone;
 			interaction.guild.channels.create(`ticket-${nickName}-${randomString}`, {
-				parent: ticategory,
+				parent: id ? ticategory : null,
 				permissionOverwrites: [
 					{
 						id: role.id,
