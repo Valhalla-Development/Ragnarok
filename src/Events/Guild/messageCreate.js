@@ -828,9 +828,9 @@ module.exports = class extends Event {
 					message.channel.sendTyping();
 
 					try {
-						const res = fetch.default(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=${message.author.id}`);
-						const json = res.json();
-						message.reply({ content: json.message, allowedMentions: { repliedUser: false } });
+						await fetch.default(`https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=Ragnarok&ownername=Ragnar&user=${message.author.id}`)
+							.then(res => res.json())
+							.then(json => message.reply({ content: json.message, allowedMentions: { repliedUser: false } }));
 					} catch {
 						message.reply({ content: 'I am unable to connect to the chat API. Please try again later.' });
 						return;
