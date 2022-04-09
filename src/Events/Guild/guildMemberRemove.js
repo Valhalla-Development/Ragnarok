@@ -12,6 +12,26 @@ module.exports = class extends Event {
 			}
 		);
 
+		function checkTicket(client) {
+			// Check if the user has a ticket
+			const foundTicket = db.prepare(`SELECT * FROM tickets WHERE guildid = ${member.guild.id} AND authorid = (@authorid)`);
+			if (foundTicket.get({ authorid: member.user.id })) {
+				// Fetch the channel
+				const channel = member.guild.channels.cache.get(foundTicket.get({ authorid: member.user.id }).chanid);
+
+				// Check if the channel exists
+				if (channel) {
+					// Send a message that the user left
+					const existTM = new MessageEmbed()
+						.setColor(client.utils.color(member.guild.me.displayHexColor))
+						.addField(`**${client.user.username} - Ticket**`,
+							`**◎ Error:** \`${member.user.tag}\` has the left the server\nThey will be added back to the ticket if they rejoin.`);
+					channel.send({ embeds: [existTM] });
+				}
+			}
+		}
+		checkTicket(this.client);
+
 		function logging(grabClient) {
 			const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${member.guild.id};`).get();
 			if (!id) return;
