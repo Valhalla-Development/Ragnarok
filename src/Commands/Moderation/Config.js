@@ -1290,6 +1290,15 @@ module.exports = class extends Command {
 						return;
 					}
 					if (args[1] === 'off') {
+						if (!role) {
+							const embed = new MessageEmbed()
+								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.addField(`**${this.client.user.username} - Config**`,
+									`**◎ Error:** Autorole is already disabled!`);
+							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+							return;
+						}
+
 						this.client.utils.messageDelete(message, 10000);
 
 						db.prepare('DELETE FROM autorole WHERE guildid = ?').run(message.guild.id);
