@@ -21,6 +21,46 @@ module.exports = class extends Command {
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 
+		const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
+
+		// "Support" role
+		if (!message.guild.roles.cache.find((r) => r.name === 'Support Team') && !suppRole) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const nomodRole = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - TicketEmbed**`,
+					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
+			message.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
+		let modRole;
+		if (message.guild.roles.cache.find((supId) => supId.id === suppRole.role)) {
+			modRole = message.guild.roles.cache.find((supId) => supId.id === suppRole.role);
+		} else if (message.guild.roles.cache.find((supNa) => supNa.name === 'Support Team')) {
+			modRole = message.guild.roles.cache.find((supNa) => supNa.name === 'Support Team');
+		} else {
+			this.client.utils.messageDelete(message, 10000);
+
+			const nomodRole = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - TicketEmbed**`,
+					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
+			message.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+		if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const donthaveRole = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - TicketEmbed**`,
+					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
+			message.channel.send({ embeds: [donthaveRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setTitle('Create a Ticket')
