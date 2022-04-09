@@ -49,12 +49,6 @@ module.exports = class extends Event {
 			db.prepare('DELETE FROM hastebin WHERE guildid = ?').run(guild.id);
 		}
 
-		// invmanager table
-		const delinv = db.prepare('SELECT count(*) FROM invmanager WHERE guildid = ?;').get(guild.id);
-		if (delinv['count(*)']) {
-			db.prepare('DELETE FROM invmanager WHERE guildid = ?').run(guild.id);
-		}
-
 		// logging table
 		const dellog = db.prepare('SELECT count(*) FROM logging WHERE guildid = ?;').get(guild.id);
 		if (dellog['count(*)']) {
@@ -95,6 +89,12 @@ module.exports = class extends Event {
 		const delticlog = db.prepare('SELECT count(*) FROM tickets WHERE guildid = ?;').get(guild.id);
 		if (delticlog['count(*)']) {
 			db.prepare('DELETE FROM tickets WHERE guildid = ?').run(guild.id);
+		}
+
+		// starboard table
+		const delstarboard = db.prepare('SELECT count(*) FROM starboard WHERE guildid = ?;').get(guild.id);
+		if (delstarboard['count(*)']) {
+			db.prepare('DELETE FROM starboard WHERE guildid = ?').run(guild.id);
 		}
 	}
 
