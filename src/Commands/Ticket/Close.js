@@ -63,7 +63,7 @@ module.exports = class extends Command {
 			const nomodRole = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
-					`**◎ Error:** This server doesn't have a \`Support Team\` role\nIf you are an administrator, You can set the ticket role with: \`${prefix}config ticket role <@role>\`.`);
+					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
 			message.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
