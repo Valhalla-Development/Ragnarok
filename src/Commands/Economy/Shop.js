@@ -829,7 +829,7 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.setThumbnail('attachment://Tomatoe.png')
+					.setThumbnail('attachment://Tomatoes.png')
 					.addField(`**${this.client.user.username} - Shop - Tomato Seeds**`,
 						`**◎ Success:** You have bought a pack of Tomato Seeds.\nYou now have \`${calc}\` total Tomato seeds.\n\nYour current backpack capacity is at \`${Number(currentTotalSeeds) + Number(tomatoeAmt) * 10}\`/\`${foundBoostList.seedBag}\``);
 				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Tomatoes.png'] });
