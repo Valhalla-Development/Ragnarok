@@ -16,6 +16,30 @@ module.exports = class extends Event {
 			}
 		);
 
+		function checkTicket(client) {
+			// Check if the user has a ticket
+			const foundTicket = db.prepare(`SELECT * FROM tickets WHERE guildid = ${member.guild.id} AND authorid = (@authorid)`);
+			if (foundTicket.get({ authorid: member.user.id })) {
+				// Fetch the channel
+				const channel = member.guild.channels.cache.get(foundTicket.get({ authorid: member.user.id }).chanid);
+
+				// Check if the channel exists
+				if (channel) {
+					// Send a message that the user joined
+					channel.permissionOverwrites.create(member, {
+						VIEW_CHANNEL: true,
+						SEND_MESSAGES: true
+					}).catch(console.error);
+					const embed = new MessageEmbed()
+						.setColor(client.utils.color(member.guild.me.displayHexColor))
+						.addField(`**${client.user.username} - Ticket**`,
+							`**◎:** \`${member.user.tag}\` has rejoined the server\nThey have been added back to the ticket.`);
+					channel.send({ embeds: [embed] });
+				}
+			}
+		}
+		checkTicket(this.client);
+
 		// welcome
 		async function welcomeMessage(clientGrab) {
 			// Return if user is my testing alt
