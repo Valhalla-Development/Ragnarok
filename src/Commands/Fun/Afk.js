@@ -20,6 +20,15 @@ module.exports = class extends Command {
 
 		const reason = args[0] ? args.join(' ') : 'AFK';
 
+		if (reason.length > 100) {
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - AFK**`,
+					`**◎ Error:** Please limit your reason to a maximum of 100 characters!`);
+			message.channel.send({ embeds: [embed] });
+			return;
+		}
+
 		if (afkGrab) {
 			await db.prepare('UPDATE afk SET reason = (@reason) WHERE (user, guildid, id) = (@user, @guildid, @id);').run({
 				reason: reason,
