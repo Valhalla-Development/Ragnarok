@@ -108,16 +108,6 @@ module.exports = class extends Event {
 			db.pragma('journal_mode = wal');
 		}
 
-		// Music Table
-		const music = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'music\';').get();
-		if (!music['count(*)']) {
-			console.log('music table created!');
-			db.prepare('CREATE TABLE music (guildid TEXT PRIMARY KEY, role TEXT, channel BLOB);').run();
-			db.prepare('CREATE UNIQUE INDEX idx_music_id ON music (guildid);').run();
-			db.pragma('synchronous = 1');
-			db.pragma('journal_mode = wal');
-		}
-
 		// RoleMenu Table
 		const rolemenu = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'rolemenu\';').get();
 		if (!rolemenu['count(*)']) {
@@ -254,9 +244,6 @@ module.exports = class extends Event {
 			db.pragma('synchronous = 1');
 			db.pragma('journal_mode = wal');
 		}
-
-		// Initiate the Erela manager.
-		this.client.manager.init(this.client.user.id);
 
 		// Starboard
 		const grabStarboard = db.prepare('SELECT * FROM starboard').all();

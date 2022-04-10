@@ -1,6 +1,6 @@
 /* eslint-disable no-inline-comments */
 /* eslint-disable no-mixed-operators */
-const { Client, Collection, MessageEmbed, Permissions, Intents } = require('discord.js');
+const { Client, Collection, Permissions, Intents } = require('discord.js');
 const Util = require('./Util.js');
 const Canvas = require('canvas');
 Canvas.registerFont('./Storage/Canvas/Fonts/Notethis.ttf', {
@@ -9,10 +9,6 @@ Canvas.registerFont('./Storage/Canvas/Fonts/Notethis.ttf', {
 const db = require('quick.db');
 if (!Array.isArray(db.get('giveaways'))) db.set('giveaways', []);
 const { GiveawaysManager } = require('discord-giveaways');
-const { Manager } = require('erela.js');
-const Spotify = require('erela.js-spotify');
-const prettyMilliseconds = require('pretty-ms');
-const { stripIndents } = require('common-tags');
 const discordModals = require('discord-modals');
 
 module.exports = class RagnarokClient extends Client {
@@ -33,10 +29,6 @@ module.exports = class RagnarokClient extends Client {
 
 		// Modals (remove when v13.7 releases)
 		discordModals(this);
-
-		// Music
-		const clientID = options.musicClientID;
-		const clientSecret = options.musicClientSecret;
 
 		const balancePrice = {
 			// Amount you earn per message & cooldown
@@ -109,138 +101,6 @@ module.exports = class RagnarokClient extends Client {
 		};
 
 		this.ecoPrices = balancePrice;
-
-		function erelaClient(grabClient) {
-			grabClient.manager = new Manager({
-				plugins: [new Spotify({ clientID, clientSecret })],
-				// Auto plays tracks after one ends, defaults to "false".
-				autoPlay: true,
-				// A send method to send data to the Discord WebSocket using your library.
-				// Getting the shard for the guild and sending the data to the WebSocket.
-				send(id, payload) {
-					const guild = grabClient.guilds.cache.get(id);
-					if (guild) guild.shard.send(payload);
-				}
-			})
-				.on('nodeCreate', () => console.log('Successfully created a new Erela Node.'))
-				.on('nodeDestroy', () => console.log('Successfully destroyed the Erela Node.'))
-				.on('nodeConnect', () => console.log('Successfully created a new Erela Node.'))
-				.on('nodeReconnect', () => console.log('Connection restored to Erela Node.'))
-				.on('nodeDisconnect', () => console.log('Lost connection to Erela Node.'))
-				.on('nodeError', (node, error) => console.error(`Node error: ${error.message}`))
-				.on('playerMove', async (player, oldChannel, newChannel) => {
-					const textChannel = player.get('textChannel');
-
-					if (!newChannel) {
-						player.destroy();
-						const embed = new MessageEmbed()
-							.addField(`**${grabClient.user.username} - Music**`,
-								`**◎ Error:** <:MusicLogo:684822003110117466> I was removed from the voice channel. Ending playback.`)
-							.setColor(textChannel.guild.me.displayHexColor || '36393F');
-						grabClient.channels.cache.get(player.textChannel).send({ embeds: [embed] });
-						return;
-					}
-					await player.setVoiceChannel(newChannel);
-
-					const getOld = grabClient.channels.cache.get(oldChannel);
-					const getNew = grabClient.channels.cache.get(newChannel);
-
-					if (getNew.members.size <= 1) return;
-
-					const embed = new MessageEmbed()
-						.addField(`**${grabClient.user.username} - Music**`,
-							`**◎ Success:** <:MusicLogo:684822003110117466> I was moved from <:VoiceChannel:855591004300115998>\`${getOld.name}\` to <:VoiceChannel:855591004300115998>\`${getNew.name}\`\nResuming playback.`)
-						.setColor(textChannel.guild.me.displayHexColor || '36393F');
-					grabClient.channels.cache.get(player.textChannel).send({ embeds: [embed] });
-
-					player.pause(true);
-					await setTimeout(() => {
-						player.pause(false);
-					}, 1000);
-				})
-				.on('queueEnd', (player) => {
-					if (player.queueRepeat) {
-						return;
-					}
-					const textChannel = player.get('textChannel');
-					const embed = new MessageEmbed()
-						.addField(`**${grabClient.user.username} - Music**`,
-							`**◎ Success:** <:MusicLogo:684822003110117466> Queue has ended.`)
-						.setColor(textChannel.guild.me.displayHexColor || '36393F');
-					grabClient.channels.cache.get(player.textChannel).send({ embeds: [embed] });
-					player.destroy(player.guild.id);
-					return;
-				})
-				.on('trackStart', (player, track) => {
-					if (player.trackRepeat) {
-						return;
-					}
-					const textChannel = player.get('textChannel');
-
-					const { title, duration, requester, uri, thumbnail } = track;
-
-					const embed = new MessageEmbed()
-						.setAuthor({ name: 'Now Playing', iconURL: 'https://cdn.wccftech.com/wp-content/uploads/2018/01/Youtube-music.png' })
-						.setColor(textChannel.guild.me.displayHexColor || '36393F')
-						.setThumbnail(`${thumbnail}`)
-						.setDescription(stripIndents`
-            [${title}](${uri})\n\nDuration: \`${prettyMilliseconds(duration, { colonNotation: true })}\`\n\n Requested by: ${requester.tag}`);
-					grabClient.channels.cache.get(player.textChannel).send({ embeds: [embed] });
-				})
-				.on('trackEnd', (player) => {
-					if (player.trackRepeat) {
-						return;
-					}
-					const textChannel = player.get('textChannel');
-					if (player.queue.size < 0) {
-						player.destroy(player.guild.id);
-
-						const embed = new MessageEmbed()
-							.addField(`**${grabClient.user.username} - Music**`,
-								`**◎ Success:** <:MusicLogo:684822003110117466> Track has ended.`)
-							.setColor(textChannel.guild.me.displayHexColor || '36393F');
-						grabClient.channels.cache.get(player.textChannel).send({ embeds: [embed] });
-						return;
-					}
-				})
-				.on('trackStuck', (player) => {
-					const textChannel = player.get('textChannel');
-					if (player.queue.size) {
-						const embed = new MessageEmbed()
-							.addField(`**${grabClient.user.username} - Music**`,
-								`**◎ Error:** <:MusicLogo:684822003110117466> An error occured, skipping playback.`)
-							.setColor(textChannel.guild.me.displayHexColor || '36393F');
-						grabClient.channels.cache.get(player.textChannel).send({ embeds: [embed] });
-						player.stop();
-						return;
-					}
-					const embed = new MessageEmbed()
-						.addField(`**${grabClient.user.username} - Music**`,
-							`**◎ Error:** <:MusicLogo:684822003110117466> An error occured, ending playback.`)
-						.setColor(textChannel.guild.me.displayHexColor || '36393F');
-					grabClient.channels.cache.get(player.textChannel).send({ embeds: [embed] });
-					player.destroy(player.guild.id);
-				})
-				.on('trackError', (player) => {
-					const textChannel = player.get('textChannel');
-					if (player.queue.size) {
-						const embed = new MessageEmbed()
-							.addField(`**${grabClient.user.username} - Music**`,
-								`**◎ Error:** <:MusicLogo:684822003110117466> An error occured, skipping playback.`)
-							.setColor(textChannel.guild.me.displayHexColor || '36393F');
-						grabClient.channels.cache.get(player.textChannel).send({ embeds: [embed] });
-						player.stop();
-						return;
-					}
-					const embed = new MessageEmbed()
-						.addField(`**${grabClient.user.username} - Music**`,
-							`**◎ Error:** <:MusicLogo:684822003110117466> An error occured, ending playback.`)
-						.setColor(textChannel.guild.me.displayHexColor || '36393F');
-					grabClient.channels.cache.get(player.textChannel).send({ embeds: [embed] });
-					player.destroy(player.guild.id);
-				});
-		}
-		erelaClient(this);
 
 		const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
 
@@ -358,8 +218,6 @@ module.exports = class RagnarokClient extends Client {
 
 		if (!options.token) throw new Error('You must pass the token for the client.');
 		this.token = options.token;
-
-		this.filterList = options.filterList;
 
 		if (options.logging !== true && options.logging !== false) throw new Error('The \'logging\' value must be true or false.');
 		this.logging = options.logging;

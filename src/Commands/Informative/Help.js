@@ -143,11 +143,6 @@ module.exports = class extends Command {
 				.setLabel('Moderation')
 				.setCustomId('mod');
 
-			const buttonF = new MessageButton()
-				.setStyle('PRIMARY')
-				.setLabel('Music')
-				.setCustomId('music');
-
 			const buttonG = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Ticket')
@@ -173,7 +168,7 @@ module.exports = class extends Command {
 				.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 			const row2 = new MessageActionRow()
-				.addComponents(buttonE, buttonF, buttonG, inv, supp);
+				.addComponents(buttonE, buttonG, inv, supp);
 
 			const m = await message.channel.send({ components: [row, row2], embeds: [embed] });
 
@@ -208,7 +203,7 @@ module.exports = class extends Command {
 					const rowNew = new MessageActionRow()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, inv, supp);
+						.addComponents(buttonE, buttonG, inv, supp);
 
 					await b.update({ embeds: [embed], components: [rowNew, row2New] });
 				}
@@ -239,7 +234,7 @@ module.exports = class extends Command {
 					const rowNew = new MessageActionRow()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, inv, supp);
+						.addComponents(buttonE, buttonG, inv, supp);
 
 					await b.update({ embeds: [eco], components: [rowNew, row2New] });
 					return;
@@ -269,7 +264,7 @@ module.exports = class extends Command {
 					const rowNew = new MessageActionRow()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, inv, supp);
+						.addComponents(buttonE, buttonG, inv, supp);
 
 					await b.update({ embeds: [fun], components: [rowNew, row2New] });
 					return;
@@ -299,7 +294,7 @@ module.exports = class extends Command {
 					const rowNew = new MessageActionRow()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, inv, supp);
+						.addComponents(buttonE, buttonG, inv, supp);
 
 					await b.update({ embeds: [gen], components: [rowNew, row2New] });
 					return;
@@ -329,7 +324,7 @@ module.exports = class extends Command {
 					const rowNew = new MessageActionRow()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, inv, supp);
+						.addComponents(buttonE, buttonG, inv, supp);
 
 					await b.update({ embeds: [info], components: [rowNew, row2New] });
 					return;
@@ -359,39 +354,9 @@ module.exports = class extends Command {
 					const rowNew = new MessageActionRow()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, inv, supp);
+						.addComponents(buttonE, buttonG, inv, supp);
 
 					await b.update({ embeds: [mod], components: [rowNew, row2New] });
-					return;
-				}
-				if (b.customId === 'music') {
-					home.setDisabled(false);
-
-					const categories = this.client.utils.removeDuplicates(this.client.commands.filter(cmd => cmd.category === 'Music').map(cmd => cmd.name));
-
-					for (let i = 0; i < categories.length; i++) {
-						categories[i] = categories[i][0].toUpperCase() + categories[i].substr(1);
-					}
-					const music = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.setDescription(
-							`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
-							Run \`${prefix}help <command>\` to see command specific instructions
-							All commands must be preceded by \`${prefix}\`
-							Command Parameters: \`<>\` is strict & \`[]\` is optional
-
-							You can run \`${prefix}help all\` to see all commands.`)
-						.addField(`**Help - Music**`, `\`${categories.join(`\`, \``)}\``)
-						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
-						.setThumbnail(this.client.user.displayAvatarURL())
-						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
-
-					const rowNew = new MessageActionRow()
-						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
-					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, inv, supp);
-
-					await b.update({ embeds: [music], components: [rowNew, row2New] });
 					return;
 				}
 				if (b.customId === 'ticket') {
@@ -419,7 +384,7 @@ module.exports = class extends Command {
 					const rowNew = new MessageActionRow()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonF, buttonG, inv, supp);
+						.addComponents(buttonE, buttonG, inv, supp);
 
 					await b.update({ embeds: [tick], components: [rowNew, row2New] });
 					return;

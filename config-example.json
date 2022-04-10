@@ -1,25 +1,17 @@
 {
-  "token": "REDACTED",
-  "applicationID": "REDACTED",
-  "publicKey": "REDACTED",
-  "traktKey": "REDACTED",
-  "traktSecret": "REDACTED",
-  "fanartKey": "REDACTED",
-  "supportGuild": "REDACTED",
-  "supportChannel": "REDACTED",
-  "ownerID": "REDACTED",
-  "prefix": "-",
-  "logging": true,
-  "trackClient": "REDACTED",
-  "trackSecret": "REDACTED",
-  "filterList": [
-    "example1",
-    "example2",
-    "example3",
-    "example4"
-  ],
-  "defaultPerms": [
-    "VIEW_CHANNEL",
-    "SEND_MESSAGES"
-  ]
+	"token": "REDACTED",
+	"applicationID": "REDACTED",
+	"publicKey": "REDACTED",
+	"traktKey": "REDACTED",
+	"traktSecret": "REDACTED",
+	"fanartKey": "REDACTED",
+	"supportGuild": "REDACTED",
+	"supportChannel": "REDACTED",
+	"suggestChan": "REDACTED",
+	"ownerID": ["151516555757223936", "488717256897855519"],
+	"prefix": "-",
+	"logging": true,
+	"trackClient": "REDACTED",
+	"trackSecret": "REDACTED",
+	"defaultPerms": ["VIEW_CHANNEL", "SEND_MESSAGES"]
 }

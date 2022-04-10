@@ -86,11 +86,6 @@ module.exports = class extends Command {
 				.setLabel('Logging')
 				.setCustomId('logging');
 
-			const buttonJ = new MessageButton()
-				.setStyle('PRIMARY')
-				.setLabel('Music')
-				.setCustomId('music');
-
 			const buttonL = new MessageButton()
 				.setStyle('PRIMARY')
 				.setLabel('Prefix')
@@ -120,10 +115,10 @@ module.exports = class extends Command {
 				.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 			const row2 = new MessageActionRow()
-				.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
+				.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
 			const row3 = new MessageActionRow()
-				.addComponents(buttonM, buttonN, buttonO, buttonP);
+				.addComponents(buttonN, buttonO, buttonP);
 
 			const initial = new MessageEmbed()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
@@ -165,10 +160,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
+						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO, buttonP);
+						.addComponents(buttonN, buttonO, buttonP);
 
 					await b.update({ embeds: [initial], components: [rowNew, row2New, row3New] });
 					return;
@@ -181,10 +176,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
+						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO, buttonP);
+						.addComponents(buttonN, buttonO, buttonP);
 
 					const ads = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -202,10 +197,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
+						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO, buttonP);
+						.addComponents(buttonN, buttonO, buttonP);
 
 					const auto = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -223,10 +218,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
+						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO, buttonP);
+						.addComponents(buttonN, buttonO, buttonP);
 
 					const bday = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -245,10 +240,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
+						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO, buttonP);
+						.addComponents(buttonN, buttonO, buttonP);
 
 					const dad = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -266,10 +261,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
+						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO, buttonP);
+						.addComponents(buttonN, buttonO, buttonP);
 
 					const haste = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -287,10 +282,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
+						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO, buttonP);
+						.addComponents(buttonN, buttonO, buttonP);
 
 					const lvl = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -308,10 +303,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
+						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO, buttonP);
+						.addComponents(buttonN, buttonO, buttonP);
 
 					const log = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -322,28 +317,6 @@ module.exports = class extends Command {
 					await b.update({ embeds: [log], components: [rowNew, row2New, row3New] });
 					return;
 				}
-				if (b.customId === 'music') {
-					home.setDisabled(false);
-
-					const rowNew = new MessageActionRow()
-						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
-
-					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
-
-					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO, buttonP);
-
-					const mus = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Config**`,
-							`**◎ Music:**
-							\u3000\`${prefix}config music role <@role>\` : Sets the DJ role
-							\u3000\`${prefix}config music role off\` : Disables the DJ role`);
-
-					await b.update({ embeds: [mus], components: [rowNew, row2New, row3New] });
-					return;
-				}
 				if (b.customId === 'prefix') {
 					home.setDisabled(false);
 
@@ -351,10 +324,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
+						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO, buttonP);
+						.addComponents(buttonN, buttonO, buttonP);
 
 					const prf = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -372,10 +345,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
+						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO, buttonP);
+						.addComponents(buttonN, buttonO, buttonP);
 
 					const rlm = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -395,10 +368,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
+						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO, buttonP);
+						.addComponents(buttonN, buttonO, buttonP);
 
 					const tck = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -418,10 +391,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
+						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO, buttonP);
+						.addComponents(buttonN, buttonO, buttonP);
 
 					const wlc = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -442,10 +415,10 @@ module.exports = class extends Command {
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, buttonH, buttonJ, buttonL);
+						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
 					const row3New = new MessageActionRow()
-						.addComponents(buttonM, buttonN, buttonO, buttonP);
+						.addComponents(buttonN, buttonO, buttonP);
 
 					const str = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -479,7 +452,6 @@ module.exports = class extends Command {
 				'haste',
 				'level',
 				'logging',
-				'music',
 				'prefix',
 				'rolemenu',
 				'ticket',
@@ -2029,84 +2001,6 @@ module.exports = class extends Command {
 									`**◎ Success:** Welcome channel updated to ${lchan}`);
 							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						}
-					}
-				}
-			}
-			// Music
-			if (args[0] === 'music') {
-				if (args[1] === undefined) {
-					const embed = new MessageEmbed()
-						.setThumbnail(this.client.user.displayAvatarURL())
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.addField('Ragnarok',
-							`**◎ Music:** To set the music role, the command is \`${prefix}config music role <@role>\`\nTo disable the role, use \`${prefix}config music role off\``)
-						.setTimestamp();
-					message.channel.send({ embeds: [embed] });
-					return;
-				}
-				if (args[1] === 'role') {
-					this.client.getTable = db.prepare('SELECT * FROM music WHERE guildid = ?');
-
-					let status;
-					if (message.guild.id) {
-						status = this.client.getTable.get(message.guild.id);
-
-						const djRole = message.mentions.roles.first();
-
-						if (message.mentions.roles.size <= 0 && args[2] !== 'off') {
-							this.client.utils.messageDelete(message, 10000);
-
-							const embed = new MessageEmbed()
-								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-								.addField(`**${this.client.user.username} - Config**`,
-									`**◎ Error:** A role must be mentioned`);
-							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-							return;
-						}
-						if (args[2] === 'off') {
-							const update = db.prepare('UPDATE music SET role = (@role) WHERE guildid = (@guildid)');
-							update.run({
-								guildid: `${message.guild.id}`,
-								role: null
-							});
-							this.client.utils.messageDelete(message, 10000);
-
-							const embed = new MessageEmbed()
-								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-								.addField(`**${this.client.user.username} - Config**`,
-									`**◎ Success:** Custom DJ Role disabled!`);
-							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-							return;
-						}
-
-						if (!status) {
-							const update = db.prepare('INSERT INTO music (role, guildid) VALUES (@role, @guildid);');
-							update.run({
-								guildid: `${message.guild.id}`,
-								role: `${djRole.id}`
-							});
-							this.client.utils.messageDelete(message, 10000);
-
-							const embed = new MessageEmbed()
-								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-								.addField(`**${this.client.user.username} - Config**`,
-									`**◎ Success:** DJ Role updated to ${djRole}`);
-							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-							return;
-						}
-
-						const update = db.prepare('UPDATE music SET role = (@role) WHERE guildid = (@guildid);');
-						update.run({
-							guildid: `${message.guild.id}`,
-							role: `${djRole.id}`
-						});
-						this.client.utils.messageDelete(message, 10000);
-
-						const embed = new MessageEmbed()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-							.addField(`**${this.client.user.username} - Config**`,
-								`**◎ Success:** DJ Role updated to ${djRole}`);
-						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					}
 				}
 			}
