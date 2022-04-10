@@ -164,11 +164,16 @@ module.exports = class extends Command {
 				.setLabel('Support Server')
 				.setURL('https://discord.gg/Q3ZhdRJ');
 
+			const support = new MessageButton()
+				.setStyle('LINK')
+				.setLabel('🍕 Buy me a Pizza')
+				.setURL('https://www.buymeacoffee.com/ragnarlothbrok');
+
 			const row = new MessageActionRow()
 				.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
 			const row2 = new MessageActionRow()
-				.addComponents(buttonE, buttonG, inv, supp);
+				.addComponents(buttonE, buttonG, inv, supp, support);
 
 			const m = await message.channel.send({ components: [row, row2], embeds: [embed] });
 
@@ -203,7 +208,7 @@ module.exports = class extends Command {
 					const rowNew = new MessageActionRow()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, inv, supp);
+						.addComponents(buttonE, buttonG, inv, supp, support);
 
 					await b.update({ embeds: [embed], components: [rowNew, row2New] });
 				}
@@ -234,7 +239,7 @@ module.exports = class extends Command {
 					const rowNew = new MessageActionRow()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, inv, supp);
+						.addComponents(buttonE, buttonG, inv, supp, support);
 
 					await b.update({ embeds: [eco], components: [rowNew, row2New] });
 					return;
@@ -264,7 +269,7 @@ module.exports = class extends Command {
 					const rowNew = new MessageActionRow()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, inv, supp);
+						.addComponents(buttonE, buttonG, inv, supp, support);
 
 					await b.update({ embeds: [fun], components: [rowNew, row2New] });
 					return;
@@ -294,7 +299,7 @@ module.exports = class extends Command {
 					const rowNew = new MessageActionRow()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, inv, supp);
+						.addComponents(buttonE, buttonG, inv, supp, support);
 
 					await b.update({ embeds: [gen], components: [rowNew, row2New] });
 					return;
@@ -324,7 +329,7 @@ module.exports = class extends Command {
 					const rowNew = new MessageActionRow()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, inv, supp);
+						.addComponents(buttonE, buttonG, inv, supp, support);
 
 					await b.update({ embeds: [info], components: [rowNew, row2New] });
 					return;
@@ -354,7 +359,7 @@ module.exports = class extends Command {
 					const rowNew = new MessageActionRow()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, inv, supp);
+						.addComponents(buttonE, buttonG, inv, supp, support);
 
 					await b.update({ embeds: [mod], components: [rowNew, row2New] });
 					return;
@@ -384,7 +389,7 @@ module.exports = class extends Command {
 					const rowNew = new MessageActionRow()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 					const row2New = new MessageActionRow()
-						.addComponents(buttonE, buttonG, inv, supp);
+						.addComponents(buttonE, buttonG, inv, supp, support);
 
 					await b.update({ embeds: [tick], components: [rowNew, row2New] });
 					return;
