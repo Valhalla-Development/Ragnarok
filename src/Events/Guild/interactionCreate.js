@@ -292,8 +292,32 @@ module.exports = class extends Event {
 			// Create the channel with the name "ticket-" then the user's ID.
 			const role = interaction.guild.roles.cache.find((x) => x.name === 'Support Team') || interaction.guild.roles.cache.find((r) => r.id === fetch.role);
 			const role2 = channel.guild.roles.everyone;
+
+			// Check how many channels are in the category
+			const category = interaction.guild.channels.cache.find((chan) => chan.id === id.category);
+			const categoryLength = category.children.size;
+
+			let newId;
+			// Check if the category has the max amount of channels
+			if (categoryLength >= 50) {
+			// Clone the category
+				await category.clone({ name: `${category.name}`, reason: 'max channels per category reached' }).then((chn) => {
+					chn.setParent(category.parentId);
+					chn.setPosition(category.rawPosition + 1);
+
+					newId = chn.id;
+
+					// Update the database
+					const update = db.prepare('UPDATE ticketConfig SET category = (@category) WHERE guildid = (@guildid);');
+					update.run({
+						guildid: `${interaction.guild.id}`,
+						category: `${chn.id}`
+					});
+				});
+			}
+
 			interaction.guild.channels.create(`ticket-${nickName}-${randomString}`, {
-				parent: id ? ticategory : null,
+				parent: newId || (ticategory || null),
 				permissionOverwrites: [
 					{
 						id: role.id,

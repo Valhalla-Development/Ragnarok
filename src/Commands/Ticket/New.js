@@ -157,6 +157,29 @@ module.exports = class extends Command {
 				logchan.send({ embeds: [logEmbed] });
 			}).catch(console.error);
 		} else {
+			// Check how many channels are in the category
+			const category = message.guild.channels.cache.find((chan) => chan.id === id.category);
+			const categoryLength = category.children.size;
+
+			let newId;
+			// Check if the category has the max amount of channels
+			if (categoryLength >= 50) {
+			// Clone the category
+				await category.clone({ name: `${category.name}`, reason: 'max channels per category reached' }).then((chn) => {
+					chn.setParent(category.parentId);
+					chn.setPosition(category.rawPosition + 1);
+
+					newId = chn.id;
+
+					// Update the database
+					const update = db.prepare('UPDATE ticketConfig SET category = (@category) WHERE guildid = (@guildid);');
+					update.run({
+						guildid: `${message.guild.id}`,
+						category: `${chn.id}`
+					});
+				});
+			}
+
 			const newTicket = db.prepare('INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);');
 			newTicket.run({
 				guildid: message.guild.id,
@@ -164,7 +187,8 @@ module.exports = class extends Command {
 				authorid: message.author.id,
 				reason
 			});
-			const ticategory = id.category;
+
+			const ticategory = newId || id.category;
 
 			const role = message.guild.roles.cache.find((x) => x.name === 'Support Team') || message.guild.roles.cache.find((r) => r.id === suppRole.role);
 			if (!role) {
