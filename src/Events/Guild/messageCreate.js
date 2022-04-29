@@ -116,7 +116,7 @@ module.exports = class extends Event {
 				const embed = new MessageEmbed()
 					.setColor('#A10000')
 					.setTitle('Select Server')
-					.setDescription('Select which server you wish to send this message to. You can do so by clicking to corresponding button.')
+					.setDescription('Select which server you wish to send this message to. You can do so by clicking the corresponding button.')
 					.addFields(...embedFields);
 
 				if (!comCooldown.has(message.author.id)) {
