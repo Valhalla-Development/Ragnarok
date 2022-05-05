@@ -41,7 +41,7 @@ module.exports = class extends Event {
 
 				if (comCooldown.has(message.author.id)) {
 					const embed = new MessageEmbed()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor('#A10000')
 						.addField(`**${this.client.user.username} - Mod Mail**`,
 							`**◎ Error:** Please do not spam the request.\nYou can canel your previous request by clicking the \`Cancel\` button.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -50,9 +50,19 @@ module.exports = class extends Event {
 
 				// Then filter which guilds have tickets enabled in the db
 				const guildsWithTickets = guilds.filter(guild => {
-					const row = db.prepare('SELECT * FROM ticketConfig WHERE guildid = ?').get(guild.id);
+					// Fetch the row from the db where role is not null
+					const row = db.prepare('SELECT * FROM ticketConfig WHERE guildid = ? AND role IS NOT NULL').get(guild.id);
 					return row;
 				});
+
+				if (!guildsWithTickets.size) { // ! DO MORE BOY LIKE IF IT DOESNT HAVE A ROLE, OR WHAT IT NEEDS TO FUNCTION
+					const embed = new MessageEmbed()
+						.setColor('#A10000')
+						.addField(`**${this.client.user.username} - Mod Mail**`,
+							`**◎ Error:** You need to share a server with ${this.client.user} that has tickets enabled, to use Mod Mail.`);
+					message.reply({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+					return;
+				}
 
 				// Map guilds by: name, id
 				const guildsMap = guildsWithTickets.map(guild => ({
@@ -295,8 +305,9 @@ module.exports = class extends Event {
 							}).catch(console.error);
 						} else {
 							// Check how many channels are in the category
-							const category = message.guild.channels.cache.find((chan) => chan.id === id.category);
-							const categoryLength = category.children.size;
+							const category = fetchGuild.channels.cache.find((chan) => chan.id === id.category);
+
+							const categoryLength = category && category.children ? category.children.size : 0;
 
 							let newId;
 							// Check if the category has the max amount of channels
@@ -311,7 +322,7 @@ module.exports = class extends Event {
 									// Update the database
 									const update = db.prepare('UPDATE ticketConfig SET category = (@category) WHERE guildid = (@guildid);');
 									update.run({
-										guildid: `${message.guild.id}`,
+										guildid: `${fetchGuild.id}`,
 										category: `${chn.id}`
 									});
 								});
