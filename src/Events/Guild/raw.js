@@ -27,7 +27,6 @@ module.exports = class extends Event {
 				if (getTicketEmbed.ticketconfig === data.id) {
 					db.prepare(`UPDATE ticketConfig SET ticketembed = '' WHERE guildid = ${data.guild_id}`).run();
 				}
-				console.log('tembed changed');
 			}
 			if (eventType === 'MESSAGE_REACTION_REMOVE' || eventType === 'MESSAGE_REACTION_REMOVE_ALL') {
 				const channel = await grabClient.channels.cache.find(channel => channel.id === data.channel_id);
@@ -46,7 +45,6 @@ module.exports = class extends Event {
 							channel.messages.fetch(foundTicketConfig.ticketembed).then((msg) => {
 								msg.react('📩');
 							});
-							console.log('tembed reaction remove, added again bub');
 						}
 					}
 				}
@@ -56,7 +54,6 @@ module.exports = class extends Event {
 						channel.messages.fetch(foundTicketConfig.ticketembed).then((msg) => {
 							msg.react('📩');
 						});
-						console.log('tembed reaction remove all, added again bub');
 					}
 				}
 			}

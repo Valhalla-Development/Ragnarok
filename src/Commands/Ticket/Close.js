@@ -154,10 +154,10 @@ module.exports = class extends Command {
 
 					const authorizationSecret = 'pmzg!SD#9H8E#PzGMhe5dr&Qo5EQReLy@cqf87QB';
 
-					const response = await fetch.default('https://ragnarok-discord.000webhostapp.com/index.php', {
+					const response = await fetch.default('https://www.ragnarokbot.com/index.php', {
 						method: 'POST',
 						body: buffered,
-						headers: { secretkey: authorizationSecret }
+						headers: { 'X-Auth': authorizationSecret }
 					});
 
 					const data = await response.status;
@@ -167,7 +167,7 @@ module.exports = class extends Command {
 					if (data !== 200) {
 						transLinkText = `\`Unavailable\``;
 					} else {
-						transLinkText = `[**Click Here**](https://ragnarok-discord.000webhostapp.com/transcripts/${staticFileName})`;
+						transLinkText = `[**Click Here**](https://www.ragnarokbot.com/transcripts/${staticFileName})`;
 					}
 
 					if (message.channel) {
