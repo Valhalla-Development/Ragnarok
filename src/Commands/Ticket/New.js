@@ -159,7 +159,7 @@ module.exports = class extends Command {
 		} else {
 			// Check how many channels are in the category
 			const category = message.guild.channels.cache.find((chan) => chan.id === id.category);
-			const categoryLength = category.children.size;
+			const categoryLength = category && category.children ? category.children.size : 0;
 
 			let newId;
 			// Check if the category has the max amount of channels
