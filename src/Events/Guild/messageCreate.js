@@ -55,7 +55,7 @@ module.exports = class extends Event {
 					return row;
 				});
 
-				if (!guildsWithTickets.size) { // ! DO MORE BOY LIKE IF IT DOESNT HAVE A ROLE, OR WHAT IT NEEDS TO FUNCTION
+				if (!guildsWithTickets.size) {
 					const embed = new MessageEmbed()
 						.setColor('#A10000')
 						.addField(`**${this.client.user.username} - Mod Mail**`,
