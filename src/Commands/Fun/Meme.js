@@ -36,8 +36,6 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const newMemes = await getNewMeme();
-
 		const msg = await message.channel.send({ content: 'Generating...' });
 		message.channel.sendTyping();
 
@@ -70,6 +68,8 @@ module.exports = class extends Command {
 		const filter = (but) => but.user.id !== this.client.user.id;
 
 		const collector = m.createMessageComponentCollector(filter, { time: 15000 });
+
+		const newMemes = await getNewMeme();
 
 		if (!comCooldown.has(message.author.id)) {
 			comCooldown.add(message.author.id);
@@ -130,7 +130,7 @@ module.exports = class extends Command {
 		async function getNewMeme() {
 			return RedditImageFetcher.fetch({
 				type: 'custom',
-				total: 50,
+				total: 25,
 				subreddit: subreddits
 			});
 		}

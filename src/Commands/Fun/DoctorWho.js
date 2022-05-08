@@ -1,6 +1,8 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
-const fetch = require('node-fetch-cjs');
+const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
+const comCooldown = new Set();
+const comCooldownSeconds = 10;
+const RedditImageFetcher = require('reddit-image-fetcher');
 
 module.exports = class extends Command {
 
@@ -13,40 +15,115 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
-		const msg = await message.channel.send({ content: 'Generating...' });
-		message.channel.sendTyping();
-
-		const res = await fetch.default(`https://www.reddit.com/r/DoctorWhumour.json?sort=top&t=week`);
-		const { data } = await res.json();
-
-		const safe = message.channel.nsfw ? data.children : data.children.filter((post) => !post.data.over_18);
-		if (!safe.length) {
+		if (comCooldown.has(message.author.id)) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const noPost = new MessageEmbed()
+			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.addField(`**${this.client.user.username} - DoctorWho**`,
-					`**◎ Error:** I could not fetch the post!`);
-			message.channel.send({ embeds: [noPost] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				.addField(`**${this.client.user.username} - Doctor Who**`,
+					`**◎ Error:** Please only run this command once.`);
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
-		const post = safe[Math.floor(Math.random() * safe.length)];
-		let postURL;
+		const msg = await message.channel.send({ content: 'Generating...' });
+		message.channel.sendTyping();
 
-		if (post.data.url.slice(-4) === 'gifv') {
-			postURL = post.data.url.slice(0, -1);
-		} else {
-			postURL = post.data.url;
+		async function getMeme() {
+			return RedditImageFetcher.fetch({
+				type: 'custom',
+				total: 1,
+				subreddit: ['DoctorWhumour']
+			});
 		}
+
+		const meme = await getMeme();
+
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.setAuthor({ name: `${post.data.title}`, url: `https://reddit.com${post.data.permalink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
-			.setImage(postURL)
-			.setFooter({ text: `👍 ${post.data.ups} | 💬 ${post.data.num_comments}` });
-		message.channel.send({ embeds: [embed] });
+			.setAuthor({ name: `${meme[0].title}`, url: `${meme[0].postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+			.setImage(meme[0].image)
+			.setFooter({ text: `👍 ${meme[0].upvotes}` });
+
+		const buttonA = new MessageButton()
+			.setStyle('PRIMARY')
+			.setLabel('Next Post')
+			.setCustomId('nxtmeme');
+
+		const row = new MessageActionRow()
+			.addComponents(buttonA);
+
+		const m = await message.channel.send({ components: [row], embeds: [embed] });
+
+		const filter = (but) => but.user.id !== this.client.user.id;
+
+		const collector = m.createMessageComponentCollector(filter, { time: 15000 });
+
+		const newMemes = await getNewMeme();
+
+		if (!comCooldown.has(message.author.id)) {
+			comCooldown.add(message.author.id);
+		}
+		setTimeout(() => {
+			if (comCooldown.has(message.author.id)) {
+				comCooldown.delete(message.author.id);
+			}
+		}, comCooldownSeconds * 1000);
+
+		collector.on('collect', async b => {
+			if (b.user.id !== message.author.id) {
+				const wrongUser = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Doctor Who**`,
+						`**◎ Error:** Only the command executor can select an option!`);
+				b.reply({ embeds: [wrongUser], ephemeral: true });
+				return;
+			}
+
+			collector.resetTimer();
+
+			if (b.customId === 'nxtmeme') {
+				// Pick a random meme
+				const randomMeme = newMemes[Math.floor(Math.random() * newMemes.length)];
+
+				// Remove the used meme from the list
+				newMemes.splice(newMemes.indexOf(randomMeme), 1);
+
+				// If there are no more memes, remove the button
+				if (newMemes.length === 0) {
+					const newMeme = new MessageEmbed()
+						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setAuthor({ name: `${randomMeme.title}`, url: `${randomMeme.postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+						.setImage(randomMeme.image)
+						.setFooter({ text: `👍 ${randomMeme.upvotes}` });
+					await b.update({ embeds: [newMeme], components: [] });
+					return;
+				}
+
+				const newMeme = new MessageEmbed()
+					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setAuthor({ name: `${randomMeme.title}`, url: `${randomMeme.postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+					.setImage(randomMeme.image)
+					.setFooter({ text: `👍 ${randomMeme.upvotes}` });
+				await b.update({ embeds: [newMeme], components: [row] });
+			}
+		});
+
+		collector.on('end', (_, reason) => {
+			if (comCooldown.has(message.author.id)) {
+				comCooldown.delete(message.author.id);
+			}
+		});
 
 		this.client.utils.deletableCheck(msg, 0);
+
+		async function getNewMeme() {
+			return RedditImageFetcher.fetch({
+				type: 'custom',
+				total: 25,
+				subreddit: ['DoctorWhumour']
+			});
+		}
 	}
 
 };
