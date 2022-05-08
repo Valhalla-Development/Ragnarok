@@ -51,7 +51,7 @@ module.exports = class extends Command {
 
 		const embed = new MessageEmbed()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-			.setAuthor({ name: `${meme[0].title}`, url: `${meme[0].postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+			.setAuthor({ name: `${meme[0].title.length >= 256 ? `${meme[0].title.substring(0, 253)}...` : meme[0].title}`, url: `${meme[0].postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
 			.setImage(meme[0].image)
 			.setFooter({ text: `👍 ${meme[0].upvotes}` });
 
@@ -103,7 +103,7 @@ module.exports = class extends Command {
 				if (newMemes.length === 0) {
 					const newMeme = new MessageEmbed()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-						.setAuthor({ name: `${randomMeme.title}`, url: `${randomMeme.postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+						.setAuthor({ name: `${randomMeme.title.length >= 256 ? `${randomMeme.title.substring(0, 253)}...` : randomMeme.title}`, url: `${randomMeme.postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
 						.setImage(randomMeme.image)
 						.setFooter({ text: `👍 ${randomMeme.upvotes}` });
 					await b.update({ embeds: [newMeme], components: [] });
@@ -112,7 +112,7 @@ module.exports = class extends Command {
 
 				const newMeme = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.setAuthor({ name: `${randomMeme.title}`, url: `${randomMeme.postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+					.setAuthor({ name: `${randomMeme.title.length >= 256 ? `${randomMeme.title.substring(0, 253)}...` : randomMeme.title}`, url: `${randomMeme.postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
 					.setImage(randomMeme.image)
 					.setFooter({ text: `👍 ${randomMeme.upvotes}` });
 				await b.update({ embeds: [newMeme], components: [row] });
