@@ -136,7 +136,7 @@ module.exports = class extends Command {
 		const m = await message.channel.send({ components: [row], embeds: [embed] });
 		const filter = (but) => but.user.id === message.author.id;
 
-		const collector = m.createMessageComponentCollector(filter, { time: 10000 });
+		const collector = m.createMessageComponentCollector({ filter: filter, time: 15000 });
 
 		collector.on('collect', async b => {
 			if (b.customId === 'unban') {

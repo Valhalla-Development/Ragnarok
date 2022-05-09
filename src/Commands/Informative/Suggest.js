@@ -51,7 +51,7 @@ module.exports = class extends Command {
 
 		const filter = (but) => but.user.id !== this.client.user.id;
 
-		const collector = m.createMessageComponentCollector(filter, { time: 15000 });
+		const collector = m.createMessageComponentCollector({ filter: filter, time: 15000 });
 
 		collector.on('collect', async b => {
 			if (b.user.id !== message.author.id) {

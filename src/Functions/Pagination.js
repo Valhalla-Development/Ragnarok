@@ -31,7 +31,7 @@ module.exports = class pagination {
 
 		const filter = i => i.user.id === message.author.id;
 
-		const collector = m.createMessageComponentCollector(filter, { time: 30000 });
+		const collector = m.createMessageComponentCollector({ filter: filter, time: 30000 });
 
 		let currentPage = 0;
 

@@ -101,7 +101,7 @@ module.exports = class extends Command {
 
 			const filter = (but) => but.user.id === message.author.id;
 
-			const collector = m.createMessageComponentCollector(filter, { time: 15000 });
+			const collector = m.createMessageComponentCollector({ filter: filter, time: 15000 });
 
 			if (!comCooldown.has(message.author.id)) {
 				comCooldown.add(message.author.id);
