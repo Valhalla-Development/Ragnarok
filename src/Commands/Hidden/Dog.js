@@ -62,7 +62,7 @@ module.exports = class extends Command {
 
 		const filter = (but) => but.user.id !== this.client.user.id;
 
-		const collector = m.createMessageComponentCollector(filter, { time: 15000 });
+		const collector = m.createMessageComponentCollector({ filter: filter, time: 15000 });
 
 		const newMemes = await getNewMeme();
 
@@ -114,7 +114,11 @@ module.exports = class extends Command {
 			}
 		});
 
-		collector.on('end', (_, reason) => {
+		collector.on('end', () => {
+			// Disable button and update message
+			buttonA.setDisabled(true);
+			m.edit({ components: [row] });
+
 			if (comCooldown.has(message.author.id)) {
 				comCooldown.delete(message.author.id);
 			}
