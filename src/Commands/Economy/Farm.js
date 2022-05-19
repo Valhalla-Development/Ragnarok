@@ -95,7 +95,7 @@ module.exports = class extends Command {
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
 			const goldChance = Math.random();
-			embed.setFooter({ text: `Planting crops yields a larger return! Check it out with - ${prefix}plant` });
+			embed.setFooter({ text: `Planting crops yields a larger return! check it out with: ${prefix}plant` });
 
 			if (goldChance < 0.80) { // 80% of this happening
 				embed.setThumbnail('attachment://GoldNugget.png');
@@ -132,7 +132,7 @@ module.exports = class extends Command {
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
-			embed.setFooter({ text: `Planting crops yields a larger return! Check it out with - ${prefix}plant` });
+			embed.setFooter({ text: `Planting crops yields a larger return! check it out with: ${prefix}plant` });
 			embed.setThumbnail('attachment://Barley.png');
 
 			name = 'Barley';
@@ -167,7 +167,7 @@ module.exports = class extends Command {
 
 			embed.setThumbnail('attachment://Spinach.png');
 
-			embed.setFooter({ text: `Planting crops yields a larger return! Check it out with - ${prefix}plant` });
+			embed.setFooter({ text: `Planting crops yields a larger return! check it out with: ${prefix}plant` });
 
 			name = 'Spinach';
 
@@ -201,7 +201,7 @@ module.exports = class extends Command {
 
 			embed.setThumbnail('attachment://Strawberry.png');
 
-			embed.setFooter({ text: `Planting crops yields a larger return! Check it out with - ${prefix}plant` });
+			embed.setFooter({ text: `Planting crops yields a larger return! check it out with: ${prefix}plant` });
 
 			name = 'Strawberries';
 
@@ -235,7 +235,7 @@ module.exports = class extends Command {
 
 			embed.setThumbnail('attachment://Lettuce.png');
 
-			embed.setFooter({ text: `Planting crops yields a larger return! Check it out with - ${prefix}plant` });
+			embed.setFooter({ text: `Planting crops yields a larger return! check it out with: ${prefix}plant` });
 
 			name = 'Lettuce';
 
