@@ -144,7 +144,7 @@ module.exports = class extends Event {
 
 					const filter = (but) => but.user.id !== this.client.user.id;
 
-					const collector = m.createMessageComponentCollector({ filter, time: 15000 });
+					const collector = m.createMessageComponentCollector({ filter: filter, time: 15000 });
 
 					collector.on('collect', async b => {
 						if (b.customId === 'cancelModMail') {
@@ -780,7 +780,7 @@ module.exports = class extends Event {
 					const embed = new MessageEmbed()
 						.setAuthor({ name: `${message.author.username}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
 						.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
-						.setFooter({ text: `Req. by ${message.author.username}` })
+						.setFooter({ text: `Requested by ${message.author.username}` })
 						.setTimestamp();
 					if (message.guild.id === guildID) {
 						const findGuild = grabClient.guilds.cache.get(guildID);
@@ -789,6 +789,11 @@ module.exports = class extends Event {
 
 						await findChannel.messages.fetch(messageID).then((res) => {
 							if (res) {
+								// Fetch the message author
+								const user = grabClient.users.cache.find((a) => a.id === res.author.id);
+
+								embed.setAuthor({ name: `${user && user.username ? user.username : message.author.username}`, iconURL: user && user.displayAvatarURL ? user.displayAvatarURL({ dynamic: true }) : message.author.displayAvatarURL({ dynamic: true }) });
+
 								if (res.embeds[0]) { // fail bruh
 									if (res.embeds[0].url) {
 										const fileExtension = res.embeds[0].url.substring(res.embeds[0].url.lastIndexOf('.') + 1);
