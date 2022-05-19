@@ -390,8 +390,6 @@ module.exports = class extends Event {
 		}
 
 		if (interaction.customId.startsWith('rm-')) {
-			await interaction.deferUpdate();
-
 			const guild = this.client.guilds.cache.get(interaction.guild.id);
 			const user = guild.members.cache.get(interaction.user.id);
 
