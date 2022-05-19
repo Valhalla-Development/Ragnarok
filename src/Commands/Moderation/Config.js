@@ -437,6 +437,7 @@ module.exports = class extends Command {
 
 				if (reason === 'time') {
 					this.client.utils.messageDelete(m, 0);
+					this.client.utils.messageDelete(message, 10000);
 					return;
 				}
 			});
