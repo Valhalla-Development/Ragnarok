@@ -8,7 +8,17 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 module.exports = class extends Event {
 
 	async run(messageReaction, user) {
-		const { message } = messageReaction;
+		const grabMessage = messageReaction.message;
+		const { channelId } = grabMessage;
+		const msgId = grabMessage.id;
+
+		// Fetch the channel
+		const fetchChn = this.client.channels.cache.get(channelId);
+		if (!fetchChn) return;
+
+		// Fetch the message
+		const message = await fetchChn.messages.fetch(msgId);
+		if (!message) return;
 
 		// Starboard check
 		const id = db.prepare(`SELECT channel FROM starboard WHERE guildid = ${message.guild.id};`).get();
