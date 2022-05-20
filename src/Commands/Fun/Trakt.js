@@ -2,7 +2,7 @@
 /* eslint-disable handle-callback-err */
 /* eslint-disable camelcase */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Formatters } = require('discord.js');
 const request = require('request');
 const Trakt = require('trakt.tv');
 const decode = require('unescape');
@@ -11,6 +11,7 @@ const {
 	traktSecret,
 	fanartKey
 } = require('../../../config.json');
+const IMDb = require('imdb-light');
 
 module.exports = class extends Command {
 
@@ -39,6 +40,7 @@ module.exports = class extends Command {
 		let reqSearch = '';
 		let reqRating = '';
 		let reqVotes = '';
+		let imdbRt;
 
 		const toThousand = (num) => {
 			num = parseInt(num);
@@ -60,26 +62,18 @@ module.exports = class extends Command {
 			image,
 			link,
 			searchQuery,
-			rating,
-			votes
+			rating
 		) => new MessageEmbed()
 			.setColor('#EA2027')
-			.setTitle(`${decode(title)} - Trakt`)
-			.setDescription(
-				`${decode(
-					desc,
-					'all'
-				)}\n**Rating: ${rating}%** - ${votes} votes\n\n${link}\n\n**Not the content you were looking for?**\nTry: https://trakt.tv/search?query=${searchQuery}`
-			)
-			.setImage(image)
-			.setFooter({ text: 'Trakt.TV', iconURL: 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png' })
-			.setTimestamp();
+			.setAuthor({ name: `${decode(title)}`, url: link, iconURL: 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png' })
+			.setDescription(`${Formatters.codeBlock('text', `${decode(desc, 'all')}`)}\n**<:trakt:977201291115765820> ${rating}**`)
+			.setImage(image);
 
 		const notFound = (searchQuery) => {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Trakt.tv**`,
-					`**◎ Error:** Couldn't find the movie/show you were looking for.**\nTry again or try on Trakt.TV here: https://trakt.tv/search?query=${searchQuery}`);
+					`**◎ Error:** **Couldn't find the movie/show you were looking for.**\nTry again or try on Trakt.TV here: https://trakt.tv/search?query=${searchQuery}`);
 			message.channel.send({ embeds: [embed] });
 			this.client.utils.deletableCheck(msg, 0);
 		};
@@ -92,7 +86,7 @@ module.exports = class extends Command {
 						`http://webservice.fanart.tv/v3/movies/${
 							movieInfo[0].movie.ids.tmdb
 						}?api_key=${fanartKey}`,
-						(err, resp, body) => {
+						async (err, resp, body) => {
 							const fanartData = JSON.parse(body);
 							if (!fanartData.movieposter) {
 								if (!fanartData.hdmovielogo) {
@@ -112,13 +106,17 @@ module.exports = class extends Command {
 							reqRating = Math.round(movieInfo[0].movie.rating * 10);
 							reqVotes = toThousand(movieInfo[0].movie.votes);
 
+							if (movieInfo[0].movie.ids.imdb) {
+								await imdbFetch(movieInfo[0].movie.ids.imdb);
+							}
+
 							message.channel.send({ embeds: [getTraktEmbed(
-								reqTitle,
+								`${reqTitle} - Movie`,
 								reqDesc,
 								reqImage,
 								reqLink,
 								reqSearch,
-								reqRating,
+								imdbRt ? `[${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(0, imdbRt.lastIndexOf('/'))}](https://www.imdb.com/title/${movieInfo[0].movie.ids.imdb})` : `${reqRating}%`,
 								reqVotes
 							)] });
 							this.client.utils.deletableCheck(msg, 0);
@@ -137,7 +135,7 @@ module.exports = class extends Command {
 						`http://webservice.fanart.tv/v3/tv/${
 							showInfo[0].show.ids.tvdb
 						}?api_key=${fanartKey}`,
-						(err, resp, body) => {
+						async (err, resp, body) => {
 							const fanartData = JSON.parse(body);
 
 							if (!fanartData.tvposter) {
@@ -156,13 +154,17 @@ module.exports = class extends Command {
 							reqRating = Math.round(showInfo[0].show.rating * 10);
 							reqVotes = toThousand(showInfo[0].show.votes);
 
+							if (showInfo[0].show.ids.imdb) {
+								await imdbFetch(showInfo[0].show.ids.imdb);
+							}
+
 							message.channel.send({ embeds: [getTraktEmbed(
-								reqTitle,
+								`${reqTitle} - TV Show`,
 								reqDesc,
 								reqImage,
 								reqLink,
 								reqSearch,
-								reqRating,
+								imdbRt ? `[${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(0, imdbRt.lastIndexOf('/'))}](https://www.imdb.com/title/${showInfo[0].show.ids.imdb})` : `${reqRating}%`,
 								reqVotes
 							)] });
 							this.client.utils.deletableCheck(msg, 0);
@@ -185,14 +187,14 @@ module.exports = class extends Command {
 		} else {
 			args = args.join(' ');
 			getTrakt(args, 'movie,show')
-				.then((info) => {
+				.then(async (info) => {
 					switch (info[0].type) {
 						case 'movie':
 							request(
 								`http://webservice.fanart.tv/v3/movies/${
 									info[0].movie.ids.tmdb
 								}?api_key=${fanartKey}`,
-								(err, resp, body) => {
+								async (err, resp, body) => {
 									const fanartData = JSON.parse(body);
 									if (!fanartData.movieposter) {
 										if (!fanartData.hdmovielogo) {
@@ -210,13 +212,17 @@ module.exports = class extends Command {
 									reqRating = Math.round(info[0].movie.rating * 10);
 									reqVotes = toThousand(info[0].movie.votes);
 
+									if (info[0].movie.ids.imdb) {
+										await imdbFetch(info[0].movie.ids.imdb);
+									}
+
 									message.channel.send({ embeds: [getTraktEmbed(
-										reqTitle,
+										`${reqTitle} - Movie`,
 										reqDesc,
 										reqImage,
 										reqLink,
 										reqSearch,
-										reqRating,
+										imdbRt ? `[${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(0, imdbRt.lastIndexOf('/'))}](https://www.imdb.com/title/${info[0].movie.ids.imdb})` : `${reqRating}%`,
 										reqVotes
 									)] });
 									this.client.utils.deletableCheck(msg, 0);
@@ -229,7 +235,7 @@ module.exports = class extends Command {
 								`http://webservice.fanart.tv/v3/tv/${
 									info[0].show.ids.tvdb
 								}?api_key=${fanartKey}`,
-								(err, resp, body) => {
+								async (err, resp, body) => {
 									const fanartData = JSON.parse(body);
 									if (!fanartData.tvposter) {
 										if (!fanartData.hdtvlogo) {
@@ -247,15 +253,20 @@ module.exports = class extends Command {
 									reqRating = Math.round(info[0].show.rating * 10);
 									reqVotes = toThousand(info[0].show.votes);
 
+									if (info[0].show.ids.imdb) {
+										await imdbFetch(info[0].show.ids.imdb);
+									}
+
 									message.channel.send({ embeds: [getTraktEmbed(
-										reqTitle,
+										`${reqTitle} - TV Show`,
 										reqDesc,
 										reqImage,
 										reqLink,
 										reqSearch,
-										reqRating,
+										imdbRt ? `[${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(0, imdbRt.lastIndexOf('/'))}](https://www.imdb.com/title/${info[0].show.ids.imdb})` : `${reqRating}%`,
 										reqVotes
 									)] });
+
 									this.client.utils.deletableCheck(msg, 0);
 								}
 							);
@@ -266,6 +277,20 @@ module.exports = class extends Command {
 					reqSearch = args.split(' ').join('+');
 					notFound(reqSearch);
 				});
+		}
+
+		// IMDB Function
+		function fetch(id) {
+			return new Promise((resolve, reject) => {
+				IMDb.fetch(id, (details) => {
+					resolve(details);
+				});
+			});
+		}
+
+		async function imdbFetch(id) {
+			var quote = await fetch(id);
+			imdbRt = quote.Rating;
 		}
 	}
 

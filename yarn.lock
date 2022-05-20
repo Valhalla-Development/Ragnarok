@@ -771,6 +771,13 @@ axios@^0.21.1:
   dependencies:
     follow-redirects "^1.14.0"
 
+axios@^0.24.0:
+  version "0.24.0"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.24.0.tgz#804e6fa1e4b9c5288501dd9dff56a7a0940d20d6"
+  integrity sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==
+  dependencies:
+    follow-redirects "^1.14.4"
+
 axios@^0.25.0:
   version "0.25.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.25.0.tgz#349cfbb31331a9b4453190791760a8d35b093e0a"
@@ -1450,7 +1457,7 @@ eslint-visitor-keys@^3.0.0, eslint-visitor-keys@^3.1.0, eslint-visitor-keys@^3.3
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-3.3.0.tgz#f6480fa6b1f30efe2d1968aa8ac745b862469826"
   integrity sha512-mQ+suqKJVyeuwGYHAdjMFqjCyfl8+Ldnxuyp3ldiMBFKkvytrXUZWaiPCEav8qDHKty44bD+qV1IP4T+w+xXRA==
 
-eslint@^8.15.0:
+eslint@^8.14.0:
   version "8.15.0"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.15.0.tgz#fea1d55a7062da48d82600d2e0974c55612a11e9"
   integrity sha512-GG5USZ1jhCu8HJkzGgeK8/+RGnHaNYZGrGDzUtigK3BsGESW/rs2az23XqE0WVwDxy1VRvvjSSGu5nB0Bu+6SA==
@@ -1681,7 +1688,7 @@ flatted@^3.1.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.5.tgz#76c8584f4fc843db64702a6bd04ab7a8bd666da3"
   integrity sha512-WIWGi2L3DyTUvUrwRKgGi9TwxQMUEqPOPQBVi71R96jZXJdFskXEmf54BoZaS1kknGODoIGASGEzBUYdyMCBJg==
 
-follow-redirects@^1.14.0:
+follow-redirects@^1.14.0, follow-redirects@^1.14.4:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.0.tgz#06441868281c86d0dda4ad8bdaead2d02dca89d4"
   integrity sha512-aExlJShTV4qOUOL7yF1U5tvLCB0xQuudbf6toyYA0E/acBNw71mvjFTnLaRp50aQaYocMR0a/RMMBIHeZnGyjQ==
@@ -2033,6 +2040,14 @@ image-q@^4.0.0:
   integrity sha512-PfJGVgIfKQJuq3s0tTDOKtztksibuUEbJQIYT3by6wctQo+Rdlh7ef4evJ5NCdxY4CfMbvFkocEwbl4BF8RlJw==
   dependencies:
     "@types/node" "16.9.1"
+
+imdb-light@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/imdb-light/-/imdb-light-1.1.5.tgz#2759d36229d0cacd91d63f92365b9e1b56038d94"
+  integrity sha512-JGZpYRXaocNWqubhwSBIQODOzXTO/0vF0Pi49jCdvOc3FEpg+DxkZzSE6w2fL38QvthUoM7zVSudLiWvGwU/HA==
+  dependencies:
+    axios "^0.24.0"
+    lodash "^4.17.21"
 
 import-fresh@^3.0.0, import-fresh@^3.2.1:
   version "3.3.0"
@@ -2801,10 +2816,10 @@ prelude-ls@~1.1.2:
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
   integrity sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ=
 
-prettier-eslint@^15.0.0:
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/prettier-eslint/-/prettier-eslint-15.0.0.tgz#727c5f2f8f40dc745b08694f1a17eaf2ab68e9e7"
-  integrity sha512-VkzXkxg1YQrXfPDmD0ydfHZWA4vE2DcOz2ac4WPkCS0nLqevUrkg0aNrMGSeNtCH+BFdc2W+YQizCdHAChEJCw==
+prettier-eslint@^14.0.0:
+  version "14.1.0"
+  resolved "https://registry.yarnpkg.com/prettier-eslint/-/prettier-eslint-14.1.0.tgz#12e0e834efe5b2359f8bb523eeb9a32cb479c630"
+  integrity sha512-K0TRVaAUXtI5xz1ZaVZfvGMmunDNyIGXFkE845hVl6FzSxzRN9E03YmK3IiapcRFv3w4PyAL25LIPsy2sRz2tw==
   dependencies:
     "@types/eslint" "^8.4.2"
     "@types/prettier" "^2.6.0"
