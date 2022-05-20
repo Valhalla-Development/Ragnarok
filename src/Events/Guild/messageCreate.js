@@ -556,7 +556,6 @@ module.exports = class extends Event {
 		function levelSystem(grabClient) {
 		// Level disabled check
 			const levelDb = db.prepare(`SELECT status FROM level WHERE guildid = ${message.guild.id};`).get();
-			if (levelDb) return;
 			let score;
 			if (message.guild) {
 				score = grabClient.getScore.get(message.author.id, message.guild.id);
@@ -586,7 +585,9 @@ module.exports = class extends Event {
 						.setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
 						.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
 						.setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
-					message.channel.send({ embeds: [lvlup] }).then((m) => grabClient.utils.deletableCheck(m, 10000));
+					if (!levelDb) {
+						message.channel.send({ embeds: [lvlup] }).then((m) => grabClient.utils.deletableCheck(m, 10000));
+					}
 				}
 			}
 			if (!xpCooldown.has(message.author.id)) {
