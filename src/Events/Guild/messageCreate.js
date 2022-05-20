@@ -931,8 +931,12 @@ module.exports = class extends Event {
 				this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
 				console.log(LoggingNoArgs);
 			} else {
+				const trimmedString = oargresult.length > 500 ?
+					`${oargresult.substring(0, 500 - 3)}...` :
+					oargresult;
+
 				logembed.addField(`Guild: ${message.guild.name} | Date: <t:${nowInSecond}>`,
-					Formatters.codeBlock('kotlin', `'${cmd} ${oargresult}' was executed by ${message.author.tag}`));
+					Formatters.codeBlock('kotlin', `'${cmd} ${trimmedString}' was executed by ${message.author.tag}`));
 				const LoggingArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] '\x1b[92m${cmd} ${oargresult}\x1b[0m' was executed by \x1b[31m${message.author.tag}\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
 				this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
 				console.log(LoggingArgs);
