@@ -7,6 +7,14 @@ const ordinal = require('ordinal');
 const fetch = require('node-fetch-cjs');
 const moment = require('moment');
 
+Canvas.registerFont('./Storage/Canvas/Fonts/Handlee-Regular.ttf', {
+	family: 'Handlee'
+});
+
+Canvas.registerFont('./Storage/Canvas/Fonts/Montserrat-SemiBold.ttf', {
+	family: 'Montserrat'
+});
+
 module.exports = class extends Event {
 
 	async run(member) {
@@ -95,17 +103,17 @@ module.exports = class extends Event {
 			ctx.globalAlpha = 1;
 
 			// text
-			ctx.font = '42px Note';
+			ctx.font = '42px Handlee';
 			ctx.fillStyle = '#ffffff';
 			ctx.textAlign = 'center';
 			ctx.fillText('Welcome to the server', canvas.width / 2, 45);
 
-			ctx.font = '42px Note';
+			ctx.font = '42px Handlee';
 			ctx.fillStyle = '#ffffff';
 			ctx.textAlign = 'center';
 			ctx.fillText(`${member.user.username}`, canvas.width / 2, 280);
 
-			ctx.font = 'bold 20px Courier';
+			ctx.font = '20px Montserrat';
 			ctx.fillStyle = '#ffffff';
 			ctx.textAlign = 'left';
 			ctx.fillText(`${ordinal(member.guild.memberCount - member.guild.members.cache.filter((m) => m.user.bot).size)} member!`, 5, 232);

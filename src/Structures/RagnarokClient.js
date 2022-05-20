@@ -2,10 +2,6 @@
 /* eslint-disable no-mixed-operators */
 const { Client, Collection, Permissions, Intents } = require('discord.js');
 const Util = require('./Util.js');
-const Canvas = require('canvas');
-Canvas.registerFont('./Storage/Canvas/Fonts/Notethis.ttf', {
-	family: 'Note'
-});
 const db = require('quick.db');
 if (!Array.isArray(db.get('giveaways'))) db.set('giveaways', []);
 const { GiveawaysManager } = require('discord-giveaways');
