@@ -64,6 +64,12 @@ module.exports = class extends Command {
 			let foundPlotList = JSON.parse(balance.farmPlot);
 			let foundHarvestList = JSON.parse(balance.harvestedCrops);
 
+			let claimUserTime;
+			if (balance.claimNewUser) {
+				const endTime = balance.claimNewUser;
+				claimUserTime = Math.round(endTime / 1000);
+			}
+
 			if (!foundItemList) {
 				foundItemList = {};
 			}
@@ -143,16 +149,16 @@ module.exports = class extends Command {
 					{ name: 'Bank', value: `<:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\``, inline: true },
 					{ name: 'Total', value: `<:coin:706659001164628008> \`${balance.total.toLocaleString('en')}\``, inline: true },
 					{ name: 'Steal Cooldown', value: `${Date.now() > balance.stealcool ? `\`Available!\`` : `\`${ms(balance.stealcool - date, { long: true })}\``}`, inline: true },
-					{ name: 'Fish Cooldown', value: `${Date.now() > balance.fishcool ? `\`Available!\`` : `\`${ms(balance.fishcool - date, { long: true })}\``}`, inline: true },
+					{ name: 'Fish Cooldown', value: `${!foundItemList.fishingRod ? `\`Rod Not Owned\`` : Date.now() > balance.fishcool ? `\`Available!\`` : `\`${ms(balance.fishcool - date, { long: true })}\``}`, inline: true },
 					{ name: 'Farm Cooldown', value: `${Date.now() > balance.farmcool ? `\`Available!\`` : `\`${ms(balance.farmcool - date, { long: true })}\``}`, inline: true },
 					{ name: 'Seed Bag', value: `${foundBoostList.seedBag ? `\`${Number(currentTotalSeeds).toLocaleString('en')}/${Number(foundBoostList.seedBag).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
 					{ name: 'Fish Bag', value: `${foundBoostList.fishBag ? `\`${Number(currentTotalFish).toLocaleString('en')}/${Number(foundBoostList.fishBag).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
 					{ name: 'Farm Bag', value: `${foundBoostList.farmBag ? `\`${Number(currentTotalFarm).toLocaleString('en')}/${Number(foundBoostList.farmBag).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
 					{ name: 'Farm Plot', value: `${foundBoostList.farmPlot ? `\`${foundPlotList.length.toLocaleString('en')}/${Number(foundBoostList.farmPlot).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
-					{ name: '**◎ Claim Cooldown**', value: `\n**Hourly:** ${Date.now() > balance.hourly ? `\`Available!\`` : `\`${ms(balance.hourly - date, { long: true })}\``}
-					\n**Daily:** ${Date.now() > balance.daily ? `\`Available!\`` : `\`${ms(balance.daily - date, { long: true })}\``}
-					\n**Weekly:** ${Date.now() > balance.weekly ? `\`Available!\`` : `\`${ms(balance.weekly - date, { long: true })}\``}
-					\n**Monthly:** ${Date.now() > balance.monthly ? `\`Available!\`` : `\`${ms(balance.monthly - date, { long: true })}\``}` });
+					{ name: '**◎ Claim Cooldown**', value: `\n**Hourly:** ${balance.claimNewUser ? `<t:${claimUserTime}:R>` : Date.now() > balance.hourly ? `\`Available!\`` : `\`${ms(balance.hourly - date, { long: true })}\``}
+					\n**Daily:** ${balance.claimNewUser ? `<t:${claimUserTime}:R>` : Date.now() > balance.daily ? `\`Available!\`` : `\`${ms(balance.daily - date, { long: true })}\``}
+					\n**Weekly:** ${balance.claimNewUser ? `<t:${claimUserTime}:R>` : Date.now() > balance.weekly ? `\`Available!\`` : `\`${ms(balance.weekly - date, { long: true })}\``}
+					\n**Monthly:** ${balance.claimNewUser ? `<t:${claimUserTime}:R>` : Date.now() > balance.monthly ? `\`Available!\`` : `\`${ms(balance.monthly - date, { long: true })}\``}` });
 			message.channel.send({ embeds: [embed1] });
 			return;
 		}
