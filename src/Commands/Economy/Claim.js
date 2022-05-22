@@ -10,7 +10,7 @@ module.exports = class extends Command {
 
 	constructor(...args) {
 		super(...args, {
-			aliases: ['rewards', 'claimable', 'reward', 'collect'],
+			aliases: ['rewards', 'claimable', 'reward', 'collect', 'c'],
 			description: 'Displays available rewards',
 			category: 'Economy'
 		});
@@ -25,13 +25,16 @@ module.exports = class extends Command {
 			if (Date.now() > balance.claimNewUser) {
 				balance.claimNewUser = null;
 			} else {
+				const endTime = balance.claimNewUser;
+				const nowInSecond = Math.round(endTime / 1000);
+
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed = new MessageEmbed()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Claim**`,
-						`**◎ Error:** Your Economy proifle is too new! Please wait another \`${ms(balance.claimNewUser - new Date().getTime(), { long: true })}\` before using this command.`);
+						`**◎ Error:** Your Economy proifle is too new! Please wait another <t:${nowInSecond}:R> before using this command.`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
