@@ -5,7 +5,6 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 const Canvas = require('canvas');
 const ordinal = require('ordinal');
 const fetch = require('node-fetch-cjs');
-const moment = require('moment');
 
 Canvas.registerFont('./Storage/Canvas/Fonts/Handlee-Regular.ttf', {
 	family: 'Handlee'
@@ -161,7 +160,7 @@ module.exports = class extends Event {
 			const logembed = new MessageEmbed()
 				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
 				.setAuthor({ name: `${member.guild.name}`, iconURL: member.user.avatarURL() })
-				.setDescription(`**◎ Member Joined:** <@${member.user.id}> - ${member.user.tag}\n**◎ Account Created:** \`${moment(member.user.createdTimestamp).format('ddd, MMM Do YYYY')}\` - ${moment(member.user.createdTimestamp).fromNow()}`)
+				.setDescription(`**◎ Member Joined:** ${member.user} - \`${member.user.tag}\` - \`(${member.user.id})\`\n**◎ Account Created:** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)\n**◎ Joined:** <t:${Math.round(member.joinedTimestamp / 1000)}> - (<t:${Math.round(member.joinedTimestamp / 1000)}:R>)`)
 				.setFooter({ text: `ID: ${member.user.id}` })
 				.setTimestamp();
 			grabClient.channels.cache.get(logs).send({ embeds: [logembed] });
