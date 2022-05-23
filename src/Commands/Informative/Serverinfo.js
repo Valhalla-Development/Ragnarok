@@ -1,6 +1,5 @@
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
-const moment = require('moment');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -99,7 +98,7 @@ module.exports = class extends Command {
 			.addField(`Guild information`,
 				`**◎ 👑 Owner:** ${guildOwner.user}
 				**◎ 🆔 ID:** ${message.guild.id}
-				**◎ 📅 Created At:** ${moment(message.guild.createdTimestamp).format('ddd, MMM Do YYYY h:mm a')} - ${moment(message.guild.createdTimestamp).fromNow()}
+				**◎ 📅 Created At:** <t:${Math.round(message.guild.createdTimestamp / 1000)}> - (<t:${Math.round(message.guild.createdTimestamp / 1000)}:R>)
 				**◎ 🔐 Verification Level:** ${verificationLevels[message.guild.verificationLevel]}
 				**◎ 🔏 MFA Level:** ${mfa[message.guild.mfaLevel]}
 				**◎ 🧑‍🤝‍🧑 Guild Members:** ${message.guild.memberCount - message.guild.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}

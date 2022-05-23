@@ -109,8 +109,8 @@ module.exports = class extends Command {
 			.addField(`Member information`,
 				`**◎ 👑 User:** ${member.user}
 				**◎ 🆔 ID:** ${member.user.id}
-				**◎ 📆 Created At** ${moment(member.user.createdTimestamp).format('ddd, MMM Do YYYY h:mm a')} - ${moment(member.user.createdTimestamp).fromNow()}
-				**◎ 📆 Joined At** ${moment(member.joinedAt).format('ddd, MMM Do YYYY h:mm a')} - ${moment(member.joinedAt).fromNow()}
+				**◎ 📆 Created At** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)
+				**◎ 📆 Joined At** <t:${Math.round(member.joinedTimestamp / 1000)}> - (<t:${Math.round(member.joinedTimestamp / 1000)}:R>)
 				**◎ 🗺️ Flags:** ${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}
 				**◎ <a:Booster:855593231294267412> Server Booster:** ${member.premiumSinceTimestamp ? `${moment(member.premiumSinceTimestamp).format('ddd, MMM Do YYYY h:mm a')} - ${moment(member.premiumSinceTimestamp).fromNow()}` : 'No'}`)
 
