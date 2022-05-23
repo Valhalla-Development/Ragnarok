@@ -97,15 +97,15 @@ module.exports = class extends Command {
 			.setAuthor({ name: `Viewing information for ${message.guild.name}`, iconURL: message.guild.iconURL({ dynamic: true }) })
 			.addField(`Guild information`,
 				`**◎ 👑 Owner:** ${guildOwner.user}
-				**◎ 🆔 ID:** ${message.guild.id}
+				**◎ 🆔 ID:** \`${message.guild.id}\`
 				**◎ 📅 Created At:** <t:${Math.round(message.guild.createdTimestamp / 1000)}> - (<t:${Math.round(message.guild.createdTimestamp / 1000)}:R>)
-				**◎ 🔐 Verification Level:** ${verificationLevels[message.guild.verificationLevel]}
-				**◎ 🔏 MFA Level:** ${mfa[message.guild.mfaLevel]}
-				**◎ 🧑‍🤝‍🧑 Guild Members:** ${message.guild.memberCount - message.guild.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}
-				**◎ 🤖 Guild Bots:** ${message.guild.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}
+				**◎ 🔐 Verification Level:** \`${verificationLevels[message.guild.verificationLevel]}\`
+				**◎ 🔏 MFA Level:** \`${mfa[message.guild.mfaLevel]}\`
+				**◎ 🧑‍🤝‍🧑 Guild Members:** \`${message.guild.memberCount - message.guild.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}\`
+				**◎ 🤖 Guild Bots:** \`${message.guild.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}\`
 				\u200b`)
-			.addFields({ name: `**Guild Channels** [${textChan.size + voiceChan.size}]`, value: `<:TextChannel:855591004236546058> | Text: ${textChan.size}\n<:VoiceChannel:855591004300115998> | Voice: ${voiceChan.size}`, inline: true },
-				{ name: `**Guild Perks**`, value: `<a:Booster:855593231294267412> | Boost Tier: ${tiers[message.guild.premiumTier]}\n<a:Booster:855593231294267412> | Boosts: ${message.guild.premiumSubscriptionCount}`, inline: true },
+			.addFields({ name: `**Guild Channels** [${textChan.size + voiceChan.size}]`, value: `<:TextChannel:855591004236546058> | Text: \`${textChan.size}\`\n<:VoiceChannel:855591004300115998> | Voice: \`${voiceChan.size}\``, inline: true },
+				{ name: `**Guild Perks**`, value: `<a:Booster:855593231294267412> | Boost Tier: \`${tiers[message.guild.premiumTier]}\`\n<a:Booster:855593231294267412> | Boosts: \`${message.guild.premiumSubscriptionCount}\``, inline: true },
 				{ name: `**Assets**`, value: `**Server Roles [${roles.length}]**: To view all roles, run\n\`${prefix}serverinfo roles\`\n**Server Emojis [${emojis.size}]**: To view all emojis, run\n\`${prefix}serverinfo emojis\``, inline: false })
 			.setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) });
 		message.channel.send({ embeds: [embed] });
