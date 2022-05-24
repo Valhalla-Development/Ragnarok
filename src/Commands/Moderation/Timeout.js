@@ -13,7 +13,7 @@ module.exports = class extends Command {
 			category: 'Moderation',
 			userPerms: ['MODERATE_MEMBERS'],
 			botPerms: ['MODERATE_MEMBERS'],
-			usage: '<@user>, <time> (reason>)'
+			usage: '<@user> <time> (reason>)'
 		});
 	}
 
