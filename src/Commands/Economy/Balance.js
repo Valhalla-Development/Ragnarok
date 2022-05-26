@@ -155,10 +155,10 @@ module.exports = class extends Command {
 					{ name: 'Fish Bag', value: `${foundBoostList.fishBag ? `\`${Number(currentTotalFish).toLocaleString('en')}/${Number(foundBoostList.fishBag).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
 					{ name: 'Farm Bag', value: `${foundBoostList.farmBag ? `\`${Number(currentTotalFarm).toLocaleString('en')}/${Number(foundBoostList.farmBag).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
 					{ name: 'Farm Plot', value: `${foundBoostList.farmPlot ? `\`${foundPlotList.length.toLocaleString('en')}/${Number(foundBoostList.farmPlot).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
-					{ name: '**◎ Claim Cooldown**', value: `\n**Hourly:** ${balance.claimNewUser ? `<t:${claimUserTime}:R>` : Date.now() > balance.hourly ? `\`Available!\`` : `\`${ms(balance.hourly - date, { long: true })}\``}
-					\n**Daily:** ${balance.claimNewUser ? `<t:${claimUserTime}:R>` : Date.now() > balance.daily ? `\`Available!\`` : `\`${ms(balance.daily - date, { long: true })}\``}
-					\n**Weekly:** ${balance.claimNewUser ? `<t:${claimUserTime}:R>` : Date.now() > balance.weekly ? `\`Available!\`` : `\`${ms(balance.weekly - date, { long: true })}\``}
-					\n**Monthly:** ${balance.claimNewUser ? `<t:${claimUserTime}:R>` : Date.now() > balance.monthly ? `\`Available!\`` : `\`${ms(balance.monthly - date, { long: true })}\``}` });
+					{ name: '**◎ Claim Cooldown**', value: `\n**Hourly:** ${balance.claimNewUser ? Date.now() > balance.claimNewUser ? `\`Available\`` : `<t:${claimUserTime}:R>` : Date.now() > balance.hourly ? `\`Available!\`` : `\`${ms(balance.hourly - date, { long: true })}\``}
+					\n**Daily:** ${balance.claimNewUser ? Date.now() > balance.claimNewUser ? `\`Available\`` : `<t:${claimUserTime}:R>` : Date.now() > balance.daily ? `\`Available!\`` : `\`${ms(balance.daily - date, { long: true })}\``}
+					\n**Weekly:** ${balance.claimNewUser ? Date.now() > balance.claimNewUser ? `\`Available\`` : `<t:${claimUserTime}:R>` : Date.now() > balance.weekly ? `\`Available!\`` : `\`${ms(balance.weekly - date, { long: true })}\``}
+					\n**Monthly:** ${balance.claimNewUser ? Date.now() > balance.claimNewUser ? `\`Available\`` : `<t:${claimUserTime}:R>` : Date.now() > balance.monthly ? `\`Available!\`` : `\`${ms(balance.monthly - date, { long: true })}\``}` });
 			message.channel.send({ embeds: [embed1] });
 			return;
 		}
