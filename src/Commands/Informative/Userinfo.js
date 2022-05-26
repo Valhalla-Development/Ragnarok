@@ -112,7 +112,7 @@ module.exports = class extends Command {
 				**◎ 📆 Created At** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)
 				**◎ 📆 Joined At** <t:${Math.round(member.joinedTimestamp / 1000)}> - (<t:${Math.round(member.joinedTimestamp / 1000)}:R>)
 				**◎ 🗺️ Flags:** ${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}
-				**◎ <a:Booster:855593231294267412> Server Booster:** ${member.premiumSinceTimestamp ? `${moment(member.premiumSinceTimestamp).format('ddd, MMM Do YYYY h:mm a')} - ${moment(member.premiumSinceTimestamp).fromNow()}` : 'No'}`)
+				**◎ <a:Booster:855593231294267412> Server Booster:** ${member.premiumSinceTimestamp ? `<t:${Math.round(member.premiumSinceTimestamp / 1000)}> - (<t:${Math.round(member.premiumSinceTimestamp / 1000)}:R>)` : 'No'}`)
 
 			.addFields({ name: `**Roles: [${roles.length}]**`, value: `${roleMsg}`, inline: true },
 				{ name: `**Status:**`, value: `${statusMsg}`, inline: true },
