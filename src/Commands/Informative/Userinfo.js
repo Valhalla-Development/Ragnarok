@@ -1,6 +1,5 @@
 const Command = require('../../Structures/Command');
 const { MessageEmbed } = require('discord.js');
-const moment = require('moment');
 
 const flags = {
 	DISCORD_EMPLOYEE: '<:DiscordStaff:748651259849998377>',
@@ -62,12 +61,10 @@ module.exports = class extends Command {
 		if (member.presence) {
 			if (member.presence.activities[0]) {
 				if (member.presence.activities[0].timestamps && member.presence.activities[0].timestamps.start) {
-					const text = moment(member.presence.activities[0].timestamps.start).fromNow();
-					const lastOf = text.lastIndexOf(' ');
-					time = text.substring(0, lastOf);
+					time = member.presence.activities[0].timestamps.start;
 				}
 
-				presence.push(`**${types[member.presence.activities[0].type]}:** ${member.presence.activities[0].name}${time ? ` (for ${time})` : ''}`);
+				presence.push(`**${types[member.presence.activities[0].type]}:** ${member.presence.activities[0].name}${time ? ` (<t:${Math.round(member.presence.activities[0].timestamps.start / 1000)}:R>)` : ''}`);
 
 				if (member.presence.activities[0].details) {
 					presence.push(`**Details:** ${member.presence.activities[0].details}`);
