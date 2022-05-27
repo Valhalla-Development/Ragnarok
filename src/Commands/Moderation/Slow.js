@@ -33,6 +33,19 @@ module.exports = class extends Command {
 			time = args[0];
 		}
 
+		// Check if the channel exists in the guild
+		const guildCheck = message.guild.channels.cache.find(c => c.id === channel.id);
+		if (!guildCheck) {
+			this.client.utils.messageDelete(message, 10000);
+
+			const embed = new MessageEmbed()
+				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.addField(`**${this.client.user.username} - Slow**`,
+					`**◎ Error:** The specified channel does not exist in this guild!`);
+			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+			return;
+		}
+
 		if (args[0] === 'off' || args[1] === 'off') {
 			this.client.utils.messageDelete(message, 10000);
 
