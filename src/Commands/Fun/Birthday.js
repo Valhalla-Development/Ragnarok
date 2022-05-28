@@ -45,7 +45,7 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
-					`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on <t:${Math.round(new Date(then).getTime() / 1000)}:D>`)
+					`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on **${nextBirthday + year}**`)
 				.setFooter({ text: 'This server currently has this feature disabled, you will not receive a message in this server.' });
 			message.channel.send({ embeds: [embed] });
 			return;
@@ -102,7 +102,7 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Birthday**`,
-						`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on <t:${Math.round(new Date(then).getTime() / 1000)}:D>`);
+						`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on **${nextBirthday + year}**`);
 				message.channel.send({ embeds: [embed] });
 				return;
 			}
@@ -224,7 +224,7 @@ module.exports = class extends Command {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
-					`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on <t:${Math.round(new Date(then).getTime() / 1000)}:D>`)
+					`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on **${nextBirthday + year}**`)
 				.setFooter({ text: `Run '${prefix}birthday help' if you wish to change your birthday` });
 			message.channel.send({ embeds: [embed] });
 			return;
