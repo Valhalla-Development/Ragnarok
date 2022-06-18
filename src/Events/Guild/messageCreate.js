@@ -626,6 +626,9 @@ module.exports = class extends Event {
 				} else if (
 					message.content.toLowerCase().startsWith('im dad') || message.content.toLowerCase().startsWith('i\'m dad')) {
 					message.channel.send({ content: 'No, I\'m Dad!' });
+				} else if (
+					message.content.toLowerCase().includes('@everyone')) {
+					message.reply({ content: '<:pepebruh:987742251297931274>' });
 				} else {
 					message.channel.send({ content: `Hi ${oargresult}, I'm Dad!` });
 				}
