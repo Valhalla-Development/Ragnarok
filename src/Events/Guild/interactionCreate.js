@@ -109,11 +109,22 @@ module.exports = class extends Event {
 				const data = await response.status;
 
 				let transLinkText;
+				let openTranscript;
+				let transcriptRow;
 
 				if (data !== 200) {
 					transLinkText = `\`Unavailable\``;
 				} else {
 					transLinkText = `[**Click Here**](https://www.ragnarokbot.com/transcripts/${staticFileName})`;
+					// Transcript button
+					openTranscript = new MessageButton()
+						.setStyle('LINK')
+						.setEmoji('<:ticketTranscript:998229979609440266>')
+						.setLabel('View Transcript')
+						.setURL(`https://www.ragnarokbot.com/transcripts/${staticFileName}`);
+
+					transcriptRow = new MessageActionRow()
+						.addComponents(openTranscript);
 				}
 
 				if (interaction.channel) {
@@ -135,13 +146,13 @@ module.exports = class extends Event {
 					const logEmbed = new MessageEmbed()
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.setAuthor({ name: 'Ticket Closed', iconURL: guild.iconURL({ dynamic: true }) })
-						.addFields({ name: `**Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
-							{ name: `**Opened By**`, value: `${user}`, inline: true },
-							{ name: `**Closed By**`, value: `${interaction.user}`, inline: true },
-							{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
-							{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
+						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+							{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
+							{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${interaction.user}`, inline: true },
+							{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
+							{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
 							{ name: `\u200b`, value: `\u200b`, inline: true });
-					user.send({ embeds: [logEmbed] }).then(() => {
+					user.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] }).then(() => {
 						// eslint-disable-next-line arrow-body-style
 					}).catch(() => {
 						return;
@@ -161,13 +172,13 @@ module.exports = class extends Event {
 				const logEmbed = new MessageEmbed()
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Closed', iconURL: guild.iconURL({ dynamic: true }) })
-					.addFields({ name: `**Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
-						{ name: `**Opened By**`, value: `${user}`, inline: true },
-						{ name: `**Closed By**`, value: `${interaction.user}`, inline: true },
-						{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
-						{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
+					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+						{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
+						{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${interaction.user}`, inline: true },
+						{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
+						{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
 						{ name: `\u200b`, value: `\u200b`, inline: true });
-				logchan.send({ embeds: [logEmbed] });
+				logchan.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] });
 			}
 
 			if (interaction.customId === 'closeTicketReason') {

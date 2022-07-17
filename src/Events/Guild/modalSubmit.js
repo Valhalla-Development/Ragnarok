@@ -1,7 +1,7 @@
 const Event = require('../../Structures/Event');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
 const discordTranscripts = require('discord-html-transcripts');
 const fetchPkg = require('node-fetch-cjs');
 
@@ -65,11 +65,22 @@ module.exports = class extends Event {
 			const data = await response.status;
 
 			let transLinkText;
+			let openTranscript;
+			let transcriptRow;
 
 			if (data !== 200) {
 				transLinkText = `\`Unavailable\``;
 			} else {
 				transLinkText = `[**Click Here**](https://www.ragnarokbot.com/transcripts/${staticFileName})`;
+				// Transcript button
+				openTranscript = new MessageButton()
+					.setStyle('LINK')
+					.setEmoji('<:ticketTranscript:998229979609440266>')
+					.setLabel('View Transcript')
+					.setURL(`https://www.ragnarokbot.com/transcripts/${staticFileName}`);
+
+				transcriptRow = new MessageActionRow()
+					.addComponents(openTranscript);
 			}
 
 			if (modal.channel) {
@@ -91,14 +102,15 @@ module.exports = class extends Event {
 				const logEmbed = new MessageEmbed()
 					.setColor(this.client.utils.color(modal.guild.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Closed', iconURL: modal.guild.iconURL({ dynamic: true }) })
-					.addFields({ name: `**Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
-						{ name: `**Opened By**`, value: `${user}`, inline: true },
-						{ name: `**Closed By**`, value: `${modal.user}`, inline: true },
-						{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
-						{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
+					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+						{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
+						{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${modal.user}`, inline: true },
+						{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
+						{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
 						{ name: `\u200b`, value: `\u200b`, inline: true },
-						{ name: `**Reason**`, value: `${firstResponse}`, inline: true });
-				user.send({ embeds: [logEmbed] }).then(() => {
+						{ name: `🖋️ **Reason**`, value: `${firstResponse}` })
+					.setTimestamp();
+				user.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] }).then(() => {
 					// eslint-disable-next-line arrow-body-style
 				}).catch(() => {
 					return;
@@ -118,14 +130,15 @@ module.exports = class extends Event {
 			const logEmbed = new MessageEmbed()
 				.setColor(this.client.utils.color(modal.guild.me.displayHexColor))
 				.setAuthor({ name: 'Ticket Closed', iconURL: modal.guild.iconURL({ dynamic: true }) })
-				.addFields({ name: `**Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
-					{ name: `**Opened By**`, value: `${user}`, inline: true },
-					{ name: `**Closed By**`, value: `${modal.user}`, inline: true },
-					{ name: `**Transcript**`, value: `${transLinkText}`, inline: true },
-					{ name: `**Time Closed**`, value: `<t:${epoch}>`, inline: true },
+				.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+					{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
+					{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${modal.user}`, inline: true },
+					{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
+					{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
 					{ name: `\u200b`, value: `\u200b`, inline: true },
-					{ name: `**Reason**`, value: `${firstResponse}`, inline: true });
-			logchan.send({ embeds: [logEmbed] });
+					{ name: `🖋️ **Reason**`, value: `${firstResponse}` })
+				.setTimestamp();
+			logchan.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] });
 		}
 	}
 
