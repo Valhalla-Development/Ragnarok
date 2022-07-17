@@ -430,7 +430,7 @@ module.exports = class extends Event {
 			});
 		}, null, true);
 
-		const thirtySecondTimer = new CronJob('*/30 * * * * *', () => {
+		const twoMinuteTimer = new CronJob('*/30 * * * * *', () => {
 			// Run every 2 minutes
 			// Bans
 			const grabBans = db.prepare('SELECT * FROM ban').all();
@@ -484,10 +484,42 @@ module.exports = class extends Event {
 			});
 		}, null, true);
 
+		const twentyFourTimer = new CronJob('0 13 * * *', async () => {
+			// Run every 24 hours
+			const todayWord = require('today-word');
+
+			const guild = this.client.guilds.cache.get('657235952116170794');
+			if (!guild) return;
+			const chn = guild.channels.cache.get('663193215943311373');
+			if (!chn) return;
+
+			try {
+				const word = await todayWord.getWord();
+				const str = word.pronunciation;
+				const res = str.split(']', 1);
+
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(guild.me.displayHexColor))
+					.setAuthor({ name: `Word of the Day`, url: 'https://www.dictionary.com/e/word-of-the-day/', iconURL: guild.iconURL({ dynamic: true }) })
+					.setDescription(`>>> **${this.client.utils.capitalise(word.word)}**\n*${res} ]*\n*${word.pos}*`)
+					.addFields({ name: '**Definition:**', value: `>>> *${word.meaning}*` },
+						{ name: '**Examples:**', value: `>>> **◎**${boldString(word.examples.join('\n**◎** '), word.word)}` });
+				chn.send({ embeds: [embed] });
+			} catch (error) {
+				console.log(error);
+			}
+
+			function boldString(str, substr) {
+				var strRegExp = new RegExp(substr, 'g');
+				return str.replace(strRegExp, `**${substr}**`);
+			}
+		}, null, true);
+
 		// Run cron jobs
 		tenSecondTimer.start();
 		twentySecondTimer.start();
-		thirtySecondTimer.start();
+		twoMinuteTimer.start();
+		twentyFourTimer.start();
 	}
 
 };
