@@ -1,8 +1,8 @@
+/* eslint-disable no-mixed-operators */
 const { MessageEmbed } = require('discord.js');
 const { version } = require('../../../package.json');
 const Command = require('../../Structures/Command');
 const os = require('os');
-const ms = require('ms');
 const si = require('systeminformation');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -61,7 +61,7 @@ module.exports = class extends Command {
 				\u200b`)
 			.addField('System',
 				`**◎ 💻 OS:** \`${osVersion}\`
-				**◎ 📊 Uptime:**\`${ms(os.uptime() * 1000, { long: true })}\`
+				**◎ 📊 Uptime:** <t:${Math.round((Date.now() - os.uptime() * 1000) / 1000)}:R>
 				**◎ 💾 Memory Usage:** \`${realMemUsed.toLocaleString('en')} / ${totalMemory.toLocaleString('en')}MB - ${memPercent.toFixed(1)}%\`
 				**◎ 💻 CPU:**
 				\u3000 \u3000 ⌨️ Cores: \`${os.cpus().length}\`
