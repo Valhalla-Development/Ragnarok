@@ -391,10 +391,10 @@ module.exports = class extends Event {
 					const logEmbed = new MessageEmbed()
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.setAuthor({ name: 'Ticket Opened', iconURL: guild.iconURL({ dynamic: true }) })
-						.addFields({ name: `**Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${interaction.guild.id}/${c.id})`, inline: true },
-							{ name: `**Opened By**`, value: `${interaction.user}`, inline: true },
-							{ name: `**Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
-							{ name: `**Reason**`, value: `${reason}`, inline: true });
+						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${interaction.guild.id}/${c.id})`, inline: true },
+							{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${interaction.user}`, inline: true },
+							{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
+							{ name: `🖋️ **Reason**`, value: `${reason}`, inline: true });
 					logchan.send({ embeds: [logEmbed] });
 				}
 			}).catch(console.error);

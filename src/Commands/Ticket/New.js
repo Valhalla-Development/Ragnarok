@@ -150,10 +150,10 @@ module.exports = class extends Command {
 				const logEmbed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Opened', iconURL: message.guild.iconURL({ dynamic: true }) })
-					.addFields({ name: `**Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${message.guild.id}/${c.id})`, inline: true },
-						{ name: `**Opened By**`, value: `${message.author}`, inline: true },
-						{ name: `**Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
-						{ name: `**Reason**`, value: `${reason}`, inline: true });
+					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${message.guild.id}/${c.id})`, inline: true },
+						{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${message.author}`, inline: true },
+						{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
+						{ name: `🖋️ **Reason**`, value: `${reason}`, inline: true });
 				logchan.send({ embeds: [logEmbed] });
 			}).catch(console.error);
 		} else {
@@ -270,10 +270,10 @@ module.exports = class extends Command {
 				const logEmbed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Opened', iconURL: message.guild.iconURL({ dynamic: true }) })
-					.addFields({ name: `**Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${message.guild.id}/${c.id})`, inline: true },
-						{ name: `**Opened By**`, value: `${message.author}`, inline: true },
-						{ name: `**Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
-						{ name: `**Reason**`, value: `${reason}`, inline: true });
+					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${message.guild.id}/${c.id})`, inline: true },
+						{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${message.author}`, inline: true },
+						{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
+						{ name: `🖋️ **Reason**`, value: `${reason}`, inline: true });
 				logchan.send({ embeds: [logEmbed] });
 			}).catch(console.error);
 		}
