@@ -14,8 +14,9 @@ module.exports = class extends Command {
 		super(...args, {
 			aliases: ['bj'],
 			description: 'Play a game of blackjack with the house',
-			category: 'Economy',
-			usage: '<amount/all>'
+			category: 'Hidden',
+			usage: '<amount/all>',
+			ownerOnly: true
 		});
 	}
 
