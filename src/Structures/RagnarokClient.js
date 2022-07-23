@@ -44,7 +44,7 @@ module.exports = class RagnarokClient extends Client {
 			// Fishing related prices
 			fishBagFirst: 50,
 			fishBagLimit: 1000,
-			fishBagPrice: 30, // Price is current capacity * price (Upgrade adds 25 to capacity)
+			fishBagPrice: 450, // Price is current capacity * price (Upgrade adds 25 to capacity)
 			fishingRod: 15000,
 			treasure: 50000,
 			pufferfish: 3000,
@@ -57,24 +57,24 @@ module.exports = class RagnarokClient extends Client {
 			// Farming with tools prices
 			farmPlotFirst: 10,
 			farmPlotLimit: 1000,
-			farmPlotPrice: 50, // Price is current capacity * price (Upgrade adds 25 to capacity)
+			farmPlotPrice: 750, // Price is current capacity * price (Upgrade adds 25 to capacity)
 			freeFarmLimit: 10,
 			farmingTools: 15000,
 			farmBagFirst: 50, // Inital bag purchase
 			farmBagLimit: 10000, // Max upgrade possible
-			farmBagPrice: 20, // Price is current capacity * price (Upgrade adds 25 to capacity)
+			farmBagPrice: 300, // Price is current capacity * price (Upgrade adds 25 to capacity)
 			goldBar: 25000,
-			corn: 2500,
-			wheat: 1000,
-			potatoes: 330,
-			tomatoes: 100,
+			corn: 1000,
+			wheat: 800,
+			potatoes: 600,
+			tomatoes: 400,
 			// Planting Times
 			cornPlant: 600000, // 10 minutes
 			wheatPlant: 450000, // 7 min 30
 			potatoPlant: 210000, // 3 min 30
 			tomatoPlant: 90000, // 1 min 30
 			// Decay rate
-			decayRate: 0.001,
+			decayRate: 0.02,
 			// Farming without tools prices
 			goldNugget: 15000,
 			barley: 1200,
@@ -87,7 +87,7 @@ module.exports = class RagnarokClient extends Client {
 			// Seed prices
 			seedBagFirst: 50, // Inital bag purchase
 			seedBagLimit: 1000, // Max upgrade possible
-			seedBagPrice: 10, // Price is current capacity * price (Upgrade adds 25 to capacity)
+			seedBagPrice: 150, // Price is current capacity * price (Upgrade adds 25 to capacity)
 			cornSeed: 5000, // You get 10 per pack
 			wheatSeed: 2000,
 			potatoSeed: 660,

@@ -182,28 +182,28 @@ module.exports = class extends Command {
 				if (foundBoostList.seedBag) {
 					if (Number(foundBoostList.seedBag) < Number(seedBagMax)) {
 						const upgradeSeedBag = foundBoostList.seedBag * seedBagPrice;
-						arr.push(`\u3000 \`${prefix}shop upgrade seedbag\` - <:coin:706659001164628008> \`${upgradeSeedBag.toLocaleString('en')}\` Upgrade by 25, current capacity: \`${Number(currentTotalSeeds).toLocaleString('en')}\`/\`${Number(foundBoostList.seedBag).toLocaleString('en')}\``);
+						arr.push(`\u3000 \`${prefix}shop upgrade seedbag\` - <:coin:706659001164628008> \`${upgradeSeedBag.toLocaleString('en')}\` Upgrade by 15, current capacity: \`${Number(currentTotalSeeds).toLocaleString('en')}\`/\`${Number(foundBoostList.seedBag).toLocaleString('en')}\``);
 					}
 				}
 
 				if (foundBoostList.fishBag) {
 					if (Number(foundBoostList.fishBag) < Number(fishBagMax)) {
 						const upgradeFishBag = foundBoostList.fishBag * fishBagPrice;
-						arr.push(`\u3000 \`${prefix}shop upgrade fishbag\` - <:coin:706659001164628008> \`${upgradeFishBag.toLocaleString('en')}\` Upgrade by 25, current capacity: \`${Number(currentTotalFish).toLocaleString('en')}\`/\`${Number(foundBoostList.fishBag).toLocaleString('en')}\``);
+						arr.push(`\u3000 \`${prefix}shop upgrade fishbag\` - <:coin:706659001164628008> \`${upgradeFishBag.toLocaleString('en')}\` Upgrade by 15, current capacity: \`${Number(currentTotalFish).toLocaleString('en')}\`/\`${Number(foundBoostList.fishBag).toLocaleString('en')}\``);
 					}
 				}
 
 				if (foundBoostList.farmBag) {
 					if (Number(foundBoostList.farmBag) < Number(farmBagMax)) {
 						const upgradeFarmBag = foundBoostList.farmBag * farmBagPrice;
-						arr.push(`\u3000 \`${prefix}shop upgrade farmbag\` - <:coin:706659001164628008> \`${upgradeFarmBag.toLocaleString('en')}\` Upgrade by 25, current capacity: \`${Number(currentTotalFarm).toLocaleString('en')}\`/\`${Number(foundBoostList.farmBag).toLocaleString('en')}\``);
+						arr.push(`\u3000 \`${prefix}shop upgrade farmbag\` - <:coin:706659001164628008> \`${upgradeFarmBag.toLocaleString('en')}\` Upgrade by 15, current capacity: \`${Number(currentTotalFarm).toLocaleString('en')}\`/\`${Number(foundBoostList.farmBag).toLocaleString('en')}\``);
 					}
 				}
 
 				if (foundBoostList.farmPlot) {
 					if (Number(foundBoostList.farmPlot) < Number(farmPlotMax)) {
 						const upgradeFarmPlot = foundBoostList.farmPlot * farmPlotPrice;
-						arr.push(`\u3000 \`${prefix}shop upgrade plot\` - <:coin:706659001164628008> \`${upgradeFarmPlot.toLocaleString('en')}\` Upgrade by 25, current capacity: \`${Number(currentTotalPlot).toLocaleString('en')}\`/\`${Number(foundBoostList.farmPlot).toLocaleString('en')}\``);
+						arr.push(`\u3000 \`${prefix}shop upgrade plot\` - <:coin:706659001164628008> \`${upgradeFarmPlot.toLocaleString('en')}\` Upgrade by 15, current capacity: \`${Number(currentTotalPlot).toLocaleString('en')}\`/\`${Number(foundBoostList.farmPlot).toLocaleString('en')}\``);
 					}
 				}
 
@@ -244,10 +244,10 @@ module.exports = class extends Command {
 					return;
 				}
 
-				if (balance.bank < foundBoostList.seedBag * seedBagPrice) {
+				if (balance.bank < foundBoostList.seedBag * seedBagPrice * 3) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const notEnough = foundBoostList.seedBag * seedBagPrice - Number(balance.bank);
+					const notEnough = foundBoostList.seedBag * seedBagPrice * 3 - Number(balance.bank);
 
 					const embed = new MessageEmbed()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
@@ -258,12 +258,12 @@ module.exports = class extends Command {
 					return;
 				}
 
-				balance.bank = Number(balance.bank) - foundBoostList.seedBag * seedBagPrice;
-				balance.total = Number(balance.total) - foundBoostList.seedBag * seedBagPrice;
+				balance.bank = Number(balance.bank) - foundBoostList.seedBag * seedBagPrice * 3;
+				balance.total = Number(balance.total) - foundBoostList.seedBag * seedBagPrice * 3;
 
 				this.client.setBalance.run(balance);
 
-				const calc = Number(foundBoostList.seedBag) + Number(25);
+				const calc = Number(foundBoostList.seedBag) + Number(15);
 				foundBoostList.seedBag = calc.toString();
 
 				await db.prepare('UPDATE balance SET boosts = (@boosts) WHERE id = (@id);').run({
@@ -276,7 +276,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://SeedBag.png')
 					.addField(`**${this.client.user.username} - Shop - Seed Bag**`,
-						`**◎ Success:** You have upgraded your seed bag, your new limit is \`${Number(foundBoostList.seedBag)}\`!`);
+						`**◎ Success:** You have upgraded your seed bag for <:coin:706659001164628008> \`${foundBoostList.seedBag * seedBagPrice * 3}\`, your new limit is \`${Number(foundBoostList.seedBag)}\`!`);
 				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/SeedBag.png'] });
 				return;
 			}
@@ -306,10 +306,10 @@ module.exports = class extends Command {
 					return;
 				}
 
-				if (balance.bank < foundBoostList.fishBag * fishBagPrice) {
+				if (balance.bank < foundBoostList.fishBag * fishBagPrice * 3) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const notEnough = foundBoostList.fishBag * fishBagPrice - Number(balance.bank);
+					const notEnough = foundBoostList.fishBag * fishBagPrice * 3 - Number(balance.bank);
 
 					const embed = new MessageEmbed()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
@@ -320,12 +320,12 @@ module.exports = class extends Command {
 					return;
 				}
 
-				balance.bank = Number(balance.bank) - foundBoostList.fishBag * fishBagPrice;
-				balance.total = Number(balance.total) - foundBoostList.fishBag * fishBagPrice;
+				balance.bank = Number(balance.bank) - foundBoostList.fishBag * fishBagPrice * 3;
+				balance.total = Number(balance.total) - foundBoostList.fishBag * fishBagPrice * 3;
 
 				this.client.setBalance.run(balance);
 
-				const calc = Number(foundBoostList.fishBag) + Number(25);
+				const calc = Number(foundBoostList.fishBag) + Number(15);
 				foundBoostList.fishBag = calc.toString();
 
 				await db.prepare('UPDATE balance SET boosts = (@boosts) WHERE id = (@id);').run({
@@ -338,7 +338,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://FishBag.png')
 					.addField(`**${this.client.user.username} - Shop - Fish Bag**`,
-						`**◎ Success:** You have upgraded your fish bag, your new limit is \`${Number(foundBoostList.fishBag)}\`!`);
+						`**◎ Success:** You have upgraded your fish bag <:coin:706659001164628008> \`${foundBoostList.fishBag * fishBagPrice * 3}\`, your new limit is \`${Number(foundBoostList.fishBag)}\`!`);
 				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/FishBag.png'] });
 				return;
 			}
@@ -368,7 +368,7 @@ module.exports = class extends Command {
 					return;
 				}
 
-				if (balance.bank < foundBoostList.farmBag * farmBagPrice) {
+				if (balance.bank < foundBoostList.farmBag * farmBagPrice * 3) {
 					this.client.utils.messageDelete(message, 10000);
 
 					const notEnough = foundBoostList.farmBag * farmBagPrice - Number(balance.bank);
@@ -382,12 +382,12 @@ module.exports = class extends Command {
 					return;
 				}
 
-				balance.bank = Number(balance.bank) - foundBoostList.farmBag * farmBagPrice;
-				balance.total = Number(balance.total) - foundBoostList.farmBag * farmBagPrice;
+				balance.bank = Number(balance.bank) - foundBoostList.farmBag * farmBagPrice * 3;
+				balance.total = Number(balance.total) - foundBoostList.farmBag * farmBagPrice * 3;
 
 				this.client.setBalance.run(balance);
 
-				const calc = Number(foundBoostList.farmBag) + Number(25);
+				const calc = Number(foundBoostList.farmBag) + Number(15);
 				foundBoostList.farmBag = calc.toString();
 
 				await db.prepare('UPDATE balance SET boosts = (@boosts) WHERE id = (@id);').run({
@@ -400,7 +400,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://FarmBag.png')
 					.addField(`**${this.client.user.username} - Shop - Farm Bag**`,
-						`**◎ Success:** You have upgraded your farm bag, your new limit is \`${Number(foundBoostList.farmBag)}\`!`);
+						`**◎ Success:** You have upgraded your farm bag <:coin:706659001164628008> \`${foundBoostList.farmBag * farmBagPrice * 3}\`, your new limit is \`${Number(foundBoostList.farmBag)}\`!`);
 				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/FarmBag.png'] });
 				return;
 			}
@@ -430,7 +430,7 @@ module.exports = class extends Command {
 					return;
 				}
 
-				if (balance.bank < foundBoostList.farmPlot * farmPlotPrice) {
+				if (balance.bank < foundBoostList.farmPlot * farmPlotPrice * 3) {
 					this.client.utils.messageDelete(message, 10000);
 
 					const notEnough = foundBoostList.farmPlot * farmPlotPrice - Number(balance.bank);
@@ -444,12 +444,12 @@ module.exports = class extends Command {
 					return;
 				}
 
-				balance.bank = Number(balance.bank) - foundBoostList.farmPlot * farmPlotPrice;
-				balance.total = Number(balance.total) - foundBoostList.farmPlot * farmPlotPrice;
+				balance.bank = Number(balance.bank) - foundBoostList.farmPlot * farmPlotPrice * 3;
+				balance.total = Number(balance.total) - foundBoostList.farmPlot * farmPlotPrice * 3;
 
 				this.client.setBalance.run(balance);
 
-				const calc = Number(foundBoostList.farmPlot) + Number(25);
+				const calc = Number(foundBoostList.farmPlot) + Number(15);
 				foundBoostList.farmPlot = calc.toString();
 
 				await db.prepare('UPDATE balance SET boosts = (@boosts) WHERE id = (@id);').run({
@@ -462,7 +462,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://FarmPlot.png')
 					.addField(`**${this.client.user.username} - Shop - Farm Plot**`,
-						`**◎ Success:** You have upgraded your farm plot, your new limit is \`${Number(foundBoostList.farmPlot)}\`!`);
+						`**◎ Success:** You have upgraded your farm plot <:coin:706659001164628008> \`${foundBoostList.farmPlot * farmPlotPrice * 3}\`, your new limit is \`${Number(foundBoostList.farmPlot)}\`!`);
 				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/FarmPlot.png'] });
 				return;
 			}
