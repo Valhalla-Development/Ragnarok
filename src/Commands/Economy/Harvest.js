@@ -81,6 +81,8 @@ module.exports = class extends Command {
 			}
 
 			if (foundPlotList.length) {
+				this.client.utils.messageDelete(message, 0);
+
 				const arr = [];
 
 				const Embeds = [];
@@ -171,6 +173,8 @@ module.exports = class extends Command {
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
+
+			this.client.utils.messageDelete(message, 0);
 
 			let totalToAdd = 0;
 			let sellPrice;
