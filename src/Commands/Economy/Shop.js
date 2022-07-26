@@ -371,7 +371,7 @@ module.exports = class extends Command {
 				if (balance.bank < foundBoostList.farmBag * farmBagPrice * 3) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const notEnough = foundBoostList.farmBag * farmBagPrice - Number(balance.bank);
+					const notEnough = foundBoostList.farmBag * farmBagPrice * 3 - Number(balance.bank);
 
 					const embed = new MessageEmbed()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
@@ -433,7 +433,7 @@ module.exports = class extends Command {
 				if (balance.bank < foundBoostList.farmPlot * farmPlotPrice * 3) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const notEnough = foundBoostList.farmPlot * farmPlotPrice - Number(balance.bank);
+					const notEnough = foundBoostList.farmPlot * farmPlotPrice * 3 - Number(balance.bank);
 
 					const embed = new MessageEmbed()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
