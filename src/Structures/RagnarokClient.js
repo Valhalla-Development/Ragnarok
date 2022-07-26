@@ -64,10 +64,10 @@ module.exports = class RagnarokClient extends Client {
 			farmBagLimit: 10000, // Max upgrade possible
 			farmBagPrice: 300, // Price is current capacity * price (Upgrade adds 25 to capacity)
 			goldBar: 25000,
-			corn: 1000,
-			wheat: 800,
-			potatoes: 600,
-			tomatoes: 400,
+			corn: 650,
+			wheat: 500,
+			potatoes: 400,
+			tomatoes: 350,
 			// Planting Times
 			cornPlant: 600000, // 10 minutes
 			wheatPlant: 450000, // 7 min 30
@@ -88,10 +88,10 @@ module.exports = class RagnarokClient extends Client {
 			seedBagFirst: 50, // Inital bag purchase
 			seedBagLimit: 1000, // Max upgrade possible
 			seedBagPrice: 150, // Price is current capacity * price (Upgrade adds 25 to capacity)
-			cornSeed: 5000, // You get 10 per pack
-			wheatSeed: 2000,
-			potatoSeed: 660,
-			tomatoSeed: 200,
+			cornSeed: 4000, // You get 10 per pack
+			wheatSeed: 3300,
+			potatoSeed: 2900,
+			tomatoSeed: 2800,
 			// Beg timeout
 			begTimer: 120000
 		};
