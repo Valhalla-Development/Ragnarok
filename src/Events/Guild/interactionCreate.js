@@ -94,6 +94,7 @@ module.exports = class extends Event {
 				const attachment = await discordTranscripts.createTranscript(channel, {
 					limit: -1,
 					returnBuffer: true,
+					saveImages: true,
 					fileName: staticFileName
 				});
 				const buffered = Buffer.from(attachment).toString();
@@ -151,7 +152,8 @@ module.exports = class extends Event {
 							{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${interaction.user}`, inline: true },
 							{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
 							{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
-							{ name: `\u200b`, value: `\u200b`, inline: true });
+							{ name: `\u200b`, value: `\u200b`, inline: true })
+						.setTimestamp();
 					user.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] }).then(() => {
 						// eslint-disable-next-line arrow-body-style
 					}).catch(() => {
@@ -177,7 +179,8 @@ module.exports = class extends Event {
 						{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${interaction.user}`, inline: true },
 						{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
 						{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
-						{ name: `\u200b`, value: `\u200b`, inline: true });
+						{ name: `\u200b`, value: `\u200b`, inline: true })
+					.setTimestamp();
 				logchan.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] });
 			}
 
@@ -394,7 +397,8 @@ module.exports = class extends Event {
 						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${interaction.guild.id}/${c.id})`, inline: true },
 							{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${interaction.user}`, inline: true },
 							{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
-							{ name: `🖋️ **Reason**`, value: `${reason}`, inline: true });
+							{ name: `🖋️ **Reason**`, value: `${reason}`, inline: true })
+						.setTimestamp();
 					logchan.send({ embeds: [logEmbed] });
 				}
 			}).catch(console.error);

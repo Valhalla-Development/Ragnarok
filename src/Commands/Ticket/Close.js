@@ -148,6 +148,7 @@ module.exports = class extends Command {
 					const attachment = await discordTranscripts.createTranscript(channel, {
 						limit: -1,
 						returnBuffer: true,
+						saveImages: true,
 						fileName: staticFileName
 					});
 					const buffered = Buffer.from(attachment).toString();
