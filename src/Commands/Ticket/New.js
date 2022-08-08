@@ -82,7 +82,7 @@ module.exports = class extends Command {
 
 		// Make Ticket
 		const id = db.prepare(`SELECT category FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
-		const reason = args.slice(0).join(' ') || 'No reason provided.';
+		const reason = args.slice(0).join(' ') || '';
 		const randomString = nanoid();
 		if (!id) {
 			const newTicket = db.prepare('INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);');
@@ -134,8 +134,8 @@ module.exports = class extends Command {
 				message.channel.send({ embeds: [newTicketE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.setTitle('New Ticket')
-					.setDescription(`Hello \`${message.author.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
+					.setTitle(`New Ticket`)
+					.setDescription(`Welcome to our support system ${message.author}.\nPlease hold tight and a support member will be with you shortly.${reason ? `\n\n\nYou opened this ticket for the following reason:\n\`\`\`${reason}\`\`\`` : '\n\n\n**Please specify a reason for opening this ticket.**'}`);
 				c.send({ embeds: [embed] });
 				// And display any errors in the console.
 				const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
@@ -254,7 +254,7 @@ module.exports = class extends Command {
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setTitle('New Ticket')
-					.setDescription(`Hello \`${message.author.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. \n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
+					.setDescription(`Welcome to our support system ${message.author}.\nPlease hold tight and a support member will be with you shortly.${reason ? `\n\n\nYou opened this ticket for the following reason:\n\`\`\`${reason}\`\`\`` : '\n\n\n**Please specify a reason for opening this ticket.**'}`);
 				c.send({ components: [row], embeds: [embed] });
 				// And display any errors in the console.
 				const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();

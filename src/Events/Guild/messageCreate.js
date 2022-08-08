@@ -283,7 +283,7 @@ module.exports = class extends Event {
 								const newTicketEm = new MessageEmbed()
 									.setColor(this.client.utils.color(fetchGuild.me.displayHexColor))
 									.setTitle('New Ticket')
-									.setDescription(`Hello \`${message.author.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
+									.setDescription(`Welcome to our support system ${message.author}.\nPlease hold tight and a support member will be with you shortly.${reason ? `\n\n\nYou opened this ticket for the following reason:\n\`\`\`${reason}\`\`\`` : '\n\n\n**Please specify a reason for opening this ticket.**'}`);
 								c.send({ embeds: [newTicketEm] });
 								// And display any errors in the console.
 								const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${fetchGuild.id};`).get();
@@ -390,7 +390,7 @@ module.exports = class extends Event {
 								const embedTicket = new MessageEmbed()
 									.setColor(this.client.utils.color(fetchGuild.me.displayHexColor))
 									.setTitle('New Ticket')
-									.setDescription(`Hello \`${message.author.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. \n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
+									.setDescription(`Welcome to our support system ${message.author}.\nPlease hold tight and a support member will be with you shortly.${reason ? `\n\n\nYou opened this ticket for the following reason:\n\`\`\`${reason}\`\`\`` : '\n\n\n**Please specify a reason for opening this ticket.**'}`);
 								c.send({ components: [row], embeds: [embedTicket] });
 								// And display any errors in the console.
 								const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${fetchGuild.id};`).get();

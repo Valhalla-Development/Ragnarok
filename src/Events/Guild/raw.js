@@ -114,7 +114,7 @@ module.exports = class extends Event {
 
 									// Make Ticket
 									const id = db.prepare(`SELECT category FROM ticketConfig WHERE guildid = ${guild.id};`).get();
-									const reason = 'No reason provided.';
+									const reason = '';
 									const randomString = nanoid();
 									const nickName = guild.members.cache.get(member.id).displayName;
 
@@ -195,7 +195,7 @@ module.exports = class extends Event {
 										const embed = new MessageEmbed()
 											.setColor(grabClient.utils.color(guild.me.displayHexColor))
 											.setTitle('New Ticket')
-											.setDescription(`Hello \`${member.user.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
+											.setDescription(`Welcome to our support system ${member}.\nPlease hold tight and a support member will be with you shortly.${reason ? `\n\n\nYou opened this ticket for the following reason:\n\`\`\`${reason}\`\`\`` : '\n\n\n**Please specify a reason for opening this ticket.**'}`);
 										c.send({ components: [row], embeds: [embed] });
 
 										if (id) {
