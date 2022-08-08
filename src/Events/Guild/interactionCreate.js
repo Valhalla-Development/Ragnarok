@@ -1,16 +1,152 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed, Permissions, MessageButton, MessageActionRow } = require('discord.js');
+const { MessageEmbed, Permissions, MessageButton, MessageActionRow, Modal, TextInputComponent } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 const discordTranscripts = require('discord-html-transcripts');
 const fetchPkg = require('node-fetch-cjs');
-const { Modal, TextInputComponent, showModal } = require('discord-modals');
 
 module.exports = class extends Event {
 
 	async run(interaction) {
+		if (interaction.isModalSubmit()) {
+			if (interaction.customId === `modal-${interaction.channelId}`) {
+				const fetchTick = db.prepare(`SELECT * FROM tickets`).all();
+				if (!fetchTick) return;
+
+				// Filter fetchTick where chanid === interaction.channel.id
+				const ticket = fetchTick.find(t => t.chanid === interaction.channelId);
+				if (!ticket) return;
+
+				const firstResponse = interaction.fields.getTextInputValue(`textinput-${interaction.channelId}`);
+
+				await interaction.deferReply({ ephemeral: true });
+				const embed = new MessageEmbed()
+					.setColor(this.client.utils.color(interaction.guild.me.displayHexColor))
+					.addField(`**${this.client.user.username} - Ticket**`,
+						`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.`);
+				interaction.followUp({ embeds: [embed] });
+
+				// Generate random string
+				const random = (length = 40) => {
+				// Declare all characters
+					const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+					// Pick characers randomly
+					let str = '';
+					for (let i = 0; i < length; i++) {
+						str += chars.charAt(Math.floor(Math.random() * chars.length));
+					}
+
+					return str;
+				};
+
+				const staticFileNameGen = random();
+				const staticFileName = `${interaction.channel.name}-_-${staticFileNameGen}.html`;
+				const { channel } = interaction;
+
+				channel.name = staticFileName;
+
+				const fixedName = interaction.channel.name.substr(0, interaction.channel.name.indexOf('-_-'));
+
+				const attachment = await discordTranscripts.createTranscript(channel, {
+					limit: -1,
+					returnBuffer: true,
+					saveImages: true,
+					fileName: staticFileName
+				});
+
+				const buffered = Buffer.from(attachment.attachment).toString();
+
+				const authorizationSecret = 'pmzg!SD#9H8E#PzGMhe5dr&Qo5EQReLy@cqf87QB';
+
+				const response = await fetchPkg.default('https://www.ragnarokbot.com/index.php', {
+					method: 'POST',
+					body: buffered,
+					headers: { 'X-Auth': authorizationSecret }
+				});
+
+				const data = await response.status;
+
+				let transLinkText;
+				let openTranscript;
+				let transcriptRow;
+
+				if (data !== 200) {
+					transLinkText = `\`Unavailable\``;
+				} else {
+					transLinkText = `[**Click Here**](https://www.ragnarokbot.com/transcripts/${staticFileName})`;
+					// Transcript button
+					openTranscript = new MessageButton()
+						.setStyle('LINK')
+						.setEmoji('<:ticketTranscript:998229979609440266>')
+						.setLabel('View Transcript')
+						.setURL(`https://www.ragnarokbot.com/transcripts/${staticFileName}`);
+
+					transcriptRow = new MessageActionRow()
+						.addComponents(openTranscript);
+				}
+
+				if (interaction.channel) {
+					channel.name = fixedName;
+					interaction.channel.delete();
+				}
+
+				const channelArgs = interaction.channel.name.split('-');
+
+				const deleteTicket = db.prepare(`DELETE FROM tickets WHERE guildid = ${interaction.guild.id} AND ticketid = (@ticketid)`);
+				deleteTicket.run({
+					ticketid: channelArgs[channelArgs.length - 1]
+				});
+
+				const epoch = Math.floor(new Date().getTime() / 1000);
+
+				const user = this.client.users.cache.find((a) => a.id === ticket.authorid);
+				if (user) {
+					const logEmbed = new MessageEmbed()
+						.setColor(this.client.utils.color(interaction.guild.me.displayHexColor))
+						.setAuthor({ name: 'Ticket Closed', iconURL: interaction.guild.iconURL({ dynamic: true }) })
+						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+							{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
+							{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${interaction.user}`, inline: true },
+							{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
+							{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
+							{ name: `\u200b`, value: `\u200b`, inline: true },
+							{ name: `🖋️ **Reason**`, value: `${firstResponse}` })
+						.setTimestamp();
+					user.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] }).then(() => {
+					// eslint-disable-next-line arrow-body-style
+					}).catch(() => {
+						return;
+					});
+				}
+
+				const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${interaction.guild.id};`).get();
+				if (!logget) {
+					return;
+				}
+
+				const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.log);
+				if (!logchan) {
+					return;
+				}
+
+				const logEmbed = new MessageEmbed()
+					.setColor(this.client.utils.color(interaction.guild.me.displayHexColor))
+					.setAuthor({ name: 'Ticket Closed', iconURL: interaction.guild.iconURL({ dynamic: true }) })
+					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+						{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
+						{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${interaction.user}`, inline: true },
+						{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
+						{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
+						{ name: `\u200b`, value: `\u200b`, inline: true },
+						{ name: `🖋️ **Reason**`, value: `${firstResponse}` })
+					.setTimestamp();
+				logchan.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] });
+			}
+		}
+
 		if (!interaction.isButton()) return;
 
 		if (interaction.customId === 'closeTicket' || interaction.customId === 'closeTicketReason') {
@@ -187,19 +323,22 @@ module.exports = class extends Event {
 			if (interaction.customId === 'closeTicketReason') {
 				const modal = new Modal()
 					.setCustomId(`modal-${ticket.chanid}`)
-					.setTitle('Close Ticket')
-					.addComponents(
-						new TextInputComponent()
-							.setCustomId(`textinput-${ticket.chanid}`)
-							.setLabel('Reason')
-							.setStyle('LONG')
-							.setMinLength(4)
-							.setMaxLength(400)
-							.setPlaceholder('Input your reason for closing this ticket')
-							.setRequired(true)
-					);
+					.setTitle('Close Ticket');
 
-				await showModal(modal, {
+				const reasonModal = new TextInputComponent()
+					.setCustomId(`textinput-${ticket.chanid}`)
+					.setLabel('Reason')
+					.setStyle('PARAGRAPH')
+					.setMinLength(4)
+					.setMaxLength(400)
+					.setPlaceholder('Input your reason for closing this ticket')
+					.setRequired(true);
+
+				const firstActionRow = new MessageActionRow().addComponents(reasonModal);
+
+				modal.addComponents(firstActionRow);
+
+				await interaction.showModal(modal, {
 					client: this.client,
 					interaction: interaction
 				});
@@ -291,7 +430,7 @@ module.exports = class extends Event {
 
 			// Make Ticket
 			const id = db.prepare(`SELECT category FROM ticketConfig WHERE guildid = ${guild.id};`).get();
-			const reason = 'No reason provided.';
+			const reason = '';
 			const randomString = nanoid();
 			const nickName = guild.members.cache.get(interaction.user.id).displayName;
 
@@ -377,8 +516,8 @@ module.exports = class extends Event {
 
 				const embed = new MessageEmbed()
 					.setColor(this.client.utils.color(interaction.guild.me.displayHexColor))
-					.setTitle('New Ticket')
-					.setDescription(`Hello \`${interaction.user.tag}\`! Welcome to our support ticketing system. Please hold tight and our administrators will be with you shortly. You can close this ticket at any time using \`-close\`.\n\n\nYou opened this ticket for the reason:\n\`\`\`${reason}\`\`\`\n**NOTE:** If you did not provide a reason, please send your reasoning for opening this ticket now.`);
+					.setTitle(`New Ticket`)
+					.setDescription(`Welcome to our support system ${interaction.user}.\nPlease hold tight and a support member will be with you shortly.${reason ? `\n\n\nYou opened this ticket for the following reason:\n\`\`\`${reason}\`\`\`` : '\n\n\n**Please specify a reason for opening this ticket.**'}`);
 				c.send({ components: [row], embeds: [embed] });
 
 				if (id) {
