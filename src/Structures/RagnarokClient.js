@@ -5,7 +5,6 @@ const Util = require('./Util.js');
 const db = require('quick.db');
 if (!Array.isArray(db.get('giveaways'))) db.set('giveaways', []);
 const { GiveawaysManager } = require('discord-giveaways');
-const discordModals = require('discord-modals');
 
 module.exports = class RagnarokClient extends Client {
 
@@ -22,9 +21,6 @@ module.exports = class RagnarokClient extends Client {
 		this.utils = new Util(this);
 
 		this.owners = options.ownerID;
-
-		// Modals (remove when v13.7 releases)
-		discordModals(this);
 
 		const balancePrice = {
 			// Amount you earn per message & cooldown
