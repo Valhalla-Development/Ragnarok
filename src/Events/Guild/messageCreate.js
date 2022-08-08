@@ -375,12 +375,12 @@ module.exports = class extends Event {
 								message.channel.send({ embeds: [newTicketE] });
 
 								const buttonClose = new MessageButton()
-									.setStyle('SUCCESS')
+									.setStyle('DANGER')
 									.setLabel('🔒 Close')
 									.setCustomId('closeTicket');
 
 								const buttonCloseReason = new MessageButton()
-									.setStyle('SUCCESS')
+									.setStyle('DANGER')
 									.setLabel('🔒 Close With Reason')
 									.setCustomId('closeTicketReason');
 

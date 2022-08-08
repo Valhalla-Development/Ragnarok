@@ -180,12 +180,12 @@ module.exports = class extends Event {
 											ticketid: randomString
 										});
 										const buttonClose = new MessageButton()
-											.setStyle('SUCCESS')
+											.setStyle('DANGER')
 											.setLabel('🔒 Close')
 											.setCustomId('closeTicket');
 
 										const buttonCloseReason = new MessageButton()
-											.setStyle('SUCCESS')
+											.setStyle('DANGER')
 											.setLabel('🔒 Close With Reason')
 											.setCustomId('closeTicketReason');
 
@@ -214,7 +214,7 @@ module.exports = class extends Event {
 												.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${guild.id}/${c.id})`, inline: true },
 													{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${member.user}`, inline: true },
 													{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
-													{ name: `🖋️ **Reason**`, value: `${reason}`, inline: true });
+													{ name: `🖋️ **Reason**`, value: `${reason || 'No reason provided.'}`, inline: true });
 											logchan.send({ embeds: [logEmbed] });
 										}
 									});
