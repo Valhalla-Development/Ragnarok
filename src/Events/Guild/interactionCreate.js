@@ -233,7 +233,7 @@ module.exports = class extends Event {
 					saveImages: true,
 					fileName: staticFileName
 				});
-				const buffered = Buffer.from(attachment).toString();
+				const buffered = Buffer.from(attachment.attachment).toString();
 
 				const authorizationSecret = 'pmzg!SD#9H8E#PzGMhe5dr&Qo5EQReLy@cqf87QB';
 
@@ -502,12 +502,12 @@ module.exports = class extends Event {
 				interaction.reply({ embeds: [newTicketE], ephemeral: true });
 
 				const buttonClose = new MessageButton()
-					.setStyle('SUCCESS')
+					.setStyle('DANGER')
 					.setLabel('🔒 Close')
 					.setCustomId('closeTicket');
 
 				const buttonCloseReason = new MessageButton()
-					.setStyle('SUCCESS')
+					.setStyle('DANGER')
 					.setLabel('🔒 Close With Reason')
 					.setCustomId('closeTicketReason');
 
@@ -536,7 +536,7 @@ module.exports = class extends Event {
 						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${interaction.guild.id}/${c.id})`, inline: true },
 							{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${interaction.user}`, inline: true },
 							{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
-							{ name: `🖋️ **Reason**`, value: `${reason}`, inline: true })
+							{ name: `🖋️ **Reason**`, value: `${reason || 'No reason provided.'}`, inline: true })
 						.setTimestamp();
 					logchan.send({ embeds: [logEmbed] });
 				}
