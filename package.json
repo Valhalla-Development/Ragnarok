@@ -1,6 +1,6 @@
 {
 	"name": "ragnarok",
-	"version": "3.9.4",
+	"version": "3.9.6",
 	"description": "A multi-purpose Discord bot.",
 	"main": "src/index",
 	"repository": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git",
@@ -16,19 +16,18 @@
 		"cron": "^2.1.0",
 		"cryptocurrencies": "^7.0.0",
 		"discord-blackjack": "^4.0.0",
-		"discord-giveaways": "^5.2.2",
-		"discord-html-transcripts": "^2.5.8",
+		"discord-giveaways": "5.2.2",
+		"discord-html-transcripts": "^2.6.0",
 		"discord-image-generation": "^1.4.13",
-		"discord-modals": "^1.3.7",
-		"discord.js": "^13.8.1",
+		"discord.js": "13.9.2",
 		"glob": "^8.0.3",
 		"hastebin.js": "^1.3.2",
 		"imdb-light": "^1.1.5",
-		"mathjs": "^10.6.4",
+		"mathjs": "^11.0.1",
 		"moment": "^2.29.4",
 		"ms": "^2.1.3",
 		"nanoid": "3.3.4",
-		"node-fetch-cjs": "^3.2.8",
+		"node-fetch-cjs": "^3.2.10",
 		"number-abbreviate": "^2.0.0",
 		"number-to-words-en": "^1.2.5",
 		"ordinal": "^1.0.3",
@@ -38,7 +37,7 @@
 		"request": "^2.88.2",
 		"string-progressbar": "^1.0.4",
 		"sudo-minigames": "^1.0.1",
-		"systeminformation": "^5.12.1",
+		"systeminformation": "^5.12.3",
 		"today-word": "^1.0.0",
 		"trakt.tv": "^8.1.1",
 		"twemoji-parser": "^14.0.0",
@@ -47,7 +46,7 @@
 		"url-regex-safe": "^3.0.0"
 	},
 	"devDependencies": {
-		"eslint": "^8.20.0",
+		"eslint": "^8.21.0",
 		"eslint-config-tesseract": "^0.3.0",
 		"prettier": "^2.7.1",
 		"prettier-eslint": "^15.0.1",
@@ -58,7 +57,9 @@
 			"chalk",
 			"nanoid",
 			"pretty-ms",
-			"quick.db"
+			"quick.db",
+			"discord.js",
+			"discord-giveaways"
 		]
 	}
 }
