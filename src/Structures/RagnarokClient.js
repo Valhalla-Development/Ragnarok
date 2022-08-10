@@ -1,6 +1,6 @@
 /* eslint-disable no-inline-comments */
 /* eslint-disable no-mixed-operators */
-const { Client, Collection, Permissions, Intents } = require('discord.js');
+const { Client, Collection, Permissions, GatewayIntentBits, Partials } = require('discord.js');
 const Util = require('./Util.js');
 const db = require('quick.db');
 if (!Array.isArray(db.get('giveaways'))) db.set('giveaways', []);
@@ -9,7 +9,7 @@ const { GiveawaysManager } = require('discord-giveaways');
 module.exports = class RagnarokClient extends Client {
 
 	constructor(options = {}) {
-		super({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_WEBHOOKS, Intents.FLAGS.GUILD_INVITES, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_PRESENCES, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_MESSAGE_TYPING, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS], partials: ['MESSAGE', 'CHANNEL', 'REACTION'] });
+		super({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildBans, GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.GuildIntegrations, GatewayIntentBits.GuildWebhooks, GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildMessageTyping, GatewayIntentBits.DirectMessages, GatewayIntentBits.DirectMessageReactions, GatewayIntentBits.MessageContent], partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message, Partials.Reaction] });
 		this.validate(options);
 
 		this.commands = new Collection();
