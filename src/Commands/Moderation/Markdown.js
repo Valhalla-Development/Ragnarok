@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, Formatters } = require('discord.js');
+const { EmbedBuilder, codeBlock } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 		const extension = args[0].toLowerCase();
 		const sayMessage = args.slice(1).join(' ');
 
-		message.channel.send(Formatters.codeBlock(extension, sayMessage));
+		message.channel.send(codeBlock(extension, sayMessage));
 	}
 
 };

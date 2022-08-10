@@ -3,7 +3,7 @@
 /* eslint-disable no-inline-comments */
 /* eslint-disable no-mixed-operators */
 const Event = require('../../Structures/Event');
-const { EmbedBuilder, PermissionsBitField, Formatters, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, codeBlock, MessageButton, MessageActionRow } = require('discord.js');
 const moment = require('moment');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -176,11 +176,11 @@ module.exports = class extends Event {
 							return;
 						}
 
-						if (!fetchguild.members.me.permissions.has(PermissionsBitField.ManageChannels)) {
+						if (!fetchGuild.members.me.permissions.has(PermissionsBitField.ManageChannels)) {
 							this.client.utils.deletableCheck(m, 0);
 
 							const botPerm = new EmbedBuilder()
-								.setColor(this.client.utils.color(fetchguild.members.me.displayHexColor))
+								.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Mod Mail**`,
 									`**◎ Error:** It seems \`${fetchGuild.name}\` has removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:\nPlease report this within \`${fetchGuild}\` to a server moderator.`);
 							message.reply({ embeds: [botPerm] }).then((d) => this.client.utils.deletableCheck(d, 10000));
@@ -194,7 +194,7 @@ module.exports = class extends Event {
 							this.client.utils.deletableCheck(m, 0);
 
 							const nomodRole = new EmbedBuilder()
-								.setColor(this.client.utils.color(fetchguild.members.me.displayHexColor))
+								.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Mod Mail**`,
 									`**◎ Error:** \`${fetchGuild.name}\` doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nPlease report this within \`${fetchGuild}\` to a server moderator.`);
 							message.reply({ embeds: [nomodRole] }).then((d) => this.client.utils.deletableCheck(d, 10000));
@@ -225,14 +225,14 @@ module.exports = class extends Event {
 							this.client.utils.deletableCheck(m, 0);
 
 							const existTM = new EmbedBuilder()
-								.setColor(this.client.utils.color(fetchguild.members.me.displayHexColor))
+								.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Mod Mail**`,
 									`**◎ Error:** You already have a ticket open in \`${fetchGuild.name}\`!`);
 							message.channel.send({ embeds: [existTM] }).then((d) => this.client.utils.deletableCheck(d, 10000));
 							return;
 						}
 
-						const nickName = fetchguild.members.members.cache.get(message.author.id).displayName;
+						const nickName = fetchGuild.members.members.cache.get(message.author.id).displayName;
 
 						// Make Ticket
 						const id = db.prepare(`SELECT category FROM ticketConfig WHERE guildid = ${fetchGuild.id};`).get();
@@ -276,12 +276,12 @@ module.exports = class extends Event {
 								});
 
 								const newTicketE = new EmbedBuilder()
-									.setColor(this.client.utils.color(fetchguild.members.me.displayHexColor))
+									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
 									.addField(`**${this.client.user.username} - New**`,
 										`**◎ Success:** Your ticket has been created in \`${fetchGuild.name}\`, <#${c.id}>.`);
 								message.reply({ embeds: [newTicketE] });
 								const newTicketEm = new EmbedBuilder()
-									.setColor(this.client.utils.color(fetchguild.members.me.displayHexColor))
+									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
 									.setTitle('New Ticket')
 									.setDescription(`Welcome to our support system ${message.author}.\nPlease hold tight and a support member will be with you shortly.${reason ? `\n\n\nYou opened this ticket for the following reason:\n\`\`\`${reason}\`\`\`` : '\n\n\n**Please specify a reason for opening this ticket.**'}`);
 								c.send({ embeds: [newTicketEm] });
@@ -296,7 +296,7 @@ module.exports = class extends Event {
 								const openEpoch = Math.floor(new Date().getTime() / 1000);
 
 								const logEmbed = new EmbedBuilder()
-									.setColor(this.client.utils.color(fetchguild.members.me.displayHexColor))
+									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
 									.setAuthor({ name: 'Ticket Opened', iconURL: fetchGuild.iconURL({ dynamic: true }) })
 									.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${fetchGuild.id}/${c.id})`, inline: true },
 										{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${message.author}`, inline: true },
@@ -369,7 +369,7 @@ module.exports = class extends Event {
 								});
 								// Send a message saying the ticket has been created.
 								const newTicketE = new EmbedBuilder()
-									.setColor(this.client.utils.color(fetchguild.members.me.displayHexColor))
+									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
 									.addField(`**${this.client.user.username} - New**`,
 										`**◎ Success:** Your ticket has been created in \`${fetchGuild.name}\`, <#${c.id}>.`);
 								message.channel.send({ embeds: [newTicketE] });
@@ -388,7 +388,7 @@ module.exports = class extends Event {
 									.addComponents(buttonClose, buttonCloseReason);
 
 								const embedTicket = new EmbedBuilder()
-									.setColor(this.client.utils.color(fetchguild.members.me.displayHexColor))
+									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
 									.setTitle('New Ticket')
 									.setDescription(`Welcome to our support system ${message.author}.\nPlease hold tight and a support member will be with you shortly.${reason ? `\n\n\nYou opened this ticket for the following reason:\n\`\`\`${reason}\`\`\`` : '\n\n\n**Please specify a reason for opening this ticket.**'}`);
 								c.send({ components: [row], embeds: [embedTicket] });
@@ -404,7 +404,7 @@ module.exports = class extends Event {
 								const openEpoch = Math.floor(new Date().getTime() / 1000);
 
 								const logEmbed = new EmbedBuilder()
-									.setColor(this.client.utils.color(fetchguild.members.me.displayHexColor))
+									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
 									.setAuthor({ name: 'Ticket Opened', iconURL: fetchGuild.iconURL({ dynamic: true }) })
 									.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${fetchGuild.id}/${c.id})`, inline: true },
 										{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${message.author}`, inline: true },
@@ -940,7 +940,7 @@ module.exports = class extends Event {
 
 			if (!oargresult || oargresult === '') {
 				logembed.addField(`Guild: ${message.guild.name} | Date: <t:${nowInSecond}>`,
-					Formatters.codeBlock('kotlin', `'${cmd}' was executed by ${message.author.tag}`));
+					codeBlock('kotlin', `'${cmd}' was executed by ${message.author.tag}`));
 				const LoggingNoArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] '\x1b[92m${cmd}\x1b[0m' was executed by \x1b[31m${message.author.tag}\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
 				this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
 				console.log(LoggingNoArgs);
@@ -950,7 +950,7 @@ module.exports = class extends Event {
 					oargresult;
 
 				logembed.addField(`Guild: ${message.guild.name} | Date: <t:${nowInSecond}>`,
-					Formatters.codeBlock('kotlin', `'${cmd} ${trimmedString}' was executed by ${message.author.tag}`));
+					codeBlock('kotlin', `'${cmd} ${trimmedString}' was executed by ${message.author.tag}`));
 				const LoggingArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] '\x1b[92m${cmd} ${oargresult}\x1b[0m' was executed by \x1b[31m${message.author.tag}\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
 				this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
 				console.log(LoggingArgs);
@@ -981,7 +981,7 @@ module.exports = class extends Event {
 
 		const logembed = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.guild.iconURL() })
-			.setDescription(`**◎ Used** \`${cmd}\` **command in ${message.channel}**\n${Formatters.codeBlock('yaml', `${prefixcommand}${cmd} ${oargresult}`)}`)
+			.setDescription(`**◎ Used** \`${cmd}\` **command in ${message.channel}**\n${codeBlock('yaml', `${prefixcommand}${cmd} ${oargresult}`)}`)
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.setFooter({ text: `ID: ${message.channel.id}` })
 			.setTimestamp();

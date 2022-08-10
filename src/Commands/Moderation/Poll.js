@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, Formatters } = require('discord.js');
+const { EmbedBuilder, codeBlock } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -34,7 +34,7 @@ module.exports = class extends Command {
 		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.setAuthor({ name: 'Poll Created', iconURL: message.guild.iconURL({ dynamic: true }) })
-			.addFields({ name: `**React to Vote**`, value: `${Formatters.codeBlock('text', `${args.join(' ')}`)}` });
+			.addFields({ name: `**React to Vote**`, value: `${codeBlock('text', `${args.join(' ')}`)}` });
 
 		await message.channel.send({ embeds: [embed] }).then((msg) => {
 			msg.react('✅');

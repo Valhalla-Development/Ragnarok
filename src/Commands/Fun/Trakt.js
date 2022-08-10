@@ -2,7 +2,7 @@
 /* eslint-disable handle-callback-err */
 /* eslint-disable camelcase */
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, Formatters } = require('discord.js');
+const { EmbedBuilder, codeBlock } = require('discord.js');
 const request = require('request');
 const Trakt = require('trakt.tv');
 const decode = require('unescape');
@@ -66,7 +66,7 @@ module.exports = class extends Command {
 		) => new EmbedBuilder()
 			.setColor('#EA2027')
 			.setAuthor({ name: `${decode(title)}`, url: link, iconURL: 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png' })
-			.setDescription(`${Formatters.codeBlock('text', `${decode(desc, 'all')}`)}\n**<:trakt:977201291115765820> ${rating}**`)
+			.setDescription(`${codeBlock('text', `${decode(desc, 'all')}`)}\n**<:trakt:977201291115765820> ${rating}**`)
 			.setImage(image);
 
 		const notFound = (searchQuery) => {
