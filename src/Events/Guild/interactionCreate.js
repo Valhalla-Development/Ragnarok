@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { EmbedBuilder, PermissionsBitField, MessageButton, MessageActionRow, Modal, TextInputComponent } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, MessageButton, MessageActionRow, Modal, TextInputComponent, InteractionType } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
@@ -10,7 +10,7 @@ const fetchPkg = require('node-fetch-cjs');
 module.exports = class extends Event {
 
 	async run(interaction) {
-		if (interaction.isModalSubmit()) {
+		if (interaction.type === InteractionType.ModalSubmit) {
 			if (interaction.customId === `modal-${interaction.channelId}`) {
 				const fetchTick = db.prepare(`SELECT * FROM tickets`).all();
 				if (!fetchTick) return;
