@@ -53,7 +53,7 @@ module.exports = class extends Command {
 			.map(role => role.toString())
 			.slice(0, -1);
 		const userFlags = member.user.flags.toArray();
-		if (member.user.bot && !userFlags.includes('VERIFIED_BOT')) userFlags.push('BOT_ACCOUNT');
+		if (member.user.bot && !userFlags.includes('VERIFIED_BOT')) userFlags.push('BOT_ACCOUNT');// TEST THESE
 
 		const presence = [];
 		let time;

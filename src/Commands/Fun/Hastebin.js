@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, Permissions } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const Hastebin = require('hastebin.js');
 const haste = new Hastebin({ url: 'https://pastie.io' });
 const fetch = require('node-fetch-cjs');
@@ -99,7 +99,7 @@ module.exports = class extends Command {
 		const user = message.guild.members.cache.get(message.author.id);
 
 		if (status) {
-			if (user.permissions.has(Permissions.FLAGS.MANAGE_GUILD) || user.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+			if (user.permissions.has(PermissionsBitField.ManageGuild) || user.permissions.has(PermissionsBitField.Administrator)) {
 				const matches = text.match(urlRegexSafe());
 				cnt = text.replace(matches, ' || Discord Link Removed By Server Config. If this is a mistake, please contact a server administrator. || ');
 			} else {

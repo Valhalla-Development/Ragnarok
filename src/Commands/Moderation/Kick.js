@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, Permissions } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -60,7 +60,7 @@ module.exports = class extends Command {
 		}
 
 		// Check if user is kickable
-		if (user.permissions.has(Permissions.FLAGS.MANAGE_GUILD) || user.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || !user.kickable) {
+		if (user.permissions.has(PermissionsBitField.ManageGuild) || user.permissions.has(PermissionsBitField.Administrator) || !user.kickable) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()

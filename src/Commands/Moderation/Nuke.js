@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, Permissions } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -27,7 +27,7 @@ module.exports = class extends Command {
 
 		const user = message.guild.members.cache.get(message.author.id);
 
-		if (!user.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+		if (!user.permissions.has(PermissionsBitField.ManageChannels)) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()

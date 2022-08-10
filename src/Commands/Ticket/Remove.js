@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, Permissions } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -70,7 +70,7 @@ module.exports = class extends Command {
 
 			const user = message.guild.members.cache.get(rUser.id);
 
-			if (!user.permissionsIn(getChan).has([Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.VIEW_CHANNEL])) {
+			if (!user.permissionsIn(getChan).has([PermissionsBitField.SendMessages, PermissionsBitField.ViewChannel])) {
 				this.client.utils.messageDelete(message, 10000);
 
 				const nouser = new EmbedBuilder()

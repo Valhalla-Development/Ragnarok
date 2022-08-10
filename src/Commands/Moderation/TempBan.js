@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, Permissions } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const ms = require('ms');
@@ -59,7 +59,7 @@ module.exports = class extends Command {
 		}
 
 		// Check if user is bannable
-		if (user.permissions.has(Permissions.FLAGS.MANAGE_GUILD) || user.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || !user.bannable) {
+		if (user.permissions.has(PermissionsBitField.ManageGuild) || user.permissions.has(PermissionsBitField.Administrator) || !user.bannable) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()

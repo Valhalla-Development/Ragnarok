@@ -3,7 +3,7 @@ const { promisify } = require('util');
 const glob = promisify(require('glob'));
 const Command = require('./Command.js');
 const Event = require('./Event.js');
-const { Permissions } = require('discord.js');
+const { PermissionsBitField } = require('discord.js');
 
 module.exports = class Util {
 
@@ -49,7 +49,7 @@ module.exports = class Util {
 	}
 
 	messageDelete(message, time) {
-		if (message.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+		if (message.member.guild.me.permissions.has(PermissionsBitField.ManageMessages)) {
 			setTimeout(() => {
 				if (message && message.deletable) {
 					message.delete();
