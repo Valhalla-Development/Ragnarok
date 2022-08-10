@@ -26,7 +26,7 @@ module.exports = class extends Command {
 				message: message,
 				embed: {
 					title: 'Calculator | Ragnarok',
-					color: this.client.utils.color(message.guild.me.displayHexColor),
+					color: this.client.utils.color(message.guild.members.me.displayHexColor),
 					footer: ' ',
 					timestamp: false
 				},
@@ -41,7 +41,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const incorrectFormat = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Calculation**`,
 					`**◎ Error:** Please input a calculation! Example: \`${prefix}calc 1+1\`\n\nAlternatively, you can run \`${prefix}calc easy\``);
 			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -55,7 +55,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const invalidInput = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Calculation**`,
 					`**◎ Error:** Please input a valid calculation!`);
 			message.channel.send({ embeds: [invalidInput] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -63,7 +63,7 @@ module.exports = class extends Command {
 		}
 
 		const embed = new EmbedBuilder()
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Calculation**`,
 				`**◎ Input:** \`\`\`js\n${args.join('')}\`\`\`
 				**◎ Output:** \`\`\`js\n${resp}\`\`\``)

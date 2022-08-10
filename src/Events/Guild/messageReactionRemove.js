@@ -40,7 +40,7 @@ module.exports = class extends Event {
 		const starChannel = message.guild.channels.cache.find(channel => channel.id === id.channel);
 
 		// Check if bot has perms to send messages in starboard channel
-		if (!message.guild.me.permissionsIn(starChannel).has('SEND_MESSAGES')) return;
+		if (!message.guild.members.me.permissionsIn(starChannel).has('SEND_MESSAGES')) return;
 
 		if (messageReaction.emoji.name !== '⭐') return;
 

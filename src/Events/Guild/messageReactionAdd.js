@@ -41,9 +41,9 @@ module.exports = class extends Event {
 		const starChannel = message.guild.channels.cache.find(channel => channel.id === id.channel);
 
 		// Check if bot has perms to send messages in starboard channel
-		if (!message.guild.me.permissionsIn(starChannel).has('SEND_MESSAGES')) {
+		if (!message.guild.members.me.permissionsIn(starChannel).has('SEND_MESSAGES')) {
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Starboard**`,
 					`**◎ Error:** I am missing the permission \`SEND_MESSAGES\` in the starboard channel.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -55,7 +55,7 @@ module.exports = class extends Event {
 		if (message.author.id === user.id) {
 			if (message.channel.id === starChannel.id) return;
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Starboard**`,
 					`**◎ Error:** ${message.author}, You cannot star your own messages.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -138,7 +138,7 @@ module.exports = class extends Event {
 			// If the message is empty, we don't allow the user to star the message.
 			if (image === '' && message.content.length < 1) {
 				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Starboard**`,
 						`**◎ Error:** You cannot star an empty messages.`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));

@@ -38,7 +38,7 @@ module.exports = class extends Event {
 						SEND_MESSAGES: true
 					}).catch(console.error);
 					const embed = new EmbedBuilder()
-						.setColor(client.utils.color(member.guild.me.displayHexColor))
+						.setColor(client.utils.color(member.guild.members.me.displayHexColor))
 						.addField(`**${client.user.username} - Ticket**`,
 							`**◎:** \`${member.user.tag}\` has rejoined the server\nThey have been added back to the ticket.`);
 					channel.send({ embeds: [embed] });
@@ -115,7 +115,7 @@ module.exports = class extends Event {
 			ctx.font = '20px Montserrat';
 			ctx.fillStyle = '#ffffff';
 			ctx.textAlign = 'left';
-			ctx.fillText(`${ordinal(member.guild.memberCount - member.guild.members.cache.filter((m) => m.user.bot).size)} member!`, 5, 232);
+			ctx.fillText(`${ordinal(member.guild.members.memberCount - member.guild.members.members.cache.filter((m) => m.user.bot).size)} member!`, 5, 232);
 
 			ctx.beginPath();
 			ctx.arc(350, 150, 85, 0, Math.PI * 2, true);
@@ -158,7 +158,7 @@ module.exports = class extends Event {
 			if (!logs) return;
 
 			const logembed = new EmbedBuilder()
-				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
+				.setColor(grabClient.utils.color(member.guild.members.me.displayHexColor))
 				.setAuthor({ name: `${member.guild.name}`, iconURL: member.user.avatarURL() })
 				.setDescription(`**◎ Member Joined:** ${member.user} - \`${member.user.tag}\` - \`(${member.user.id})\`\n**◎ Account Created:** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)\n**◎ Joined:** <t:${Math.round(member.joinedTimestamp / 1000)}> - (<t:${Math.round(member.joinedTimestamp / 1000)}:R>)`)
 				.setFooter({ text: `ID: ${member.user.id}` })

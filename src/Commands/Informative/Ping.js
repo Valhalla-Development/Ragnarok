@@ -18,10 +18,8 @@ module.exports = class extends Command {
 
 		this.client.utils.deletableCheck(msg, 0);
 
-		console.log(message.guild);
-		return;
 		const embed = new EmbedBuilder()
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.addFields([{ name: `**${this.client.user.username} - Ping**`, value: `**◎ Bot Latency:** \`${latency}ms\`
 				**◎ API Latency:** \`${Math.round(this.client.ws.ping)}ms\`` }]);
 		message.channel.send({ embeds: [embed] });

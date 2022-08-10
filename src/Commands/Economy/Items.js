@@ -26,7 +26,7 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Items**`,
 					`**◎ Error:** You do not have any items.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -198,7 +198,7 @@ module.exports = class extends Command {
 
 		const embed = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Items**`,
 				`**◎ Fish:**
 				\u3000 Trout: Own ${foundItemList.trout === undefined ? `\`0\`` : `\`${foundItemList.trout}\` - <:coin:706659001164628008> \`${troutPrice.toLocaleString('en')}\``}

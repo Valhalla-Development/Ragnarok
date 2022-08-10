@@ -25,7 +25,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Cat**`,
 					`**◎ Error:** Please only run this command once.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -46,7 +46,7 @@ module.exports = class extends Command {
 		const meme = await getMeme();
 
 		const embed = new EmbedBuilder()
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.setAuthor({ name: `${meme[0].title.length >= 256 ? `${meme[0].title.substring(0, 253)}...` : meme[0].title}`, url: `${meme[0].postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
 			.setImage(meme[0].image)
 			.setFooter({ text: `👍 ${meme[0].upvotes}` });
@@ -79,7 +79,7 @@ module.exports = class extends Command {
 		collector.on('collect', async b => {
 			if (b.user.id !== message.author.id) {
 				const wrongUser = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Cat**`,
 						`**◎ Error:** Only the command executor can select an option!`);
 				b.reply({ embeds: [wrongUser], ephemeral: true });
@@ -98,7 +98,7 @@ module.exports = class extends Command {
 				// If there are no more memes, remove the button
 				if (newMemes.length === 0) {
 					const newMeme = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.setAuthor({ name: `${randomMeme.title.length >= 256 ? `${randomMeme.title.substring(0, 253)}...` : randomMeme.title}`, url: `${randomMeme.postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
 						.setImage(randomMeme.image)
 						.setFooter({ text: `👍 ${randomMeme.upvotes}` });
@@ -107,7 +107,7 @@ module.exports = class extends Command {
 				}
 
 				const newMeme = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setAuthor({ name: `${randomMeme.title.length >= 256 ? `${randomMeme.title.substring(0, 253)}...` : randomMeme.title}`, url: `${randomMeme.postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
 					.setImage(randomMeme.image)
 					.setFooter({ text: `👍 ${randomMeme.upvotes}` });

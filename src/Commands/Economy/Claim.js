@@ -32,7 +32,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Claim**`,
 						`**◎ Error:** Your Economy proifle is too new! Please wait another <t:${nowInSecond}:R> before using this command.`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -66,7 +66,7 @@ module.exports = class extends Command {
 
 		if (!args.length) {
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Claim**`,
 					`**◎ Hourly:** \`${Date.now() > balance.hourly ? 'Available!' : ms(balance.hourly - date.getTime(), { long: true })}\`
 					**◎ Daily:** \`${Date.now() > balance.daily ? 'Available!' : ms(balance.daily - date.getTime(), { long: true })}\`
@@ -82,7 +82,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Claim - All**`,
 						`**◎ Error:** You have nothing to claim!`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -111,7 +111,7 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Claim - All**`,
 					`**◎ Success:** You have claimed all available claims! <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` has been credited to your bank.\n Your new total is <:coin:706659001164628008> \`${newTot.toLocaleString('en')}\``);
 			message.channel.send({ embeds: [embed] });
@@ -138,7 +138,7 @@ module.exports = class extends Command {
 
 				const depArg = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Hourly**`,
 						`**◎ Success:** You have received your hourly sum of: <:coin:706659001164628008> \`${hourlyAmount.toLocaleString('en')}\`.`);
 				message.channel.send({ embeds: [depArg] });
@@ -150,7 +150,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Hourly**`,
 						`**◎ Error:** Please wait another \`${ms(balance.hourly - date.getTime(), { long: true })}\` before using this command.`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -178,7 +178,7 @@ module.exports = class extends Command {
 
 				const depArg = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Daily**`,
 						`**◎ Success:** You have received your daily sum of: <:coin:706659001164628008> \`${dailyAmount.toLocaleString('en')}\`.`);
 				message.channel.send({ embeds: [depArg] });
@@ -190,7 +190,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Daily**`,
 						`**◎ Error:** Please wait another \`${ms(balance.daily - date.getTime(), { long: true })}\` before using this command.`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -218,7 +218,7 @@ module.exports = class extends Command {
 
 				const depArg = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Weeky**`,
 						`**◎ Success:** You have received your weekly sum of: <:coin:706659001164628008> \`${weeklyAmount.toLocaleString('en')}\`.`);
 				message.channel.send({ embeds: [depArg] });
@@ -230,7 +230,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Weekly**`,
 						`**◎ Error:** Please wait another \`${Date.now() > balance.weekly ? 'Available!' : ms(balance.weekly - date.getTime(), { long: true })}\` before using this command.`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -258,7 +258,7 @@ module.exports = class extends Command {
 
 				const depArg = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Monthly**`,
 						`**◎ Success:** You have received your monthly sum of: <:coin:706659001164628008> \`${monthlyAmount.toLocaleString('en')}\`.`);
 				message.channel.send({ embeds: [depArg] });
@@ -270,7 +270,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Monthly**`,
 						`**◎ Error:** Please wait another \`${Date.now() > balance.monthly ? 'Available!' : ms(balance.monthly - date.getTime(), { long: true })}\` before using this command.`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));

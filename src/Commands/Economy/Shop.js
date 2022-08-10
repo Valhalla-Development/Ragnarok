@@ -103,7 +103,7 @@ module.exports = class extends Command {
 		if (!args.length) {
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Shop**`,
 					`**◎ Available Commands:**
 					\u3000 \`${prefix}shop buy\`
@@ -211,7 +211,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Shop - Upgrade**`,
 						`**◎ Available Upgrades**
 						${arr.join('\n')}`);
@@ -225,7 +225,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Seed Bag**`,
 							`**◎ Error:** You do not own a seed bag! You will be awarded one once you purchase farming tools.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -237,7 +237,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Seed Bag**`,
 							`**◎ Error:** You have already upgraded your seed bag to the maximum level!`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -251,7 +251,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Seed Bag**`,
 							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -273,7 +273,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://SeedBag.png')
 					.addField(`**${this.client.user.username} - Shop - Seed Bag**`,
 						`**◎ Success:** You have upgraded your seed bag for <:coin:706659001164628008> \`${foundBoostList.seedBag * seedBagPrice * 3}\`, your new limit is \`${Number(foundBoostList.seedBag)}\`!`);
@@ -287,7 +287,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Fish Bag**`,
 							`**◎ Error:** You do not own a fish bag! You will be awarded one once you purchase a fishing rod.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -299,7 +299,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Fish Bag**`,
 							`**◎ Error:** You have already upgraded your fish bag to the maximum level!`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -313,7 +313,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Fish Bag**`,
 							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -335,7 +335,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://FishBag.png')
 					.addField(`**${this.client.user.username} - Shop - Fish Bag**`,
 						`**◎ Success:** You have upgraded your fish bag <:coin:706659001164628008> \`${foundBoostList.fishBag * fishBagPrice * 3}\`, your new limit is \`${Number(foundBoostList.fishBag)}\`!`);
@@ -349,7 +349,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farm Bag**`,
 							`**◎ Error:** You do not own a farm bag! You will be awarded one once you purchase farming tools.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -361,7 +361,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farm Bag**`,
 							`**◎ Error:** You have already upgraded your farm bag to the maximum level!!`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -375,7 +375,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farm Bag**`,
 							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -397,7 +397,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://FarmBag.png')
 					.addField(`**${this.client.user.username} - Shop - Farm Bag**`,
 						`**◎ Success:** You have upgraded your farm bag <:coin:706659001164628008> \`${foundBoostList.farmBag * farmBagPrice * 3}\`, your new limit is \`${Number(foundBoostList.farmBag)}\`!`);
@@ -411,7 +411,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farm Plot**`,
 							`**◎ Error:** You do not own a farm plot! You will be awarded one once you purchase farming tools.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -423,7 +423,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farm Plot**`,
 							`**◎ Error:** You have already upgraded your farm plot to the maximum level!!`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -437,7 +437,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farm Plot**`,
 							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -459,7 +459,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://FarmPlot.png')
 					.addField(`**${this.client.user.username} - Shop - Farm Plot**`,
 						`**◎ Success:** You have upgraded your farm plot <:coin:706659001164628008> \`${foundBoostList.farmPlot * farmPlotPrice * 3}\`, your new limit is \`${Number(foundBoostList.farmPlot)}\`!`);
@@ -472,7 +472,7 @@ module.exports = class extends Command {
 			if (args[1] === undefined) {
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Shop - Buy**`,
 						`**◎ Farming Seeds: (Amount optional)**
 						\u3000 \`${prefix}shop buy corn [amount]\` - 10 Seeds per pack - ${!foundItemList.cornSeeds ? `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\`` : `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\` - \`Owned ${foundItemList.cornSeeds.toLocaleString('en')}\``}
@@ -497,7 +497,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Seeds**`,
 							`**◎ Error:** You must own farming tools before you can buy seeds!\nYou can buy them with \`${prefix}shop buy tools\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -513,7 +513,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Corn Seeds**`,
 							`**◎ Error:** Please enter a valid number.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -525,7 +525,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Corn Seeds**`,
 							`**◎ Error:** Please enter a valid number.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -542,7 +542,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Corn Seeds**`,
 							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -565,7 +565,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Backpack Limit**`,
 							`**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.seedBag}\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -576,7 +576,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://CornSeeds.png')
 					.addField(`**${this.client.user.username} - Shop - Corn Seeds**`,
 						`**◎ Success:** You have bought a pack of Corn Seeds.\nYou now have \`${calc}\` total Corn seeds.\n\nYour current backpack capacity is at \`${Number(currentTotalSeeds) + Number(cornAmt) * 10}\`/\`${foundBoostList.seedBag}\``);
@@ -597,7 +597,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Wheat Seeds**`,
 							`**◎ Error:** Please enter a valid number.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -609,7 +609,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Wheat Seeds**`,
 							`**◎ Error:** Please enter a valid number.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -626,7 +626,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Wheat Seeds**`,
 							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -649,7 +649,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Backpack Limit**`,
 							`**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.seedBag}\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -660,7 +660,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://WheatSeeds.png')
 					.addField(`**${this.client.user.username} - Shop - Wheat Seeds**`,
 						`**◎ Success:** You have bought a pack of Wheat Seeds.\nYou now have \`${calc}\` total Wheat seeds.\n\nYour current backpack capacity is at \`${Number(currentTotalSeeds) + Number(wheatAmt) * 10}\`/\`${foundBoostList.seedBag}\``);
@@ -681,7 +681,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Potato Seeds**`,
 							`**◎ Error:** Please enter a valid number.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -693,7 +693,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Potato Seeds**`,
 							`**◎ Error:** Please enter a valid number.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -710,7 +710,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Potato Seeds**`,
 							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -733,7 +733,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Backpack Limit**`,
 							`**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.seedBag}\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -744,7 +744,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://Potatoe.png')
 					.addField(`**${this.client.user.username} - Shop - Potato Seeds**`,
 						`**◎ Success:** You have bought a pack of Potato Seeds.\nYou now have \`${calc}\` total Potato seeds.\n\nYour current backpack capacity is at \`${Number(currentTotalSeeds) + Number(potatoeAmt) * 10}\`/\`${foundBoostList.seedBag}\``);
@@ -765,7 +765,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Tomato Seeds**`,
 							`**◎ Error:** Please enter a valid number.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -777,7 +777,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Tomato Seeds**`,
 							`**◎ Error:** Please enter a valid number.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -794,7 +794,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Tomato Seeds**`,
 							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -817,7 +817,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Backpack Limit**`,
 							`**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.seedBag}\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -828,7 +828,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://Tomatoes.png')
 					.addField(`**${this.client.user.username} - Shop - Tomato Seeds**`,
 						`**◎ Success:** You have bought a pack of Tomato Seeds.\nYou now have \`${calc}\` total Tomato seeds.\n\nYour current backpack capacity is at \`${Number(currentTotalSeeds) + Number(tomatoeAmt) * 10}\`/\`${foundBoostList.seedBag}\``);
@@ -847,7 +847,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Fishing Rod**`,
 							`**◎ Error:** You already own a fishing rod!`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -861,7 +861,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Fishing Rod**`,
 							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -883,7 +883,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://FishingRod.png')
 					.addField(`**${this.client.user.username} - Shop - Fishing Rod**`,
 						`**◎ Success:** You have bought a fishing rod!\nYou have also been awarded a starter Fish bag, it's capacity is \`${initialFishBag}\``);
@@ -897,7 +897,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farming Tools**`,
 							`**◎ Error:** You already own Farming Tools!`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -911,7 +911,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farming Tools**`,
 							`**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString('en')}\``);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -943,7 +943,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://FarmingTool.png')
 					.addField(`**${this.client.user.username} - Shop - Farming Tools**`,
 						`**◎ Success:** You have bought Farming Tools${foundItemList.barley || foundItemList.spinach || foundItemList.strawberries || foundItemList.lettuce ? `.\nYou had some old crops, I have sold them for you and credited <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` to your account.` : `!`}\n\nYou have also been awarded a starter Farm bag, Plot and Seed bag\nFarm capacity: \`${initalFarmBag}\` Seed capacity: \`${initalSeedBag}\` Plot Capacity: \`${initialFarmPlot}\``);
@@ -995,7 +995,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Items**`,
 						`**◎ Fish:**
 						\u3000 Trout: Own ${foundItemList.trout === undefined ? `\`0\`` : `\`${foundItemList.trout}\` - <:coin:706659001164628008> \`${troutPrice.toLocaleString('en')}\``}
@@ -1026,7 +1026,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Sell All**`,
 							`**◎ Error:** You do not have anything to sell!`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -1102,7 +1102,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Shop - Sell All**`,
 						`**◎ Success:** You have sold \`${itemCount}\` items. You have received <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\`\nYour new total is: <:coin:706659001164628008> \`${totalAdd.toLocaleString('en')}\``);
 				message.channel.send({ embeds: [embed] });
@@ -1115,7 +1115,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Sell Fish**`,
 							`**◎ Error:** You do not have any fish!`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -1153,7 +1153,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Shop - Sell Fish**`,
 						`**◎ Success:** You have sold \`${fishCount}\` fish. You have received <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\`\nYour new total is: <:coin:706659001164628008> \`${totalAdd.toLocaleString('en')}\``);
 				message.channel.send({ embeds: [embed] });
@@ -1166,7 +1166,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Sell Treasure**`,
 							`**◎ Error:** You do not have any treasure!`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -1201,7 +1201,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Shop - Sell Treasure**`,
 						`**◎ Success:** You have sold \`${treasureCount}\` treasure. You have received <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\`\nYour new total is: <:coin:706659001164628008> \`${totalAdd.toLocaleString('en')}\``);
 				message.channel.send({ embeds: [embed] });
@@ -1214,7 +1214,7 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Sell Farm**`,
 							`**◎ Error:** You do not have any farming produce!`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -1268,7 +1268,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Shop - Sell Farm**`,
 						`**◎ Success:** You have sold \`${itemCount}\` farm products. You have received <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\`\nYour new total is: <:coin:706659001164628008> \`${totalAdd.toLocaleString('en')}\``);
 				message.channel.send({ embeds: [embed] });

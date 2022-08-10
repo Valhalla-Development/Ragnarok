@@ -21,7 +21,7 @@ module.exports = class extends Command {
 
 		if (!args[0]) {
 			const invalidInput = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Captcha**`,
 					`**◎ Error:** You must supply some text!`);
 			message.channel.send({ embeds: [invalidInput] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -29,7 +29,7 @@ module.exports = class extends Command {
 		}
 		if (args.length > 5) {
 			const tooLong = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Captcha**`,
 					`**◎ Error:** You can only have 5 words!`);
 			message.channel.send({ embeds: [tooLong] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -41,7 +41,7 @@ module.exports = class extends Command {
 			.splice(1)
 			.join(' ');
 
-		const user = message.guild.members.cache.get(message.mentions.users.first());
+		const user = message.guild.members.members.cache.get(message.mentions.users.first());
 		if (user) return;
 
 		/* (SCRAP THIS FOR NOW: This only works for the first tag, not the second etc.)

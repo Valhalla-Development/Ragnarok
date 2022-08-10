@@ -47,7 +47,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
-		const member = message.mentions.members.first() || message.guild.members.cache.find((a) => a.id === args[0]) || message.member;
+		const member = message.mentions.members.first() || message.guild.members.members.cache.find((a) => a.id === args[0]) || message.member;
 		const roles = member.roles.cache
 			.sort((a, b) => b.position - a.position)
 			.map(role => role.toString())
@@ -100,7 +100,7 @@ module.exports = class extends Command {
 		}
 
 		const embed = new EmbedBuilder()
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 			.setAuthor({ name: `Viewing information for ${member.user.username}`, iconURL: member.user.displayAvatarURL({ dynamic: true }) })
 			.addField(`Member information`,

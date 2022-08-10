@@ -18,7 +18,7 @@ module.exports = class extends Command {
 		const embed = new EmbedBuilder()
 			.setAuthor({ name: `${user.username}'s Avatar`, iconURL: user.avatarURL() })
 			.setImage(user.avatarURL({ dynamic: true, size: 1024 }))
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor));
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor));
 		message.channel.send({ embeds: [embed] });
 	}
 

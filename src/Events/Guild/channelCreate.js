@@ -20,7 +20,7 @@ module.exports = class extends Event {
 		}
 
 		const logembed = new EmbedBuilder()
-			.setColor(this.client.utils.color(channel.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(channel.guild.members.me.displayHexColor))
 			.setAuthor({ name: `${channel.guild.name}`, iconURL: channel.guild.iconURL() })
 			.setTitle('Channel Created')
 			.setFooter({ text: `ID: ${channel.id}` })

@@ -40,7 +40,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Farm**`,
 						`**◎ Error:** Please wait another \`${ms(balance.farmcool - new Date().getTime(), { long: true })}\` before using this command.`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -78,7 +78,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Farm**`,
 						`**◎ Error:** Your farm bag is full! You can sell your produce with \`${prefix}shop sell\``)
 					.setFooter({ text: `Consider purchasing farming tools to increase your limit.` });
@@ -92,7 +92,7 @@ module.exports = class extends Command {
 		if (farmChance < 0.0018) { // 0.18%
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor));
 
 			const goldChance = Math.random();
 			embed.setFooter({ text: `Planting crops yields a larger return! check it out with: ${prefix}plant` });
@@ -130,7 +130,7 @@ module.exports = class extends Command {
 		} else if (farmChance >= 0.0018 && farmChance < 0.0318) { // 3%
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor));
 
 			embed.setFooter({ text: `Planting crops yields a larger return! check it out with: ${prefix}plant` });
 			embed.setThumbnail('attachment://Barley.png');
@@ -163,7 +163,7 @@ module.exports = class extends Command {
 		} else if (farmChance >= 0.0318 && farmChance < 0.0918) { // 6%
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor));
 
 			embed.setThumbnail('attachment://Spinach.png');
 
@@ -197,7 +197,7 @@ module.exports = class extends Command {
 		} else if (farmChance >= 0.0918 && farmChance < 0.3718) { // 28%
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor));
 
 			embed.setThumbnail('attachment://Strawberry.png');
 
@@ -231,7 +231,7 @@ module.exports = class extends Command {
 		} else if (farmChance >= 0.3718 && farmChance < 0.8718) {
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor));
 
 			embed.setThumbnail('attachment://Lettuce.png');
 
@@ -265,7 +265,7 @@ module.exports = class extends Command {
 		} else { // 12.82%
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor));
 
 			embed.setFooter({ text: `Purchase farming tools to never fail farming! - ${prefix}shop buy tools` });
 

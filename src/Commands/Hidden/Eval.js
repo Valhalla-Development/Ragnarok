@@ -26,7 +26,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const incorrectFormat = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Eval**`,
 					`**◎ Error:** Please input some text!`);
 			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -47,14 +47,14 @@ module.exports = class extends Command {
 				.addField(`${this.client.user.username} - Eval`,
 					`**◎ Output:** \`\`\`js\n${this.clean(inspect(evaled, { depth: 0 }))}\n\`\`\`
 					**◎ Type:** \`\`\`ts\n${new Type(evaled).is}\n\`\`\``)
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.setFooter({ text: `Time Taken: ${(((stop[0] * 1e9) + stop[1])) / 1e6}s` });
 
 			if (success.fields[0].value.length > 1024) {
 				await haste.post(this.clean(inspect(evaled, { depth: 1 })), 'js')
 					.then((link) => {
 						const hastEmb = new EmbedBuilder()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Eval**`,
 								`**◎ Link:** ${link}`)
 							.setURL(link)
@@ -70,7 +70,7 @@ module.exports = class extends Command {
 			const error = new EmbedBuilder()
 				.addField(`${this.client.user.username} - Eval`,
 					`**◎ Error:** \`\`\`x1\n${this.clean(err)}\n\`\`\``)
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor));
 			message.channel.send({ embeds: [error] });
 			return;
 		}

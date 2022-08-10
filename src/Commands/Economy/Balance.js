@@ -19,7 +19,7 @@ module.exports = class extends Command {
 	async run(message, args) {
 		let user;
 		try {
-			user = message.mentions.users.size ? message.mentions.members.first().user : args[0] ? message.guild.members.cache.find(usr => usr.displayName === args.join(' ')).user : message.author;
+			user = message.mentions.users.size ? message.mentions.members.first().user : args[0] ? message.guild.members.members.cache.find(usr => usr.displayName === args.join(' ')).user : message.author;
 		} catch {
 			user = null;
 		}
@@ -29,7 +29,7 @@ module.exports = class extends Command {
 
 			const limitE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Balance**`,
 					`**◎ Error:** I could not find the specified user!`);
 			message.channel.send({ embeds: [limitE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -45,7 +45,7 @@ module.exports = class extends Command {
 
 			const limitE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Balance**`,
 					`**◎ Error:** ${user} does not have any balance!`);
 			message.channel.send({ embeds: [limitE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -144,7 +144,7 @@ module.exports = class extends Command {
 			const embed1 = new EmbedBuilder()
 				.setAuthor({ name: `${user.username}'s Balance`, iconURL: user.avatarURL() })
 				.setDescription(`Leaderboard Rank: \`${rankPos}\``)
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addFields({ name: 'Cash', value: `<:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\``, inline: true },
 					{ name: 'Bank', value: `<:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\``, inline: true },
 					{ name: 'Total', value: `<:coin:706659001164628008> \`${balance.total.toLocaleString('en')}\``, inline: true },
@@ -165,7 +165,7 @@ module.exports = class extends Command {
 		const embed1 = new EmbedBuilder()
 			.setAuthor({ name: `${user.username}'s Balance`, iconURL: user.avatarURL() })
 			.setDescription(`Leaderboard Rank: \`${rankPos}\``)
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.addFields({ name: 'Cash', value: `<:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\``, inline: true },
 				{ name: 'Bank', value: `<:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\``, inline: true },
 				{ name: 'Total', value: `<:coin:706659001164628008> \`${balance.total.toLocaleString('en')}\``, inline: true })

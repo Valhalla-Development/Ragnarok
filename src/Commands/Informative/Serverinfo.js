@@ -58,7 +58,7 @@ module.exports = class extends Command {
 			}
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.setAuthor({ name: `Viewing information for ${message.guild.name}`, iconURL: message.guild.iconURL({ dynamic: true }) })
 				.setDescription(`**Server Roles [${roles.length}]**\n${!roleArr.length ? roles.join(', ') : `${roleArr.join(', ')}... ${roles.length - roleArr[0].split(', ').length + 1} more!`}`)
 				.setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) });
@@ -77,7 +77,7 @@ module.exports = class extends Command {
 			}
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.setAuthor({ name: `Viewing information for ${message.guild.name}`, iconURL: message.guild.iconURL({ dynamic: true }) })
 				.setDescription(`**Server Emojis [${emojiMap.length}]**\n${!emojiArr.length ? emojiMap.join(', ') : `${emojiArr.join(', ')}... ${emojiMap.length - emojiArr[0].split(', ').length + 1} more!`}`)
 				.setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) });
@@ -92,7 +92,7 @@ module.exports = class extends Command {
 		const voiceChan = channels.filter(channel => channel.type === 'GUILD_VOICE');
 
 		const embed = new EmbedBuilder()
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.setThumbnail(message.guild.iconURL({ dynamic: true }))
 			.setAuthor({ name: `Viewing information for ${message.guild.name}`, iconURL: message.guild.iconURL({ dynamic: true }) })
 			.addField(`Guild information`,
@@ -101,8 +101,8 @@ module.exports = class extends Command {
 				**◎ 📅 Created At:** <t:${Math.round(message.guild.createdTimestamp / 1000)}> - (<t:${Math.round(message.guild.createdTimestamp / 1000)}:R>)
 				**◎ 🔐 Verification Level:** \`${verificationLevels[message.guild.verificationLevel]}\`
 				**◎ 🔏 MFA Level:** \`${mfa[message.guild.mfaLevel]}\`
-				**◎ 🧑‍🤝‍🧑 Guild Members:** \`${message.guild.memberCount - message.guild.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}\`
-				**◎ 🤖 Guild Bots:** \`${message.guild.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}\`
+				**◎ 🧑‍🤝‍🧑 Guild Members:** \`${message.guild.members.memberCount - message.guild.members.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}\`
+				**◎ 🤖 Guild Bots:** \`${message.guild.members.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}\`
 				\u200b`)
 			.addFields({ name: `**Guild Channels** [${textChan.size + voiceChan.size}]`, value: `<:TextChannel:855591004236546058> | Text: \`${textChan.size}\`\n<:VoiceChannel:855591004300115998> | Voice: \`${voiceChan.size}\``, inline: true },
 				{ name: `**Guild Perks**`, value: `<a:Booster:855593231294267412> | Boost Tier: \`${tiers[message.guild.premiumTier]}\`\n<a:Booster:855593231294267412> | Boosts: \`${message.guild.premiumSubscriptionCount}\``, inline: true },

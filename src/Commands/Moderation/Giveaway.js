@@ -25,7 +25,7 @@ module.exports = class extends Command {
 
 		const usageE = new EmbedBuilder()
 			.setThumbnail(this.client.user.displayAvatarURL())
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Giveaway**`,
 				`**◎ Start:** \`${prefix}giveaway start <time> <winners amount> <prize>\`
 				**◎ Reroll:** \`${prefix}giveaway reroll <message id>\`
@@ -50,7 +50,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const incorrectStart = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** \`${prefix}giveaway start <time> <winners amount> <prize>\``);
 				message.channel.send({ embeds: [incorrectStart] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -60,7 +60,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const incorrectFormat = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** You did not use the correct formatting for the time! The valid options are \`d\`, \`h\`, or \`m\``);
 				message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -70,7 +70,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const valueHigh = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Please input a value lower than 3 months!`);
 				message.channel.send({ embeds: [valueHigh] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -80,7 +80,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const valueLow = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Please input a value higher than 1 minute!`);
 				message.channel.send({ embeds: [valueLow] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -90,7 +90,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const invalidDur = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Please input a valid duration!`);
 				message.channel.send({ embeds: [invalidDur] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -100,7 +100,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const invalidNum = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Please input a valid number!`);
 				message.channel.send({ embeds: [invalidNum] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -129,7 +129,7 @@ module.exports = class extends Command {
 
 			if (!args[1]) {
 				const incorrectReroll = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** \`${prefix}giveaway reroll <message id>\``);
 				message.channel.send({ embeds: [incorrectReroll] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -141,7 +141,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const noGiveaway = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Unable to find a giveaway with ID: \`${args.slice(1).join(' ')}\`.`);
 				message.channel.send({ embeds: [noGiveaway] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -150,7 +150,7 @@ module.exports = class extends Command {
 			this.client.giveawaysManager.reroll(giveaway.messageID)
 				.then(() => {
 					const rerolled = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Giveaway**`,
 							`**◎ Success:** Giveaway rerolled!`);
 					message.channel.send({ embeds: [rerolled] });
@@ -160,7 +160,7 @@ module.exports = class extends Command {
 
 					if (e.startsWith(`Giveaway with message ID ${giveaway.messageID} is not ended.`)) {
 						const notEnded = new EmbedBuilder()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Giveaway**`,
 								`**◎ Error:** This giveaway has not ended!`);
 						message.channel.send({ embeds: [notEnded] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -169,7 +169,7 @@ module.exports = class extends Command {
 
 						console.error(e);
 						const error = new EmbedBuilder()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Giveaway**`,
 								`**◎ Error:** An error occured!`);
 						message.channel.send({ embeds: [error] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -183,7 +183,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const incorrectStop = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** \`${prefix}giveaway stop <message id>\``);
 				message.channel.send({ embeds: [incorrectStop] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -195,7 +195,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const noGiveaway = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Error:** Unable to find a giveaway with ID: \`${args.slice(1).join(' ')}\`.`);
 				message.channel.send({ embeds: [noGiveaway] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -207,7 +207,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const stopped = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Giveaway**`,
 						`**◎ Success:** Giveaway will end in less than ${this.client.giveawaysManager.options.updateCountdownEvery / 1000} seconds.`);
 				message.channel.send({ embeds: [stopped] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -216,7 +216,7 @@ module.exports = class extends Command {
 
 				if (e.startsWith(`Giveaway with message ID ${giveaway.messageID} is already ended.`)) {
 					const alreadyEnded = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Giveaway**`,
 							`**◎ Error:** This giveaway has already ended!`);
 					message.channel.send({ embeds: [alreadyEnded] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -225,7 +225,7 @@ module.exports = class extends Command {
 
 					console.error(e);
 					const error = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Giveaway**`,
 							`**◎ Error:** An error occured!`);
 					message.channel.send({ embeds: [error] }).then((m) => this.client.utils.deletableCheck(m, 10000));

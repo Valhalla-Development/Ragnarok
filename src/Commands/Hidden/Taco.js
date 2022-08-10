@@ -12,7 +12,7 @@ module.exports = class extends Command {
 
 	async run(message) {
 		const embed = new EmbedBuilder()
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.setImage('attachment://taco.png')
 			.addField(`Please take this **taco**. A gift from me, to you!`,
 				`_ _`);

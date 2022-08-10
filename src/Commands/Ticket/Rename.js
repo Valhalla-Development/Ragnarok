@@ -32,7 +32,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const nomodRole = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Rename**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
 			message.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -43,7 +43,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const donthaveRole = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Rename**`,
 					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
 			message.channel.send({ embeds: [donthaveRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -61,7 +61,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const donthaveRole = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Rename**`,
 						`**◎ Error:** Sorry! You must wait at least 10 minutes before changing the channel name again due to an API restriction.`);
 				message.channel.send({ embeds: [donthaveRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -73,7 +73,7 @@ module.exports = class extends Command {
 					this.client.utils.messageDelete(message, 10000);
 
 					const donthaveRole = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Rename**`,
 							`**◎ Error:** Sorry! Please input a valid string.`);
 					message.channel.send({ embeds: [donthaveRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -83,14 +83,14 @@ module.exports = class extends Command {
 					this.client.utils.messageDelete(message, 10000);
 
 					const donthaveRole = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Rename**`,
 							`**◎ Error:** Sorry! Please keep the name length **below** 40 and **above** 4.`);
 					message.channel.send({ embeds: [donthaveRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Rename**`,
 						`**◎ Success:** <@${message.author.id}> renamed ticket to \`${argResult}\``);
 				getChan.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -102,7 +102,7 @@ module.exports = class extends Command {
 				);
 				if (!logchan) return;
 				const loggingembed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Rename**`,
 						`**◎ Success:** <@${message.author.id}> renamed ticket from \`#${getChan.name}\` to <#${getChan.id}>`);
 				logchan.send({ embeds: [loggingembed] });
@@ -123,7 +123,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const donthaveRole = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Rename**`,
 						`**◎ Error:** Sorry! You must wait at least 10 minutes before changing the channel name again due to an API restriction.`);
 				message.channel.send({ embeds: [donthaveRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -136,7 +136,7 @@ module.exports = class extends Command {
 					this.client.utils.messageDelete(message, 10000);
 
 					const donthaveRole = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Rename**`,
 							`**◎ Error:** Sorry! Please input a valid string.`);
 					message.channel.send({ embeds: [donthaveRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -147,7 +147,7 @@ module.exports = class extends Command {
 					this.client.utils.messageDelete(message, 10000);
 
 					const donthaveRole = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Rename**`,
 							`**◎ Error:** Sorry! Please keep the name length **below** 40 and **above** 4.`);
 					message.channel.send({ embeds: [donthaveRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -155,7 +155,7 @@ module.exports = class extends Command {
 				}
 
 				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Rename**`,
 						`**◎ Success:** <@${message.author.id}> renamed ticket from to \`${argResult}\``);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -167,7 +167,7 @@ module.exports = class extends Command {
 				);
 				if (!logchan) return;
 				const loggingembed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Rename**`,
 						`**◎ Success:** <@${message.author.id}> renamed ticket from \`#${message.channel.name}\` to <#${message.channel.id}>`);
 				logchan.send({ embeds: [loggingembed] });
@@ -182,7 +182,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const errEmbed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Rename**`,
 					`**◎ Error:** This ticket could not be found.`);
 			message.channel.send({ embeds: [errEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));

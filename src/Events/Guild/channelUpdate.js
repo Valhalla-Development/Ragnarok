@@ -19,7 +19,7 @@ module.exports = class extends Event {
 		let newNs;
 
 		const logembed = new EmbedBuilder()
-			.setColor(this.client.utils.color(oldChannel.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(oldChannel.guild.members.me.displayHexColor))
 			.setAuthor({ name: `${oldChannel.guild.name}`, iconURL: oldChannel.guild.iconURL() })
 			.setTitle('Channel Updated')
 			.setFooter({ text: `ID: ${newChannel.id}` })

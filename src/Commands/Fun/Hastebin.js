@@ -36,7 +36,7 @@ module.exports = class extends Command {
 			const validExtensions = ['bat', 'c', 'cpp', 'css', 'html', 'ini', 'java', 'js', 'jsx', 'json', 'lua', 'md', 'php', 'py', 'pyc', 'scss', 'sql', 'txt', 'xml', 'yaml'];
 			if (!validExtensions.includes(fileExtension)) {
 				const invalidExt = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Hastebin**`,
 						`**◎ Error:** \`.${fileExtension}\` is not a valid file type!\n\n**Acceptable files:**\n\`${validExtensions.join(', ')}\``);
 				message.channel.send({ embeds: [invalidExt] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -47,7 +47,7 @@ module.exports = class extends Command {
 				.then((body) => {
 					if (!body) {
 						const emptyFile = new EmbedBuilder()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Hastebin**`,
 								`**◎ Error:** You can not upload an empty file!`);
 						message.channel.send({ embeds: [emptyFile] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -56,21 +56,21 @@ module.exports = class extends Command {
 					haste.post(body, extension)
 						.then((res) => {
 							const hastEmb = new EmbedBuilder()
-								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 								.addField(`**${this.client.user.username} - HasteBin**`,
 									`**◎ Link:** ${res}\nPosted By: ${message.author}`)
 								.setURL(res);
 							message.channel.send({ embeds: [hastEmb] });
 						}).catch(() => {
 							const error = new EmbedBuilder()
-								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+								.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 								.addField(`**${this.client.user.username} - HasteBin**`,
 									`**◎ Error:** An error occured!`);
 							message.channel.send({ embeds: [error] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						});
 				}).catch(() => {
 					const error = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - HasteBin**`,
 							`**◎ Error:** An error occured!`);
 					message.channel.send({ embeds: [error] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -78,7 +78,7 @@ module.exports = class extends Command {
 			return;
 		} if (message.attachments.size > 1) {
 			const fileCount = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Hastebin**`,
 					`**◎ Error:** You can only post 1 file at a time!`);
 			message.channel.send({ embeds: [fileCount] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -86,7 +86,7 @@ module.exports = class extends Command {
 		}
 		if (args[0] === undefined) {
 			const error = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Hastebin**`,
 					`**◎ Error:** You must input some text!`);
 			message.channel.send({ embeds: [error] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -96,7 +96,7 @@ module.exports = class extends Command {
 		let cnt;
 
 		const text = args.join(' ');
-		const user = message.guild.members.cache.get(message.author.id);
+		const user = message.guild.members.members.cache.get(message.author.id);
 
 		if (status) {
 			if (user.permissions.has(PermissionsBitField.ManageGuild) || user.permissions.has(PermissionsBitField.Administrator)) {
@@ -112,14 +112,14 @@ module.exports = class extends Command {
 		await haste.post(cnt, 'js')
 			.then((link) => {
 				const hastEmb = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - HasteBin**`,
 						`**◎ Link:** ${link}\nPosted By: ${message.author}`)
 					.setURL(link);
 				message.channel.send({ embeds: [hastEmb] });
 			}).catch(() => {
 				const error = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - HasteBin**`,
 						`**◎ Error:** An error occured!`);
 				message.channel.send({ embeds: [error] }).then((m) => this.client.utils.deletableCheck(m, 10000));

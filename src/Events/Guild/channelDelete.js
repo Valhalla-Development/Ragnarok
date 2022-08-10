@@ -13,7 +13,7 @@ module.exports = class extends Event {
 		if (!logs) return;
 
 		const logembed = new EmbedBuilder()
-			.setColor(this.client.utils.color(channel.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(channel.guild.members.me.displayHexColor))
 			.setAuthor({ name: `${channel.guild.name}`, iconURL: channel.guild.iconURL() })
 			.setTitle('Channel Deleted')
 			.setFooter({ text: `ID: ${channel.id}` })

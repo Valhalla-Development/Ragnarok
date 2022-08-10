@@ -46,7 +46,7 @@ module.exports = class extends Command {
 		const nowInSecond = Math.round(nowInMs / 1000);
 
 		const embed = new EmbedBuilder()
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
 			.setAuthor({ name: `Viewing statistics for ${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) })
 			.addField('General Information',

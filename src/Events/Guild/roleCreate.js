@@ -15,7 +15,7 @@ module.exports = class extends Event {
 		const logembed = new EmbedBuilder()
 			.setAuthor({ name: `${role.guild.name}`, iconURL: role.guild.iconURL() })
 			.setDescription(`**◎ Role Created: \`${role.name}\`.**`)
-			.setColor(this.client.utils.color(role.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(role.guild.members.me.displayHexColor))
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send({ embeds: [logembed] });
 	}

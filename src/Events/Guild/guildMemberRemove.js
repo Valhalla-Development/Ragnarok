@@ -23,7 +23,7 @@ module.exports = class extends Event {
 				if (channel) {
 					// Send a message that the user left
 					const existTM = new EmbedBuilder()
-						.setColor(client.utils.color(member.guild.me.displayHexColor))
+						.setColor(client.utils.color(member.guild.members.me.displayHexColor))
 						.addField(`**${client.user.username} - Ticket**`,
 							`**◎ Error:** \`${member.user.tag}\` has the left the server\nThey will be added back to the ticket if they rejoin.`);
 					channel.send({ embeds: [existTM] });
@@ -45,7 +45,7 @@ module.exports = class extends Event {
 			}
 
 			const logembed = new EmbedBuilder()
-				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
+				.setColor(grabClient.utils.color(member.guild.members.me.displayHexColor))
 				.setAuthor({ name: `${member.guild.name}`, iconURL: member.user.avatarURL() })
 				.setDescription(`**◎ Member Left:** \`${member.user.tag}\` - \`(${member.user.id})\`\n**◎ Account Created:** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)\n**◎ Joined:** <t:${Math.round(member.joinedTimestamp / 1000)}> - (<t:${Math.round(member.joinedTimestamp / 1000)}:R>)\n**◎ Left:** <t:${Math.floor(new Date().getTime() / 1000)}> - (<t:${Math.floor(new Date().getTime() / 1000)}:R>)`)
 				.setFooter({ text: `ID: ${member.user.id}` })

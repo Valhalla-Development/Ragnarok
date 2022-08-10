@@ -39,7 +39,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Error:** The specified channel does not exist in this guild!`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -51,7 +51,7 @@ module.exports = class extends Command {
 
 			channel.setRateLimitPerUser(0);
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Success:** <#${channel.id}> is no longer in slowmode.`);
 			channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -62,7 +62,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Error:** You did not include a valid time! Correct usage is:\n\`${prefix}slow [channel] <time>\` an example would be: \`${prefix}slow #general 10s\` or \`${prefix}slow 10s\``);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -76,7 +76,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Error:** You did not include a valid time! Correct usage is:\n\`${prefix}slow [channel] <time>\` an example would be: \`${prefix}slow #general 10s\` or \`${prefix}slow 10s\``);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -87,7 +87,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Error:** The maximum cooldown is 6 hours.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -96,7 +96,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Error:** The minimum cooldown is 1 second.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -108,7 +108,7 @@ module.exports = class extends Command {
 		await channel.setRateLimitPerUser(toSecond);
 
 		const embed = new EmbedBuilder()
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Slow**`,
 				`**◎ Success:** <#${channel.id}> is now in slowmode. Regular users can send messages every \`${ms(ms(time), { long: true })}\``);
 		channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));

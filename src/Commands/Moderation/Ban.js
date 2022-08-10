@@ -22,14 +22,14 @@ module.exports = class extends Command {
 
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
 
-		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0]);
+		const user = message.mentions.users.size ? message.guild.members.members.cache.get(message.mentions.users.first().id) : message.guild.members.members.cache.get(args[0]);
 
 		// No user
 		if (!user) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Ban**`,
 					`**◎ Error:** Run \`${prefix}help ban\` If you are unsure.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -41,7 +41,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Ban**`,
 					`**◎ Error:** You cannot Ban yourself!`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -53,7 +53,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Ban**`,
 					`**◎ Error:** You cannot ban someone with a higher role than yourself!`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -65,7 +65,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Ban**`,
 					`**◎ Error:** You cannot ban <@${user.id}>`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -77,7 +77,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You cannot ban me. :slight_frown:`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -89,7 +89,7 @@ module.exports = class extends Command {
 
 		const authoMes = new EmbedBuilder()
 			.setThumbnail(this.client.user.displayAvatarURL())
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.addField(`You have been banned from: \`${message.guild.name}\``,
 				`**◎ Reason:** ${reasonArgs}
 				**◎ Moderator:** ${message.author.tag}`)
@@ -102,11 +102,11 @@ module.exports = class extends Command {
 		}
 
 		// Kick the user and send the embed
-		message.guild.members.ban(user, { days: 1, reason: `${reasonArgs}` }).catch(() => {
+		message.guild.members.members.ban(user, { days: 1, reason: `${reasonArgs}` }).catch(() => {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Ban**`,
 					`**◎ Error:** An error occured!`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -115,7 +115,7 @@ module.exports = class extends Command {
 
 		const embed = new EmbedBuilder()
 			.setThumbnail(this.client.user.displayAvatarURL())
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.addField('User Banned',
 				`**◎ User:** ${user.user.tag}
 				**◎ Reason:** ${reasonArgs}
@@ -145,7 +145,7 @@ module.exports = class extends Command {
 						this.client.utils.messageDelete(message, 10000);
 
 						const embed1 = new EmbedBuilder()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Un-Ban**`,
 								`**◎ Error:** An error occured, is the user banned?`);
 						message.channel.send({ embeds: [embed1] }).then((me) => this.client.utils.deletableCheck(me, 10000));
@@ -156,7 +156,7 @@ module.exports = class extends Command {
 						this.client.utils.messageDelete(message, 10000);
 
 						const embed2 = new EmbedBuilder()
-							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+							.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Un-Ban**`,
 								`**◎ Error:** The user specified is not banned!`);
 						message.channel.send({ embeds: [embed2] }).then((me) => this.client.utils.deletableCheck(me, 10000));
@@ -165,13 +165,13 @@ module.exports = class extends Command {
 
 					const unbanEmbed = new EmbedBuilder()
 						.setThumbnail(this.client.user.displayAvatarURL())
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField('Action | Un-Ban',
 							`**◎ User ID:** ${user.user.id}
 				**◎ Moderator:** ${message.author.tag}`)
 						.setFooter({ text: 'User Un-Ban Logs' })
 						.setTimestamp();
-					message.guild.members.unban(bUser.user).then(() => message.channel.send({ embeds: [unbanEmbed] }));
+					message.guild.members.members.unban(bUser.user).then(() => message.channel.send({ embeds: [unbanEmbed] }));
 					collector.stop('unbanned');
 				});
 			}

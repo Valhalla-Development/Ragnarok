@@ -19,7 +19,7 @@ module.exports = class extends Command {
 
 			const noinEmbed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - BugReport**`,
 					`**◎ Error:** Please input some text!`);
 			message.channel.send({ embeds: [noinEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -39,7 +39,7 @@ module.exports = class extends Command {
 
 		const loggedEmbed = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.addField(`**${this.client.user.username} - BugReport**`,
 				`**◎ Success:** Bug has been successfully reported!`);
 		message.channel.send({ embeds: [loggedEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));

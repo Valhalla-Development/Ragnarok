@@ -21,14 +21,14 @@ module.exports = class extends Command {
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 
-		const user = message.mentions.members.first() || message.guild.members.cache.find(usr => usr.displayName === args.join(' '));
+		const user = message.mentions.members.first() || message.guild.members.members.cache.find(usr => usr.displayName === args.join(' '));
 
 		if (!user) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Steal**`,
 					`**◎ Error:** An example of this command is: \`${prefix}steal @user\``);
 			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -40,7 +40,7 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Steal**`,
 					`**◎ Error:** You can not rob yourself. <:wut:745408596233289839>`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -57,7 +57,7 @@ module.exports = class extends Command {
 
 			const errorE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
 					`**◎ Error:** ${user} does not have an economy account. They will instantly open one when they speak.`);
 			message.channel.send({ embeds: [errorE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -72,7 +72,7 @@ module.exports = class extends Command {
 
 				const wrongUsage = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Steal**`,
 						`**◎ Error:** The targeted user does not have enough cash to steal!`);
 				message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -126,7 +126,7 @@ module.exports = class extends Command {
 
 				const depArg = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Steal**`,
 						`**◎ Success:** ${succMessage[Math.floor(Math.random() * succMessage.length)]}`);
 				message.channel.send({ embeds: [depArg] });
@@ -172,7 +172,7 @@ module.exports = class extends Command {
 
 				const depArg = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Steal**`,
 						`**◎ Fail:** ${failMessage[Math.floor(Math.random() * failMessage.length)]}`);
 				message.channel.send({ embeds: [depArg] });
@@ -183,7 +183,7 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Steal**`,
 					`**◎ Error:** Please wait \`${ms(balance.stealcool - new Date().getTime(), { long: true })}\`, before using this command again!`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));

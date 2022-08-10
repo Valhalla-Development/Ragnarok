@@ -19,7 +19,7 @@ module.exports = class extends Command {
 
 		if (!user) {
 			const incorrectFormat = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kiss**`,
 					`**◎ Error:** Incorrect usage! Please tag a user!`);
 			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));

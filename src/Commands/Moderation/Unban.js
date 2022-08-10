@@ -24,7 +24,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Un-Ban**`,
 					`**◎ Error:** Run \`${prefix}help unban\` If you are unsure.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -33,7 +33,7 @@ module.exports = class extends Command {
 
 		const embed = new EmbedBuilder()
 			.setThumbnail(this.client.user.displayAvatarURL())
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.addField('Action | Un-Ban',
 				`**◎ User ID:** ${args[0]}
 				**◎ Moderator:** ${message.author.tag}`)
@@ -45,7 +45,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed1 = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Un-Ban**`,
 						`**◎ Error:** An error occured, is the user banned?`);
 				message.channel.send({ embeds: [embed1] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -56,13 +56,13 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed2 = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Un-Ban**`,
 						`**◎ Error:** The user specified is not banned!`);
 				message.channel.send({ embeds: [embed2] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
-			message.guild.members.unban(bUser.user).then(() => message.channel.send({ embeds: [embed] }));
+			message.guild.members.members.unban(bUser.user).then(() => message.channel.send({ embeds: [embed] }));
 
 			db.prepare('DELETE FROM ban WHERE id = ?').run(`${message.guild.id}-${bUser.user.id}`);
 		});

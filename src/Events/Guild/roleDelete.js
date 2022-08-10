@@ -48,7 +48,7 @@ module.exports = class extends Event {
 								setTimeout(() => {
 									// I added this timeout because I couldn’t be bothered fixing, please don’t remove or I cry
 									const roleMenuEmbed = new EmbedBuilder()
-										.setColor(clientGrab.utils.color(role.guild.me.displayHexColor))
+										.setColor(clientGrab.utils.color(role.guild.members.me.displayHexColor))
 										.setTitle('Assign a Role')
 										.setDescription(`Select the role you wish to assign to yourself.`);
 									ms.edit({ embeds: [roleMenuEmbed], components: [row] });
@@ -56,7 +56,7 @@ module.exports = class extends Event {
 							}, 1000);
 						} catch {
 							const embed = new EmbedBuilder()
-								.setColor(clientGrab.utils.color(role.guild.me.displayHexColor))
+								.setColor(clientGrab.utils.color(role.guild.members.me.displayHexColor))
 								.addField(`**${clientGrab.user.username} - Config**`,
 									`**◎ Error:** A role in the role menu was deleted, I was unable to update the active role menu. Please run the following command to refresh it.\n\`${prefix}rolemenu\``);
 							ch.send({ embeds: [embed] }).then((m) => clientGrab.utils.deletableCheck(m, 10000));
@@ -76,7 +76,7 @@ module.exports = class extends Event {
 		const logembed = new EmbedBuilder()
 			.setAuthor({ name: `${role.guild.name}`, iconURL: role.guild.iconURL() })
 			.setDescription(`**◎ Role Deleted: \`${role.name}\`.**`)
-			.setColor(this.client.utils.color(role.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(role.guild.members.me.displayHexColor))
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send({ embeds: [logembed] });
 	}

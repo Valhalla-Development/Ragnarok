@@ -19,7 +19,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - BigEmote**`,
 					`**◎ Error:** Incorrect usage! Please specify an emote!`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -32,8 +32,8 @@ module.exports = class extends Command {
 
 		if (custom.id) {
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.setTitle(`BigEmote - Requesed By ${message.guild.members.cache.get(message.author.id).nickname ? message.guild.members.cache.get(message.author.id).nickname : message.author.username}`)
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+				.setTitle(`BigEmote - Requesed By ${message.guild.members.members.cache.get(message.author.id).nickname ? message.guild.members.members.cache.get(message.author.id).nickname : message.author.username}`)
 				.setImage(`https://cdn.discordapp.com/emojis/${custom.id}.${custom.animated ? 'gif' : 'png'}`);
 			message.channel.send({ embeds: [embed] });
 			return;
@@ -43,16 +43,16 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-					.addField(`BigEmote - Requesed By ${message.guild.members.cache.get(message.author.id).nickname ? message.guild.members.cache.get(message.author.id).nickname : message.author.username}`,
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+					.addField(`BigEmote - Requesed By ${message.guild.members.members.cache.get(message.author.id).nickname ? message.guild.members.members.cache.get(message.author.id).nickname : message.author.username}`,
 						`**◎ Error:** Invalid emoji!`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
-				.setTitle(`BigEmote - Requesed By ${message.guild.members.cache.get(message.author.id).nickname ? message.guild.members.cache.get(message.author.id).nickname : message.author.username}`)
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+				.setTitle(`BigEmote - Requesed By ${message.guild.members.members.cache.get(message.author.id).nickname ? message.guild.members.members.cache.get(message.author.id).nickname : message.author.username}`)
 				.setImage(parsed[0].url);
 			message.channel.send({ embeds: [embed] });
 			return;

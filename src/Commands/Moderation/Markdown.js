@@ -21,7 +21,7 @@ module.exports = class extends Command {
 		const { prefix } = prefixgrab;
 
 		const embed = new EmbedBuilder()
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Markdown**`,
 				`**◎ Error:** Please input text, example: \`${prefix}markdown <language> <text> !\``);
 

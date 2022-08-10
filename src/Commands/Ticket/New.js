@@ -22,11 +22,11 @@ module.exports = class extends Command {
 
 		const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
 
-		if (!message.member.guild.me.permissions.has(PermissionsBitField.ManageChannels)) {
+		if (!message.member.guild.members.me.permissions.has(PermissionsBitField.ManageChannels)) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const botPerm = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - New**`,
 					`**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:`);
 			message.channel.send({ embeds: [botPerm] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const nomodRole = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - New**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
 			message.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -71,14 +71,14 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const existTM = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - New**`,
 					`**◎ Error:** You already have a ticket open!`);
 			message.channel.send({ embeds: [existTM] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
-		const nickName = message.guild.members.cache.get(message.author.id).displayName;
+		const nickName = message.guild.members.members.cache.get(message.author.id).displayName;
 
 		// Make Ticket
 		const id = db.prepare(`SELECT category FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
@@ -128,12 +128,12 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const newTicketE = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - New**`,
 						`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
 				message.channel.send({ embeds: [newTicketE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setTitle(`New Ticket`)
 					.setDescription(`Welcome to our support system ${message.author}.\nPlease hold tight and a support member will be with you shortly.${reason ? `\n\n\nYou opened this ticket for the following reason:\n\`\`\`${reason}\`\`\`` : '\n\n\n**Please specify a reason for opening this ticket.**'}`);
 				c.send({ embeds: [embed] });
@@ -148,7 +148,7 @@ module.exports = class extends Command {
 				const openEpoch = Math.floor(new Date().getTime() / 1000);
 
 				const logEmbed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Opened', iconURL: message.guild.iconURL({ dynamic: true }) })
 					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${message.guild.id}/${c.id})`, inline: true },
 						{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${message.author}`, inline: true },
@@ -195,7 +195,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const nomodRole = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - New**`,
 						`**◎ Error:** I could not find the \`Support Team\` role!\nIf you use a custom role, I recommend running the command again \`${prefix}config ticket role <@role>\``);
 				message.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -233,7 +233,7 @@ module.exports = class extends Command {
 
 				// Send a message saying the ticket has been created.
 				const newTicketE = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - New**`,
 						`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
 				message.channel.send({ embeds: [newTicketE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -252,7 +252,7 @@ module.exports = class extends Command {
 					.addComponents(buttonClose, buttonCloseReason);
 
 				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setTitle('New Ticket')
 					.setDescription(`Welcome to our support system ${message.author}.\nPlease hold tight and a support member will be with you shortly.${reason ? `\n\n\nYou opened this ticket for the following reason:\n\`\`\`${reason}\`\`\`` : '\n\n\n**Please specify a reason for opening this ticket.**'}`);
 				c.send({ components: [row], embeds: [embed] });
@@ -268,7 +268,7 @@ module.exports = class extends Command {
 				const openEpoch = Math.floor(new Date().getTime() / 1000);
 
 				const logEmbed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Opened', iconURL: message.guild.iconURL({ dynamic: true }) })
 					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${message.guild.id}/${c.id})`, inline: true },
 						{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${message.author}`, inline: true },

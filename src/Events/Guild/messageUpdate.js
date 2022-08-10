@@ -11,9 +11,9 @@ module.exports = class extends Event {
 		if (!newMessage.guild || oldMessage.content === newMessage.content || newMessage.author.bot) return;
 		const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(newMessage.guild.id);
 		if (adsprot['count(*)']) {
-			if (!newMessage.member.guild.me.permissions.has(PermissionsBitField.ManageMessages)) {
+			if (!newMessage.member.guild.members.me.permissions.has(PermissionsBitField.ManageMessages)) {
 				const npPerms = new EmbedBuilder()
-					.setColor(this.client.utils.color(newMessage.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(newMessage.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ads Protection**`,
 						`**◎ Error:** I do not have the \`MANAGE_MESSAGES\` permissions. Disabling Ads Protection.`);
 				newMessage.channel.send({ embeds: [npPerms] }).then((m) => newMessage.utils.messageDelete(m, 0));
@@ -23,7 +23,7 @@ module.exports = class extends Event {
 			if (!newMessage.member.permissions.has(PermissionsBitField.ManageMessages)) {
 				const matches = urlRegexSafe({ strict: false }).test(newMessage.content.toLowerCase());
 				if (matches) {
-					if (newMessage.member.guild.me.permissions.has(PermissionsBitField.ManageMessages)) {
+					if (newMessage.member.guild.members.me.permissions.has(PermissionsBitField.ManageMessages)) {
 						this.client.utils.messageDelete(newMessage, 0);
 						newMessage.channel.send(`**◎ Your message contained a link and it was deleted, ${newMessage.author}**`)
 							.then((msg) => {
@@ -55,7 +55,7 @@ module.exports = class extends Event {
 		if (oldMessage.content.length + newMessage.content.length > 6000) return;
 
 		const embed = new RagnarokEmbed()
-			.setColor(this.client.utils.color(newMessage.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(newMessage.guild.members.me.displayHexColor))
 			.setAuthor({ name: `${oldMessage.author.tag}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) })
 			.setTitle('Message Updated')
 			.splitFields([

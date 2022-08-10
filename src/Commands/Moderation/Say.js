@@ -34,7 +34,7 @@ module.exports = class extends Command {
 
 			if (ch.type !== 'GUILD_TEXT' && ch.type !== 'GUILD_NEWS') {
 				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Say**`,
 						`**◎ Error:** Please input a valid channel!`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -43,16 +43,16 @@ module.exports = class extends Command {
 
 			if (!ch) {
 				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Say**`,
 						`**◎ Error:** I could not find the channel you mentioned!`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
-			if (!message.guild.me.permissionsIn(ch).has('SEND_MESSAGES')) {
+			if (!message.guild.members.me.permissionsIn(ch).has('SEND_MESSAGES')) {
 				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Say**`,
 						`**◎ Error:** I do not have permissions to send a message in ${ch}!`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -63,17 +63,17 @@ module.exports = class extends Command {
 
 			if (!input) {
 				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Say**`,
 						`**◎ Error:** You need to input text!`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
-			const user = message.guild.members.cache.get(message.author.id);
+			const user = message.guild.members.members.cache.get(message.author.id);
 			if (!user.permissionsIn(ch).has('SEND_MESSAGES')) {
 				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Say**`,
 						`**◎ Error:** You do not have permission to send messages to ${ch}!`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -83,7 +83,7 @@ module.exports = class extends Command {
 			ch.send(input);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Say**`,
 					`**◎ Success:** The following message has been posted in ${ch}\n\n${input}`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -93,7 +93,7 @@ module.exports = class extends Command {
 
 			if (!input) {
 				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Say**`,
 						`**◎ Error:** You need to input text!`);
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));

@@ -27,7 +27,7 @@ module.exports = class extends Event {
 
 		const embed = new EmbedBuilder()
 			.setThumbnail(this.client.user.displayAvatarURL())
-			.setColor(this.client.utils.color(ban.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(ban.guild.members.me.displayHexColor))
 			.addField('User Banned',
 				`**◎ User:** ${ban.user.tag}
 				**◎ Reason:** ${reason}

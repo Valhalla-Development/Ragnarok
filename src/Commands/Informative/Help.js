@@ -31,7 +31,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Help**`,
 					`**◎ Error:** Please only run this command once.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -39,7 +39,7 @@ module.exports = class extends Command {
 		}
 
 		const embed = new EmbedBuilder()
-			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.setDescription(
 				`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 				Run \`${prefix}help <command>\` to see command specific instructions
@@ -91,7 +91,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				const embed1 = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Help**`,
 						`**◎ Error:** Invalid command name: \`${command}\``);
 				message.channel.send({ embeds: [embed1] }).then((m) => this.client.utils.deletableCheck(m, 10000));
@@ -193,7 +193,7 @@ module.exports = class extends Command {
 			collector.on('collect', async b => {
 				if (b.user.id !== message.author.id) {
 					const wrongUser = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Help**`,
 							`**◎ Error:** Only the command executor can select an option!`);
 					b.reply({ embeds: [wrongUser], ephemeral: true });
@@ -223,7 +223,7 @@ module.exports = class extends Command {
 					}
 
 					const eco = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.setDescription(
 							`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 							Run \`${prefix}help <command>\` to see command specific instructions
@@ -253,7 +253,7 @@ module.exports = class extends Command {
 						categories[i] = categories[i][0].toUpperCase() + categories[i].substr(1);
 					}
 					const fun = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.setDescription(
 							`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 							Run \`${prefix}help <command>\` to see command specific instructions
@@ -283,7 +283,7 @@ module.exports = class extends Command {
 						categories[i] = categories[i][0].toUpperCase() + categories[i].substr(1);
 					}
 					const gen = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.setDescription(
 							`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 							Run \`${prefix}help <command>\` to see command specific instructions
@@ -313,7 +313,7 @@ module.exports = class extends Command {
 						categories[i] = categories[i][0].toUpperCase() + categories[i].substr(1);
 					}
 					const info = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.setDescription(
 							`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 							Run \`${prefix}help <command>\` to see command specific instructions
@@ -343,7 +343,7 @@ module.exports = class extends Command {
 						categories[i] = categories[i][0].toUpperCase() + categories[i].substr(1);
 					}
 					const mod = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.setDescription(
 							`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 							Run \`${prefix}help <command>\` to see command specific instructions
@@ -373,7 +373,7 @@ module.exports = class extends Command {
 						categories[i] = categories[i][0].toUpperCase() + categories[i].substr(1);
 					}
 					const tick = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
+						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 						.setDescription(
 							`Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
 							Run \`${prefix}help <command>\` to see command specific instructions
