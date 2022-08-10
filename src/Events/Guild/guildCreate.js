@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ChannelType } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -34,7 +34,7 @@ module.exports = class extends Event {
 			defaultChannel = genChan;
 		} else {
 			guild.channels.cache.forEach((channel) => {
-				if (channel.type === 'GUILD_TEXT' && defaultChannel === '') {
+				if (channel.type === ChannelType.GuildText && defaultChannel === '') {
 					if (channel.permissionsFor(guild.members.me).has('SEND_MESSAGES')) {
 						defaultChannel = channel;
 					}

@@ -1,6 +1,7 @@
 const Event = require('../../Structures/Event');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
+const { ChannelType } = require('discord.js');
 
 module.exports = class extends Event {
 
@@ -12,7 +13,7 @@ module.exports = class extends Event {
 			if (eventType === 'MESSAGE_DELETE') {
 				const channel = await grabClient.channels.cache.find(ch => ch.id === data.channel_id);
 
-				if (channel.type === 'DM') return;
+				if (channel.type === ChannelType.DM) return;
 
 				if (data.user_id === grabClient.user.id) return;
 				const getTicketEmbed = db.prepare(`SELECT * FROM ticketConfig WHERE guildid = ${data.guild_id}`).get();

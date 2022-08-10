@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ChannelType } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -25,7 +25,7 @@ module.exports = class extends Event {
 			.setFooter({ text: `ID: ${newChannel.id}` })
 			.setTimestamp();
 
-		if (oldChannel.type === 'GUILD_CATEGORY') {
+		if (oldChannel.type === ChannelType.GuildCategory) {
 			if (oldChannel.name !== newChannel.name) {
 				updateM = `**◎ Category Name Updated:**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
 				logembed.setDescription(updateM);
@@ -33,7 +33,7 @@ module.exports = class extends Event {
 			}
 		}
 
-		if (oldChannel.type === 'GUILD_VOICE') {
+		if (oldChannel.type === ChannelType.GuildVoice) {
 			if (oldChannel.name !== newChannel.name) {
 				updateM = `**◎ Voice Channel Name Updated:**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
 				logembed.setDescription(updateM);
@@ -41,7 +41,7 @@ module.exports = class extends Event {
 			}
 		}
 
-		if (oldChannel.type === 'GUILD_TEXT') {
+		if (oldChannel.type === ChannelType.GuildText) {
 			if (oldChannel.name !== newChannel.name) {
 				updateM = `**◎ Channel Name Updated:**\nOld:\n\`#${oldChannel.name}\`\nNew:\n<#${newChannel.id}>`;
 				logembed.setDescription(updateM);

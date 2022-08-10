@@ -1,6 +1,6 @@
 /* eslint-disable max-depth */
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, PermissionsBitField, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, MessageButton, MessageActionRow, ChannelType } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const fetch = require('node-fetch-cjs');
@@ -1388,7 +1388,7 @@ module.exports = class extends Command {
 						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
-					if (lchan.type === 'GUILD_VOICE' || lchan.type === 'GUILD_CATEGORY') {
+					if (lchan.type === ChannelType.GuildVoice || lchan.type === ChannelType.GuildCategory) {
 						this.client.utils.messageDelete(message, 10000);
 
 						const embed = new EmbedBuilder()
@@ -1437,7 +1437,7 @@ module.exports = class extends Command {
 					this.client.getTable = db.prepare('SELECT category FROM ticketConfig WHERE guildid = ?');
 
 					const category = message.guild.channels.cache.find(
-						(c) => c.name === args.slice(2).join(' ') && c.type === 'GUILD_CATEGORY'
+						(c) => c.name === args.slice(2).join(' ') && c.type === ChannelType.GuildCategory
 					);
 
 					let status;
@@ -2060,7 +2060,7 @@ module.exports = class extends Command {
 						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
-					if (lchan.type === 'GUILD_VOICE' || lchan.type === 'GUILD_CATEGORY') {
+					if (lchan.type === ChannelType.GuildVoice || lchan.type === ChannelType.GuildCategory) {
 						this.client.utils.messageDelete(message, 10000);
 
 						const embed = new EmbedBuilder()

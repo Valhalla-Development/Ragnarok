@@ -1,12 +1,12 @@
 const Event = require('../../Structures/Event');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ChannelType } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
 module.exports = class extends Event {
 
 	async run(channel) {
-		if (channel.type === 'DM') return;
+		if (channel.type === ChannelType.DM) return;
 
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${channel.guild.id};`).get();
 		if (!id) return;
@@ -28,21 +28,21 @@ module.exports = class extends Event {
 
 		let updateM;
 
-		if (channel.type === 'GUILD_TEXT') {
+		if (channel.type === ChannelType.GuildText) {
 			updateM = `**◎ Text Channel Created:**\n<#${channel.id}>`;
 			logembed
 				.setDescription(updateM);
 			this.client.channels.cache.get(logs).send({ embeds: [logembed] });
 		}
 
-		if (channel.type === 'GUILD_VOICE') {
+		if (channel.type === ChannelType.GuildVoice) {
 			updateM = `**◎ Voice Channel Created:**\n\`${channel.name}\``;
 			logembed
 				.setDescription(updateM);
 			this.client.channels.cache.get(logs).send({ embeds: [logembed] });
 		}
 
-		if (channel.type === 'GUILD_CATEGORY') {
+		if (channel.type === ChannelType.GuildCategory) {
 			updateM = `**◎ Category Created:**\n\`${channel.name}\``;
 			logembed
 				.setDescription(updateM);

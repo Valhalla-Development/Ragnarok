@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ChannelType } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -88,8 +88,8 @@ module.exports = class extends Command {
 		const guildOwner = await message.guild.fetchOwner();
 		const channels = message.guild.channels.cache;
 
-		const textChan = channels.filter(channel => channel.type === 'GUILD_TEXT');
-		const voiceChan = channels.filter(channel => channel.type === 'GUILD_VOICE');
+		const textChan = channels.filter(channel => channel.type === ChannelType.GuildText);
+		const voiceChan = channels.filter(channel => channel.type === ChannelType.GuildVoice);
 
 		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
