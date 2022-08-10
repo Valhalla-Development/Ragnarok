@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -23,7 +23,7 @@ module.exports = class extends Command {
 		if (!user) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const wrongUsage = new MessageEmbed()
+			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
@@ -49,7 +49,7 @@ module.exports = class extends Command {
 				});
 
 				const amt = otherB.total + Number(args[2]);
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Give - Admin**`,
@@ -62,7 +62,7 @@ module.exports = class extends Command {
 		if (user.id === message.author.id) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
@@ -76,7 +76,7 @@ module.exports = class extends Command {
 		if (!otherB) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const errorE = new MessageEmbed()
+			const errorE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
@@ -89,7 +89,7 @@ module.exports = class extends Command {
 		if (balance.bank === 0) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const noBal = new MessageEmbed()
+			const noBal = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
@@ -109,7 +109,7 @@ module.exports = class extends Command {
 
 			const totaCalc2 = balance.total - balance.bank;
 
-			const depAll = new MessageEmbed()
+			const depAll = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
@@ -125,7 +125,7 @@ module.exports = class extends Command {
 		if (isNaN(args[1]) || args.length > 2) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const wrongUsage = new MessageEmbed()
+			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
@@ -137,7 +137,7 @@ module.exports = class extends Command {
 		if (Number(args[1]) < 1) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const wrongUsage = new MessageEmbed()
+			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
@@ -149,7 +149,7 @@ module.exports = class extends Command {
 		if (args[1] > balance.bank) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const wrongUsage = new MessageEmbed()
+			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
@@ -172,7 +172,7 @@ module.exports = class extends Command {
 		balance.total = totaCalc2;
 		this.client.setBalance.run(balance);
 
-		const depArg = new MessageEmbed()
+		const depArg = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Give**`,

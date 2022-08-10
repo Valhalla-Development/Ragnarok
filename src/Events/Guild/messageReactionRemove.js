@@ -1,7 +1,7 @@
 /* eslint-disable max-depth */
 /* eslint-disable no-useless-escape */
 const Event = require('../../Structures/Event');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -62,7 +62,7 @@ module.exports = class extends Event {
 						const dataArray = getThatID.split('|');
 						const star = /^\⭐\s([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(foundStar.footer.text);
 						const image = foundStar.image ? foundStar.image.url : '';
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(foundStar.color)
 							.setThumbnail(foundStar.thumbnail.url)
 							.addFields(foundStar.fields)
@@ -104,7 +104,7 @@ module.exports = class extends Event {
 			const getThatID = foundStar.footer.text;
 			// Split that sum-bitch
 			const dataArray = getThatID.split('|');
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(foundStar.color)
 				.setThumbnail(foundStar.thumbnail.url)
 				.addFields(foundStar.fields)

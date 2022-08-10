@@ -1,6 +1,6 @@
 /* eslint-disable new-cap */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -21,7 +21,7 @@ module.exports = class extends Command {
 		if (!user) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Sudo**`,
 					`**◎ Error:** Please mention a user or paste a user ID.`);
@@ -32,7 +32,7 @@ module.exports = class extends Command {
 		if (!args[1]) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reload**`,
 					`**◎ Error:** Please specify the text you wish me to sudo!`);

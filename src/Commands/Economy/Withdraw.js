@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -24,7 +24,7 @@ module.exports = class extends Command {
 		if (balance.bank === 0) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const noBalance = new MessageEmbed()
+			const noBalance = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
@@ -41,7 +41,7 @@ module.exports = class extends Command {
 			balance.total = bankCalc;
 			this.client.setBalance.run(balance);
 
-			const depAll = new MessageEmbed()
+			const depAll = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
@@ -53,7 +53,7 @@ module.exports = class extends Command {
 		if (isNaN(args[0]) || args.length > 1) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const wrongUsage = new MessageEmbed()
+			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
@@ -65,7 +65,7 @@ module.exports = class extends Command {
 		if (args[0] > balance.bank) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const wrongUsage = new MessageEmbed()
+			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
@@ -77,7 +77,7 @@ module.exports = class extends Command {
 		if (args[0] < 1) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const wrongUsage = new MessageEmbed()
+			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Withdraw**`,
@@ -95,7 +95,7 @@ module.exports = class extends Command {
 		balance.total = totaA;
 		this.client.setBalance.run(balance);
 
-		const depAll = new MessageEmbed()
+		const depAll = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Withdraw**`,

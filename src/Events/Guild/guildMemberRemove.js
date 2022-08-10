@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -22,7 +22,7 @@ module.exports = class extends Event {
 				// Check if the channel exists
 				if (channel) {
 					// Send a message that the user left
-					const existTM = new MessageEmbed()
+					const existTM = new EmbedBuilder()
 						.setColor(client.utils.color(member.guild.me.displayHexColor))
 						.addField(`**${client.user.username} - Ticket**`,
 							`**◎ Error:** \`${member.user.tag}\` has the left the server\nThey will be added back to the ticket if they rejoin.`);
@@ -44,7 +44,7 @@ module.exports = class extends Event {
 				db.prepare('DELETE FROM logging WHERE guildid = ?').run(member.guild.id);
 			}
 
-			const logembed = new MessageEmbed()
+			const logembed = new EmbedBuilder()
 				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
 				.setAuthor({ name: `${member.guild.name}`, iconURL: member.user.avatarURL() })
 				.setDescription(`**◎ Member Left:** \`${member.user.tag}\` - \`(${member.user.id})\`\n**◎ Account Created:** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)\n**◎ Joined:** <t:${Math.round(member.joinedTimestamp / 1000)}> - (<t:${Math.round(member.joinedTimestamp / 1000)}:R>)\n**◎ Left:** <t:${Math.floor(new Date().getTime() / 1000)}> - (<t:${Math.floor(new Date().getTime() / 1000)}:R>)`)

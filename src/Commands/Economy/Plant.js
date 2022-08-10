@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const prettyMilliseconds = require('pretty-ms');
@@ -46,7 +46,7 @@ module.exports = class extends Command {
 		if (!foundBoostList.farmPlot) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Plant**`,
@@ -58,7 +58,7 @@ module.exports = class extends Command {
 		if (!foundItemList.cornSeeds && !foundItemList.wheatSeeds && !foundItemList.potatoSeeds && !foundItemList.tomatoSeeds) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Plant**`,
@@ -71,7 +71,7 @@ module.exports = class extends Command {
 			if (args[1] === undefined) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -84,7 +84,7 @@ module.exports = class extends Command {
 				if (balance.dmHarvest) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Plant DM**`,
@@ -99,7 +99,7 @@ module.exports = class extends Command {
 
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Plant DM**`,
@@ -118,7 +118,7 @@ module.exports = class extends Command {
 
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Plant DM**`,
@@ -129,7 +129,7 @@ module.exports = class extends Command {
 				} else {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Plant DM**`,
@@ -143,7 +143,7 @@ module.exports = class extends Command {
 		if (foundPlotList.length >= Number(foundBoostList.farmPlot)) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Plant**`,
@@ -155,7 +155,7 @@ module.exports = class extends Command {
 		if (args[0] !== 'corn' && args[0] !== 'wheat' && args[0] !== 'potato' && args[0] !== 'tomato') {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Plant**`,
@@ -182,7 +182,7 @@ module.exports = class extends Command {
 			if (cornAmt <= 0) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -194,7 +194,7 @@ module.exports = class extends Command {
 			if (!foundItemList.cornSeeds || Number(foundItemList.cornSeeds - Number(cornAmt)) < 0) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -206,7 +206,7 @@ module.exports = class extends Command {
 			if (isNaN(cornAmt)) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -218,7 +218,7 @@ module.exports = class extends Command {
 			if (foundPlotList.length + Number(cornAmt) > Number(foundBoostList.farmPlot)) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -242,7 +242,7 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Plant**`,
@@ -257,7 +257,7 @@ module.exports = class extends Command {
 			if (wheatAmt <= 0) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -269,7 +269,7 @@ module.exports = class extends Command {
 			if (!foundItemList.wheatSeeds || Number(foundItemList.wheatSeeds - Number(wheatAmt)) < 0) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -281,7 +281,7 @@ module.exports = class extends Command {
 			if (isNaN(wheatAmt)) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -293,7 +293,7 @@ module.exports = class extends Command {
 			if (foundPlotList.length + Number(wheatAmt) > Number(foundBoostList.farmPlot)) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -317,7 +317,7 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Plant**`,
@@ -332,7 +332,7 @@ module.exports = class extends Command {
 			if (potatoeAmt <= 0) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -344,7 +344,7 @@ module.exports = class extends Command {
 			if (!foundItemList.potatoSeeds || Number(foundItemList.potatoSeeds - Number(potatoeAmt)) < 0) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -356,7 +356,7 @@ module.exports = class extends Command {
 			if (isNaN(potatoeAmt)) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -368,7 +368,7 @@ module.exports = class extends Command {
 			if (foundPlotList.length + Number(potatoeAmt) > Number(foundBoostList.farmPlot)) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -392,7 +392,7 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Plant**`,
@@ -407,7 +407,7 @@ module.exports = class extends Command {
 			if (tomatoeAmt <= 0) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -419,7 +419,7 @@ module.exports = class extends Command {
 			if (!foundItemList.tomatoSeeds || Number(foundItemList.tomatoSeeds - Number(tomatoeAmt)) < 0) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -431,7 +431,7 @@ module.exports = class extends Command {
 			if (isNaN(tomatoeAmt)) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -443,7 +443,7 @@ module.exports = class extends Command {
 			if (foundPlotList.length + Number(tomatoeAmt) > Number(foundBoostList.farmPlot)) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Plant**`,
@@ -467,7 +467,7 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Plant**`,

@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed, MessageAttachment } = require('discord.js');
+const { EmbedBuilder, MessageAttachment } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const Canvas = require('canvas');
@@ -37,7 +37,7 @@ module.exports = class extends Event {
 						VIEW_CHANNEL: true,
 						SEND_MESSAGES: true
 					}).catch(console.error);
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(client.utils.color(member.guild.me.displayHexColor))
 						.addField(`**${client.user.username} - Ticket**`,
 							`**◎:** \`${member.user.tag}\` has rejoined the server\nThey have been added back to the ticket.`);
@@ -157,7 +157,7 @@ module.exports = class extends Event {
 			const logs = id.channel;
 			if (!logs) return;
 
-			const logembed = new MessageEmbed()
+			const logembed = new EmbedBuilder()
 				.setColor(grabClient.utils.color(member.guild.me.displayHexColor))
 				.setAuthor({ name: `${member.guild.name}`, iconURL: member.user.avatarURL() })
 				.setDescription(`**◎ Member Joined:** ${member.user} - \`${member.user.tag}\` - \`(${member.user.id})\`\n**◎ Account Created:** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)\n**◎ Joined:** <t:${Math.round(member.joinedTimestamp / 1000)}> - (<t:${Math.round(member.joinedTimestamp / 1000)}:R>)`)

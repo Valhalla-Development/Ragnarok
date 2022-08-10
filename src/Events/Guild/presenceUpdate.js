@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class extends Event {
 
@@ -9,13 +9,13 @@ module.exports = class extends Event {
 
 		const Ragnar = this.client.users.cache.find((a) => a.id === '151516555757223936');
 
-		const offlineEmbed = new MessageEmbed()
+		const offlineEmbed = new EmbedBuilder()
 			.setTitle('Ragnarok Report')
 			.setDescription(`<@${newPresence.userID}> is **OFFLINE**`)
 			.setColor('#ff2f2f')
 			.setTimestamp();
 
-		const onlineEmbed = new MessageEmbed()
+		const onlineEmbed = new EmbedBuilder()
 			.setTitle('Ragnarok Report')
 			.setDescription(`<@${newPresence.userID}> is **ONLINE**`)
 			.setColor('#27d200')

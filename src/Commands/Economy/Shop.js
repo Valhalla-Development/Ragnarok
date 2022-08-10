@@ -1,7 +1,7 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable no-inline-comments */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -101,7 +101,7 @@ module.exports = class extends Command {
 		if (foundItemList.lettuce !== undefined) lettucePrice = this.client.ecoPrices.lettuce * Number(foundItemList.lettuce);
 
 		if (!args.length) {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Shop**`,
@@ -209,7 +209,7 @@ module.exports = class extends Command {
 
 				if (!arr.length) arr.push(`\u3000 \`None\``);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Shop - Upgrade**`,
@@ -223,7 +223,7 @@ module.exports = class extends Command {
 				if (!foundBoostList.seedBag) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Seed Bag**`,
@@ -235,7 +235,7 @@ module.exports = class extends Command {
 				if (Number(foundBoostList.seedBag) >= Number(seedBagMax)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Seed Bag**`,
@@ -249,7 +249,7 @@ module.exports = class extends Command {
 
 					const notEnough = foundBoostList.seedBag * seedBagPrice * 3 - Number(balance.bank);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Seed Bag**`,
@@ -271,7 +271,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://SeedBag.png')
@@ -285,7 +285,7 @@ module.exports = class extends Command {
 				if (!foundBoostList.fishBag) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Fish Bag**`,
@@ -297,7 +297,7 @@ module.exports = class extends Command {
 				if (Number(foundBoostList.fishBag) >= Number(fishBagMax)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Fish Bag**`,
@@ -311,7 +311,7 @@ module.exports = class extends Command {
 
 					const notEnough = foundBoostList.fishBag * fishBagPrice * 3 - Number(balance.bank);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Fish Bag**`,
@@ -333,7 +333,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://FishBag.png')
@@ -347,7 +347,7 @@ module.exports = class extends Command {
 				if (!foundBoostList.farmBag) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farm Bag**`,
@@ -359,7 +359,7 @@ module.exports = class extends Command {
 				if (Number(foundBoostList.farmBag) >= Number(farmBagMax)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farm Bag**`,
@@ -373,7 +373,7 @@ module.exports = class extends Command {
 
 					const notEnough = foundBoostList.farmBag * farmBagPrice * 3 - Number(balance.bank);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farm Bag**`,
@@ -395,7 +395,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://FarmBag.png')
@@ -409,7 +409,7 @@ module.exports = class extends Command {
 				if (!foundBoostList.farmPlot) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farm Plot**`,
@@ -421,7 +421,7 @@ module.exports = class extends Command {
 				if (Number(foundBoostList.farmPlot) >= Number(farmPlotMax)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farm Plot**`,
@@ -435,7 +435,7 @@ module.exports = class extends Command {
 
 					const notEnough = foundBoostList.farmPlot * farmPlotPrice * 3 - Number(balance.bank);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farm Plot**`,
@@ -457,7 +457,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://FarmPlot.png')
@@ -470,7 +470,7 @@ module.exports = class extends Command {
 
 		if (args[0] === 'buy') {
 			if (args[1] === undefined) {
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Shop - Buy**`,
@@ -495,7 +495,7 @@ module.exports = class extends Command {
 				if (!foundItemList.farmingTools) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Seeds**`,
@@ -511,7 +511,7 @@ module.exports = class extends Command {
 				if (cornAmt <= 0) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Corn Seeds**`,
@@ -523,7 +523,7 @@ module.exports = class extends Command {
 				if (isNaN(cornAmt)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Corn Seeds**`,
@@ -540,7 +540,7 @@ module.exports = class extends Command {
 
 					const notEnough = Number(cornTot) - Number(balance.bank);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Corn Seeds**`,
@@ -563,7 +563,7 @@ module.exports = class extends Command {
 				if (Number(currentTotalSeeds) + Number(cornAmt) * 10 > Number(foundBoostList.seedBag)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Backpack Limit**`,
@@ -574,7 +574,7 @@ module.exports = class extends Command {
 
 				foundItemList.cornSeeds = Number(calc).toString();
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://CornSeeds.png')
@@ -595,7 +595,7 @@ module.exports = class extends Command {
 				if (wheatAmt <= 0) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Wheat Seeds**`,
@@ -607,7 +607,7 @@ module.exports = class extends Command {
 				if (isNaN(wheatAmt)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Wheat Seeds**`,
@@ -624,7 +624,7 @@ module.exports = class extends Command {
 
 					const notEnough = Number(wheatTot) - Number(balance.bank);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Wheat Seeds**`,
@@ -647,7 +647,7 @@ module.exports = class extends Command {
 				if (Number(currentTotalSeeds) + Number(wheatAmt) * 10 > Number(foundBoostList.seedBag)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Backpack Limit**`,
@@ -658,7 +658,7 @@ module.exports = class extends Command {
 
 				foundItemList.wheatSeeds = Number(calc).toString();
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://WheatSeeds.png')
@@ -679,7 +679,7 @@ module.exports = class extends Command {
 				if (potatoeAmt <= 0) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Potato Seeds**`,
@@ -691,7 +691,7 @@ module.exports = class extends Command {
 				if (isNaN(potatoeAmt)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Potato Seeds**`,
@@ -708,7 +708,7 @@ module.exports = class extends Command {
 
 					const notEnough = Number(potatoeTot) - Number(balance.bank);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Potato Seeds**`,
@@ -731,7 +731,7 @@ module.exports = class extends Command {
 				if (Number(currentTotalSeeds) + Number(potatoeAmt) * 10 > Number(foundBoostList.seedBag)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Backpack Limit**`,
@@ -742,7 +742,7 @@ module.exports = class extends Command {
 
 				foundItemList.potatoSeeds = Number(calc).toString();
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://Potatoe.png')
@@ -763,7 +763,7 @@ module.exports = class extends Command {
 				if (tomatoeAmt <= 0) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Tomato Seeds**`,
@@ -775,7 +775,7 @@ module.exports = class extends Command {
 				if (isNaN(tomatoeAmt)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Tomato Seeds**`,
@@ -792,7 +792,7 @@ module.exports = class extends Command {
 
 					const notEnough = Number(tomatoeTot) - Number(balance.bank);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Tomato Seeds**`,
@@ -815,7 +815,7 @@ module.exports = class extends Command {
 				if (Number(currentTotalSeeds) + Number(tomatoeAmt) * 10 > Number(foundBoostList.seedBag)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Backpack Limit**`,
@@ -826,7 +826,7 @@ module.exports = class extends Command {
 
 				foundItemList.tomatoSeeds = Number(calc).toString();
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://Tomatoes.png')
@@ -845,7 +845,7 @@ module.exports = class extends Command {
 				if (foundItemList.fishingRod) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Fishing Rod**`,
@@ -859,7 +859,7 @@ module.exports = class extends Command {
 
 					const notEnough = Number(fishingPrice) - Number(balance.bank);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Fishing Rod**`,
@@ -881,7 +881,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://FishingRod.png')
@@ -895,7 +895,7 @@ module.exports = class extends Command {
 				if (foundItemList.farmingTools) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farming Tools**`,
@@ -909,7 +909,7 @@ module.exports = class extends Command {
 
 					const notEnough = Number(farmingPrice) - Number(balance.bank);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Farming Tools**`,
@@ -941,7 +941,7 @@ module.exports = class extends Command {
 				foundBoostList.seedBag = Number(initalSeedBag).toString();
 				foundBoostList.farmPlot = Number(initialFarmPlot).toString();
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://FarmingTool.png')
@@ -993,7 +993,7 @@ module.exports = class extends Command {
 					}
 				}
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Items**`,
@@ -1024,7 +1024,7 @@ module.exports = class extends Command {
 				if (!foundItemList.lettuce && !foundItemList.strawberries && !foundItemList.spinach && !foundItemList.barley && !foundHarvestList.filter(key => key.cropType === 'tomato').length && !foundHarvestList.filter(key => key.cropType === 'potato').length && !foundHarvestList.filter(key => key.cropType === 'wheat').length && !foundHarvestList.filter(key => key.cropType === 'corn').length && !foundItemList.trout && !foundItemList.kingSalmon && !foundItemList.swordfish && !foundItemList.pufferfish && !foundItemList.treasure && !foundItemList.goldBar && !foundItemList.goldNugget) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Sell All**`,
@@ -1100,7 +1100,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Shop - Sell All**`,
@@ -1113,7 +1113,7 @@ module.exports = class extends Command {
 				if (foundItemList.trout === undefined && foundItemList.kingSalmon === undefined && foundItemList.swordfish === undefined && foundItemList.pufferfish === undefined && foundItemList.treasure === undefined) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Sell Fish**`,
@@ -1151,7 +1151,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Shop - Sell Fish**`,
@@ -1164,7 +1164,7 @@ module.exports = class extends Command {
 				if (foundItemList.treasure === undefined) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Sell Treasure**`,
@@ -1199,7 +1199,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Shop - Sell Treasure**`,
@@ -1212,7 +1212,7 @@ module.exports = class extends Command {
 				if (!foundItemList.lettuce && !foundItemList.strawberries && !foundItemList.spinach && !foundItemList.barley && !foundHarvestList.filter(key => key.cropType === 'tomato').length && !foundHarvestList.filter(key => key.cropType === 'potato').length && !foundHarvestList.filter(key => key.cropType === 'wheat').length && !foundHarvestList.filter(key => key.cropType === 'corn').length) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Shop - Sell Farm**`,
@@ -1266,7 +1266,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Shop - Sell Farm**`,

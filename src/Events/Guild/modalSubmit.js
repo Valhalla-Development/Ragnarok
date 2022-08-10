@@ -1,7 +1,7 @@
 const Event = require('../../Structures/Event');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, MessageButton, MessageActionRow } = require('discord.js');
 const discordTranscripts = require('discord-html-transcripts');
 const fetchPkg = require('node-fetch-cjs');
 
@@ -19,7 +19,7 @@ module.exports = class extends Event {
 			const firstResponse = modal.getTextInputValue(`textinput-${modal.channelId}`);
 
 			await modal.deferReply({ ephemeral: true });
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(modal.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Ticket**`,
 					`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.`);
@@ -100,7 +100,7 @@ module.exports = class extends Event {
 
 			const user = this.client.users.cache.find((a) => a.id === ticket.authorid);
 			if (user) {
-				const logEmbed = new MessageEmbed()
+				const logEmbed = new EmbedBuilder()
 					.setColor(this.client.utils.color(modal.guild.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Closed', iconURL: modal.guild.iconURL({ dynamic: true }) })
 					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
@@ -128,7 +128,7 @@ module.exports = class extends Event {
 				return;
 			}
 
-			const logEmbed = new MessageEmbed()
+			const logEmbed = new EmbedBuilder()
 				.setColor(this.client.utils.color(modal.guild.me.displayHexColor))
 				.setAuthor({ name: 'Ticket Closed', iconURL: modal.guild.iconURL({ dynamic: true }) })
 				.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },

@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const converter = require('number-to-words-en');
@@ -27,7 +27,7 @@ module.exports = class extends Command {
 		if (user === null) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const limitE = new MessageEmbed()
+			const limitE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Balance**`,
@@ -43,7 +43,7 @@ module.exports = class extends Command {
 		if (!balance) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const limitE = new MessageEmbed()
+			const limitE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Balance**`,
@@ -141,7 +141,7 @@ module.exports = class extends Command {
 				currentTotalFarm += Number(foundHarvestList.filter(key => key.cropType === 'tomato').length);
 			}
 
-			const embed1 = new MessageEmbed()
+			const embed1 = new EmbedBuilder()
 				.setAuthor({ name: `${user.username}'s Balance`, iconURL: user.avatarURL() })
 				.setDescription(`Leaderboard Rank: \`${rankPos}\``)
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
@@ -162,7 +162,7 @@ module.exports = class extends Command {
 			message.channel.send({ embeds: [embed1] });
 			return;
 		}
-		const embed1 = new MessageEmbed()
+		const embed1 = new EmbedBuilder()
 			.setAuthor({ name: `${user.username}'s Balance`, iconURL: user.avatarURL() })
 			.setDescription(`Leaderboard Rank: \`${rankPos}\``)
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))

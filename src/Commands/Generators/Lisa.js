@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, MessageAttachment } = require('discord.js');
+const { EmbedBuilder, MessageAttachment } = require('discord.js');
 const DIG = require('discord-image-generation');
 
 module.exports = class extends Command {
@@ -18,7 +18,7 @@ module.exports = class extends Command {
 		const text = args.join(' ');
 
 		if (!text) {
-			const incorrectFormat = new MessageEmbed()
+			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Lisa**`,
 					`**◎ Error:** Incorrect usage! Please input some text`);
@@ -27,7 +27,7 @@ module.exports = class extends Command {
 		}
 
 		if (text.length > 300) {
-			const incorrectFormat = new MessageEmbed()
+			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Lisa**`,
 					`**◎ Error:** Incorrect usage! Please input a maximum of 300 characters!`);

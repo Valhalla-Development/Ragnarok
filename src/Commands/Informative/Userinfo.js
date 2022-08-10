@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 const flags = {
 	DISCORD_EMPLOYEE: '<:DiscordStaff:748651259849998377>',
@@ -99,7 +99,7 @@ module.exports = class extends Command {
 			activityMsg = 'None';
 		}
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 			.setAuthor({ name: `Viewing information for ${member.user.username}`, iconURL: member.user.displayAvatarURL({ dynamic: true }) })

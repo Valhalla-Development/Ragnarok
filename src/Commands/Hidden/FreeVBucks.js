@@ -1,6 +1,6 @@
 const Command = require('../../Structures/Command');
 const { MessageButton, MessageActionRow } = require('discord.js');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const comCooldown = new Set();
 const comCooldownSeconds = 10;
 
@@ -46,13 +46,13 @@ module.exports = class extends Command {
 		const rowNew = new MessageActionRow()
 			.addComponents(buttonANew, buttonBNew);
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Free V-Bucks**`,
 				`**◎ Success:** ${message.author}, Would you like to claim your **FREE** V-Bucks?`);
 
-		const embedNew = new MessageEmbed()
+		const embedNew = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Free V-Bucks**`,

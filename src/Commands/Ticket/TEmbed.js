@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { MessageButton, MessageActionRow } = require('discord.js');
@@ -27,7 +27,7 @@ module.exports = class extends Command {
 		if (!message.guild.roles.cache.find((r) => r.name === 'Support Team') && !suppRole) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const nomodRole = new MessageEmbed()
+			const nomodRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - TicketEmbed**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
@@ -43,7 +43,7 @@ module.exports = class extends Command {
 		} else {
 			this.client.utils.messageDelete(message, 10000);
 
-			const nomodRole = new MessageEmbed()
+			const nomodRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - TicketEmbed**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
@@ -53,7 +53,7 @@ module.exports = class extends Command {
 		if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const donthaveRole = new MessageEmbed()
+			const donthaveRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - TicketEmbed**`,
 					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
@@ -61,7 +61,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setTitle('Create a Ticket')
 			.setDescription('By clicking the button, a ticket will be opened for you.')
@@ -77,7 +77,7 @@ module.exports = class extends Command {
 
 		const foundtEmbed = db.prepare(`SELECT * FROM ticketConfig WHERE guildid=${message.guild.id}`).get();
 		if (!foundtEmbed) {
-			const disabledTic = new MessageEmbed()
+			const disabledTic = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - TicketEmbed**`,
 					`**◎ Error:** Tickets are not enabled on this server!`);
@@ -95,14 +95,14 @@ module.exports = class extends Command {
 						ticketembed: null,
 						ticketEChan: null
 					});
-					const cleared = new MessageEmbed()
+					const cleared = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - TicketEmbed**`,
 							`**◎ Success:** Tickets embed has been cleared from the database.`);
 					message.channel.send({ embeds: [cleared] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
-				const danelSucc = new MessageEmbed()
+				const danelSucc = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - TicketEmbed**`,
 						`**◎ Error:** I found no embed data in the database!`);
@@ -127,7 +127,7 @@ module.exports = class extends Command {
 					const embedChannel = message.guild.channels.cache.find((channel) => channel.id === foundtEmbed.ticketembedchan);
 					await embedChannel.messages.fetch(foundtEmbed.ticketembed).then((res) => {
 						if (res) {
-							const alreadytick = new MessageEmbed()
+							const alreadytick = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - TicketEmbed**`,
 									`**◎ Error:** You already have a Ticket embed in this server!\n Please delete the other, or clear it from the database via \`${prefix}tembed clear\``);

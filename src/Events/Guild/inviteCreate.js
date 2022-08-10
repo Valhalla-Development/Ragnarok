@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -31,7 +31,7 @@ module.exports = class extends Event {
 			expiry = 'Never';
 		}
 
-		const logembed = new MessageEmbed()
+		const logembed = new EmbedBuilder()
 			.setColor(this.client.utils.color(invite.guild.me.displayHexColor))
 			.setAuthor({ name: `${invite.guild.name}`, iconURL: invite.guild.iconURL() })
 			.setDescription(`**◎ Invite Created:**\n**◎ Created By:** ${invite.inviter}\n**◎ Expires:** \`${expiry}\`\n**◎ Location:** ${invite.channel}\n**◎ Invite:** [https://discord.gg/${invite.code}](https://discord.gg/${invite.code}${invite.code})`)

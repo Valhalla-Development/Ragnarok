@@ -1,7 +1,7 @@
 /* eslint-disable max-depth */
 /* eslint-disable no-useless-escape */
 const Event = require('../../Structures/Event');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -42,7 +42,7 @@ module.exports = class extends Event {
 
 		// Check if bot has perms to send messages in starboard channel
 		if (!message.guild.me.permissionsIn(starChannel).has('SEND_MESSAGES')) {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Starboard**`,
 					`**◎ Error:** I am missing the permission \`SEND_MESSAGES\` in the starboard channel.`);
@@ -54,7 +54,7 @@ module.exports = class extends Event {
 
 		if (message.author.id === user.id) {
 			if (message.channel.id === starChannel.id) return;
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Starboard**`,
 					`**◎ Error:** ${message.author}, You cannot star your own messages.`);
@@ -81,7 +81,7 @@ module.exports = class extends Event {
 						const dataArray = getThatID.split('|');
 						const star = /^\⭐\s([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(foundStar.footer.text);
 						const image = foundStar.image ? foundStar.image.url : '';
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(foundStar.color)
 							.setThumbnail(foundStar.thumbnail.url)
 							.addFields(foundStar.fields)
@@ -119,7 +119,7 @@ module.exports = class extends Event {
 			const getThatID = foundStar.footer.text;
 			// Split that sum-bitch
 			const dataArray = getThatID.split('|');
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(foundStar.color)
 				.setThumbnail(foundStar.thumbnail.url)
 				.addFields(foundStar.fields)
@@ -137,7 +137,7 @@ module.exports = class extends Event {
 			const image = message.attachments.size > 0 ? await this.extension(messageReaction, message.attachments.first().url) : '';
 			// If the message is empty, we don't allow the user to star the message.
 			if (image === '' && message.content.length < 1) {
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Starboard**`,
 						`**◎ Error:** You cannot star an empty messages.`);
@@ -146,7 +146,7 @@ module.exports = class extends Event {
 			}
 
 			// We set the color to a nice yellow here.
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(15844367)
 				.setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
 				.addFields({ name: `**Author**`, value: `${message.author}`, inline: true },

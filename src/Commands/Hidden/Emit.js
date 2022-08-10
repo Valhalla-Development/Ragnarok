@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -22,7 +22,7 @@ module.exports = class extends Command {
 		if (args[0] === undefined) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const noArgs = new MessageEmbed()
+			const noArgs = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Emit**`,
 					`**◎ Available Commands:**\n\`${prefix}emit guildMemberAdd\`\n\`${prefix}emit guildMemberRemove\``);

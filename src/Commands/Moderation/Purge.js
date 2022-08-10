@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -17,7 +17,7 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
 					`**◎ Error:** You need to specify the amount of messages to purge!`);
@@ -27,7 +27,7 @@ module.exports = class extends Command {
 		if (isNaN(args[0])) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
 					`**◎ Error:** The provided argument is not a valid number.`);
@@ -37,7 +37,7 @@ module.exports = class extends Command {
 		if (args[0] < 1) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
 					`**◎ Error:** You need to specify the amount of messages to purge!`);
@@ -52,13 +52,13 @@ module.exports = class extends Command {
 			const fetch = await message.channel.messages.fetch({ limit: Number(messageCount) + 1 });
 			await message.channel.bulkDelete(fetch, true);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
 					`**◎ Success:** ${Number(messageCount)} message${Number(messageCount) > 1 ? 's' : ''} were removed.`);
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 		} catch {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Purge**`,
 					`**◎ Error:** An error occured.`);

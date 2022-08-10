@@ -2,7 +2,7 @@
 /* eslint-disable handle-callback-err */
 /* eslint-disable camelcase */
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Formatters } = require('discord.js');
+const { EmbedBuilder, Formatters } = require('discord.js');
 const request = require('request');
 const Trakt = require('trakt.tv');
 const decode = require('unescape');
@@ -63,14 +63,14 @@ module.exports = class extends Command {
 			link,
 			searchQuery,
 			rating
-		) => new MessageEmbed()
+		) => new EmbedBuilder()
 			.setColor('#EA2027')
 			.setAuthor({ name: `${decode(title)}`, url: link, iconURL: 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png' })
 			.setDescription(`${Formatters.codeBlock('text', `${decode(desc, 'all')}`)}\n**<:trakt:977201291115765820> ${rating}**`)
 			.setImage(image);
 
 		const notFound = (searchQuery) => {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Trakt.tv**`,
 					`**◎ Error:** **Couldn't find the movie/show you were looking for.**\nTry again or try on Trakt.TV here: https://trakt.tv/search?query=${searchQuery}`);
@@ -178,7 +178,7 @@ module.exports = class extends Command {
 		} else if (args.length === 0) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const errEmbed = new MessageEmbed()
+			const errEmbed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Trakt.tv**`,
 					`**◎ Error:** Please specify what movie/show you are trying to find.`);

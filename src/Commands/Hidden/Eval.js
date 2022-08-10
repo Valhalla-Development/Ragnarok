@@ -1,7 +1,7 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-unused-vars */
 const Command = require('../../Structures/Command');
-const { MessageEmbed, MessageAttachment, Permissions } = require('discord.js');
+const { EmbedBuilder, MessageAttachment, Permissions } = require('discord.js');
 const { inspect } = require('util');
 const { Type } = require('@extreme_hero/deeptype');
 const SQLite = require('better-sqlite3');
@@ -25,7 +25,7 @@ module.exports = class extends Command {
 		if (!args.length) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const incorrectFormat = new MessageEmbed()
+			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Eval**`,
 					`**◎ Error:** Please input some text!`);
@@ -43,7 +43,7 @@ module.exports = class extends Command {
 				evaled = await evaled;
 			}
 			const stop = process.hrtime(start);
-			const success = new MessageEmbed()
+			const success = new EmbedBuilder()
 				.addField(`${this.client.user.username} - Eval`,
 					`**◎ Output:** \`\`\`js\n${this.clean(inspect(evaled, { depth: 0 }))}\n\`\`\`
 					**◎ Type:** \`\`\`ts\n${new Type(evaled).is}\n\`\`\``)
@@ -53,7 +53,7 @@ module.exports = class extends Command {
 			if (success.fields[0].value.length > 1024) {
 				await haste.post(this.clean(inspect(evaled, { depth: 1 })), 'js')
 					.then((link) => {
-						const hastEmb = new MessageEmbed()
+						const hastEmb = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Eval**`,
 								`**◎ Link:** ${link}`)
@@ -67,7 +67,7 @@ module.exports = class extends Command {
 			}
 			await message.channel.send({ embeds: [success] });
 		} catch (err) {
-			const error = new MessageEmbed()
+			const error = new EmbedBuilder()
 				.addField(`${this.client.user.username} - Eval`,
 					`**◎ Error:** \`\`\`x1\n${this.clean(err)}\n\`\`\``)
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));

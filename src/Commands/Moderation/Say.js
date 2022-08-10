@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -33,7 +33,7 @@ module.exports = class extends Command {
 			const ch = message.guild.channels.cache.get(channel.id);
 
 			if (ch.type !== 'GUILD_TEXT' && ch.type !== 'GUILD_NEWS') {
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Say**`,
 						`**◎ Error:** Please input a valid channel!`);
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 			}
 
 			if (!ch) {
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Say**`,
 						`**◎ Error:** I could not find the channel you mentioned!`);
@@ -51,7 +51,7 @@ module.exports = class extends Command {
 			}
 
 			if (!message.guild.me.permissionsIn(ch).has('SEND_MESSAGES')) {
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Say**`,
 						`**◎ Error:** I do not have permissions to send a message in ${ch}!`);
@@ -62,7 +62,7 @@ module.exports = class extends Command {
 			input = args.slice(1).join(' ');
 
 			if (!input) {
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Say**`,
 						`**◎ Error:** You need to input text!`);
@@ -72,7 +72,7 @@ module.exports = class extends Command {
 
 			const user = message.guild.members.cache.get(message.author.id);
 			if (!user.permissionsIn(ch).has('SEND_MESSAGES')) {
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Say**`,
 						`**◎ Error:** You do not have permission to send messages to ${ch}!`);
@@ -82,7 +82,7 @@ module.exports = class extends Command {
 
 			ch.send(input);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Say**`,
 					`**◎ Success:** The following message has been posted in ${ch}\n\n${input}`);
@@ -92,7 +92,7 @@ module.exports = class extends Command {
 			input = args.join(' ');
 
 			if (!input) {
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Say**`,
 						`**◎ Error:** You need to input text!`);

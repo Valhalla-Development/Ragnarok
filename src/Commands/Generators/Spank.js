@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, MessageAttachment } = require('discord.js');
+const { EmbedBuilder, MessageAttachment } = require('discord.js');
 const DIG = require('discord-image-generation');
 
 module.exports = class extends Command {
@@ -18,7 +18,7 @@ module.exports = class extends Command {
 		const user = message.mentions.members.first();
 
 		if (!user) {
-			const incorrectFormat = new MessageEmbed()
+			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Spank**`,
 					`**◎ Error:** Incorrect usage! Please tag a user!`);

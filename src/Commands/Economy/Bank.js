@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -18,7 +18,7 @@ module.exports = class extends Command {
 		if (balance.cash === 0) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const limitE = new MessageEmbed()
+			const limitE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Bank**`,
@@ -29,7 +29,7 @@ module.exports = class extends Command {
 
 		const bankCalc = balance.cash + balance.bank;
 
-		const depAll = new MessageEmbed()
+		const depAll = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail('attachment://Bank.png')

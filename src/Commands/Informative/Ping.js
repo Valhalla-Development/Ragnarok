@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -18,7 +18,7 @@ module.exports = class extends Command {
 
 		this.client.utils.deletableCheck(msg, 0);
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Ping**`,
 				`**◎ Bot Latency:** \`${latency}ms\`

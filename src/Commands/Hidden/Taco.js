@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -11,7 +11,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setImage('attachment://taco.png')
 			.addField(`Please take this **taco**. A gift from me, to you!`,

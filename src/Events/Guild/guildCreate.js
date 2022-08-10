@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -46,7 +46,7 @@ module.exports = class extends Event {
 			return;
 		}
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setAuthor({ name: `${guild.name}`, iconURL: guild.iconURL({ dynamic: true }) })
 			.setColor(this.client.utils.color(guild.me.displayHexColor))
 			.setTitle('Hello, I\'m **Ragnarok**! Thanks for inviting me!')

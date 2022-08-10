@@ -1,5 +1,5 @@
 /* eslint-disable no-mixed-operators */
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { version } = require('../../../package.json');
 const Command = require('../../Structures/Command');
 const os = require('os');
@@ -45,7 +45,7 @@ module.exports = class extends Command {
 		const nowInMs = Date.now() - this.client.uptime;
 		const nowInSecond = Math.round(nowInMs / 1000);
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
 			.setAuthor({ name: `Viewing statistics for ${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) })

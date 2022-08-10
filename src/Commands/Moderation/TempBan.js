@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Permissions } = require('discord.js');
+const { EmbedBuilder, Permissions } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const ms = require('ms');
@@ -26,7 +26,7 @@ module.exports = class extends Command {
 		if (!user) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** Run \`${prefix}help tempban\` If you are unsure.`);
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 		if (user.user.id === message.author.id) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** You cannot Ban yourself!`);
@@ -50,7 +50,7 @@ module.exports = class extends Command {
 		if (user.roles.highest.position >= message.member.roles.highest.position) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** You cannot ban someone with a higher role than yourself!`);
@@ -62,7 +62,7 @@ module.exports = class extends Command {
 		if (user.permissions.has(Permissions.FLAGS.MANAGE_GUILD) || user.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || !user.bannable) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** You cannot ban <@${user.id}>`);
@@ -74,7 +74,7 @@ module.exports = class extends Command {
 		if (user.user.id === this.client.user.id) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You cannot ban me. :slight_frown:`);
@@ -87,7 +87,7 @@ module.exports = class extends Command {
 		if (!bantime) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** You must specify a ban time!`);
@@ -99,7 +99,7 @@ module.exports = class extends Command {
 		if (!args[1].match('[dhms]')) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const incorrectFormat = new MessageEmbed()
+			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** You did not use the correct formatting for the time! The valid options are \`d\`, \`h\`, \`m\` or \`s\``);
@@ -111,7 +111,7 @@ module.exports = class extends Command {
 		if (isNaN(ms(args[1]))) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const invalidDur = new MessageEmbed()
+			const invalidDur = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** Please input a valid duration!`);
@@ -123,7 +123,7 @@ module.exports = class extends Command {
 		if (ms(args[1]) < '30000') {
 			this.client.utils.messageDelete(message, 10000);
 
-			const valueLow = new MessageEmbed()
+			const valueLow = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** Please input a value higher than 30 seconds!`);
@@ -134,7 +134,7 @@ module.exports = class extends Command {
 		let reason = args.slice(2).join(' ');
 		if (!reason) reason = 'No reason given.';
 
-		const authoMes = new MessageEmbed()
+		const authoMes = new EmbedBuilder()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`You have been temporarily banned from: \`${message.guild.name}\``,
@@ -153,7 +153,7 @@ module.exports = class extends Command {
 		await message.guild.members.ban(user, { reason: `${reason}-tempban` }).catch(() => {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Temp-Ban**`,
 					`**◎ Error:** An error occured!`);
@@ -173,7 +173,7 @@ module.exports = class extends Command {
 			username: user.user.tag
 		});
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField('Action | Temp-Banned',

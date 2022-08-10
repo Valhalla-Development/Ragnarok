@@ -4,7 +4,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-mixed-operators */
 const Command = require('../../Structures/Command');
-const { MessageAttachment, MessageEmbed } = require('discord.js');
+const { MessageAttachment, EmbedBuilder } = require('discord.js');
 const abbreviate = require('number-abbreviate');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -37,7 +37,7 @@ module.exports = class extends Command {
 		if (levelDb) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Level**`,
 					`**◎ Error:** Level system is disabled for this guild!`);
@@ -52,7 +52,7 @@ module.exports = class extends Command {
 			if (!args[1]) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Level**`,
 						`**◎ Error:** Incorrect usage! An example of this command would be: \`${prefix}level country UK\``);
@@ -81,14 +81,14 @@ module.exports = class extends Command {
 
 			if (args[1] === 'off') {
 				if (score && !score.country) {
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Level**`,
 							`**◎ Error:** You do not have a country set.`);
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				} else {
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Level**`,
 							`**◎ Success:** I have disabled your country flag!`);
@@ -108,7 +108,7 @@ module.exports = class extends Command {
 				await this.client.setScore.run(score);
 
 				this.client.utils.messageDelete(message, 10000);
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Level**`,
 						`**◎ Success:** You selected \`${fetchCountry.name}\``);
@@ -117,7 +117,7 @@ module.exports = class extends Command {
 			} catch {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** Did you input a valid country code? Your input was: \`${args[1].toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`);
@@ -151,7 +151,7 @@ module.exports = class extends Command {
 					if (!score.image) {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Level**`,
 								`**◎ Error:** You have no custom image enabled!`);
@@ -166,7 +166,7 @@ module.exports = class extends Command {
 
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Level**`,
 								`**◎ Success:** Custom image has been disabled!`);
@@ -178,7 +178,7 @@ module.exports = class extends Command {
 				if (!args[1]) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Level**`,
 							`**◎ Error:** Incorrect Usage! An example of this command would be: \`${prefix}level image <url-to-image>\` or to disable: \`${prefix}level image off\``);
@@ -192,7 +192,7 @@ module.exports = class extends Command {
 				if (!validExtensions.includes(urlExtension)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const invalidExt = new MessageEmbed()
+					const invalidExt = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Level**`,
 							`**◎ Error:** \`.${urlExtension}\` is not a valid image type!\n\n**Acceptable files:**\n\`${validExtensions.join(', ')}\``);
@@ -205,7 +205,7 @@ module.exports = class extends Command {
 				if (!urlRegex.test(args[1])) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Level**`,
 							`**◎ Error:** Please enter a valid URL, the URL must be absolute! An example of an absolute URL would be: https://www.google.com`);
@@ -221,7 +221,7 @@ module.exports = class extends Command {
 							} catch {
 								this.client.utils.messageDelete(message, 10000);
 
-								const invalidExt = new MessageEmbed()
+								const invalidExt = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Level**`,
 										`**◎ Error:** I was unable to process \`${args[1]}\`\nIs it a valid image?`);
@@ -236,7 +236,7 @@ module.exports = class extends Command {
 							});
 							this.client.utils.messageDelete(message, 0);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.setImage(args[1])
 								.addField(`**${this.client.user.username} - Level**`,
@@ -246,7 +246,7 @@ module.exports = class extends Command {
 						} else {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Level**`,
 									`**◎ Error:** Please enter a valid image URL! The end of the URL must end with one of the supported extensions. (\`.jpg, .jpeg, .png\`)`);
@@ -269,7 +269,7 @@ module.exports = class extends Command {
 		if (user === null) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const limitE = new MessageEmbed()
+			const limitE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Balance**`,

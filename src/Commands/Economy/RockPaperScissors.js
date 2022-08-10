@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-unused-expressions */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { MessageButton, MessageActionRow } = require('discord.js');
@@ -27,7 +27,7 @@ module.exports = class extends Command {
 		if (!balance) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const limitE = new MessageEmbed()
+			const limitE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Coin Flip**`,
@@ -39,7 +39,7 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Coin Flip**`,
 					`**◎ Error:** Please input an amount you wish to bet.`);
@@ -50,7 +50,7 @@ module.exports = class extends Command {
 		if (comCooldown.has(message.author.id)) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Coin Flip**`,
 					`**◎ Error:** You can only run one instance of this game!.`);
@@ -65,7 +65,7 @@ module.exports = class extends Command {
 		if (isNaN(rps)) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const wrongUsage = new MessageEmbed()
+			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Coin Flip**`,
@@ -77,7 +77,7 @@ module.exports = class extends Command {
 		if (Number(rps) < 10) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const wrongUsage = new MessageEmbed()
+			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Coin Flip**`,
@@ -89,7 +89,7 @@ module.exports = class extends Command {
 		if (Number(rps) > balance.bank) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const wrongUsage = new MessageEmbed()
+			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Coin Flip**`,
@@ -158,25 +158,25 @@ module.exports = class extends Command {
 
 		const group2 = new MessageActionRow().addComponents([[RockNew, PaperNew, ScissorsNew, CancelNew]]);
 
-		const initial = new MessageEmbed()
+		const initial = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Rock Paper Scissors**`,
 				`**◎** ${message.author} bet <:coin:706659001164628008> \`${Number(rps).toLocaleString('en')}\``);
 
-		const win = new MessageEmbed()
+		const win = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Rock Paper Scissors**`,
 				`**◎** ${message.author} won <:coin:706659001164628008> \`${houseBet.toLocaleString('en')}\` has been credited to your bank!`);
 
-		const lose = new MessageEmbed()
+		const lose = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Rock Paper Scissors**`,
 				`**◎** ${message.author} lost <:coin:706659001164628008> \`${rps.toLocaleString('en')}\``);
 
-		const tie = new MessageEmbed()
+		const tie = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Rock Paper Scissors**`,
@@ -268,7 +268,7 @@ module.exports = class extends Command {
 				await this.client.utils.messageDelete(message, 0);
 				await this.client.utils.messageDelete(m, 0);
 
-				const limitE = new MessageEmbed()
+				const limitE = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Coin Flip**`,

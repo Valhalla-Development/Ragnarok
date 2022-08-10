@@ -1,7 +1,7 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable no-inline-comments */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const ms = require('ms');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -21,7 +21,7 @@ module.exports = class extends Command {
 		if (!balance.items) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Fish**`,
@@ -35,7 +35,7 @@ module.exports = class extends Command {
 		if (!foundItemList.fishingRod) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Fish**`,
@@ -71,7 +71,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://Treasure.png')
@@ -100,7 +100,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://Pufferfish.png')
@@ -129,7 +129,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://Swordfish.png')
@@ -158,7 +158,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://KingSalmon.png')
@@ -187,7 +187,7 @@ module.exports = class extends Command {
 					id: `${message.author.id}-${message.guild.id}`
 				});
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setThumbnail('attachment://Trout.png')
@@ -202,7 +202,7 @@ module.exports = class extends Command {
 
 				this.client.setBalance.run(balance);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Fish**`,
@@ -213,7 +213,7 @@ module.exports = class extends Command {
 		} else {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Fish**`,

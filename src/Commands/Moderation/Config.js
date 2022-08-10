@@ -1,6 +1,6 @@
 /* eslint-disable max-depth */
 const Command = require('../../Structures/Command');
-const { MessageEmbed, PermissionsBitField, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, MessageButton, MessageActionRow } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const fetch = require('node-fetch-cjs');
@@ -35,7 +35,7 @@ module.exports = class extends Command {
 		if (comCooldown.has(message.author.id)) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Config**`,
 					`**◎ Error:** Please only run this command once.`);
@@ -120,7 +120,7 @@ module.exports = class extends Command {
 			const row3 = new MessageActionRow()
 				.addComponents(buttonN, buttonO, buttonP);
 
-			const initial = new MessageEmbed()
+			const initial = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Config**`,
@@ -143,7 +143,7 @@ module.exports = class extends Command {
 
 			collector.on('collect', async b => {
 				if (b.user.id !== message.author.id) {
-					const wrongUser = new MessageEmbed()
+					const wrongUser = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Only the command executor can select an option!`);
@@ -181,7 +181,7 @@ module.exports = class extends Command {
 					const row3New = new MessageActionRow()
 						.addComponents(buttonN, buttonO, buttonP);
 
-					const ads = new MessageEmbed()
+					const ads = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Advert Protection:**
@@ -202,7 +202,7 @@ module.exports = class extends Command {
 					const row3New = new MessageActionRow()
 						.addComponents(buttonN, buttonO, buttonP);
 
-					const auto = new MessageEmbed()
+					const auto = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ AutoRole:**
@@ -223,7 +223,7 @@ module.exports = class extends Command {
 					const row3New = new MessageActionRow()
 						.addComponents(buttonN, buttonO, buttonP);
 
-					const bday = new MessageEmbed()
+					const bday = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Birthday:**
@@ -245,7 +245,7 @@ module.exports = class extends Command {
 					const row3New = new MessageActionRow()
 						.addComponents(buttonN, buttonO, buttonP);
 
-					const dad = new MessageEmbed()
+					const dad = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Dad Bot:**
@@ -266,7 +266,7 @@ module.exports = class extends Command {
 					const row3New = new MessageActionRow()
 						.addComponents(buttonN, buttonO, buttonP);
 
-					const haste = new MessageEmbed()
+					const haste = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Hastebin:**
@@ -287,7 +287,7 @@ module.exports = class extends Command {
 					const row3New = new MessageActionRow()
 						.addComponents(buttonN, buttonO, buttonP);
 
-					const lvl = new MessageEmbed()
+					const lvl = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Level System:**
@@ -308,7 +308,7 @@ module.exports = class extends Command {
 					const row3New = new MessageActionRow()
 						.addComponents(buttonN, buttonO, buttonP);
 
-					const log = new MessageEmbed()
+					const log = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Logging:**
@@ -329,7 +329,7 @@ module.exports = class extends Command {
 					const row3New = new MessageActionRow()
 						.addComponents(buttonN, buttonO, buttonP);
 
-					const prf = new MessageEmbed()
+					const prf = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Prefix:**
@@ -350,7 +350,7 @@ module.exports = class extends Command {
 					const row3New = new MessageActionRow()
 						.addComponents(buttonN, buttonO, buttonP);
 
-					const rlm = new MessageEmbed()
+					const rlm = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Role Menu:**
@@ -373,7 +373,7 @@ module.exports = class extends Command {
 					const row3New = new MessageActionRow()
 						.addComponents(buttonN, buttonO, buttonP);
 
-					const tck = new MessageEmbed()
+					const tck = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Tickets:**
@@ -396,7 +396,7 @@ module.exports = class extends Command {
 					const row3New = new MessageActionRow()
 						.addComponents(buttonN, buttonO, buttonP);
 
-					const wlc = new MessageEmbed()
+					const wlc = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Welcome:**
@@ -420,7 +420,7 @@ module.exports = class extends Command {
 					const row3New = new MessageActionRow()
 						.addComponents(buttonN, buttonO, buttonP);
 
-					const str = new MessageEmbed()
+					const str = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Starboard:**
@@ -463,7 +463,7 @@ module.exports = class extends Command {
 			if (!commandList.includes(args[0].toLowerCase())) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** Unknown config: \`${args[0]}\`\nRun \`${prefix}config\` to see all available configurations.`);
@@ -482,7 +482,7 @@ module.exports = class extends Command {
 					if (args[1] === undefined) {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Available options are:\n\`${prefix}config birthday channel <#channel>\` : Sets the channel where birthday alerts are sent.\n\`${prefix}config birthday role [@role]\` : Sets the (optional) role is pinged when it is someones birthday.\nor \`${prefix}config birthday off\``);
@@ -494,7 +494,7 @@ module.exports = class extends Command {
 						if (!status) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Birthday function is already disabled!`);
@@ -504,7 +504,7 @@ module.exports = class extends Command {
 
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Birthday function disabled!`);
@@ -519,7 +519,7 @@ module.exports = class extends Command {
 						if (args[2] === undefined) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Please mention a channel!`);
@@ -530,7 +530,7 @@ module.exports = class extends Command {
 						if (!lchan) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Ensure you are tagging a valid channel, I had difficulty locating ${lchan}`);
@@ -543,7 +543,7 @@ module.exports = class extends Command {
 							});
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Success:** Birthday channel is now set to ${lchan}`);
@@ -556,7 +556,7 @@ module.exports = class extends Command {
 							});
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Success:** Birthday channel updated to ${lchan}`);
@@ -568,7 +568,7 @@ module.exports = class extends Command {
 						if (!status) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Please set a channel before setting the role! You can do this by running: \`${prefix}config birthday channel #channel\``);
@@ -581,7 +581,7 @@ module.exports = class extends Command {
 						if (!role) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** A role must be mentioned`);
@@ -597,7 +597,7 @@ module.exports = class extends Command {
 
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Birthday Role updated to ${role}`);
@@ -617,7 +617,7 @@ module.exports = class extends Command {
 					if (args[1] === undefined) {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Available options are: \`${prefix}config level enable\` or \`${prefix}config level disable\``);
@@ -629,7 +629,7 @@ module.exports = class extends Command {
 						if (status) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Level system is already disabled!`);
@@ -639,7 +639,7 @@ module.exports = class extends Command {
 
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Level system disabled!`);
@@ -655,7 +655,7 @@ module.exports = class extends Command {
 						if (!status) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Level system is already enabled!`);
@@ -665,7 +665,7 @@ module.exports = class extends Command {
 
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Level system enabled!`);
@@ -684,7 +684,7 @@ module.exports = class extends Command {
 					if (message.mentions.roles.size <= 0) {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** You must mention a role to remove from the menu.`);
@@ -706,7 +706,7 @@ module.exports = class extends Command {
 
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Roles successfully set in the assignable role menu!\nYou can now rum \`${prefix}rolemenu\` to create a menu.`);
@@ -718,7 +718,7 @@ module.exports = class extends Command {
 						if (foundRoleList.length >= 25) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** You can only have 25 roles!\nYou can remove roles with \`${prefix}config rolemenu remove <@role>\``);
@@ -756,7 +756,7 @@ module.exports = class extends Command {
 						if (foundRoleList.length >= 25) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** You can only have 25 roles!\nYou can remove roles with \`${prefix}config rolemenu remove <@role>\``);
@@ -768,7 +768,7 @@ module.exports = class extends Command {
 							if (msg !== '') {
 								this.client.utils.messageDelete(message, 10000);
 
-								const embed = new MessageEmbed()
+								const embed = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Config**`,
 										`**◎ Error:** The following roles are **already** in the active rolemenu:\n${msg}`);
@@ -811,7 +811,7 @@ module.exports = class extends Command {
 
 										setTimeout(() => {
 											// I added this timeout because I couldn’t be bothered fixing, please don’t remove or I cry
-											const roleMenuEmbed = new MessageEmbed()
+											const roleMenuEmbed = new EmbedBuilder()
 												.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 												.setTitle('Assign a Role')
 												.setDescription(`Select the role you wish to assign to yourself.`);
@@ -820,13 +820,13 @@ module.exports = class extends Command {
 									}, 1000);
 
 
-									const embed = new MessageEmbed()
+									const embed = new EmbedBuilder()
 										.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 										.addField(`**${this.client.user.username} - Config**`,
 											`**◎ Success:** Roles successfully set in the assignable role menu!\nYour current menu has been updated.${msg !== '' ? `\n\nThe following roles are **already** in the active rolemenu:\n${msg}` : ''}`);
 									message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 								} catch {
-									const embed = new MessageEmbed()
+									const embed = new EmbedBuilder()
 										.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 										.addField(`**${this.client.user.username} - Config**`,
 											`**◎ Success:** Roles successfully set in the assignable role menu!\n**However** I was unable to update the current rolemenu, you will have to run \`${prefix}rolemenu\` to create a menu again.`);
@@ -848,7 +848,7 @@ module.exports = class extends Command {
 					if (message.mentions.roles.size <= 0) {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** You must mention a role to remove from the menu.`);
@@ -897,7 +897,7 @@ module.exports = class extends Command {
 						if (msg !== '') {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** The following roles are **not** in the active rolemenu:\n${msg}`);
@@ -930,7 +930,7 @@ module.exports = class extends Command {
 
 									setTimeout(() => {
 										// I added this timeout because I couldn’t be bothered fixing, please don’t remove or I cry
-										const roleMenuEmbed = new MessageEmbed()
+										const roleMenuEmbed = new EmbedBuilder()
 											.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 											.setTitle('Assign a Role')
 											.setDescription(`Select the role you wish to assign to yourself.`);
@@ -940,7 +940,7 @@ module.exports = class extends Command {
 
 								this.client.utils.messageDelete(message, 10000);
 
-								const embed = new MessageEmbed()
+								const embed = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Config**`,
 										`**◎ Success:** Specified roles have successfully been removed from the rolemenu!${msg !== '' ? `\n\nThe following roles are **not** in the active rolemenu:\n${msg}` : ''}`);
@@ -948,7 +948,7 @@ module.exports = class extends Command {
 							} catch {
 								this.client.utils.messageDelete(message, 10000);
 
-								const embed = new MessageEmbed()
+								const embed = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Config**`,
 										`**◎ Error:** Specified roles have successfully been removed from the rolemene. However, I was unable to update the existing menu, you will have to run \`${prefix}rolemenu\` again to reset the menu.`);
@@ -964,7 +964,7 @@ module.exports = class extends Command {
 					if (!foundRoleMenu) {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** The roles for the menu have not been set yet. Please try again later.`);
@@ -986,13 +986,13 @@ module.exports = class extends Command {
 									ms.delete();
 								});
 
-								const embed = new MessageEmbed()
+								const embed = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Config**`,
 										`**◎ Success:** Rolemenu has been cleared!`);
 								message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 							} catch {
-								const embed = new MessageEmbed()
+								const embed = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Config**`,
 										`**◎ Error:** Rolemenu has been cleared, however I was unable to delete the message.`);
@@ -1002,7 +1002,7 @@ module.exports = class extends Command {
 					}
 
 					db.prepare(`DELETE FROM rolemenu WHERE guildid=${message.guild.id}`).run();
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** All roles have successfully been cleagreen from the rolemenu!`);
@@ -1012,7 +1012,7 @@ module.exports = class extends Command {
 
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Error:** Please use \`${prefix}config\` to see available commands!`);
@@ -1034,7 +1034,7 @@ module.exports = class extends Command {
 							if (status) {
 								this.client.utils.messageDelete(message, 10000);
 
-								const embed = new MessageEmbed()
+								const embed = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Config**`,
 										`**◎ Error:** Hastebin URL blocker is already enabled on this guild! To disable it, please use \`${prefix}config haste url <off>\``);
@@ -1049,7 +1049,7 @@ module.exports = class extends Command {
 
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Success:** Hastebin URL blocker was enabled.`);
@@ -1061,7 +1061,7 @@ module.exports = class extends Command {
 							if (!status) {
 								this.client.utils.messageDelete(message, 10000);
 
-								const embed = new MessageEmbed()
+								const embed = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Config**`,
 										`**◎ Error:** Hastebin URL blocker is not enabled on this guild! To activate it, please use \`${prefix}config haste url <on>\``);
@@ -1072,7 +1072,7 @@ module.exports = class extends Command {
 							this.client.utils.messageDelete(message, 10000);
 
 							db.prepare('DELETE FROM hastebin WHERE guildid = ?').run(message.guild.id);
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Success:** Hastebin URL blocker was disabled!`);
@@ -1081,7 +1081,7 @@ module.exports = class extends Command {
 						} else if (args[2] !== 'off' || args[2] !== 'on') {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Correct usage \`${prefix}config haste inv <on/off>\``);
@@ -1105,7 +1105,7 @@ module.exports = class extends Command {
 						if (status) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Dad bot is already enabled on this guild! To disable it, please use \`${prefix}config dadbot <off>\``);
@@ -1120,7 +1120,7 @@ module.exports = class extends Command {
 
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Dad bot was enabled`);
@@ -1132,7 +1132,7 @@ module.exports = class extends Command {
 						if (!status) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Dad bot is not enabled on this guild! To activate it, please use \`${prefix}config dadbot <on>\``);
@@ -1143,7 +1143,7 @@ module.exports = class extends Command {
 						this.client.utils.messageDelete(message, 10000);
 
 						db.prepare('DELETE FROM dadbot WHERE guildid = ?').run(message.guild.id);
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Dad bot was disabled!`);
@@ -1152,7 +1152,7 @@ module.exports = class extends Command {
 					} else if (args[1] !== 'off' || args[1] !== 'on') {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Correct usage \`${prefix}config dadbot <on/off>\``);
@@ -1168,7 +1168,7 @@ module.exports = class extends Command {
 				if (!message.member.guild.me.permissions.has(PermissionsBitField.ManageMessages)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const npPerms = new MessageEmbed()
+					const npPerms = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Ads Protection**`,
 							`**◎ Error:** I need to have the \`MANAGE_MESSAGES\` permission for this function.`);
@@ -1188,7 +1188,7 @@ module.exports = class extends Command {
 						if (status) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Advert protection is already enabled on this guild! To disable it, please use \`${prefix}config adsprot <off>\``);
@@ -1203,7 +1203,7 @@ module.exports = class extends Command {
 						});
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Advert protection was enabled`);
@@ -1215,7 +1215,7 @@ module.exports = class extends Command {
 						if (!status) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Advert protection is not enabled on this guild! To activate it, please use \`${prefix}config adsprot <on>\``);
@@ -1226,7 +1226,7 @@ module.exports = class extends Command {
 						this.client.utils.messageDelete(message, 10000);
 
 						db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(message.guild.id);
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Advert protection was disabled`);
@@ -1235,7 +1235,7 @@ module.exports = class extends Command {
 					} else if (args[1] !== 'off' || args[1] !== 'on') {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Please use \`${prefix}config adsprot <on/off>\``);
@@ -1255,7 +1255,7 @@ module.exports = class extends Command {
 					if (!args[1]) {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Please use \`${prefix}config autorole <role>\` __the role is case sensitive!__`);
@@ -1264,7 +1264,7 @@ module.exports = class extends Command {
 					}
 					if (args[1] === 'off') {
 						if (!role) {
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Autorole is already disabled!`);
@@ -1275,7 +1275,7 @@ module.exports = class extends Command {
 						this.client.utils.messageDelete(message, 10000);
 
 						db.prepare('DELETE FROM autorole WHERE guildid = ?').run(message.guild.id);
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Autorole disabled!`);
@@ -1285,7 +1285,7 @@ module.exports = class extends Command {
 					if (!message.guild.roles.cache.some((r) => [`${args[1]}`].includes(r.name))) {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** That role does not exist! Roles are case sensitive. (You do not tag the role, simply write the name of the role)`);
@@ -1300,7 +1300,7 @@ module.exports = class extends Command {
 						});
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Autorole updated to \`${args[1]}\`!`);
@@ -1315,7 +1315,7 @@ module.exports = class extends Command {
 					});
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Autorole set to \`${args[1]}\`!`);
@@ -1329,7 +1329,7 @@ module.exports = class extends Command {
 				if (!message.member.guild.me.permissions.has(PermissionsBitField.ViewAuditLog)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** I need the permission \`Manage Channels\` for this command!`);
@@ -1347,7 +1347,7 @@ module.exports = class extends Command {
 					if (args[1] === undefined) {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Please mention a channel!`);
@@ -1360,7 +1360,7 @@ module.exports = class extends Command {
 						if (!status) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Logging is already disabled!`);
@@ -1370,7 +1370,7 @@ module.exports = class extends Command {
 
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Logging disabled!`);
@@ -1381,7 +1381,7 @@ module.exports = class extends Command {
 					if (!lchan) {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Check if the channel's name is correct and then type the command again.`);
@@ -1391,7 +1391,7 @@ module.exports = class extends Command {
 					if (lchan.type === 'GUILD_VOICE' || lchan.type === 'GUILD_CATEGORY') {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Check if the text channel's name is correct and then type the command again.`);
@@ -1406,7 +1406,7 @@ module.exports = class extends Command {
 						});
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Logging set to ${lchan}`);
@@ -1422,7 +1422,7 @@ module.exports = class extends Command {
 					});
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Logging updated to ${lchan}`);
@@ -1447,7 +1447,7 @@ module.exports = class extends Command {
 						if (args[2] === undefined) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Please type the name of the category!`);
@@ -1460,7 +1460,7 @@ module.exports = class extends Command {
 							if (!status) {
 								this.client.utils.messageDelete(message, 10000);
 
-								const embed = new MessageEmbed()
+								const embed = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Config**`,
 										`**◎ Error:** Ticket Category is already disabled!`);
@@ -1470,7 +1470,7 @@ module.exports = class extends Command {
 
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Success:** Ticket Category disabled!`);
@@ -1484,7 +1484,7 @@ module.exports = class extends Command {
 						if (!category) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Check if the categories name is correct and then type the command again. (The name is case sensitive!`);
@@ -1499,7 +1499,7 @@ module.exports = class extends Command {
 							});
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Success:** Ticket Category set to \`${category.name}\``);
@@ -1514,7 +1514,7 @@ module.exports = class extends Command {
 						});
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Ticket Category updated to \`${category.name}\``);
@@ -1533,7 +1533,7 @@ module.exports = class extends Command {
 						if (args[2] === undefined) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Please mention a channel!`);
@@ -1546,7 +1546,7 @@ module.exports = class extends Command {
 							if (!status) {
 								this.client.utils.messageDelete(message, 10000);
 
-								const embed = new MessageEmbed()
+								const embed = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Config**`,
 										`**◎ Error:** Ticket Logging is already disabled!`);
@@ -1556,7 +1556,7 @@ module.exports = class extends Command {
 
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Success:** Ticket Logging disabled!`);
@@ -1570,7 +1570,7 @@ module.exports = class extends Command {
 						if (!lchan) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Check if the categories name is correct and then type the command again. (The name is case sensitive!`);
@@ -1585,7 +1585,7 @@ module.exports = class extends Command {
 							});
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Success:** Ticket Logging set to ${lchan}`);
@@ -1600,7 +1600,7 @@ module.exports = class extends Command {
 						});
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Ticket Logging updated to ${lchan}`);
@@ -1616,7 +1616,7 @@ module.exports = class extends Command {
 					if (message.mentions.roles.size <= 0 && args[2] !== 'off') {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** A role must be mentioned`);
@@ -1631,7 +1631,7 @@ module.exports = class extends Command {
 						});
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Custom Support Role disabled!`);
@@ -1646,7 +1646,7 @@ module.exports = class extends Command {
 						});
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Support Role updated to ${suppRole}`);
@@ -1661,7 +1661,7 @@ module.exports = class extends Command {
 					});
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Support Role updated to ${suppRole}`);
@@ -1678,7 +1678,7 @@ module.exports = class extends Command {
 				if (talkedRecently.has(message.author.id)) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Wait 1 minute before changing the prefix again.`);
@@ -1699,7 +1699,7 @@ module.exports = class extends Command {
 					});
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Custom prefix disabled!`);
@@ -1710,7 +1710,7 @@ module.exports = class extends Command {
 				if (!args[1]) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const tomakataABCSUCC = new MessageEmbed()
+					const tomakataABCSUCC = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Please input some text.`);
@@ -1721,7 +1721,7 @@ module.exports = class extends Command {
 				if (args[1].includes('[') || args[1].includes('{') || args[1].includes(']') || args[1].includes('}') || args[1].includes(':') || args[1].includes('|')) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Please choose another prefix.`);
@@ -1732,7 +1732,7 @@ module.exports = class extends Command {
 				if (args[1].length >= 5) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const tomakataABCSUCC = new MessageEmbed()
+					const tomakataABCSUCC = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Please input a prefix no longer than 5 characters.`);
@@ -1743,7 +1743,7 @@ module.exports = class extends Command {
 				if (!args[1]) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Error:** Incorrect usage!`);
@@ -1759,7 +1759,7 @@ module.exports = class extends Command {
 					});
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Prefix updated!`);
@@ -1774,7 +1774,7 @@ module.exports = class extends Command {
 				});
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Config**`,
 						`**◎ Success:** Prefix set!`);
@@ -1786,7 +1786,7 @@ module.exports = class extends Command {
 
 			if (args[0] === 'welcome') {
 				if (args[1] === undefined) {
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setThumbnail(this.client.user.displayAvatarURL())
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField('Ragnarok',
@@ -1806,7 +1806,7 @@ module.exports = class extends Command {
 							if (!status.image) {
 								this.client.utils.messageDelete(message, 10000);
 
-								const embed = new MessageEmbed()
+								const embed = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Config**`,
 										`**◎ Error:** You have no custom image enabled!`);
@@ -1821,7 +1821,7 @@ module.exports = class extends Command {
 
 								this.client.utils.messageDelete(message, 10000);
 
-								const embed = new MessageEmbed()
+								const embed = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Config**`,
 										`**◎ Success:** Custom image has been disabled!`);
@@ -1833,7 +1833,7 @@ module.exports = class extends Command {
 						if (!args[2]) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Incorrect Usage! An example of this command would be: \`${prefix}config welcome image <url-to-image>\` or to disable: \`${prefix}config welcome image off\``);
@@ -1847,7 +1847,7 @@ module.exports = class extends Command {
 						if (!validExtensions.includes(urlExtension)) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const invalidExt = new MessageEmbed()
+							const invalidExt = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** \`.${urlExtension}\` is not a valid image type!\n\n**Acceptable files:**\n\`${validExtensions.join(', ')}\``);
@@ -1860,7 +1860,7 @@ module.exports = class extends Command {
 						if (!urlRegex.test(args[2])) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Please enter a valid URL, the URL must be absolute! An example of an absolute URL would be: https://www.google.com`);
@@ -1874,7 +1874,7 @@ module.exports = class extends Command {
 									if (!status) {
 										this.client.utils.messageDelete(message, 10000);
 
-										const embed = new MessageEmbed()
+										const embed = new EmbedBuilder()
 											.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 											.addField(`**${this.client.user.username} - Config**`,
 												`**◎ Error:** You must enable the welcome module first! You can do this by running the following command. \`${prefix}config welcome channel <#channel>\``);
@@ -1886,7 +1886,7 @@ module.exports = class extends Command {
 										} catch {
 											this.client.utils.messageDelete(message, 10000);
 
-											const invalidExt = new MessageEmbed()
+											const invalidExt = new EmbedBuilder()
 												.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 												.addField(`**${this.client.user.username} - Config**`,
 													`**◎ Error:** I was unable to process \`${args[2]}\`\nIs it a valid image?`);
@@ -1901,7 +1901,7 @@ module.exports = class extends Command {
 										});
 										this.client.utils.messageDelete(message, 0);
 
-										const embed = new MessageEmbed()
+										const embed = new EmbedBuilder()
 											.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 											.setImage(args[2])
 											.addField(`**${this.client.user.username} - Config**`,
@@ -1912,7 +1912,7 @@ module.exports = class extends Command {
 								} else {
 									this.client.utils.messageDelete(message, 10000);
 
-									const embed = new MessageEmbed()
+									const embed = new EmbedBuilder()
 										.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 										.addField(`**${this.client.user.username} - Config**`,
 											`**◎ Error:** Please enter a valid image URL! The end of the URL must end with one of the supported extensions. (\`.jpg, .jpeg, .png\`)`);
@@ -1937,7 +1937,7 @@ module.exports = class extends Command {
 						if (args[2] === undefined) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Please mention a channel!`);
@@ -1950,7 +1950,7 @@ module.exports = class extends Command {
 							if (!status) {
 								this.client.utils.messageDelete(message, 10000);
 
-								const embed = new MessageEmbed()
+								const embed = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Config**`,
 										`**◎ Error:** Welcome channel is already disabled!`);
@@ -1958,7 +1958,7 @@ module.exports = class extends Command {
 							} else {
 								this.client.utils.messageDelete(message, 10000);
 
-								const embed = new MessageEmbed()
+								const embed = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 									.addField(`**${this.client.user.username} - Config**`,
 										`**◎ Success:** Welcome channel disabled!`);
@@ -1970,7 +1970,7 @@ module.exports = class extends Command {
 						} else if (!lchan) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Check if the categories name is correct and then type the command again. (The name is case sensitive!`);
@@ -1983,7 +1983,7 @@ module.exports = class extends Command {
 							});
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Success:** Welcome channel is now set to ${lchan}`);
@@ -1996,7 +1996,7 @@ module.exports = class extends Command {
 							});
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Success:** Welcome channel updated to ${lchan}`);
@@ -2019,7 +2019,7 @@ module.exports = class extends Command {
 					if (args[1] === undefined) {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Please mention a channel!`);
@@ -2032,7 +2032,7 @@ module.exports = class extends Command {
 						if (!status) {
 							this.client.utils.messageDelete(message, 10000);
 
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - Config**`,
 									`**◎ Error:** Starboard is already disabled!`);
@@ -2042,7 +2042,7 @@ module.exports = class extends Command {
 
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Starboard disabled!`);
@@ -2053,7 +2053,7 @@ module.exports = class extends Command {
 					if (!lchan) {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Check if the channel's name is correct and then type the command again.`);
@@ -2063,7 +2063,7 @@ module.exports = class extends Command {
 					if (lchan.type === 'GUILD_VOICE' || lchan.type === 'GUILD_CATEGORY') {
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Error:** Check if the text channel's name is correct and then type the command again.`);
@@ -2078,7 +2078,7 @@ module.exports = class extends Command {
 						});
 						this.client.utils.messageDelete(message, 10000);
 
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Config**`,
 								`**◎ Success:** Starboard set to ${lchan}`);
@@ -2094,7 +2094,7 @@ module.exports = class extends Command {
 					});
 					this.client.utils.messageDelete(message, 10000);
 
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Config**`,
 							`**◎ Success:** Starboard updated to ${lchan}`);

@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Permissions } = require('discord.js');
+const { EmbedBuilder, Permissions } = require('discord.js');
 const Hastebin = require('hastebin.js');
 const haste = new Hastebin({ url: 'https://pastie.io' });
 const fetch = require('node-fetch-cjs');
@@ -35,7 +35,7 @@ module.exports = class extends Command {
 			}
 			const validExtensions = ['bat', 'c', 'cpp', 'css', 'html', 'ini', 'java', 'js', 'jsx', 'json', 'lua', 'md', 'php', 'py', 'pyc', 'scss', 'sql', 'txt', 'xml', 'yaml'];
 			if (!validExtensions.includes(fileExtension)) {
-				const invalidExt = new MessageEmbed()
+				const invalidExt = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Hastebin**`,
 						`**◎ Error:** \`.${fileExtension}\` is not a valid file type!\n\n**Acceptable files:**\n\`${validExtensions.join(', ')}\``);
@@ -46,7 +46,7 @@ module.exports = class extends Command {
 				.then((res) => res.text())
 				.then((body) => {
 					if (!body) {
-						const emptyFile = new MessageEmbed()
+						const emptyFile = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.addField(`**${this.client.user.username} - Hastebin**`,
 								`**◎ Error:** You can not upload an empty file!`);
@@ -55,21 +55,21 @@ module.exports = class extends Command {
 					}
 					haste.post(body, extension)
 						.then((res) => {
-							const hastEmb = new MessageEmbed()
+							const hastEmb = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - HasteBin**`,
 									`**◎ Link:** ${res}\nPosted By: ${message.author}`)
 								.setURL(res);
 							message.channel.send({ embeds: [hastEmb] });
 						}).catch(() => {
-							const error = new MessageEmbed()
+							const error = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.addField(`**${this.client.user.username} - HasteBin**`,
 									`**◎ Error:** An error occured!`);
 							message.channel.send({ embeds: [error] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						});
 				}).catch(() => {
-					const error = new MessageEmbed()
+					const error = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - HasteBin**`,
 							`**◎ Error:** An error occured!`);
@@ -77,7 +77,7 @@ module.exports = class extends Command {
 				});
 			return;
 		} if (message.attachments.size > 1) {
-			const fileCount = new MessageEmbed()
+			const fileCount = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Hastebin**`,
 					`**◎ Error:** You can only post 1 file at a time!`);
@@ -85,7 +85,7 @@ module.exports = class extends Command {
 			return;
 		}
 		if (args[0] === undefined) {
-			const error = new MessageEmbed()
+			const error = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Hastebin**`,
 					`**◎ Error:** You must input some text!`);
@@ -111,14 +111,14 @@ module.exports = class extends Command {
 
 		await haste.post(cnt, 'js')
 			.then((link) => {
-				const hastEmb = new MessageEmbed()
+				const hastEmb = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - HasteBin**`,
 						`**◎ Link:** ${link}\nPosted By: ${message.author}`)
 					.setURL(link);
 				message.channel.send({ embeds: [hastEmb] });
 			}).catch(() => {
-				const error = new MessageEmbed()
+				const error = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - HasteBin**`,
 						`**◎ Error:** An error occured!`);

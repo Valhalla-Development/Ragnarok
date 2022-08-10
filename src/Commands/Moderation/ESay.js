@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -19,7 +19,7 @@ module.exports = class extends Command {
 		if (args[0] === undefined) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - ESay**`,
 					`**◎ Error:** You need to input text!`);
@@ -29,7 +29,7 @@ module.exports = class extends Command {
 
 		const sayMessage = args.join(' ');
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setDescription(`${sayMessage}`);
 		message.channel.send({ embeds: [embed] });

@@ -1,6 +1,6 @@
 const Command = require('../../Structures/Command');
 const { MessageButton, MessageActionRow } = require('discord.js');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -13,7 +13,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message) {
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Ping**`,
 				`Want to invite ${this.client.user}?`);

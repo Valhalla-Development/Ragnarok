@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-unused-expressions */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const blackjack = require('discord-blackjack');
@@ -29,7 +29,7 @@ module.exports = class extends Command {
 		if (!balance) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const limitE = new MessageEmbed()
+			const limitE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - BlackJack**`,
@@ -41,7 +41,7 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - BlackJack**`,
 					`**◎ Error:** Please input an amount you wish to bet.`);
@@ -52,7 +52,7 @@ module.exports = class extends Command {
 		if (comCooldown.has(message.author.id)) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Blackjack**`,
 					`**◎ Error:** You can only run one instance of this game!.`);
@@ -67,7 +67,7 @@ module.exports = class extends Command {
 		if (isNaN(betAmt)) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const wrongUsage = new MessageEmbed()
+			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - BlackJack**`,
@@ -79,7 +79,7 @@ module.exports = class extends Command {
 		if (Number(betAmt) < 1) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const wrongUsage = new MessageEmbed()
+			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - BlackJack**`,
@@ -91,7 +91,7 @@ module.exports = class extends Command {
 		if (Number(betAmt) > balance.bank) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const wrongUsage = new MessageEmbed()
+			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - BlackJack**`,
@@ -102,31 +102,31 @@ module.exports = class extends Command {
 
 		const houseBet = betAmt;
 
-		const win = new MessageEmbed()
+		const win = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Blackjack**`,
 				`**◎** ${message.author} won! <:coin:706659001164628008> \`${Number(houseBet).toLocaleString('en')}\` has been credited to your bank!`);
 
-		const lose = new MessageEmbed()
+		const lose = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Blackjack**`,
 				`**◎** ${message.author} lost <:coin:706659001164628008> \`${Number(betAmt).toLocaleString('en')}\``);
 
-		const tie = new MessageEmbed()
+		const tie = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Blackjack**`,
 				`**◎** ${message.author} tied. Your wager has been returned to you.`);
 
-		const cancel = new MessageEmbed()
+		const cancel = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Blackjack**`,
 				`**◎** ${message.author} cancelled the game.`);
 
-		const timeout = new MessageEmbed()
+		const timeout = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Blackjack**`,

@@ -1,7 +1,7 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable no-inline-comments */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const ms = require('ms');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -30,7 +30,7 @@ module.exports = class extends Command {
 
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Claim**`,
@@ -65,7 +65,7 @@ module.exports = class extends Command {
 		}
 
 		if (!args.length) {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Claim**`,
 					`**◎ Hourly:** \`${Date.now() > balance.hourly ? 'Available!' : ms(balance.hourly - date.getTime(), { long: true })}\`
@@ -80,7 +80,7 @@ module.exports = class extends Command {
 			if (Date.now() < balance.hourly && Date.now() < balance.daily && Date.now() < balance.weekly && Date.now() < balance.monthly) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Claim - All**`,
@@ -109,7 +109,7 @@ module.exports = class extends Command {
 
 			const newTot = balance.total + fullPrice;
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Claim - All**`,
@@ -136,7 +136,7 @@ module.exports = class extends Command {
 				balance.total = totaCalc2;
 				this.client.setBalance.run(balance);
 
-				const depArg = new MessageEmbed()
+				const depArg = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Hourly**`,
@@ -148,7 +148,7 @@ module.exports = class extends Command {
 			if (balance.hourly !== null) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Hourly**`,
@@ -176,7 +176,7 @@ module.exports = class extends Command {
 				balance.total = totaCalc2;
 				this.client.setBalance.run(balance);
 
-				const depArg = new MessageEmbed()
+				const depArg = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Daily**`,
@@ -188,7 +188,7 @@ module.exports = class extends Command {
 			if (balance.daily !== null) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Daily**`,
@@ -216,7 +216,7 @@ module.exports = class extends Command {
 				balance.total = totaCalc2;
 				this.client.setBalance.run(balance);
 
-				const depArg = new MessageEmbed()
+				const depArg = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Weeky**`,
@@ -228,7 +228,7 @@ module.exports = class extends Command {
 			if (balance.weekly !== null) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Weekly**`,
@@ -256,7 +256,7 @@ module.exports = class extends Command {
 				balance.total = totaCalc2;
 				this.client.setBalance.run(balance);
 
-				const depArg = new MessageEmbed()
+				const depArg = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Monthly**`,
@@ -268,7 +268,7 @@ module.exports = class extends Command {
 			if (balance.monthly !== null) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Monthly**`,

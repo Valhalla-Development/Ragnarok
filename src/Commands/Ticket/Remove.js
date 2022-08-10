@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Permissions } = require('discord.js');
+const { EmbedBuilder, Permissions } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -30,7 +30,7 @@ module.exports = class extends Command {
 		if (!modRole) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const nomodRole = new MessageEmbed()
+			const nomodRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Remove**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
@@ -41,7 +41,7 @@ module.exports = class extends Command {
 		if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const donthaveRole = new MessageEmbed()
+			const donthaveRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Remove**`,
 					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
@@ -53,7 +53,7 @@ module.exports = class extends Command {
 		if (!rUser) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const nouser = new MessageEmbed()
+			const nouser = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Remove**`,
 					`**◎ Error:** Sorry! I could not find the specified user!`);
@@ -73,7 +73,7 @@ module.exports = class extends Command {
 			if (!user.permissionsIn(getChan).has([Permissions.FLAGS.SEND_MESSAGES, Permissions.FLAGS.VIEW_CHANNEL])) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const nouser = new MessageEmbed()
+				const nouser = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Remove**`,
 						`**◎ Error:** This user is not in this channel!`);
@@ -84,7 +84,7 @@ module.exports = class extends Command {
 			getChan.permissionOverwrites.create(rUser, {
 				VIEW_CHANNEL: false
 			}).catch(console.error);
-			const removed = new MessageEmbed()
+			const removed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Remove**`,
 					`**◎ Success:** ${rUser} has been removed from the ticket!`);
@@ -92,14 +92,14 @@ module.exports = class extends Command {
 			const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
 			const logchan = message.guild.channels.cache.find((chan) => chan.id === logget.log);
 			if (!logchan) return;
-			const loggingembed = new MessageEmbed()
+			const loggingembed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setDescription(`<@${message.author.id}> removed ${rUser} from ticket <#${getChan.id}>`);
 			logchan.send({ embeds: [loggingembed] });
 		} else {
 			this.client.utils.messageDelete(message, 10000);
 
-			const errEmbed = new MessageEmbed()
+			const errEmbed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Remove**`,
 					`**◎ Error:** This ticket could not be found.`);

@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -21,7 +21,7 @@ module.exports = class extends Command {
 		const reason = args[0] ? args.join(' ') : 'AFK';
 
 		if (reason.length > 100) {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - AFK**`,
 					`**◎ Error:** Please limit your reason to a maximum of 100 characters!`);
@@ -37,7 +37,7 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
-			const badChannel = new MessageEmbed()
+			const badChannel = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - AFK**`,
 					`**◎ Success:** ${message.author} is now AFK for the following reason:\n\n${reason}`);
@@ -51,7 +51,7 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
-			const badChannel = new MessageEmbed()
+			const badChannel = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - AFK**`,
 					`**◎ Success:** ${message.author} is now AFK for the following reason:\n\n${reason}`);

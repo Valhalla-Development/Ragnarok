@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed, PermissionsBitField, MessageButton, MessageActionRow, Modal, TextInputComponent } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, MessageButton, MessageActionRow, Modal, TextInputComponent } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
@@ -22,7 +22,7 @@ module.exports = class extends Event {
 				const firstResponse = interaction.fields.getTextInputValue(`textinput-${interaction.channelId}`);
 
 				await interaction.deferReply({ ephemeral: true });
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(interaction.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.`);
@@ -104,7 +104,7 @@ module.exports = class extends Event {
 
 				const user = this.client.users.cache.find((a) => a.id === ticket.authorid);
 				if (user) {
-					const logEmbed = new MessageEmbed()
+					const logEmbed = new EmbedBuilder()
 						.setColor(this.client.utils.color(interaction.guild.me.displayHexColor))
 						.setAuthor({ name: 'Ticket Closed', iconURL: interaction.guild.iconURL({ dynamic: true }) })
 						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
@@ -132,7 +132,7 @@ module.exports = class extends Event {
 					return;
 				}
 
-				const logEmbed = new MessageEmbed()
+				const logEmbed = new EmbedBuilder()
 					.setColor(this.client.utils.color(interaction.guild.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Closed', iconURL: interaction.guild.iconURL({ dynamic: true }) })
 					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
@@ -176,7 +176,7 @@ module.exports = class extends Event {
 
 			// Check if bot has perms
 			if (!guild.me.permissions.has(PermissionsBitField.ManageChannels)) {
-				const botPerm = new MessageEmbed()
+				const botPerm = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:`);
@@ -187,7 +187,7 @@ module.exports = class extends Event {
 
 			// "Support" role
 			if (!guild.roles.cache.find((r) => r.name === 'Support Team') && !fetchRole.role) {
-				const nomodRole = new MessageEmbed()
+				const nomodRole = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
@@ -199,7 +199,7 @@ module.exports = class extends Event {
 			// If no reason
 			if (interaction.customId === 'closeTicket') {
 				interaction.channel.sendTyping();
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.`);
@@ -280,7 +280,7 @@ module.exports = class extends Event {
 
 				const user = this.client.users.cache.find((a) => a.id === ticket.authorid);
 				if (user) {
-					const logEmbed = new MessageEmbed()
+					const logEmbed = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.setAuthor({ name: 'Ticket Closed', iconURL: guild.iconURL({ dynamic: true }) })
 						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
@@ -307,7 +307,7 @@ module.exports = class extends Event {
 					return;
 				}
 
-				const logEmbed = new MessageEmbed()
+				const logEmbed = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Closed', iconURL: guild.iconURL({ dynamic: true }) })
 					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
@@ -353,7 +353,7 @@ module.exports = class extends Event {
 			const guild = this.client.guilds.cache.get(interaction.guild.id);
 			const fetch = db.prepare(`SELECT * FROM ticketConfig WHERE guildid = ${guild.id}`).get();
 			if (!fetch) {
-				const alreadyTicket = new MessageEmbed()
+				const alreadyTicket = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Error:** No ticket configuration found.\n\nPlease ask an administrator to set up the ticket system.`);
@@ -369,7 +369,7 @@ module.exports = class extends Event {
 			}
 
 			if (!guild.me.permissions.has(PermissionsBitField.ManageChannels)) {
-				const botPerm = new MessageEmbed()
+				const botPerm = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:`);
@@ -380,7 +380,7 @@ module.exports = class extends Event {
 
 			// "Support" role
 			if (!guild.roles.cache.find((r) => r.name === 'Support Team') && !fetch.role) {
-				const nomodRole = new MessageEmbed()
+				const nomodRole = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
@@ -415,7 +415,7 @@ module.exports = class extends Event {
 			if (foundTicket.get({ authorid: interaction.user.id })) {
 				try {
 					const cha = guild.channels.cache.get(checkTicketEx.chanid);
-					const alreadyTicket = new MessageEmbed()
+					const alreadyTicket = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Ticket**`,
 							`**◎ Error:** It seems you already have a ticket open. | ${cha}`);
@@ -495,7 +495,7 @@ module.exports = class extends Event {
 					chanid: c.id,
 					ticketid: randomString
 				});
-				const newTicketE = new MessageEmbed()
+				const newTicketE = new EmbedBuilder()
 					.setColor(this.client.utils.color(interaction.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
 						`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
@@ -514,7 +514,7 @@ module.exports = class extends Event {
 				const row = new MessageActionRow()
 					.addComponents(buttonClose, buttonCloseReason);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(interaction.guild.me.displayHexColor))
 					.setTitle(`New Ticket`)
 					.setDescription(`Welcome to our support system ${interaction.user}.\nPlease hold tight and a support member will be with you shortly.${reason ? `\n\n\nYou opened this ticket for the following reason:\n\`\`\`${reason}\`\`\`` : '\n\n\n**Please specify a reason for opening this ticket.**'}`);
@@ -530,7 +530,7 @@ module.exports = class extends Event {
 
 					const openEpoch = Math.floor(new Date().getTime() / 1000);
 
-					const logEmbed = new MessageEmbed()
+					const logEmbed = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.setAuthor({ name: 'Ticket Opened', iconURL: guild.iconURL({ dynamic: true }) })
 						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${interaction.guild.id}/${c.id})`, inline: true },
@@ -569,7 +569,7 @@ module.exports = class extends Event {
 			});
 
 			if (!roleArrayCleaned.includes(role.id)) {
-				const alreadyRole = new MessageEmbed()
+				const alreadyRole = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Role Menu**`,
 						`**◎ Error:** The role you selected no longer exists on the server.`);
@@ -585,13 +585,13 @@ module.exports = class extends Event {
 			// check if user has role already
 			if (user.roles.cache.has(role.id)) {
 				user.roles.remove(role).then(() => {
-					const alreadyRole = new MessageEmbed()
+					const alreadyRole = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Role Menu**`,
 							`**◎ Success:** I have removed the ${role} role from you.`);
 					interaction.reply({ embeds: [alreadyRole], ephemeral: true });
 				}).catch(() => {
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Rolemenu**`,
 							`**◎ Error:** An error occured.`);
@@ -600,13 +600,13 @@ module.exports = class extends Event {
 			} else {
 				// add role to user
 				user.roles.add(role).then(() => {
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Rolemenu**`,
 							`**◎ Success:** I have added the ${role} role to you!`);
 					interaction.reply({ embeds: [embed], ephemeral: true });
 				}).catch(() => {
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Rolemenu**`,
 							`**◎ Error:** An error occured.`);

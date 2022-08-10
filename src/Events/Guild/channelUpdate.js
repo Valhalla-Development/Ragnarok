@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -18,7 +18,7 @@ module.exports = class extends Event {
 		let oldNs;
 		let newNs;
 
-		const logembed = new MessageEmbed()
+		const logembed = new EmbedBuilder()
 			.setColor(this.client.utils.color(oldChannel.guild.me.displayHexColor))
 			.setAuthor({ name: `${oldChannel.guild.name}`, iconURL: oldChannel.guild.iconURL() })
 			.setTitle('Channel Updated')

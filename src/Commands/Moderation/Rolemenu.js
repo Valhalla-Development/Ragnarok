@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, MessageButton, MessageActionRow } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -19,7 +19,7 @@ module.exports = class extends Command {
 
 		const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${message.guild.id}`).get();
 		if (!foundRoleMenu || !foundRoleMenu.roleList || JSON.parse(foundRoleMenu.roleList).length <= 0) {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - RoleMenu**`,
 					`**◎ Error:** The roles for the menu have not been set yet. Please try again later.`);
@@ -46,7 +46,7 @@ module.exports = class extends Command {
 
 			// If there is no length to roleArrayCleaned, delete from database and send a message
 			if (roleArrayCleaned.length <= 0) {
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - RoleMenu**`,
 						`**◎ Error:** The roles for the menu have been removed from the server. Please try again later.`);
@@ -68,7 +68,7 @@ module.exports = class extends Command {
 				);
 			}
 
-			const roleMenuEmbed = new MessageEmbed()
+			const roleMenuEmbed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle('Assign a Role')
 				.setDescription(`Select the role you wish to assign to yourself.`);

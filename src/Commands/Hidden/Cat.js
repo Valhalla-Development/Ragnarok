@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, MessageButton, MessageActionRow } = require('discord.js');
 const comCooldown = new Set();
 const comCooldownSeconds = 10;
 const RedditImageFetcher = require('reddit-image-fetcher');
@@ -24,7 +24,7 @@ module.exports = class extends Command {
 		if (comCooldown.has(message.author.id)) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Cat**`,
 					`**◎ Error:** Please only run this command once.`);
@@ -45,7 +45,7 @@ module.exports = class extends Command {
 
 		const meme = await getMeme();
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setAuthor({ name: `${meme[0].title.length >= 256 ? `${meme[0].title.substring(0, 253)}...` : meme[0].title}`, url: `${meme[0].postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
 			.setImage(meme[0].image)
@@ -78,7 +78,7 @@ module.exports = class extends Command {
 
 		collector.on('collect', async b => {
 			if (b.user.id !== message.author.id) {
-				const wrongUser = new MessageEmbed()
+				const wrongUser = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Cat**`,
 						`**◎ Error:** Only the command executor can select an option!`);
@@ -97,7 +97,7 @@ module.exports = class extends Command {
 
 				// If there are no more memes, remove the button
 				if (newMemes.length === 0) {
-					const newMeme = new MessageEmbed()
+					const newMeme = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.setAuthor({ name: `${randomMeme.title.length >= 256 ? `${randomMeme.title.substring(0, 253)}...` : randomMeme.title}`, url: `${randomMeme.postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
 						.setImage(randomMeme.image)
@@ -106,7 +106,7 @@ module.exports = class extends Command {
 					return;
 				}
 
-				const newMeme = new MessageEmbed()
+				const newMeme = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setAuthor({ name: `${randomMeme.title.length >= 256 ? `${randomMeme.title.substring(0, 253)}...` : randomMeme.title}`, url: `${randomMeme.postLink}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
 					.setImage(randomMeme.image)

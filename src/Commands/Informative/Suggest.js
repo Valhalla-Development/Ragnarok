@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, MessageButton, MessageActionRow } = require('discord.js');
 const { supportGuild, suggestChan } = require('../../../config.json');
 
 module.exports = class extends Command {
@@ -17,7 +17,7 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const noinEmbed = new MessageEmbed()
+			const noinEmbed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Suggest**`,
@@ -41,7 +41,7 @@ module.exports = class extends Command {
 		const row = new MessageActionRow()
 			.addComponents(buttonA, buttonB);
 
-		const questionE = new MessageEmbed()
+		const questionE = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Suggest**`,
@@ -55,7 +55,7 @@ module.exports = class extends Command {
 
 		collector.on('collect', async b => {
 			if (b.user.id !== message.author.id) {
-				const wrongUser = new MessageEmbed()
+				const wrongUser = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Help**`,
 						`**◎ Error:** Only the command executor can select an option!`);
@@ -66,7 +66,7 @@ module.exports = class extends Command {
 			collector.resetTimer();
 
 			if (b.customId === 'yes') {
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(this.client.guilds.cache.get(supportGuild).me.displayHexColor))
 					.setTitle('Suggestion')
 					.setDescription(`**◎ User: <@${message.author.id}> - **\`${message.author.tag}\`\n**Suggestion:** ${argresult}`)
@@ -76,7 +76,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 				this.client.utils.messageDelete(m, 0);
 
-				const loggedEmbed = new MessageEmbed()
+				const loggedEmbed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Suggest**`,

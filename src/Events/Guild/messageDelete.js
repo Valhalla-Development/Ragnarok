@@ -1,6 +1,6 @@
 const Event = require('../../Structures/Event');
 const RagnarokEmbed = require('../../Structures/RagnarokEmbed');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -29,7 +29,7 @@ module.exports = class extends Event {
 			}
 
 			if (!deletionLog) {
-				const noLogE = new MessageEmbed()
+				const noLogE = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setAuthor({ name: `${message.author.tag}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) })
 					.setTitle('Message Deleted')

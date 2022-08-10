@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const comCooldown = new Set();
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 		if (!modRole) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const nomodRole = new MessageEmbed()
+			const nomodRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Rename**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 		if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const donthaveRole = new MessageEmbed()
+			const donthaveRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Rename**`,
 					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
@@ -60,7 +60,7 @@ module.exports = class extends Command {
 			if (comCooldown.has(`${message.author.id}-${getChan.id}`)) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const donthaveRole = new MessageEmbed()
+				const donthaveRole = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Rename**`,
 						`**◎ Error:** Sorry! You must wait at least 10 minutes before changing the channel name again due to an API restriction.`);
@@ -72,7 +72,7 @@ module.exports = class extends Command {
 				if (!argResult) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const donthaveRole = new MessageEmbed()
+					const donthaveRole = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Rename**`,
 							`**◎ Error:** Sorry! Please input a valid string.`);
@@ -82,14 +82,14 @@ module.exports = class extends Command {
 				if (argResult.length > 40 || argResult.length < 4) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const donthaveRole = new MessageEmbed()
+					const donthaveRole = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Rename**`,
 							`**◎ Error:** Sorry! Please keep the name length **below** 40 and **above** 4.`);
 					message.channel.send({ embeds: [donthaveRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Rename**`,
 						`**◎ Success:** <@${message.author.id}> renamed ticket to \`${argResult}\``);
@@ -101,7 +101,7 @@ module.exports = class extends Command {
 					(chan) => chan.id === logget.log
 				);
 				if (!logchan) return;
-				const loggingembed = new MessageEmbed()
+				const loggingembed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Rename**`,
 						`**◎ Success:** <@${message.author.id}> renamed ticket from \`#${getChan.name}\` to <#${getChan.id}>`);
@@ -122,7 +122,7 @@ module.exports = class extends Command {
 			if (comCooldown.has(`${message.author.id}-${foundTicket.chanid}`)) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const donthaveRole = new MessageEmbed()
+				const donthaveRole = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Rename**`,
 						`**◎ Error:** Sorry! You must wait at least 10 minutes before changing the channel name again due to an API restriction.`);
@@ -135,7 +135,7 @@ module.exports = class extends Command {
 				if (!argResult) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const donthaveRole = new MessageEmbed()
+					const donthaveRole = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Rename**`,
 							`**◎ Error:** Sorry! Please input a valid string.`);
@@ -146,7 +146,7 @@ module.exports = class extends Command {
 				if (argResult.length > 40 || argResult.length < 4) {
 					this.client.utils.messageDelete(message, 10000);
 
-					const donthaveRole = new MessageEmbed()
+					const donthaveRole = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Rename**`,
 							`**◎ Error:** Sorry! Please keep the name length **below** 40 and **above** 4.`);
@@ -154,7 +154,7 @@ module.exports = class extends Command {
 					return;
 				}
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Rename**`,
 						`**◎ Success:** <@${message.author.id}> renamed ticket from to \`${argResult}\``);
@@ -166,7 +166,7 @@ module.exports = class extends Command {
 					(chan) => chan.id === logget.log
 				);
 				if (!logchan) return;
-				const loggingembed = new MessageEmbed()
+				const loggingembed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Rename**`,
 						`**◎ Success:** <@${message.author.id}> renamed ticket from \`#${message.channel.name}\` to <#${message.channel.id}>`);
@@ -181,7 +181,7 @@ module.exports = class extends Command {
 		} else if (!foundTicket && !message.channel.name.startsWith('ticket-')) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const errEmbed = new MessageEmbed()
+			const errEmbed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Rename**`,
 					`**◎ Error:** This ticket could not be found.`);

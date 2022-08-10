@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const comCooldown = new Set();
@@ -32,7 +32,7 @@ module.exports = class extends Command {
 		if (foundTicket && message.channel.id !== foundTicket.chanid) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const badChannel = new MessageEmbed()
+			const badChannel = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Error:** You can't use the close command outside of a ticket channel.`);
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 		if (!foundTicket) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const errEmbed = new MessageEmbed()
+			const errEmbed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Error:** You can't use the close command outside of a ticket channel.`);
@@ -60,7 +60,7 @@ module.exports = class extends Command {
 		} else {
 			this.client.utils.messageDelete(message, 10000);
 
-			const nomodRole = new MessageEmbed()
+			const nomodRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
@@ -70,7 +70,7 @@ module.exports = class extends Command {
 		if (!message.member.roles.cache.has(modRole.id) && message.author.id !== message.guild.ownerID) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const donthaveRole = new MessageEmbed()
+			const donthaveRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
@@ -92,7 +92,7 @@ module.exports = class extends Command {
 			const row = new MessageActionRow()
 				.addComponents(buttonA, buttonB);
 
-			const initial = new MessageEmbed()
+			const initial = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!`);
@@ -117,7 +117,7 @@ module.exports = class extends Command {
 
 				if (b.customId === 'close') {
 					message.channel.sendTyping();
-					const embed = new MessageEmbed()
+					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Ticket**`,
 							`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.`);
@@ -197,7 +197,7 @@ module.exports = class extends Command {
 					const user = this.client.users.cache.find((a) => a.id === foundTicket.authorid);
 					if (user) {
 						if (!closeReason) {
-							const dmE = new MessageEmbed()
+							const dmE = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
 								.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
@@ -216,7 +216,7 @@ module.exports = class extends Command {
 								return;
 							});
 						} else {
-							const dmE = new MessageEmbed()
+							const dmE = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 								.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
 								.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
@@ -255,7 +255,7 @@ module.exports = class extends Command {
 					}
 
 					if (!closeReason) {
-						const logEmbed = new MessageEmbed()
+						const logEmbed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
 							.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
@@ -270,7 +270,7 @@ module.exports = class extends Command {
 							comCooldown.delete(message.author.id);
 						}
 					} else {
-						const logEmbed = new MessageEmbed()
+						const logEmbed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 							.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
 							.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
@@ -301,7 +301,7 @@ module.exports = class extends Command {
 					this.client.utils.messageDelete(message, 0);
 					this.client.utils.messageDelete(m, 0);
 
-					const limitE = new MessageEmbed()
+					const limitE = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${this.client.user.username} - Close**`,
@@ -313,7 +313,7 @@ module.exports = class extends Command {
 		} else {
 			this.client.utils.messageDelete(message, 10000);
 
-			const badChannel = new MessageEmbed()
+			const badChannel = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Close**`,
 					`**◎ Error:** Please only run \`${prefix}close\` once!`);

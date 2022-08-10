@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
+const { EmbedBuilder, MessageActionRow, MessageButton } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -47,7 +47,7 @@ module.exports = class extends Event {
 
 								setTimeout(() => {
 									// I added this timeout because I couldn’t be bothered fixing, please don’t remove or I cry
-									const roleMenuEmbed = new MessageEmbed()
+									const roleMenuEmbed = new EmbedBuilder()
 										.setColor(clientGrab.utils.color(role.guild.me.displayHexColor))
 										.setTitle('Assign a Role')
 										.setDescription(`Select the role you wish to assign to yourself.`);
@@ -55,7 +55,7 @@ module.exports = class extends Event {
 								});
 							}, 1000);
 						} catch {
-							const embed = new MessageEmbed()
+							const embed = new EmbedBuilder()
 								.setColor(clientGrab.utils.color(role.guild.me.displayHexColor))
 								.addField(`**${clientGrab.user.username} - Config**`,
 									`**◎ Error:** A role in the role menu was deleted, I was unable to update the active role menu. Please run the following command to refresh it.\n\`${prefix}rolemenu\``);
@@ -73,7 +73,7 @@ module.exports = class extends Event {
 		const logs = id.channel;
 		if (!logs) return;
 
-		const logembed = new MessageEmbed()
+		const logembed = new EmbedBuilder()
 			.setAuthor({ name: `${role.guild.name}`, iconURL: role.guild.iconURL() })
 			.setDescription(`**◎ Role Deleted: \`${role.name}\`.**`)
 			.setColor(this.client.utils.color(role.guild.me.displayHexColor))

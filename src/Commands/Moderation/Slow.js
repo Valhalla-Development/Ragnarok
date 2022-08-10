@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 const Command = require('../../Structures/Command');
 const ms = require('ms');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 		if (!guildCheck) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Error:** The specified channel does not exist in this guild!`);
@@ -50,7 +50,7 @@ module.exports = class extends Command {
 			this.client.utils.messageDelete(message, 10000);
 
 			channel.setRateLimitPerUser(0);
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Success:** <#${channel.id}> is no longer in slowmode.`);
@@ -61,7 +61,7 @@ module.exports = class extends Command {
 		if (!time) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Error:** You did not include a valid time! Correct usage is:\n\`${prefix}slow [channel] <time>\` an example would be: \`${prefix}slow #general 10s\` or \`${prefix}slow 10s\``);
@@ -75,7 +75,7 @@ module.exports = class extends Command {
 		if (!toSecond || toSecond === undefined) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Error:** You did not include a valid time! Correct usage is:\n\`${prefix}slow [channel] <time>\` an example would be: \`${prefix}slow #general 10s\` or \`${prefix}slow 10s\``);
@@ -86,7 +86,7 @@ module.exports = class extends Command {
 		if (toSecond > 21600) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Error:** The maximum cooldown is 6 hours.`);
@@ -95,7 +95,7 @@ module.exports = class extends Command {
 		} else if (toSecond < 1) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Slow**`,
 					`**◎ Error:** The minimum cooldown is 1 second.`);
@@ -107,7 +107,7 @@ module.exports = class extends Command {
 
 		await channel.setRateLimitPerUser(toSecond);
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Slow**`,
 				`**◎ Success:** <#${channel.id}> is now in slowmode. Regular users can send messages every \`${ms(ms(time), { long: true })}\``);

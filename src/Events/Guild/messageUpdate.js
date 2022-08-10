@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed, Permissions } = require('discord.js');
+const { EmbedBuilder, Permissions } = require('discord.js');
 const RagnarokEmbed = require('../../Structures/RagnarokEmbed');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -12,7 +12,7 @@ module.exports = class extends Event {
 		const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(newMessage.guild.id);
 		if (adsprot['count(*)']) {
 			if (!newMessage.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
-				const npPerms = new MessageEmbed()
+				const npPerms = new EmbedBuilder()
 					.setColor(this.client.utils.color(newMessage.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ads Protection**`,
 						`**◎ Error:** I do not have the \`MANAGE_MESSAGES\` permissions. Disabling Ads Protection.`);

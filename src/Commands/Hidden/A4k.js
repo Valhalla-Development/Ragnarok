@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const fetch = require('node-fetch-cjs');
@@ -21,7 +21,7 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const incorrectFormat = new MessageEmbed()
+			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - A4K**`,
 					`**◎ Error:** Incorrect usage! Please use \`${prefix}a4k <search>\``);
@@ -35,7 +35,7 @@ module.exports = class extends Command {
 			.then(res => res.json())
 			.then(res => res.data.children)
 			.then(res => {
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${res[0].data.subreddit} - Top 3 results for: ${args.join(' ')}`, iconURL: 'http://i.imgur.com/sdO8tAw.png' })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setDescription(`[**◎ ${res[0].data.title}**](${res[0].data.url})\n \`\`\`${res[0].data.selftext.substring(0, 150)}...\`\`\`\n
@@ -45,7 +45,7 @@ module.exports = class extends Command {
 				message.channel.send({ embeds: [embed] });
 			}).catch(() => {
 				this.client.utils.messageDelete(message, 10000);
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - A4K**`,
 						`**◎ Error:** No results found!`);

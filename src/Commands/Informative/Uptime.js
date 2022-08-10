@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -14,7 +14,7 @@ module.exports = class extends Command {
 		const nowInMs = Date.now() - this.client.uptime;
 		const nowInSecond = Math.round(nowInMs / 1000);
 
-		const botembed = new MessageEmbed()
+		const botembed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Uptime**`,
 				`**◎ My uptime is:** <t:${nowInSecond}:R>`);

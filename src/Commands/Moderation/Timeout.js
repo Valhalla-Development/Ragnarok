@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { PermissionsBitField, MessageEmbed } = require('discord.js');
+const { PermissionsBitField, EmbedBuilder } = require('discord.js');
 const ms = require('ms');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -24,7 +24,7 @@ module.exports = class extends Command {
 		const { prefix } = prefixgrab;
 
 		if (!args[0]) {
-			const incorrectFormat = new MessageEmbed()
+			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
 					`**◎ Error:** Incorrect usage! Available Commands:
@@ -37,7 +37,7 @@ module.exports = class extends Command {
 		const user = message.mentions.members.first() || message.guild.members.cache.find(usr => usr.id === args[0]);
 
 		if (!user) {
-			const incorrectFormat = new MessageEmbed()
+			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
 					`**◎ Error:** Incorrect usage! Available Commands:
@@ -49,7 +49,7 @@ module.exports = class extends Command {
 
 		// Check if user is message.author
 		if (user.user.id === message.author.id) {
-			const incorrectFormat = new MessageEmbed()
+			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
 					`**◎ Error:** You can't timeout yourself!`);
@@ -59,7 +59,7 @@ module.exports = class extends Command {
 
 		// Check if user is bannable
 		if (user.permissions.has(PermissionsBitField.ManageGuild) || user.permissions.has(PermissionsBitField.Administrator)) {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
 					`**◎ Error:** You cannot timeout <@${user.id}>`);
@@ -69,7 +69,7 @@ module.exports = class extends Command {
 
 		if (args[0] === 'clear') {
 			if (!args[1]) {
-				const incorrectFormat = new MessageEmbed()
+				const incorrectFormat = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Timeout**`,
 						`**◎ Error:** Incorrect usage! Please use \`${prefix}timeout clear <@user>\``);
@@ -79,7 +79,7 @@ module.exports = class extends Command {
 
 			const userClear = message.mentions.members.first() || message.guild.members.cache.find(usr => usr.id === args[0]);
 			if (!userClear) {
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Timeout**`,
 						`**◎ Error:** Run \`${prefix}help timeout\` If you are unsure.`);
@@ -88,7 +88,7 @@ module.exports = class extends Command {
 			}
 
 			if (!user.isCommunicationDisabled()) {
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Timeout**`,
 						`**◎ Error:** ${user} is not timed out`);
@@ -99,7 +99,7 @@ module.exports = class extends Command {
 			try {
 				user.timeout(0);
 			} catch {
-				const valueLow = new MessageEmbed()
+				const valueLow = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Timeout**`,
 						`**◎ Error:** An unknown error occured.`);
@@ -107,7 +107,7 @@ module.exports = class extends Command {
 				return;
 			}
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setThumbnail(this.client.user.displayAvatarURL())
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField('Action | Timeout Clear',
@@ -132,7 +132,7 @@ module.exports = class extends Command {
 		}
 
 		if (!user) {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
 					`**◎ Error:** Run \`${prefix}help timeout\` If you are unsure.`);
@@ -141,7 +141,7 @@ module.exports = class extends Command {
 		}
 
 		if (user.isCommunicationDisabled()) {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
 					`**◎ Error:** ${user} is already timed out, are you looking for \`${prefix}timeout clear\``);
@@ -151,7 +151,7 @@ module.exports = class extends Command {
 
 		const timeoutTime = args[1];
 		if (!timeoutTime) {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
 					`**◎ Error:** You must specify a timeout time!`);
@@ -161,7 +161,7 @@ module.exports = class extends Command {
 
 		// Ensure timeoutTime is a valid option
 		if (!args[1].match('[dhms]')) {
-			const incorrectFormat = new MessageEmbed()
+			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
 					`**◎ Error:** You did not use the correct formatting for the time! The valid options are \`d\`, \`h\`, \`m\` or \`s\``);
@@ -171,7 +171,7 @@ module.exports = class extends Command {
 
 		// Checks if timeoutTime is a number
 		if (isNaN(ms(args[1]))) {
-			const invalidDur = new MessageEmbed()
+			const invalidDur = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
 					`**◎ Error:** Please input a valid duration!`);
@@ -181,7 +181,7 @@ module.exports = class extends Command {
 
 		// Check if timeoutTime is higher than 30 seconds
 		if (ms(args[1]) < '30000') {
-			const valueLow = new MessageEmbed()
+			const valueLow = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
 					`**◎ Error:** Please input a value higher than 30 seconds!`);
@@ -191,7 +191,7 @@ module.exports = class extends Command {
 
 		// Check if timeoutTime is higher than 28 days
 		if (ms(args[1]) > '2419200000') {
-			const valueLow = new MessageEmbed()
+			const valueLow = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
 					`**◎ Error:** Please input a value lower than 28 days!`);
@@ -208,7 +208,7 @@ module.exports = class extends Command {
 		try {
 			user.timeout(ms(args[1]), reason);
 		} catch {
-			const valueLow = new MessageEmbed()
+			const valueLow = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,
 					`**◎ Error:** An unknown error occured.`);
@@ -216,7 +216,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField('Action | Timeout',

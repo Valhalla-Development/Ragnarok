@@ -1,8 +1,8 @@
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 const ZWS = '\u200B';
 
-module.exports = class RagnarokEmbed extends MessageEmbed {
+module.exports = class RagnarokEmbed extends EmbedBuilder {
 
 	splitFields(contentOrTitle, rawContent) {
 		if (typeof contentOrTitle === 'undefined') return this;

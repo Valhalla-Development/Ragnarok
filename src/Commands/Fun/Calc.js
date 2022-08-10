@@ -1,6 +1,6 @@
 /* eslint-disable new-cap */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const math = require('mathjs');
 const { Calculator } = require('sudo-minigames');
 const SQLite = require('better-sqlite3');
@@ -40,7 +40,7 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const incorrectFormat = new MessageEmbed()
+			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Calculation**`,
 					`**◎ Error:** Please input a calculation! Example: \`${prefix}calc 1+1\`\n\nAlternatively, you can run \`${prefix}calc easy\``);
@@ -54,7 +54,7 @@ module.exports = class extends Command {
 		} catch (err) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const invalidInput = new MessageEmbed()
+			const invalidInput = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Calculation**`,
 					`**◎ Error:** Please input a valid calculation!`);
@@ -62,7 +62,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Calculation**`,
 				`**◎ Input:** \`\`\`js\n${args.join('')}\`\`\`

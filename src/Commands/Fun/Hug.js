@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 
 		const hugresult = Math.floor(Math.random() * hug.length);
 		if (!args[0]) {
-			const ghembed = new MessageEmbed()
+			const ghembed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle(`${message.author.username} hugged themself...! (weirdo)`)
 				.setImage('https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif');
@@ -40,7 +40,7 @@ module.exports = class extends Command {
 		}
 
 		if (!message.mentions.members.first()) {
-			const ghembed = new MessageEmbed()
+			const ghembed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle(`${message.author.username} hugged themself...! (weirdo)`)
 				.setImage('https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif');
@@ -50,14 +50,14 @@ module.exports = class extends Command {
 		const mentionUser = message.mentions.members.first().user.id === message.author.id;
 
 		if (!mentionUser) {
-			const hembed = new MessageEmbed()
+			const hembed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle(`${message.author.username} gave ${message.mentions.members.first().user.username} a hug! How sweet!`)
 				.setImage(hug[hugresult]);
 			message.channel.send({ embeds: [hembed] });
 			return;
 		}
-		const ghembed = new MessageEmbed()
+		const ghembed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setTitle(`${message.author.username} hugged themself...! (weirdo)`)
 			.setImage('https://media.tenor.com/images/347c4a8b9c5567f01fa7ada234eaa9f4/tenor.gif');

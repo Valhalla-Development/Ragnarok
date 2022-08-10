@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -57,7 +57,7 @@ module.exports = class extends Command {
 				roleArr.push(lastOf);
 			}
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setAuthor({ name: `Viewing information for ${message.guild.name}`, iconURL: message.guild.iconURL({ dynamic: true }) })
 				.setDescription(`**Server Roles [${roles.length}]**\n${!roleArr.length ? roles.join(', ') : `${roleArr.join(', ')}... ${roles.length - roleArr[0].split(', ').length + 1} more!`}`)
@@ -76,7 +76,7 @@ module.exports = class extends Command {
 				emojiArr.push(lastOf);
 			}
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setAuthor({ name: `Viewing information for ${message.guild.name}`, iconURL: message.guild.iconURL({ dynamic: true }) })
 				.setDescription(`**Server Emojis [${emojiMap.length}]**\n${!emojiArr.length ? emojiMap.join(', ') : `${emojiArr.join(', ')}... ${emojiMap.length - emojiArr[0].split(', ').length + 1} more!`}`)
@@ -91,7 +91,7 @@ module.exports = class extends Command {
 		const textChan = channels.filter(channel => channel.type === 'GUILD_TEXT');
 		const voiceChan = channels.filter(channel => channel.type === 'GUILD_VOICE');
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail(message.guild.iconURL({ dynamic: true }))
 			.setAuthor({ name: `Viewing information for ${message.guild.name}`, iconURL: message.guild.iconURL({ dynamic: true }) })

@@ -1,7 +1,7 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable no-inline-comments */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const ms = require('ms');
@@ -26,7 +26,7 @@ module.exports = class extends Command {
 		if (!user) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const wrongUsage = new MessageEmbed()
+			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Steal**`,
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 		if (user.id === message.author.id) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Steal**`,
@@ -55,7 +55,7 @@ module.exports = class extends Command {
 		if (!otherB) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const errorE = new MessageEmbed()
+			const errorE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Give**`,
@@ -70,7 +70,7 @@ module.exports = class extends Command {
 			if (otherB.cash < 10) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const wrongUsage = new MessageEmbed()
+				const wrongUsage = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Steal**`,
@@ -124,7 +124,7 @@ module.exports = class extends Command {
 					`${user} tried to mug you, but you had an uno reverse card. You stole <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\` from them.`
 				];
 
-				const depArg = new MessageEmbed()
+				const depArg = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Steal**`,
@@ -170,7 +170,7 @@ module.exports = class extends Command {
 					`${user} was a ninja and you tried to steal from them. They threw you out the window and stole <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`
 				];
 
-				const depArg = new MessageEmbed()
+				const depArg = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Steal**`,
@@ -181,7 +181,7 @@ module.exports = class extends Command {
 		} else {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Steal**`,

@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Util } = require('discord.js');
+const { EmbedBuilder, Util } = require('discord.js');
 const { parse } = require('twemoji-parser');
 
 module.exports = class extends Command {
@@ -18,7 +18,7 @@ module.exports = class extends Command {
 		if (!emoji) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - BigEmote**`,
 					`**◎ Error:** Incorrect usage! Please specify an emote!`);
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 		const custom = Util.parseEmoji(emoji);
 
 		if (custom.id) {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle(`BigEmote - Requesed By ${message.guild.members.cache.get(message.author.id).nickname ? message.guild.members.cache.get(message.author.id).nickname : message.author.username}`)
 				.setImage(`https://cdn.discordapp.com/emojis/${custom.id}.${custom.animated ? 'gif' : 'png'}`);
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 			if (!parsed[0]) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`BigEmote - Requesed By ${message.guild.members.cache.get(message.author.id).nickname ? message.guild.members.cache.get(message.author.id).nickname : message.author.username}`,
 						`**◎ Error:** Invalid emoji!`);
@@ -50,7 +50,7 @@ module.exports = class extends Command {
 				return;
 			}
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.setTitle(`BigEmote - Requesed By ${message.guild.members.cache.get(message.author.id).nickname ? message.guild.members.cache.get(message.author.id).nickname : message.author.username}`)
 				.setImage(parsed[0].url);

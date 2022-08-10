@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -25,7 +25,7 @@ module.exports = class extends Command {
 		if (args[0] === undefined) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reply**`,
 					`**◎ Error:** Incorrect Usage, examples follow:\n\n\`${prefix}reply <channel id> <message id> <text>\`\n\`${prefix}reply <message link> <text>\``);
@@ -37,7 +37,7 @@ module.exports = class extends Command {
 			if (args[1] === undefined) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Reply**`,
 						`**◎ Error:** You need to input text you wish to reply with!`);
@@ -48,7 +48,7 @@ module.exports = class extends Command {
 			if (returnValuesFromLink().guildID !== message.guild.id) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Reply**`,
 						`**◎ Error:** I can not find the message you linked within this server.`);
@@ -63,7 +63,7 @@ module.exports = class extends Command {
 			}).catch(() => {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Reply**`,
 						`**◎ Error:** An error occured while trying to reply to the message!\nHas the message been deleted?`);
@@ -76,7 +76,7 @@ module.exports = class extends Command {
 		if (args[1] === undefined) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reply**`,
 					`**◎ Error:** You need to input a message ID`);
@@ -87,7 +87,7 @@ module.exports = class extends Command {
 		if (args[2] === undefined) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reply**`,
 					`**◎ Error:** You need to input text you wish to reply with!`);
@@ -100,7 +100,7 @@ module.exports = class extends Command {
 		if (!channel) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reply**`,
 					`**◎ Error:** I was unable to find the specified channel!`);
@@ -113,7 +113,7 @@ module.exports = class extends Command {
 		}).catch(() => {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reply**`,
 					`**◎ Error:** An error occured while trying to reply to the message!\nHas the message been deleted?`);

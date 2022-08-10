@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { supportGuild, supportChannel } = require('../../../config.json');
 
 module.exports = class extends Command {
@@ -17,7 +17,7 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const noinEmbed = new MessageEmbed()
+			const noinEmbed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - BugReport**`,
@@ -28,7 +28,7 @@ module.exports = class extends Command {
 
 		const argresult = args.join(' ');
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(this.client.guilds.cache.get(supportGuild).me.displayHexColor))
 			.setTitle('Bug Report')
 			.setDescription(`**◎ User: <@${message.author.id}> - **\`${message.author.tag}\`\n**Bug:** ${argresult}`)
@@ -37,7 +37,7 @@ module.exports = class extends Command {
 
 		this.client.utils.messageDelete(message, 10000);
 
-		const loggedEmbed = new MessageEmbed()
+		const loggedEmbed = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - BugReport**`,

@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -19,7 +19,7 @@ module.exports = class extends Command {
 		if (levelDb) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Leader**`,
 					`**◎ Error:** Level system is disabled for this guild!`);
@@ -53,7 +53,7 @@ module.exports = class extends Command {
 			if (j === 10) break;
 		}
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setAuthor({ name: `Leaderboard for ${message.guild.name}`, iconURL: message.guild.iconURL({ dynamic: true }) })
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addFields({ name: 'Top 10', value: userNames, inline: true },

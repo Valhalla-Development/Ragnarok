@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const moment = require('moment');
@@ -42,7 +42,7 @@ module.exports = class extends Command {
 
 			const then = moment(nextBirthday + year);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on **${nextBirthday + year}**`)
@@ -54,7 +54,7 @@ module.exports = class extends Command {
 		if (!birthdayConfigDB) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Error:** Birthdays are currently disabled on this server, an admin may need to enable this function.\nThey can do this by running \`${prefix}config birthday\``);
@@ -63,7 +63,7 @@ module.exports = class extends Command {
 		}
 
 		if (user.id !== message.author.id && !birthdayDB) {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎** ${user} does not have a birthday set!`);
@@ -74,7 +74,7 @@ module.exports = class extends Command {
 		if (args[0] === undefined && !birthdayDB) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Error:** Incorrect usage! You have 3 commands you can run.\n\n\`${prefix}birthday <MM/DD/YYYY>\` - Sets your birthday\n\`${prefix}birthday -r <MM/DD/YYYY>\` - Changes your birthday\n\`${prefix}birthday -d\` - Deletes your birthday`);
@@ -99,7 +99,7 @@ module.exports = class extends Command {
 
 				const then = moment(nextBirthday + year);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Birthday**`,
 						`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on **${nextBirthday + year}**`);
@@ -109,7 +109,7 @@ module.exports = class extends Command {
 		}
 
 		if (args[0] === 'help') {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Error:** Incorrect usage! You have 3 commands you can run.\n\n\`${prefix}birthday <MM/DD/YYYY>\` - Sets your birthday\n\`${prefix}birthday -r <MM/DD/YYYY>\` - Changes your birthday\n\`${prefix}birthday -d\` - Deletes your birthday`);
@@ -121,7 +121,7 @@ module.exports = class extends Command {
 			if (!birthdayDB) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Birthday**`,
 						`**◎ Error:** I could not find your birthday in the database!`);
@@ -133,7 +133,7 @@ module.exports = class extends Command {
 
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Success:** I have removed your birthday from the database!`);
@@ -145,7 +145,7 @@ module.exports = class extends Command {
 			if (!birthdayDB) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Birthday**`,
 						`**◎ Error:** I could not find your birthday in the database!`);
@@ -156,7 +156,7 @@ module.exports = class extends Command {
 			if (!args[1]) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Birthday**`,
 						`**◎ Error:** Incorrect usage, an example of this command would be:\n\`${prefix}birthday -r 11/04/2018\``);
@@ -169,7 +169,7 @@ module.exports = class extends Command {
 			if (!validateDate) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Birthday**`,
 						`**◎ Error:** Please input a valid date! Input should be \`MM/DD/YYYY\`\nAn example would be:\n\`11/04/2018\``);
@@ -183,7 +183,7 @@ module.exports = class extends Command {
 			if (birthdayUpd > now) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Birthday**`,
 						`**◎ Error:** You tried to set your birthday to: \`${args[1]}\` ... that date is in the future <:wut:745408596233289839>`);
@@ -191,7 +191,7 @@ module.exports = class extends Command {
 				return;
 			}
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Success:** You have successfully set your birthday to \`${args[1]}\``);
@@ -221,7 +221,7 @@ module.exports = class extends Command {
 
 			const then = moment(nextBirthday + year, 'MM/DD/YYYY');
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎** ${user}'s **next** birthday is in **${ms(then - bdayNow, { long: true })}**, on **${nextBirthday + year}**`)
@@ -233,7 +233,7 @@ module.exports = class extends Command {
 		if (args[0] === undefined && !birthdayDB) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Error:** Incorrect usage! You have 3 commands you can run.\n\n\`${prefix}birthday <MM/DD/YYYY>\` - Sets your birthday\n\`${prefix}birthday -r <MM/DD/YYYY>\` - Changes your birthday\n\`${prefix}birthday -d\` - Deletes your birthday`);
@@ -247,7 +247,7 @@ module.exports = class extends Command {
 		if (birthdayUpd > now) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Error:** You tried to set your birthday to: \`${args[0]}\` ... that date is in the future <:wut:745408596233289839>`);
@@ -260,7 +260,7 @@ module.exports = class extends Command {
 		if (!validateDate) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Birthday**`,
 					`**◎ Error:** Please input a valid date! Input should be \`MM/DD/YYYY\`\nAn example would be:\n\`11/04/2018\``);
@@ -275,7 +275,7 @@ module.exports = class extends Command {
 			lastRun: null
 		});
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Birthday**`,
 				`**◎ Success:** You have successfully set your birthday to \`${args[0]}\``);

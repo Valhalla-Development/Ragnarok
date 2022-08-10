@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -17,7 +17,7 @@ module.exports = class extends Command {
 		if (!cmd) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reload**`,
 					`**◎ Error:** Please specify a command to reload!`);
@@ -30,7 +30,7 @@ module.exports = class extends Command {
 		if (!command) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reload**`,
 					`**◎ Error:** Could not find command name \`${cmd}\``);
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField(`**${this.client.user.username} - Reload**`,
 				`**◎ Success:** Realoading \`${command.name}\``);
@@ -57,7 +57,7 @@ module.exports = class extends Command {
 
 			const timeInMs = endRestart.getTime() - startRestart.getTime();
 
-			const embedUpd = new MessageEmbed()
+			const embedUpd = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Reload**`,
 					`**◎ Success:** Command **${command.name}** has been successfully reloaded!\nCommand took \`${timeInMs}\`ms to reload.`);

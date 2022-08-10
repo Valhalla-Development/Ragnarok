@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 const Command = require('../../Structures/Command');
 const fetch = require('node-fetch-cjs');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -17,7 +17,7 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const noInput = new MessageEmbed()
+			const noInput = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Discord.js**`,
 					`**◎ Error:** You must input a search term!`);
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 		if (res.error) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const noInput = new MessageEmbed()
+			const noInput = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Discord.js**`,
 					`**◎ Error:** I couldn't find anything for \`${args[0]}\``);
@@ -41,7 +41,7 @@ module.exports = class extends Command {
 
 		const version = res.versions[res['dist-tags'].latest];
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setThumbnail('https://static.npmjs.com/338e4905a2684ca96e08c7780fc68412.png')
 			.setAuthor({ name: `${res.name}`, iconURL: 'https://i.imgur.com/ErKf5Y0.png', url: `https://www.npmjs.com/package/${res._id}` })

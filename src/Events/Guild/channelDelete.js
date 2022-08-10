@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -12,7 +12,7 @@ module.exports = class extends Event {
 		const logs = id.channel;
 		if (!logs) return;
 
-		const logembed = new MessageEmbed()
+		const logembed = new EmbedBuilder()
 			.setColor(this.client.utils.color(channel.guild.me.displayHexColor))
 			.setAuthor({ name: `${channel.guild.name}`, iconURL: channel.guild.iconURL() })
 			.setTitle('Channel Deleted')

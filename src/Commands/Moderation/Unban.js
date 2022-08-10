@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -23,7 +23,7 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Un-Ban**`,
 					`**◎ Error:** Run \`${prefix}help unban\` If you are unsure.`);
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField('Action | Un-Ban',
@@ -44,7 +44,7 @@ module.exports = class extends Command {
 			if (bans.size === 0) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed1 = new MessageEmbed()
+				const embed1 = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Un-Ban**`,
 						`**◎ Error:** An error occured, is the user banned?`);
@@ -55,7 +55,7 @@ module.exports = class extends Command {
 			if (!bUser) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed2 = new MessageEmbed()
+				const embed2 = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Un-Ban**`,
 						`**◎ Error:** The user specified is not banned!`);

@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const fetch = require('node-fetch-cjs');
 const cryptocurrencies = require('cryptocurrencies');
 
@@ -27,7 +27,7 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const noinEmbed = new MessageEmbed()
+			const noinEmbed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Crypto**`,
@@ -41,7 +41,7 @@ module.exports = class extends Command {
 		if (!cryptoType) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const noinEmbed = new MessageEmbed()
+			const noinEmbed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Crypto**`,
@@ -57,7 +57,7 @@ module.exports = class extends Command {
 		if (!content[0] || !content[0].id) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const noinEmbed = new MessageEmbed()
+			const noinEmbed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Crypto**`,
@@ -76,7 +76,7 @@ module.exports = class extends Command {
 		const priceper24 = content[0].price_change_percentage_24h ? `${content[0].price_change_percentage_24h.toLocaleString('en')}%` : 'N/A';
 		const { image } = content[0];
 
-		const successEmb = new MessageEmbed();
+		const successEmb = new EmbedBuilder();
 
 		if (image) {
 			successEmb.setThumbnail(content[0].image);

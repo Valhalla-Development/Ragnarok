@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Permissions } = require('discord.js');
+const { EmbedBuilder, Permissions } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -27,7 +27,7 @@ module.exports = class extends Command {
 		if (!user) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** Run \`${prefix}help kick\` If you are unsure.`);
@@ -39,7 +39,7 @@ module.exports = class extends Command {
 		if (user.user.id === message.author.id) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You can't kick yourself <:wut:745408596233289839>`);
@@ -51,7 +51,7 @@ module.exports = class extends Command {
 		if (user.roles.highest.position >= message.member.roles.highest.position) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You cannot kick someone with a higher role than yourself!`);
@@ -63,7 +63,7 @@ module.exports = class extends Command {
 		if (user.permissions.has(Permissions.FLAGS.MANAGE_GUILD) || user.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || !user.kickable) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You cannot kick <@${user.id}>`);
@@ -75,7 +75,7 @@ module.exports = class extends Command {
 		if (user.user.id === this.client.user.id) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** You cannot kick me. :slight_frown:`);
@@ -90,7 +90,7 @@ module.exports = class extends Command {
 		user.kick({ reason: `${reason}` }).catch(() => {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Kick**`,
 					`**◎ Error:** An error occured!`);
@@ -98,7 +98,7 @@ module.exports = class extends Command {
 			return;
 		});
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.addField('User Kicked',

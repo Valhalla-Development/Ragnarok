@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Formatters } = require('discord.js');
+const { EmbedBuilder, Formatters } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -22,7 +22,7 @@ module.exports = class extends Command {
 
 		// Check for input
 		if (!args[0]) {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Poll**`,
 					`**◎ Error:** Correct usage: \`${prefix}poll <question>\``);
@@ -31,7 +31,7 @@ module.exports = class extends Command {
 		}
 
 		// Create Embed
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 			.setAuthor({ name: 'Poll Created', iconURL: message.guild.iconURL({ dynamic: true }) })
 			.addFields({ name: `**React to Vote**`, value: `${Formatters.codeBlock('text', `${args.join(' ')}`)}` });

@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Permissions } = require('discord.js');
+const { EmbedBuilder, Permissions } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -17,7 +17,7 @@ module.exports = class extends Command {
 		if (message.guild.id === '657235952116170794') {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Nuke**`,
 					`**◎ Error:** This command has been disabled for this server!`);
@@ -30,7 +30,7 @@ module.exports = class extends Command {
 		if (!user.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Nuke**`,
 					`**◎ Error:** I need the \`MANAGE_CHANNELS\` permissions to execute this command.`);

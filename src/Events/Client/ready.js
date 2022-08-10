@@ -4,7 +4,7 @@ const Event = require('../../Structures/Event');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const chalk = require('chalk');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const moment = require('moment');
 const { CronJob } = require('cron');
 
@@ -447,7 +447,7 @@ module.exports = class extends Event {
 					});
 
 					if (Date.now() > r.endtime) {
-						const embed = new MessageEmbed()
+						const embed = new EmbedBuilder()
 							.setThumbnail(this.client.user.displayAvatarURL())
 							.setColor(this.client.utils.color(guild.me.displayHexColor))
 							.addField('Action | Un-Ban',
@@ -498,7 +498,7 @@ module.exports = class extends Event {
 				const str = word.pronunciation;
 				const res = str.split(']', 1);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.setAuthor({ name: `Word of the Day`, url: 'https://www.dictionary.com/e/word-of-the-day/', iconURL: guild.iconURL({ dynamic: true }) })
 					.setDescription(`>>> **${this.client.utils.capitalise(word.word)}**\n*${res} ]*\n*${word.pos}*`)

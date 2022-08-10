@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -15,7 +15,7 @@ module.exports = class extends Command {
 	async run(message) {
 		const user = message.mentions.users.first() || message.author;
 
-		const embed = new MessageEmbed()
+		const embed = new EmbedBuilder()
 			.setAuthor({ name: `${user.username}'s Avatar`, iconURL: user.avatarURL() })
 			.setImage(user.avatarURL({ dynamic: true, size: 1024 }))
 			.setColor(this.client.utils.color(message.guild.me.displayHexColor));

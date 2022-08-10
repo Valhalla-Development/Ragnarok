@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -24,7 +24,7 @@ module.exports = class extends Command {
 		if (!member) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Add Role**`,
 					`**◎ Error:** Correct usage: \`${prefix}addrole <@user> <role-id>\` or \`${prefix}addrole <all> <role-id>\``);
@@ -37,7 +37,7 @@ module.exports = class extends Command {
 		if (!role) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Add Role**`,
 					`**◎ Error:** Correct usage: \`${prefix}addrole <@user> <role-id>\` or \`${prefix}addrole <all> <role-id>\``);
@@ -48,7 +48,7 @@ module.exports = class extends Command {
 		if (role.position >= message.member.roles.highest.position) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Add Role**`,
 					`**◎ Error:** You cannot give a user a role that is equal or greater than your own!`);
@@ -60,7 +60,7 @@ module.exports = class extends Command {
 		if (member.roles.cache.has(role.id)) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Add Role**`,
 					`**◎ Error:** ${member} already has the role: ${role}`);
@@ -71,7 +71,7 @@ module.exports = class extends Command {
 		try {
 			await member.roles.add(role);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Add Role**`,
 					`**◎ Success:** I have added the ${role} role to ${member}`);
@@ -80,7 +80,7 @@ module.exports = class extends Command {
 		} catch {
 			this.client.utils.messageDelete(message, 10000);
 
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Add Role**`,
 					`**◎ Error:** An error occured.`);

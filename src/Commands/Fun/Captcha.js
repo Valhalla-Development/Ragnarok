@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageAttachment, MessageEmbed } = require('discord.js');
+const { MessageAttachment, EmbedBuilder } = require('discord.js');
 const Canvas = require('canvas');
 Canvas.registerFont('./Storage/Canvas/Fonts/Roboto-Thin.ttf', {
 	family: 'Roboto'
@@ -20,7 +20,7 @@ module.exports = class extends Command {
 		this.client.utils.messageDelete(message, 0);
 
 		if (!args[0]) {
-			const invalidInput = new MessageEmbed()
+			const invalidInput = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Captcha**`,
 					`**◎ Error:** You must supply some text!`);
@@ -28,7 +28,7 @@ module.exports = class extends Command {
 			return;
 		}
 		if (args.length > 5) {
-			const tooLong = new MessageEmbed()
+			const tooLong = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Captcha**`,
 					`**◎ Error:** You can only have 5 words!`);

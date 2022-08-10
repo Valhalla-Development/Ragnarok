@@ -1,7 +1,7 @@
 /* eslint-disable no-mixed-operators */
 /* eslint-disable no-inline-comments */
 const Command = require('../../Structures/Command');
-const { MessageEmbed } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const ms = require('ms');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -38,7 +38,7 @@ module.exports = class extends Command {
 			} else {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Farm**`,
@@ -76,7 +76,7 @@ module.exports = class extends Command {
 			if (currentTotalFarm >= Number(freeLimit)) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Farm**`,
@@ -90,7 +90,7 @@ module.exports = class extends Command {
 		let amt;
 		const farmChance = Math.random();
 		if (farmChance < 0.0018) { // 0.18%
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
@@ -128,7 +128,7 @@ module.exports = class extends Command {
 			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/GoldNugget.png'] });
 			return;
 		} else if (farmChance >= 0.0018 && farmChance < 0.0318) { // 3%
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
@@ -161,7 +161,7 @@ module.exports = class extends Command {
 			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Barley.png'] });
 			return;
 		} else if (farmChance >= 0.0318 && farmChance < 0.0918) { // 6%
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
@@ -195,7 +195,7 @@ module.exports = class extends Command {
 			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Spinach.png'] });
 			return;
 		} else if (farmChance >= 0.0918 && farmChance < 0.3718) { // 28%
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
@@ -229,7 +229,7 @@ module.exports = class extends Command {
 			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Strawberry.png'] });
 			return;
 		} else if (farmChance >= 0.3718 && farmChance < 0.8718) {
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 
@@ -263,7 +263,7 @@ module.exports = class extends Command {
 			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Lettuce.png'] });
 			return;
 		} else { // 12.82%
-			const embed = new MessageEmbed()
+			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor));
 

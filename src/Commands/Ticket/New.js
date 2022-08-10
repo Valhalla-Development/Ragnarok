@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, PermissionsBitField, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, MessageButton, MessageActionRow } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
@@ -25,7 +25,7 @@ module.exports = class extends Command {
 		if (!message.member.guild.me.permissions.has(PermissionsBitField.ManageChannels)) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const botPerm = new MessageEmbed()
+			const botPerm = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - New**`,
 					`**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:`);
@@ -37,7 +37,7 @@ module.exports = class extends Command {
 		if (!message.guild.roles.cache.find((r) => r.name === 'Support Team') && !suppRole) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const nomodRole = new MessageEmbed()
+			const nomodRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - New**`,
 					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
@@ -70,7 +70,7 @@ module.exports = class extends Command {
 		) {
 			this.client.utils.messageDelete(message, 10000);
 
-			const existTM = new MessageEmbed()
+			const existTM = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - New**`,
 					`**◎ Error:** You already have a ticket open!`);
@@ -127,12 +127,12 @@ module.exports = class extends Command {
 				// Send a message saying the ticket has been created.
 				this.client.utils.messageDelete(message, 10000);
 
-				const newTicketE = new MessageEmbed()
+				const newTicketE = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - New**`,
 						`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
 				message.channel.send({ embeds: [newTicketE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setTitle(`New Ticket`)
 					.setDescription(`Welcome to our support system ${message.author}.\nPlease hold tight and a support member will be with you shortly.${reason ? `\n\n\nYou opened this ticket for the following reason:\n\`\`\`${reason}\`\`\`` : '\n\n\n**Please specify a reason for opening this ticket.**'}`);
@@ -147,7 +147,7 @@ module.exports = class extends Command {
 
 				const openEpoch = Math.floor(new Date().getTime() / 1000);
 
-				const logEmbed = new MessageEmbed()
+				const logEmbed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Opened', iconURL: message.guild.iconURL({ dynamic: true }) })
 					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${message.guild.id}/${c.id})`, inline: true },
@@ -194,7 +194,7 @@ module.exports = class extends Command {
 			if (!role) {
 				this.client.utils.messageDelete(message, 10000);
 
-				const nomodRole = new MessageEmbed()
+				const nomodRole = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - New**`,
 						`**◎ Error:** I could not find the \`Support Team\` role!\nIf you use a custom role, I recommend running the command again \`${prefix}config ticket role <@role>\``);
@@ -232,7 +232,7 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 
 				// Send a message saying the ticket has been created.
-				const newTicketE = new MessageEmbed()
+				const newTicketE = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - New**`,
 						`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
@@ -251,7 +251,7 @@ module.exports = class extends Command {
 				const row = new MessageActionRow()
 					.addComponents(buttonClose, buttonCloseReason);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setTitle('New Ticket')
 					.setDescription(`Welcome to our support system ${message.author}.\nPlease hold tight and a support member will be with you shortly.${reason ? `\n\n\nYou opened this ticket for the following reason:\n\`\`\`${reason}\`\`\`` : '\n\n\n**Please specify a reason for opening this ticket.**'}`);
@@ -267,7 +267,7 @@ module.exports = class extends Command {
 
 				const openEpoch = Math.floor(new Date().getTime() / 1000);
 
-				const logEmbed = new MessageEmbed()
+				const logEmbed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Opened', iconURL: message.guild.iconURL({ dynamic: true }) })
 					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${message.guild.id}/${c.id})`, inline: true },
