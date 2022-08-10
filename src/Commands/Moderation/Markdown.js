@@ -10,7 +10,7 @@ module.exports = class extends Command {
 			description: 'Posts supplied text with markdown support.',
 			category: 'Moderation',
 			usage: '<language> <input>',
-			userPerms: ['MANAGE_MESSAGES']
+			userPerms: ['ManageMessages']
 		});
 	}
 

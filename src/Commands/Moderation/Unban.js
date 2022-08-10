@@ -10,8 +10,8 @@ module.exports = class extends Command {
 			description: 'Un-bans specified user.',
 			category: 'Moderation',
 			usage: '<user-id>',
-			userPerms: ['BAN_MEMBERS'],
-			botPerms: ['BAN_MEMBERS', 'VIEW_AUDIT_LOG']
+			userPerms: ['BanMembers'],
+			botPerms: ['BanMembers', 'ViewAuditLog']
 		});
 	}
 

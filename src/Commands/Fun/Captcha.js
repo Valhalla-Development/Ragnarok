@@ -12,7 +12,7 @@ module.exports = class extends Command {
 			description: 'Generates a captcha image with given text.',
 			category: 'Fun',
 			usage: '<input>',
-			botPerms: ['ATTACH_FILES']
+			botPerms: ['AttachFiles']
 		});
 	}
 

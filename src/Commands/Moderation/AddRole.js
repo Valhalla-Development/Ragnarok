@@ -10,7 +10,7 @@ module.exports = class extends Command {
 			description: 'Adds a role to @user/all users',
 			category: 'Moderation',
 			usage: '<@user/all> <role-id>',
-			userPerms: ['MANAGE_ROLES', 'MANAGE_GUILD'],
+			userPerms: ['ManageRoles', 'ManageGuild'],
 			ownerOnly: true
 		});
 	}

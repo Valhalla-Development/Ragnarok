@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Permissions, MessageButton, MessageActionRow } = require('discord.js');
+const { MessageEmbed, PermissionsBitField, MessageButton, MessageActionRow } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -11,8 +11,8 @@ module.exports = class extends Command {
 			description: 'Bans tagged user from the guild.',
 			category: 'Moderation',
 			usage: '<@user> [reason]',
-			userPerms: ['BAN_MEMBERS', 'SEND_MESSAGES', 'VIEW_AUDIT_LOG'],
-			botPerms: ['BAN_MEMBERS']
+			userPerms: ['BanMembers', 'SendMessages', 'ViewAuditLog'],
+			botPerms: ['BanMembers']
 		});
 	}
 
@@ -61,7 +61,7 @@ module.exports = class extends Command {
 		}
 
 		// Check if user is bannable
-		if (user.permissions.has(Permissions.FLAGS.MANAGE_GUILD) || user.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || !user.bannable) {
+		if (user.permissions.has(PermissionsBitField.ManageGuild) || user.permissions.has(PermissionsBitField.Administrator) || !user.bannable) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new MessageEmbed()

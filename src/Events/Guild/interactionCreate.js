@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { MessageEmbed, Permissions, MessageButton, MessageActionRow, Modal, TextInputComponent } = require('discord.js');
+const { MessageEmbed, PermissionsBitField, MessageButton, MessageActionRow, Modal, TextInputComponent } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
@@ -175,7 +175,7 @@ module.exports = class extends Event {
 			if (!ticket) return;
 
 			// Check if bot has perms
-			if (!guild.me.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+			if (!guild.me.permissions.has(PermissionsBitField.ManageChannels)) {
 				const botPerm = new MessageEmbed()
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
@@ -368,7 +368,7 @@ module.exports = class extends Event {
 				return;
 			}
 
-			if (!guild.me.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+			if (!guild.me.permissions.has(PermissionsBitField.ManageChannels)) {
 				const botPerm = new MessageEmbed()
 					.setColor(this.client.utils.color(guild.me.displayHexColor))
 					.addField(`**${this.client.user.username} - Ticket**`,
@@ -474,19 +474,19 @@ module.exports = class extends Event {
 				permissionOverwrites: [
 					{
 						id: role.id,
-						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+						allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 					},
 					{
 						id: role2.id,
-						deny: Permissions.FLAGS.VIEW_CHANNEL
+						deny: PermissionsBitField.ViewChannel
 					},
 					{
 						id: interaction.user.id,
-						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+						allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 					},
 					{
 						id: this.client.user.id,
-						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+						allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 					}
 				]
 			}).then((c) => {

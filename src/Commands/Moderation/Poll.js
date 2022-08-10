@@ -9,8 +9,8 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Starts a poll.',
 			category: 'Moderation',
-			userPerms: ['MANAGE_MESSAGES'],
-			botPerms: ['ADD_REACTIONS']
+			userPerms: ['ManageMessages'],
+			botPerms: ['AddReactions']
 		});
 	}
 

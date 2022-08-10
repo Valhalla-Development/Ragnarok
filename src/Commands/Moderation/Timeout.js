@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { Permissions, MessageEmbed } = require('discord.js');
+const { PermissionsBitField, MessageEmbed } = require('discord.js');
 const ms = require('ms');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -11,8 +11,8 @@ module.exports = class extends Command {
 			aliases: ['shh', 'mute'],
 			description: 'Timeouts tagged user.',
 			category: 'Moderation',
-			userPerms: ['MODERATE_MEMBERS'],
-			botPerms: ['MODERATE_MEMBERS'],
+			userPerms: ['ModerateMembers'],
+			botPerms: ['ModerateMembers'],
 			usage: '<@user> <time> (reason>)'
 		});
 	}
@@ -58,7 +58,7 @@ module.exports = class extends Command {
 		}
 
 		// Check if user is bannable
-		if (user.permissions.has(Permissions.FLAGS.MANAGE_GUILD) || user.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+		if (user.permissions.has(PermissionsBitField.ManageGuild) || user.permissions.has(PermissionsBitField.Administrator)) {
 			const embed = new MessageEmbed()
 				.setColor(this.client.utils.color(message.guild.me.displayHexColor))
 				.addField(`**${this.client.user.username} - Timeout**`,

@@ -8,7 +8,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Displays an invite link for the bot.',
 			category: 'Informative',
-			botPerms: ['EMBED_LINKS']
+			botPerms: ['EmbedLinks']
 		});
 	}
 

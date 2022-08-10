@@ -12,7 +12,7 @@ module.exports = class extends Command {
 			description: 'Reply to a message as the bot.',
 			category: 'Moderation',
 			usage: '<channel id> <message id> <text>',
-			userPerms: ['MANAGE_GUILD']
+			userPerms: ['ManageGuild']
 		});
 	}
 

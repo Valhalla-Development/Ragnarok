@@ -1,4 +1,4 @@
-const { Permissions } = require('discord.js');
+const { PermissionsBitField } = require('discord.js');
 
 module.exports = class Command {
 
@@ -10,8 +10,8 @@ module.exports = class Command {
 		this.category = options.category || 'Misc';
 		this.usage = `${this.client.prefix}${this.name} ${options.usage || ''}`.trim();
 		this.ownerOnly = options.ownerOnly || false;
-		this.userPerms = new Permissions(options.userPerms).freeze();
-		this.botPerms = new Permissions(options.botPerms).freeze();
+		this.userPerms = new PermissionsBitField(options.userPerms).freeze();
+		this.botPerms = new PermissionsBitField(options.botPerms).freeze();
 	}
 
 	// eslint-disable-next-line no-unused-vars

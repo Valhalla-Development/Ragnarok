@@ -8,8 +8,8 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'sudo message',
 			category: 'Hidden',
-			userPerms: ['MANAGE_MESSAGES'],
-			botPerms: ['MANAGE_WEBHOOKS']
+			userPerms: ['ManageMessages'],
+			botPerms: ['ManageWebhooks']
 		});
 	}
 

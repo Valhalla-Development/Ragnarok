@@ -10,7 +10,7 @@ module.exports = class extends Command {
 			description: 'Removes tagged user from a ticket.',
 			category: 'Ticket',
 			usage: '<@user> [ticketid]',
-			botPerms: ['MANAGE_CHANNELS']
+			botPerms: ['ManageChannels']
 		});
 	}
 

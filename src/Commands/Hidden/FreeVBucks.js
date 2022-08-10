@@ -11,7 +11,7 @@ module.exports = class extends Command {
 			aliases: ['vbucks', 'fortnite'],
 			description: 'Hidden Easter Egg, shh!',
 			category: 'Hidden',
-			botPerms: ['ADD_REACTIONS']
+			botPerms: ['AddReactions']
 		});
 	}
 

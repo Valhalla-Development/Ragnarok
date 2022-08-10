@@ -8,7 +8,7 @@ module.exports = class extends Command {
 			description: 'Fake ban a user',
 			category: 'Hidden',
 			usage: '<input>',
-			userPerms: ['MANAGE_MESSAGES']
+			userPerms: ['ManageMessages']
 
 		});
 	}

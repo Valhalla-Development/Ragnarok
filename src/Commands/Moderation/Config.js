@@ -1,6 +1,6 @@
 /* eslint-disable max-depth */
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Permissions, MessageButton, MessageActionRow } = require('discord.js');
+const { MessageEmbed, PermissionsBitField, MessageButton, MessageActionRow } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const fetch = require('node-fetch-cjs');
@@ -16,8 +16,8 @@ module.exports = class extends Command {
 			description: 'Contains multiple commands to configure the bot.',
 			category: 'Moderation',
 			usage: '[sub-command]',
-			userPerms: ['MANAGE_GUILD'],
-			botPerms: ['MANAGE_GUILD']
+			userPerms: ['ManageGuild'],
+			botPerms: ['ManageGuild']
 		});
 	}
 
@@ -1165,7 +1165,7 @@ module.exports = class extends Command {
 			// adsprot
 			if (args[0] === 'adsprot') {
 				// perms checking
-				if (!message.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+				if (!message.member.guild.me.permissions.has(PermissionsBitField.ManageMessages)) {
 					this.client.utils.messageDelete(message, 10000);
 
 					const npPerms = new MessageEmbed()
@@ -1326,7 +1326,7 @@ module.exports = class extends Command {
 
 			// logging
 			if (args[0] === 'logging') {
-				if (!message.member.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) {
+				if (!message.member.guild.me.permissions.has(PermissionsBitField.ViewAuditLog)) {
 					this.client.utils.messageDelete(message, 10000);
 
 					const embed = new MessageEmbed()

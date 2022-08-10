@@ -1,6 +1,6 @@
 /* eslint-disable no-inline-comments */
 /* eslint-disable no-mixed-operators */
-const { Client, Collection, Permissions, GatewayIntentBits, Partials } = require('discord.js');
+const { Client, Collection, PermissionsBitField, GatewayIntentBits, Partials } = require('discord.js');
 const Util = require('./Util.js');
 const db = require('quick.db');
 if (!Array.isArray(db.get('giveaways'))) db.set('giveaways', []);
@@ -219,7 +219,7 @@ module.exports = class RagnarokClient extends Client {
 		this.prefix = options.prefix;
 
 		if (!options.defaultPerms) throw new Error('You must pass default perm(s) for the Client.');
-		this.defaultPerms = new Permissions(options.defaultPerms).freeze();
+		this.defaultPerms = new PermissionsBitField(options.defaultPerms).freeze();
 	}
 
 	async start(token = this.token) {

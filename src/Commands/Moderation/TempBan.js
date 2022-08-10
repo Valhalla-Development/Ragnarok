@@ -11,8 +11,8 @@ module.exports = class extends Command {
 			description: 'Temp-Bans tagged user from the guild.',
 			category: 'Moderation',
 			usage: '<@user> <time> [reason]',
-			userPerms: ['BAN_MEMBERS'],
-			botPerms: ['BAN_MEMBERS']
+			userPerms: ['BanMembers'],
+			botPerms: ['BanMembers']
 		});
 	}
 

@@ -24,7 +24,7 @@ module.exports = class extends Command {
 			description: 'Displays level of message author/tagged user.',
 			category: 'Fun',
 			usage: '[@user] [image <URL> [off]] [country <country-code> [off]]',
-			botPerms: ['ATTACH_FILES']
+			botPerms: ['AttachFiles']
 		});
 	}
 

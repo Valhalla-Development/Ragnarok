@@ -9,7 +9,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Displays available commands.',
 			category: 'Ticket',
-			userPerms: ['MANAGE_GUILD']
+			userPerms: ['ManageGuild']
 		});
 	}
 

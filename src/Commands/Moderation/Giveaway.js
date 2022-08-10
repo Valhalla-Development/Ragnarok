@@ -3,7 +3,7 @@
 const Command = require('../../Structures/Command');
 const ms = require('ms');
 const SQLite = require('better-sqlite3');
-const { MessageEmbed, Permissions } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
 module.exports = class extends Command {
@@ -14,8 +14,8 @@ module.exports = class extends Command {
 			description: 'Starts a giveaway.',
 			category: 'Moderation',
 			usage: '<start/stop/reroll> <time> <winners amount> <prize>',
-			userPerms: [Permissions.FLAGS.MANAGE_MESSAGES],
-			botPerms: ['ADD_REACTIONS']
+			userPerms: ['ManageMessages'],
+			botPerms: ['AddReactions']
 		});
 	}
 

@@ -3,7 +3,7 @@
 /* eslint-disable no-inline-comments */
 /* eslint-disable no-mixed-operators */
 const Event = require('../../Structures/Event');
-const { MessageEmbed, Permissions, Formatters, MessageButton, MessageActionRow } = require('discord.js');
+const { MessageEmbed, PermissionsBitField, Formatters, MessageButton, MessageActionRow } = require('discord.js');
 const moment = require('moment');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -176,7 +176,7 @@ module.exports = class extends Event {
 							return;
 						}
 
-						if (!fetchGuild.me.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+						if (!fetchGuild.me.permissions.has(PermissionsBitField.ManageChannels)) {
 							this.client.utils.deletableCheck(m, 0);
 
 							const botPerm = new MessageEmbed()
@@ -253,19 +253,19 @@ module.exports = class extends Event {
 								permissionOverwrites: [
 									{
 										id: role.id,
-										allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+										allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 									},
 									{
 										id: role2.id,
-										deny: [Permissions.FLAGS.VIEW_CHANNEL]
+										deny: [PermissionsBitField.ViewChannel]
 									},
 									{
 										id: message.author.id,
-										allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+										allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 									},
 									{
 										id: this.client.user.id,
-										allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+										allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 									}
 								]
 							}).then((c) => {
@@ -346,19 +346,19 @@ module.exports = class extends Event {
 								permissionOverwrites: [
 									{
 										id: role.id,
-										allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+										allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 									},
 									{
 										id: role2.id,
-										deny: [Permissions.FLAGS.VIEW_CHANNEL]
+										deny: [PermissionsBitField.ViewChannel]
 									},
 									{
 										id: message.author.id,
-										allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+										allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 									},
 									{
 										id: this.client.user.id,
-										allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+										allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 									}
 								]
 							}).then(async (c) => {
@@ -646,7 +646,7 @@ module.exports = class extends Event {
 		function adsProt(grabClient) {
 			const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(message.guild.id);
 			if (adsprot['count(*)']) {
-				if (!message.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+				if (!message.member.guild.me.permissions.has(PermissionsBitField.ManageMessages)) {
 					const npPerms = new MessageEmbed()
 						.setColor(grabClient.utils.color(message.guild.me.displayHexColor))
 						.addField(`**${grabClient.user.username} - Ads Protection**`,
@@ -655,10 +655,10 @@ module.exports = class extends Event {
 					db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(message.guild.id);
 					return;
 				}
-				if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+				if (!message.member.permissions.has(PermissionsBitField.ManageMessages)) {
 					const matches = urlRegexSafe({ strict: false }).test(message.content.toLowerCase());
 					if (matches) {
-						if (message.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+						if (message.member.guild.me.permissions.has(PermissionsBitField.ManageMessages)) {
 							grabClient.utils.messageDelete(message, 0);
 							message.channel.send(`**◎ Your message contained a link and it was deleted, ${message.author}**`)
 								.then((msg) => {
@@ -974,7 +974,7 @@ module.exports = class extends Event {
 				return;
 			}
 			const ch = message.guild.channels.cache.get(logs);
-			if (!message.guild.me.permissionsIn(ch).has('SEND_MESSAGES')) {
+			if (!message.guild.me.permissionsIn(ch).has(PermissionsBitField.SendMessages)) {
 				return;
 			}
 		}

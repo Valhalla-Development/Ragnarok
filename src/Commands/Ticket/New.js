@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageEmbed, Permissions, MessageButton, MessageActionRow } = require('discord.js');
+const { MessageEmbed, PermissionsBitField, MessageButton, MessageActionRow } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
@@ -12,7 +12,7 @@ module.exports = class extends Command {
 			aliases: ['open'],
 			description: 'Creates a private ticket.',
 			category: 'Ticket',
-			botPerms: ['MANAGE_CHANNELS']
+			botPerms: ['ManageChannels']
 		});
 	}
 
@@ -22,7 +22,7 @@ module.exports = class extends Command {
 
 		const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${message.guild.id}`).get();
 
-		if (!message.member.guild.me.permissions.has(Permissions.FLAGS.MANAGE_CHANNELS)) {
+		if (!message.member.guild.me.permissions.has(PermissionsBitField.ManageChannels)) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const botPerm = new MessageEmbed()
@@ -103,19 +103,19 @@ module.exports = class extends Command {
 				permissionOverwrites: [
 					{
 						id: role.id,
-						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+						allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 					},
 					{
 						id: role2.id,
-						deny: [Permissions.FLAGS.VIEW_CHANNEL]
+						deny: [PermissionsBitField.ViewChannel]
 					},
 					{
 						id: message.author.id,
-						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+						allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 					},
 					{
 						id: this.client.user.id,
-						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+						allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 					}
 				]
 			}).then((c) => {
@@ -208,19 +208,19 @@ module.exports = class extends Command {
 				permissionOverwrites: [
 					{
 						id: role.id,
-						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+						allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 					},
 					{
 						id: role2.id,
-						deny: [Permissions.FLAGS.VIEW_CHANNEL]
+						deny: [PermissionsBitField.ViewChannel]
 					},
 					{
 						id: message.author.id,
-						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+						allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 					},
 					{
 						id: this.client.user.id,
-						allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES]
+						allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
 					}
 				]
 			}).then(async (c) => {

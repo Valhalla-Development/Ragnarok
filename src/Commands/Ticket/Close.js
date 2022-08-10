@@ -14,7 +14,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Closes the ticket.',
 			category: 'Ticket',
-			botPerms: ['MANAGE_CHANNELS']
+			botPerms: ['ManageChannels']
 		});
 	}
 

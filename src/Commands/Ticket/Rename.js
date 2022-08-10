@@ -11,7 +11,7 @@ module.exports = class extends Command {
 		super(...args, {
 			description: 'Renames the ticket channel name.',
 			category: 'Ticket',
-			botPerms: ['MANAGE_CHANNELS']
+			botPerms: ['ManageChannels']
 		});
 	}
 

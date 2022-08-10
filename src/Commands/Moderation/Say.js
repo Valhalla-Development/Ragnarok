@@ -9,7 +9,7 @@ module.exports = class extends Command {
 			description: 'Makes the bot post given text.',
 			category: 'Moderation',
 			usage: '[channel] <text>',
-			userPerms: ['MANAGE_MESSAGES']
+			userPerms: ['ManageMessages']
 		});
 	}
 
