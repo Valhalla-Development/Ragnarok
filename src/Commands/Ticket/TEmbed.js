@@ -2,7 +2,7 @@ const Command = require('../../Structures/Command');
 const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const { MessageButton, MessageActionRow } = require('discord.js');
+const { ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -67,12 +67,12 @@ module.exports = class extends Command {
 			.setDescription('By clicking the button, a ticket will be opened for you.')
 			.setFooter({ text: 'Ragnarok Bot', iconURL: this.client.user.avatarURL() });
 
-		const button = new MessageButton()
-			.setStyle('SUCCESS')
+		const button = new ButtonBuilder()
+			.setStyle(ButtonStyle.Success)
 			.setLabel('📩 Open a ticket 📩')
 			.setCustomId('createTicket');
 
-		const row = new MessageActionRow()
+		const row = new ActionRowBuilder()
 			.addComponents(button);
 
 		const foundtEmbed = db.prepare(`SELECT * FROM ticketConfig WHERE guildid=${message.guild.id}`).get();

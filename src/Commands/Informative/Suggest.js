@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const { supportGuild, suggestChan } = require('../../../config.json');
 
 module.exports = class extends Command {
@@ -28,17 +28,17 @@ module.exports = class extends Command {
 
 		const argresult = args.join(' ');
 
-		const buttonA = new MessageButton()
-			.setStyle('PRIMARY')
+		const buttonA = new ButtonBuilder()
+			.setStyle(ButtonStyle.Primary)
 			.setLabel('Yes')
 			.setCustomId('yes');
 
-		const buttonB = new MessageButton()
-			.setStyle('DANGER')
+		const buttonB = new ButtonBuilder()
+			.setStyle(ButtonStyle.Danger)
 			.setLabel('No')
 			.setCustomId('no');
 
-		const row = new MessageActionRow()
+		const row = new ActionRowBuilder()
 			.addComponents(buttonA, buttonB);
 
 		const questionE = new EmbedBuilder()

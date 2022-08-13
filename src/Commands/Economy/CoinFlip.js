@@ -5,7 +5,7 @@ const Command = require('../../Structures/Command');
 const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const { MessageButton, MessageActionRow } = require('discord.js');
+const { ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const comCooldown = new Set();
 const comCooldownSeconds = 20;
 
@@ -101,43 +101,43 @@ module.exports = class extends Command {
 		const answer = flip[Math.floor(Math.random() * flip.length)];
 		const houseBet = coinFlip;
 
-		const buttonA = new MessageButton()
-			.setStyle('PRIMARY')
+		const buttonA = new ButtonBuilder()
+			.setStyle(ButtonStyle.Primary)
 			.setLabel('Heads!')
 			.setCustomId('heads');
 
-		const buttonB = new MessageButton()
-			.setStyle('PRIMARY')
+		const buttonB = new ButtonBuilder()
+			.setStyle(ButtonStyle.Primary)
 			.setLabel('Tails!')
 			.setCustomId('tails');
 
-		const buttonC = new MessageButton()
-			.setStyle('DANGER')
+		const buttonC = new ButtonBuilder()
+			.setStyle(ButtonStyle.Danger)
 			.setLabel('Cancel')
 			.setCustomId('cancel');
 
-		const row = new MessageActionRow()
+		const row = new ActionRowBuilder()
 			.addComponents(buttonA, buttonB, buttonC);
 
-		const buttonANew = new MessageButton()
-			.setStyle('PRIMARY')
+		const buttonANew = new ButtonBuilder()
+			.setStyle(ButtonStyle.Primary)
 			.setLabel('Heads!')
 			.setCustomId('heads')
 			.setDisabled(true);
 
-		const buttonBNew = new MessageButton()
-			.setStyle('PRIMARY')
+		const buttonBNew = new ButtonBuilder()
+			.setStyle(ButtonStyle.Primary)
 			.setLabel('Tails!')
 			.setCustomId('tails')
 			.setDisabled(true);
 
-		const buttonCNew = new MessageButton()
-			.setStyle('DANGER')
+		const buttonCNew = new ButtonBuilder()
+			.setStyle(ButtonStyle.Danger)
 			.setLabel('Cancel')
 			.setCustomId('cancel')
 			.setDisabled(true);
 
-		const rowNew = new MessageActionRow()
+		const rowNew = new ActionRowBuilder()
 			.addComponents(buttonANew, buttonBNew, buttonCNew);
 
 		const initial = new EmbedBuilder()

@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, PermissionsBitField, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -123,12 +123,12 @@ module.exports = class extends Command {
 			.setFooter({ text: 'User Ban Logs' })
 			.setTimestamp();
 
-		const buttonA = new MessageButton()
-			.setStyle('SUCCESS')
+		const buttonA = new ButtonBuilder()
+			.setStyle(ButtonStyle.Success)
 			.setLabel('Unban')
 			.setCustomId('unban');
 
-		const row = new MessageActionRow()
+		const row = new ActionRowBuilder()
 			.addComponents(buttonA);
 
 		if (id && id.channel && id.channel === message.channel.id) return;

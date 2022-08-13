@@ -1,4 +1,4 @@
-const { MessageButton, MessageActionRow } = require('discord.js');
+const { ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = class pagination {
 
@@ -7,24 +7,24 @@ module.exports = class pagination {
 	}
 
 	async pagination(message, embeds, emojiNext, emojiHome, emojiBack) {
-		const back = new MessageButton()
+		const back = new ButtonBuilder()
 			.setCustomId('back')
 			.setEmoji(emojiBack || '◀️')
-			.setStyle('PRIMARY')
+			.setStyle(ButtonStyle.Primary)
 			.setDisabled(true);
 
-		const home = new MessageButton()
+		const home = new ButtonBuilder()
 			.setCustomId('home')
 			.setEmoji(emojiHome || '🏠')
-			.setStyle('PRIMARY')
+			.setStyle(ButtonStyle.Primary)
 			.setDisabled(true);
 
-		const next = new MessageButton()
+		const next = new ButtonBuilder()
 			.setCustomId('next')
 			.setEmoji(emojiNext || '▶️')
-			.setStyle('PRIMARY');
+			.setStyle(ButtonStyle.Primary);
 
-		const row = new MessageActionRow()
+		const row = new ActionRowBuilder()
 			.addComponents(back, home, next);
 
 		const m = await message.channel.send({ embeds: [embeds[0]], components: [row] });
@@ -51,7 +51,7 @@ module.exports = class pagination {
 						home.setDisabled(true);
 					}
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(back, home, next);
 
 					await b.update({ embeds: [embeds[currentPage]], components: [rowNew] });
@@ -69,7 +69,7 @@ module.exports = class pagination {
 					home.setDisabled(false);
 					back.setDisabled(false);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(back, home, next);
 
 					await b.update({ embeds: [embeds[currentPage]], components: [rowNew] });
@@ -82,7 +82,7 @@ module.exports = class pagination {
 				back.setDisabled(true);
 				next.setDisabled(false);
 
-				const rowNew = new MessageActionRow()
+				const rowNew = new ActionRowBuilder()
 					.addComponents(back, home, next);
 
 				await b.update({ embeds: [embeds[currentPage]], components: [rowNew] });

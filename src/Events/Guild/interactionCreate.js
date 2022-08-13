@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { EmbedBuilder, PermissionsBitField, MessageButton, MessageActionRow, Modal, TextInputComponent, InteractionType } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, ButtonBuilder, ActionRowBuilder, Modal, TextInputComponent, InteractionType, ButtonStyle } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
@@ -78,13 +78,13 @@ module.exports = class extends Event {
 				} else {
 					transLinkText = `[**Click Here**](https://www.ragnarokbot.com/transcripts/${staticFileName})`;
 					// Transcript button
-					openTranscript = new MessageButton()
-						.setStyle('LINK')
+					openTranscript = new ButtonBuilder()
+						.setStyle(ButtonStyle.Link)
 						.setEmoji('<:ticketTranscript:998229979609440266>')
 						.setLabel('View Transcript')
 						.setURL(`https://www.ragnarokbot.com/transcripts/${staticFileName}`);
 
-					transcriptRow = new MessageActionRow()
+					transcriptRow = new ActionRowBuilder()
 						.addComponents(openTranscript);
 				}
 
@@ -268,13 +268,13 @@ module.exports = class extends Event {
 				} else {
 					transLinkText = `[**Click Here**](https://www.ragnarokbot.com/transcripts/${staticFileName})`;
 					// Transcript button
-					openTranscript = new MessageButton()
-						.setStyle('LINK')
+					openTranscript = new ButtonBuilder()
+						.setStyle(ButtonStyle.Link)
 						.setEmoji('<:ticketTranscript:998229979609440266>')
 						.setLabel('View Transcript')
 						.setURL(`https://www.ragnarokbot.com/transcripts/${staticFileName}`);
 
-					transcriptRow = new MessageActionRow()
+					transcriptRow = new ActionRowBuilder()
 						.addComponents(openTranscript);
 				}
 
@@ -354,13 +354,13 @@ module.exports = class extends Event {
 				const reasonModal = new TextInputComponent()
 					.setCustomId(`textinput-${ticket.chanid}`)
 					.setLabel('Reason')
-					.setStyle('PARAGRAPH')
+					.setStyle(ButtonStyle.Paragraph)
 					.setMinLength(4)
 					.setMaxLength(400)
 					.setPlaceholder('Input your reason for closing this ticket')
 					.setRequired(true);
 
-				const firstActionRow = new MessageActionRow().addComponents(reasonModal);
+				const firstActionRow = new ActionRowBuilder().addComponents(reasonModal);
 
 				modal.addComponents(firstActionRow);
 
@@ -527,17 +527,17 @@ module.exports = class extends Event {
 						value: `**◎ Success:** Your ticket has been created, <#${c.id}>.` });
 				interaction.reply({ embeds: [newTicketE], ephemeral: true });
 
-				const buttonClose = new MessageButton()
-					.setStyle('DANGER')
+				const buttonClose = new ButtonBuilder()
+					.setStyle(ButtonStyle.Danger)
 					.setLabel('🔒 Close')
 					.setCustomId('closeTicket');
 
-				const buttonCloseReason = new MessageButton()
-					.setStyle('DANGER')
+				const buttonCloseReason = new ButtonBuilder()
+					.setStyle(ButtonStyle.Danger)
 					.setLabel('🔒 Close With Reason')
 					.setCustomId('closeTicketReason');
 
-				const row = new MessageActionRow()
+				const row = new ActionRowBuilder()
 					.addComponents(buttonClose, buttonCloseReason);
 
 				const embed = new EmbedBuilder()

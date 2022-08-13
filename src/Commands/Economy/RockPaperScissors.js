@@ -4,7 +4,7 @@ const Command = require('../../Structures/Command');
 const { EmbedBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const { MessageButton, MessageActionRow } = require('discord.js');
+const { ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const comCooldown = new Set();
 const comCooldownSeconds = 10;
 
@@ -98,52 +98,52 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const Rock = new MessageButton()
-			.setStyle('PRIMARY')
+		const Rock = new ButtonBuilder()
+			.setStyle(ButtonStyle.Primary)
 			.setEmoji('🪨')
 			.setLabel('Rock')
 			.setCustomId('rock');
 
-		const Paper = new MessageButton()
-			.setStyle('PRIMARY')
+		const Paper = new ButtonBuilder()
+			.setStyle(ButtonStyle.Primary)
 			.setEmoji('🧻')
 			.setLabel('Paper')
 			.setCustomId('paper');
 
-		const Scissors = new MessageButton()
-			.setStyle('PRIMARY')
+		const Scissors = new ButtonBuilder()
+			.setStyle(ButtonStyle.Primary)
 			.setEmoji('✂️')
 			.setLabel('Scissors')
 			.setCustomId('scissors');
 
-		const Cancel = new MessageButton()
-			.setStyle('DANGER')
+		const Cancel = new ButtonBuilder()
+			.setStyle(ButtonStyle.Danger)
 			.setLabel('Cancel')
 			.setCustomId('cancel');
 
-		const RockNew = new MessageButton()
-			.setStyle('PRIMARY')
+		const RockNew = new ButtonBuilder()
+			.setStyle(ButtonStyle.Primary)
 			.setEmoji('🪨')
 			.setLabel('Rock')
 			.setCustomId('rock')
 			.setDisabled(true);
 
-		const PaperNew = new MessageButton()
-			.setStyle('PRIMARY')
+		const PaperNew = new ButtonBuilder()
+			.setStyle(ButtonStyle.Primary)
 			.setEmoji('🧻')
 			.setLabel('Paper')
 			.setCustomId('paper')
 			.setDisabled(true);
 
-		const ScissorsNew = new MessageButton()
-			.setStyle('PRIMARY')
+		const ScissorsNew = new ButtonBuilder()
+			.setStyle(ButtonStyle.Primary)
 			.setEmoji('✂️')
 			.setLabel('Scissors')
 			.setCustomId('scissors')
 			.setDisabled(true);
 
-		const CancelNew = new MessageButton()
-			.setStyle('DANGER')
+		const CancelNew = new ButtonBuilder()
+			.setStyle(ButtonStyle.Danger)
 			.setLabel('Cancel')
 			.setCustomId('cancel')
 			.setDisabled(true);
@@ -154,9 +154,9 @@ module.exports = class extends Command {
 		const index = Math.floor(Math.random() * 3);
 		const ai = choices[index];
 
-		const group1 = new MessageActionRow().addComponents([Rock, Paper, Scissors, Cancel]);
+		const group1 = new ActionRowBuilder().addComponents([Rock, Paper, Scissors, Cancel]);
 
-		const group2 = new MessageActionRow().addComponents([[RockNew, PaperNew, ScissorsNew, CancelNew]]);
+		const group2 = new ActionRowBuilder().addComponents([[RockNew, PaperNew, ScissorsNew, CancelNew]]);
 
 		const initial = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })

@@ -3,7 +3,7 @@
 /* eslint-disable no-inline-comments */
 /* eslint-disable no-mixed-operators */
 const Event = require('../../Structures/Event');
-const { EmbedBuilder, PermissionsBitField, codeBlock, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, codeBlock, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const moment = require('moment');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -93,8 +93,8 @@ module.exports = class extends Event {
 
 				// Map embedFields to buttons with numbers
 				const buttons = embedFields.map((obj) => {
-					const buttonMap = new MessageButton()
-						.setStyle('SUCCESS')
+					const buttonMap = new ButtonBuilder()
+						.setStyle(ButtonStyle.Success)
 						.setLabel(`${obj.name.slice(0, obj.name.indexOf('.'))}`)
 						.setCustomId(`modMail-${obj.value.substring(obj.value.indexOf('`') + 1, obj.value.lastIndexOf('`'))}`);
 					return buttonMap;
@@ -103,8 +103,8 @@ module.exports = class extends Event {
 				// Trim buttons to 24
 				const trimmedButtons = buttons.slice(0, 24);
 
-				const cancelButton = new MessageButton()
-					.setStyle('DANGER')
+				const cancelButton = new ButtonBuilder()
+					.setStyle(ButtonStyle.Danger)
 					.setLabel(`Cancel`)
 					.setCustomId(`cancelModMail`);
 				trimmedButtons.push(cancelButton);
@@ -116,10 +116,10 @@ module.exports = class extends Event {
 				}
 				const finalButtonArray = splitButtons.splice(0, 5);
 
-				// For each finalButtonArray, create a MessageActionRow()
+				// For each finalButtonArray, create a ActionRowBuilder()
 				const actionRows = [];
 				for (let i = 0; i < finalButtonArray.length; i++) {
-					const actionRow = new MessageActionRow()
+					const actionRow = new ActionRowBuilder()
 						.addComponents(finalButtonArray[i]);
 					actionRows.push(actionRow);
 				}
@@ -378,17 +378,17 @@ module.exports = class extends Event {
 										value: `**◎ Success:** Your ticket has been created in \`${fetchGuild.name}\`, <#${c.id}>.` });
 								message.channel.send({ embeds: [newTicketE] });
 
-								const buttonClose = new MessageButton()
-									.setStyle('DANGER')
+								const buttonClose = new ButtonBuilder()
+									.setStyle(ButtonStyle.Danger)
 									.setLabel('🔒 Close')
 									.setCustomId('closeTicket');
 
-								const buttonCloseReason = new MessageButton()
-									.setStyle('DANGER')
+								const buttonCloseReason = new ButtonBuilder()
+									.setStyle(ButtonStyle.Danger)
 									.setLabel('🔒 Close With Reason')
 									.setCustomId('closeTicketReason');
 
-								const row = new MessageActionRow()
+								const row = new ActionRowBuilder()
 									.addComponents(buttonClose, buttonCloseReason);
 
 								const embedTicket = new EmbedBuilder()

@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const comCooldown = new Set();
 const comCooldownSeconds = 10;
 const RedditImageFetcher = require('reddit-image-fetcher');
@@ -55,12 +55,12 @@ module.exports = class extends Command {
 			.setImage(meme[0].image)
 			.setFooter({ text: `👍 ${meme[0].upvotes}` });
 
-		const buttonA = new MessageButton()
-			.setStyle('PRIMARY')
+		const buttonA = new ButtonBuilder()
+			.setStyle(ButtonStyle.Primary)
 			.setLabel('Next Meme')
 			.setCustomId('nxtmeme');
 
-		const row = new MessageActionRow()
+		const row = new ActionRowBuilder()
 			.addComponents(buttonA);
 
 		const m = await message.channel.send({ components: [row], embeds: [embed] });

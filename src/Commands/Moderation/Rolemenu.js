@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -55,16 +55,16 @@ module.exports = class extends Command {
 				return;
 			}
 
-			const row = new MessageActionRow();
+			const row = new ActionRowBuilder();
 
 			for (const buttonObject of roleArrayCleaned) {
 				const role = message.guild.roles.cache.get(buttonObject);
 
 				row.addComponents(
-					new MessageButton()
+					new ButtonBuilder()
 						.setCustomId(`rm-${role.id}`)
 						.setLabel(`${role.name}`)
-						.setStyle('SUCCESS')
+						.setStyle(ButtonStyle.Success)
 				);
 			}
 

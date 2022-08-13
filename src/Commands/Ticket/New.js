@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, PermissionsBitField, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
@@ -242,17 +242,17 @@ module.exports = class extends Command {
 						value: `**◎ Success:** Your ticket has been created, <#${c.id}>.` });
 				message.channel.send({ embeds: [newTicketE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 
-				const buttonClose = new MessageButton()
-					.setStyle('DANGER')
+				const buttonClose = new ButtonBuilder()
+					.setStyle(ButtonStyle.Danger)
 					.setLabel('🔒 Close')
 					.setCustomId('closeTicket');
 
-				const buttonCloseReason = new MessageButton()
-					.setStyle('DANGER')
+				const buttonCloseReason = new ButtonBuilder()
+					.setStyle(ButtonStyle.Danger)
 					.setLabel('🔒 Close With Reason')
 					.setCustomId('closeTicketReason');
 
-				const row = new MessageActionRow()
+				const row = new ActionRowBuilder()
 					.addComponents(buttonClose, buttonCloseReason);
 
 				const embed = new EmbedBuilder()

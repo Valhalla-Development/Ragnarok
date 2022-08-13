@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageButton, MessageActionRow } = require('discord.js');
+const { ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
 const comCooldown = new Set();
 const comCooldownSeconds = 10;
@@ -18,32 +18,32 @@ module.exports = class extends Command {
 	async run(message) {
 		this.client.utils.messageDelete(message, 10000);
 
-		const buttonA = new MessageButton()
-			.setStyle('SUCCESS')
+		const buttonA = new ButtonBuilder()
+			.setStyle(ButtonStyle.Success)
 			.setLabel('Yes!')
 			.setCustomId('yes');
 
-		const buttonB = new MessageButton()
-			.setStyle('DANGER')
+		const buttonB = new ButtonBuilder()
+			.setStyle(ButtonStyle.Danger)
 			.setLabel('No!')
 			.setCustomId('no');
 
-		const row = new MessageActionRow()
+		const row = new ActionRowBuilder()
 			.addComponents(buttonA, buttonB);
 
-		const buttonANew = new MessageButton()
-			.setStyle('SUCCESS')
+		const buttonANew = new ButtonBuilder()
+			.setStyle(ButtonStyle.Success)
 			.setLabel('Yes!')
 			.setCustomId('yes')
 			.setDisabled(true);
 
-		const buttonBNew = new MessageButton()
-			.setStyle('DANGER')
+		const buttonBNew = new ButtonBuilder()
+			.setStyle(ButtonStyle.Danger)
 			.setLabel('No!')
 			.setCustomId('no')
 			.setDisabled(true);
 
-		const rowNew = new MessageActionRow()
+		const rowNew = new ActionRowBuilder()
 			.addComponents(buttonANew, buttonBNew);
 
 		const embed = new EmbedBuilder()

@@ -1,7 +1,7 @@
 const Event = require('../../Structures/Event');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
-const { EmbedBuilder, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const discordTranscripts = require('discord-html-transcripts');
 const fetchPkg = require('node-fetch-cjs');
 
@@ -74,13 +74,13 @@ module.exports = class extends Event {
 			} else {
 				transLinkText = `[**Click Here**](https://www.ragnarokbot.com/transcripts/${staticFileName})`;
 				// Transcript button
-				openTranscript = new MessageButton()
-					.setStyle('LINK')
+				openTranscript = new ButtonBuilder()
+					.setStyle(ButtonStyle.Link)
 					.setEmoji('<:ticketTranscript:998229979609440266>')
 					.setLabel('View Transcript')
 					.setURL(`https://www.ragnarokbot.com/transcripts/${staticFileName}`);
 
-				transcriptRow = new MessageActionRow()
+				transcriptRow = new ActionRowBuilder()
 					.addComponents(openTranscript);
 			}
 

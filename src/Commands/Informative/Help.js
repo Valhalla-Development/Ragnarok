@@ -1,4 +1,4 @@
-const { EmbedBuilder, MessageButton, MessageActionRow } = require('discord.js');
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const Command = require('../../Structures/Command');
 const { version } = require('../../../package.json');
 const SQLite = require('better-sqlite3');
@@ -68,17 +68,17 @@ module.exports = class extends Command {
 					cmd.category === category).map(cmd => `\`${this.client.utils.capitalise(cmd.name)}\``).join(', ') });
 			}
 
-			const buttonA = new MessageButton()
-				.setStyle('LINK')
+			const buttonA = new ButtonBuilder()
+				.setStyle(ButtonStyle.Link)
 				.setLabel('Invite Me')
 				.setURL('https://discordapp.com/oauth2/authorize?client_id=508756879564865539&scope=bot%20applications.commands&permissions=1580723711');
 
-			const buttonB = new MessageButton()
-				.setStyle('LINK')
+			const buttonB = new ButtonBuilder()
+				.setStyle(ButtonStyle.Link)
 				.setLabel('Support Server')
 				.setURL('https://discord.gg/Q3ZhdRJ');
 
-			const row = new MessageActionRow()
+			const row = new ActionRowBuilder()
 				.addComponents(buttonA, buttonB);
 
 			await message.channel.send({ components: [row], embeds: [embed] });
@@ -119,61 +119,61 @@ module.exports = class extends Command {
 			message.channel.send({ embeds: [embed] });
 			return;
 		} else {
-			const buttonA = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonA = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Economy')
 				.setCustomId('eco');
 
-			const buttonB = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonB = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Fun')
 				.setCustomId('fun');
 
-			const buttonC = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonC = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Generators')
 				.setCustomId('gens');
 
-			const buttonD = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonD = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Information')
 				.setCustomId('info');
 
-			const buttonE = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonE = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Moderation')
 				.setCustomId('mod');
 
-			const buttonG = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonG = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Ticket')
 				.setCustomId('ticket');
 
-			const home = new MessageButton()
+			const home = new ButtonBuilder()
 				.setCustomId('home')
 				.setEmoji('🏠')
-				.setStyle('SUCCESS')
+				.setStyle(ButtonStyle.Success)
 				.setDisabled(true);
 
-			const inv = new MessageButton()
-				.setStyle('LINK')
+			const inv = new ButtonBuilder()
+				.setStyle(ButtonStyle.Link)
 				.setLabel('Invite Me')
 				.setURL('https://discordapp.com/oauth2/authorize?client_id=508756879564865539&scope=bot%20applications.commands&permissions=1514550062326');
 
-			const supp = new MessageButton()
-				.setStyle('LINK')
+			const supp = new ButtonBuilder()
+				.setStyle(ButtonStyle.Link)
 				.setLabel('Support Server')
 				.setURL('https://discord.gg/Q3ZhdRJ');
 
-			const support = new MessageButton()
-				.setStyle('LINK')
+			const support = new ButtonBuilder()
+				.setStyle(ButtonStyle.Link)
 				.setLabel('🍕 Buy me a Pizza')
 				.setURL('https://www.buymeacoffee.com/ragnarlothbrok');
 
-			const row = new MessageActionRow()
+			const row = new ActionRowBuilder()
 				.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-			const row2 = new MessageActionRow()
+			const row2 = new ActionRowBuilder()
 				.addComponents(buttonE, buttonG, inv, supp, support);
 
 			const m = await message.channel.send({ components: [row, row2], embeds: [embed] });
@@ -206,9 +206,9 @@ module.exports = class extends Command {
 				if (b.customId === 'home') {
 					home.setDisabled(true);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, inv, supp, support);
 
 					await b.update({ embeds: [embed], components: [rowNew, row2New] });
@@ -238,9 +238,9 @@ module.exports = class extends Command {
 						.setThumbnail(this.client.user.displayAvatarURL())
 						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, inv, supp, support);
 
 					await b.update({ embeds: [eco], components: [rowNew, row2New] });
@@ -269,9 +269,9 @@ module.exports = class extends Command {
 						.setThumbnail(this.client.user.displayAvatarURL())
 						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, inv, supp, support);
 
 					await b.update({ embeds: [fun], components: [rowNew, row2New] });
@@ -300,9 +300,9 @@ module.exports = class extends Command {
 						.setThumbnail(this.client.user.displayAvatarURL())
 						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, inv, supp, support);
 
 					await b.update({ embeds: [gen], components: [rowNew, row2New] });
@@ -331,9 +331,9 @@ module.exports = class extends Command {
 						.setThumbnail(this.client.user.displayAvatarURL())
 						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, inv, supp, support);
 
 					await b.update({ embeds: [info], components: [rowNew, row2New] });
@@ -362,9 +362,9 @@ module.exports = class extends Command {
 						.setThumbnail(this.client.user.displayAvatarURL())
 						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, inv, supp, support);
 
 					await b.update({ embeds: [mod], components: [rowNew, row2New] });
@@ -393,9 +393,9 @@ module.exports = class extends Command {
 						.setThumbnail(this.client.user.displayAvatarURL())
 						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, inv, supp, support);
 
 					await b.update({ embeds: [tick], components: [rowNew, row2New] });

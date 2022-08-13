@@ -4,7 +4,7 @@ const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const comCooldown = new Set();
 const comCooldownSeconds = 20;
-const { MessageButton, MessageActionRow } = require('discord.js');
+const { ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
 const discordTranscripts = require('discord-html-transcripts');
 const fetch = require('node-fetch-cjs');
 
@@ -79,17 +79,17 @@ module.exports = class extends Command {
 		}
 
 		if (!comCooldown.has(message.author.id)) {
-			const buttonA = new MessageButton()
-				.setStyle('SUCCESS')
+			const buttonA = new ButtonBuilder()
+				.setStyle(ButtonStyle.Success)
 				.setLabel('Close')
 				.setCustomId('close');
 
-			const buttonB = new MessageButton()
-				.setStyle('DANGER')
+			const buttonB = new ButtonBuilder()
+				.setStyle(ButtonStyle.Danger)
 				.setLabel('Cancel')
 				.setCustomId('cancel');
 
-			const row = new MessageActionRow()
+			const row = new ActionRowBuilder()
 				.addComponents(buttonA, buttonB);
 
 			const initial = new EmbedBuilder()
@@ -172,13 +172,13 @@ module.exports = class extends Command {
 					} else {
 						transLinkText = `[**Click Here**](https://www.ragnarokbot.com/transcripts/${staticFileName})`;
 						// Transcript button
-						openTranscript = new MessageButton()
-							.setStyle('LINK')
+						openTranscript = new ButtonBuilder()
+							.setStyle(ButtonStyle.Link)
 							.setEmoji('<:ticketTranscript:998229979609440266>')
 							.setLabel('View Transcript')
 							.setURL(`https://www.ragnarokbot.com/transcripts/${staticFileName}`);
 
-						transcriptRow = new MessageActionRow()
+						transcriptRow = new ActionRowBuilder()
 							.addComponents(openTranscript);
 					}
 

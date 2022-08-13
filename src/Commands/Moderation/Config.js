@@ -1,6 +1,6 @@
 /* eslint-disable max-depth */
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, PermissionsBitField, MessageButton, MessageActionRow, ChannelType } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, ButtonBuilder, ActionRowBuilder, ChannelType, ButtonStyle } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const fetch = require('node-fetch-cjs');
@@ -45,79 +45,79 @@ module.exports = class extends Command {
 
 		// config help
 		if (args[0] === undefined) {
-			const home = new MessageButton()
+			const home = new ButtonBuilder()
 				.setCustomId('home')
 				.setEmoji('🏠')
-				.setStyle('SUCCESS')
+				.setStyle(ButtonStyle.Success)
 				.setDisabled(true);
 
-			const buttonA = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonA = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Ad Prot')
 				.setCustomId('ads');
 
-			const buttonB = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonB = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Autorole')
 				.setCustomId('autorole');
 
-			const buttonC = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonC = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Birthday')
 				.setCustomId('birthday');
 
-			const buttonD = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonD = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Dad')
 				.setCustomId('dad');
 
-			const buttonE = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonE = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Haste')
 				.setCustomId('haste');
 
-			const buttonG = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonG = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Level')
 				.setCustomId('level');
 
-			const buttonH = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonH = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Logging')
 				.setCustomId('logging');
 
-			const buttonL = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonL = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Prefix')
 				.setCustomId('prefix');
 
-			const buttonM = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonM = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Rolemenu')
 				.setCustomId('rolemenu');
 
-			const buttonN = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonN = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Tickets')
 				.setCustomId('tickets');
 
-			const buttonO = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonO = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Welcome')
 				.setCustomId('welcome');
 
-			const buttonP = new MessageButton()
-				.setStyle('PRIMARY')
+			const buttonP = new ButtonBuilder()
+				.setStyle(ButtonStyle.Primary)
 				.setLabel('Starboard')
 				.setCustomId('starboard');
 
-			const row = new MessageActionRow()
+			const row = new ActionRowBuilder()
 				.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-			const row2 = new MessageActionRow()
+			const row2 = new ActionRowBuilder()
 				.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
-			const row3 = new MessageActionRow()
+			const row3 = new ActionRowBuilder()
 				.addComponents(buttonN, buttonO, buttonP);
 
 			const initial = new EmbedBuilder()
@@ -156,13 +156,13 @@ module.exports = class extends Command {
 				if (b.customId === 'home') {
 					home.setDisabled(true);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
-					const row3New = new MessageActionRow()
+					const row3New = new ActionRowBuilder()
 						.addComponents(buttonN, buttonO, buttonP);
 
 					await b.update({ embeds: [initial], components: [rowNew, row2New, row3New] });
@@ -172,13 +172,13 @@ module.exports = class extends Command {
 				if (b.customId === 'ads') {
 					home.setDisabled(false);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
-					const row3New = new MessageActionRow()
+					const row3New = new ActionRowBuilder()
 						.addComponents(buttonN, buttonO, buttonP);
 
 					const ads = new EmbedBuilder()
@@ -193,13 +193,13 @@ module.exports = class extends Command {
 				if (b.customId === 'autorole') {
 					home.setDisabled(false);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
-					const row3New = new MessageActionRow()
+					const row3New = new ActionRowBuilder()
 						.addComponents(buttonN, buttonO, buttonP);
 
 					const auto = new EmbedBuilder()
@@ -214,13 +214,13 @@ module.exports = class extends Command {
 				if (b.customId === 'birthday') {
 					home.setDisabled(false);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
-					const row3New = new MessageActionRow()
+					const row3New = new ActionRowBuilder()
 						.addComponents(buttonN, buttonO, buttonP);
 
 					const bday = new EmbedBuilder()
@@ -236,13 +236,13 @@ module.exports = class extends Command {
 				if (b.customId === 'dad') {
 					home.setDisabled(false);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
-					const row3New = new MessageActionRow()
+					const row3New = new ActionRowBuilder()
 						.addComponents(buttonN, buttonO, buttonP);
 
 					const dad = new EmbedBuilder()
@@ -257,13 +257,13 @@ module.exports = class extends Command {
 				if (b.customId === 'haste') {
 					home.setDisabled(false);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
-					const row3New = new MessageActionRow()
+					const row3New = new ActionRowBuilder()
 						.addComponents(buttonN, buttonO, buttonP);
 
 					const haste = new EmbedBuilder()
@@ -278,13 +278,13 @@ module.exports = class extends Command {
 				if (b.customId === 'level') {
 					home.setDisabled(false);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
-					const row3New = new MessageActionRow()
+					const row3New = new ActionRowBuilder()
 						.addComponents(buttonN, buttonO, buttonP);
 
 					const lvl = new EmbedBuilder()
@@ -299,13 +299,13 @@ module.exports = class extends Command {
 				if (b.customId === 'logging') {
 					home.setDisabled(false);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
-					const row3New = new MessageActionRow()
+					const row3New = new ActionRowBuilder()
 						.addComponents(buttonN, buttonO, buttonP);
 
 					const log = new EmbedBuilder()
@@ -320,13 +320,13 @@ module.exports = class extends Command {
 				if (b.customId === 'prefix') {
 					home.setDisabled(false);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
-					const row3New = new MessageActionRow()
+					const row3New = new ActionRowBuilder()
 						.addComponents(buttonN, buttonO, buttonP);
 
 					const prf = new EmbedBuilder()
@@ -341,13 +341,13 @@ module.exports = class extends Command {
 				if (b.customId === 'rolemenu') {
 					home.setDisabled(false);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
-					const row3New = new MessageActionRow()
+					const row3New = new ActionRowBuilder()
 						.addComponents(buttonN, buttonO, buttonP);
 
 					const rlm = new EmbedBuilder()
@@ -364,13 +364,13 @@ module.exports = class extends Command {
 				if (b.customId === 'tickets') {
 					home.setDisabled(false);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
-					const row3New = new MessageActionRow()
+					const row3New = new ActionRowBuilder()
 						.addComponents(buttonN, buttonO, buttonP);
 
 					const tck = new EmbedBuilder()
@@ -387,13 +387,13 @@ module.exports = class extends Command {
 				if (b.customId === 'welcome') {
 					home.setDisabled(false);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
-					const row3New = new MessageActionRow()
+					const row3New = new ActionRowBuilder()
 						.addComponents(buttonN, buttonO, buttonP);
 
 					const wlc = new EmbedBuilder()
@@ -411,13 +411,13 @@ module.exports = class extends Command {
 				if (b.customId === 'starboard') {
 					home.setDisabled(false);
 
-					const rowNew = new MessageActionRow()
+					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
 
-					const row2New = new MessageActionRow()
+					const row2New = new ActionRowBuilder()
 						.addComponents(buttonE, buttonG, buttonH, buttonL, buttonM);
 
-					const row3New = new MessageActionRow()
+					const row3New = new ActionRowBuilder()
 						.addComponents(buttonN, buttonO, buttonP);
 
 					const str = new EmbedBuilder()
@@ -787,25 +787,25 @@ module.exports = class extends Command {
 									ch.messages.fetch(activeMenu.message).then(ms => {
 										const roleArray = JSON.parse(foundRoleMenu.roleList);
 
-										const row = new MessageActionRow();
+										const row = new ActionRowBuilder();
 
 										for (const buttonObject of roleArray) {
 											const currentRoles = message.guild.roles.cache.get(buttonObject);
 
 											row.addComponents(
-												new MessageButton()
+												new ButtonBuilder()
 													.setCustomId(`rm-${currentRoles.id}`)
 													.setLabel(`${currentRoles.name}`)
-													.setStyle('SUCCESS')
+													.setStyle(ButtonStyle.Success)
 											);
 										}
 
 										mentions.forEach((role) => {
 											row.addComponents(
-												new MessageButton()
+												new ButtonBuilder()
 													.setCustomId(`rm-${role.id}`)
 													.setLabel(`${role.name}`)
-													.setStyle('SUCCESS')
+													.setStyle(ButtonStyle.Success)
 											);
 										});
 
@@ -915,16 +915,16 @@ module.exports = class extends Command {
 							try {
 								ch.messages.fetch(activeMenu.message).then(ms => {
 									// Update the message with the new array of roles
-									const row = new MessageActionRow();
+									const row = new ActionRowBuilder();
 
 									for (const buttonObject of roleList) {
 										const currentRoles = message.guild.roles.cache.get(buttonObject);
 
 										row.addComponents(
-											new MessageButton()
+											new ButtonBuilder()
 												.setCustomId(`rm-${currentRoles.id}`)
 												.setLabel(`${currentRoles.name}`)
-												.setStyle('SUCCESS')
+												.setStyle(ButtonStyle.Success)
 										);
 									}
 
