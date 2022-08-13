@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { EmbedBuilder, PermissionsBitField, ButtonBuilder, ActionRowBuilder, Modal, TextInputComponent, InteractionType, ButtonStyle } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, ButtonBuilder, ActionRowBuilder, Modal, TextInputBuilder, InteractionType, ButtonStyle } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
@@ -351,7 +351,7 @@ module.exports = class extends Event {
 					.setCustomId(`modal-${ticket.chanid}`)
 					.setTitle('Close Ticket');
 
-				const reasonModal = new TextInputComponent()
+				const reasonModal = new TextInputBuilder()
 					.setCustomId(`textinput-${ticket.chanid}`)
 					.setLabel('Reason')
 					.setStyle(ButtonStyle.Paragraph)
