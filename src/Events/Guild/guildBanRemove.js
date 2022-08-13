@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, AuditLogEvent } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -12,7 +12,7 @@ module.exports = class extends Event {
 		const logs = id.channel;
 		if (!logs) return;
 
-		const entry = await ban.guild.fetchAuditLogs({ type: 'MEMBER_BAN_REMOVE' }).then((audit) => audit.entries.first());
+		const entry = await ban.guild.fetchAuditLogs({ type: AuditLogEvent.MemberBanRemove }).then((audit) => audit.entries.first());
 
 		if (entry.reason && entry.reason.includes('tempban')) return;
 

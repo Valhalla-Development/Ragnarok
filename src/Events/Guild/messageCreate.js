@@ -938,9 +938,9 @@ module.exports = class extends Event {
 			if (botPermCheck) {
 				const missing = message.channel.permissionsFor(this.client.user).missing(botPermCheck);
 				if (missing.length) {
-					if (missing.includes('SEND_MESSAGES')) {
-						const errorMsg = `'[PERMISSIONS ERROR]' An attempt to run command: '${cmd}' in guild '${message.guild.name}' was made, but I am missing the 'SEND_MESSAGES' permission.`;
-						console.error(`[\x1b[31mPERMISSIONS ERROR\x1b[0m] An attempt to run command: '\x1b[92m${cmd}\x1b[0m' in guild \x1b[31m${message.guild.name}\x1b[0m was made, but I am missing the '\x1b[92mSEND_MESSAGES\x1b[0m' permission.`);
+					if (missing.includes('SendMessages')) {
+						const errorMsg = `'[PERMISSIONS ERROR]' An attempt to run command: '${cmd}' in guild '${message.guild.name}' was made, but I am missing the 'Send Messages' permission.`;
+						console.error(`[\x1b[31mPERMISSIONS ERROR\x1b[0m] An attempt to run command: '\x1b[92m${cmd}\x1b[0m' in guild \x1b[31m${message.guild.name}\x1b[0m was made, but I am missing the '\x1b[92mSend Messages\x1b[0m' permission.`);
 						const channel = this.client.channels.cache.get('685973401772621843');
 						if (!channel) return;
 						channel.send(`\`\`\`js\n${errorMsg}\`\`\``);

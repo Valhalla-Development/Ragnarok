@@ -1,7 +1,7 @@
 /* eslint-disable max-depth */
 /* eslint-disable no-useless-escape */
 const Event = require('../../Structures/Event');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -41,11 +41,11 @@ module.exports = class extends Event {
 		const starChannel = message.guild.channels.cache.find(channel => channel.id === id.channel);
 
 		// Check if bot has perms to send messages in starboard channel
-		if (!message.guild.members.me.permissionsIn(starChannel).has('SEND_MESSAGES')) {
+		if (!message.guild.members.me.permissionsIn(starChannel).has(PermissionsBitField.SendMessages)) {
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addFields({ name: `**${this.client.user.username} - Starboard**`,
-					value: `**◎ Error:** I am missing the permission \`SEND_MESSAGES\` in the starboard channel.` });
+					value: `**◎ Error:** I am missing the permission \`Send Messages\` in the starboard channel.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}

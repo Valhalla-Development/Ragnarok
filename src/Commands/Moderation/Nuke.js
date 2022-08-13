@@ -33,7 +33,7 @@ module.exports = class extends Command {
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addFields({ name: `**${this.client.user.username} - Nuke**`,
-					value: `**◎ Error:** I need the \`MANAGE_CHANNELS\` permissions to execute this command.` });
+					value: `**◎ Error:** I need the \`Manage Channels\` permissions to execute this command.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}

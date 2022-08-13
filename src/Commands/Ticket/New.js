@@ -35,7 +35,7 @@ module.exports = class extends Command {
 			const botPerm = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addFields({ name: `**${this.client.user.username} - Ticket**`,
-					value: `**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:` });
+					value: `**◎ Error:** It seems you have removed the \`Manage Channels\` permission from me. I cannot function properly without it :cry:` });
 			message.reply({ embeds: [botPerm], ephemeral: true });
 			return;
 		}

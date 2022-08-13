@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { EmbedBuilder, PermissionsBitField, ButtonBuilder, ActionRowBuilder, Modal, TextInputBuilder, InteractionType, ButtonStyle, OverwriteType, ChannelType } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, ButtonBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, InteractionType, ButtonStyle, OverwriteType, ChannelType } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
@@ -193,7 +193,7 @@ module.exports = class extends Event {
 				const botPerm = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
 					.addFields({ name: `**${this.client.user.username} - Ticket**`,
-						value: `**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:` });
+						value: `**◎ Error:** It seems you have removed the \`Manage Channels\` permission from me. I cannot function properly without it :cry:` });
 				interaction.channel.send({ embeds: [botPerm] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				await interaction.deferUpdate();
 				return;
@@ -347,14 +347,14 @@ module.exports = class extends Event {
 			}
 
 			if (interaction.customId === 'closeTicketReason') {
-				const modal = new Modal()
+				const modal = new ModalBuilder()
 					.setCustomId(`modal-${ticket.chanid}`)
 					.setTitle('Close Ticket');
 
 				const reasonModal = new TextInputBuilder()
 					.setCustomId(`textinput-${ticket.chanid}`)
 					.setLabel('Reason')
-					.setStyle(ButtonStyle.Paragraph)
+					.setStyle('Paragraph')
 					.setMinLength(4)
 					.setMaxLength(400)
 					.setPlaceholder('Input your reason for closing this ticket')
@@ -398,7 +398,7 @@ module.exports = class extends Event {
 				const botPerm = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
 					.addFields({ name: `**${this.client.user.username} - Ticket**`,
-						value: `**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:` });
+						value: `**◎ Error:** It seems you have removed the \`Manage Channels\` permission from me. I cannot function properly without it :cry:` });
 				channel.send({ embeds: [botPerm], ephemeral: true });
 				await interaction.deferUpdate();
 				return;

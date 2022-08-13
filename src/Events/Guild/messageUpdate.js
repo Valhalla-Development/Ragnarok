@@ -15,7 +15,7 @@ module.exports = class extends Event {
 				const npPerms = new EmbedBuilder()
 					.setColor(this.client.utils.color(newMessage.guild.members.me.displayHexColor))
 					.addFields({ name: `**${this.client.user.username} - Ads Protection**`,
-						value: `**◎ Error:** I do not have the \`MANAGE_MESSAGES\` permissions. Disabling Ads Protection.` });
+						value: `**◎ Error:** I do not have the \`Manage Messages\` permissions. Disabling Ads Protection.` });
 				newMessage.channel.send({ embeds: [npPerms] }).then((m) => newMessage.utils.messageDelete(m, 0));
 				db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(newMessage.guild.id);
 				return;

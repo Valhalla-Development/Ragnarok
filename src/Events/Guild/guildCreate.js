@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { EmbedBuilder, ChannelType } = require('discord.js');
+const { EmbedBuilder, ChannelType, PermissionsBitField } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -35,7 +35,7 @@ module.exports = class extends Event {
 		} else {
 			guild.channels.cache.forEach((channel) => {
 				if (channel.type === ChannelType.GuildText && defaultChannel === '') {
-					if (channel.permissionsFor(guild.members.me).has('SEND_MESSAGES')) {
+					if (channel.permissionsFor(guild.members.me).has(PermissionsBitField.SendMessages)) {
 						defaultChannel = channel;
 					}
 				}

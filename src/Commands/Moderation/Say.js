@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 
 module.exports = class extends Command {
 
@@ -50,7 +50,7 @@ module.exports = class extends Command {
 				return;
 			}
 
-			if (!message.guild.members.me.permissionsIn(ch).has('SEND_MESSAGES')) {
+			if (!message.guild.members.me.permissionsIn(ch).has(PermissionsBitField.Flags.SendMessages)) {
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addFields({ name: `**${this.client.user.username} - Say**`,
@@ -71,7 +71,7 @@ module.exports = class extends Command {
 			}
 
 			const user = message.guild.members.cache.get(message.author.id);
-			if (!user.permissionsIn(ch).has('SEND_MESSAGES')) {
+			if (!user.permissionsIn(ch).has(PermissionsBitField.SendMessages)) {
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.addFields({ name: `**${this.client.user.username} - Say**`,

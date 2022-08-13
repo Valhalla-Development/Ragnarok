@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, AuditLogEvent } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -12,7 +12,7 @@ module.exports = class extends Event {
 		const logs = id.channel;
 		if (!logs) return;
 
-		const entry = await ban.guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD' }).then((audit) => audit.entries.first());
+		const entry = await ban.guild.fetchAuditLogs({ type: AuditLogEvent.MemberBanAdd }).then((audit) => audit.entries.first());
 
 		const mod = entry.executor.id;
 

@@ -1,6 +1,6 @@
 const Event = require('../../Structures/Event');
 const RagnarokEmbed = require('../../Structures/RagnarokEmbed');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, AuditLogEvent } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 
@@ -17,7 +17,7 @@ module.exports = class extends Event {
 
 			const fetchedLogs = await message.guild.fetchAuditLogs({
 				limit: 1,
-				type: 'MESSAGE_DELETE'
+				type: AuditLogEvent.MessageDelete
 			});
 			const deletionLog = fetchedLogs.entries.first();
 
