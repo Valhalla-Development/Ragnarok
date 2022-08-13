@@ -3,7 +3,7 @@
 /* eslint-disable no-inline-comments */
 /* eslint-disable no-mixed-operators */
 const Event = require('../../Structures/Event');
-const { EmbedBuilder, PermissionsBitField, codeBlock, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, codeBlock, ButtonBuilder, ActionRowBuilder, ButtonStyle, OverwriteType, ChannelType } = require('discord.js');
 const moment = require('moment');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -249,23 +249,29 @@ module.exports = class extends Event {
 							// Create the channel with the name "ticket-" then the user's ID.
 							const role = fetchGuild.roles.cache.find((x) => x.name === 'Support Team') || fetchGuild.roles.cache.find((r) => r.id === suppRole.role);
 							const role2 = fetchGuild.roles.everyone;
-							fetchGuild.channels.create({ name: `ticket-${nickName}-${randomString}` }, {
+							fetchGuild.channels.create({
+								name: `ticket-${nickName}-${randomString}`,
+								type: ChannelType.GuildText,
 								permissionOverwrites: [
 									{
 										id: role.id,
-										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
+										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+										type: OverwriteType.Role
 									},
 									{
 										id: role2.id,
-										deny: [PermissionsBitField.Flags.ViewChannel]
+										deny: PermissionsBitField.Flags.ViewChannel,
+										type: OverwriteType.Role
 									},
 									{
 										id: message.author.id,
-										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
+										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+										type: OverwriteType.Member
 									},
 									{
 										id: this.client.user.id,
-										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
+										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+										type: OverwriteType.Member
 									}
 								]
 							}).then((c) => {
@@ -312,7 +318,7 @@ module.exports = class extends Event {
 							// Check how many channels are in the category
 							const category = fetchGuild.channels.cache.find((chan) => chan.id === id.category);
 
-							const categoryLength = category && category.children ? category.children.size : 0;
+							const categoryLength = category && category.children.cache.size ? category.children.cache.size : 0;
 
 							let newId;
 							// Check if the category has the max amount of channels
@@ -340,28 +346,44 @@ module.exports = class extends Event {
 								authorid: message.author.id,
 								reason
 							});
-							const ticategory = newId || id.category;
+
+							let ticategory;
+							if (message.guild.channels.cache.find((chan) => chan.id === id.category)) {
+								ticategory = id.category;
+							} else {
+								const deleteCat = db.prepare(`UPDATE ticketConfig SET category = (@category) WHERE guildid = ${message.guild.id}`);
+								deleteCat.run({
+									category: null
+								});
+							}
 
 							const role = fetchGuild.roles.cache.find((x) => x.name === 'Support Team') || fetchGuild.roles.cache.find((r) => r.id === suppRole.role);
 							const role2 = fetchGuild.roles.everyone;
 							// Create the channel with the name "ticket-" then the user's ID.
-							fetchGuild.channels.create({ name: `ticket-${nickName}-${randomString}`, parent: ticategory }, {
+							fetchGuild.channels.create({
+								name: `ticket-${nickName}-${randomString}`,
+								type: ChannelType.GuildText,
+								parent: newId || (ticategory || null),
 								permissionOverwrites: [
 									{
 										id: role.id,
-										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
+										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+										type: OverwriteType.Role
 									},
 									{
 										id: role2.id,
-										deny: [PermissionsBitField.Flags.ViewChannel]
+										deny: PermissionsBitField.Flags.ViewChannel,
+										type: OverwriteType.Role
 									},
 									{
 										id: message.author.id,
-										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
+										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+										type: OverwriteType.Member
 									},
 									{
 										id: this.client.user.id,
-										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
+										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+										type: OverwriteType.Member
 									}
 								]
 							}).then(async (c) => {

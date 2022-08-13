@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { EmbedBuilder, PermissionsBitField, ButtonBuilder, ActionRowBuilder, Modal, TextInputBuilder, InteractionType, ButtonStyle } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, ButtonBuilder, ActionRowBuilder, Modal, TextInputBuilder, InteractionType, ButtonStyle, OverwriteType, ChannelType } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const { customAlphabet } = require('nanoid');
@@ -467,14 +467,24 @@ module.exports = class extends Event {
 				authorid: interaction.user.id,
 				reason
 			});
-			const ticategory = id.category;
+
+			let ticategory;
+			if (interaction.guild.channels.cache.find((chan) => chan.id === id.category)) {
+				ticategory = id.category;
+			} else {
+				const deleteCat = db.prepare(`UPDATE ticketConfig SET category = (@category) WHERE guildid = ${interaction.guild.id}`);
+				deleteCat.run({
+					category: null
+				});
+			}
+
 			// Create the channel with the name "ticket-" then the user's ID.
 			const role = interaction.guild.roles.cache.find((x) => x.name === 'Support Team') || interaction.guild.roles.cache.find((r) => r.id === fetch.role);
 			const role2 = channel.guild.roles.everyone;
 
 			// Check how many channels are in the category
 			const category = interaction.guild.channels.cache.find((chan) => chan.id === id.category);
-			const categoryLength = category && category.children ? category.children.size : 0;
+			const categoryLength = category && category.children.cache.size ? category.children.cache.size : 0;
 
 			let newId;
 			// Check if the category has the max amount of channels
@@ -495,23 +505,30 @@ module.exports = class extends Event {
 				});
 			}
 
-			interaction.guild.channels.create({ name: `ticket-${nickName}-${randomString}`, parent: newId || (ticategory || null) }, {
+			interaction.guild.channels.create({
+				name: `ticket-${nickName}-${randomString}`,
+				type: ChannelType.GuildText,
+				parent: newId || (ticategory || null),
 				permissionOverwrites: [
 					{
 						id: role.id,
-						allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
+						allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+						type: OverwriteType.Role
 					},
 					{
 						id: role2.id,
-						deny: PermissionsBitField.Flags.ViewChannel
+						deny: PermissionsBitField.Flags.ViewChannel,
+						type: OverwriteType.Role
 					},
 					{
 						id: interaction.user.id,
-						allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
+						allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+						type: OverwriteType.Member
 					},
 					{
 						id: this.client.user.id,
-						allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
+						allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+						type: OverwriteType.Member
 					}
 				]
 			}).then((c) => {
