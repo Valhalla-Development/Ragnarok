@@ -189,7 +189,7 @@ module.exports = class extends Event {
 			if (!ticket) return;
 
 			// Check if bot has perms
-			if (!guild.members.me.permissions.has(PermissionsBitField.ManageChannels)) {
+			if (!guild.members.me.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
 				const botPerm = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
 					.addFields({ name: `**${this.client.user.username} - Ticket**`,
@@ -394,23 +394,23 @@ module.exports = class extends Event {
 				return;
 			}
 
-			if (!guild.members.me.permissions.has(PermissionsBitField.ManageChannels)) {
+			if (!guild.members.me.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
 				const botPerm = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
 					.addFields({ name: `**${this.client.user.username} - Ticket**`,
 						value: `**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:` });
-				channel.send({ embeds: [botPerm] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+				channel.send({ embeds: [botPerm], ephemeral: true });
 				await interaction.deferUpdate();
 				return;
 			}
 
 			// "Support" role
-			if (!guild.roles.cache.find((r) => r.name === 'Support Team') && !fetch.role) {
+			if (!fetch.role) {
 				const nomodRole = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
 					.addFields({ name: `**${this.client.user.username} - Ticket**`,
-						value: `**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.` });
-				channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+						value: `**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`` });
+				channel.send({ embeds: [nomodRole], ephemeral: true });
 				await interaction.deferUpdate();
 				return;
 			}
@@ -458,7 +458,7 @@ module.exports = class extends Event {
 			const id = db.prepare(`SELECT category FROM ticketConfig WHERE guildid = ${guild.id};`).get();
 			const reason = '';
 			const randomString = nanoid();
-			const nickName = guild.members.members.cache.get(interaction.user.id).displayName;
+			const nickName = guild.members.cache.get(interaction.user.id).displayName;
 
 			const newTicket = db.prepare('INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);');
 			newTicket.run({
@@ -495,24 +495,23 @@ module.exports = class extends Event {
 				});
 			}
 
-			interaction.guild.channels.create({ name: `ticket-${nickName}-${randomString}` }, {
-				parent: newId || (ticategory || null),
+			interaction.guild.channels.create({ name: `ticket-${nickName}-${randomString}`, parent: newId || (ticategory || null) }, {
 				permissionOverwrites: [
 					{
 						id: role.id,
-						allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
+						allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
 					},
 					{
 						id: role2.id,
-						deny: PermissionsBitField.ViewChannel
+						deny: PermissionsBitField.Flags.ViewChannel
 					},
 					{
 						id: interaction.user.id,
-						allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
+						allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
 					},
 					{
 						id: this.client.user.id,
-						allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
+						allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
 					}
 				]
 			}).then((c) => {
@@ -575,7 +574,7 @@ module.exports = class extends Event {
 
 		if (interaction.customId.startsWith('rm-')) {
 			const guild = this.client.guilds.cache.get(interaction.guild.id);
-			const user = guild.members.members.cache.get(interaction.user.id);
+			const user = guild.members.cache.get(interaction.user.id);
 
 			const lastRole = interaction.customId.lastIndexOf('-');
 

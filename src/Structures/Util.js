@@ -49,7 +49,7 @@ module.exports = class Util {
 	}
 
 	messageDelete(message, time) {
-		if (message.member.guild.members.me.permissions.has(PermissionsBitField.ManageMessages)) {
+		if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
 			setTimeout(() => {
 				if (message && message.deletable) {
 					message.delete();

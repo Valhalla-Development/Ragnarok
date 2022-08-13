@@ -69,7 +69,7 @@ module.exports = class extends Command {
 			const getChan = message.guild.channels.cache.find((chan) => chan.id === foundTicket.chanid);
 			const user = message.guild.members.cache.get(rUser.id);
 
-			if (user.permissionsIn(getChan).has([PermissionsBitField.SendMessages, PermissionsBitField.SendMessages])) {
+			if (user.permissionsIn(getChan).has([PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.SendMessages])) {
 				this.client.utils.messageDelete(message, 10000);
 
 				const nouser = new EmbedBuilder()

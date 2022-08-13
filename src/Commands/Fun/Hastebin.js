@@ -99,7 +99,7 @@ module.exports = class extends Command {
 		const user = message.guild.members.cache.get(message.author.id);
 
 		if (status) {
-			if (user.permissions.has(PermissionsBitField.ManageGuild) || user.permissions.has(PermissionsBitField.Administrator)) {
+			if (user.permissions.has(PermissionsBitField.Flags.ManageGuild) || user.permissions.has(PermissionsBitField.Flags.Administrator)) {
 				const matches = text.match(urlRegexSafe());
 				cnt = text.replace(matches, ' || Discord Link Removed By Server Config. If this is a mistake, please contact a server administrator. || ');
 			} else {

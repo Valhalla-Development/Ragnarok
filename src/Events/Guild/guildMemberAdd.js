@@ -115,7 +115,7 @@ module.exports = class extends Event {
 			ctx.font = '20px Montserrat';
 			ctx.fillStyle = '#ffffff';
 			ctx.textAlign = 'left';
-			ctx.fillText(`${ordinal(member.guild.members.memberCount - member.guild.members.members.cache.filter((m) => m.user.bot).size)} member!`, 5, 232);
+			ctx.fillText(`${ordinal(member.guild.members.memberCount - member.guild.members.cache.filter((m) => m.user.bot).size)} member!`, 5, 232);
 
 			ctx.beginPath();
 			ctx.arc(350, 150, 85, 0, Math.PI * 2, true);

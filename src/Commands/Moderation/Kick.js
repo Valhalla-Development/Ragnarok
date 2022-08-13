@@ -60,7 +60,7 @@ module.exports = class extends Command {
 		}
 
 		// Check if user is kickable
-		if (user.permissions.has(PermissionsBitField.ManageGuild) || user.permissions.has(PermissionsBitField.Administrator) || !user.kickable) {
+		if (user.permissions.has(PermissionsBitField.Flags.ManageGuild) || user.permissions.has(PermissionsBitField.Flags.Administrator) || !user.kickable) {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()

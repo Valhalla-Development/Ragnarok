@@ -11,7 +11,7 @@ module.exports = class extends Event {
 		if (!newMessage.guild || oldMessage.content === newMessage.content || newMessage.author.bot) return;
 		const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(newMessage.guild.id);
 		if (adsprot['count(*)']) {
-			if (!newMessage.member.guild.members.me.permissions.has(PermissionsBitField.ManageMessages)) {
+			if (!newMessage.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
 				const npPerms = new EmbedBuilder()
 					.setColor(this.client.utils.color(newMessage.guild.members.me.displayHexColor))
 					.addFields({ name: `**${this.client.user.username} - Ads Protection**`,
@@ -20,10 +20,10 @@ module.exports = class extends Event {
 				db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(newMessage.guild.id);
 				return;
 			}
-			if (!newMessage.member.permissions.has(PermissionsBitField.ManageMessages)) {
+			if (!newMessage.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
 				const matches = urlRegexSafe({ strict: false }).test(newMessage.content.toLowerCase());
 				if (matches) {
-					if (newMessage.member.guild.members.me.permissions.has(PermissionsBitField.ManageMessages)) {
+					if (newMessage.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
 						this.client.utils.messageDelete(newMessage, 0);
 						newMessage.channel.send(`**◎ Your message contained a link and it was deleted, ${newMessage.author}**`)
 							.then((msg) => {

@@ -58,7 +58,7 @@ module.exports = class extends Command {
 		}
 
 		// Check if user is bannable
-		if (user.permissions.has(PermissionsBitField.ManageGuild) || user.permissions.has(PermissionsBitField.Administrator)) {
+		if (user.permissions.has(PermissionsBitField.Flags.ManageGuild) || user.permissions.has(PermissionsBitField.Flags.Administrator)) {
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 				.addFields({ name: `**${this.client.user.username} - Timeout**`,

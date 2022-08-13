@@ -372,7 +372,7 @@ module.exports = class extends Event {
 
 				grabBdays.forEach(b => {
 					// Check if b.userid is in guild
-					const usr = guild.members.members.cache.get(b.userid);
+					const usr = guild.members.cache.get(b.userid);
 					if (!usr) return;
 
 					const grabUser = db.prepare(`SELECT * FROM birthdays WHERE userid = ${usr.user.id};`).get();
@@ -456,7 +456,7 @@ module.exports = class extends Event {
 							.setTimestamp();
 
 						try {
-							guild.members.members.unban(r.userid, 'tempban');
+							guild.members.unban(r.userid, 'tempban');
 
 							const channelGrab = db.prepare(`SELECT channel FROM ban WHERE id = ?`).get(`${guild.id}-${r.userid}`);
 							const findChannel = this.client.channels.cache.get(channelGrab.channel);

@@ -70,7 +70,7 @@ module.exports = class extends Command {
 
 			const user = message.guild.members.cache.get(rUser.id);
 
-			if (!user.permissionsIn(getChan).has([PermissionsBitField.SendMessages, PermissionsBitField.ViewChannel])) {
+			if (!user.permissionsIn(getChan).has([PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.ViewChannel])) {
 				this.client.utils.messageDelete(message, 10000);
 
 				const nouser = new EmbedBuilder()

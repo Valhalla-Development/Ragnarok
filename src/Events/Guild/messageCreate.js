@@ -26,7 +26,7 @@ module.exports = class extends Event {
 				if (message.author.bot) return;
 
 				// Filter all guilds where the user is in
-				const guilds = this.client.guilds.cache.filter(guild => guild.members.members.cache.get(message.author.id));
+				const guilds = this.client.guilds.cache.filter(guild => guild.members.cache.get(message.author.id));
 
 				if (!guilds) {
 					const embed = new EmbedBuilder()
@@ -176,7 +176,7 @@ module.exports = class extends Event {
 							return;
 						}
 
-						if (!fetchGuild.members.me.permissions.has(PermissionsBitField.ManageChannels)) {
+						if (!fetchGuild.members.me.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
 							this.client.utils.deletableCheck(m, 0);
 
 							const botPerm = new EmbedBuilder()
@@ -232,7 +232,7 @@ module.exports = class extends Event {
 							return;
 						}
 
-						const nickName = fetchGuild.members.members.cache.get(message.author.id).displayName;
+						const nickName = fetchGuild.members.cache.get(message.author.id).displayName;
 
 						// Make Ticket
 						const id = db.prepare(`SELECT category FROM ticketConfig WHERE guildid = ${fetchGuild.id};`).get();
@@ -253,19 +253,19 @@ module.exports = class extends Event {
 								permissionOverwrites: [
 									{
 										id: role.id,
-										allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
+										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
 									},
 									{
 										id: role2.id,
-										deny: [PermissionsBitField.ViewChannel]
+										deny: [PermissionsBitField.Flags.ViewChannel]
 									},
 									{
 										id: message.author.id,
-										allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
+										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
 									},
 									{
 										id: this.client.user.id,
-										allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
+										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
 									}
 								]
 							}).then((c) => {
@@ -345,24 +345,23 @@ module.exports = class extends Event {
 							const role = fetchGuild.roles.cache.find((x) => x.name === 'Support Team') || fetchGuild.roles.cache.find((r) => r.id === suppRole.role);
 							const role2 = fetchGuild.roles.everyone;
 							// Create the channel with the name "ticket-" then the user's ID.
-							fetchGuild.channels.create({ name: `ticket-${nickName}-${randomString}` }, {
-								parent: ticategory,
+							fetchGuild.channels.create({ name: `ticket-${nickName}-${randomString}`, parent: ticategory }, {
 								permissionOverwrites: [
 									{
 										id: role.id,
-										allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
+										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
 									},
 									{
 										id: role2.id,
-										deny: [PermissionsBitField.ViewChannel]
+										deny: [PermissionsBitField.Flags.ViewChannel]
 									},
 									{
 										id: message.author.id,
-										allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
+										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
 									},
 									{
 										id: this.client.user.id,
-										allow: [PermissionsBitField.ViewChannel, PermissionsBitField.SendMessages]
+										allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages]
 									}
 								]
 							}).then(async (c) => {
@@ -654,7 +653,7 @@ module.exports = class extends Event {
 		function adsProt(grabClient) {
 			const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(message.guild.id);
 			if (adsprot['count(*)']) {
-				if (!message.member.guild.members.me.permissions.has(PermissionsBitField.ManageMessages)) {
+				if (!message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
 					const npPerms = new EmbedBuilder()
 						.setColor(grabClient.utils.color(message.guild.members.me.displayHexColor))
 						.addFields({ name: `**${grabClient.user.username} - Ads Protection**`,
@@ -663,10 +662,10 @@ module.exports = class extends Event {
 					db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(message.guild.id);
 					return;
 				}
-				if (!message.member.permissions.has(PermissionsBitField.ManageMessages)) {
+				if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
 					const matches = urlRegexSafe({ strict: false }).test(message.content.toLowerCase());
 					if (matches) {
-						if (message.member.guild.members.me.permissions.has(PermissionsBitField.ManageMessages)) {
+						if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
 							grabClient.utils.messageDelete(message, 0);
 							message.channel.send(`**◎ Your message contained a link and it was deleted, ${message.author}**`)
 								.then((msg) => {
@@ -982,7 +981,7 @@ module.exports = class extends Event {
 				return;
 			}
 			const ch = message.guild.channels.cache.get(logs);
-			if (!message.guild.members.me.permissionsIn(ch).has(PermissionsBitField.SendMessages)) {
+			if (!message.guild.members.me.permissionsIn(ch).has(PermissionsBitField.Flags.SendMessages)) {
 				return;
 			}
 		}

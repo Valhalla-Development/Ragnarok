@@ -1165,7 +1165,7 @@ module.exports = class extends Command {
 			// adsprot
 			if (args[0] === 'adsprot') {
 				// perms checking
-				if (!message.member.guild.members.me.permissions.has(PermissionsBitField.ManageMessages)) {
+				if (!message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
 					this.client.utils.messageDelete(message, 10000);
 
 					const npPerms = new EmbedBuilder()
@@ -1326,7 +1326,7 @@ module.exports = class extends Command {
 
 			// logging
 			if (args[0] === 'logging') {
-				if (!message.member.guild.members.me.permissions.has(PermissionsBitField.ViewAuditLog)) {
+				if (!message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ViewAuditLog)) {
 					this.client.utils.messageDelete(message, 10000);
 
 					const embed = new EmbedBuilder()
