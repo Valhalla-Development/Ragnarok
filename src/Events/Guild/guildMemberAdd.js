@@ -128,7 +128,7 @@ module.exports = class extends Event {
 			ctx.strokeRect(0, 0, canvas.width, canvas.height);
 			ctx.drawImage(avatar, 257.5, 57.5, 180, 180);
 
-			const attachment = new MessageAttachment(canvas.toBuffer(), 'welcome.jpg');
+			const attachment = new MessageAttachment(canvas.toBuffer(), { name: 'welcome.jpg' });
 
 			clientGrab.channels.cache.get(sendchannel).send({ files: [attachment] }).catch((err) => console.error(err));
 		}

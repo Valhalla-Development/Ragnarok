@@ -27,7 +27,7 @@ module.exports = class extends Command {
 		}
 
 		const img = await new DIG.Bed().getImage(message.author.displayAvatarURL({ dynamic: false, format: 'png' }), user.user.displayAvatarURL({ dynamic: false, format: 'png' }));
-		const attach = new MessageAttachment(img, 'Bed.png');
+		const attach = new MessageAttachment(img, { name: 'Bed.png' });
 		message.channel.send({ files: [attach] });
 		return;
 	}

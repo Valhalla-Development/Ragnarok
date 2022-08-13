@@ -27,7 +27,7 @@ module.exports = class extends Command {
 		}
 
 		const img = await new DIG.Kiss().getImage(message.author.displayAvatarURL({ dynamic: false, format: 'png' }), user.user.displayAvatarURL({ dynamic: false, format: 'png' }));
-		const attach = new MessageAttachment(img, 'Kiss.png');
+		const attach = new MessageAttachment(img, { name: 'Kiss.png' });
 		message.channel.send({ files: [attach] });
 		return;
 	}

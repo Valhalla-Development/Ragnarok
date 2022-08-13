@@ -28,7 +28,7 @@ module.exports = class extends Command {
 		}
 
 		const img = await new DIG.Batslap().getImage(message.author.displayAvatarURL({ dynamic: false, format: 'png' }), user.user.displayAvatarURL({ dynamic: false, format: 'png' }));
-		const attach = new MessageAttachment(img, 'BatSlap.png');
+		const attach = new MessageAttachment(img, { name: 'BatSlap.png' });
 		message.channel.send({ files: [attach] });
 		return;
 	}

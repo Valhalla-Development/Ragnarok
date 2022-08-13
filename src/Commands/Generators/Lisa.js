@@ -36,7 +36,7 @@ module.exports = class extends Command {
 		}
 
 		const img = await new DIG.LisaPresentation().getImage(text);
-		const attach = new MessageAttachment(img, 'Lisa.png');
+		const attach = new MessageAttachment(img, { name: 'Lisa.png' });
 		message.channel.send({ files: [attach] });
 		return;
 	}

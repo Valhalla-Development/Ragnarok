@@ -23,7 +23,7 @@ module.exports = class extends Command {
 		}
 
 		const img = await new DIG.Tatoo().getImage(avatar);
-		const attach = new MessageAttachment(img, 'Tatoo.png');
+		const attach = new MessageAttachment(img, { name: 'Tatoo.png' });
 		message.channel.send({ files: [attach] });
 		return;
 	}

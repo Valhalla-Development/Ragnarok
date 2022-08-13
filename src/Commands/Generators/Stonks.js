@@ -24,7 +24,7 @@ module.exports = class extends Command {
 		}
 
 		const img = await new DIG.Stonk().getImage(avatar);
-		const attach = new MessageAttachment(img, 'Stonk.png');
+		const attach = new MessageAttachment(img, { name: 'Stonk.png' });
 		message.channel.send({ files: [attach] });
 		return;
 	}

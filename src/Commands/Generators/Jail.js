@@ -23,7 +23,7 @@ module.exports = class extends Command {
 		}
 
 		const img = await new DIG.Jail().getImage(avatar);
-		const attach = new MessageAttachment(img, 'Jail.png');
+		const attach = new MessageAttachment(img, { name: 'Jail.png' });
 		message.channel.send({ files: [attach] });
 		return;
 	}

@@ -83,7 +83,7 @@ module.exports = class extends Command {
 
 		const attachment = new MessageAttachment(
 			canvas.toBuffer(),
-			'captcha-image.jpg'
+			{ name: 'captcha-image.jpg' }
 		);
 
 		message.channel.send({ files: [attachment] });

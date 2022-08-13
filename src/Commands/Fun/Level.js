@@ -589,7 +589,7 @@ module.exports = class extends Command {
 		ctx.fill();
 		ctx.save();
 
-		const attachment = new MessageAttachment(canvas.toBuffer(), 'level.jpg');
+		const attachment = new MessageAttachment(canvas.toBuffer(), { name: 'level.jpg' });
 		message.channel.send({ files: [attachment] }).catch((err) => console.error(err));
 	}
 

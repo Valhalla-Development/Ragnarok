@@ -23,7 +23,7 @@ module.exports = class extends Command {
 		}
 
 		const img = await new DIG.Triggered().getImage(avatar);
-		const attach = new MessageAttachment(img, 'Triggered.gif');
+		const attach = new MessageAttachment(img, { name: 'Triggered.gif' });
 		message.channel.send({ files: [attach] });
 		return;
 	}
