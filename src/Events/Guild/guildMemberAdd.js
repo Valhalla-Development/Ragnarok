@@ -1,5 +1,5 @@
 const Event = require('../../Structures/Event');
-const { EmbedBuilder, MessageAttachment } = require('discord.js');
+const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
 const Canvas = require('canvas');
@@ -128,7 +128,7 @@ module.exports = class extends Event {
 			ctx.strokeRect(0, 0, canvas.width, canvas.height);
 			ctx.drawImage(avatar, 257.5, 57.5, 180, 180);
 
-			const attachment = new MessageAttachment(canvas.toBuffer(), { name: 'welcome.jpg' });
+			const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: 'welcome.jpg' });
 
 			clientGrab.channels.cache.get(sendchannel).send({ files: [attachment] }).catch((err) => console.error(err));
 		}

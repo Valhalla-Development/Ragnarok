@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageAttachment, EmbedBuilder } = require('discord.js');
+const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
 const Canvas = require('canvas');
 Canvas.registerFont('./Storage/Canvas/Fonts/Roboto-Thin.ttf', {
 	family: 'Roboto'
@@ -81,7 +81,7 @@ module.exports = class extends Command {
 		ctx.closePath();
 		ctx.clip();
 
-		const attachment = new MessageAttachment(
+		const attachment = new AttachmentBuilder(
 			canvas.toBuffer(),
 			{ name: 'captcha-image.jpg' }
 		);

@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { MessageAttachment } = require('discord.js');
+const { AttachmentBuilder } = require('discord.js');
 const DIG = require('discord-image-generation');
 
 module.exports = class extends Command {
@@ -23,7 +23,7 @@ module.exports = class extends Command {
 		}
 
 		const img = await new DIG.Triggered().getImage(avatar);
-		const attach = new MessageAttachment(img, { name: 'Triggered.gif' });
+		const attach = new AttachmentBuilder(img, { name: 'Triggered.gif' });
 		message.channel.send({ files: [attach] });
 		return;
 	}

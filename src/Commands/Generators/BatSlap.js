@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, MessageAttachment } = require('discord.js');
+const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const DIG = require('discord-image-generation');
 
 module.exports = class extends Command {
@@ -28,7 +28,7 @@ module.exports = class extends Command {
 		}
 
 		const img = await new DIG.Batslap().getImage(message.author.displayAvatarURL({ dynamic: false, format: 'png' }), user.user.displayAvatarURL({ dynamic: false, format: 'png' }));
-		const attach = new MessageAttachment(img, { name: 'BatSlap.png' });
+		const attach = new AttachmentBuilder(img, { name: 'BatSlap.png' });
 		message.channel.send({ files: [attach] });
 		return;
 	}

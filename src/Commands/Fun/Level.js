@@ -4,7 +4,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-mixed-operators */
 const Command = require('../../Structures/Command');
-const { MessageAttachment, EmbedBuilder } = require('discord.js');
+const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
 const abbreviate = require('number-abbreviate');
 const SQLite = require('better-sqlite3');
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -589,7 +589,7 @@ module.exports = class extends Command {
 		ctx.fill();
 		ctx.save();
 
-		const attachment = new MessageAttachment(canvas.toBuffer(), { name: 'level.jpg' });
+		const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: 'level.jpg' });
 		message.channel.send({ files: [attachment] }).catch((err) => console.error(err));
 	}
 
