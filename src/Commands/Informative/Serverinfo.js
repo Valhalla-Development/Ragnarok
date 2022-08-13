@@ -101,8 +101,8 @@ module.exports = class extends Command {
 				**◎ 📅 Created At:** <t:${Math.round(message.guild.createdTimestamp / 1000)}> - (<t:${Math.round(message.guild.createdTimestamp / 1000)}:R>)
 				**◎ 🔐 Verification Level:** \`${verificationLevels[message.guild.verificationLevel]}\`
 				**◎ 🔏 MFA Level:** \`${mfa[message.guild.mfaLevel]}\`
-				**◎ 🧑‍🤝‍🧑 Guild Members:** \`${message.guild.members.memberCount - message.guild.members.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}\`
-				**◎ 🤖 Guild Bots:** \`${message.guild.members.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}\`
+				**◎ 🧑‍🤝‍🧑 Guild Members:** \`${message.guild.members.memberCount - message.guild.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}\`
+				**◎ 🤖 Guild Bots:** \`${message.guild.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}\`
 				\u200b` })
 			.addFields({ name: `**Guild Channels** [${textChan.size + voiceChan.size}]`,
 				value: `<:TextChannel:855591004236546058> | Text: \`${textChan.size}\`\n<:VoiceChannel:855591004300115998> | Voice: \`${voiceChan.size}\``, inline: true },

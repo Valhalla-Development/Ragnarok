@@ -70,7 +70,7 @@ module.exports = class extends Command {
 				return;
 			}
 
-			const user = message.guild.members.members.cache.get(message.author.id);
+			const user = message.guild.members.cache.get(message.author.id);
 			if (!user.permissionsIn(ch).has('SEND_MESSAGES')) {
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))

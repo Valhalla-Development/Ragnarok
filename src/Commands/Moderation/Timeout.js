@@ -34,7 +34,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const user = message.mentions.members.first() || message.guild.members.members.cache.find(usr => usr.id === args[0]);
+		const user = message.mentions.members.first() || message.guild.members.cache.find(usr => usr.id === args[0]);
 
 		if (!user) {
 			const incorrectFormat = new EmbedBuilder()
@@ -77,7 +77,7 @@ module.exports = class extends Command {
 				return;
 			}
 
-			const userClear = message.mentions.members.first() || message.guild.members.members.cache.find(usr => usr.id === args[0]);
+			const userClear = message.mentions.members.first() || message.guild.members.cache.find(usr => usr.id === args[0]);
 			if (!userClear) {
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))

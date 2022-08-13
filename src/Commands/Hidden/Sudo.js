@@ -14,7 +14,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
-		const user = message.mentions.users.size ? message.guild.members.members.cache.get(message.mentions.users.first().id) : message.guild.members.members.cache.get(args[0]);
+		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0]);
 
 		this.client.utils.messageDelete(message, 0);
 

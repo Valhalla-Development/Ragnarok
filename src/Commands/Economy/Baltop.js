@@ -26,7 +26,7 @@ module.exports = class extends Command {
 
 		for (let i = 0; i < top10.length; i++) {
 			const data = top10[i];
-			const fetchUsers = message.guild.members.members.cache.get(data.user);
+			const fetchUsers = message.guild.members.cache.get(data.user);
 
 			if (fetchUsers === undefined) {
 				continue;

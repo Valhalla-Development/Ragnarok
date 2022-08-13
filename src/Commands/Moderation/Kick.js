@@ -21,7 +21,7 @@ module.exports = class extends Command {
 
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
 
-		const user = message.mentions.users.size ? message.guild.members.members.cache.get(message.mentions.users.first().id) : message.guild.members.members.cache.get(args[0]);
+		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0]);
 
 		// No user
 		if (!user) {

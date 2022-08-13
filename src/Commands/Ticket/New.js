@@ -78,7 +78,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const nickName = message.guild.members.members.cache.get(message.author.id).displayName;
+		const nickName = message.guild.members.cache.get(message.author.id).displayName;
 
 		// Make Ticket
 		const id = db.prepare(`SELECT category FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();

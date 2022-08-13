@@ -47,7 +47,7 @@ module.exports = class extends Command {
 	}
 
 	async run(message, args) {
-		const member = message.mentions.members.first() || message.guild.members.members.cache.find((a) => a.id === args[0]) || message.member;
+		const member = message.mentions.members.first() || message.guild.members.cache.find((a) => a.id === args[0]) || message.member;
 		const roles = member.roles.cache
 			.sort((a, b) => b.position - a.position)
 			.map(role => role.toString())

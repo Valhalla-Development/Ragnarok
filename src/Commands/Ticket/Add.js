@@ -67,7 +67,7 @@ module.exports = class extends Command {
 		});
 		if (foundTicket) {
 			const getChan = message.guild.channels.cache.find((chan) => chan.id === foundTicket.chanid);
-			const user = message.guild.members.members.cache.get(rUser.id);
+			const user = message.guild.members.cache.get(rUser.id);
 
 			if (user.permissionsIn(getChan).has([PermissionsBitField.SendMessages, PermissionsBitField.SendMessages])) {
 				this.client.utils.messageDelete(message, 10000);

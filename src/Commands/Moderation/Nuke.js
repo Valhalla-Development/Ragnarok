@@ -25,7 +25,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		const user = message.guild.members.members.cache.get(message.author.id);
+		const user = message.guild.members.cache.get(message.author.id);
 
 		if (!user.permissions.has(PermissionsBitField.ManageChannels)) {
 			this.client.utils.messageDelete(message, 10000);

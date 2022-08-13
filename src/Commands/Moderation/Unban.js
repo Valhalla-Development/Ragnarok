@@ -62,7 +62,7 @@ module.exports = class extends Command {
 				message.channel.send({ embeds: [embed2] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
-			message.guild.members.members.unban(bUser.user).then(() => message.channel.send({ embeds: [embed] }));
+			message.guild.members.unban(bUser.user).then(() => message.channel.send({ embeds: [embed] }));
 
 			db.prepare('DELETE FROM ban WHERE id = ?').run(`${message.guild.id}-${bUser.user.id}`);
 		});

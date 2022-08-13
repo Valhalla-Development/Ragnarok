@@ -41,7 +41,7 @@ module.exports = class extends Command {
 			.splice(1)
 			.join(' ');
 
-		const user = message.guild.members.members.cache.get(message.mentions.users.first());
+		const user = message.guild.members.cache.get(message.mentions.users.first());
 		if (user) return;
 
 		/* (SCRAP THIS FOR NOW: This only works for the first tag, not the second etc.)

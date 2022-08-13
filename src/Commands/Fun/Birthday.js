@@ -22,7 +22,7 @@ module.exports = class extends Command {
 
 		const birthdayConfigDB = db.prepare(`SELECT * FROM birthdayConfig WHERE guildid = ${message.guild.id};`).get();
 
-		const user = message.mentions.members.first() || message.guild.members.members.cache.find((a) => a.id === args[0]) || message.member;
+		const user = message.mentions.members.first() || message.guild.members.cache.find((a) => a.id === args[0]) || message.member;
 
 		const birthdayDB = db.prepare(`SELECT * FROM birthdays WHERE userid = ${user.id};`).get();
 

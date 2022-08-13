@@ -20,7 +20,7 @@ module.exports = class extends Command {
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 
-		const user = message.mentions.users.size ? message.guild.members.members.cache.get(message.mentions.users.first().id) : message.guild.members.members.cache.get(args[0]);
+		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0]);
 
 		// No user
 		if (!user) {
@@ -150,7 +150,7 @@ module.exports = class extends Command {
 		}
 
 		// Kick the user and send the embed
-		await message.guild.members.members.ban(user, { reason: `${reason}-tempban` }).catch(() => {
+		await message.guild.members.ban(user, { reason: `${reason}-tempban` }).catch(() => {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()

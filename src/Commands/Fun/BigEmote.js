@@ -33,7 +33,7 @@ module.exports = class extends Command {
 		if (custom.id) {
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.setTitle(`BigEmote - Requesed By ${message.guild.members.members.cache.get(message.author.id).nickname ? message.guild.members.members.cache.get(message.author.id).nickname : message.author.username}`)
+				.setTitle(`BigEmote - Requesed By ${message.guild.members.cache.get(message.author.id).nickname ? message.guild.members.cache.get(message.author.id).nickname : message.author.username}`)
 				.setImage(`https://cdn.discordapp.com/emojis/${custom.id}.${custom.animated ? 'gif' : 'png'}`);
 			message.channel.send({ embeds: [embed] });
 			return;
@@ -44,7 +44,7 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addFields({ name: `BigEmote - Requesed By ${message.guild.members.members.cache.get(message.author.id).nickname ? message.guild.members.members.cache.get(message.author.id).nickname : message.author.username}`,
+					.addFields({ name: `BigEmote - Requesed By ${message.guild.members.cache.get(message.author.id).nickname ? message.guild.members.cache.get(message.author.id).nickname : message.author.username}`,
 						value: `**◎ Error:** Invalid emoji!` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
@@ -52,7 +52,7 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.setTitle(`BigEmote - Requesed By ${message.guild.members.members.cache.get(message.author.id).nickname ? message.guild.members.members.cache.get(message.author.id).nickname : message.author.username}`)
+				.setTitle(`BigEmote - Requesed By ${message.guild.members.cache.get(message.author.id).nickname ? message.guild.members.cache.get(message.author.id).nickname : message.author.username}`)
 				.setImage(parsed[0].url);
 			message.channel.send({ embeds: [embed] });
 			return;

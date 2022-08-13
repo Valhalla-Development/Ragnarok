@@ -19,7 +19,7 @@ module.exports = class extends Command {
 	async run(message, args) {
 		let user;
 		try {
-			user = message.mentions.users.size ? message.mentions.members.first().user : args[0] ? message.guild.members.members.cache.find(usr => usr.displayName === args.join(' ')).user : message.author;
+			user = message.mentions.users.size ? message.mentions.members.first().user : args[0] ? message.guild.members.cache.find(usr => usr.displayName === args.join(' ')).user : message.author;
 		} catch {
 			user = null;
 		}

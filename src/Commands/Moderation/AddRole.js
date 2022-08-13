@@ -19,7 +19,7 @@ module.exports = class extends Command {
 		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
 		const { prefix } = prefixgrab;
 
-		const member = message.mentions.members.first() || message.guild.members.members.cache.find(usr => usr.id === args[0]);
+		const member = message.mentions.members.first() || message.guild.members.cache.find(usr => usr.id === args[0]);
 
 		if (!member) {
 			this.client.utils.messageDelete(message, 10000);

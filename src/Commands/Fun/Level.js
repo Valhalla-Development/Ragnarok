@@ -261,7 +261,7 @@ module.exports = class extends Command {
 
 		let user;
 		try {
-			user = message.mentions.users.size ? message.mentions.members.first().user : args[0] ? message.guild.members.members.cache.find(usr => usr.displayName === args.join(' ')).user : message.author;
+			user = message.mentions.users.size ? message.mentions.members.first().user : args[0] ? message.guild.members.cache.find(usr => usr.displayName === args.join(' ')).user : message.author;
 		} catch {
 			user = null;
 		}
@@ -280,7 +280,7 @@ module.exports = class extends Command {
 
 		if (user.bot) return;
 
-		const colorGrab = this.client.utils.color(message.guild.members.members.cache.find(grabUser => grabUser.id === user.id).displayHexColor);
+		const colorGrab = this.client.utils.color(message.guild.members.cache.find(grabUser => grabUser.id === user.id).displayHexColor);
 		let score;
 
 		if (message.guild) {
@@ -353,7 +353,7 @@ module.exports = class extends Command {
 		// Presence colors
 		let userStatusColor;
 
-		const fetchUser = await message.guild.members.members.fetch(user.id);
+		const fetchUser = await message.guild.members.fetch(user.id);
 
 		if (!fetchUser.presence) {
 			userStatusColor = '#737F8D';

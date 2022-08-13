@@ -22,7 +22,7 @@ module.exports = class extends Command {
 
 		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
 
-		const user = message.mentions.users.size ? message.guild.members.members.cache.get(message.mentions.users.first().id) : message.guild.members.members.cache.get(args[0]);
+		const user = message.mentions.users.size ? message.guild.members.cache.get(message.mentions.users.first().id) : message.guild.members.cache.get(args[0]);
 
 		// No user
 		if (!user) {
@@ -102,7 +102,7 @@ module.exports = class extends Command {
 		}
 
 		// Kick the user and send the embed
-		message.guild.members.members.ban(user, { days: 1, reason: `${reasonArgs}` }).catch(() => {
+		message.guild.members.ban(user, { days: 1, reason: `${reasonArgs}` }).catch(() => {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
@@ -171,7 +171,7 @@ module.exports = class extends Command {
 				**◎ Moderator:** ${message.author.tag}` })
 						.setFooter({ text: 'User Un-Ban Logs' })
 						.setTimestamp();
-					message.guild.members.members.unban(bUser.user).then(() => message.channel.send({ embeds: [unbanEmbed] }));
+					message.guild.members.unban(bUser.user).then(() => message.channel.send({ embeds: [unbanEmbed] }));
 					collector.stop('unbanned');
 				});
 			}
