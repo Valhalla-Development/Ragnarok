@@ -23,8 +23,8 @@ module.exports = class extends Command {
 		if (args[0] === undefined) {
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Announcement**`,
-					`**◎ Error:** Please use:**\n\n${prefix}announcement <message>`);
+				.addFields({ name: `**${this.client.user.username} - Announcement**`,
+					value: `**◎ Error:** Please use:**\n\n${prefix}announcement <message>` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -32,8 +32,8 @@ module.exports = class extends Command {
 		db.prepare('UPDATE announcement SET msg = ?').run(args.join(' '));
 		const complete = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Announcement**`,
-				`**◎ Success:** Announcement message has been set to:\n\`\`\`${args.join(' ')}\`\`\``);
+			.addFields({ name: `**${this.client.user.username} - Announcement**`,
+				value: `**◎ Success:** Announcement message has been set to:\n\`\`\`${args.join(' ')}\`\`\`` });
 		message.channel.send({ embeds: [complete] });
 	}
 

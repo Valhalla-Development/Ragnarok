@@ -20,8 +20,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - BigEmote**`,
-					`**◎ Error:** Incorrect usage! Please specify an emote!`);
+				.addFields({ name: `**${this.client.user.username} - BigEmote**`,
+					value: `**◎ Error:** Incorrect usage! Please specify an emote!` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -44,8 +44,8 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`BigEmote - Requesed By ${message.guild.members.members.cache.get(message.author.id).nickname ? message.guild.members.members.cache.get(message.author.id).nickname : message.author.username}`,
-						`**◎ Error:** Invalid emoji!`);
+					.addFields({ name: `BigEmote - Requesed By ${message.guild.members.members.cache.get(message.author.id).nickname ? message.guild.members.members.cache.get(message.author.id).nickname : message.author.username}`,
+						value: `**◎ Error:** Invalid emoji!` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}

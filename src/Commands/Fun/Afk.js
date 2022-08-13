@@ -23,8 +23,8 @@ module.exports = class extends Command {
 		if (reason.length > 100) {
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - AFK**`,
-					`**◎ Error:** Please limit your reason to a maximum of 100 characters!`);
+				.addFields({ name: `**${this.client.user.username} - AFK**`,
+					value: `**◎ Error:** Please limit your reason to a maximum of 100 characters!` });
 			message.channel.send({ embeds: [embed] });
 			return;
 		}
@@ -39,8 +39,8 @@ module.exports = class extends Command {
 
 			const badChannel = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - AFK**`,
-					`**◎ Success:** ${message.author} is now AFK for the following reason:\n\n${reason}`);
+				.addFields({ name: `**${this.client.user.username} - AFK**`,
+					value: `**◎ Success:** ${message.author} is now AFK for the following reason:\n\n${reason}` });
 			message.channel.send({ embeds: [badChannel] });
 			return;
 		} else {
@@ -53,8 +53,8 @@ module.exports = class extends Command {
 
 			const badChannel = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - AFK**`,
-					`**◎ Success:** ${message.author} is now AFK for the following reason:\n\n${reason}`);
+				.addFields({ name: `**${this.client.user.username} - AFK**`,
+					value: `**◎ Success:** ${message.author} is now AFK for the following reason:\n\n${reason}` });
 			message.channel.send({ embeds: [badChannel] });
 			return;
 		}

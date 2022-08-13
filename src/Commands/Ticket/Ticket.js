@@ -21,12 +21,12 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
 			.setAuthor({ name: `Tickets`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) })
-			.addField(`Available Commands`,
-				`**◎ 📩 Open ticket:** \`${prefix}new\`
+			.addFields({ name: `Available Commands`,
+				value: `**◎ 📩 Open ticket:** \`${prefix}new\`
 				**◎ 📩 Close Ticket (Admin):** \`${prefix}close\`
 				**◎ 📩 Add User to Ticket (Admin):** \`${prefix}add\`
 				**◎ 📩 Remove User from Ticket (Admin):** \`${prefix}remove\`
-				**◎ 📩 Rename (Admin):** \`${prefix}rename\``);
+				**◎ 📩 Rename (Admin):** \`${prefix}rename\`` });
 		message.channel.send({ embeds: [embed] });
 	}
 

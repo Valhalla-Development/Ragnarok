@@ -27,8 +27,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Reply**`,
-					`**◎ Error:** Incorrect Usage, examples follow:\n\n\`${prefix}reply <channel id> <message id> <text>\`\n\`${prefix}reply <message link> <text>\``);
+				.addFields({ name: `**${this.client.user.username} - Reply**`,
+					value: `**◎ Error:** Incorrect Usage, examples follow:\n\n\`${prefix}reply <channel id> <message id> <text>\`\n\`${prefix}reply <message link> <text>\`` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -39,8 +39,8 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Reply**`,
-						`**◎ Error:** You need to input text you wish to reply with!`);
+					.addFields({ name: `**${this.client.user.username} - Reply**`,
+						value: `**◎ Error:** You need to input text you wish to reply with!` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -50,8 +50,8 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Reply**`,
-						`**◎ Error:** I can not find the message you linked within this server.`);
+					.addFields({ name: `**${this.client.user.username} - Reply**`,
+						value: `**◎ Error:** I can not find the message you linked within this server.` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -65,8 +65,8 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Reply**`,
-						`**◎ Error:** An error occured while trying to reply to the message!\nHas the message been deleted?`);
+					.addFields({ name: `**${this.client.user.username} - Reply**`,
+						value: `**◎ Error:** An error occured while trying to reply to the message!\nHas the message been deleted?` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			});
@@ -78,8 +78,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Reply**`,
-					`**◎ Error:** You need to input a message ID`);
+				.addFields({ name: `**${this.client.user.username} - Reply**`,
+					value: `**◎ Error:** You need to input a message ID` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -89,8 +89,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Reply**`,
-					`**◎ Error:** You need to input text you wish to reply with!`);
+				.addFields({ name: `**${this.client.user.username} - Reply**`,
+					value: `**◎ Error:** You need to input text you wish to reply with!` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -102,8 +102,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Reply**`,
-					`**◎ Error:** I was unable to find the specified channel!`);
+				.addFields({ name: `**${this.client.user.username} - Reply**`,
+					value: `**◎ Error:** I was unable to find the specified channel!` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -115,8 +115,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Reply**`,
-					`**◎ Error:** An error occured while trying to reply to the message!\nHas the message been deleted?`);
+				.addFields({ name: `**${this.client.user.username} - Reply**`,
+					value: `**◎ Error:** An error occured while trying to reply to the message!\nHas the message been deleted?` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		});

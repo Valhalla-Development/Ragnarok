@@ -20,8 +20,8 @@ module.exports = class extends Command {
 		if (!text) {
 			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Lisa**`,
-					`**◎ Error:** Incorrect usage! Please input some text`);
+				.addFields({ name: `**${this.client.user.username} - Lisa**`,
+					value: `**◎ Error:** Incorrect usage! Please input some text` });
 			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -29,8 +29,8 @@ module.exports = class extends Command {
 		if (text.length > 300) {
 			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Lisa**`,
-					`**◎ Error:** Incorrect usage! Please input a maximum of 300 characters!`);
+				.addFields({ name: `**${this.client.user.username} - Lisa**`,
+					value: `**◎ Error:** Incorrect usage! Please input a maximum of 300 characters!` });
 			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}

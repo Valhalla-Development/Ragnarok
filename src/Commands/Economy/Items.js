@@ -27,8 +27,8 @@ module.exports = class extends Command {
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Items**`,
-					`**◎ Error:** You do not have any items.`);
+				.addFields({ name: `**${this.client.user.username} - Items**`,
+					value: `**◎ Error:** You do not have any items.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -199,8 +199,8 @@ module.exports = class extends Command {
 		const embed = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Items**`,
-				`**◎ Fish:**
+			.addFields({ name: `**${this.client.user.username} - Items**`,
+				value: `**◎ Fish:**
 				\u3000 Trout: Own ${foundItemList.trout === undefined ? `\`0\`` : `\`${foundItemList.trout}\` - <:coin:706659001164628008> \`${troutPrice.toLocaleString('en')}\``}
 				\u3000 King Salmon: Own ${foundItemList.kingSalmon === undefined ? `\`0\`` : `\`${foundItemList.kingSalmon}\` - <:coin:706659001164628008> \`${salmonPrice.toLocaleString('en')}\``}
 				\u3000 Swordfish: Own ${foundItemList.swordfish === undefined ? `\`0\`` : `\`${foundItemList.swordfish} \`- <:coin:706659001164628008> \`${swordFishPrice.toLocaleString('en')}\``}
@@ -218,7 +218,7 @@ module.exports = class extends Command {
 				\u3000 Fish Bag - ${!foundBoostList.fishBag ? `\`Not Owned\` - Buy fishing rod to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFish)}\`/\`${foundBoostList.fishBag}\``}
 				\u3000 ${!foundItemList.farmingTools ? `\`${prefix}shop buy tools\` - <:coin:706659001164628008> \`${farmingPrice.toLocaleString('en')}\`` : `Farming Tools - \`Owned\``}
 				\u3000 Seed Bag - ${!foundBoostList.seedBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalSeeds)}\`/\`${foundBoostList.seedBag}\``}
-				\u3000 Farm Bag - ${!foundBoostList.farmBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.farmBag}\``}`);
+				\u3000 Farm Bag - ${!foundBoostList.farmBag ? `\`Not Owned\` - Buy farming tools to aquire` : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.farmBag}\``}` });
 		if (fullPrice > 0) {
 			embed.setFooter({ text: `Total Value: ${fullPrice.toLocaleString('en')}` });
 		}

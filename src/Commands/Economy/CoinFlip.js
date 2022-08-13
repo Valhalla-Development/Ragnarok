@@ -31,8 +31,8 @@ module.exports = class extends Command {
 			const limitE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Coin Flip**`,
-					`**◎ Error:** You do not have any balance!`);
+				.addFields({ name: `**${this.client.user.username} - Coin Flip**`,
+					value: `**◎ Error:** You do not have any balance!` });
 			message.channel.send({ embeds: [limitE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -42,8 +42,7 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Coin Flip**`,
-					`**◎ Error:** Please input an amount you wish to bet.`);
+				.addFields({ name: `**${this.client.user.username} - Coin Flip**`, value: `**◎ Error:** Please input an amount you wish to bet.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -53,8 +52,7 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Coin Flip**`,
-					`**◎ Error:** You can only run one instance of this game!.`);
+				.addFields({ name: `**${this.client.user.username} - Coin Flip**`, value: `**◎ Error:** You can only run one instance of this game!.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -69,8 +67,8 @@ module.exports = class extends Command {
 			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Coin Flip**`,
-					`**◎ Error:** An example of this command is: \`${prefix}coinflip 100\`\nAlternatively, you can run \`${prefix}coinflip all\``);
+				.addFields({ name: `**${this.client.user.username} - Coin Flip**`,
+					value: `**◎ Error:** An example of this command is: \`${prefix}coinflip 100\`\nAlternatively, you can run \`${prefix}coinflip all\`` });
 			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -81,8 +79,8 @@ module.exports = class extends Command {
 			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Coin Flip**`,
-					`**◎ Error:** Please enter a value of at least <:coin:706659001164628008> \`10\`. Please try again with a valid amount.`);
+				.addFields({ name: `**${this.client.user.username} - Coin Flip**`,
+					value: `**◎ Error:** Please enter a value of at least <:coin:706659001164628008> \`10\`. Please try again with a valid amount.` });
 			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -93,8 +91,8 @@ module.exports = class extends Command {
 			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Coin Flip**`,
-					`**◎ Error:** You do not have enough to bet <:coin:706659001164628008> \`${Number(coinFlip).toLocaleString('en')}\`, you have <:coin:706659001164628008> \`${Number(balance.bank).toLocaleString('en')}\` available in your bank.`);
+				.addFields({ name: `**${this.client.user.username} - Coin Flip**`,
+					value: `**◎ Error:** You do not have enough to bet <:coin:706659001164628008> \`${Number(coinFlip).toLocaleString('en')}\`, you have <:coin:706659001164628008> \`${Number(balance.bank).toLocaleString('en')}\` available in your bank.` });
 			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -145,20 +143,20 @@ module.exports = class extends Command {
 		const initial = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Coin Flip**`,
-				`**◎** ${message.author} bet <:coin:706659001164628008> \`${Number(coinFlip).toLocaleString('en')}\`\n**◎** The house bet <:coin:706659001164628008> \`${Number(houseBet).toLocaleString('en')}\``);
+			.addFields({ name: `**${this.client.user.username} - Coin Flip**`,
+				value: `**◎** ${message.author} bet <:coin:706659001164628008> \`${Number(coinFlip).toLocaleString('en')}\`\n**◎** The house bet <:coin:706659001164628008> \`${Number(houseBet).toLocaleString('en')}\`` });
 
 		const win = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Coin Flip**`,
-				`**◎** ${message.author} won! <:coin:706659001164628008> \`${Number(houseBet).toLocaleString('en')}\` has been credited to your bank!`);
+			.addFields({ name: `**${this.client.user.username} - Coin Flip**`,
+				value: `**◎** ${message.author} won! <:coin:706659001164628008> \`${Number(houseBet).toLocaleString('en')}\` has been credited to your bank!` });
 
 		const lose = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Coin Flip**`,
-				`**◎** ${message.author} lost <:coin:706659001164628008> \`${Number(coinFlip).toLocaleString('en')}\``);
+			.addFields({ name: `**${this.client.user.username} - Coin Flip**`,
+				value: `**◎** ${message.author} lost <:coin:706659001164628008> \`${Number(coinFlip).toLocaleString('en')}\`` });
 
 		const m = await message.channel.send({ components: [row], embeds: [initial] });
 		const filter = (but) => but.user.id === message.author.id;
@@ -222,8 +220,8 @@ module.exports = class extends Command {
 				const limitE = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Coin Flip**`,
-						`**◎ Success:** Your bet was cancelled, your money has been returned.`);
+					.addFields({ name: `**${this.client.user.username} - Coin Flip**`,
+						value: `**◎ Success:** Your bet was cancelled, your money has been returned.` });
 				message.channel.send({ embeds: [limitE] }).then((ca) => this.client.utils.deletableCheck(ca, 10000));
 				return;
 			}

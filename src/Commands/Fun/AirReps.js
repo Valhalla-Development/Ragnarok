@@ -23,8 +23,8 @@ module.exports = class extends Command {
 
 			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - A4K**`,
-					`**◎ Error:** Incorrect usage! Please use \`${prefix}airreps <search>\``);
+				.addFields({ name: `**${this.client.user.username} - A4K**`,
+					value: `**◎ Error:** Incorrect usage! Please use \`${prefix}airreps <search>\`` });
 			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -47,8 +47,8 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - AirReps**`,
-						`**◎ Error:** No results found!`);
+					.addFields({ name: `**${this.client.user.username} - AirReps**`,
+						value: `**◎ Error:** No results found!` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			});
 	}

@@ -20,8 +20,8 @@ module.exports = class extends Command {
 			const noinEmbed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Suggest**`,
-					`**◎ Error:** Please input some text!`);
+				.addFields({ name: `**${this.client.user.username} - Suggest**`,
+					value: `**◎ Error:** Please input some text!` });
 			message.channel.send({ embeds: [noinEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -44,8 +44,8 @@ module.exports = class extends Command {
 		const questionE = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Suggest**`,
-				`**◎ NOTE** This is a **BOT** suggestion, not a **SERVER** suggestion.\nThis message will be forwarded to the bot owner.\n\n**◎ Are you sure you want to send this suggestion?**`);
+			.addFields({ name: `**${this.client.user.username} - Suggest**`,
+				value: `**◎ NOTE** This is a **BOT** suggestion, not a **SERVER** suggestion.\nThis message will be forwarded to the bot owner.\n\n**◎ Are you sure you want to send this suggestion?**` });
 
 		const m = await message.channel.send({ components: [row], embeds: [questionE] });
 
@@ -57,8 +57,8 @@ module.exports = class extends Command {
 			if (b.user.id !== message.author.id) {
 				const wrongUser = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Help**`,
-						`**◎ Error:** Only the command executor can select an option!`);
+					.addFields({ name: `**${this.client.user.username} - Help**`,
+						value: `**◎ Error:** Only the command executor can select an option!` });
 				b.reply({ embeds: [wrongUser], ephemeral: true });
 				return;
 			}
@@ -79,8 +79,8 @@ module.exports = class extends Command {
 				const loggedEmbed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Suggest**`,
-						`**◎ Success:** Suggestion has been successfully sent!`);
+					.addFields({ name: `**${this.client.user.username} - Suggest**`,
+						value: `**◎ Success:** Suggestion has been successfully sent!` });
 				message.channel.send({ embeds: [loggedEmbed] }).then((a) => this.client.utils.deletableCheck(a, 10000));
 			}
 			if (b.customId === 'no') {

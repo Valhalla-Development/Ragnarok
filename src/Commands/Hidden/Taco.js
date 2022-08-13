@@ -14,8 +14,8 @@ module.exports = class extends Command {
 		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.setImage('attachment://taco.png')
-			.addField(`Please take this **taco**. A gift from me, to you!`,
-				`_ _`);
+			.addFields({ name: `Please take this **taco**. A gift from me, to you!`,
+				value: `_ _` });
 		message.channel.send({ embeds: [embed], files: ['./Storage/Images/taco.png'] });
 	}
 

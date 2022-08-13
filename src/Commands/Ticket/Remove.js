@@ -32,8 +32,8 @@ module.exports = class extends Command {
 
 			const nomodRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Remove**`,
-					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
+				.addFields({ name: `**${this.client.user.username} - Remove**`,
+					value: `**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.` });
 			message.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -43,8 +43,8 @@ module.exports = class extends Command {
 
 			const donthaveRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Remove**`,
-					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
+				.addFields({ name: `**${this.client.user.username} - Remove**`,
+					value: `**◎ Error:** Sorry! You do not have the **${modRole}** role.` });
 			message.channel.send({ embeds: [donthaveRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -55,8 +55,8 @@ module.exports = class extends Command {
 
 			const nouser = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Remove**`,
-					`**◎ Error:** Sorry! I could not find the specified user!`);
+				.addFields({ name: `**${this.client.user.username} - Remove**`,
+					value: `**◎ Error:** Sorry! I could not find the specified user!` });
 			message.channel.send({ embeds: [nouser] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -75,8 +75,8 @@ module.exports = class extends Command {
 
 				const nouser = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Remove**`,
-						`**◎ Error:** This user is not in this channel!`);
+					.addFields({ name: `**${this.client.user.username} - Remove**`,
+						value: `**◎ Error:** This user is not in this channel!` });
 				message.channel.send({ embeds: [nouser] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -86,8 +86,8 @@ module.exports = class extends Command {
 			}).catch(console.error);
 			const removed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Remove**`,
-					`**◎ Success:** ${rUser} has been removed from the ticket!`);
+				.addFields({ name: `**${this.client.user.username} - Remove**`,
+					value: `**◎ Success:** ${rUser} has been removed from the ticket!` });
 			getChan.send({ embeds: [removed] });
 			const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
 			const logchan = message.guild.channels.cache.find((chan) => chan.id === logget.log);
@@ -101,8 +101,8 @@ module.exports = class extends Command {
 
 			const errEmbed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Remove**`,
-					`**◎ Error:** This ticket could not be found.`);
+				.addFields({ name: `**${this.client.user.username} - Remove**`,
+					value: `**◎ Error:** This ticket could not be found.` });
 			message.channel.send({ embeds: [errEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 		}
 	}

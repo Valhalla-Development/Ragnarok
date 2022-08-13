@@ -25,8 +25,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Dog**`,
-					`**◎ Error:** Please only run this command once.`);
+				.addFields({ name: `**${this.client.user.username} - Dog**`,
+					value: `**◎ Error:** Please only run this command once.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -79,8 +79,8 @@ module.exports = class extends Command {
 			if (b.user.id !== message.author.id) {
 				const wrongUser = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Dog**`,
-						`**◎ Error:** Only the command executor can select an option!`);
+					.addFields({ name: `**${this.client.user.username} - Dog**`,
+						value: `**◎ Error:** Only the command executor can select an option!` });
 				b.reply({ embeds: [wrongUser], ephemeral: true });
 				return;
 			}

@@ -26,8 +26,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Add Role**`,
-					`**◎ Error:** Correct usage: \`${prefix}addrole <@user> <role-id>\` or \`${prefix}addrole <all> <role-id>\``);
+				.addFields({ name: `**${this.client.user.username} - Add Role**`,
+					value: `**◎ Error:** Correct usage: \`${prefix}addrole <@user> <role-id>\` or \`${prefix}addrole <all> <role-id>\`` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -39,8 +39,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Add Role**`,
-					`**◎ Error:** Correct usage: \`${prefix}addrole <@user> <role-id>\` or \`${prefix}addrole <all> <role-id>\``);
+				.addFields({ name: `**${this.client.user.username} - Add Role**`,
+					value: `**◎ Error:** Correct usage: \`${prefix}addrole <@user> <role-id>\` or \`${prefix}addrole <all> <role-id>\`` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -50,8 +50,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Add Role**`,
-					`**◎ Error:** You cannot give a user a role that is equal or greater than your own!`);
+				.addFields({ name: `**${this.client.user.username} - Add Role**`,
+					value: `**◎ Error:** You cannot give a user a role that is equal or greater than your own!` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -62,8 +62,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Add Role**`,
-					`**◎ Error:** ${member} already has the role: ${role}`);
+				.addFields({ name: `**${this.client.user.username} - Add Role**`,
+					value: `**◎ Error:** ${member} already has the role: ${role}` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -73,8 +73,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Add Role**`,
-					`**◎ Success:** I have added the ${role} role to ${member}`);
+				.addFields({ name: `**${this.client.user.username} - Add Role**`,
+					value: `**◎ Success:** I have added the ${role} role to ${member}` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		} catch {
@@ -82,8 +82,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Add Role**`,
-					`**◎ Error:** An error occured.`);
+				.addFields({ name: `**${this.client.user.username} - Add Role**`,
+					value: `**◎ Error:** An error occured.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}

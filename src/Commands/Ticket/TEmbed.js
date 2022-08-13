@@ -29,8 +29,8 @@ module.exports = class extends Command {
 
 			const nomodRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - TicketEmbed**`,
-					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
+				.addFields({ name: `**${this.client.user.username} - TicketEmbed**`,
+					value: `**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.` });
 			message.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -45,8 +45,8 @@ module.exports = class extends Command {
 
 			const nomodRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - TicketEmbed**`,
-					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
+				.addFields({ name: `**${this.client.user.username} - TicketEmbed**`,
+					value: `**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.` });
 			message.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -55,8 +55,8 @@ module.exports = class extends Command {
 
 			const donthaveRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - TicketEmbed**`,
-					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
+				.addFields({ name: `**${this.client.user.username} - TicketEmbed**`,
+					value: `**◎ Error:** Sorry! You do not have the **${modRole}** role.` });
 			message.channel.send({ embeds: [donthaveRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -79,8 +79,8 @@ module.exports = class extends Command {
 		if (!foundtEmbed) {
 			const disabledTic = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - TicketEmbed**`,
-					`**◎ Error:** Tickets are not enabled on this server!`);
+				.addFields({ name: `**${this.client.user.username} - TicketEmbed**`,
+					value: `**◎ Error:** Tickets are not enabled on this server!` });
 			message.channel.send({ embeds: [disabledTic] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -97,15 +97,15 @@ module.exports = class extends Command {
 					});
 					const cleared = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - TicketEmbed**`,
-							`**◎ Success:** Tickets embed has been cleared from the database.`);
+						.addFields({ name: `**${this.client.user.username} - TicketEmbed**`,
+							value: `**◎ Success:** Tickets embed has been cleared from the database.` });
 					message.channel.send({ embeds: [cleared] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
 				const danelSucc = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - TicketEmbed**`,
-						`**◎ Error:** I found no embed data in the database!`);
+					.addFields({ name: `**${this.client.user.username} - TicketEmbed**`,
+						value: `**◎ Error:** I found no embed data in the database!` });
 				message.channel.send({ embeds: [danelSucc] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -129,8 +129,8 @@ module.exports = class extends Command {
 						if (res) {
 							const alreadytick = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-								.addField(`**${this.client.user.username} - TicketEmbed**`,
-									`**◎ Error:** You already have a Ticket embed in this server!\n Please delete the other, or clear it from the database via \`${prefix}tembed clear\``);
+								.addFields({ name: `**${this.client.user.username} - TicketEmbed**`,
+									value: `**◎ Error:** You already have a Ticket embed in this server!\n Please delete the other, or clear it from the database via \`${prefix}tembed clear\`` });
 							message.channel.send({ embeds: [alreadytick] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 							return;
 						}

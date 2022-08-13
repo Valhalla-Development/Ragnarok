@@ -24,8 +24,8 @@ module.exports = class extends Event {
 					// Send a message that the user left
 					const existTM = new EmbedBuilder()
 						.setColor(client.utils.color(member.guild.members.me.displayHexColor))
-						.addField(`**${client.user.username} - Ticket**`,
-							`**◎ Error:** \`${member.user.tag}\` has the left the server\nThey will be added back to the ticket if they rejoin.`);
+						.addFields({ name: `**${client.user.username} - Ticket**`,
+							value: `**◎ Error:** \`${member.user.tag}\` has the left the server\nThey will be added back to the ticket if they rejoin.` });
 					channel.send({ embeds: [existTM] });
 				}
 			}

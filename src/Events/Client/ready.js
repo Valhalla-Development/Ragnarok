@@ -450,9 +450,9 @@ module.exports = class extends Event {
 						const embed = new EmbedBuilder()
 							.setThumbnail(this.client.user.displayAvatarURL())
 							.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-							.addField('Action | Un-Ban',
-								`**◎ User:** ${r.username}
-							**◎ Reason:** Ban time ended.`)
+							.addFields({ name: 'Action | Un-Ban',
+								value: `**◎ User:** ${r.username}
+							**◎ Reason:** Ban time ended.` })
 							.setTimestamp();
 
 						try {
@@ -502,8 +502,10 @@ module.exports = class extends Event {
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
 					.setAuthor({ name: `Word of the Day`, url: 'https://www.dictionary.com/e/word-of-the-day/', iconURL: guild.iconURL({ dynamic: true }) })
 					.setDescription(`>>> **${this.client.utils.capitalise(word.word)}**\n*${res} ]*\n*${word.pos}*`)
-					.addFields({ name: '**Definition:**', value: `>>> *${word.meaning}*` },
-						{ name: '**Examples:**', value: `>>> **◎**${boldString(word.examples.join('\n**◎** '), word.word)}` });
+					.addFields({ name: '**Definition:**',
+						value: `>>> *${word.meaning}*` },
+					{ name: '**Examples:**',
+						value: `>>> **◎**${boldString(word.examples.join('\n**◎** '), word.word)}` });
 				chn.send({ embeds: [embed] });
 			} catch (error) {
 				console.log(error);

@@ -20,7 +20,8 @@ module.exports = class extends Command {
 
 		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addFields([{ name: `**${this.client.user.username} - Ping**`, value: `**◎ Bot Latency:** \`${latency}ms\`
+			.addFields([{ name: `**${this.client.user.username} - Ping**`,
+				value: `**◎ Bot Latency:** \`${latency}ms\`
 				**◎ API Latency:** \`${Math.round(this.client.ws.ping)}ms\`` }]);
 		message.channel.send({ embeds: [embed] });
 	}

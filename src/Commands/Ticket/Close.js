@@ -34,8 +34,8 @@ module.exports = class extends Command {
 
 			const badChannel = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Close**`,
-					`**◎ Error:** You can't use the close command outside of a ticket channel.`);
+				.addFields({ name: `**${this.client.user.username} - Close**`,
+					value: `**◎ Error:** You can't use the close command outside of a ticket channel.` });
 			message.channel.send({ embeds: [badChannel] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -44,8 +44,8 @@ module.exports = class extends Command {
 
 			const errEmbed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Close**`,
-					`**◎ Error:** You can't use the close command outside of a ticket channel.`);
+				.addFields({ name: `**${this.client.user.username} - Close**`,
+					value: `**◎ Error:** You can't use the close command outside of a ticket channel.` });
 			message.channel.send({ embeds: [errEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -62,8 +62,8 @@ module.exports = class extends Command {
 
 			const nomodRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Close**`,
-					`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
+				.addFields({ name: `**${this.client.user.username} - Close**`,
+					value: `**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.` });
 			message.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -72,8 +72,8 @@ module.exports = class extends Command {
 
 			const donthaveRole = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Close**`,
-					`**◎ Error:** Sorry! You do not have the **${modRole}** role.`);
+				.addFields({ name: `**${this.client.user.username} - Close**`,
+					value: `**◎ Error:** Sorry! You do not have the **${modRole}** role.` });
 			message.channel.send({ embeds: [donthaveRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -94,8 +94,8 @@ module.exports = class extends Command {
 
 			const initial = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Close**`,
-					`**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!`);
+				.addFields({ name: `**${this.client.user.username} - Close**`,
+					value: `**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!` });
 
 			const m = await message.channel.send({ components: [row], embeds: [initial] });
 
@@ -119,8 +119,8 @@ module.exports = class extends Command {
 					message.channel.sendTyping();
 					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Ticket**`,
-							`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.`);
+						.addFields({ name: `**${this.client.user.username} - Ticket**`,
+							value: `Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.` });
 					message.channel.send({ embeds: [embed] });
 
 					// Generate random string
@@ -200,12 +200,18 @@ module.exports = class extends Command {
 							const dmE = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 								.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
-								.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
-									{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
-									{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${message.author}`, inline: true },
-									{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
-									{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
-									{ name: `\u200b`, value: `\u200b`, inline: true })
+								.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
+									value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+								{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
+									value: `${user}`, inline: true },
+								{ name: `<:ticketClose:998229974634991646> **Closed By**`,
+									value: `${message.author}`, inline: true },
+								{ name: `<:ticketTranscript:998229979609440266> **Transcript**`,
+									value: `${transLinkText}`, inline: true },
+								{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`,
+									value: `<t:${epoch}>`, inline: true },
+								{ name: `\u200b`,
+									value: `\u200b`, inline: true })
 								.setTimestamp();
 							user.send(transcriptRow ? { components: [transcriptRow], embeds: [dmE] } : { embeds: [dmE] }).then(() => {
 								// eslint-disable-next-line arrow-body-style
@@ -219,13 +225,20 @@ module.exports = class extends Command {
 							const dmE = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 								.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
-								.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
-									{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
-									{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${message.author}`, inline: true },
-									{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
-									{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
-									{ name: `\u200b`, value: `\u200b`, inline: true },
-									{ name: `🖋️ **Reason**`, value: `${closeReason}` })
+								.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
+									value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+								{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
+									value: `${user}`, inline: true },
+								{ name: `<:ticketClose:998229974634991646> **Closed By**`,
+									value: `${message.author}`, inline: true },
+								{ name: `<:ticketTranscript:998229979609440266> **Transcript**`,
+									value: `${transLinkText}`, inline: true },
+								{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`,
+									value: `<t:${epoch}>`, inline: true },
+								{ name: `\u200b`,
+									value: `\u200b`, inline: true },
+								{ name: `🖋️ **Reason**`,
+									value: `${closeReason}` })
 								.setTimestamp();
 							user.send(transcriptRow ? { components: [transcriptRow], embeds: [dmE] } : { embeds: [dmE] }).then(() => {
 								// eslint-disable-next-line arrow-body-style
@@ -258,12 +271,18 @@ module.exports = class extends Command {
 						const logEmbed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 							.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
-							.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
-								{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
-								{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${message.author}`, inline: true },
-								{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
-								{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
-								{ name: `\u200b`, value: `\u200b`, inline: true })
+							.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
+								value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+							{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
+								value: `${user}`, inline: true },
+							{ name: `<:ticketClose:998229974634991646> **Closed By**`,
+								value: `${message.author}`, inline: true },
+							{ name: `<:ticketTranscript:998229979609440266> **Transcript**`,
+								value: `${transLinkText}`, inline: true },
+							{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`,
+								value: `<t:${epoch}>`, inline: true },
+							{ name: `\u200b`,
+								value: `\u200b`, inline: true })
 							.setTimestamp();
 						logchan.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] });
 						if (comCooldown.has(message.author.id)) {
@@ -273,13 +292,20 @@ module.exports = class extends Command {
 						const logEmbed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 							.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
-							.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
-								{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
-								{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${message.author}`, inline: true },
-								{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
-								{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
-								{ name: `\u200b`, value: `\u200b`, inline: true },
-								{ name: `🖋️ **Reason**`, value: `${closeReason}` })
+							.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
+								value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+							{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
+								value: `${user}`, inline: true },
+							{ name: `<:ticketClose:998229974634991646> **Closed By**`,
+								value: `${message.author}`, inline: true },
+							{ name: `<:ticketTranscript:998229979609440266> **Transcript**`,
+								value: `${transLinkText}`, inline: true },
+							{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`,
+								value: `<t:${epoch}>`, inline: true },
+							{ name: `\u200b`,
+								value: `\u200b`, inline: true },
+							{ name: `🖋️ **Reason**`,
+								value: `${closeReason}` })
 							.setTimestamp();
 						logchan.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] });
 						if (comCooldown.has(message.author.id)) {
@@ -304,8 +330,8 @@ module.exports = class extends Command {
 					const limitE = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Close**`,
-							`**◎ Success:** Ticket close cancelled.`);
+						.addFields({ name: `**${this.client.user.username} - Close**`,
+							value: `**◎ Success:** Ticket close cancelled.` });
 					message.channel.send({ embeds: [limitE] }).then((ca) => this.client.utils.deletableCheck(ca, 10000));
 					return;
 				}
@@ -315,8 +341,8 @@ module.exports = class extends Command {
 
 			const badChannel = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Close**`,
-					`**◎ Error:** Please only run \`${prefix}close\` once!`);
+				.addFields({ name: `**${this.client.user.username} - Close**`,
+					value: `**◎ Error:** Please only run \`${prefix}close\` once!` });
 			message.channel.send({ embeds: [badChannel] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}

@@ -21,8 +21,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Leader**`,
-					`**◎ Error:** Level system is disabled for this guild!`);
+				.addFields({ name: `**${this.client.user.username} - Leader**`,
+					value: `**◎ Error:** Level system is disabled for this guild!` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -56,9 +56,12 @@ module.exports = class extends Command {
 		const embed = new EmbedBuilder()
 			.setAuthor({ name: `Leaderboard for ${message.guild.name}`, iconURL: message.guild.iconURL({ dynamic: true }) })
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addFields({ name: 'Top 10', value: userNames, inline: true },
-				{ name: 'Level', value: levels, inline: true },
-				{ name: 'XP', value: xp, inline: true });
+			.addFields({ name: 'Top 10',
+				value: userNames, inline: true },
+			{ name: 'Level',
+				value: levels, inline: true },
+			{ name: 'XP',
+				value: xp, inline: true });
 		message.channel.send({ embeds: [embed] });
 		return;
 	}

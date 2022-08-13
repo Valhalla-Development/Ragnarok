@@ -24,8 +24,8 @@ module.exports = class extends Event {
 				await interaction.deferReply({ ephemeral: true });
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Ticket**`,
-						`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.`);
+					.addFields({ name: `**${this.client.user.username} - Ticket**`,
+						value: `Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.` });
 				interaction.followUp({ embeds: [embed] });
 
 				// Generate random string
@@ -107,13 +107,20 @@ module.exports = class extends Event {
 					const logEmbed = new EmbedBuilder()
 						.setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
 						.setAuthor({ name: 'Ticket Closed', iconURL: interaction.guild.iconURL({ dynamic: true }) })
-						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
-							{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
-							{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${interaction.user}`, inline: true },
-							{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
-							{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
-							{ name: `\u200b`, value: `\u200b`, inline: true },
-							{ name: `🖋️ **Reason**`, value: `${firstResponse}` })
+						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
+							value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+						{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
+							value: `${user}`, inline: true },
+						{ name: `<:ticketClose:998229974634991646> **Closed By**`,
+							value: `${interaction.user}`, inline: true },
+						{ name: `<:ticketTranscript:998229979609440266> **Transcript**`,
+							value: `${transLinkText}`, inline: true },
+						{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`,
+							value: `<t:${epoch}>`, inline: true },
+						{ name: `\u200b`,
+							value: `\u200b`, inline: true },
+						{ name: `🖋️ **Reason**`,
+							value: `${firstResponse}` })
 						.setTimestamp();
 					user.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] }).then(() => {
 					// eslint-disable-next-line arrow-body-style
@@ -135,13 +142,20 @@ module.exports = class extends Event {
 				const logEmbed = new EmbedBuilder()
 					.setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Closed', iconURL: interaction.guild.iconURL({ dynamic: true }) })
-					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
-						{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
-						{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${interaction.user}`, inline: true },
-						{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
-						{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
-						{ name: `\u200b`, value: `\u200b`, inline: true },
-						{ name: `🖋️ **Reason**`, value: `${firstResponse}` })
+					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
+						value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+					{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
+						value: `${user}`, inline: true },
+					{ name: `<:ticketClose:998229974634991646> **Closed By**`,
+						value: `${interaction.user}`, inline: true },
+					{ name: `<:ticketTranscript:998229979609440266> **Transcript**`,
+						value: `${transLinkText}`, inline: true },
+					{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`,
+						value: `<t:${epoch}>`, inline: true },
+					{ name: `\u200b`,
+						value: `\u200b`, inline: true },
+					{ name: `🖋️ **Reason**`,
+						value: `${firstResponse}` })
 					.setTimestamp();
 				logchan.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] });
 			}
@@ -178,8 +192,8 @@ module.exports = class extends Event {
 			if (!guild.members.me.permissions.has(PermissionsBitField.ManageChannels)) {
 				const botPerm = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Ticket**`,
-						`**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:`);
+					.addFields({ name: `**${this.client.user.username} - Ticket**`,
+						value: `**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:` });
 				interaction.channel.send({ embeds: [botPerm] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				await interaction.deferUpdate();
 				return;
@@ -189,8 +203,8 @@ module.exports = class extends Event {
 			if (!guild.roles.cache.find((r) => r.name === 'Support Team') && !fetchRole.role) {
 				const nomodRole = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Ticket**`,
-						`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
+					.addFields({ name: `**${this.client.user.username} - Ticket**`,
+						value: `**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.` });
 				interaction.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				await interaction.deferUpdate();
 				return;
@@ -201,8 +215,8 @@ module.exports = class extends Event {
 				interaction.channel.sendTyping();
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Ticket**`,
-						`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.`);
+					.addFields({ name: `**${this.client.user.username} - Ticket**`,
+						value: `Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.` });
 				interaction.channel.send({ embeds: [embed] });
 
 				// Generate random string
@@ -283,12 +297,18 @@ module.exports = class extends Event {
 					const logEmbed = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.members.me.displayHexColor))
 						.setAuthor({ name: 'Ticket Closed', iconURL: guild.iconURL({ dynamic: true }) })
-						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
-							{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
-							{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${interaction.user}`, inline: true },
-							{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
-							{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
-							{ name: `\u200b`, value: `\u200b`, inline: true })
+						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
+							value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+						{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
+							value: `${user}`, inline: true },
+						{ name: `<:ticketClose:998229974634991646> **Closed By**`,
+							value: `${interaction.user}`, inline: true },
+						{ name: `<:ticketTranscript:998229979609440266> **Transcript**`,
+							value: `${transLinkText}`, inline: true },
+						{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`,
+							value: `<t:${epoch}>`, inline: true },
+						{ name: `\u200b`,
+							value: `\u200b`, inline: true })
 						.setTimestamp();
 					user.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] }).then(() => {
 						// eslint-disable-next-line arrow-body-style
@@ -310,12 +330,18 @@ module.exports = class extends Event {
 				const logEmbed = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Closed', iconURL: guild.iconURL({ dynamic: true }) })
-					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
-						{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
-						{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${interaction.user}`, inline: true },
-						{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
-						{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
-						{ name: `\u200b`, value: `\u200b`, inline: true })
+					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
+						value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+					{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
+						value: `${user}`, inline: true },
+					{ name: `<:ticketClose:998229974634991646> **Closed By**`,
+						value: `${interaction.user}`, inline: true },
+					{ name: `<:ticketTranscript:998229979609440266> **Transcript**`,
+						value: `${transLinkText}`, inline: true },
+					{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`,
+						value: `<t:${epoch}>`, inline: true },
+					{ name: `\u200b`,
+						value: `\u200b`, inline: true })
 					.setTimestamp();
 				logchan.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] });
 			}
@@ -355,8 +381,8 @@ module.exports = class extends Event {
 			if (!fetch) {
 				const alreadyTicket = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Ticket**`,
-						`**◎ Error:** No ticket configuration found.\n\nPlease ask an administrator to set up the ticket system.`);
+					.addFields({ name: `**${this.client.user.username} - Ticket**`,
+						value: `**◎ Error:** No ticket configuration found.\n\nPlease ask an administrator to set up the ticket system.` });
 				interaction.reply({ embeds: [alreadyTicket], ephemeral: true });
 				return;
 			}
@@ -371,8 +397,8 @@ module.exports = class extends Event {
 			if (!guild.members.me.permissions.has(PermissionsBitField.ManageChannels)) {
 				const botPerm = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Ticket**`,
-						`**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:`);
+					.addFields({ name: `**${this.client.user.username} - Ticket**`,
+						value: `**◎ Error:** It seems you have removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:` });
 				channel.send({ embeds: [botPerm] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				await interaction.deferUpdate();
 				return;
@@ -382,8 +408,8 @@ module.exports = class extends Event {
 			if (!guild.roles.cache.find((r) => r.name === 'Support Team') && !fetch.role) {
 				const nomodRole = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Ticket**`,
-						`**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.`);
+					.addFields({ name: `**${this.client.user.username} - Ticket**`,
+						value: `**◎ Error:** This server doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nIf you are an administrator, you can run the command \`${prefix}config ticket role @role\`, alternatively, you can create the role with that name \`Support Team\` and give it to users that should be able to see tickets.` });
 				channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				await interaction.deferUpdate();
 				return;
@@ -417,8 +443,8 @@ module.exports = class extends Event {
 					const cha = guild.channels.cache.get(checkTicketEx.chanid);
 					const alreadyTicket = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Ticket**`,
-							`**◎ Error:** It seems you already have a ticket open. | ${cha}`);
+						.addFields({ name: `**${this.client.user.username} - Ticket**`,
+							value: `**◎ Error:** It seems you already have a ticket open. | ${cha}` });
 					interaction.reply({ embeds: [alreadyTicket], ephemeral: true });
 					return;
 				} catch (e) {
@@ -497,8 +523,8 @@ module.exports = class extends Event {
 				});
 				const newTicketE = new EmbedBuilder()
 					.setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Ticket**`,
-						`**◎ Success:** Your ticket has been created, <#${c.id}>.`);
+					.addFields({ name: `**${this.client.user.username} - Ticket**`,
+						value: `**◎ Success:** Your ticket has been created, <#${c.id}>.` });
 				interaction.reply({ embeds: [newTicketE], ephemeral: true });
 
 				const buttonClose = new MessageButton()
@@ -533,10 +559,14 @@ module.exports = class extends Event {
 					const logEmbed = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.members.me.displayHexColor))
 						.setAuthor({ name: 'Ticket Opened', iconURL: guild.iconURL({ dynamic: true }) })
-						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${interaction.guild.id}/${c.id})`, inline: true },
-							{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${interaction.user}`, inline: true },
-							{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
-							{ name: `🖋️ **Reason**`, value: `${reason || 'No reason provided.'}`, inline: true })
+						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
+							value: `[${randomString}](https://discord.com/channels/${interaction.guild.id}/${c.id})`, inline: true },
+						{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
+							value: `${interaction.user}`, inline: true },
+						{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`,
+							value: `<t:${openEpoch}>`, inline: true },
+						{ name: `🖋️ **Reason**`,
+							value: `${reason || 'No reason provided.'}`, inline: true })
 						.setTimestamp();
 					logchan.send({ embeds: [logEmbed] });
 				}
@@ -571,8 +601,8 @@ module.exports = class extends Event {
 			if (!roleArrayCleaned.includes(role.id)) {
 				const alreadyRole = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Role Menu**`,
-						`**◎ Error:** The role you selected no longer exists on the server.`);
+					.addFields({ name: `**${this.client.user.username} - Role Menu**`,
+						value: `**◎ Error:** The role you selected no longer exists on the server.` });
 				interaction.reply({ embeds: [alreadyRole], ephemeral: true });
 
 				db.prepare('UPDATE rolemenu SET activeRoleMenuID = (@activeRoleMenuID), roleList = (@roleList) WHERE guildid = (@guildid);').run({
@@ -587,14 +617,14 @@ module.exports = class extends Event {
 				user.roles.remove(role).then(() => {
 					const alreadyRole = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Role Menu**`,
-							`**◎ Success:** I have removed the ${role} role from you.`);
+						.addFields({ name: `**${this.client.user.username} - Role Menu**`,
+							value: `**◎ Success:** I have removed the ${role} role from you.` });
 					interaction.reply({ embeds: [alreadyRole], ephemeral: true });
 				}).catch(() => {
 					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Rolemenu**`,
-							`**◎ Error:** An error occured.`);
+						.addFields({ name: `**${this.client.user.username} - Rolemenu**`,
+							value: `**◎ Error:** An error occured.` });
 					interaction.reply({ embeds: [embed], ephemeral: true });
 				});
 			} else {
@@ -602,14 +632,14 @@ module.exports = class extends Event {
 				user.roles.add(role).then(() => {
 					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Rolemenu**`,
-							`**◎ Success:** I have added the ${role} role to you!`);
+						.addFields({ name: `**${this.client.user.username} - Rolemenu**`,
+							value: `**◎ Success:** I have added the ${role} role to you!` });
 					interaction.reply({ embeds: [embed], ephemeral: true });
 				}).catch(() => {
 					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Rolemenu**`,
-							`**◎ Error:** An error occured.`);
+						.addFields({ name: `**${this.client.user.username} - Rolemenu**`,
+							value: `**◎ Error:** An error occured.` });
 					interaction.reply({ embeds: [embed], ephemeral: true });
 				});
 			}

@@ -57,8 +57,8 @@ module.exports = class extends Event {
 						} catch {
 							const embed = new EmbedBuilder()
 								.setColor(clientGrab.utils.color(role.guild.members.me.displayHexColor))
-								.addField(`**${clientGrab.user.username} - Config**`,
-									`**◎ Error:** A role in the role menu was deleted, I was unable to update the active role menu. Please run the following command to refresh it.\n\`${prefix}rolemenu\``);
+								.addFields({ name: `**${clientGrab.user.username} - Config**`,
+									value: `**◎ Error:** A role in the role menu was deleted, I was unable to update the active role menu. Please run the following command to refresh it.\n\`${prefix}rolemenu\`` });
 							ch.send({ embeds: [embed] }).then((m) => clientGrab.utils.deletableCheck(m, 10000));
 						}
 					}

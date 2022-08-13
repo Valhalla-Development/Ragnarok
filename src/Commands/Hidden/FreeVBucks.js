@@ -49,14 +49,14 @@ module.exports = class extends Command {
 		const embed = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Free V-Bucks**`,
-				`**◎ Success:** ${message.author}, Would you like to claim your **FREE** V-Bucks?`);
+			.addFields({ name: `**${this.client.user.username} - Free V-Bucks**`,
+				value: `**◎ Success:** ${message.author}, Would you like to claim your **FREE** V-Bucks?` });
 
 		const embedNew = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Free V-Bucks**`,
-				`**◎ Success:** ${message.author}, Virus activated!.`);
+			.addFields({ name: `**${this.client.user.username} - Free V-Bucks**`,
+				value: `**◎ Success:** ${message.author}, Virus activated!.` });
 
 		const m = await message.channel.send({ embeds: [embed], components: [row] });
 		const filter = (but) => but.user.id === message.author.id;

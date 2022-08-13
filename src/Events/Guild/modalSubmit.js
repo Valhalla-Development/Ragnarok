@@ -21,8 +21,8 @@ module.exports = class extends Event {
 			await modal.deferReply({ ephemeral: true });
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(modal.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Ticket**`,
-					`Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.`);
+				.addFields({ name: `**${this.client.user.username} - Ticket**`,
+					value: `Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.` });
 			modal.followUp({ embeds: [embed] });
 
 			// Generate random string
@@ -103,13 +103,20 @@ module.exports = class extends Event {
 				const logEmbed = new EmbedBuilder()
 					.setColor(this.client.utils.color(modal.guild.members.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Closed', iconURL: modal.guild.iconURL({ dynamic: true }) })
-					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
-						{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
-						{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${modal.user}`, inline: true },
-						{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
-						{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
-						{ name: `\u200b`, value: `\u200b`, inline: true },
-						{ name: `🖋️ **Reason**`, value: `${firstResponse}` })
+					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
+						value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+					{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
+						value: `${user}`, inline: true },
+					{ name: `<:ticketClose:998229974634991646> **Closed By**`,
+						value: `${modal.user}`, inline: true },
+					{ name: `<:ticketTranscript:998229979609440266> **Transcript**`,
+						value: `${transLinkText}`, inline: true },
+					{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`,
+						value: `<t:${epoch}>`, inline: true },
+					{ name: `\u200b`,
+						value: `\u200b`, inline: true },
+					{ name: `🖋️ **Reason**`,
+						value: `${firstResponse}` })
 					.setTimestamp();
 				user.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] }).then(() => {
 					// eslint-disable-next-line arrow-body-style
@@ -131,13 +138,20 @@ module.exports = class extends Event {
 			const logEmbed = new EmbedBuilder()
 				.setColor(this.client.utils.color(modal.guild.members.me.displayHexColor))
 				.setAuthor({ name: 'Ticket Closed', iconURL: modal.guild.iconURL({ dynamic: true }) })
-				.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
-					{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${user}`, inline: true },
-					{ name: `<:ticketClose:998229974634991646> **Closed By**`, value: `${modal.user}`, inline: true },
-					{ name: `<:ticketTranscript:998229979609440266> **Transcript**`, value: `${transLinkText}`, inline: true },
-					{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`, value: `<t:${epoch}>`, inline: true },
-					{ name: `\u200b`, value: `\u200b`, inline: true },
-					{ name: `🖋️ **Reason**`, value: `${firstResponse}` })
+				.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
+					value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
+				{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
+					value: `${user}`, inline: true },
+				{ name: `<:ticketClose:998229974634991646> **Closed By**`,
+					value: `${modal.user}`, inline: true },
+				{ name: `<:ticketTranscript:998229979609440266> **Transcript**`,
+					value: `${transLinkText}`, inline: true },
+				{ name: `<:ticketCloseTime:998229975931048028> **Time Closed**`,
+					value: `<t:${epoch}>`, inline: true },
+				{ name: `\u200b`,
+					value: `\u200b`, inline: true },
+				{ name: `🖋️ **Reason**`,
+					value: `${firstResponse}` })
 				.setTimestamp();
 			logchan.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] });
 		}

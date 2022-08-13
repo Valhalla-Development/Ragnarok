@@ -32,8 +32,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Help**`,
-					`**◎ Error:** Please only run this command once.`);
+				.addFields({ name: `**${this.client.user.username} - Help**`,
+					value: `**◎ Error:** Please only run this command once.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -62,9 +62,10 @@ module.exports = class extends Command {
 			const categories = this.client.utils.removeDuplicates(this.client.commands.filter(cmd => cmd.category !== 'Hidden').map(cmd => cmd.category));
 
 			for (const category of categories) {
-				embed.addField(`**${this.client.utils.capitalise(category)} (${this.client.commands.filter(cmd =>
-					cmd.category === category).size})**`, this.client.commands.filter(cmd =>
-					cmd.category === category).map(cmd => `\`${this.client.utils.capitalise(cmd.name)}\``).join(', '));
+				embed.addFields({ name: `**${this.client.utils.capitalise(category)} (${this.client.commands.filter(cmd =>
+					cmd.category === category).size})**`,
+				value: this.client.commands.filter(cmd =>
+					cmd.category === category).map(cmd => `\`${this.client.utils.capitalise(cmd.name)}\``).join(', ') });
 			}
 
 			const buttonA = new MessageButton()
@@ -92,8 +93,8 @@ module.exports = class extends Command {
 
 				const embed1 = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Help**`,
-						`**◎ Error:** Invalid command name: \`${command}\``);
+					.addFields({ name: `**${this.client.user.username} - Help**`,
+						value: `**◎ Error:** Invalid command name: \`${command}\`` });
 				message.channel.send({ embeds: [embed1] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -194,8 +195,8 @@ module.exports = class extends Command {
 				if (b.user.id !== message.author.id) {
 					const wrongUser = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Help**`,
-							`**◎ Error:** Only the command executor can select an option!`);
+						.addFields({ name: `**${this.client.user.username} - Help**`,
+							value: `**◎ Error:** Only the command executor can select an option!` });
 					b.reply({ embeds: [wrongUser], ephemeral: true });
 					return;
 				}
@@ -231,7 +232,8 @@ module.exports = class extends Command {
 							Command Parameters: \`<>\` is strict & \`[]\` is optional
 
 							You can run \`${prefix}help all\` to see all commands.`)
-						.addField(`**Help - Economy**`, `\`${categories.join(`\`, \``)}\``)
+						.addFields({ name: `**Help - Economy**`,
+							value: `\`${categories.join(`\`, \``)}\`` })
 						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
 						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
@@ -261,7 +263,8 @@ module.exports = class extends Command {
 							Command Parameters: \`<>\` is strict & \`[]\` is optional
 
 							You can run \`${prefix}help all\` to see all commands.`)
-						.addField(`**Help - Fun**`, `\`${categories.join(`\`, \``)}\``)
+						.addFields({ name: `**Help - Fun**`,
+							value: `\`${categories.join(`\`, \``)}\`` })
 						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
 						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
@@ -291,7 +294,8 @@ module.exports = class extends Command {
 							Command Parameters: \`<>\` is strict & \`[]\` is optional
 
 							You can run \`${prefix}help all\` to see all commands.`)
-						.addField(`**Help - Generators**`, `\`${categories.join(`\`, \``)}\``)
+						.addFields({ name: `**Help - Generators**`,
+							value: `\`${categories.join(`\`, \``)}\`` })
 						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
 						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
@@ -321,7 +325,8 @@ module.exports = class extends Command {
 							Command Parameters: \`<>\` is strict & \`[]\` is optional
 
 							You can run \`${prefix}help all\` to see all commands.`)
-						.addField(`**Help - Informative**`, `\`${categories.join(`\`, \``)}\``)
+						.addFields({ name: `**Help - Informative**`,
+							value: `\`${categories.join(`\`, \``)}\`` })
 						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
 						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
@@ -351,7 +356,8 @@ module.exports = class extends Command {
 							Command Parameters: \`<>\` is strict & \`[]\` is optional
 
 							You can run \`${prefix}help all\` to see all commands.`)
-						.addField(`**Help - Moderation**`, `\`${categories.join(`\`, \``)}\``)
+						.addFields({ name: `**Help - Moderation**`,
+							value: `\`${categories.join(`\`, \``)}\`` })
 						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
 						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
@@ -381,7 +387,8 @@ module.exports = class extends Command {
 							Command Parameters: \`<>\` is strict & \`[]\` is optional
 
 							You can run \`${prefix}help all\` to see all commands.`)
-						.addField(`**Help - Ticket**`, `\`${categories.join(`\`, \``)}\``)
+						.addFields({ name: `**Help - Ticket**`,
+							value: `\`${categories.join(`\`, \``)}\`` })
 						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
 						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });

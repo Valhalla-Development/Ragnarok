@@ -19,8 +19,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Reload**`,
-					`**◎ Error:** Please specify a command to reload!`);
+				.addFields({ name: `**${this.client.user.username} - Reload**`,
+					value: `**◎ Error:** Please specify a command to reload!` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -32,16 +32,16 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Reload**`,
-					`**◎ Error:** Could not find command name \`${cmd}\``);
+				.addFields({ name: `**${this.client.user.username} - Reload**`,
+					value: `**◎ Error:** Could not find command name \`${cmd}\`` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
 		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Reload**`,
-				`**◎ Success:** Realoading \`${command.name}\``);
+			.addFields({ name: `**${this.client.user.username} - Reload**`,
+				value: `**◎ Success:** Realoading \`${command.name}\`` });
 		message.channel.send({ embeds: [embed] }).then(async (m) => {
 			const startRestart = new Date();
 
@@ -59,8 +59,8 @@ module.exports = class extends Command {
 
 			const embedUpd = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Reload**`,
-					`**◎ Success:** Command **${command.name}** has been successfully reloaded!\nCommand took \`${timeInMs}\`ms to reload.`);
+				.addFields({ name: `**${this.client.user.username} - Reload**`,
+					value: `**◎ Success:** Command **${command.name}** has been successfully reloaded!\nCommand took \`${timeInMs}\`ms to reload.` });
 			m.edit({ embeds: [embedUpd] });
 			return;
 		});

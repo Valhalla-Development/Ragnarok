@@ -23,8 +23,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Sudo**`,
-					`**◎ Error:** Please mention a user or paste a user ID.`);
+				.addFields({ name: `**${this.client.user.username} - Sudo**`,
+					value: `**◎ Error:** Please mention a user or paste a user ID.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -34,8 +34,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Reload**`,
-					`**◎ Error:** Please specify the text you wish me to sudo!`);
+				.addFields({ name: `**${this.client.user.username} - Reload**`,
+					value: `**◎ Error:** Please specify the text you wish me to sudo!` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}

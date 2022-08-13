@@ -44,8 +44,8 @@ module.exports = class extends Event {
 		if (!message.guild.members.me.permissionsIn(starChannel).has('SEND_MESSAGES')) {
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Starboard**`,
-					`**◎ Error:** I am missing the permission \`SEND_MESSAGES\` in the starboard channel.`);
+				.addFields({ name: `**${this.client.user.username} - Starboard**`,
+					value: `**◎ Error:** I am missing the permission \`SEND_MESSAGES\` in the starboard channel.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -56,8 +56,8 @@ module.exports = class extends Event {
 			if (message.channel.id === starChannel.id) return;
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Starboard**`,
-					`**◎ Error:** ${message.author}, You cannot star your own messages.`);
+				.addFields({ name: `**${this.client.user.username} - Starboard**`,
+					value: `**◎ Error:** ${message.author}, You cannot star your own messages.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -139,8 +139,8 @@ module.exports = class extends Event {
 			if (image === '' && message.content.length < 1) {
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Starboard**`,
-						`**◎ Error:** You cannot star an empty messages.`);
+					.addFields({ name: `**${this.client.user.username} - Starboard**`,
+						value: `**◎ Error:** You cannot star an empty messages.` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -149,10 +149,14 @@ module.exports = class extends Event {
 			const embed = new EmbedBuilder()
 				.setColor(15844367)
 				.setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
-				.addFields({ name: `**Author**`, value: `${message.author}`, inline: true },
-					{ name: `**Channel**`, value: `<#${message.channel.id}>`, inline: true },
-					{ name: `**Message**`, value: `${message.content ? message.content : 'N/A'}`, inline: false },
-					{ name: `**Message:**`, value: `[Jump To](${message.url})`, inline: false })
+				.addFields({ name: `**Author**`,
+					value: `${message.author}`, inline: true },
+				{ name: `**Channel**`,
+					value: `<#${message.channel.id}>`, inline: true },
+				{ name: `**Message**`,
+					value: `${message.content ? message.content : 'N/A'}`, inline: false },
+				{ name: `**Message:**`,
+					value: `[Jump To](${message.url})`, inline: false })
 				.setTimestamp(new Date())
 				.setFooter({ text: `⭐ 1 | ${message.id}` })
 				.setImage(image);

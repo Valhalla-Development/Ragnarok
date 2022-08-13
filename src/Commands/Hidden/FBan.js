@@ -21,8 +21,8 @@ module.exports = class extends Command {
 		if (!user) {
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Ban**`,
-					`**◎ Error:** Please specify a user you wish to ban!.`);
+				.addFields({ name: `**${this.client.user.username} - Ban**`,
+					value: `**◎ Error:** Please specify a user you wish to ban!.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -33,10 +33,10 @@ module.exports = class extends Command {
 		const embed = new EmbedBuilder()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField('User Banned',
-				`**◎ User:** ${user.user.tag}
+			.addFields({ name: 'User Banned',
+				value: `**◎ User:** ${user.user.tag}
 				**◎ Reason:** ${reason}
-				**◎ Moderator:** ${message.author.tag}`)
+				**◎ Moderator:** ${message.author.tag}` })
 			.setFooter({ text: 'User Ban Logs' })
 			.setTimestamp();
 		message.channel.send({ embeds: [embed] });

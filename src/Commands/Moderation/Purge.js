@@ -19,8 +19,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Purge**`,
-					`**◎ Error:** You need to specify the amount of messages to purge!`);
+				.addFields({ name: `**${this.client.user.username} - Purge**`,
+					value: `**◎ Error:** You need to specify the amount of messages to purge!` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -29,8 +29,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Purge**`,
-					`**◎ Error:** The provided argument is not a valid number.`);
+				.addFields({ name: `**${this.client.user.username} - Purge**`,
+					value: `**◎ Error:** The provided argument is not a valid number.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -39,8 +39,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Purge**`,
-					`**◎ Error:** You need to specify the amount of messages to purge!`);
+				.addFields({ name: `**${this.client.user.username} - Purge**`,
+					value: `**◎ Error:** You need to specify the amount of messages to purge!` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -54,14 +54,14 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Purge**`,
-					`**◎ Success:** ${Number(messageCount)} message${Number(messageCount) > 1 ? 's' : ''} were removed.`);
+				.addFields({ name: `**${this.client.user.username} - Purge**`,
+					value: `**◎ Success:** ${Number(messageCount)} message${Number(messageCount) > 1 ? 's' : ''} were removed.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 		} catch {
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Purge**`,
-					`**◎ Error:** An error occured.`);
+				.addFields({ name: `**${this.client.user.username} - Purge**`,
+					value: `**◎ Error:** An error occured.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 		}
 	}

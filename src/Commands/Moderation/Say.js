@@ -35,8 +35,8 @@ module.exports = class extends Command {
 			if (ch.type !== 'GUILD_TEXT' && ch.type !== 'GUILD_NEWS') {
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Say**`,
-						`**◎ Error:** Please input a valid channel!`);
+					.addFields({ name: `**${this.client.user.username} - Say**`,
+						value: `**◎ Error:** Please input a valid channel!` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -44,8 +44,8 @@ module.exports = class extends Command {
 			if (!ch) {
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Say**`,
-						`**◎ Error:** I could not find the channel you mentioned!`);
+					.addFields({ name: `**${this.client.user.username} - Say**`,
+						value: `**◎ Error:** I could not find the channel you mentioned!` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -53,8 +53,8 @@ module.exports = class extends Command {
 			if (!message.guild.members.me.permissionsIn(ch).has('SEND_MESSAGES')) {
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Say**`,
-						`**◎ Error:** I do not have permissions to send a message in ${ch}!`);
+					.addFields({ name: `**${this.client.user.username} - Say**`,
+						value: `**◎ Error:** I do not have permissions to send a message in ${ch}!` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -64,8 +64,8 @@ module.exports = class extends Command {
 			if (!input) {
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Say**`,
-						`**◎ Error:** You need to input text!`);
+					.addFields({ name: `**${this.client.user.username} - Say**`,
+						value: `**◎ Error:** You need to input text!` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -74,8 +74,8 @@ module.exports = class extends Command {
 			if (!user.permissionsIn(ch).has('SEND_MESSAGES')) {
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Say**`,
-						`**◎ Error:** You do not have permission to send messages to ${ch}!`);
+					.addFields({ name: `**${this.client.user.username} - Say**`,
+						value: `**◎ Error:** You do not have permission to send messages to ${ch}!` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -84,8 +84,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Say**`,
-					`**◎ Success:** The following message has been posted in ${ch}\n\n${input}`);
+				.addFields({ name: `**${this.client.user.username} - Say**`,
+					value: `**◎ Success:** The following message has been posted in ${ch}\n\n${input}` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		} else {
@@ -94,8 +94,8 @@ module.exports = class extends Command {
 			if (!input) {
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Say**`,
-						`**◎ Error:** You need to input text!`);
+					.addFields({ name: `**${this.client.user.username} - Say**`,
+						value: `**◎ Error:** You need to input text!` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}

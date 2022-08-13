@@ -16,8 +16,8 @@ module.exports = class extends Command {
 
 		const botembed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Uptime**`,
-				`**◎ My uptime is:** <t:${nowInSecond}:R>`);
+			.addFields({ name: `**${this.client.user.username} - Uptime**`,
+				value: `**◎ My uptime is:** <t:${nowInSecond}:R>` });
 		message.channel.send({ embeds: [botembed] });
 	}
 

@@ -24,8 +24,8 @@ module.exports = class extends Command {
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Fish**`,
-					`**◎ Error:** You do not have a fishing rod! You must buy one from the shop.`);
+				.addFields({ name: `**${this.client.user.username} - Fish**`,
+					value: `**◎ Error:** You do not have a fishing rod! You must buy one from the shop.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -38,8 +38,8 @@ module.exports = class extends Command {
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Fish**`,
-					`**◎ Error:** You do not have a fishing rod! You must buy one from the shop.`);
+				.addFields({ name: `**${this.client.user.username} - Fish**`,
+					value: `**◎ Error:** You do not have a fishing rod! You must buy one from the shop.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -75,8 +75,8 @@ module.exports = class extends Command {
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://Treasure.png')
-					.addField(`**${this.client.user.username} - Fish**`,
-						`**◎ Success:** You found hidden treasure! You are extremely lucky, there is only a \`0.18%\` of finding this! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
+					.addFields({ name: `**${this.client.user.username} - Fish**`,
+						value: `**◎ Success:** You found hidden treasure! You are extremely lucky, there is only a \`0.18%\` of finding this! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.` });
 				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Treasure.png'] });
 				return;
 			} else if (fishChance >= 0.0018 && fishChance < 0.0318) { // 3%
@@ -104,8 +104,8 @@ module.exports = class extends Command {
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://Pufferfish.png')
-					.addField(`**${this.client.user.username} - Fish**`,
-						`**◎ Success:** You caught a Pufferfish! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
+					.addFields({ name: `**${this.client.user.username} - Fish**`,
+						value: `**◎ Success:** You caught a Pufferfish! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.` });
 				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Pufferfish.png'] });
 				return;
 			} else if (fishChance >= 0.0318 && fishChance < 0.0918) { // 6%
@@ -133,8 +133,8 @@ module.exports = class extends Command {
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://Swordfish.png')
-					.addField(`**${this.client.user.username} - Fish**`,
-						`**◎ Success:** You caught a Swordfish! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
+					.addFields({ name: `**${this.client.user.username} - Fish**`,
+						value: `**◎ Success:** You caught a Swordfish! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.` });
 				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Swordfish.png'] });
 				return;
 			} else if (fishChance >= 0.0918 && fishChance < 0.3718) { // 28%
@@ -162,8 +162,8 @@ module.exports = class extends Command {
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://KingSalmon.png')
-					.addField(`**${this.client.user.username} - Fish**`,
-						`**◎ Success:** You caught a King Salmon! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
+					.addFields({ name: `**${this.client.user.username} - Fish**`,
+						value: `**◎ Success:** You caught a King Salmon! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.` });
 				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/KingSalmon.png'] });
 				return;
 			} else if (fishChance >= 0.3718 && fishChance < 0.8718) { // 50%
@@ -191,8 +191,8 @@ module.exports = class extends Command {
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setThumbnail('attachment://Trout.png')
-					.addField(`**${this.client.user.username} - Fish**`,
-						`**◎ Success:** You caught a Trout! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
+					.addFields({ name: `**${this.client.user.username} - Fish**`,
+						value: `**◎ Success:** You caught a Trout! It is valued at: <:coin:706659001164628008> \`${fishPrice.toLocaleString('en')}\`\nYou now have \`${amt}\`.` });
 				message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Trout.png'] });
 				return;
 			} else { // 12.82&
@@ -205,8 +205,8 @@ module.exports = class extends Command {
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Fish**`,
-						`**◎ Fail:** Your catch escaped the line!`);
+					.addFields({ name: `**${this.client.user.username} - Fish**`,
+						value: `**◎ Fail:** Your catch escaped the line!` });
 				message.channel.send({ embeds: [embed] });
 				return;
 			}
@@ -216,8 +216,8 @@ module.exports = class extends Command {
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Fish**`,
-					`**◎ Error:** Please wait another \`${ms(balance.fishcool - new Date().getTime(), { long: true })}\` before using this command.`);
+				.addFields({ name: `**${this.client.user.username} - Fish**`,
+					value: `**◎ Error:** Please wait another \`${ms(balance.fishcool - new Date().getTime(), { long: true })}\` before using this command.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}

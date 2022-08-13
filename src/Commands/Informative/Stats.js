@@ -49,8 +49,8 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
 			.setAuthor({ name: `Viewing statistics for ${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) })
-			.addField('General Information',
-				`**◎ 🤖 Name:** \`${this.client.user.tag}\`
+			.addFields({ name: 'General Information',
+				value: `**◎ 🤖 Name:** \`${this.client.user.tag}\`
 				**◎ 📈 Uptime:** <t:${nowInSecond}:R>
 				**◎ 🧾 Commands:** \`${this.client.commands.filter(cmd => cmd.category !== 'Hidden').size}\`
 				**◎ 🔖 Servers:** \`${this.client.guilds.cache.size.toLocaleString()}\`
@@ -58,18 +58,18 @@ module.exports = class extends Command {
 				**◎ 📝 Channels:** \`${this.client.channels.cache.size.toLocaleString()}\`
 				**◎ 📅 Creation Date:** <t:${Math.round(this.client.user.createdTimestamp / 1000)}> - (<t:${Math.round(this.client.user.createdTimestamp / 1000)}:R>)
 				**◎ 💹 Bot Version:** \`v${version}\`
-				\u200b`)
-			.addField('System',
-				`**◎ 💻 OS:** \`${osVersion}\`
+				\u200b` })
+			.addFields({ name: 'System',
+				value: `**◎ 💻 OS:** \`${osVersion}\`
 				**◎ 📊 Uptime:** <t:${Math.round((Date.now() - os.uptime() * 1000) / 1000)}:R>
 				**◎ 💾 Memory Usage:** \`${realMemUsed.toLocaleString('en')} / ${totalMemory.toLocaleString('en')}MB - ${memPercent.toFixed(1)}%\`
 				**◎ 💻 CPU:**
 				\u3000 \u3000 ⌨️ Cores: \`${os.cpus().length}\`
 				\u3000 \u3000 ⌨️ Model: \`${core.model}\`
 				\u3000 \u3000 ⌨️ Speed: \`${core.speed}MHz\`
-				\u3000 \u3000 ⌨️ Usage: \`${cpuUsage.toFixed(1)}%\``)
-			.addField('Announcement',
-				`\`\`\`${annc}\`\`\``)
+				\u3000 \u3000 ⌨️ Usage: \`${cpuUsage.toFixed(1)}%\`` })
+			.addFields({ name: 'Announcement',
+				value: `\`\`\`${annc}\`\`\`` })
 			.setTimestamp();
 		message.channel.send({ embeds: [embed] });
 	}

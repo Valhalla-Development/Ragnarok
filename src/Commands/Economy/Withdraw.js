@@ -27,8 +27,8 @@ module.exports = class extends Command {
 			const noBalance = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Withdraw**`,
-					`**◎ Error:** You currently have no money in your bank!`);
+				.addFields({ name: `**${this.client.user.username} - Withdraw**`,
+					value: `**◎ Error:** You currently have no money in your bank!` });
 			message.channel.send({ embeds: [noBalance] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -44,8 +44,8 @@ module.exports = class extends Command {
 			const depAll = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Withdraw**`,
-					`**◎ Success:** You have withdrawn <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`.`);
+				.addFields({ name: `**${this.client.user.username} - Withdraw**`,
+					value: `**◎ Success:** You have withdrawn <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`.` });
 			message.channel.send({ embeds: [depAll] });
 			return;
 		}
@@ -56,8 +56,8 @@ module.exports = class extends Command {
 			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Withdraw**`,
-					`**◎ Error:** An example of this command is: \`${prefix}withdraw 100\`\nAlternatively, you can run \`${prefix}withdraw all\``);
+				.addFields({ name: `**${this.client.user.username} - Withdraw**`,
+					value: `**◎ Error:** An example of this command is: \`${prefix}withdraw 100\`\nAlternatively, you can run \`${prefix}withdraw all\`` });
 			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -68,8 +68,8 @@ module.exports = class extends Command {
 			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Withdraw**`,
-					`**◎ Error:** You only have <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`. Please try again with a valid amount.`);
+				.addFields({ name: `**${this.client.user.username} - Withdraw**`,
+					value: `**◎ Error:** You only have <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`. Please try again with a valid amount.` });
 			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -80,8 +80,8 @@ module.exports = class extends Command {
 			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Withdraw**`,
-					`**◎ Error:** Please enter a valid amount.`);
+				.addFields({ name: `**${this.client.user.username} - Withdraw**`,
+					value: `**◎ Error:** Please enter a valid amount.` });
 			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -98,8 +98,8 @@ module.exports = class extends Command {
 		const depAll = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Withdraw**`,
-				`**◎ Success:** You have withdrawn <:coin:706659001164628008> \`${numberCov.toLocaleString('en')}\`.`);
+			.addFields({ name: `**${this.client.user.username} - Withdraw**`,
+				value: `**◎ Success:** You have withdrawn <:coin:706659001164628008> \`${numberCov.toLocaleString('en')}\`.` });
 		message.channel.send({ embeds: [depAll] });
 	}
 

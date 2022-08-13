@@ -39,8 +39,8 @@ module.exports = class extends Event {
 					}).catch(console.error);
 					const embed = new EmbedBuilder()
 						.setColor(client.utils.color(member.guild.members.me.displayHexColor))
-						.addField(`**${client.user.username} - Ticket**`,
-							`**◎:** \`${member.user.tag}\` has rejoined the server\nThey have been added back to the ticket.`);
+						.addFields({ name: `**${client.user.username} - Ticket**`,
+							value: `**◎:** \`${member.user.tag}\` has rejoined the server\nThey have been added back to the ticket.` });
 					channel.send({ embeds: [embed] });
 				}
 			}

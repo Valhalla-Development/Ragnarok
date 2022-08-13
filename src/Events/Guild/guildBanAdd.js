@@ -28,10 +28,10 @@ module.exports = class extends Event {
 		const embed = new EmbedBuilder()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(ban.guild.members.me.displayHexColor))
-			.addField('User Banned',
-				`**◎ User:** ${ban.user.tag}
+			.addFields({ name: 'User Banned',
+				value: `**◎ User:** ${ban.user.tag}
 				**◎ Reason:** ${reason}
-				**◎ Moderator:** ${mod}`)
+				**◎ Moderator:** ${mod}` })
 			.setFooter({ text: 'User Ban Logs' })
 			.setTimestamp();
 		this.client.channels.cache.get(logs).send({ embeds: [embed] });

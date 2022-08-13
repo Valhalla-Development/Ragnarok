@@ -19,8 +19,8 @@ module.exports = class extends Command {
 
 			const noInput = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Discord.js**`,
-					`**◎ Error:** You must input a search term!`);
+				.addFields({ name: `**${this.client.user.username} - Discord.js**`,
+					value: `**◎ Error:** You must input a search term!` });
 			message.channel.send({ embeds: [noInput] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -33,8 +33,8 @@ module.exports = class extends Command {
 
 			const noInput = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Discord.js**`,
-					`**◎ Error:** I couldn't find anything for \`${args[0]}\``);
+				.addFields({ name: `**${this.client.user.username} - Discord.js**`,
+					value: `**◎ Error:** I couldn't find anything for \`${args[0]}\`` });
 			message.channel.send({ embeds: [noInput] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -45,14 +45,14 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.setThumbnail('https://static.npmjs.com/338e4905a2684ca96e08c7780fc68412.png')
 			.setAuthor({ name: `${res.name}`, iconURL: 'https://i.imgur.com/ErKf5Y0.png', url: `https://www.npmjs.com/package/${res._id}` })
-			.addField('Package Info\n',
-				`**❯ Author:** ${version.maintainers[0].name || 'None'}
+			.addFields({ name: 'Package Info\n',
+				value: `**❯ Author:** ${version.maintainers[0].name || 'None'}
 				**❯ Repository:** ${res.repository ? res.repository.url : 'None'}
 				**❯ ${version.maintainers.length > 1 ? 'Maintainers' : 'Maintainer'}:** ${version.maintainers
 	.map(usr => usr.name)
 	.join(', ')}
 				**❯ Latest Version:** ${version.version || 'None'}
-				**❯ Keywords:** ${res.keywords ? res.keywords.join(', ') : 'None'}`);
+				**❯ Keywords:** ${res.keywords ? res.keywords.join(', ') : 'None'}` });
 
 		if (res.description) {
 			embed.setDescription('**Description:**', res.description);

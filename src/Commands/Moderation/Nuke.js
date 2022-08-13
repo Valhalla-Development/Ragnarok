@@ -19,8 +19,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Nuke**`,
-					`**◎ Error:** This command has been disabled for this server!`);
+				.addFields({ name: `**${this.client.user.username} - Nuke**`,
+					value: `**◎ Error:** This command has been disabled for this server!` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -32,8 +32,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Nuke**`,
-					`**◎ Error:** I need the \`MANAGE_CHANNELS\` permissions to execute this command.`);
+				.addFields({ name: `**${this.client.user.username} - Nuke**`,
+					value: `**◎ Error:** I need the \`MANAGE_CHANNELS\` permissions to execute this command.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}

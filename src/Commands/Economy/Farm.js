@@ -41,8 +41,8 @@ module.exports = class extends Command {
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Farm**`,
-						`**◎ Error:** Please wait another \`${ms(balance.farmcool - new Date().getTime(), { long: true })}\` before using this command.`);
+					.addFields({ name: `**${this.client.user.username} - Farm**`,
+						value: `**◎ Error:** Please wait another \`${ms(balance.farmcool - new Date().getTime(), { long: true })}\` before using this command.` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -79,8 +79,8 @@ module.exports = class extends Command {
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Farm**`,
-						`**◎ Error:** Your farm bag is full! You can sell your produce with \`${prefix}shop sell\``)
+					.addFields({ name: `**${this.client.user.username} - Farm**`,
+						value: `**◎ Error:** Your farm bag is full! You can sell your produce with \`${prefix}shop sell\`` })
 					.setFooter({ text: `Consider purchasing farming tools to increase your limit.` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
@@ -122,8 +122,8 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
-			embed.addField(`**${this.client.user.username} - Farm**`,
-				`**◎ Success:** You found a ${name}! You are extremely lucky, there is only a \`0.18%\` of finding this! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
+			embed.addFields({ name: `**${this.client.user.username} - Farm**`,
+				value: `**◎ Success:** You found a ${name}! You are extremely lucky, there is only a \`0.18%\` of finding this! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.` });
 
 			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/GoldNugget.png'] });
 			return;
@@ -156,8 +156,8 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
-			embed.addField(`**${this.client.user.username} - Farm**`,
-				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
+			embed.addFields({ name: `**${this.client.user.username} - Farm**`,
+				value: `**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.` });
 			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Barley.png'] });
 			return;
 		} else if (farmChance >= 0.0318 && farmChance < 0.0918) { // 6%
@@ -190,8 +190,8 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
-			embed.addField(`**${this.client.user.username} - Farm**`,
-				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
+			embed.addFields({ name: `**${this.client.user.username} - Farm**`,
+				value: `**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.` });
 			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Spinach.png'] });
 			return;
 		} else if (farmChance >= 0.0918 && farmChance < 0.3718) { // 28%
@@ -224,8 +224,8 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
-			embed.addField(`**${this.client.user.username} - Farm**`,
-				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
+			embed.addFields({ name: `**${this.client.user.username} - Farm**`,
+				value: `**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.` });
 			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Strawberry.png'] });
 			return;
 		} else if (farmChance >= 0.3718 && farmChance < 0.8718) {
@@ -258,8 +258,8 @@ module.exports = class extends Command {
 				id: `${message.author.id}-${message.guild.id}`
 			});
 
-			embed.addField(`**${this.client.user.username} - Farm**`,
-				`**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.`);
+			embed.addFields({ name: `**${this.client.user.username} - Farm**`,
+				value: `**◎ Success:** You farmed ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt}\`.` });
 			message.channel.send({ embeds: [embed], files: ['./Storage/Images/Economy/Lettuce.png'] });
 			return;
 		} else { // 12.82%
@@ -275,8 +275,8 @@ module.exports = class extends Command {
 
 			this.client.setBalance.run(balance);
 
-			embed.addField(`**${this.client.user.username} - Farm**`,
-				`**◎ Fail:** You farmed nothing!`);
+			embed.addFields({ name: `**${this.client.user.username} - Farm**`,
+				value: `**◎ Fail:** You farmed nothing!` });
 			message.channel.send({ embeds: [embed] });
 			return;
 		}

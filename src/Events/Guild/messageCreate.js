@@ -31,8 +31,8 @@ module.exports = class extends Event {
 				if (!guilds) {
 					const embed = new EmbedBuilder()
 						.setColor('#A10000')
-						.addField(`**${this.client.user.username} - Mod Mail**`,
-							`**◎ Error:** You need to share a server with ${this.client.user} to use Mod Mail.`);
+						.addFields({ name: `**${this.client.user.username} - Mod Mail**`,
+							value: `**◎ Error:** You need to share a server with ${this.client.user} to use Mod Mail.` });
 					message.reply({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
@@ -43,8 +43,8 @@ module.exports = class extends Event {
 				if (comCooldown.has(message.author.id)) {
 					const embed = new EmbedBuilder()
 						.setColor('#A10000')
-						.addField(`**${this.client.user.username} - Mod Mail**`,
-							`**◎ Error:** Please do not spam the request.\nYou can canel your previous request by clicking the \`Cancel\` button.`);
+						.addFields({ name: `**${this.client.user.username} - Mod Mail**`,
+							value: `**◎ Error:** Please do not spam the request.\nYou can canel your previous request by clicking the \`Cancel\` button.` });
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
@@ -59,8 +59,8 @@ module.exports = class extends Event {
 				if (!guildsWithTickets.size) {
 					const embed = new EmbedBuilder()
 						.setColor('#A10000')
-						.addField(`**${this.client.user.username} - Mod Mail**`,
-							`**◎ Error:** You need to share a server with ${this.client.user} that has tickets enabled, to use Mod Mail.`);
+						.addFields({ name: `**${this.client.user.username} - Mod Mail**`,
+							value: `**◎ Error:** You need to share a server with ${this.client.user} that has tickets enabled, to use Mod Mail.` });
 					message.reply({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
@@ -153,8 +153,8 @@ module.exports = class extends Event {
 
 							const noGuild = new EmbedBuilder()
 								.setColor('#A10000')
-								.addField(`**${this.client.user.username} - Mod Mail**`,
-									`**◎ Success:** Your request has been cancelled.`);
+								.addFields({ name: `**${this.client.user.username} - Mod Mail**`,
+									value: `**◎ Success:** Your request has been cancelled.` });
 							message.reply({ embeds: [noGuild] }).then((d) => this.client.utils.deletableCheck(d, 10000));
 							return;
 						}
@@ -170,8 +170,8 @@ module.exports = class extends Event {
 
 							const noGuild = new EmbedBuilder()
 								.setColor('#A10000')
-								.addField(`**${this.client.user.username} - Mod Mail**`,
-									`**◎ Error:** I could not find the server you selected. Please try again.`);
+								.addFields({ name: `**${this.client.user.username} - Mod Mail**`,
+									value: `**◎ Error:** I could not find the server you selected. Please try again.` });
 							message.reply({ embeds: [noGuild] }).then((d) => this.client.utils.deletableCheck(d, 10000));
 							return;
 						}
@@ -181,8 +181,8 @@ module.exports = class extends Event {
 
 							const botPerm = new EmbedBuilder()
 								.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
-								.addField(`**${this.client.user.username} - Mod Mail**`,
-									`**◎ Error:** It seems \`${fetchGuild.name}\` has removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:\nPlease report this within \`${fetchGuild}\` to a server moderator.`);
+								.addFields({ name: `**${this.client.user.username} - Mod Mail**`,
+									value: `**◎ Error:** It seems \`${fetchGuild.name}\` has removed the \`MANAGE_CHANNELS\` permission from me. I cannot function properly without it :cry:\nPlease report this within \`${fetchGuild}\` to a server moderator.` });
 							message.reply({ embeds: [botPerm] }).then((d) => this.client.utils.deletableCheck(d, 10000));
 							return;
 						}
@@ -195,8 +195,8 @@ module.exports = class extends Event {
 
 							const nomodRole = new EmbedBuilder()
 								.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
-								.addField(`**${this.client.user.username} - Mod Mail**`,
-									`**◎ Error:** \`${fetchGuild.name}\` doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nPlease report this within \`${fetchGuild}\` to a server moderator.`);
+								.addFields({ name: `**${this.client.user.username} - Mod Mail**`,
+									value: `**◎ Error:** \`${fetchGuild.name}\` doesn't have a \`Support Team\` role made, so the ticket can't be opened.\nPlease report this within \`${fetchGuild}\` to a server moderator.` });
 							message.reply({ embeds: [nomodRole] }).then((d) => this.client.utils.deletableCheck(d, 10000));
 							return;
 						}
@@ -226,8 +226,8 @@ module.exports = class extends Event {
 
 							const existTM = new EmbedBuilder()
 								.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
-								.addField(`**${this.client.user.username} - Mod Mail**`,
-									`**◎ Error:** You already have a ticket open in \`${fetchGuild.name}\`!`);
+								.addFields({ name: `**${this.client.user.username} - Mod Mail**`,
+									value: `**◎ Error:** You already have a ticket open in \`${fetchGuild.name}\`!` });
 							message.channel.send({ embeds: [existTM] }).then((d) => this.client.utils.deletableCheck(d, 10000));
 							return;
 						}
@@ -277,8 +277,8 @@ module.exports = class extends Event {
 
 								const newTicketE = new EmbedBuilder()
 									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
-									.addField(`**${this.client.user.username} - New**`,
-										`**◎ Success:** Your ticket has been created in \`${fetchGuild.name}\`, <#${c.id}>.`);
+									.addFields({ name: `**${this.client.user.username} - New**`,
+										value: `**◎ Success:** Your ticket has been created in \`${fetchGuild.name}\`, <#${c.id}>.` });
 								message.reply({ embeds: [newTicketE] });
 								const newTicketEm = new EmbedBuilder()
 									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
@@ -298,10 +298,14 @@ module.exports = class extends Event {
 								const logEmbed = new EmbedBuilder()
 									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
 									.setAuthor({ name: 'Ticket Opened', iconURL: fetchGuild.iconURL({ dynamic: true }) })
-									.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${fetchGuild.id}/${c.id})`, inline: true },
-										{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${message.author}`, inline: true },
-										{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
-										{ name: `🖋️ **Reason**`, value: `${reason}`, inline: true });
+									.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
+										value: `[${randomString}](https://discord.com/channels/${fetchGuild.id}/${c.id})`, inline: true },
+									{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
+										value: `${message.author}`, inline: true },
+									{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`,
+										value: `<t:${openEpoch}>`, inline: true },
+									{ name: `🖋️ **Reason**`,
+										value: `${reason}`, inline: true });
 								logchan.send({ embeds: [logEmbed] });
 							}).catch(console.error);
 						} else {
@@ -370,8 +374,8 @@ module.exports = class extends Event {
 								// Send a message saying the ticket has been created.
 								const newTicketE = new EmbedBuilder()
 									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
-									.addField(`**${this.client.user.username} - New**`,
-										`**◎ Success:** Your ticket has been created in \`${fetchGuild.name}\`, <#${c.id}>.`);
+									.addFields({ name: `**${this.client.user.username} - New**`,
+										value: `**◎ Success:** Your ticket has been created in \`${fetchGuild.name}\`, <#${c.id}>.` });
 								message.channel.send({ embeds: [newTicketE] });
 
 								const buttonClose = new MessageButton()
@@ -406,10 +410,14 @@ module.exports = class extends Event {
 								const logEmbed = new EmbedBuilder()
 									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
 									.setAuthor({ name: 'Ticket Opened', iconURL: fetchGuild.iconURL({ dynamic: true }) })
-									.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`, value: `[${randomString}](https://discord.com/channels/${fetchGuild.id}/${c.id})`, inline: true },
-										{ name: `<:ticketOpen:998229978267258881> **Opened By**`, value: `${message.author}`, inline: true },
-										{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`, value: `<t:${openEpoch}>`, inline: true },
-										{ name: `🖋️ **Reason**`, value: `${reason}`, inline: true });
+									.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
+										value: `[${randomString}](https://discord.com/channels/${fetchGuild.id}/${c.id})`, inline: true },
+									{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
+										value: `${message.author}`, inline: true },
+									{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`,
+										value: `<t:${openEpoch}>`, inline: true },
+									{ name: `🖋️ **Reason**`,
+										value: `${reason}`, inline: true });
 								logchan.send({ embeds: [logEmbed] });
 							}).catch(console.error);
 						}
@@ -472,8 +480,8 @@ module.exports = class extends Event {
 
 				const embed = new EmbedBuilder()
 					.setColor(client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${client.user.username} - AFK**`,
-						`**◎** ${message.author} is no longer AFK.`);
+					.addFields({ name: `**${client.user.username} - AFK**`,
+						value: `**◎** ${message.author} is no longer AFK.` });
 				message.channel.send({ embeds: [embed] });
 				return;
 			}
@@ -483,8 +491,8 @@ module.exports = class extends Event {
 				if (afkCheck) {
 					const error = new EmbedBuilder()
 						.setColor(client.utils.color(message.guild.members.me.displayHexColor))
-						.addField(`**${client.user.username} - AFK**`,
-							`**◎** Please do not ping ${found}, they are currently AFK with the reason:\n\n${afkCheck.reason}`);
+						.addFields({ name: `**${client.user.username} - AFK**`,
+							value: `**◎** Please do not ping ${found}, they are currently AFK with the reason:\n\n${afkCheck.reason}` });
 					message.channel.send({ embeds: [error] }).then((m) => client.utils.deletableCheck(m, 10000));
 					return;
 				}
@@ -649,8 +657,8 @@ module.exports = class extends Event {
 				if (!message.member.guild.members.me.permissions.has(PermissionsBitField.ManageMessages)) {
 					const npPerms = new EmbedBuilder()
 						.setColor(grabClient.utils.color(message.guild.members.me.displayHexColor))
-						.addField(`**${grabClient.user.username} - Ads Protection**`,
-							`**◎ Error:** I do not have the \`MANAGE_MESSAGES\` permissions. Disabling Ads Protection.`);
+						.addFields({ name: `**${grabClient.user.username} - Ads Protection**`,
+							value: `**◎ Error:** I do not have the \`MANAGE_MESSAGES\` permissions. Disabling Ads Protection.` });
 					message.channel.send({ embeds: [npPerms] }).then((m) => grabClient.utils.messageDelete(m, 0));
 					db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(message.guild.id);
 					return;
@@ -898,8 +906,8 @@ module.exports = class extends Event {
 				if (missing.length) {
 					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
-							`**◎ Error:** You are missing \`${this.client.utils.formatArray(missing.map(this.client.utils.formatPerms))}\` permissions, they are required for this command.`);
+						.addFields({ name: `**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
+							value: `**◎ Error:** You are missing \`${this.client.utils.formatArray(missing.map(this.client.utils.formatPerms))}\` permissions, they are required for this command.` });
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
@@ -919,8 +927,8 @@ module.exports = class extends Event {
 					}
 					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
-							`**◎ Error:** I am missing \`${this.client.utils.formatArray(missing.map(this.client.utils.formatPerms))}\` permissions, they are required for this command.`);
+						.addFields({ name: `**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
+							value: `**◎ Error:** I am missing \`${this.client.utils.formatArray(missing.map(this.client.utils.formatPerms))}\` permissions, they are required for this command.` });
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
@@ -939,8 +947,8 @@ module.exports = class extends Event {
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor));
 
 			if (!oargresult || oargresult === '') {
-				logembed.addField(`Guild: ${message.guild.name} | Date: <t:${nowInSecond}>`,
-					codeBlock('kotlin', `'${cmd}' was executed by ${message.author.tag}`));
+				logembed.addFields({ name: `Guild: ${message.guild.name} | Date: <t:${nowInSecond}>`,
+					value: codeBlock('kotlin', `'${cmd}' was executed by ${message.author.tag}`) });
 				const LoggingNoArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] '\x1b[92m${cmd}\x1b[0m' was executed by \x1b[31m${message.author.tag}\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
 				this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
 				console.log(LoggingNoArgs);
@@ -949,8 +957,8 @@ module.exports = class extends Event {
 					`${oargresult.substring(0, 500 - 3)}...` :
 					oargresult;
 
-				logembed.addField(`Guild: ${message.guild.name} | Date: <t:${nowInSecond}>`,
-					codeBlock('kotlin', `'${cmd} ${trimmedString}' was executed by ${message.author.tag}`));
+				logembed.addFields({ name: `Guild: ${message.guild.name} | Date: <t:${nowInSecond}>`,
+					value: codeBlock('kotlin', `'${cmd} ${trimmedString}' was executed by ${message.author.tag}`) });
 				const LoggingArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] '\x1b[92m${cmd} ${oargresult}\x1b[0m' was executed by \x1b[31m${message.author.tag}\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
 				this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
 				console.log(LoggingArgs);

@@ -22,16 +22,16 @@ module.exports = class extends Command {
 		if (!args[0]) {
 			const invalidInput = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Captcha**`,
-					`**◎ Error:** You must supply some text!`);
+				.addFields({ name: `**${this.client.user.username} - Captcha**`,
+					value: `**◎ Error:** You must supply some text!` });
 			message.channel.send({ embeds: [invalidInput] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 		if (args.length > 5) {
 			const tooLong = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Captcha**`,
-					`**◎ Error:** You can only have 5 words!`);
+				.addFields({ name: `**${this.client.user.username} - Captcha**`,
+					value: `**◎ Error:** You can only have 5 words!` });
 			message.channel.send({ embeds: [tooLong] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}

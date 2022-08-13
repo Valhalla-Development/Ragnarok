@@ -34,8 +34,8 @@ module.exports = class extends Command {
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Harvest**`,
-					`**◎ Error:** You do not have a farming plot! You will be awarded one once you purhcase farming tools with: \`${prefix}shop buy\``);
+				.addFields({ name: `**${this.client.user.username} - Harvest**`,
+					value: `**◎ Error:** You do not have a farming plot! You will be awarded one once you purhcase farming tools with: \`${prefix}shop buy\`` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -74,8 +74,8 @@ module.exports = class extends Command {
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Harvest**`,
-						`**◎ Error:** You have nothing to harvest!`);
+					.addFields({ name: `**${this.client.user.username} - Harvest**`,
+						value: `**◎ Error:** You have nothing to harvest!` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -122,9 +122,9 @@ module.exports = class extends Command {
 					const Embed = new EmbedBuilder()
 						.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Harvest**`,
-							`**◎ Success:** Current crop status:
-						${arr.splice(0, 5).join(`\n`)}`)
+						.addFields({ name: `**${this.client.user.username} - Harvest**`,
+							value: `**◎ Success:** Current crop status:
+						${arr.splice(0, 5).join(`\n`)}` })
 						.setFooter({ text: `To harvest, you can run ${prefix}harvest all${TotalPage > 1 ? ` | Page: ${PageNo++}/${TotalPage}` : ''}` });
 					Embeds.push(Embed);
 				}
@@ -153,8 +153,8 @@ module.exports = class extends Command {
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Harvest**`,
-					`**◎ Error:** You do not have enough space to harvest anything!\nYou can upgrade your storage with the command \`${prefix}shop upgrade\``);
+				.addFields({ name: `**${this.client.user.username} - Harvest**`,
+					value: `**◎ Error:** You do not have enough space to harvest anything!\nYou can upgrade your storage with the command \`${prefix}shop upgrade\`` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -168,8 +168,8 @@ module.exports = class extends Command {
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Harvest**`,
-						`**◎ Error:** You have nothing to harvest!`);
+					.addFields({ name: `**${this.client.user.username} - Harvest**`,
+						value: `**◎ Error:** You have nothing to harvest!` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -220,9 +220,9 @@ module.exports = class extends Command {
 				const Embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Harvest**`,
-						`**◎ Success:** You have harvested the following crops:
-						${arr.splice(0, 5).join(`\n`)}\n\n In total, the current value is <:coin:706659001164628008>\`${totalToAdd.toLocaleString('en')}\`\nThis value of each crop will continue to depreciate, I recommend you sell your crops.`)
+					.addFields({ name: `**${this.client.user.username} - Harvest**`,
+						value: `**◎ Success:** You have harvested the following crops:
+						${arr.splice(0, 5).join(`\n`)}\n\n In total, the current value is <:coin:706659001164628008>\`${totalToAdd.toLocaleString('en')}\`\nThis value of each crop will continue to depreciate, I recommend you sell your crops.` })
 					.setFooter({ text: `To harvest, you can run ${prefix}harvest all${TotalPage > 1 ? ` | Page: ${PageNo++}/${TotalPage}` : ''}` });
 				Embeds.push(Embed);
 			}

@@ -25,8 +25,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Un-Ban**`,
-					`**◎ Error:** Run \`${prefix}help unban\` If you are unsure.`);
+				.addFields({ name: `**${this.client.user.username} - Un-Ban**`,
+					value: `**◎ Error:** Run \`${prefix}help unban\` If you are unsure.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -34,9 +34,9 @@ module.exports = class extends Command {
 		const embed = new EmbedBuilder()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField('Action | Un-Ban',
-				`**◎ User ID:** ${args[0]}
-				**◎ Moderator:** ${message.author.tag}`)
+			.addFields({ name: 'Action | Un-Ban',
+				value: `**◎ User ID:** ${args[0]}
+				**◎ Moderator:** ${message.author.tag}` })
 			.setFooter({ text: 'User Un-Ban Logs' })
 			.setTimestamp();
 
@@ -46,8 +46,8 @@ module.exports = class extends Command {
 
 				const embed1 = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Un-Ban**`,
-						`**◎ Error:** An error occured, is the user banned?`);
+					.addFields({ name: `**${this.client.user.username} - Un-Ban**`,
+						value: `**◎ Error:** An error occured, is the user banned?` });
 				message.channel.send({ embeds: [embed1] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -57,8 +57,8 @@ module.exports = class extends Command {
 
 				const embed2 = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Un-Ban**`,
-						`**◎ Error:** The user specified is not banned!`);
+					.addFields({ name: `**${this.client.user.username} - Un-Ban**`,
+						value: `**◎ Error:** The user specified is not banned!` });
 				message.channel.send({ embeds: [embed2] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}

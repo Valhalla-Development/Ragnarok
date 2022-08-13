@@ -30,8 +30,8 @@ module.exports = class extends Command {
 			const noinEmbed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Crypto**`,
-					`**◎ Error:** Please enter a valid cryptocurrency!`);
+				.addFields({ name: `**${this.client.user.username} - Crypto**`,
+					value: `**◎ Error:** Please enter a valid cryptocurrency!` });
 			message.channel.send({ embeds: [noinEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -44,8 +44,8 @@ module.exports = class extends Command {
 			const noinEmbed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Crypto**`,
-					`**◎ Error:** Please enter a valid cryptocurrency!`);
+				.addFields({ name: `**${this.client.user.username} - Crypto**`,
+					value: `**◎ Error:** Please enter a valid cryptocurrency!` });
 			message.channel.send({ embeds: [noinEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -60,8 +60,8 @@ module.exports = class extends Command {
 			const noinEmbed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Crypto**`,
-					`**◎ Error:** Please enter a valid cryptocurrency!`);
+				.addFields({ name: `**${this.client.user.username} - Crypto**`,
+					value: `**◎ Error:** Please enter a valid cryptocurrency!` });
 			message.channel.send({ embeds: [noinEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -83,15 +83,15 @@ module.exports = class extends Command {
 		}
 		successEmb.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() });
 		successEmb.setColor(this.client.utils.color(message.guild.members.me.displayHexColor));
-		successEmb.addField(`**Crypto - ${this.client.utils.capitalise(content[0].id)} ${args[1] ? `(${args[1].toUpperCase()})` : '(USD)'}**`,
-			`**◎ Name:** \`${this.client.utils.capitalise(content[0].id)}\` **(${content[0].symbol.toUpperCase()})**
+		successEmb.addFields({ name: `**Crypto - ${this.client.utils.capitalise(content[0].id)} ${args[1] ? `(${args[1].toUpperCase()})` : '(USD)'}**`,
+			value: `**◎ Name:** \`${this.client.utils.capitalise(content[0].id)}\` **(${content[0].symbol.toUpperCase()})**
 			**◎ Current Price:** \`${currentPrice}\`
 			**◎ History:**
 			\u3000 Market Cap: \`${marketCap}\`
 			\u3000 High (24hr): \`${high24}\`
 			\u3000 Low (24hr): \`${low24}\`
 			\u3000 Price Change (24hr): \`${pricech24}\`
-			\u3000 Price Change Percentage (24hr): \`${priceper24}\``);
+			\u3000 Price Change Percentage (24hr): \`${priceper24}\`` });
 		message.channel.send({ embeds: [successEmb] });
 	}
 

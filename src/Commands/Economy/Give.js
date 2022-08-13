@@ -26,8 +26,8 @@ module.exports = class extends Command {
 			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Give**`,
-					`**◎ Error:** An example of this command is: \`${prefix}give @user 100\`\nAlternatively, you can run \`${prefix}give @user all\``);
+				.addFields({ name: `**${this.client.user.username} - Give**`,
+					value: `**◎ Error:** An example of this command is: \`${prefix}give @user 100\`\nAlternatively, you can run \`${prefix}give @user all\`` });
 			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -52,8 +52,8 @@ module.exports = class extends Command {
 				const embed = new EmbedBuilder()
 					.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Give - Admin**`,
-						`**◎ Success:** System gave <:coin:706659001164628008> \`${Number(args[2]).toLocaleString('en')}\` to ${user}\nNew total: <:coin:706659001164628008> \`${amt.toLocaleString('en')}\``);
+					.addFields({ name: `**${this.client.user.username} - Give - Admin**`,
+						value: `**◎ Success:** System gave <:coin:706659001164628008> \`${Number(args[2]).toLocaleString('en')}\` to ${user}\nNew total: <:coin:706659001164628008> \`${amt.toLocaleString('en')}\`` });
 				message.channel.send({ embeds: [embed] });
 				return;
 			}
@@ -65,8 +65,8 @@ module.exports = class extends Command {
 			const embed = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Give**`,
-					`**◎ Error:** You can not give yourself money. <:wut:745408596233289839>`);
+				.addFields({ name: `**${this.client.user.username} - Give**`,
+					value: `**◎ Error:** You can not give yourself money. <:wut:745408596233289839>` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -79,8 +79,8 @@ module.exports = class extends Command {
 			const errorE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Give**`,
-					`**◎ Error:** ${user} does not have an economy account. They will instantly open one when they speak.`);
+				.addFields({ name: `**${this.client.user.username} - Give**`,
+					value: `**◎ Error:** ${user} does not have an economy account. They will instantly open one when they speak.` });
 			message.channel.send({ embeds: [errorE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -92,8 +92,8 @@ module.exports = class extends Command {
 			const noBal = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Give**`,
-					`**◎ Error:** Uh oh! You currently have no money in your bank!`);
+				.addFields({ name: `**${this.client.user.username} - Give**`,
+					value: `**◎ Error:** Uh oh! You currently have no money in your bank!` });
 			message.channel.send({ embeds: [noBal] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -112,8 +112,8 @@ module.exports = class extends Command {
 			const depAll = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Give**`,
-					`**◎ Success:** You have paid ${user} the sum of: <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`.`);
+				.addFields({ name: `**${this.client.user.username} - Give**`,
+					value: `**◎ Success:** You have paid ${user} the sum of: <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`.` });
 			message.channel.send({ embeds: [depAll] });
 
 			balance.bank = 0;
@@ -128,8 +128,8 @@ module.exports = class extends Command {
 			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Give**`,
-					`**◎ Error:** An example of this command is: \`${prefix}give @user 100\`\nAlternatively, you can run \`${prefix}give @user all\``);
+				.addFields({ name: `**${this.client.user.username} - Give**`,
+					value: `**◎ Error:** An example of this command is: \`${prefix}give @user 100\`\nAlternatively, you can run \`${prefix}give @user all\`` });
 			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -140,8 +140,8 @@ module.exports = class extends Command {
 			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Give**`,
-					`**◎ Error:** Please enter a value of at least \`1\`. Please try again with a valid amount.`);
+				.addFields({ name: `**${this.client.user.username} - Give**`,
+					value: `**◎ Error:** Please enter a value of at least \`1\`. Please try again with a valid amount.` });
 			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -152,8 +152,8 @@ module.exports = class extends Command {
 			const wrongUsage = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Give**`,
-					`**◎ Error:** You only have <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`. Please try again with a valid amount.`);
+				.addFields({ name: `**${this.client.user.username} - Give**`,
+					value: `**◎ Error:** You only have <:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\`. Please try again with a valid amount.` });
 			message.channel.send({ embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -175,8 +175,8 @@ module.exports = class extends Command {
 		const depArg = new EmbedBuilder()
 			.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Give**`,
-				`**◎ Success:** You have paid ${user} the sum of: <:coin:706659001164628008> \`${numberCov.toLocaleString('en')}\`.`);
+			.addFields({ name: `**${this.client.user.username} - Give**`,
+				value: `**◎ Success:** You have paid ${user} the sum of: <:coin:706659001164628008> \`${numberCov.toLocaleString('en')}\`.` });
 		message.channel.send({ embeds: [depArg] });
 	}
 

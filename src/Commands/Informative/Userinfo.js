@@ -103,17 +103,20 @@ module.exports = class extends Command {
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 			.setAuthor({ name: `Viewing information for ${member.user.username}`, iconURL: member.user.displayAvatarURL({ dynamic: true }) })
-			.addField(`Member information`,
-				`**◎ 👑 User:** ${member.user}
+			.addFields({ name: `Member information`,
+				value: `**◎ 👑 User:** ${member.user}
 				**◎ 🆔 ID:** ${member.user.id}
 				**◎ 📆 Created At** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)
 				**◎ 📆 Joined At** <t:${Math.round(member.joinedTimestamp / 1000)}> - (<t:${Math.round(member.joinedTimestamp / 1000)}:R>)
 				**◎ 🗺️ Flags:** ${userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None'}
-				**◎ <a:Booster:855593231294267412> Server Booster:** ${member.premiumSinceTimestamp ? `<t:${Math.round(member.premiumSinceTimestamp / 1000)}> - (<t:${Math.round(member.premiumSinceTimestamp / 1000)}:R>)` : 'No'}`)
+				**◎ <a:Booster:855593231294267412> Server Booster:** ${member.premiumSinceTimestamp ? `<t:${Math.round(member.premiumSinceTimestamp / 1000)}> - (<t:${Math.round(member.premiumSinceTimestamp / 1000)}:R>)` : 'No'}` })
 
-			.addFields({ name: `**Roles: [${roles.length}]**`, value: `${roleMsg}`, inline: true },
-				{ name: `**Status:**`, value: `${statusMsg}`, inline: true },
-				{ name: `**Activity:**`, value: `${activityMsg}`, inline: true });
+			.addFields({ name: `**Roles: [${roles.length}]**`,
+				value: `${roleMsg}`, inline: true },
+			{ name: `**Status:**`,
+				value: `${statusMsg}`, inline: true },
+			{ name: `**Activity:**`,
+				value: `${activityMsg}`, inline: true });
 		message.channel.send({ embeds: [embed] });
 	}
 

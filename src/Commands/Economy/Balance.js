@@ -30,8 +30,8 @@ module.exports = class extends Command {
 			const limitE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Balance**`,
-					`**◎ Error:** I could not find the specified user!`);
+				.addFields({ name: `**${this.client.user.username} - Balance**`,
+					value: `**◎ Error:** I could not find the specified user!` });
 			message.channel.send({ embeds: [limitE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -46,8 +46,8 @@ module.exports = class extends Command {
 			const limitE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Balance**`,
-					`**◎ Error:** ${user} does not have any balance!`);
+				.addFields({ name: `**${this.client.user.username} - Balance**`,
+					value: `**◎ Error:** ${user} does not have any balance!` });
 			message.channel.send({ embeds: [limitE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -145,17 +145,28 @@ module.exports = class extends Command {
 				.setAuthor({ name: `${user.username}'s Balance`, iconURL: user.avatarURL() })
 				.setDescription(`Leaderboard Rank: \`${rankPos}\``)
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: 'Cash', value: `<:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\``, inline: true },
-					{ name: 'Bank', value: `<:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\``, inline: true },
-					{ name: 'Total', value: `<:coin:706659001164628008> \`${balance.total.toLocaleString('en')}\``, inline: true },
-					{ name: 'Steal Cooldown', value: `${Date.now() > balance.stealcool ? `\`Available!\`` : `\`${ms(balance.stealcool - date, { long: true })}\``}`, inline: true },
-					{ name: 'Fish Cooldown', value: `${!foundItemList.fishingRod ? `\`Rod Not Owned\`` : Date.now() > balance.fishcool ? `\`Available!\`` : `\`${ms(balance.fishcool - date, { long: true })}\``}`, inline: true },
-					{ name: 'Farm Cooldown', value: `${Date.now() > balance.farmcool ? `\`Available!\`` : `\`${ms(balance.farmcool - date, { long: true })}\``}`, inline: true },
-					{ name: 'Seed Bag', value: `${foundBoostList.seedBag ? `\`${Number(currentTotalSeeds).toLocaleString('en')}/${Number(foundBoostList.seedBag).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
-					{ name: 'Fish Bag', value: `${foundBoostList.fishBag ? `\`${Number(currentTotalFish).toLocaleString('en')}/${Number(foundBoostList.fishBag).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
-					{ name: 'Farm Bag', value: `${foundBoostList.farmBag ? `\`${Number(currentTotalFarm).toLocaleString('en')}/${Number(foundBoostList.farmBag).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
-					{ name: 'Farm Plot', value: `${foundBoostList.farmPlot ? `\`${foundPlotList.length.toLocaleString('en')}/${Number(foundBoostList.farmPlot).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
-					{ name: '**◎ Claim Cooldown**', value: `\n**Hourly:** ${balance.claimNewUser ? Date.now() > balance.claimNewUser ? `\`Available\`` : `<t:${claimUserTime}:R>` : Date.now() > balance.hourly ? `\`Available!\`` : `\`${ms(balance.hourly - date, { long: true })}\``}
+				.addFields({ name: 'Cash',
+					value: `<:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\``, inline: true },
+				{ name: 'Bank',
+					value: `<:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\``, inline: true },
+				{ name: 'Total',
+					value: `<:coin:706659001164628008> \`${balance.total.toLocaleString('en')}\``, inline: true },
+				{ name: 'Steal Cooldown',
+					value: `${Date.now() > balance.stealcool ? `\`Available!\`` : `\`${ms(balance.stealcool - date, { long: true })}\``}`, inline: true },
+				{ name: 'Fish Cooldown',
+					value: `${!foundItemList.fishingRod ? `\`Rod Not Owned\`` : Date.now() > balance.fishcool ? `\`Available!\`` : `\`${ms(balance.fishcool - date, { long: true })}\``}`, inline: true },
+				{ name: 'Farm Cooldown',
+					value: `${Date.now() > balance.farmcool ? `\`Available!\`` : `\`${ms(balance.farmcool - date, { long: true })}\``}`, inline: true },
+				{ name: 'Seed Bag',
+					value: `${foundBoostList.seedBag ? `\`${Number(currentTotalSeeds).toLocaleString('en')}/${Number(foundBoostList.seedBag).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
+				{ name: 'Fish Bag',
+					value: `${foundBoostList.fishBag ? `\`${Number(currentTotalFish).toLocaleString('en')}/${Number(foundBoostList.fishBag).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
+				{ name: 'Farm Bag',
+					value: `${foundBoostList.farmBag ? `\`${Number(currentTotalFarm).toLocaleString('en')}/${Number(foundBoostList.farmBag).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
+				{ name: 'Farm Plot',
+					value: `${foundBoostList.farmPlot ? `\`${foundPlotList.length.toLocaleString('en')}/${Number(foundBoostList.farmPlot).toLocaleString('en')}\`` : `\`Not Owned\``}`, inline: true },
+				{ name: '**◎ Claim Cooldown**',
+					value: `\n**Hourly:** ${balance.claimNewUser ? Date.now() > balance.claimNewUser ? `\`Available\`` : `<t:${claimUserTime}:R>` : Date.now() > balance.hourly ? `\`Available!\`` : `\`${ms(balance.hourly - date, { long: true })}\``}
 					\n**Daily:** ${balance.claimNewUser ? Date.now() > balance.claimNewUser ? `\`Available\`` : `<t:${claimUserTime}:R>` : Date.now() > balance.daily ? `\`Available!\`` : `\`${ms(balance.daily - date, { long: true })}\``}
 					\n**Weekly:** ${balance.claimNewUser ? Date.now() > balance.claimNewUser ? `\`Available\`` : `<t:${claimUserTime}:R>` : Date.now() > balance.weekly ? `\`Available!\`` : `\`${ms(balance.weekly - date, { long: true })}\``}
 					\n**Monthly:** ${balance.claimNewUser ? Date.now() > balance.claimNewUser ? `\`Available\`` : `<t:${claimUserTime}:R>` : Date.now() > balance.monthly ? `\`Available!\`` : `\`${ms(balance.monthly - date, { long: true })}\``}` });
@@ -166,9 +177,12 @@ module.exports = class extends Command {
 			.setAuthor({ name: `${user.username}'s Balance`, iconURL: user.avatarURL() })
 			.setDescription(`Leaderboard Rank: \`${rankPos}\``)
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addFields({ name: 'Cash', value: `<:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\``, inline: true },
-				{ name: 'Bank', value: `<:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\``, inline: true },
-				{ name: 'Total', value: `<:coin:706659001164628008> \`${balance.total.toLocaleString('en')}\``, inline: true })
+			.addFields({ name: 'Cash',
+				value: `<:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\``, inline: true },
+			{ name: 'Bank',
+				value: `<:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\``, inline: true },
+			{ name: 'Total',
+				value: `<:coin:706659001164628008> \`${balance.total.toLocaleString('en')}\``, inline: true })
 			.setTimestamp();
 		message.channel.send({ embeds: [embed1] });
 	}

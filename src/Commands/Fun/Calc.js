@@ -42,8 +42,8 @@ module.exports = class extends Command {
 
 			const incorrectFormat = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Calculation**`,
-					`**◎ Error:** Please input a calculation! Example: \`${prefix}calc 1+1\`\n\nAlternatively, you can run \`${prefix}calc easy\``);
+				.addFields({ name: `**${this.client.user.username} - Calculation**`,
+					value: `**◎ Error:** Please input a calculation! Example: \`${prefix}calc 1+1\`\n\nAlternatively, you can run \`${prefix}calc easy\`` });
 			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -56,17 +56,17 @@ module.exports = class extends Command {
 
 			const invalidInput = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Calculation**`,
-					`**◎ Error:** Please input a valid calculation!`);
+				.addFields({ name: `**${this.client.user.username} - Calculation**`,
+					value: `**◎ Error:** Please input a valid calculation!` });
 			message.channel.send({ embeds: [invalidInput] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
 
 		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Calculation**`,
-				`**◎ Input:** \`\`\`js\n${args.join('')}\`\`\`
-				**◎ Output:** \`\`\`js\n${resp}\`\`\``)
+			.addFields({ name: `**${this.client.user.username} - Calculation**`,
+				value: `**◎ Input:** \`\`\`js\n${args.join('')}\`\`\`
+				**◎ Output:** \`\`\`js\n${resp}\`\`\`` })
 			.setTimestamp();
 		message.channel.send({ embeds: [embed] });
 	}

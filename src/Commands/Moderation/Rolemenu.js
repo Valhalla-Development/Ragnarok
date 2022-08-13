@@ -21,8 +21,8 @@ module.exports = class extends Command {
 		if (!foundRoleMenu || !foundRoleMenu.roleList || JSON.parse(foundRoleMenu.roleList).length <= 0) {
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - RoleMenu**`,
-					`**◎ Error:** The roles for the menu have not been set yet. Please try again later.`);
+				.addFields({ name: `**${this.client.user.username} - RoleMenu**`,
+					value: `**◎ Error:** The roles for the menu have not been set yet. Please try again later.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			db.prepare(`DELETE FROM rolemenu WHERE guildid=${message.guild.id}`).run();
 		} else {
@@ -48,8 +48,8 @@ module.exports = class extends Command {
 			if (roleArrayCleaned.length <= 0) {
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - RoleMenu**`,
-						`**◎ Error:** The roles for the menu have been removed from the server. Please try again later.`);
+					.addFields({ name: `**${this.client.user.username} - RoleMenu**`,
+						value: `**◎ Error:** The roles for the menu have been removed from the server. Please try again later.` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				db.prepare(`DELETE FROM rolemenu WHERE guildid=${message.guild.id}`).run();
 				return;

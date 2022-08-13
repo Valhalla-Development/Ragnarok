@@ -39,8 +39,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Level**`,
-					`**◎ Error:** Level system is disabled for this guild!`);
+				.addFields({ name: `**${this.client.user.username} - Level**`,
+					value: `**◎ Error:** Level system is disabled for this guild!` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -54,8 +54,8 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Level**`,
-						`**◎ Error:** Incorrect usage! An example of this command would be: \`${prefix}level country UK\``);
+					.addFields({ name: `**${this.client.user.username} - Level**`,
+						value: `**◎ Error:** Incorrect usage! An example of this command would be: \`${prefix}level country UK\`` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -83,15 +83,15 @@ module.exports = class extends Command {
 				if (score && !score.country) {
 					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Level**`,
-							`**◎ Error:** You do not have a country set.`);
+						.addFields({ name: `**${this.client.user.username} - Level**`,
+							value: `**◎ Error:** You do not have a country set.` });
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				} else {
 					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Level**`,
-							`**◎ Success:** I have disabled your country flag!`);
+						.addFields({ name: `**${this.client.user.username} - Level**`,
+							value: `**◎ Success:** I have disabled your country flag!` });
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 
 					score.country = null;
@@ -110,8 +110,8 @@ module.exports = class extends Command {
 				this.client.utils.messageDelete(message, 10000);
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Level**`,
-						`**◎ Success:** You selected \`${fetchCountry.name}\``);
+					.addFields({ name: `**${this.client.user.username} - Level**`,
+						value: `**◎ Success:** You selected \`${fetchCountry.name}\`` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			} catch {
@@ -119,8 +119,8 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addField(`**${this.client.user.username} - Config**`,
-						`**◎ Error:** Did you input a valid country code? Your input was: \`${args[1].toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`);
+					.addFields({ name: `**${this.client.user.username} - Config**`,
+						value: `**◎ Error:** Did you input a valid country code? Your input was: \`${args[1].toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.` });
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -153,8 +153,8 @@ module.exports = class extends Command {
 
 						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-							.addField(`**${this.client.user.username} - Level**`,
-								`**◎ Error:** You have no custom image enabled!`);
+							.addFields({ name: `**${this.client.user.username} - Level**`,
+								value: `**◎ Error:** You have no custom image enabled!` });
 						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					} else {
@@ -168,8 +168,8 @@ module.exports = class extends Command {
 
 						const embed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-							.addField(`**${this.client.user.username} - Level**`,
-								`**◎ Success:** Custom image has been disabled!`);
+							.addFields({ name: `**${this.client.user.username} - Level**`,
+								value: `**◎ Success:** Custom image has been disabled!` });
 						message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 						return;
 					}
@@ -180,8 +180,8 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Level**`,
-							`**◎ Error:** Incorrect Usage! An example of this command would be: \`${prefix}level image <url-to-image>\` or to disable: \`${prefix}level image off\``);
+						.addFields({ name: `**${this.client.user.username} - Level**`,
+							value: `**◎ Error:** Incorrect Usage! An example of this command would be: \`${prefix}level image <url-to-image>\` or to disable: \`${prefix}level image off\`` });
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
@@ -194,8 +194,8 @@ module.exports = class extends Command {
 
 					const invalidExt = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Level**`,
-							`**◎ Error:** \`.${urlExtension}\` is not a valid image type!\n\n**Acceptable files:**\n\`${validExtensions.join(', ')}\``);
+						.addFields({ name: `**${this.client.user.username} - Level**`,
+							value: `**◎ Error:** \`.${urlExtension}\` is not a valid image type!\n\n**Acceptable files:**\n\`${validExtensions.join(', ')}\`` });
 					message.channel.send({ embeds: [invalidExt] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
@@ -207,8 +207,8 @@ module.exports = class extends Command {
 
 					const embed = new EmbedBuilder()
 						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-						.addField(`**${this.client.user.username} - Level**`,
-							`**◎ Error:** Please enter a valid URL, the URL must be absolute! An example of an absolute URL would be: https://www.google.com`);
+						.addFields({ name: `**${this.client.user.username} - Level**`,
+							value: `**◎ Error:** Please enter a valid URL, the URL must be absolute! An example of an absolute URL would be: https://www.google.com` });
 					message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 					return;
 				}
@@ -223,8 +223,8 @@ module.exports = class extends Command {
 
 								const invalidExt = new EmbedBuilder()
 									.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-									.addField(`**${this.client.user.username} - Level**`,
-										`**◎ Error:** I was unable to process \`${args[1]}\`\nIs it a valid image?`);
+									.addFields({ name: `**${this.client.user.username} - Level**`,
+										value: `**◎ Error:** I was unable to process \`${args[1]}\`\nIs it a valid image?` });
 								message.channel.send({ embeds: [invalidExt] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 								return;
 							}
@@ -239,8 +239,8 @@ module.exports = class extends Command {
 							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 								.setImage(args[1])
-								.addField(`**${this.client.user.username} - Level**`,
-									`**◎ Success:** Image has been updated to the following.`);
+								.addFields({ name: `**${this.client.user.username} - Level**`,
+									value: `**◎ Success:** Image has been updated to the following.` });
 							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 							return;
 						} else {
@@ -248,8 +248,8 @@ module.exports = class extends Command {
 
 							const embed = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-								.addField(`**${this.client.user.username} - Level**`,
-									`**◎ Error:** Please enter a valid image URL! The end of the URL must end with one of the supported extensions. (\`.jpg, .jpeg, .png\`)`);
+								.addFields({ name: `**${this.client.user.username} - Level**`,
+									value: `**◎ Error:** Please enter a valid image URL! The end of the URL must end with one of the supported extensions. (\`.jpg, .jpeg, .png\`)` });
 							message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 							return;
 						}
@@ -272,8 +272,8 @@ module.exports = class extends Command {
 			const limitE = new EmbedBuilder()
 				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Balance**`,
-					`**◎ Error:** I could not find the specified user!`);
+				.addFields({ name: `**${this.client.user.username} - Balance**`,
+					value: `**◎ Error:** I could not find the specified user!` });
 			message.channel.send({ embeds: [limitE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}

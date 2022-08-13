@@ -15,8 +15,8 @@ module.exports = class extends Command {
 	async run(message) {
 		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField(`**${this.client.user.username} - Ping**`,
-				`Want to invite ${this.client.user}?`);
+			.addFields({ name: `**${this.client.user.username} - Ping**`,
+				value: `Want to invite ${this.client.user}?` });
 
 		const buttonA = new MessageButton()
 			.setStyle('LINK')

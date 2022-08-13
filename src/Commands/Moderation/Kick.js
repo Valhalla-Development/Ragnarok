@@ -29,8 +29,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Kick**`,
-					`**◎ Error:** Run \`${prefix}help kick\` If you are unsure.`);
+				.addFields({ name: `**${this.client.user.username} - Kick**`,
+					value: `**◎ Error:** Run \`${prefix}help kick\` If you are unsure.` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -41,8 +41,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Kick**`,
-					`**◎ Error:** You can't kick yourself <:wut:745408596233289839>`);
+				.addFields({ name: `**${this.client.user.username} - Kick**`,
+					value: `**◎ Error:** You can't kick yourself <:wut:745408596233289839>` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -53,8 +53,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Kick**`,
-					`**◎ Error:** You cannot kick someone with a higher role than yourself!`);
+				.addFields({ name: `**${this.client.user.username} - Kick**`,
+					value: `**◎ Error:** You cannot kick someone with a higher role than yourself!` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -65,8 +65,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Kick**`,
-					`**◎ Error:** You cannot kick <@${user.id}>`);
+				.addFields({ name: `**${this.client.user.username} - Kick**`,
+					value: `**◎ Error:** You cannot kick <@${user.id}>` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -77,8 +77,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Kick**`,
-					`**◎ Error:** You cannot kick me. :slight_frown:`);
+				.addFields({ name: `**${this.client.user.username} - Kick**`,
+					value: `**◎ Error:** You cannot kick me. :slight_frown:` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		}
@@ -92,8 +92,8 @@ module.exports = class extends Command {
 
 			const embed = new EmbedBuilder()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addField(`**${this.client.user.username} - Kick**`,
-					`**◎ Error:** An error occured!`);
+				.addFields({ name: `**${this.client.user.username} - Kick**`,
+					value: `**◎ Error:** An error occured!` });
 			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 			return;
 		});
@@ -101,10 +101,10 @@ module.exports = class extends Command {
 		const embed = new EmbedBuilder()
 			.setThumbnail(this.client.user.displayAvatarURL())
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addField('User Kicked',
-				`**◎ User:** ${user.user.tag}
+			.addFields({ name: 'User Kicked',
+				value: `**◎ User:** ${user.user.tag}
 				**◎ Reason:** ${reason}
-				**◎ Moderator:** ${message.author.tag}`)
+				**◎ Moderator:** ${message.author.tag}` })
 			.setFooter({ text: 'User Kick Logs' })
 			.setTimestamp();
 		message.channel.send({ embeds: [embed] });
