@@ -102,7 +102,7 @@ module.exports = class extends Command {
 		}
 
 		// Kick the user and send the embed
-		message.guild.members.ban(user, { days: 1, reason: `${reasonArgs}` }).catch(() => {
+		message.guild.members.ban(user, { deleteMessageDays: 1, reason: `${reasonArgs}` }).catch(() => {
 			this.client.utils.messageDelete(message, 10000);
 
 			const embed = new EmbedBuilder()
