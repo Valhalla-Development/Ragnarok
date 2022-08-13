@@ -2,21 +2,21 @@ const Command = require('../../Structures/Command');
 const { EmbedBuilder } = require('discord.js');
 
 const flags = {
-	DISCORD_EMPLOYEE: '<:DiscordStaff:748651259849998377>',
-	DISCORD_CERTIFIED_MODERATOR: '<:CertifiedModerator:854722328382406676>',
-	PARTNERED_SERVER_OWNER: '<:DiscordPartner:748985364022165694>',
-	BUGHUNTER_LEVEL_1: '<:DiscordBugHunter1:748651259724300364>',
-	BUGHUNTER_LEVEL_2: '<:DiscordBugHunter2:748651259741077574>',
-	HYPESQUAD_EVENTS: '<:HypeSquadEvents:748651259761786981>',
-	HOUSE_BRAVERY: '<:HypeSquadBravery:748651259845673020>',
-	HOUSE_BRILLIANCE: '<:HypeSquadBrilliance:748651259933753464>',
-	HOUSE_BALANCE: '<:HypeSquadBalance:748651259631894579>',
-	EARLY_SUPPORTER: '<:DiscordNitroEarlySupporter:748651259816312992>',
-	TEAM_USER: 'Team User',
-	SYSTEM: 'System',
-	VERIFIED_BOT: '<:VerifiedBot:854725852101476382>',
-	EARLY_VERIFIED_BOT_DEVELOPER: '<:VerifiedBotDeveloper:748651259858255973>',
-	BOT_ACCOUNT: '<:Bot:854724408458870814>'
+	BotHTTPInteractions: '<:Bot:854724408458870814>',
+	CertifiedModerator: '<:CertifiedModerator:854722328382406676>',
+	HypeSquadOnlineHouse3: '<:HypeSquadBalance:748651259631894579>',
+	PremiumEarlySupporter: '<:DiscordNitroEarlySupporter:748651259816312992>',
+	Staff: '<:DiscordStaff:748651259849998377>',
+	VerifiedDeveloper: '<:VerifiedBotDeveloper:748651259858255973>',
+	BugHunterLevel1: '<:DiscordBugHunter1:748651259724300364>',
+	HypeSquadOnlineHouse1: '<:HypeSquadBravery:748651259845673020>',
+	Hypesquad: '<:HypeSquadEvents:748651259761786981>',
+	TeamPseudoUser: 'Team User',
+	BugHunterLevel2: '<:DiscordBugHunter2:748651259741077574>',
+	HypeSquadOnlineHouse2: '<:HypeSquadBrilliance:748651259933753464>',
+	Partner: '<:DiscordPartner:748985364022165694>',
+	VerifiedBot: '<:VerifiedBot:854725852101476382>',
+	Bot: '<:Bot:854724408458870814>'
 };
 
 const status = {
@@ -27,12 +27,12 @@ const status = {
 };
 
 const types = {
-	PLAYING: 'Playing',
-	STREAMING: 'Streaming',
-	LISTENING: 'Listening',
-	WATCHING: 'Watching',
-	CUSTOM: 'Custom',
-	COMPETING: 'Competing'
+	5: 'Competing',
+	4: 'Custom',
+	2: 'Listening',
+	0: 'Playing',
+	1: 'Streaming',
+	3: 'Watching'
 };
 
 module.exports = class extends Command {
@@ -53,12 +53,14 @@ module.exports = class extends Command {
 			.map(role => role.toString())
 			.slice(0, -1);
 		const userFlags = member.user.flags.toArray();
-		if (member.user.bot && !userFlags.includes('VERIFIED_BOT')) userFlags.push('BOT_ACCOUNT');// TEST THESE
+
+		if (member.user.bot && !userFlags.includes('VerifiedBot')) userFlags.push('Bot');
 
 		const presence = [];
 		let time;
 
 		if (member.presence) {
+			console.log(member.presence.status);
 			if (member.presence.activities[0]) {
 				if (member.presence.activities[0].timestamps && member.presence.activities[0].timestamps.start) {
 					time = member.presence.activities[0].timestamps.start;
@@ -71,9 +73,6 @@ module.exports = class extends Command {
 				}
 				if (member.presence.activities[0].state) {
 					presence.push(`**State:** ${member.presence.activities[0].state}`);
-				}
-				if (member.presence.activities[0].platform) {
-					presence.push(`**Platform:** ${member.presence.activities[0].platform.toUpperCase()}`);
 				}
 			}
 		}
