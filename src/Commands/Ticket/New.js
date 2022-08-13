@@ -99,7 +99,7 @@ module.exports = class extends Command {
 				return;
 			}
 			const role2 = message.channel.guild.roles.everyone;
-			message.guild.channels.create(`ticket-${nickName}-${randomString}`, {
+			message.guild.channels.create({ name: `ticket-${nickName}-${randomString}` }, {
 				permissionOverwrites: [
 					{
 						id: role.id,
@@ -132,11 +132,26 @@ module.exports = class extends Command {
 					.addFields({ name: `**${this.client.user.username} - New**`,
 						value: `**◎ Success:** Your ticket has been created, <#${c.id}>.` });
 				message.channel.send({ embeds: [newTicketE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+
+				const buttonClose = new ButtonBuilder()
+					.setStyle(ButtonStyle.Danger)
+					.setLabel('🔒 Close')
+					.setCustomId('closeTicket');
+
+				const buttonCloseReason = new ButtonBuilder()
+					.setStyle(ButtonStyle.Danger)
+					.setLabel('🔒 Close With Reason')
+					.setCustomId('closeTicketReason');
+
+				const row = new ActionRowBuilder()
+					.addComponents(buttonClose, buttonCloseReason);
+
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.setTitle(`New Ticket`)
+					.setTitle('New Ticket')
 					.setDescription(`Welcome to our support system ${message.author}.\nPlease hold tight and a support member will be with you shortly.${reason ? `\n\n\nYou opened this ticket for the following reason:\n\`\`\`${reason}\`\`\`` : '\n\n\n**Please specify a reason for opening this ticket.**'}`);
-				c.send({ embeds: [embed] });
+				c.send({ components: [row], embeds: [embed] });
+
 				// And display any errors in the console.
 				const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${message.guild.id};`).get();
 				if (!logget) {
@@ -164,7 +179,7 @@ module.exports = class extends Command {
 			// Check how many channels are in the category
 			const category = message.guild.channels.cache.find((chan) => chan.id === id.category);
 			const categoryLength = category && category.children ? category.children.size : 0;
-
+			console.log(category.children.size);
 			let newId;
 			// Check if the category has the max amount of channels
 			if (categoryLength >= 50) {
@@ -207,7 +222,7 @@ module.exports = class extends Command {
 			}
 			const role2 = message.channel.guild.roles.everyone;
 			// Create the channel with the name "ticket-" then the user's ID.
-			message.guild.channels.create(`ticket-${nickName}-${randomString}`, {
+			message.guild.channels.create({ name: `ticket-${nickName}-${randomString}` }, {
 				parent: ticategory,
 				permissionOverwrites: [
 					{

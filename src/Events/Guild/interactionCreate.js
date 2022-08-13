@@ -495,7 +495,7 @@ module.exports = class extends Event {
 				});
 			}
 
-			interaction.guild.channels.create(`ticket-${nickName}-${randomString}`, {
+			interaction.guild.channels.create({ name: `ticket-${nickName}-${randomString}` }, {
 				parent: newId || (ticategory || null),
 				permissionOverwrites: [
 					{

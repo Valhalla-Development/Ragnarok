@@ -249,7 +249,7 @@ module.exports = class extends Event {
 							// Create the channel with the name "ticket-" then the user's ID.
 							const role = fetchGuild.roles.cache.find((x) => x.name === 'Support Team') || fetchGuild.roles.cache.find((r) => r.id === suppRole.role);
 							const role2 = fetchGuild.roles.everyone;
-							fetchGuild.channels.create(`ticket-${nickName}-${randomString}`, {
+							fetchGuild.channels.create({ name: `ticket-${nickName}-${randomString}` }, {
 								permissionOverwrites: [
 									{
 										id: role.id,
@@ -345,7 +345,7 @@ module.exports = class extends Event {
 							const role = fetchGuild.roles.cache.find((x) => x.name === 'Support Team') || fetchGuild.roles.cache.find((r) => r.id === suppRole.role);
 							const role2 = fetchGuild.roles.everyone;
 							// Create the channel with the name "ticket-" then the user's ID.
-							fetchGuild.channels.create(`ticket-${nickName}-${randomString}`, {
+							fetchGuild.channels.create({ name: `ticket-${nickName}-${randomString}` }, {
 								parent: ticategory,
 								permissionOverwrites: [
 									{
