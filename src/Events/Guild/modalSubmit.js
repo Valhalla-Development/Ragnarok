@@ -102,7 +102,7 @@ module.exports = class extends Event {
 			if (user) {
 				const logEmbed = new EmbedBuilder()
 					.setColor(this.client.utils.color(modal.guild.members.me.displayHexColor))
-					.setAuthor({ name: 'Ticket Closed', iconURL: modal.guild.iconURL({ dynamic: true }) })
+					.setAuthor({ name: 'Ticket Closed', iconURL: modal.guild.iconURL({ extension: 'png' }) })
 					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
 						value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
 					{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
@@ -137,7 +137,7 @@ module.exports = class extends Event {
 
 			const logEmbed = new EmbedBuilder()
 				.setColor(this.client.utils.color(modal.guild.members.me.displayHexColor))
-				.setAuthor({ name: 'Ticket Closed', iconURL: modal.guild.iconURL({ dynamic: true }) })
+				.setAuthor({ name: 'Ticket Closed', iconURL: modal.guild.iconURL({ extension: 'png' }) })
 				.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
 					value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
 				{ name: `<:ticketOpen:998229978267258881> **Opened By**`,

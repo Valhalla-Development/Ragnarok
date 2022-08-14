@@ -47,9 +47,9 @@ module.exports = class extends Command {
 				Command Parameters: \`<>\` is strict & \`[]\` is optional
 				
 				You can run \`${prefix}help all\` to see all commands.`)
-			.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
+			.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ extension: 'png' }) })
 			.setThumbnail(this.client.user.displayAvatarURL())
-			.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
+			.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ extension: 'png' }) });
 
 		if (command === 'all') {
 			embed.setDescription(
@@ -234,9 +234,9 @@ module.exports = class extends Command {
 							You can run \`${prefix}help all\` to see all commands.`)
 						.addFields({ name: `**Help - Economy**`,
 							value: `\`${categories.join(`\`, \``)}\`` })
-						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
+						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ extension: 'png' }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
-						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
+						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ extension: 'png' }) });
 
 					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
@@ -265,9 +265,9 @@ module.exports = class extends Command {
 							You can run \`${prefix}help all\` to see all commands.`)
 						.addFields({ name: `**Help - Fun**`,
 							value: `\`${categories.join(`\`, \``)}\`` })
-						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
+						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ extension: 'png' }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
-						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
+						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ extension: 'png' }) });
 
 					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
@@ -296,9 +296,9 @@ module.exports = class extends Command {
 							You can run \`${prefix}help all\` to see all commands.`)
 						.addFields({ name: `**Help - Generators**`,
 							value: `\`${categories.join(`\`, \``)}\`` })
-						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
+						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ extension: 'png' }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
-						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
+						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ extension: 'png' }) });
 
 					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
@@ -327,9 +327,9 @@ module.exports = class extends Command {
 							You can run \`${prefix}help all\` to see all commands.`)
 						.addFields({ name: `**Help - Informative**`,
 							value: `\`${categories.join(`\`, \``)}\`` })
-						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
+						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ extension: 'png' }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
-						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
+						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ extension: 'png' }) });
 
 					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
@@ -358,9 +358,9 @@ module.exports = class extends Command {
 							You can run \`${prefix}help all\` to see all commands.`)
 						.addFields({ name: `**Help - Moderation**`,
 							value: `\`${categories.join(`\`, \``)}\`` })
-						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
+						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ extension: 'png' }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
-						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
+						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ extension: 'png' }) });
 
 					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);
@@ -389,9 +389,9 @@ module.exports = class extends Command {
 							You can run \`${prefix}help all\` to see all commands.`)
 						.addFields({ name: `**Help - Ticket**`,
 							value: `\`${categories.join(`\`, \``)}\`` })
-						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ dynamic: true }) })
+						.setAuthor({ name: `${message.guild.name} Help`, iconURL: message.guild.iconURL({ extension: 'png' }) })
 						.setThumbnail(this.client.user.displayAvatarURL())
-						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ dynamic: true }) });
+						.setFooter({ text: `This guild's prefix is ${prefix} - Bot Version ${version}`, iconURL: this.client.user.avatarURL({ extension: 'png' }) });
 
 					const rowNew = new ActionRowBuilder()
 						.addComponents(home, buttonA, buttonB, buttonC, buttonD);

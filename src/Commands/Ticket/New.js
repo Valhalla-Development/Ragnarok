@@ -208,7 +208,7 @@ module.exports = class extends Command {
 
 				const logEmbed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.setAuthor({ name: 'Ticket Opened', iconURL: message.guild.iconURL({ dynamic: true }) })
+					.setAuthor({ name: 'Ticket Opened', iconURL: message.guild.iconURL({ extension: 'png' }) })
 					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
 						value: `[${randomString}](${c.url})`, inline: true },
 					{ name: `<:ticketOpen:998229978267258881> **Opened By**`,

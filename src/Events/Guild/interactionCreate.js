@@ -106,7 +106,7 @@ module.exports = class extends Event {
 				if (user) {
 					const logEmbed = new EmbedBuilder()
 						.setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-						.setAuthor({ name: 'Ticket Closed', iconURL: interaction.guild.iconURL({ dynamic: true }) })
+						.setAuthor({ name: 'Ticket Closed', iconURL: interaction.guild.iconURL({ extension: 'png' }) })
 						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
 							value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
 						{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
@@ -141,7 +141,7 @@ module.exports = class extends Event {
 
 				const logEmbed = new EmbedBuilder()
 					.setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-					.setAuthor({ name: 'Ticket Closed', iconURL: interaction.guild.iconURL({ dynamic: true }) })
+					.setAuthor({ name: 'Ticket Closed', iconURL: interaction.guild.iconURL({ extension: 'png' }) })
 					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
 						value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
 					{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
@@ -296,7 +296,7 @@ module.exports = class extends Event {
 				if (user) {
 					const logEmbed = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-						.setAuthor({ name: 'Ticket Closed', iconURL: guild.iconURL({ dynamic: true }) })
+						.setAuthor({ name: 'Ticket Closed', iconURL: guild.iconURL({ extension: 'png' }) })
 						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
 							value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
 						{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
@@ -329,7 +329,7 @@ module.exports = class extends Event {
 
 				const logEmbed = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-					.setAuthor({ name: 'Ticket Closed', iconURL: guild.iconURL({ dynamic: true }) })
+					.setAuthor({ name: 'Ticket Closed', iconURL: guild.iconURL({ extension: 'png' }) })
 					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
 						value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
 					{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
@@ -574,7 +574,7 @@ module.exports = class extends Event {
 
 					const logEmbed = new EmbedBuilder()
 						.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-						.setAuthor({ name: 'Ticket Opened', iconURL: guild.iconURL({ dynamic: true }) })
+						.setAuthor({ name: 'Ticket Opened', iconURL: guild.iconURL({ extension: 'png' }) })
 						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
 							value: `[${randomString}](https://discord.com/channels/${c.url})`, inline: true },
 						{ name: `<:ticketOpen:998229978267258881> **Opened By**`,

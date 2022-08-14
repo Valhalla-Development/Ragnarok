@@ -500,7 +500,7 @@ module.exports = class extends Event {
 
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(guild.members.me.displayHexColor))
-					.setAuthor({ name: `Word of the Day`, url: 'https://www.dictionary.com/e/word-of-the-day/', iconURL: guild.iconURL({ dynamic: true }) })
+					.setAuthor({ name: `Word of the Day`, url: 'https://www.dictionary.com/e/word-of-the-day/', iconURL: guild.iconURL({ extension: 'png' }) })
 					.setDescription(`>>> **${this.client.utils.capitalise(word.word)}**\n*${res} ]*\n*${word.pos}*`)
 					.addFields({ name: '**Definition:**',
 						value: `>>> *${word.meaning}*` },

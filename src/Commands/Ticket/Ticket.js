@@ -19,8 +19,8 @@ module.exports = class extends Command {
 
 		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
-			.setAuthor({ name: `Tickets`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) })
+			.setThumbnail(this.client.user.displayAvatarURL({ extension: 'png' }))
+			.setAuthor({ name: `Tickets`, iconURL: this.client.user.displayAvatarURL({ extension: 'png' }) })
 			.addFields({ name: `Available Commands`,
 				value: `**◎ 📩 Open ticket:** \`${prefix}new\`
 				**◎ 📩 Close Ticket (Admin):** \`${prefix}close\`

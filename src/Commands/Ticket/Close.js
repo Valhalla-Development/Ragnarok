@@ -199,7 +199,7 @@ module.exports = class extends Command {
 						if (!closeReason) {
 							const dmE = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-								.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
+								.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ extension: 'png' }) })
 								.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
 									value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
 								{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
@@ -224,7 +224,7 @@ module.exports = class extends Command {
 						} else {
 							const dmE = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-								.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
+								.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ extension: 'png' }) })
 								.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
 									value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
 								{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
@@ -270,7 +270,7 @@ module.exports = class extends Command {
 					if (!closeReason) {
 						const logEmbed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-							.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
+							.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ extension: 'png' }) })
 							.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
 								value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
 							{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
@@ -291,7 +291,7 @@ module.exports = class extends Command {
 					} else {
 						const logEmbed = new EmbedBuilder()
 							.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-							.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ dynamic: true }) })
+							.setAuthor({ name: 'Ticket Closed', iconURL: message.guild.iconURL({ extension: 'png' }) })
 							.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
 								value: `\`${channelArgs[channelArgs.length - 1]}\``, inline: true },
 							{ name: `<:ticketOpen:998229978267258881> **Opened By**`,

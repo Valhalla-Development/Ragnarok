@@ -56,7 +56,7 @@ module.exports = class extends Event {
 
 		const embed = new RagnarokEmbed()
 			.setColor(this.client.utils.color(newMessage.guild.members.me.displayHexColor))
-			.setAuthor({ name: `${oldMessage.author.tag}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) })
+			.setAuthor({ name: `${oldMessage.author.tag}`, iconURL: this.client.user.displayAvatarURL({ extension: 'png' }) })
 			.setTitle('Message Updated')
 			.splitFields([
 				`**◎ Before:**\n${oldMessage.content}`,

@@ -47,8 +47,8 @@ module.exports = class extends Command {
 
 		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.setThumbnail(this.client.user.displayAvatarURL({ dynamic: true }))
-			.setAuthor({ name: `Viewing statistics for ${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) })
+			.setThumbnail(this.client.user.displayAvatarURL({ extension: 'png' }))
+			.setAuthor({ name: `Viewing statistics for ${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ extension: 'png' }) })
 			.addFields({ name: 'General Information',
 				value: `**◎ 🤖 Name:** \`${this.client.user.tag}\`
 				**◎ 📈 Uptime:** <t:${nowInSecond}:R>

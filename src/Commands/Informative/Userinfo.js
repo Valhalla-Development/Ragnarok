@@ -100,8 +100,8 @@ module.exports = class extends Command {
 
 		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-			.setAuthor({ name: `Viewing information for ${member.user.username}`, iconURL: member.user.displayAvatarURL({ dynamic: true }) })
+			.setThumbnail(member.user.displayAvatarURL({ extension: 'png' }))
+			.setAuthor({ name: `Viewing information for ${member.user.username}`, iconURL: member.user.displayAvatarURL({ extension: 'png' }) })
 			.addFields({ name: `Member information`,
 				value: `**◎ 👑 User:** ${member.user}
 				**◎ 🆔 ID:** ${member.user.id}

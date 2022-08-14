@@ -31,7 +31,7 @@ module.exports = class extends Event {
 			if (!deletionLog) {
 				const noLogE = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.setAuthor({ name: `${message.author.tag}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) })
+					.setAuthor({ name: `${message.author.tag}`, iconURL: this.client.user.displayAvatarURL({ extension: 'png' }) })
 					.setTitle('Message Deleted')
 					.setDescription([
 						`**◎ No Data:** A message sent by <@${message.author.id}> was deleted but no content was found.**`
@@ -44,7 +44,7 @@ module.exports = class extends Event {
 			const attachments = message.attachments.size ? message.attachments.map(attachment => attachment.proxyURL) : null;
 			const embed = new RagnarokEmbed()
 				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.setAuthor({ name: `${message.author.tag}`, iconURL: this.client.user.displayAvatarURL({ dynamic: true }) })
+				.setAuthor({ name: `${message.author.tag}`, iconURL: this.client.user.displayAvatarURL({ extension: 'png' }) })
 				.setTitle('Message Deleted')
 				.setDescription(
 					`**◎ Message ID:** ${message.id}

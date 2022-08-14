@@ -148,7 +148,7 @@ module.exports = class extends Event {
 			// We set the color to a nice yellow here.
 			const embed = new EmbedBuilder()
 				.setColor(15844367)
-				.setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
+				.setThumbnail(message.author.displayAvatarURL({ extension: 'png' }))
 				.addFields({ name: `**Author**`,
 					value: `${message.author}`, inline: true },
 				{ name: `**Channel**`,

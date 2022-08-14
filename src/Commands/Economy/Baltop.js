@@ -40,7 +40,7 @@ module.exports = class extends Command {
 		}
 
 		const embed = new EmbedBuilder()
-			.setAuthor({ name: `Leaderboard for ${message.guild.name}`, iconURL: message.guild.iconURL({ dynamic: true }) })
+			.setAuthor({ name: `Leaderboard for ${message.guild.name}`, iconURL: message.guild.iconURL({ extension: 'png' }) })
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 			.addFields({ name: 'Top 10',
 				value: userNames, inline: true },

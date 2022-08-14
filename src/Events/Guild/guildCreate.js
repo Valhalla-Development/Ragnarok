@@ -47,7 +47,7 @@ module.exports = class extends Event {
 		}
 
 		const embed = new EmbedBuilder()
-			.setAuthor({ name: `${guild.name}`, iconURL: guild.iconURL({ dynamic: true }) })
+			.setAuthor({ name: `${guild.name}`, iconURL: guild.iconURL({ extension: 'png' }) })
 			.setColor(this.client.utils.color(guild.members.me.displayHexColor))
 			.setTitle('Hello, I\'m **Ragnarok**! Thanks for inviting me!')
 			.setDescription(`The prefix for all my commands is \`${this.client.prefix}\`, e.g: \`${this.client.prefix}help\`.\nIf you find any bugs, report them with \`${this.client.prefix}bugreport <bug>\`\nCheck \`${this.client.prefix}stats\` to see the latest announcements!`);

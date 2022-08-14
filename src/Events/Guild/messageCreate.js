@@ -303,7 +303,7 @@ module.exports = class extends Event {
 
 								const logEmbed = new EmbedBuilder()
 									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
-									.setAuthor({ name: 'Ticket Opened', iconURL: fetchGuild.iconURL({ dynamic: true }) })
+									.setAuthor({ name: 'Ticket Opened', iconURL: fetchGuild.iconURL({ extension: 'png' }) })
 									.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
 										value: `[${randomString}](https://discord.com/channels/${c.url})`, inline: true },
 									{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
@@ -430,7 +430,7 @@ module.exports = class extends Event {
 
 								const logEmbed = new EmbedBuilder()
 									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
-									.setAuthor({ name: 'Ticket Opened', iconURL: fetchGuild.iconURL({ dynamic: true }) })
+									.setAuthor({ name: 'Ticket Opened', iconURL: fetchGuild.iconURL({ extension: 'png' }) })
 									.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
 										value: `[${randomString}](https://discord.com/channels/${c.url})`, inline: true },
 									{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
@@ -813,7 +813,7 @@ module.exports = class extends Event {
 					}
 
 					const embed = new EmbedBuilder()
-						.setAuthor({ name: `${message.author.username}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+						.setAuthor({ name: `${message.author.username}`, iconURL: message.author.displayAvatarURL({ extension: 'png' }) })
 						.setColor(grabClient.utils.color(message.guild.members.me.displayHexColor))
 						.setFooter({ text: `Requested by ${message.author.username}` })
 						.setTimestamp();
@@ -827,7 +827,7 @@ module.exports = class extends Event {
 								// Fetch the message author
 								const user = grabClient.users.cache.find((a) => a.id === res.author.id);
 
-								embed.setAuthor({ name: `${user && user.username ? user.username : message.author.username}`, iconURL: user && user.displayAvatarURL ? user.displayAvatarURL({ dynamic: true }) : message.author.displayAvatarURL({ dynamic: true }) });
+								embed.setAuthor({ name: `${user && user.username ? user.username : message.author.username}`, iconURL: user && user.displayAvatarURL ? user.displayAvatarURL({ extension: 'png' }) : message.author.displayAvatarURL({ extension: 'png' }) });
 
 								if (res.embeds[0]) { // fail bruh
 									if (res.embeds[0].url) {

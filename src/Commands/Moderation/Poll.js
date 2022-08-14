@@ -33,7 +33,7 @@ module.exports = class extends Command {
 		// Create Embed
 		const embed = new EmbedBuilder()
 			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.setAuthor({ name: 'Poll Created', iconURL: message.guild.iconURL({ dynamic: true }) })
+			.setAuthor({ name: 'Poll Created', iconURL: message.guild.iconURL({ extension: 'png' }) })
 			.addFields({ name: `**React to Vote**`,
 				value: `${codeBlock('text', `${args.join(' ')}`)}` });
 
