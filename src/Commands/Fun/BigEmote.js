@@ -1,5 +1,5 @@
 const Command = require('../../Structures/Command');
-const { EmbedBuilder, Util } = require('discord.js');
+const { EmbedBuilder, parseEmoji } = require('discord.js');
 const { parse } = require('twemoji-parser');
 
 module.exports = class extends Command {
@@ -28,7 +28,7 @@ module.exports = class extends Command {
 
 		this.client.utils.messageDelete(message, 0);
 
-		const custom = Util.parseEmoji(emoji);
+		const custom = parseEmoji(emoji);
 
 		if (custom.id) {
 			const embed = new EmbedBuilder()
