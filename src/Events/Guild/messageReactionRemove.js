@@ -17,7 +17,7 @@ module.exports = class extends Event {
 		if (!fetchChn) return;
 
 		// Fetch the message
-		const message = await fetchChn.messages.fetch(msgId);
+		const message = await fetchChn.messages.fetch({ message: msgId });
 		if (!message) return;
 
 		// Starboard check
@@ -52,7 +52,7 @@ module.exports = class extends Event {
 				if (message && message.embeds[0]) {
 					if (message.embeds[0].footer.text.startsWith('⭐')) {
 						// We fetch the ID of the message already on the starboard.
-						const starMsg = await starChannel.messages.fetch(message.id);
+						const starMsg = await starChannel.messages.fetch({ message: message.id });
 						if (!starMsg) return;
 
 						const foundStar = message.embeds[0];
@@ -94,7 +94,7 @@ module.exports = class extends Event {
 		const stars = filtered.find(m => m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(message.id));
 		if (stars) {
 			// We fetch the ID of the message already on the starboard.
-			const starMsg = await starChannel.messages.fetch(stars.id);
+			const starMsg = await starChannel.messages.fetch({ message: stars.id });
 			if (!starMsg) return;
 
 			const star = /^\⭐\s([0-9]{1,3})\s\|\s([0-9]{17,20})/.exec(stars.embeds[0].footer.text);

@@ -31,7 +31,7 @@ module.exports = class extends Event {
 						const ch = role.guild.channels.cache.get(activeMenu.channel);
 
 						try {
-							ch.messages.fetch(activeMenu.message).then(ms => {
+							ch.messages.fetch({ message: activeMenu.message }).then(ms => {
 								const row = new ActionRowBuilder();
 
 								for (const buttonObject of roleArray) {

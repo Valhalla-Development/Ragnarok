@@ -125,7 +125,7 @@ module.exports = class extends Command {
 			} else {
 				try {
 					const embedChannel = message.guild.channels.cache.find((channel) => channel.id === foundtEmbed.ticketembedchan);
-					await embedChannel.messages.fetch(foundtEmbed.ticketembed).then((res) => {
+					await embedChannel.messages.fetch({ message: foundtEmbed.ticketembed }).then((res) => {
 						if (res) {
 							const alreadytick = new EmbedBuilder()
 								.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))

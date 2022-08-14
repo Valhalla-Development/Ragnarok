@@ -822,7 +822,7 @@ module.exports = class extends Event {
 						const findChannel = findGuild.channels.cache.get(channelID);
 						const validExtensions = ['gif', 'png', 'jpeg', 'jpg'];
 
-						await findChannel.messages.fetch(messageID).then((res) => {
+						await findChannel.messages.fetch({ message: messageID }).then((res) => {
 							if (res) {
 								// Fetch the message author
 								const user = grabClient.users.cache.find((a) => a.id === res.author.id);

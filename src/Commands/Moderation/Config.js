@@ -784,7 +784,7 @@ module.exports = class extends Command {
 								const ch = message.guild.channels.cache.get(activeMenu.channel);
 
 								try {
-									ch.messages.fetch(activeMenu.message).then(ms => {
+									ch.messages.fetch({ message: activeMenu.message }).then(ms => {
 										const roleArray = JSON.parse(foundRoleMenu.roleList);
 
 										const row = new ActionRowBuilder();
@@ -913,7 +913,7 @@ module.exports = class extends Command {
 							const ch = message.guild.channels.cache.get(activeMenu.channel);
 
 							try {
-								ch.messages.fetch(activeMenu.message).then(ms => {
+								ch.messages.fetch({ message: activeMenu.message }).then(ms => {
 									// Update the message with the new array of roles
 									const row = new ActionRowBuilder();
 
@@ -982,7 +982,7 @@ module.exports = class extends Command {
 							const ch = message.guild.channels.cache.get(activeMenu.channel);
 
 							try {
-								ch.messages.fetch(activeMenu.message).then(ms => {
+								ch.messages.fetch({ message: activeMenu.message }).then(ms => {
 									ms.delete();
 								});
 

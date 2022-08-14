@@ -39,8 +39,10 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addFields({ name: `**${this.client.user.username} - Reply**`,
-						value: `**◎ Error:** You need to input text you wish to reply with!` });
+					.addFields({
+						name: `**${this.client.user.username} - Reply**`,
+						value: `**◎ Error:** You need to input text you wish to reply with!`
+					});
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
@@ -50,15 +52,17 @@ module.exports = class extends Command {
 
 				const embed = new EmbedBuilder()
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addFields({ name: `**${this.client.user.username} - Reply**`,
-						value: `**◎ Error:** I can not find the message you linked within this server.` });
+					.addFields({
+						name: `**${this.client.user.username} - Reply**`,
+						value: `**◎ Error:** I can not find the message you linked within this server.`
+					});
 				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
 				return;
 			}
 
 			const fetchChannel = message.guild.channels.cache.get(returnValuesFromLink().channelID);
 
-			fetchChannel.messages.fetch(returnValuesFromLink().messageID).then(async (msg) => {
+			fetchChannel.messages.fetch({ message: returnValuesFromLink().messageID }).then(async (msg) => {
 				msg.reply({ content: `${args.slice(1).join(' ')}` });
 			}).catch(() => {
 				this.client.utils.messageDelete(message, 10000);
@@ -108,7 +112,7 @@ module.exports = class extends Command {
 			return;
 		}
 
-		channel.messages.fetch(args[1]).then(async (msg) => {
+		channel.messages.fetch({ message: args[1] }).then(async (msg) => {
 			msg.reply({ content: `${args.slice(2).join(' ')}` });
 		}).catch(() => {
 			this.client.utils.messageDelete(message, 10000);

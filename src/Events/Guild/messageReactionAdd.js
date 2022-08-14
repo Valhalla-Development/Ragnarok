@@ -17,7 +17,7 @@ module.exports = class extends Event {
 		if (!fetchChn) return;
 
 		// Fetch the message
-		const message = await fetchChn.messages.fetch(msgId);
+		const message = await fetchChn.messages.fetch({ message: msgId });
 		if (!message) return;
 
 		// Starboard check
@@ -107,7 +107,7 @@ module.exports = class extends Event {
 		// Now we setup an if statement for if the message is found within the starboard.
 		if (stars) {
 			// We fetch the ID of the message already on the starboard.
-			const starMsg = await starChannel.messages.fetch(stars.id);
+			const starMsg = await starChannel.messages.fetch({ message: stars.id });
 			if (!starMsg) return;
 
 			// Regex to check how many stars the embed has.
