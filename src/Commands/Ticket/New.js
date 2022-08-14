@@ -210,7 +210,7 @@ module.exports = class extends Command {
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setAuthor({ name: 'Ticket Opened', iconURL: message.guild.iconURL({ dynamic: true }) })
 					.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
-						value: `[${randomString}](https://discord.com/channels/${message.guild.id}/${c.id})`, inline: true },
+						value: `[${randomString}](${c.url}))`, inline: true },
 					{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
 						value: `${message.author}`, inline: true },
 					{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`,

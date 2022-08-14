@@ -576,7 +576,7 @@ module.exports = class extends Event {
 						.setColor(this.client.utils.color(guild.members.me.displayHexColor))
 						.setAuthor({ name: 'Ticket Opened', iconURL: guild.iconURL({ dynamic: true }) })
 						.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
-							value: `[${randomString}](https://discord.com/channels/${interaction.guild.id}/${c.id})`, inline: true },
+							value: `[${randomString}](https://discord.com/channels/${c.url})`, inline: true },
 						{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
 							value: `${interaction.user}`, inline: true },
 						{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`,
