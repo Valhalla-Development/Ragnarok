@@ -18,8 +18,8 @@ module.exports = class RagnarokEmbed extends EmbedBuilder {
 		}
 
 		if (Array.isArray(content)) content = content.join('\n');
-		if (title === ZWS && !this.description && content.length < 2048) {
-			this.description = content;
+		if (title === ZWS && !this.data.description && content.length < 2048) {
+			this.data.description = content;
 			return this;
 		}
 
@@ -27,16 +27,26 @@ module.exports = class RagnarokEmbed extends EmbedBuilder {
 		let slice;
 		while (content.length) {
 			if (content.length < 1024) {
-				this.fields.push({ name: title, value: content, inline: false });
+				if (this.data.fields) {
+					this.data.fields.push({ name: title, value: content, inline: false });
+				} else {
+					this.data.fields = [{ name: title, value: content, inline: false }];
+				}
 				return this;
 			}
 
+			console.log('over 1024');
 			slice = content.slice(0, 1024);
 			x = slice.lastIndexOf('\n');
 			if (x === -1) x = slice.lastIndexOf('');
 			if (x === -1) x = 1024;
 
-			this.fields.push({ name: title, value: content.trim().slice(0, x), inline: false });
+			if (this.data.fields) {
+				this.data.fields.push({ name: title, value: content.trim().slice(0, x), inline: false });
+			} else {
+				this.data.fields = [{ name: title, value: content.trim().slice(0, x), inline: false }];
+			}
+
 			content = content.slice(x + 1);
 			title = ZWS;
 		}
