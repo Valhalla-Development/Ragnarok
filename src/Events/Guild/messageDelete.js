@@ -33,9 +33,7 @@ module.exports = class extends Event {
 					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
 					.setAuthor({ name: `${message.author.tag}`, iconURL: this.client.user.displayAvatarURL({ extension: 'png' }) })
 					.setTitle('Message Deleted')
-					.setDescription([
-						`**◎ No Data:** A message sent by <@${message.author.id}> was deleted but no content was found.**`
-					])
+					.setDescription(`**◎ No Data:** A message sent by <@${message.author.id}> was deleted but no content was found.**`)
 					.setTimestamp();
 				this.client.channels.cache.get(logs).send({ embeds: [noLogE] });
 				return;

@@ -35,7 +35,6 @@ module.exports = class RagnarokEmbed extends EmbedBuilder {
 				return this;
 			}
 
-			console.log('over 1024');
 			slice = content.slice(0, 1024);
 			x = slice.lastIndexOf('\n');
 			if (x === -1) x = slice.lastIndexOf('');
