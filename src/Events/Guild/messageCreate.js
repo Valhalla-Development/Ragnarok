@@ -305,7 +305,7 @@ module.exports = class extends Event {
 									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
 									.setAuthor({ name: 'Ticket Opened', iconURL: fetchGuild.iconURL({ extension: 'png' }) })
 									.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
-										value: `[${randomString}](https://discord.com/channels/${c.url})`, inline: true },
+										value: `[${randomString}](${c.url})`, inline: true },
 									{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
 										value: `${message.author}`, inline: true },
 									{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`,
@@ -432,7 +432,7 @@ module.exports = class extends Event {
 									.setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor))
 									.setAuthor({ name: 'Ticket Opened', iconURL: fetchGuild.iconURL({ extension: 'png' }) })
 									.addFields({ name: `<:ticketId:998229977004781618> **Ticket ID**`,
-										value: `[${randomString}](https://discord.com/channels/${c.url})`, inline: true },
+										value: `[${randomString}](${c.url})`, inline: true },
 									{ name: `<:ticketOpen:998229978267258881> **Opened By**`,
 										value: `${message.author}`, inline: true },
 									{ name: `<:ticketCloseTime:998229975931048028> **Time Opened**`,
