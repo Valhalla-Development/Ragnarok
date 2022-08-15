@@ -348,10 +348,10 @@ module.exports = class extends Event {
 							});
 
 							let ticategory;
-							if (message.guild.channels.cache.find((chan) => chan.id === id.category)) {
+							if (fetchGuild.channels.cache.find((chan) => chan.id === id.category)) {
 								ticategory = id.category;
 							} else {
-								const deleteCat = db.prepare(`UPDATE ticketConfig SET category = (@category) WHERE guildid = ${message.guild.id}`);
+								const deleteCat = db.prepare(`UPDATE ticketConfig SET category = (@category) WHERE guildid = ${fetchGuild.id}`);
 								deleteCat.run({
 									category: null
 								});
