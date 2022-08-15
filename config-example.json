@@ -13,5 +13,5 @@
 	"logging": true,
 	"trackClient": "REDACTED",
 	"trackSecret": "REDACTED",
-	"defaultPerms": ["VIEW_CHANNEL", "SEND_MESSAGES"]
+	"defaultPerms": ["ViewChannel", "SendMessages"]
 }
