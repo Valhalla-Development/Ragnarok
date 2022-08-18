@@ -1,98 +1,135 @@
-const Command = require('../../Structures/Command');
-const { EmbedBuilder } = require('discord.js');
-const fetch = require('node-fetch-cjs');
-const cryptocurrencies = require('cryptocurrencies');
+/* eslint-disable no-nested-ternary */
+import { EmbedBuilder } from 'discord.js';
+import fetch from 'node-fetch';
+import cryptocurrencies from 'cryptocurrencies';
+import Command from '../../Structures/Command.js';
 
-module.exports = class extends Command {
+export const CommandF = class extends Command {
+  constructor(...args) {
+    super(...args, {
+      aliases: ['cryptocurrency'],
+      description: 'Fetches specified crypto price.',
+      category: 'Fun',
+      usage: '<crypto> [currency]'
+    });
+  }
 
-	constructor(...args) {
-		super(...args, {
-			aliases: ['cryptocurrency'],
-			description: 'Fetches specified crypto price.',
-			category: 'Fun',
-			usage: '<crypto> [currency]'
-		});
-	}
+  async run(message, args) {
+    const symbolDict = {
+      USD: '$',
+      BTC: '₿',
+      ETH: 'Ξ',
+      LTC: 'Ł',
+      EUR: '€',
+      JPY: '¥',
+      RUB: '₽',
+      AED: 'د.إ',
+      BDT: '৳',
+      BHD: 'BD',
+      CNY: '¥',
+      CZK: 'Kč',
+      DKK: 'kr.',
+      GBP: '£',
+      HUF: 'Ft',
+      IDR: 'Rp',
+      ILS: '₪',
+      INR: '₹',
+      KRW: '₩',
+      KWD: 'KD',
+      LKR: 'රු',
+      MMK: 'K',
+      MYR: 'RM',
+      NOK: 'kr',
+      PHP: '₱',
+      PKR: 'Rs',
+      PLN: 'zł',
+      SAR: 'SR',
+      SEK: 'kr',
+      THB: '฿',
+      TRY: '₺',
+      VEF: 'Bs.',
+      VND: '₫',
+      ZAR: 'R',
+      XDR: 'SDR',
+      XAG: 'XAG',
+      XAU: 'XAU'
+    };
 
-	async run(message, args) {
-		const symbolDict = {
-			USD: '$', BTC: '₿', ETH: 'Ξ', LTC: 'Ł', EUR: '€', JPY: '¥', RUB: '₽',
-			AED: 'د.إ', BDT: '৳', BHD: 'BD', CNY: '¥', CZK: 'Kč', DKK: 'kr.', GBP: '£',
-			HUF: 'Ft', IDR: 'Rp', ILS: '₪', INR: '₹', KRW: '₩', KWD: 'KD', LKR: 'රු',
-			MMK: 'K', MYR: 'RM', NOK: 'kr', PHP: '₱', PKR: 'Rs', PLN: 'zł', SAR: 'SR',
-			SEK: 'kr', THB: '฿', TRY: '₺', VEF: 'Bs.', VND: '₫', ZAR: 'R', XDR: 'SDR',
-			XAG: 'XAG', XAU: 'XAU'
-		};
+    if (!args[0]) {
+      this.client.utils.messageDelete(message, 10000);
 
-		if (!args[0]) {
-			this.client.utils.messageDelete(message, 10000);
+      const noinEmbed = new EmbedBuilder()
+        .setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Crypto**`, value: '**◎ Error:** Please enter a valid cryptocurrency!' });
+      message.channel.send({ embeds: [noinEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-			const noinEmbed = new EmbedBuilder()
-				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Crypto**`,
-					value: `**◎ Error:** Please enter a valid cryptocurrency!` });
-			message.channel.send({ embeds: [noinEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    const cryptoType = cryptocurrencies[args[0].toUpperCase()] || args[0];
 
-		const cryptoType = cryptocurrencies[args[0].toUpperCase()] || args[0];
+    if (!cryptoType) {
+      this.client.utils.messageDelete(message, 10000);
 
-		if (!cryptoType) {
-			this.client.utils.messageDelete(message, 10000);
+      const noinEmbed = new EmbedBuilder()
+        .setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Crypto**`, value: '**◎ Error:** Please enter a valid cryptocurrency!' });
+      message.channel.send({ embeds: [noinEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-			const noinEmbed = new EmbedBuilder()
-				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Crypto**`,
-					value: `**◎ Error:** Please enter a valid cryptocurrency!` });
-			message.channel.send({ embeds: [noinEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    const rawResponse = await fetch(
+      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${args[1] ? args[1].toLowerCase() : 'usd'}&ids=${cryptoType.toLowerCase()}`
+    );
 
-		const rawResponse = await fetch.default(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${args[1] ? args[1].toLowerCase() : 'usd'}&ids=${cryptoType.toLowerCase()}`);
+    const content = await rawResponse.json();
 
-		const content = await rawResponse.json();
+    if (!content[0] || !content[0].id) {
+      this.client.utils.messageDelete(message, 10000);
 
-		if (!content[0] || !content[0].id) {
-			this.client.utils.messageDelete(message, 10000);
+      const noinEmbed = new EmbedBuilder()
+        .setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Crypto**`, value: '**◎ Error:** Please enter a valid cryptocurrency!' });
+      message.channel.send({ embeds: [noinEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-			const noinEmbed = new EmbedBuilder()
-				.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() })
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Crypto**`,
-					value: `**◎ Error:** Please enter a valid cryptocurrency!` });
-			message.channel.send({ embeds: [noinEmbed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    const currency = args[1] ? `${symbolDict[args[1].toUpperCase()]}` : '$';
 
-		const currency = args[1] ? `${symbolDict[args[1].toUpperCase()]}` : `$`;
+    const currentPrice = content[0].current_price
+      ? content[0].current_price > 1
+        ? `${currency}${content[0].current_price.toLocaleString('en')}`
+        : `${currency}${content[0].current_price}`
+      : 'N/A';
+    const marketCap = content[0].market_cap ? `${currency}${content[0].market_cap.toLocaleString('en')}` : 'N/A';
+    const high24 = content[0].high_24h ? `${currency}${content[0].high_24h.toLocaleString('en')}` : 'N/A';
+    const low24 = content[0].low_24h ? `${currency}${content[0].low_24h.toLocaleString('en')}` : 'N/A';
+    const pricech24 = content[0].price_change_24h ? `${currency}${content[0].price_change_24h.toLocaleString('en')}` : 'N/A';
+    const priceper24 = content[0].price_change_percentage_24h ? `${content[0].price_change_percentage_24h.toLocaleString('en')}%` : 'N/A';
+    const { image } = content[0];
 
-		const currentPrice = content[0].current_price ? content[0].current_price > 1 ? `${currency}${content[0].current_price.toLocaleString('en')}` : `${currency}${content[0].current_price}` : 'N/A';
-		const marketCap = content[0].market_cap ? `${currency}${content[0].market_cap.toLocaleString('en')}` : 'N/A';
-		const high24 = content[0].high_24h ? `${currency}${content[0].high_24h.toLocaleString('en')}` : 'N/A';
-		const low24 = content[0].low_24h ? `${currency}${content[0].low_24h.toLocaleString('en')}` : 'N/A';
-		const pricech24 = content[0].price_change_24h ? `${currency}${content[0].price_change_24h.toLocaleString('en')}` : 'N/A';
-		const priceper24 = content[0].price_change_percentage_24h ? `${content[0].price_change_percentage_24h.toLocaleString('en')}%` : 'N/A';
-		const { image } = content[0];
+    const successEmb = new EmbedBuilder();
 
-		const successEmb = new EmbedBuilder();
-
-		if (image) {
-			successEmb.setThumbnail(content[0].image);
-		}
-		successEmb.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() });
-		successEmb.setColor(this.client.utils.color(message.guild.members.me.displayHexColor));
-		successEmb.addFields({ name: `**Crypto - ${this.client.utils.capitalise(content[0].id)} ${args[1] ? `(${args[1].toUpperCase()})` : '(USD)'}**`,
-			value: `**◎ Name:** \`${this.client.utils.capitalise(content[0].id)}\` **(${content[0].symbol.toUpperCase()})**
+    if (image) {
+      successEmb.setThumbnail(content[0].image);
+    }
+    successEmb.setAuthor({ name: `${message.author.tag}`, iconURL: message.author.avatarURL() });
+    successEmb.setColor(this.client.utils.color(message.guild.members.me.displayHexColor));
+    successEmb.addFields({
+      name: `**Crypto - ${this.client.utils.capitalise(content[0].id)} ${args[1] ? `(${args[1].toUpperCase()})` : '(USD)'}**`,
+      value: `**◎ Name:** \`${this.client.utils.capitalise(content[0].id)}\` **(${content[0].symbol.toUpperCase()})**
 			**◎ Current Price:** \`${currentPrice}\`
 			**◎ History:**
 			\u3000 Market Cap: \`${marketCap}\`
 			\u3000 High (24hr): \`${high24}\`
 			\u3000 Low (24hr): \`${low24}\`
 			\u3000 Price Change (24hr): \`${pricech24}\`
-			\u3000 Price Change Percentage (24hr): \`${priceper24}\`` });
-		message.channel.send({ embeds: [successEmb] });
-	}
-
+			\u3000 Price Change Percentage (24hr): \`${priceper24}\``
+    });
+    message.channel.send({ embeds: [successEmb] });
+  }
 };
+
+export default CommandF;

@@ -1,5 +1,6 @@
-const RagnarokClient = require('./Structures/RagnarokClient');
-const config = require('../config.json');
+import RagnarokClient from './Structures/RagnarokClient.js';
 
-const client = new RagnarokClient(config);
+import * as config from '../config.json' assert { type: 'json' };
+
+const client = new RagnarokClient(config.default);
 client.start();

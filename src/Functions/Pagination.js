@@ -1,101 +1,109 @@
-const { ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
+import { ButtonBuilder, ActionRowBuilder, ButtonStyle } from 'discord.js';
 
-module.exports = class pagination {
+export const pagination = class pagination {
+  constructor(client) {
+    this.client = client;
+  }
 
-	constructor(client) {
-		this.client = client;
-	}
+  async pagination(message, embeds, emojiNext, emojiHome, emojiBack) {
+    const back = new ButtonBuilder()
+      .setCustomId('back')
+      .setEmoji(emojiBack || '◀️')
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(true);
 
-	async pagination(message, embeds, emojiNext, emojiHome, emojiBack) {
-		const back = new ButtonBuilder()
-			.setCustomId('back')
-			.setEmoji(emojiBack || '◀️')
-			.setStyle(ButtonStyle.Primary)
-			.setDisabled(true);
+    const home = new ButtonBuilder()
+      .setCustomId('home')
+      .setEmoji(emojiHome || '🏠')
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(true);
 
-		const home = new ButtonBuilder()
-			.setCustomId('home')
-			.setEmoji(emojiHome || '🏠')
-			.setStyle(ButtonStyle.Primary)
-			.setDisabled(true);
+    const next = new ButtonBuilder()
+      .setCustomId('next')
+      .setEmoji(emojiNext || '▶️')
+      .setStyle(ButtonStyle.Primary);
 
-		const next = new ButtonBuilder()
-			.setCustomId('next')
-			.setEmoji(emojiNext || '▶️')
-			.setStyle(ButtonStyle.Primary);
+    const row = new ActionRowBuilder().addComponents(back, home, next);
 
-		const row = new ActionRowBuilder()
-			.addComponents(back, home, next);
+    const m = await message.channel.send({
+      embeds: [embeds[0]],
+      components: [row]
+    });
 
-		const m = await message.channel.send({ embeds: [embeds[0]], components: [row] });
+    const filter = (i) => i.user.id === message.author.id;
 
-		const filter = i => i.user.id === message.author.id;
+    const collector = m.createMessageComponentCollector({
+      filter,
+      time: 30000
+    });
 
-		const collector = m.createMessageComponentCollector({ filter: filter, time: 30000 });
+    let currentPage = 0;
 
-		let currentPage = 0;
+    collector.on('collect', async (b) => {
+      collector.resetTimer();
 
-		collector.on('collect', async b => {
-			collector.resetTimer();
+      if (b.customId === 'back') {
+        if (currentPage !== 0) {
+          if (currentPage === embeds.length - 1) {
+            next.setDisabled(false);
+          }
 
-			if (b.customId === 'back') {
-				if (currentPage !== 0) {
-					if (currentPage === embeds.length - 1) {
-						next.setDisabled(false);
-					}
+          currentPage -= 1;
 
-					--currentPage;
+          if (currentPage === 0) {
+            back.setDisabled(true);
+            home.setDisabled(true);
+          }
 
-					if (currentPage === 0) {
-						back.setDisabled(true);
-						home.setDisabled(true);
-					}
+          const rowNew = new ActionRowBuilder().addComponents(back, home, next);
 
-					const rowNew = new ActionRowBuilder()
-						.addComponents(back, home, next);
+          await b.update({
+            embeds: [embeds[currentPage]],
+            components: [rowNew]
+          });
+        }
+      }
 
-					await b.update({ embeds: [embeds[currentPage]], components: [rowNew] });
-				}
-			}
+      if (b.customId === 'next') {
+        if (currentPage < embeds.length - 1) {
+          currentPage += 1;
 
-			if (b.customId === 'next') {
-				if (currentPage < embeds.length - 1) {
-					currentPage++;
+          if (currentPage === embeds.length - 1) {
+            next.setDisabled(true);
+          }
 
-					if (currentPage === embeds.length - 1) {
-						next.setDisabled(true);
-					}
+          home.setDisabled(false);
+          back.setDisabled(false);
 
-					home.setDisabled(false);
-					back.setDisabled(false);
+          const rowNew = new ActionRowBuilder().addComponents(back, home, next);
 
-					const rowNew = new ActionRowBuilder()
-						.addComponents(back, home, next);
+          await b.update({
+            embeds: [embeds[currentPage]],
+            components: [rowNew]
+          });
+        }
+      }
 
-					await b.update({ embeds: [embeds[currentPage]], components: [rowNew] });
-				}
-			}
+      if (b.customId === 'home') {
+        currentPage = 0;
+        home.setDisabled(true);
+        back.setDisabled(true);
+        next.setDisabled(false);
 
-			if (b.customId === 'home') {
-				currentPage = 0;
-				home.setDisabled(true);
-				back.setDisabled(true);
-				next.setDisabled(false);
+        const rowNew = new ActionRowBuilder().addComponents(back, home, next);
 
-				const rowNew = new ActionRowBuilder()
-					.addComponents(back, home, next);
+        await b.update({ embeds: [embeds[currentPage]], components: [rowNew] });
+      }
+    });
 
-				await b.update({ embeds: [embeds[currentPage]], components: [rowNew] });
-			}
-		});
+    collector.on('end', () => {
+      if (m && m.deletable) {
+        m.delete();
+      }
+    });
 
-		collector.on('end', () => {
-			if (m && m.deletable) {
-				m.delete();
-			}
-		});
-
-		collector.on('error', (e) => console.log(e));
-	}
-
+    collector.on('error', (e) => console.log(e));
+  }
 };
+
+export default pagination;

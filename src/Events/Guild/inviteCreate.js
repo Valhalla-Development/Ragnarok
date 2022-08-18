@@ -1,42 +1,48 @@
-const Event = require('../../Structures/Event');
-const { EmbedBuilder } = require('discord.js');
-const SQLite = require('better-sqlite3');
+import { EmbedBuilder } from 'discord.js';
+import SQLite from 'better-sqlite3';
+import Event from '../../Structures/Event.js';
+
 const db = new SQLite('./Storage/DB/db.sqlite');
 
-module.exports = class extends Event {
+export const EventF = class extends Event {
+  async run(invite) {
+    const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${invite.guild.id};`).get();
+    if (!id) return;
 
-	async run(invite) {
-		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${invite.guild.id};`).get();
-		if (!id) return;
+    const logs = id.channel;
+    if (!logs) return;
 
-		const logs = id.channel;
-		if (!logs) return;
+    const toHHMMSS = (secs) => {
+      const secNum = parseInt(secs, 10);
+      const hours = Math.floor(secNum / 3600);
+      const minutes = Math.floor(secNum / 60) % 60;
 
-		const toHHMMSS = (secs) => {
-			const secNum = parseInt(secs, 10);
-			const hours = Math.floor(secNum / 3600);
-			const minutes = Math.floor(secNum / 60) % 60;
+      return [hours, minutes]
+        .map((v) => (v < 10 ? `0${v}` : v))
+        .filter((v, i) => v !== '00' || i > 0)
+        .join(' Hours ');
+    };
 
-			return [hours, minutes]
-				.map((v) => v < 10 ? `0${v}` : v)
-				.filter((v, i) => v !== '00' || i > 0)
-				.join(' Hours ');
-		};
+    let expiry;
 
-		let expiry;
+    if (invite.maxAge !== 0) {
+      expiry = `${toHHMMSS(invite.maxAge)} Minutes`;
+    } else {
+      expiry = 'Never';
+    }
 
-		if (invite.maxAge !== 0) {
-			expiry = `${toHHMMSS(invite.maxAge)} Minutes`;
-		} else {
-			expiry = 'Never';
-		}
-
-		const logembed = new EmbedBuilder()
-			.setColor(this.client.utils.color(invite.guild.members.me.displayHexColor))
-			.setAuthor({ name: `${invite.guild.name}`, iconURL: invite.guild.iconURL() })
-			.setDescription(`**◎ Invite Created:**\n**◎ Created By:** ${invite.inviter}\n**◎ Expires:** \`${expiry}\`\n**◎ Location:** ${invite.channel}\n**◎ Invite:** [https://discord.gg/${invite.code}](https://discord.gg/${invite.code}${invite.code})`)
-			.setTimestamp();
-		this.client.channels.cache.get(logs).send({ embeds: [logembed] });
-	}
-
+    const logembed = new EmbedBuilder()
+      .setColor(this.client.utils.color(invite.guild.members.me.displayHexColor))
+      .setAuthor({
+        name: `${invite.guild.name}`,
+        iconURL: invite.guild.iconURL()
+      })
+      .setDescription(
+        `**◎ Invite Created:**\n**◎ Created By:** ${invite.inviter}\n**◎ Expires:** \`${expiry}\`\n**◎ Location:** ${invite.channel}\n**◎ Invite:** [https://discord.gg/${invite.code}](https://discord.gg/${invite.code}${invite.code})`
+      )
+      .setTimestamp();
+    this.client.channels.cache.get(logs).send({ embeds: [logembed] });
+  }
 };
+
+export default EventF;

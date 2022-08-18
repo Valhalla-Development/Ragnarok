@@ -1,56 +1,62 @@
-const Command = require('../../Structures/Command');
-const { EmbedBuilder } = require('discord.js');
-const SQLite = require('better-sqlite3');
+import { EmbedBuilder } from 'discord.js';
+import SQLite from 'better-sqlite3';
+import fetch from 'node-fetch';
+import Command from '../../Structures/Command.js';
+
 const db = new SQLite('./Storage/DB/db.sqlite');
-const fetch = require('node-fetch-cjs');
 
-module.exports = class extends Command {
+export const CommandF = class extends Command {
+  constructor(...args) {
+    super(...args, {
+      description: 'Fetches search results from r/AirReps',
+      category: 'Fun',
+      usage: '<input>'
+    });
+  }
 
-	constructor(...args) {
-		super(...args, {
-			description: 'Fetches search results from r/AirReps',
-			category: 'Fun',
-			usage: '<input>'
-		});
-	}
+  async run(message, args) {
+    const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
+    const { prefix } = prefixgrab;
 
-	async run(message, args) {
-		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
-		const { prefix } = prefixgrab;
+    if (!args[0]) {
+      this.client.utils.messageDelete(message, 10000);
 
-		if (!args[0]) {
-			this.client.utils.messageDelete(message, 10000);
+      const incorrectFormat = new EmbedBuilder().setColor(this.client.utils.color(message.guild.members.me.displayHexColor)).addFields({
+        name: `**${this.client.user.username} - A4K**`,
+        value: `**◎ Error:** Incorrect usage! Please use \`${prefix}airreps <search>\``
+      });
+      message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-			const incorrectFormat = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - A4K**`,
-					value: `**◎ Error:** Incorrect usage! Please use \`${prefix}airreps <search>\`` });
-			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    const searchTerm = args.join('%20');
 
-		const searchTerm = args.join('%20');
-
-		fetch.default(`https://www.reddit.com/r/AirReps/search.json?q=${searchTerm}&restrict_sr=1&limit=3`)
-			.then(res => res.json())
-			.then(res => res.data.children)
-			.then(res => {
-				const embed = new EmbedBuilder()
-					.setAuthor({ name: `${res[0].data.subreddit} - Top 3 results for: ${args.join(' ')}`, iconURL: 'https://styles.redditmedia.com/t5_2oemly/styles/communityIcon_vzp0ymwfksz41.png?width=256&s=96596caa93f51c37505a2cecf33f2abdb8d93d87' })
-					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.setDescription(`[**◎ ${res[0].data.title}**](${res[0].data.url})\n \`\`\`${res[0].data.selftext.substring(0, 150)}...\`\`\`\n
+    fetch(`https://www.reddit.com/r/AirReps/search.json?q=${searchTerm}&restrict_sr=1&limit=3`)
+      .then((res) => res.json())
+      .then((res) => res.data.children)
+      .then((res) => {
+        const embed = new EmbedBuilder()
+          .setAuthor({
+            name: `${res[0].data.subreddit} - Top 3 results for: ${args.join(' ')}`,
+            iconURL:
+              'https://styles.redditmedia.com/t5_2oemly/styles/communityIcon_vzp0ymwfksz41.png?width=256&s=96596caa93f51c37505a2cecf33f2abdb8d93d87'
+          })
+          .setColor(this.client.utils.color(message.guild.members.me.displayHexColor)).setDescription(`[**◎ ${res[0].data.title}**](${
+          res[0].data.url
+        })\n \`\`\`${res[0].data.selftext.substring(0, 150)}...\`\`\`\n
 					[**◎ ${res[1].data.title}**](${res[1].data.url})\n  \`\`\`${res[1].data.selftext.substring(0, 150)}...\`\`\`\n
 					[**◎ ${res[2].data.title}**](${res[2].data.url})\n  \`\`\`${res[2].data.selftext.substring(0, 150)}...\`\`\`\n
 					[**__Search Results...__**](https://www.reddit.com/r/AirReps/search/?q=${searchTerm}&restrict_sr=1)`);
-				message.channel.send({ embeds: [embed] });
-			}).catch(() => {
-				this.client.utils.messageDelete(message, 10000);
-				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addFields({ name: `**${this.client.user.username} - AirReps**`,
-						value: `**◎ Error:** No results found!` });
-				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			});
-	}
-
+        message.channel.send({ embeds: [embed] });
+      })
+      .catch(() => {
+        this.client.utils.messageDelete(message, 10000);
+        const embed = new EmbedBuilder()
+          .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+          .addFields({ name: `**${this.client.user.username} - AirReps**`, value: '**◎ Error:** No results found!' });
+        message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      });
+  }
 };
+
+export default CommandF;

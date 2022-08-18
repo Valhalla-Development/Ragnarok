@@ -1,89 +1,91 @@
-const Event = require('../../Structures/Event');
-const { EmbedBuilder, ChannelType } = require('discord.js');
-const SQLite = require('better-sqlite3');
+import { EmbedBuilder, ChannelType } from 'discord.js';
+import SQLite from 'better-sqlite3';
+import Event from '../../Structures/Event.js';
+
 const db = new SQLite('./Storage/DB/db.sqlite');
 
-module.exports = class extends Event {
+export const EventF = class extends Event {
+  async run(oldChannel, newChannel) {
+    const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${oldChannel.guild.id};`).get();
+    if (!id) return;
 
-	async run(oldChannel, newChannel) {
-		const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${oldChannel.guild.id};`).get();
-		if (!id) return;
+    const logs = id.channel;
+    if (!logs) return;
 
-		const logs = id.channel;
-		if (!logs) return;
+    let updateM;
+    let oldTopic;
+    let newTopic;
+    let oldNs;
+    let newNs;
 
-		let updateM;
-		let oldTopic;
-		let newTopic;
-		let oldNs;
-		let newNs;
+    const logembed = new EmbedBuilder()
+      .setColor(this.client.utils.color(oldChannel.guild.members.me.displayHexColor))
+      .setAuthor({
+        name: `${oldChannel.guild.name}`,
+        iconURL: oldChannel.guild.iconURL()
+      })
+      .setTitle('Channel Updated')
+      .setFooter({ text: `ID: ${newChannel.id}` })
+      .setTimestamp();
 
-		const logembed = new EmbedBuilder()
-			.setColor(this.client.utils.color(oldChannel.guild.members.me.displayHexColor))
-			.setAuthor({ name: `${oldChannel.guild.name}`, iconURL: oldChannel.guild.iconURL() })
-			.setTitle('Channel Updated')
-			.setFooter({ text: `ID: ${newChannel.id}` })
-			.setTimestamp();
+    if (oldChannel.type === ChannelType.GuildCategory) {
+      if (oldChannel.name !== newChannel.name) {
+        updateM = `**◎ Category Name Updated:**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
+        logembed.setDescription(updateM);
+        this.client.channels.cache.get(logs).send({ embeds: [logembed] });
+      }
+    }
 
-		if (oldChannel.type === ChannelType.GuildCategory) {
-			if (oldChannel.name !== newChannel.name) {
-				updateM = `**◎ Category Name Updated:**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
-				logembed.setDescription(updateM);
-				this.client.channels.cache.get(logs).send({ embeds: [logembed] });
-			}
-		}
+    if (oldChannel.type === ChannelType.GuildVoice) {
+      if (oldChannel.name !== newChannel.name) {
+        updateM = `**◎ Voice Channel Name Updated:**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
+        logembed.setDescription(updateM);
+        this.client.channels.cache.get(logs).send({ embeds: [logembed] });
+      }
+    }
 
-		if (oldChannel.type === ChannelType.GuildVoice) {
-			if (oldChannel.name !== newChannel.name) {
-				updateM = `**◎ Voice Channel Name Updated:**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\``;
-				logembed.setDescription(updateM);
-				this.client.channels.cache.get(logs).send({ embeds: [logembed] });
-			}
-		}
+    if (oldChannel.type === ChannelType.GuildText) {
+      if (oldChannel.name !== newChannel.name) {
+        updateM = `**◎ Channel Name Updated:**\nOld:\n\`#${oldChannel.name}\`\nNew:\n<#${newChannel.id}>`;
+        logembed.setDescription(updateM);
+        this.client.channels.cache.get(logs).send({ embeds: [logembed] });
+      }
+    }
 
-		if (oldChannel.type === ChannelType.GuildText) {
-			if (oldChannel.name !== newChannel.name) {
-				updateM = `**◎ Channel Name Updated:**\nOld:\n\`#${oldChannel.name}\`\nNew:\n<#${newChannel.id}>`;
-				logembed.setDescription(updateM);
-				this.client.channels.cache.get(logs).send({ embeds: [logembed] });
-			}
-		}
+    if (oldChannel.nsfw !== newChannel.nsfw) {
+      if (oldChannel.nsfw === true) {
+        oldNs = 'Enabled';
+      } else {
+        oldNs = 'Disabled';
+      }
+      if (newChannel.nsfw === true) {
+        newNs = 'Enabled';
+      } else {
+        newNs = 'Disabled';
+      }
+      updateM = `**◎ NSFW Status Updated:**\nOld:\n\`${oldNs}\`\nNew:\n\`${newNs}\``;
+      logembed.setDescription(updateM);
+      this.client.channels.cache.get(logs).send({ embeds: [logembed] });
+    } else {
+      return;
+    }
 
-		if (oldChannel.nsfw !== newChannel.nsfw) {
-			if (oldChannel.nsfw === true) {
-				oldNs = 'Enabled';
-			} else {
-				oldNs = 'Disabled';
-			}
-			if (newChannel.nsfw === true) {
-				newNs = 'Enabled';
-			} else {
-				newNs = 'Disabled';
-			}
-			updateM = `**◎ NSFW Status Updated:**\nOld:\n\`${oldNs}\`\nNew:\n\`${newNs}\``;
-			logembed.setDescription(updateM);
-			this.client.channels.cache.get(logs).send({ embeds: [logembed] });
-		} else {
-			return;
-		}
-
-		if (oldChannel.topic !== newChannel.topic) {
-			if (oldChannel.topic === '') {
-				oldTopic = 'None';
-			} else {
-				oldTopic = `${oldChannel.topic}`;
-			}
-			if (newChannel.topic === '') {
-				newTopic = 'None';
-			} else {
-				newTopic = `${newChannel.topic}`;
-			}
-			updateM = `**◎ Channel Topic Updated:**\nOld:\n\`${oldTopic}\`\nNew:\n\`${newTopic}\``;
-			logembed.setDescription(updateM);
-			this.client.channels.cache.get(logs).send({ embeds: [logembed] });
-		} else {
-			return;
-		}
-	}
-
+    if (oldChannel.topic !== newChannel.topic) {
+      if (oldChannel.topic === '') {
+        oldTopic = 'None';
+      } else {
+        oldTopic = `${oldChannel.topic}`;
+      }
+      if (newChannel.topic === '') {
+        newTopic = 'None';
+      } else {
+        newTopic = `${newChannel.topic}`;
+      }
+      updateM = `**◎ Channel Topic Updated:**\nOld:\n\`${oldTopic}\`\nNew:\n\`${newTopic}\``;
+      logembed.setDescription(updateM);
+      this.client.channels.cache.get(logs).send({ embeds: [logembed] });
+    }
+  }
 };
+
+export default EventF;

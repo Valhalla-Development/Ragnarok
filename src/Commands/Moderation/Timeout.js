@@ -1,244 +1,238 @@
-const Command = require('../../Structures/Command');
-const { PermissionsBitField, EmbedBuilder } = require('discord.js');
-const ms = require('ms');
-const SQLite = require('better-sqlite3');
+import { PermissionsBitField, EmbedBuilder } from 'discord.js';
+import ms from 'ms';
+import SQLite from 'better-sqlite3';
+import Command from '../../Structures/Command.js';
+
 const db = new SQLite('./Storage/DB/db.sqlite');
 
-module.exports = class extends Command {
+export const CommandF = class extends Command {
+  constructor(...args) {
+    super(...args, {
+      aliases: ['shh', 'mute'],
+      description: 'Timeouts tagged user.',
+      category: 'Moderation',
+      userPerms: ['ModerateMembers'],
+      botPerms: ['ModerateMembers'],
+      usage: '<@user> <time> (reason>)'
+    });
+  }
 
-	constructor(...args) {
-		super(...args, {
-			aliases: ['shh', 'mute'],
-			description: 'Timeouts tagged user.',
-			category: 'Moderation',
-			userPerms: ['ModerateMembers'],
-			botPerms: ['ModerateMembers'],
-			usage: '<@user> <time> (reason>)'
-		});
-	}
+  async run(message, args) {
+    this.client.utils.messageDelete(message, 10000);
 
-	async run(message, args) {
-		this.client.utils.messageDelete(message, 10000);
+    const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
+    const { prefix } = prefixgrab;
 
-		const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
-		const { prefix } = prefixgrab;
-
-		if (!args[0]) {
-			const incorrectFormat = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Timeout**`,
-					value: `**◎ Error:** Incorrect usage! Available Commands:
+    if (!args[0]) {
+      const incorrectFormat = new EmbedBuilder().setColor(this.client.utils.color(message.guild.members.me.displayHexColor)).addFields({
+        name: `**${this.client.user.username} - Timeout**`,
+        value: `**◎ Error:** Incorrect usage! Available Commands:
 					\`${prefix}timeout <@user> <time> (reason)\`
-					\`${prefix}timeout clear <@user>\`` });
-			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+					\`${prefix}timeout clear <@user>\``
+      });
+      message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		const user = message.mentions.members.first() || message.guild.members.cache.find(usr => usr.id === args[0]);
+    const user = message.mentions.members.first() || message.guild.members.cache.find((usr) => usr.id === args[0]);
 
-		if (!user) {
-			const incorrectFormat = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Timeout**`,
-					value: `**◎ Error:** Incorrect usage! Available Commands:
+    if (!user) {
+      const incorrectFormat = new EmbedBuilder().setColor(this.client.utils.color(message.guild.members.me.displayHexColor)).addFields({
+        name: `**${this.client.user.username} - Timeout**`,
+        value: `**◎ Error:** Incorrect usage! Available Commands:
 					\`${prefix}timeout <@user> <time> (reason)\`
-					\`${prefix}timeout clear <@user>\`` });
-			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+					\`${prefix}timeout clear <@user>\``
+      });
+      message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		// Check if user is message.author
-		if (user.user.id === message.author.id) {
-			const incorrectFormat = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Timeout**`,
-					value: `**◎ Error:** You can't timeout yourself!` });
-			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    // Check if user is message.author
+    if (user.user.id === message.author.id) {
+      const incorrectFormat = new EmbedBuilder()
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Timeout**`, value: '**◎ Error:** You can\'t timeout yourself!' });
+      message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		// Check if user is bannable
-		if (user.permissions.has(PermissionsBitField.Flags.ManageGuild) || user.permissions.has(PermissionsBitField.Flags.Administrator)) {
-			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Timeout**`,
-					value: `**◎ Error:** You cannot timeout <@${user.id}>` });
-			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    // Check if user is bannable
+    if (user.permissions.has(PermissionsBitField.Flags.ManageGuild) || user.permissions.has(PermissionsBitField.Flags.Administrator)) {
+      const embed = new EmbedBuilder()
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Timeout**`, value: `**◎ Error:** You cannot timeout <@${user.id}>` });
+      message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		if (args[0] === 'clear') {
-			if (!args[1]) {
-				const incorrectFormat = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addFields({ name: `**${this.client.user.username} - Timeout**`,
-						value: `**◎ Error:** Incorrect usage! Please use \`${prefix}timeout clear <@user>\`` });
-				message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
-			}
+    if (args[0] === 'clear') {
+      if (!args[1]) {
+        const incorrectFormat = new EmbedBuilder().setColor(this.client.utils.color(message.guild.members.me.displayHexColor)).addFields({
+          name: `**${this.client.user.username} - Timeout**`,
+          value: `**◎ Error:** Incorrect usage! Please use \`${prefix}timeout clear <@user>\``
+        });
+        message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+        return;
+      }
 
-			const userClear = message.mentions.members.first() || message.guild.members.cache.find(usr => usr.id === args[0]);
-			if (!userClear) {
-				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addFields({ name: `**${this.client.user.username} - Timeout**`,
-						value: `**◎ Error:** Run \`${prefix}help timeout\` If you are unsure.` });
-				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
-			}
+      const userClear = message.mentions.members.first() || message.guild.members.cache.find((usr) => usr.id === args[0]);
+      if (!userClear) {
+        const embed = new EmbedBuilder()
+          .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+          .addFields({ name: `**${this.client.user.username} - Timeout**`, value: `**◎ Error:** Run \`${prefix}help timeout\` If you are unsure.` });
+        message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+        return;
+      }
 
-			if (!user.isCommunicationDisabled()) {
-				const embed = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addFields({ name: `**${this.client.user.username} - Timeout**`,
-						value: `**◎ Error:** ${user} is not timed out` });
-				message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
-			}
+      if (!user.isCommunicationDisabled()) {
+        const embed = new EmbedBuilder()
+          .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+          .addFields({ name: `**${this.client.user.username} - Timeout**`, value: `**◎ Error:** ${user} is not timed out` });
+        message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+        return;
+      }
 
-			try {
-				user.timeout(0);
-			} catch {
-				const valueLow = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addFields({ name: `**${this.client.user.username} - Timeout**`,
-						value: `**◎ Error:** An unknown error occured.` });
-				message.channel.send({ embeds: [valueLow] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-				return;
-			}
+      try {
+        user.timeout(0);
+      } catch {
+        const valueLow = new EmbedBuilder()
+          .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+          .addFields({ name: `**${this.client.user.username} - Timeout**`, value: '**◎ Error:** An unknown error occured.' });
+        message.channel.send({ embeds: [valueLow] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+        return;
+      }
 
-			const embed = new EmbedBuilder()
-				.setThumbnail(this.client.user.displayAvatarURL())
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: 'Action | Timeout Clear',
-					value: `**◎ User:** ${user.user.tag}
-				**◎ Moderator:** ${message.author.tag}` })
-				.setFooter({ text: 'User Timeout Logs' })
-				.setTimestamp();
+      const embed = new EmbedBuilder()
+        .setThumbnail(this.client.user.displayAvatarURL())
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({
+          name: 'Action | Timeout Clear',
+          value: `**◎ User:** ${user.user.tag}
+				**◎ Moderator:** ${message.author.tag}`
+        })
+        .setFooter({ text: 'User Timeout Logs' })
+        .setTimestamp();
 
-			message.channel.send({ embeds: [embed] });
+      message.channel.send({ embeds: [embed] });
 
-			const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
-			if (dbid && dbid.channel && dbid.channel === message.channel.id) return;
+      const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
+      if (dbid && dbid.channel && dbid.channel === message.channel.id) return;
 
-			if (!dbid) return;
-			const dblogs = dbid.channel;
-			const chnCheck = this.client.channels.cache.get(dblogs);
+      if (!dbid) return;
+      const dblogs = dbid.channel;
+      const chnCheck = this.client.channels.cache.get(dblogs);
 
-			if (dbid && chnCheck) {
-				this.client.channels.cache.get(dblogs).send({ embeds: [embed] });
-			}
-			return;
-		}
+      if (dbid && chnCheck) {
+        this.client.channels.cache.get(dblogs).send({ embeds: [embed] });
+      }
+      return;
+    }
 
-		if (!user) {
-			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Timeout**`,
-					value: `**◎ Error:** Run \`${prefix}help timeout\` If you are unsure.` });
-			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    if (!user) {
+      const embed = new EmbedBuilder()
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Timeout**`, value: `**◎ Error:** Run \`${prefix}help timeout\` If you are unsure.` });
+      message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		if (user.isCommunicationDisabled()) {
-			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Timeout**`,
-					value: `**◎ Error:** ${user} is already timed out, are you looking for \`${prefix}timeout clear\`` });
-			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    if (user.isCommunicationDisabled()) {
+      const embed = new EmbedBuilder().setColor(this.client.utils.color(message.guild.members.me.displayHexColor)).addFields({
+        name: `**${this.client.user.username} - Timeout**`,
+        value: `**◎ Error:** ${user} is already timed out, are you looking for \`${prefix}timeout clear\``
+      });
+      message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		const timeoutTime = args[1];
-		if (!timeoutTime) {
-			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Timeout**`,
-					value: `**◎ Error:** You must specify a timeout time!` });
-			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    const timeoutTime = args[1];
+    if (!timeoutTime) {
+      const embed = new EmbedBuilder()
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Timeout**`, value: '**◎ Error:** You must specify a timeout time!' });
+      message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		// Ensure timeoutTime is a valid option
-		if (!args[1].match('[dhms]')) {
-			const incorrectFormat = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Timeout**`,
-					value: `**◎ Error:** You did not use the correct formatting for the time! The valid options are \`d\`, \`h\`, \`m\` or \`s\`` });
-			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    // Ensure timeoutTime is a valid option
+    if (!args[1].match('[dhms]')) {
+      const incorrectFormat = new EmbedBuilder().setColor(this.client.utils.color(message.guild.members.me.displayHexColor)).addFields({
+        name: `**${this.client.user.username} - Timeout**`,
+        value: '**◎ Error:** You did not use the correct formatting for the time! The valid options are `d`, `h`, `m` or `s`'
+      });
+      message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		// Checks if timeoutTime is a number
-		if (isNaN(ms(args[1]))) {
-			const invalidDur = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Timeout**`,
-					value: `**◎ Error:** Please input a valid duration!` });
-			message.channel.send({ embeds: [invalidDur] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    // Checks if timeoutTime is a number
+    if (Number.isNaN(ms(args[1]))) {
+      const invalidDur = new EmbedBuilder()
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Timeout**`, value: '**◎ Error:** Please input a valid duration!' });
+      message.channel.send({ embeds: [invalidDur] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		// Check if timeoutTime is higher than 30 seconds
-		if (ms(args[1]) < '30000') {
-			const valueLow = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Timeout**`,
-					value: `**◎ Error:** Please input a value higher than 30 seconds!` });
-			message.channel.send({ embeds: [valueLow] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    // Check if timeoutTime is higher than 30 seconds
+    if (ms(args[1]) < '30000') {
+      const valueLow = new EmbedBuilder()
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Timeout**`, value: '**◎ Error:** Please input a value higher than 30 seconds!' });
+      message.channel.send({ embeds: [valueLow] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		// Check if timeoutTime is higher than 28 days
-		if (ms(args[1]) > '2419200000') {
-			const valueLow = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Timeout**`,
-					value: `**◎ Error:** Please input a value lower than 28 days!` });
-			message.channel.send({ embeds: [valueLow] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    // Check if timeoutTime is higher than 28 days
+    if (ms(args[1]) > '2419200000') {
+      const valueLow = new EmbedBuilder()
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Timeout**`, value: '**◎ Error:** Please input a value lower than 28 days!' });
+      message.channel.send({ embeds: [valueLow] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		const endTime = new Date().getTime() + ms(args[1]);
-		const nowInSecond = Math.round(endTime / 1000);
+    const endTime = new Date().getTime() + ms(args[1]);
+    const nowInSecond = Math.round(endTime / 1000);
 
-		let reason = args.slice(2).join(' ');
-		if (!reason) reason = 'No reason given.';
+    let reason = args.slice(2).join(' ');
+    if (!reason) reason = 'No reason given.';
 
-		try {
-			user.timeout(ms(args[1]), reason);
-		} catch {
-			const valueLow = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Timeout**`,
-					value: `**◎ Error:** An unknown error occured.` });
-			message.channel.send({ embeds: [valueLow] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    try {
+      user.timeout(ms(args[1]), reason);
+    } catch {
+      const valueLow = new EmbedBuilder()
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Timeout**`, value: '**◎ Error:** An unknown error occured.' });
+      message.channel.send({ embeds: [valueLow] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		const embed = new EmbedBuilder()
-			.setThumbnail(this.client.user.displayAvatarURL())
-			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.addFields({ name: 'Action | Timeout',
-				value: `**◎ User:** ${user.user.tag}
+    const embed = new EmbedBuilder()
+      .setThumbnail(this.client.user.displayAvatarURL())
+      .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+      .addFields({
+        name: 'Action | Timeout',
+        value: `**◎ User:** ${user.user.tag}
 				**◎ Reason:** ${reason}
 				**◎ Time:** <t:${nowInSecond}>
-				**◎ Moderator:** ${message.author.tag}` })
-			.setFooter({ text: 'User Timeout Logs' })
-			.setTimestamp();
+				**◎ Moderator:** ${message.author.tag}`
+      })
+      .setFooter({ text: 'User Timeout Logs' })
+      .setTimestamp();
 
-		message.channel.send({ embeds: [embed] });
+    message.channel.send({ embeds: [embed] });
 
-		const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
-		if (dbid && dbid.channel && dbid.channel === message.channel.id) return;
+    const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
+    if (dbid && dbid.channel && dbid.channel === message.channel.id) return;
 
-		if (!dbid) return;
-		const dblogs = dbid.channel;
-		const chnCheck = this.client.channels.cache.get(dblogs);
+    if (!dbid) return;
+    const dblogs = dbid.channel;
+    const chnCheck = this.client.channels.cache.get(dblogs);
 
-		if (dbid && chnCheck) {
-			this.client.channels.cache.get(dblogs).send({ embeds: [embed] });
-		}
-	}
-
+    if (dbid && chnCheck) {
+      this.client.channels.cache.get(dblogs).send({ embeds: [embed] });
+    }
+  }
 };
+
+export default CommandF;

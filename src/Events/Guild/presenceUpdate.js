@@ -1,43 +1,43 @@
-const Event = require('../../Structures/Event');
-const { EmbedBuilder } = require('discord.js');
+import { EmbedBuilder } from 'discord.js';
+import Event from '../../Structures/Event.js';
 
-module.exports = class extends Event {
+export const EventF = class extends Event {
+  // this whole file is just for AirReps!
+  async run(oldPresence, newPresence) {
+    if (newPresence.guild.id !== '657235952116170794') return;
 
-	// this whole file is just for AirReps!
-	async run(oldPresence, newPresence) {
-		if (newPresence.guild.id !== '657235952116170794') return;
+    const Ragnar = this.client.users.cache.find((a) => a.id === '151516555757223936');
 
-		const Ragnar = this.client.users.cache.find((a) => a.id === '151516555757223936');
+    const offlineEmbed = new EmbedBuilder()
+      .setTitle('Ragnarok Report')
+      .setDescription(`<@${newPresence.userID}> is **OFFLINE**`)
+      .setColor('#ff2f2f')
+      .setTimestamp();
 
-		const offlineEmbed = new EmbedBuilder()
-			.setTitle('Ragnarok Report')
-			.setDescription(`<@${newPresence.userID}> is **OFFLINE**`)
-			.setColor('#ff2f2f')
-			.setTimestamp();
+    const onlineEmbed = new EmbedBuilder()
+      .setTitle('Ragnarok Report')
+      .setDescription(`<@${newPresence.userID}> is **ONLINE**`)
+      .setColor('#27d200')
+      .setTimestamp();
 
-		const onlineEmbed = new EmbedBuilder()
-			.setTitle('Ragnarok Report')
-			.setDescription(`<@${newPresence.userID}> is **ONLINE**`)
-			.setColor('#27d200')
-			.setTimestamp();
+    // Status other than offline
+    const statusList = ['online', 'idle', 'dnd'];
 
-		// Status other than offline
-		const statusList = ['online', 'idle', 'dnd'];
+    const airRepsBotId = '664924910048641044';
 
-		const airRepsBotId = '664924910048641044';
-
-		const channelid = this.client.channels.cache.find((a) => a.id === '657342849737687041');
-		if (airRepsBotId.includes(newPresence.userID)) {
-			if (oldPresence.status === newPresence.status) return;
-			if (statusList.includes(oldPresence.status) && statusList.includes(newPresence.status)) return;
-			if (newPresence.status === 'offline') {
-				channelid.send(`${Ragnar}`);
-				channelid.send({ embeds: [offlineEmbed] });
-			} else {
-				channelid.send(`${Ragnar}`);
-				channelid.send({ embeds: [onlineEmbed] });
-			}
-		}
-	}
-
+    const channelid = this.client.channels.cache.find((a) => a.id === '657342849737687041');
+    if (airRepsBotId.includes(newPresence.userID)) {
+      if (oldPresence.status === newPresence.status) return;
+      if (statusList.includes(oldPresence.status) && statusList.includes(newPresence.status)) return;
+      if (newPresence.status === 'offline') {
+        channelid.send(`${Ragnar}`);
+        channelid.send({ embeds: [offlineEmbed] });
+      } else {
+        channelid.send(`${Ragnar}`);
+        channelid.send({ embeds: [onlineEmbed] });
+      }
+    }
+  }
 };
+
+export default EventF;

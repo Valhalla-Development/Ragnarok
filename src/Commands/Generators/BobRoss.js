@@ -1,31 +1,30 @@
-const Command = require('../../Structures/Command');
-const { AttachmentBuilder } = require('discord.js');
-const DIG = require('discord-image-generation');
+import { AttachmentBuilder } from 'discord.js';
+import DIG from 'discord-image-generation';
+import Command from '../../Structures/Command.js';
 
-module.exports = class extends Command {
+export const CommandF = class extends Command {
+  constructor(...args) {
+    super(...args, {
+      description: 'Generate a Bob Ross image!',
+      category: 'Generators',
+      usage: '[@tag]'
+    });
+  }
 
-	constructor(...args) {
-		super(...args, {
-			description: 'Generate a Bob Ross image!',
-			category: 'Generators',
-			usage: '[@tag]'
-		});
-	}
+  async run(message) {
+    this.client.utils.messageDelete(message, 0);
+    let avatar;
 
-	async run(message) {
-		this.client.utils.messageDelete(message, 0);
-		let avatar;
+    if (message.mentions.members.first()) {
+      avatar = message.mentions.members.first().user.displayAvatarURL({ dynamic: false, format: 'png' });
+    } else {
+      avatar = message.author.displayAvatarURL({ dynamic: false, format: 'png' });
+    }
 
-		if (message.mentions.members.first()) {
-			avatar = message.mentions.members.first().user.displayAvatarURL({ dynamic: false, format: 'png' });
-		} else {
-			avatar = message.author.displayAvatarURL({ dynamic: false, format: 'png' });
-		}
-
-		const img = await new DIG.Bobross().getImage(avatar);
-		const attach = new AttachmentBuilder(img, { name: 'BobRoss.png' });
-		message.channel.send({ files: [attach] });
-		return;
-	}
-
+    const img = await new DIG.Bobross().getImage(avatar);
+    const attach = new AttachmentBuilder(img, { name: 'BobRoss.png' });
+    message.channel.send({ files: [attach] });
+  }
 };
+
+export default CommandF;

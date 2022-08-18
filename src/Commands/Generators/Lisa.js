@@ -1,44 +1,42 @@
-const Command = require('../../Structures/Command');
-const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
-const DIG = require('discord-image-generation');
+import { EmbedBuilder, AttachmentBuilder } from 'discord.js';
+import DIG from 'discord-image-generation';
+import Command from '../../Structures/Command.js';
 
-module.exports = class extends Command {
+export const CommandF = class extends Command {
+  constructor(...args) {
+    super(...args, {
+      description: 'Generate a Lisa image!',
+      category: 'Generators',
+      usage: '<text>'
+    });
+  }
 
-	constructor(...args) {
-		super(...args, {
-			description: 'Generate a Lisa image!',
-			category: 'Generators',
-			usage: '<text>'
-		});
-	}
+  async run(message, args) {
+    this.client.utils.messageDelete(message, 0);
 
-	async run(message, args) {
-		this.client.utils.messageDelete(message, 0);
+    const text = args.join(' ');
 
-		const text = args.join(' ');
+    if (!text) {
+      const incorrectFormat = new EmbedBuilder()
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Lisa**`, value: '**◎ Error:** Incorrect usage! Please input some text' });
+      message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		if (!text) {
-			const incorrectFormat = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Lisa**`,
-					value: `**◎ Error:** Incorrect usage! Please input some text` });
-			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    if (text.length > 300) {
+      const incorrectFormat = new EmbedBuilder().setColor(this.client.utils.color(message.guild.members.me.displayHexColor)).addFields({
+        name: `**${this.client.user.username} - Lisa**`,
+        value: '**◎ Error:** Incorrect usage! Please input a maximum of 300 characters!'
+      });
+      message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		if (text.length > 300) {
-			const incorrectFormat = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Lisa**`,
-					value: `**◎ Error:** Incorrect usage! Please input a maximum of 300 characters!` });
-			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
-
-		const img = await new DIG.LisaPresentation().getImage(text);
-		const attach = new AttachmentBuilder(img, { name: 'Lisa.png' });
-		message.channel.send({ files: [attach] });
-		return;
-	}
-
+    const img = await new DIG.LisaPresentation().getImage(text);
+    const attach = new AttachmentBuilder(img, { name: 'Lisa.png' });
+    message.channel.send({ files: [attach] });
+  }
 };
+
+export default CommandF;

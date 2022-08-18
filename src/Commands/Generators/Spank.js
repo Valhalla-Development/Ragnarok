@@ -1,35 +1,36 @@
-const Command = require('../../Structures/Command');
-const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
-const DIG = require('discord-image-generation');
+import { EmbedBuilder, AttachmentBuilder } from 'discord.js';
+import DIG from 'discord-image-generation';
+import Command from '../../Structures/Command.js';
 
-module.exports = class extends Command {
+export const CommandF = class extends Command {
+  constructor(...args) {
+    super(...args, {
+      description: 'Generate a Spank image!',
+      category: 'Generators',
+      usage: '<@tag>'
+    });
+  }
 
-	constructor(...args) {
-		super(...args, {
-			description: 'Generate a Spank image!',
-			category: 'Generators',
-			usage: '<@tag>'
-		});
-	}
+  async run(message) {
+    this.client.utils.messageDelete(message, 0);
 
-	async run(message) {
-		this.client.utils.messageDelete(message, 0);
+    const user = message.mentions.members.first();
 
-		const user = message.mentions.members.first();
+    if (!user) {
+      const incorrectFormat = new EmbedBuilder()
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Spank**`, value: '**◎ Error:** Incorrect usage! Please tag a user!' });
+      message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-		if (!user) {
-			const incorrectFormat = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Spank**`,
-					value: `**◎ Error:** Incorrect usage! Please tag a user!` });
-			message.channel.send({ embeds: [incorrectFormat] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
-
-		const img = await new DIG.Spank().getImage(message.author.displayAvatarURL({ dynamic: false, format: 'png' }), user.user.displayAvatarURL({ dynamic: false, format: 'png' }));
-		const attach = new AttachmentBuilder(img, { name: 'Spank.png' });
-		message.channel.send({ files: [attach] });
-		return;
-	}
-
+    const img = await new DIG.Spank().getImage(
+      message.author.displayAvatarURL({ dynamic: false, format: 'png' }),
+      user.user.displayAvatarURL({ dynamic: false, format: 'png' })
+    );
+    const attach = new AttachmentBuilder(img, { name: 'Spank.png' });
+    message.channel.send({ files: [attach] });
+  }
 };
+
+export default CommandF;

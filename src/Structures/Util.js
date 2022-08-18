@@ -1,130 +1,135 @@
-const path = require('path');
-const { promisify } = require('util');
-const glob = promisify(require('glob'));
-const Command = require('./Command.js');
-const Event = require('./Event.js');
-const { PermissionsBitField } = require('discord.js');
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-param-reassign */
+import path from 'path';
+import { promisify } from 'util';
+import { PermissionsBitField } from 'discord.js';
+import glob from 'glob';
+import url from 'url';
+import Command from './Command.js';
+import Event from './Event.js';
 
-module.exports = class Util {
+const globPromise = promisify(glob);
 
-	constructor(client) {
-		this.client = client;
-	}
+export const Util = class Util {
+  constructor(client) {
+    this.client = client;
+  }
 
-	isClass(input) {
-		return typeof input === 'function' &&
-        typeof input.prototype === 'object' &&
-        input.toString().substring(0, 5) === 'class';
-	}
+  isClass(input) {
+    return typeof input === 'function' && typeof input.prototype === 'object' && input.toString().substring(0, 5) === 'class';
+  }
 
-	get directory() {
-		return `${path.dirname(require.main.filename)}${path.sep}`;
-	}
+  get directory() {
+    return url.fileURLToPath(new URL('..', import.meta.url));
+  }
 
-	trimArray(arr, maxLen) {
-		if (arr.length > maxLen) {
-			const len = arr.length - maxLen;
-			arr = arr.slice(0, maxLen);
-			arr.push(` ${len} more...`);
-		}
-		return arr;
-	}
+  trimArray(arr, maxLen) {
+    if (arr.length > maxLen) {
+      const len = arr.length - maxLen;
+      arr = arr.slice(0, maxLen);
+      arr.push(` ${len} more...`);
+    }
+    return arr;
+  }
 
-	removeDuplicates(arr) {
-		return [...new Set(arr)];
-	}
+  removeDuplicates(arr) {
+    return [...new Set(arr)];
+  }
 
-	capitalise(string) {
-		return string.split(' ').map(str => str.slice(0, 1).toUpperCase() + str.slice(1)).join(' ');
-	}
+  capitalise(string) {
+    return string
+      .split(' ')
+      .map((str) => str.slice(0, 1).toUpperCase() + str.slice(1))
+      .join(' ');
+  }
 
-	color(me) {
-		let color;
-		if (me === '#000000') {
-			color = '#A10000';
-		} else {
-			color = me;
-		}
-		return color;
-	}
+  color(me) {
+    let color;
+    if (me === '#000000') {
+      color = '#A10000';
+    } else {
+      color = me;
+    }
+    return color;
+  }
 
-	messageDelete(message, time) {
-		if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-			setTimeout(() => {
-				if (message && message.deletable) {
-					message.delete();
-				}
-			}, time);
-		}
-	}
+  messageDelete(message, time) {
+    if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+      setTimeout(() => {
+        if (message && message.deletable) {
+          message.delete();
+        }
+      }, time);
+    }
+  }
 
-	deletableCheck(message, time) {
-		setTimeout(() => {
-			if (message && message.deletable) {
-				message.delete();
-			}
-		}, time);
-	}
+  deletableCheck(message, time) {
+    setTimeout(() => {
+      if (message && message.deletable) {
+        message.delete();
+      }
+    }, time);
+  }
 
-	formatPerms(perms) {
-		return perms
-			.toLowerCase()
-			.replace(/(^|"|_)(\S)/g, (s) => s.toUpperCase())
-			.replace(/_/g, ' ')
-			.replace(/Guild/g, 'Server')
-			.replace(/Use Vad/g, 'Use Voice Activity');
-	}
+  formatPerms(perms) {
+    return perms
+      .toLowerCase()
+      .replace(/(^|"|_)(\S)/g, (s) => s.toUpperCase())
+      .replace(/_/g, ' ')
+      .replace(/Guild/g, 'Server')
+      .replace(/Use Vad/g, 'Use Voice Activity');
+  }
 
-	formatArray(array, type = 'conjunction') {
-		return new Intl.ListFormat('en-GB', { style: 'short', type: type }).format(array);
-	}
+  formatArray(array, type = 'conjunction') {
+    return new Intl.ListFormat('en-GB', { style: 'short', type }).format(array);
+  }
 
-	checkOwner(target) {
-		return this.client.owners.includes(target);
-	}
+  checkOwner(target) {
+    return this.client.owners.includes(target);
+  }
 
-	async loadCommands() {
-		return glob(`${this.directory}Commands/**/*.js`).then(commands => {
-			for (const commandFile of commands) {
-				delete require.cache[commandFile];
-				const { name } = path.parse(commandFile);
-				const File = require(commandFile);
-				if (!this.isClass(File)) throw new TypeError(`Command ${name} doesn't export a class.`);
-				const command = new File(this.client, name.toLowerCase());
-				if (!(command instanceof Command)) throw new TypeError(`Comamnd ${name} doesnt belong in Commands.`);
-				this.client.commands.set(command.name, command);
-				if (command.aliases.length) {
-					for (const alias of command.aliases) {
-						this.client.aliases.set(alias, command.name);
-					}
-				}
-			}
-		});
-	}
+  async loadCommands() {
+    return globPromise(`${this.directory}Commands/**/*.js`).then(async (commands) => {
+      for (const commandFile of commands) {
+        const { name } = path.parse(commandFile);
+        const { default: File } = await import(commandFile);
+        if (!this.isClass(File)) throw new TypeError(`Command ${name} doesn't export a class!`);
+        const command = new File(this.client, name.toLowerCase());
+        if (!(command instanceof Command)) throw new TypeError(`Command ${name} doesn't belong in the Commands directory.`);
+        this.client.commands.set(command.name, command);
+        if (command.aliases.length) {
+          for (const alias of command.aliases) {
+            this.client.aliases.set(alias, command.name);
+          }
+        }
+      }
+    });
+  }
 
-	async loadEvents() {
-		return glob(`${this.directory}Events/**/*.js`).then(events => {
-			for (const eventFile of events) {
-				delete require.cache[eventFile];
-				const { name } = path.parse(eventFile);
-				const File = require(eventFile);
-				if (!this.isClass(File)) throw new TypeError(`Event ${name} doesn't export a class!`);
-				const event = new File(this.client, name);
-				if (!(event instanceof Event)) throw new TypeError(`Event ${name} doesn't belong in the Events directory.`);
-				this.client.events.set(event.name, event);
-				event.emitter[event.type](name, (...args) => event.run(...args));
-			}
-		});
-	}
+  async loadEvents() {
+    return globPromise(`${this.directory}Events/**/*.js`).then(async (events) => {
+      for (const eventFile of events) {
+        const { name } = path.parse(eventFile);
+        const { default: File } = await import(eventFile);
+        if (!this.isClass(File)) throw new TypeError(`Event ${name} doesn't export a class!`);
+        const event = new File(this.client, name);
+        if (!(event instanceof Event)) throw new TypeError(`Event ${name} doesn't belong in the Events directory.`);
+        this.client.events.set(event.name, event);
+        event.emitter[event.type](name, (...args) => event.run(...args));
+      }
+    });
+  }
 
-	async loadFunctions() {
-		this.client.functions = {};
-		return glob(`${this.directory}Functions/*.js`).then(functions => {
-			functions.forEach((m) => {
-				const File = require(m);
-				this.client.functions[File.name] = new File(this)[File.name];
-			});
-		});
-	}
-
+  async loadFunctions() {
+    this.client.functions = {};
+    return globPromise(`${this.directory}Functions/*.js`).then(async (functions) => {
+      functions.forEach(async (m) => {
+        const { default: File } = await import(m);
+        this.client.functions[File.name] = new File(this)[File.name];
+      });
+    });
+  }
 };
+
+export default Util;

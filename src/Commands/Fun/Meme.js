@@ -1,143 +1,142 @@
-const Command = require('../../Structures/Command');
-const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require('discord.js');
+import { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } from 'discord.js';
+import RedditImageFetcher from 'reddit-image-fetcher';
+import Command from '../../Structures/Command.js';
+
 const comCooldown = new Set();
 const comCooldownSeconds = 10;
-const RedditImageFetcher = require('reddit-image-fetcher');
 
-const subreddits = [
-	'memes',
-	'bonehurtingjuice',
-	'surrealmemes',
-	'dankmemes',
-	'meirl',
-	'me_irl',
-	'funny'
-];
+const subreddits = ['memes', 'bonehurtingjuice', 'surrealmemes', 'dankmemes', 'meirl', 'me_irl', 'funny'];
 
-module.exports = class extends Command {
+export const CommandF = class extends Command {
+  constructor(...args) {
+    super(...args, {
+      aliases: ['funny'],
+      description: 'Fetches a random Meme from several sub-reddits.',
+      category: 'Fun'
+    });
+  }
 
-	constructor(...args) {
-		super(...args, {
-			aliases: ['funny'],
-			description: 'Fetches a random Meme from several sub-reddits.',
-			category: 'Fun'
-		});
-	}
+  async run(message) {
+    if (comCooldown.has(message.author.id)) {
+      this.client.utils.messageDelete(message, 10000);
 
-	async run(message) {
-		if (comCooldown.has(message.author.id)) {
-			this.client.utils.messageDelete(message, 10000);
+      const embed = new EmbedBuilder()
+        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Meme**`, value: '**◎ Error:** Please only run this command once.' });
+      message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      return;
+    }
 
-			const embed = new EmbedBuilder()
-				.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-				.addFields({ name: `**${this.client.user.username} - Meme**`,
-					value: `**◎ Error:** Please only run this command once.` });
-			message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-			return;
-		}
+    const msg = await message.channel.send({ content: 'Generating...' });
+    message.channel.sendTyping();
 
-		const msg = await message.channel.send({ content: 'Generating...' });
-		message.channel.sendTyping();
+    async function getMeme() {
+      return RedditImageFetcher.fetch({
+        type: 'custom',
+        total: 1,
+        subreddit: subreddits
+      });
+    }
 
-		async function getMeme() {
-			return RedditImageFetcher.fetch({
-				type: 'custom',
-				total: 1,
-				subreddit: subreddits
-			});
-		}
+    const meme = await getMeme();
 
-		const meme = await getMeme();
+    const embed = new EmbedBuilder()
+      .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+      .setAuthor({
+        name: `${meme[0].title.length >= 256 ? `${meme[0].title.substring(0, 253)}...` : meme[0].title}`,
+        url: `${meme[0].postLink}`,
+        iconURL: message.author.displayAvatarURL({ extension: 'png' })
+      })
+      .setImage(meme[0].image)
+      .setFooter({ text: `👍 ${meme[0].upvotes}` });
 
-		const embed = new EmbedBuilder()
-			.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-			.setAuthor({ name: `${meme[0].title.length >= 256 ? `${meme[0].title.substring(0, 253)}...` : meme[0].title}`, url: `${meme[0].postLink}`, iconURL: message.author.displayAvatarURL({ extension: 'png' }) })
-			.setImage(meme[0].image)
-			.setFooter({ text: `👍 ${meme[0].upvotes}` });
+    const buttonA = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Next Meme').setCustomId('nxtmeme');
 
-		const buttonA = new ButtonBuilder()
-			.setStyle(ButtonStyle.Primary)
-			.setLabel('Next Meme')
-			.setCustomId('nxtmeme');
+    const row = new ActionRowBuilder().addComponents(buttonA);
 
-		const row = new ActionRowBuilder()
-			.addComponents(buttonA);
+    const m = await message.channel.send({ components: [row], embeds: [embed] });
 
-		const m = await message.channel.send({ components: [row], embeds: [embed] });
+    const filter = (but) => but.user.id !== this.client.user.id;
 
-		const filter = (but) => but.user.id !== this.client.user.id;
+    const collector = m.createMessageComponentCollector({ filter, time: 15000 });
 
-		const collector = m.createMessageComponentCollector({ filter: filter, time: 15000 });
+    const newMemes = await getNewMeme();
 
-		const newMemes = await getNewMeme();
+    if (!comCooldown.has(message.author.id)) {
+      comCooldown.add(message.author.id);
+    }
+    setTimeout(() => {
+      if (comCooldown.has(message.author.id)) {
+        comCooldown.delete(message.author.id);
+      }
+    }, comCooldownSeconds * 1000);
 
-		if (!comCooldown.has(message.author.id)) {
-			comCooldown.add(message.author.id);
-		}
-		setTimeout(() => {
-			if (comCooldown.has(message.author.id)) {
-				comCooldown.delete(message.author.id);
-			}
-		}, comCooldownSeconds * 1000);
+    collector.on('collect', async (b) => {
+      if (b.user.id !== message.author.id) {
+        const wrongUser = new EmbedBuilder()
+          .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+          .addFields({ name: `**${this.client.user.username} - Meme**`, value: '**◎ Error:** Only the command executor can select an option!' });
+        b.reply({ embeds: [wrongUser], ephemeral: true });
+        return;
+      }
 
-		collector.on('collect', async b => {
-			if (b.user.id !== message.author.id) {
-				const wrongUser = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.addFields({ name: `**${this.client.user.username} - Meme**`,
-						value: `**◎ Error:** Only the command executor can select an option!` });
-				b.reply({ embeds: [wrongUser], ephemeral: true });
-				return;
-			}
+      collector.resetTimer();
 
-			collector.resetTimer();
+      if (b.customId === 'nxtmeme') {
+        // Pick a random meme
+        const randomMeme = newMemes[Math.floor(Math.random() * newMemes.length)];
 
-			if (b.customId === 'nxtmeme') {
-				// Pick a random meme
-				const randomMeme = newMemes[Math.floor(Math.random() * newMemes.length)];
+        // Remove the used meme from the list
+        newMemes.splice(newMemes.indexOf(randomMeme), 1);
 
-				// Remove the used meme from the list
-				newMemes.splice(newMemes.indexOf(randomMeme), 1);
+        // If there are no more memes, remove the button
+        if (newMemes.length === 0) {
+          const newMeme = new EmbedBuilder()
+            .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+            .setAuthor({
+              name: `${randomMeme.title.length >= 256 ? `${randomMeme.title.substring(0, 253)}...` : randomMeme.title}`,
+              url: `${randomMeme.postLink}`,
+              iconURL: message.author.displayAvatarURL({ extension: 'png' })
+            })
+            .setImage(randomMeme.image)
+            .setFooter({ text: `👍 ${randomMeme.upvotes}` });
+          await b.update({ embeds: [newMeme], components: [] });
+          return;
+        }
 
-				// If there are no more memes, remove the button
-				if (newMemes.length === 0) {
-					const newMeme = new EmbedBuilder()
-						.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-						.setAuthor({ name: `${randomMeme.title.length >= 256 ? `${randomMeme.title.substring(0, 253)}...` : randomMeme.title}`, url: `${randomMeme.postLink}`, iconURL: message.author.displayAvatarURL({ extension: 'png' }) })
-						.setImage(randomMeme.image)
-						.setFooter({ text: `👍 ${randomMeme.upvotes}` });
-					await b.update({ embeds: [newMeme], components: [] });
-					return;
-				}
+        const newMeme = new EmbedBuilder()
+          .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
+          .setAuthor({
+            name: `${randomMeme.title.length >= 256 ? `${randomMeme.title.substring(0, 253)}...` : randomMeme.title}`,
+            url: `${randomMeme.postLink}`,
+            iconURL: message.author.displayAvatarURL({ extension: 'png' })
+          })
+          .setImage(randomMeme.image)
+          .setFooter({ text: `👍 ${randomMeme.upvotes}` });
+        await b.update({ embeds: [newMeme], components: [row] });
+      }
+    });
 
-				const newMeme = new EmbedBuilder()
-					.setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-					.setAuthor({ name: `${randomMeme.title.length >= 256 ? `${randomMeme.title.substring(0, 253)}...` : randomMeme.title}`, url: `${randomMeme.postLink}`, iconURL: message.author.displayAvatarURL({ extension: 'png' }) })
-					.setImage(randomMeme.image)
-					.setFooter({ text: `👍 ${randomMeme.upvotes}` });
-				await b.update({ embeds: [newMeme], components: [row] });
-			}
-		});
+    collector.on('end', () => {
+      // Disable button and update message
+      buttonA.setDisabled(true);
+      m.edit({ components: [row] });
 
-		collector.on('end', () => {
-			// Disable button and update message
-			buttonA.setDisabled(true);
-			m.edit({ components: [row] });
+      if (comCooldown.has(message.author.id)) {
+        comCooldown.delete(message.author.id);
+      }
+    });
 
-			if (comCooldown.has(message.author.id)) {
-				comCooldown.delete(message.author.id);
-			}
-		});
+    this.client.utils.deletableCheck(msg, 0);
 
-		this.client.utils.deletableCheck(msg, 0);
-
-		async function getNewMeme() {
-			return RedditImageFetcher.fetch({
-				type: 'custom',
-				total: 25,
-				subreddit: subreddits
-			});
-		}
-	}
-
+    async function getNewMeme() {
+      return RedditImageFetcher.fetch({
+        type: 'custom',
+        total: 25,
+        subreddit: subreddits
+      });
+    }
+  }
 };
+
+export default CommandF;
