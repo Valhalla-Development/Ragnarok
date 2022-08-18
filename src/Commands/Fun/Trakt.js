@@ -55,13 +55,6 @@ export const CommandF = class extends Command {
         extended: 'full'
       });
 
-    const getTraktEmbed = (title, desc, image, link, searchQuery, rating) =>
-      new EmbedBuilder()
-        .setColor('#EA2027')
-        .setAuthor({ name: `${decode(title)}`, url: link, iconURL: 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png' })
-        .setDescription(`${codeBlock('text', `${decode(desc, 'all')}`)}\n**<:trakt:977201291115765820> ${rating}**`)
-        .setImage(image);
-
     const notFound = (searchQuery) => {
       const embed = new EmbedBuilder().setColor(this.client.utils.color(message.guild.members.me.displayHexColor)).addFields({
         name: `**${this.client.user.username} - Trakt.tv**`,
@@ -97,24 +90,28 @@ export const CommandF = class extends Command {
               await imdbFetch(movieInfo[0].movie.ids.imdb);
             }
 
-            message.channel.send({
-              embeds: [
-                getTraktEmbed(
-                  `${reqTitle} - Movie`,
-                  reqDesc,
-                  reqImage,
-                  reqLink,
-                  reqSearch,
+            const getTraktEmbed = new EmbedBuilder()
+              .setColor('#EA2027')
+              .setAuthor({
+                name: `${decode(reqTitle)} - Movie`,
+                url: reqLink || 'https://trakt.tv/',
+                iconURL: 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png'
+              })
+              .setDescription(
+                `${codeBlock('text', `${decode(reqDesc, 'all')}`)}\n**<:trakt:977201291115765820>${
                   imdbRt
-                    ? `[${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(
+                    ? ` [${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(
                         0,
                         imdbRt.lastIndexOf('/')
                       )}](https://www.imdb.com/title/${movieInfo[0].movie.ids.imdb})`
-                    : `${reqRating}%`,
-                  reqVotes
-                )
-              ]
-            });
+                    : ` [${reqRating}%](${reqLink})%`
+                }**`
+              );
+            if (reqImage) {
+              getTraktEmbed.setImage(reqImage);
+            }
+
+            message.channel.send({ embeds: [getTraktEmbed] });
             this.client.utils.deletableCheck(msg, 0);
           });
         })
@@ -149,24 +146,28 @@ export const CommandF = class extends Command {
               await imdbFetch(showInfo[0].show.ids.imdb);
             }
 
-            message.channel.send({
-              embeds: [
-                getTraktEmbed(
-                  `${reqTitle} - TV Show`,
-                  reqDesc,
-                  reqImage,
-                  reqLink,
-                  reqSearch,
+            const getTraktEmbed = new EmbedBuilder()
+              .setColor('#EA2027')
+              .setAuthor({
+                name: `${decode(reqTitle)} - TV Show`,
+                url: reqLink || 'https://trakt.tv/',
+                iconURL: 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png'
+              })
+              .setDescription(
+                `${codeBlock('text', `${decode(reqDesc, 'all')}`)}\n**<:trakt:977201291115765820>${
                   imdbRt
-                    ? `[${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(
+                    ? ` [${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(
                         0,
                         imdbRt.lastIndexOf('/')
                       )}](https://www.imdb.com/title/${showInfo[0].show.ids.imdb})`
-                    : `${reqRating}%`,
-                  reqVotes
-                )
-              ]
-            });
+                    : ` [${reqRating}%](${reqLink})%`
+                }**`
+              );
+            if (reqImage) {
+              getTraktEmbed.setImage(reqImage);
+            }
+
+            message.channel.send({ embeds: [getTraktEmbed] });
             this.client.utils.deletableCheck(msg, 0);
           });
         })
@@ -211,24 +212,28 @@ export const CommandF = class extends Command {
                   await imdbFetch(info[0].movie.ids.imdb);
                 }
 
-                message.channel.send({
-                  embeds: [
-                    getTraktEmbed(
-                      `${reqTitle} - Movie`,
-                      reqDesc,
-                      reqImage,
-                      reqLink,
-                      reqSearch,
+                const getTraktEmbed = new EmbedBuilder()
+                  .setColor('#EA2027')
+                  .setAuthor({
+                    name: `${decode(reqTitle)} - Movie`,
+                    url: reqLink || 'https://trakt.tv/',
+                    iconURL: 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png'
+                  })
+                  .setDescription(
+                    `${codeBlock('text', `${decode(reqDesc, 'all')}`)}\n**<:trakt:977201291115765820>${
                       imdbRt
-                        ? `[${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(
+                        ? ` [${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(
                             0,
                             imdbRt.lastIndexOf('/')
                           )}](https://www.imdb.com/title/${info[0].movie.ids.imdb})`
-                        : `${reqRating}%`,
-                      reqVotes
-                    )
-                  ]
-                });
+                        : ` [${reqRating}%](${reqLink})%`
+                    }**`
+                  );
+                if (reqImage) {
+                  getTraktEmbed.setImage(reqImage);
+                }
+
+                message.channel.send({ embeds: [getTraktEmbed] });
                 this.client.utils.deletableCheck(msg, 0);
               });
               break;
@@ -256,25 +261,28 @@ export const CommandF = class extends Command {
                   await imdbFetch(info[0].show.ids.imdb);
                 }
 
-                message.channel.send({
-                  embeds: [
-                    getTraktEmbed(
-                      `${reqTitle} - TV Show`,
-                      reqDesc,
-                      reqImage,
-                      reqLink,
-                      reqSearch,
+                const getTraktEmbed = new EmbedBuilder()
+                  .setColor('#EA2027')
+                  .setAuthor({
+                    name: `${decode(reqTitle)} - TV Show`,
+                    url: reqLink || 'https://trakt.tv/',
+                    iconURL: 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png'
+                  })
+                  .setDescription(
+                    `${codeBlock('text', `${decode(reqDesc, 'all')}`)}\n**<:trakt:977201291115765820>${
                       imdbRt
-                        ? `[${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(
+                        ? ` [${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(
                             0,
                             imdbRt.lastIndexOf('/')
                           )}](https://www.imdb.com/title/${info[0].show.ids.imdb})`
-                        : `${reqRating}%`,
-                      reqVotes
-                    )
-                  ]
-                });
+                        : ` [${reqRating}%](${reqLink})%`
+                    }**`
+                  );
+                if (reqImage) {
+                  getTraktEmbed.setImage(reqImage);
+                }
 
+                message.channel.send({ embeds: [getTraktEmbed] });
                 this.client.utils.deletableCheck(msg, 0);
               });
               break;
