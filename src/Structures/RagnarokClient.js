@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 import { Client, Collection, PermissionsBitField, GatewayIntentBits, Partials } from 'discord.js';
 import db from 'quick.db';
 import { GiveawaysManager } from 'discord-giveaways';
@@ -29,6 +30,8 @@ export const RagnarokClient = class RagnarokClient extends Client {
     this.validate(options);
 
     this.commands = new Collection();
+
+    this.slashCommands = new Collection();
 
     this.aliases = new Collection();
 
@@ -237,10 +240,11 @@ export const RagnarokClient = class RagnarokClient extends Client {
   }
 
   async start(token = this.token) {
-    this.utils.loadCommands();
-    this.utils.loadEvents();
-    this.utils.loadFunctions();
-    super.login(token);
+    await this.utils.loadCommands();
+    await this.utils.loadSlashCommands();
+    await this.utils.loadEvents();
+    await this.utils.loadFunctions();
+    await super.login(token);
   }
 };
 
