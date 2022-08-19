@@ -3,11 +3,17 @@
 /* eslint-disable no-param-reassign */
 import path from 'path';
 import { promisify } from 'util';
-import { PermissionsBitField } from 'discord.js';
+import { PermissionsBitField, REST, Routes } from 'discord.js';
 import glob from 'glob';
 import url from 'url';
+import chalk from 'chalk';
 import Command from './Command.js';
 import Event from './Event.js';
+import SlashCommand from './SlashCommand.js';
+
+import * as configFile from '../../config.json' assert { type: 'json' };
+
+const { supportGuild } = configFile.default;
 
 const globPromise = promisify(glob);
 
@@ -87,6 +93,64 @@ export const Util = class Util {
 
   checkOwner(target) {
     return this.client.owners.includes(target);
+  }
+
+  async loadSlashCommands() {
+    const testingCmds = [];
+    const cmds = [];
+
+    return globPromise(`${this.directory}SlashCommands/**/*.js`).then(async (commands) => {
+      for (const commandFile of commands) {
+        const { name } = path.parse(commandFile);
+        const { default: File } = await import(commandFile);
+        if (!this.isClass(File)) throw new TypeError(`Slash Command ${name} doesn't export a class!`);
+        const command = new File(this.client, name.toLowerCase());
+        if (!(command instanceof SlashCommand)) throw new TypeError(`Slash Command ${name} doesn't belong in the Commands directory.`);
+        this.client.slashCommands.set(command.name, command);
+
+        if (command.ownerOnly) {
+          testingCmds.push({
+            name: command.name,
+            type: command.type ? command.type : 1,
+            description: command.description ? command.description : 'No description provided.',
+            ownerOnly: command.ownerOnly ? command.ownerOnly : null,
+            options: command.options ? command.options.options : null,
+            userPerms: command.userPerms ? command.userPerms : null,
+            botPerms: command.botPerms ? command.botPerms : null
+          });
+        } else {
+          cmds.push({
+            name: command.name,
+            type: command.type ? command.type : 1,
+            description: command.description ? command.description : 'No description provided.',
+            ownerOnly: command.ownerOnly ? command.ownerOnly : null,
+            options: command.options ? command.options.options : null,
+            userPerms: command.userPerms ? command.userPerms : null,
+            botPerms: command.botPerms ? command.botPerms : null
+          });
+        }
+      }
+
+      const rest = new REST({ version: '10' }).setToken(this.client.token);
+
+      (async () => {
+        try {
+          if (testingCmds) {
+            await rest.put(Routes.applicationGuildCommands('509122286561787904', supportGuild), { body: testingCmds });
+            console.log(
+              `${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${testingCmds.length}`)} ${chalk.whiteBright('Owner Only Slash commands!')}`
+            );
+          }
+
+          if (cmds) {
+            await rest.put(Routes.applicationCommands('509122286561787904'), { body: cmds });
+            console.log(`${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${cmds.length}`)} ${chalk.whiteBright('Slash commands!')}`);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      })();
+    });
   }
 
   async loadCommands() {
