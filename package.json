@@ -1,6 +1,6 @@
 {
   "name": "ragnarok",
-  "version": "4.1.59",
+  "version": "4.1.67",
   "description": "A multi-purpose Discord bot.",
   "main": "src/index",
   "repository": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git",
@@ -41,7 +41,7 @@
     "request": "^2.88.2",
     "string-progressbar": "^1.0.4",
     "sudo-minigames": "^1.0.1",
-    "systeminformation": "^5.12.5",
+    "systeminformation": "^5.12.6",
     "today-word": "^1.0.0",
     "trakt.tv": "^8.1.1",
     "twemoji-parser": "^14.0.0",
@@ -50,10 +50,10 @@
     "url-regex-safe": "^3.0.0"
   },
   "devDependencies": {
-    "eslint": "^7.32.0 || ^8.2.0",
+    "eslint": "^8.22.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.7.1",
     "yarn-upgrade-all": "^0.7.1"
