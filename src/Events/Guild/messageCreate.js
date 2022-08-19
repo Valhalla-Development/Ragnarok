@@ -1063,9 +1063,9 @@ export const EventF = class extends Event {
       if (!oargresult || oargresult === '') {
         logembed.addFields({
           name: `Guild: ${message.guild.name} | Date: <t:${nowInSecond}>`,
-          value: codeBlock('kotlin', `'${cmd}' was executed by ${message.author.tag}`)
+          value: codeBlock('kotlin', `'${cmd}' Command was executed by ${message.author.tag}`)
         });
-        const LoggingNoArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] '\x1b[92m${cmd}\x1b[0m' was executed by \x1b[31m${
+        const LoggingNoArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] '\x1b[92m${cmd}\x1b[0m' Command was executed by \x1b[31m${
           message.author.tag
         }\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
         this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
@@ -1075,9 +1075,9 @@ export const EventF = class extends Event {
 
         logembed.addFields({
           name: `Guild: ${message.guild.name} | Date: <t:${nowInSecond}>`,
-          value: codeBlock('kotlin', `'${cmd} ${trimmedString}' was executed by ${message.author.tag}`)
+          value: codeBlock('kotlin', `'${cmd} ${trimmedString}' Command was executed by ${message.author.tag}`)
         });
-        const LoggingArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] '\x1b[92m${cmd} ${oargresult}\x1b[0m' was executed by \x1b[31m${
+        const LoggingArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] '\x1b[92m${cmd} ${oargresult}\x1b[0m' Command was executed by \x1b[31m${
           message.author.tag
         }\x1b[0m (Guild: \x1b[31m${message.guild.name}\x1b[0m)`;
         this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
