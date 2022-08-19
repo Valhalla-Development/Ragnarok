@@ -8,8 +8,10 @@ import {
   InteractionType,
   ButtonStyle,
   OverwriteType,
-  ChannelType
+  ChannelType,
+  codeBlock
 } from 'discord.js';
+import moment from 'moment';
 import SQLite from 'better-sqlite3';
 import { customAlphabet } from 'nanoid';
 import discordTranscripts from 'discord-html-transcripts';
@@ -22,6 +24,74 @@ const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 
 export const EventF = class extends Event {
   async run(interaction) {
+    if (interaction.isChatInputCommand()) {
+      const command = this.client.slashCommands.get(interaction.commandName.toLowerCase());
+      if (!command) return;
+
+      try {
+        const userPermCheck = command.userPerms ? this.client.defaultPerms.add(command.userPerms) : this.client.defaultPerms;
+        if (!this.client.utils.checkOwner(interaction.user.id) && userPermCheck) {
+          const missing = interaction.channel.permissionsFor(interaction.member).missing(userPermCheck);
+          if (missing.length) {
+            const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+              name: `**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
+              value: `**◎ Error:** You are missing \`${this.client.utils.formatArray(
+                missing.map(this.client.utils.formatPerms)
+              )}\` permissions, they are required for this command.`
+            });
+            interaction.reply({ ephemeral: true, embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+            return;
+          }
+        }
+
+        const botPermCheck = command.botPerms ? this.client.defaultPerms.add(command.botPerms) : this.client.defaultPerms;
+        if (botPermCheck) {
+          const missing = interaction.channel.permissionsFor(this.client.user).missing(botPermCheck);
+          if (missing.length) {
+            if (missing.includes('SendMessages')) {
+              const errorMsg = `'[PERMISSIONS ERROR]' An attempt to run command: '${command.name}' in guild '${interaction.guild.name}' was made, but I am missing the 'Send Messages' permission.`;
+              console.error(
+                `[\x1b[31mPERMISSIONS ERROR\x1b[0m] An attempt to run command: '\x1b[92m${command.name}\x1b[0m' in guild \x1b[31m${interaction.guild.name}\x1b[0m was made, but I am missing the '\x1b[92mSend Messages\x1b[0m' permission.`
+              );
+              const channel = this.client.channels.cache.get('685973401772621843');
+              if (!channel) return;
+              channel.send(`\`\`\`js\n${errorMsg}\`\`\``);
+              return;
+            }
+            const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+              name: `**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
+              value: `**◎ Error:** I am missing \`${this.client.utils.formatArray(
+                missing.map(this.client.utils.formatPerms)
+              )}\` permissions, they are required for this command.`
+            });
+            interaction.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+            return;
+          }
+        }
+
+        await command.run(interaction);
+      } catch (error) {
+        console.log(error);
+      }
+
+      if (this.client.logging === true) {
+        const nowInMs = Date.now();
+        const nowInSecond = Math.round(nowInMs / 1000);
+
+        const logembed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor));
+
+        logembed.addFields({
+          name: `Guild: ${interaction.guild.name} | Date: <t:${nowInSecond}>`,
+          value: codeBlock('kotlin', `'${command.name}' SlashCommand was executed by ${interaction.user.tag}`)
+        });
+        const LoggingNoArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] '\x1b[92m${command.name}\x1b[0m' SlashCommand was executed by \x1b[31m${
+          interaction.user.tag
+        }\x1b[0m (Guild: \x1b[31m${interaction.guild.name}\x1b[0m)`;
+        this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
+        console.log(LoggingNoArgs);
+      }
+    }
+
     if (interaction.type === InteractionType.ModalSubmit) {
       if (interaction.customId === `modal-${interaction.channelId}`) {
         const fetchTick = db.prepare('SELECT * FROM tickets').all();
