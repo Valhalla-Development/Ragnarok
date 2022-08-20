@@ -30,6 +30,7 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Displays stats on the guild.',
       category: 'Informative',
+      usage: '[roles]/[emojis]',
       options: data
     });
   }
