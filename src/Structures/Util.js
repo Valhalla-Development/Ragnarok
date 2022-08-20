@@ -113,8 +113,10 @@ export const Util = class Util {
             name: command.name,
             type: command.type ? command.type : 1,
             description: command.description ? command.description : 'No description provided.',
+            category: command.category,
             ownerOnly: command.ownerOnly ? command.ownerOnly : null,
             options: command.options ? command.options.options : null,
+            usage: command.usage,
             userPerms: command.userPerms ? command.userPerms : null,
             botPerms: command.botPerms ? command.botPerms : null
           });
@@ -123,8 +125,10 @@ export const Util = class Util {
             name: command.name,
             type: command.type ? command.type : 1,
             description: command.description ? command.description : 'No description provided.',
+            category: command.category,
             ownerOnly: command.ownerOnly ? command.ownerOnly : null,
             options: command.options ? command.options.options : null,
+            usage: command.usage,
             userPerms: command.userPerms ? command.userPerms : null,
             botPerms: command.botPerms ? command.botPerms : null
           });
