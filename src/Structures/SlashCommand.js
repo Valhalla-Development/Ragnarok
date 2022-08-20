@@ -6,8 +6,10 @@ export const SlashCommand = class SlashCommand {
     this.name = options.name || name;
     this.type = options.type || 1;
     this.ownerOnly = options.ownerOnly || null;
-    this.description = this.type === 1 ? options.description || 'No description provided' : undefined;
+    this.description = options.description || 'No description provided';
+    this.category = options.category;
     this.options = options.options || [];
+    this.usage = `/${this.name} ${options.usage || ''}`.trim();
     this.userPerms = new PermissionsBitField(options.userPerms).freeze();
     this.botPerms = new PermissionsBitField(options.botPerms).freeze();
   }
