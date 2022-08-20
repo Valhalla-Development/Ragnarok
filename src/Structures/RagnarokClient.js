@@ -41,6 +41,8 @@ export const RagnarokClient = class RagnarokClient extends Client {
 
     this.owners = options.ownerID;
 
+    this.config = options;
+
     const balancePrice = {
       // Amount you earn per message & cooldown
       maxPerM: 40,
