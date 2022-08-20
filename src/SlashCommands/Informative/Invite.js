@@ -1,0 +1,27 @@
+import { ButtonBuilder, ActionRowBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
+import SlashCommand from '../../Structures/SlashCommand.js';
+
+export const SlashCommandF = class extends SlashCommand {
+  constructor(...args) {
+    super(...args, {
+      description: 'Displays an invite link for the bot.',
+      category: 'Informative'
+    });
+  }
+
+  async run(interaction) {
+    const embed = new EmbedBuilder()
+      .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+      .addFields({ name: `**${this.client.user.username} - Ping**`, value: `Want to invite ${this.client.user}?` });
+
+    const buttonA = new ButtonBuilder()
+      .setStyle(ButtonStyle.Link)
+      .setLabel('Invite')
+      .setURL('https://discordapp.com/oauth2/authorize?client_id=508756879564865539&scope=bot%20applications.commands&permissions=1514550062326');
+
+    const row = new ActionRowBuilder().addComponents(buttonA);
+    interaction.reply({ components: [row], embeds: [embed] });
+  }
+};
+
+export default SlashCommandF;
