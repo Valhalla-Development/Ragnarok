@@ -92,6 +92,17 @@ export const EventF = class extends Event {
       }
     }
 
+    if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
+      const command = this.client.slashCommands.get(interaction.commandName.toLowerCase());
+      if (!command) return;
+
+      try {
+        command.autoComplete(interaction);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
     if (interaction.type === InteractionType.ModalSubmit) {
       if (interaction.customId === `modal-${interaction.channelId}`) {
         const fetchTick = db.prepare('SELECT * FROM tickets').all();
