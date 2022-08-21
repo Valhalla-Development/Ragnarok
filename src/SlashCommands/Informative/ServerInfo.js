@@ -17,13 +17,7 @@ const mfa = {
 const data = new SlashCommandBuilder()
   .setName('serverinfo')
   .setDescription('Displays stats on the guild.')
-  .addStringOption((option) =>
-    option
-      .setName('options')
-      .setDescription('Optional sub-commands')
-      .setRequired(false)
-      .addChoices({ name: 'roles', value: 'serverInfoRoles' }, { name: 'emojis', value: 'serverInfoEmojis' })
-  );
+  .addStringOption((option) => option.setName('options').setDescription('Optional sub-commands').setAutocomplete(true));
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -33,6 +27,13 @@ export const SlashCommandF = class extends SlashCommand {
       usage: '[roles]/[emojis]',
       options: data
     });
+  }
+
+  async autoComplete(interaction) {
+    const focusedValue = interaction.options.getFocused();
+    const choices = ['roles', 'emojis'];
+    const filtered = choices.filter((choice) => choice.startsWith(focusedValue));
+    await interaction.respond(filtered.map((choice) => ({ name: choice, value: choice })));
   }
 
   async run(interaction) {
@@ -45,7 +46,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     const emojiMap = emojis.sort((a, b) => b.position - a.position).map((emoji) => emoji.toString());
 
-    if (interaction.options.getString('sub-commands') === 'serverInfoRoles') {
+    if (interaction.options.getString('options') === 'roles') {
       const roleArr = [];
 
       const join = roles.join(', ');
@@ -68,7 +69,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    if (interaction.options.getString('options') === 'serverInfoEmojis') {
+    if (interaction.options.getString('options') === 'emojis') {
       const emojiArr = [];
 
       const join = emojiMap.join(', ');
