@@ -39,7 +39,7 @@ const types = {
 const data = new SlashCommandBuilder()
   .setName('userinfo')
   .setDescription('Displays information on user.')
-  .addUserOption((option) => option.setName('target').setDescription('Select a user'));
+  .addUserOption((option) => option.setName('target').setDescription('Select a user').setRequired(true));
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {

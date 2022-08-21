@@ -8,7 +8,7 @@ const { version } = packageFile.default;
 const data = new SlashCommandBuilder()
   .setName('help')
   .setDescription('Display command list / command usage.')
-  .addStringOption((option) => option.setName('command').setDescription('To see command specific instructions').setRequired(false));
+  .addStringOption((option) => option.setName('command').setDescription('To see command specific instructions'));
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -60,7 +60,7 @@ export const SlashCommandF = class extends SlashCommand {
       .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
       .setDescription(
         `Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
-				Run \`/help <command>\` to see command specific instructions
+				Type \`/help\` to see available options
 				
 				Command Parameters: \`<>\` is strict & \`[]\` is optional`
       )
