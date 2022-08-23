@@ -10,7 +10,7 @@ export const CommandF = class extends Command {
   constructor(...args) {
     super(...args, {
       description: 'Generates a captcha image with given text.',
-      category: 'Fun',
+      category: 'Generators',
       usage: '<input>',
       botPerms: ['AttachFiles']
     });
