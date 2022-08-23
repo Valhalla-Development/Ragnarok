@@ -38,7 +38,7 @@ export const EventF = class extends Event {
         iconURL: invite.guild.iconURL()
       })
       .setDescription(
-        `**◎ Invite Created:**\n**◎ Created By:** ${invite.inviter}\n**◎ Expires:** \`${expiry}\`\n**◎ Location:** ${invite.channel}\n**◎ Invite:** [https://discord.gg/${invite.code}](https://discord.gg/${invite.code}${invite.code})`
+        `**◎ Invite Created:**\n**◎ Created By:** ${invite.inviter}\n**◎ Expires:** \`${expiry}\`\n**◎ Location:** ${invite.channel}\n**◎ Invite:** [https://discord.gg/${invite.code}](https://discord.gg/${invite.code})`
       )
       .setTimestamp();
     this.client.channels.cache.get(logs).send({ embeds: [logembed] });
