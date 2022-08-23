@@ -94,7 +94,7 @@ export const SlashCommandF = class extends SlashCommand {
     collector.on('end', () => {
       // Disable button and update interaction
       buttonA.setDisabled(true);
-      m.edit({ components: [row] });
+      interaction.editReply({ components: [row] });
     });
 
     async function getNewMeme() {
