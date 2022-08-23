@@ -42,8 +42,8 @@ export const SlashCommandF = class extends SlashCommand {
 
     const embed = new EmbedBuilder()
       .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-      .setThumbnail(this.client.user.displayAvatarURL({ extension: 'png' }))
-      .setAuthor({ name: `Viewing statistics for ${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ extension: 'png' }) })
+      .setThumbnail(this.client.user.displayAvatarURL())
+      .setAuthor({ name: `Viewing statistics for ${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL() })
       .addFields({
         name: 'General Information',
         value: `**◎ 🤖 Name:** \`${this.client.user.tag}\`

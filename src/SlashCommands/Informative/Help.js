@@ -49,9 +49,9 @@ export const SlashCommandF = class extends SlashCommand {
 				**◎ Usage:** ${cmd.usage}
 				${reqPerm}`
         )
-        .setAuthor({ name: `${interaction.guild.name} Help`, iconURL: interaction.guild.iconURL({ extension: 'png' }) })
+        .setAuthor({ name: `${interaction.guild.name} Help`, iconURL: interaction.guild.iconURL() })
         .setThumbnail(this.client.user.displayAvatarURL())
-        .setFooter({ text: `Bot Version ${version}`, iconURL: this.client.user.avatarURL({ extension: 'png' }) });
+        .setFooter({ text: `Bot Version ${version}`, iconURL: this.client.user.avatarURL() });
       interaction.reply({ ephemeral: true, embeds: [embed] });
       return;
     }
@@ -64,9 +64,9 @@ export const SlashCommandF = class extends SlashCommand {
 				
 				Command Parameters: \`<>\` is strict & \`[]\` is optional`
       )
-      .setAuthor({ name: `${interaction.guild.name} Help`, iconURL: interaction.guild.iconURL({ extension: 'png' }) })
+      .setAuthor({ name: `${interaction.guild.name} Help`, iconURL: interaction.guild.iconURL() })
       .setThumbnail(this.client.user.displayAvatarURL())
-      .setFooter({ text: `Bot Version ${version}`, iconURL: this.client.user.avatarURL({ extension: 'png' }) });
+      .setFooter({ text: `Bot Version ${version}`, iconURL: this.client.user.avatarURL() });
 
     const buttonEco = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Economy').setCustomId('eco');
     const buttonFun = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Fun').setCustomId('fun');

@@ -58,13 +58,13 @@ export const SlashCommandF = class extends SlashCommand {
 
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-        .setAuthor({ name: `Viewing information for ${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ extension: 'png' }) })
+        .setAuthor({ name: `Viewing information for ${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
         .setDescription(
           `**Server Roles [${roles.length}]**\n${
             !roleArr.length ? roles.join(', ') : `${roleArr.join(', ')}... ${roles.length - roleArr[0].split(', ').length + 1} more!`
           }`
         )
-        .setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ extension: 'png' }) });
+        .setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL() });
       interaction.reply({ ephemeral: true, embeds: [embed] });
       return;
     }
@@ -81,13 +81,13 @@ export const SlashCommandF = class extends SlashCommand {
 
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-        .setAuthor({ name: `Viewing information for ${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ extension: 'png' }) })
+        .setAuthor({ name: `Viewing information for ${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
         .setDescription(
           `**Server Emojis [${emojiMap.length}]**\n${
             !emojiArr.length ? emojiMap.join(', ') : `${emojiArr.join(', ')}... ${emojiMap.length - emojiArr[0].split(', ').length + 1} more!`
           }`
         )
-        .setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ extension: 'png' }) });
+        .setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL() });
       interaction.reply({ ephemeral: true, embeds: [embed] });
       return;
     }
@@ -100,8 +100,8 @@ export const SlashCommandF = class extends SlashCommand {
 
     const embed = new EmbedBuilder()
       .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-      .setThumbnail(interaction.guild.iconURL({ extension: 'png' }))
-      .setAuthor({ name: `Viewing information for ${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ extension: 'png' }) })
+      .setThumbnail(interaction.guild.iconURL())
+      .setAuthor({ name: `Viewing information for ${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
       .addFields({
         name: 'Guild information',
         value: `**◎ 👑 Owner:** ${guildOwner.user}
@@ -130,7 +130,7 @@ export const SlashCommandF = class extends SlashCommand {
           inline: false
         }
       )
-      .setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL({ extension: 'png' }) });
+      .setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL() });
     interaction.reply({ embeds: [embed] });
   }
 };
