@@ -72,12 +72,12 @@ export const SlashCommandF = class extends SlashCommand {
 
     if (!argsChoice) {
       // Fetch the movie/show
-      getTrakt(args, 'movie/show')
+      getTrakt(args, 'movie,show')
         .then(async (info) => {
           const argsType = info[0].type;
 
-          // If the type of content is a movie
           if (argsType === 'movie') {
+            // If the type of content is a movie
             // Fetch the artwork
             const artwork = await fetch(`http://webservice.fanart.tv/v3/movies/${info[0].movie.ids.tmdb}?api_key=${fanartKey}`);
             const fanartData = await artwork.json();
@@ -118,7 +118,7 @@ export const SlashCommandF = class extends SlashCommand {
                         0,
                         imdbRt.lastIndexOf('/')
                       )}](https://www.imdb.com/title/${info[0].movie.ids.imdb})`
-                    : ` [${reqRating}%](${reqLink})%`
+                    : ` [${reqRating}%](${reqLink})`
                 }**`
               );
             if (reqImage) {
@@ -169,7 +169,7 @@ export const SlashCommandF = class extends SlashCommand {
                           0,
                           imdbRt.lastIndexOf('/')
                         )}](https://www.imdb.com/title/${info[0].show.ids.imdb})`
-                      : ` [${reqRating}%](${reqLink})%`
+                      : ` [${reqRating}%](${reqLink})`
                   }**`
                 );
               if (reqImage) {
@@ -185,125 +185,125 @@ export const SlashCommandF = class extends SlashCommand {
           notFound(reqSearch);
         });
     } else if (argsChoice === 'movie') {
-        // Fetch the movie
-        getTrakt(args, 'movie')
-          .then(async (info) => {
-            const argsType = info[0].type;
+      // Fetch the movie
+      getTrakt(args, 'movie')
+        .then(async (info) => {
+          const argsType = info[0].type;
 
-            // If the type of content is a movie
-            if (argsType === 'movie') {
-              // Fetch the artwork
-              const artwork = await fetch(`http://webservice.fanart.tv/v3/movies/${info[0].movie.ids.tmdb}?api_key=${fanartKey}`);
-              const fanartData = await artwork.json();
-
-              // Set the fanartData
-              if (!fanartData.movieposter) {
-                if (!fanartData.hdmovielogo) {
-                  reqImage = '';
-                } else {
-                  reqImage = fanartData.hdmovielogo[0].url;
-                }
-              } else {
-                reqImage = fanartData.movieposter[0].url;
-              }
-
-              // Set all other variables
-              reqTitle = info[0].movie.title;
-              reqDesc = info[0].movie.overview;
-              reqLink = `https://trakt.tv/movies/${info[0].movie.ids.slug}`;
-              reqRating = Math.round(info[0].movie.rating * 10);
-
-              // Fetch IMDB rating
-              if (info[0].movie.ids.imdb) {
-                await imdbFetch(info[0].movie.ids.imdb);
-              }
-
-              const getTraktEmbed = new EmbedBuilder()
-                .setColor('#EA2027')
-                .setAuthor({
-                  name: `${decode(reqTitle)} - Movie`,
-                  url: reqLink || 'https://trakt.tv/',
-                  iconURL: 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png'
-                })
-                .setDescription(
-                  `${codeBlock('text', `${decode(reqDesc, 'all')}`)}\n**<:trakt:977201291115765820>${
-                    imdbRt
-                      ? ` [${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(
-                          0,
-                          imdbRt.lastIndexOf('/')
-                        )}](https://www.imdb.com/title/${info[0].movie.ids.imdb})`
-                      : ` [${reqRating}%](${reqLink})%`
-                  }**`
-                );
-              if (reqImage) {
-                getTraktEmbed.setImage(reqImage);
-              }
-
-              interaction.reply({ embeds: [getTraktEmbed] });
-            }
-          })
-          .catch(() => {
-            reqSearch = args.split(' ').join('+');
-            notFound(reqSearch);
-          });
-      } else if (argsChoice === 'show')
-        // Fetch the show
-        getTrakt(args, 'show')
-          .then(async (info) => {
+          // If the type of content is a movie
+          if (argsType === 'movie') {
             // Fetch the artwork
-            fetch(`http://webservice.fanart.tv/v3/tv/${info[0].show.ids.tvdb}?api_key=${fanartKey}`).then(async (res) => {
-              const fanartData = await res.json();
+            const artwork = await fetch(`http://webservice.fanart.tv/v3/movies/${info[0].movie.ids.tmdb}?api_key=${fanartKey}`);
+            const fanartData = await artwork.json();
 
-              // Set the fanartData
-              if (!fanartData.tvposter) {
-                if (!fanartData.hdtvlogo) {
-                  reqImage = '';
-                } else {
-                  reqImage = fanartData.hdtvlogo[0].url;
-                }
+            // Set the fanartData
+            if (!fanartData.movieposter) {
+              if (!fanartData.hdmovielogo) {
+                reqImage = '';
               } else {
-                reqImage = fanartData.tvposter[0].url;
+                reqImage = fanartData.hdmovielogo[0].url;
               }
+            } else {
+              reqImage = fanartData.movieposter[0].url;
+            }
 
-              // Set all other variables
-              reqTitle = info[0].show.title;
-              reqDesc = info[0].show.overview;
-              reqLink = `https://trakt.tv/shows/${info[0].show.ids.slug}`;
-              reqRating = Math.round(info[0].show.rating * 10);
+            // Set all other variables
+            reqTitle = info[0].movie.title;
+            reqDesc = info[0].movie.overview;
+            reqLink = `https://trakt.tv/movies/${info[0].movie.ids.slug}`;
+            reqRating = Math.round(info[0].movie.rating * 10);
 
-              // Fetch IMDB rating
-              if (info[0].show.ids.imdb) {
-                await imdbFetch(info[0].show.ids.imdb);
+            // Fetch IMDB rating
+            if (info[0].movie.ids.imdb) {
+              await imdbFetch(info[0].movie.ids.imdb);
+            }
+
+            const getTraktEmbed = new EmbedBuilder()
+              .setColor('#EA2027')
+              .setAuthor({
+                name: `${decode(reqTitle)} - Movie`,
+                url: reqLink || 'https://trakt.tv/',
+                iconURL: 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png'
+              })
+              .setDescription(
+                `${codeBlock('text', `${decode(reqDesc, 'all')}`)}\n**<:trakt:977201291115765820>${
+                  imdbRt
+                    ? ` [${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(
+                        0,
+                        imdbRt.lastIndexOf('/')
+                      )}](https://www.imdb.com/title/${info[0].movie.ids.imdb})`
+                    : ` [${reqRating}%](${reqLink})`
+                }**`
+              );
+            if (reqImage) {
+              getTraktEmbed.setImage(reqImage);
+            }
+
+            interaction.reply({ embeds: [getTraktEmbed] });
+          }
+        })
+        .catch(() => {
+          reqSearch = args.split(' ').join('+');
+          notFound(reqSearch);
+        });
+    } else if (argsChoice === 'show')
+      // Fetch the show
+      getTrakt(args, 'show')
+        .then(async (info) => {
+          // Fetch the artwork
+          fetch(`http://webservice.fanart.tv/v3/tv/${info[0].show.ids.tvdb}?api_key=${fanartKey}`).then(async (res) => {
+            const fanartData = await res.json();
+
+            // Set the fanartData
+            if (!fanartData.tvposter) {
+              if (!fanartData.hdtvlogo) {
+                reqImage = '';
+              } else {
+                reqImage = fanartData.hdtvlogo[0].url;
               }
+            } else {
+              reqImage = fanartData.tvposter[0].url;
+            }
 
-              const getTraktEmbed = new EmbedBuilder()
-                .setColor('#EA2027')
-                .setAuthor({
-                  name: `${decode(reqTitle)} - Show`,
-                  url: reqLink || 'https://trakt.tv/',
-                  iconURL: 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png'
-                })
-                .setDescription(
-                  `${codeBlock('text', `${decode(reqDesc, 'all')}`)}\n**<:trakt:977201291115765820>${
-                    imdbRt
-                      ? ` [${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(
-                          0,
-                          imdbRt.lastIndexOf('/')
-                        )}](https://www.imdb.com/title/${info[0].show.ids.imdb})`
-                      : ` [${reqRating}%](${reqLink})%`
-                  }**`
-                );
-              if (reqImage) {
-                getTraktEmbed.setImage(reqImage);
-              }
+            // Set all other variables
+            reqTitle = info[0].show.title;
+            reqDesc = info[0].show.overview;
+            reqLink = `https://trakt.tv/shows/${info[0].show.ids.slug}`;
+            reqRating = Math.round(info[0].show.rating * 10);
 
-              interaction.reply({ embeds: [getTraktEmbed] });
-            });
-          })
-          .catch(() => {
-            reqSearch = args.split(' ').join('+');
-            notFound(reqSearch);
+            // Fetch IMDB rating
+            if (info[0].show.ids.imdb) {
+              await imdbFetch(info[0].show.ids.imdb);
+            }
+
+            const getTraktEmbed = new EmbedBuilder()
+              .setColor('#EA2027')
+              .setAuthor({
+                name: `${decode(reqTitle)} - Show`,
+                url: reqLink || 'https://trakt.tv/',
+                iconURL: 'https://trakt.tv/assets/logos/header@2x-09f929ba67b0964596b359f497884cd9.png'
+              })
+              .setDescription(
+                `${codeBlock('text', `${decode(reqDesc, 'all')}`)}\n**<:trakt:977201291115765820>${
+                  imdbRt
+                    ? ` [${reqRating}%](${reqLink})\u3000<:imdb:977228158615027803> [${imdbRt.slice(
+                        0,
+                        imdbRt.lastIndexOf('/')
+                      )}](https://www.imdb.com/title/${info[0].show.ids.imdb})`
+                    : ` [${reqRating}%](${reqLink})`
+                }**`
+              );
+            if (reqImage) {
+              getTraktEmbed.setImage(reqImage);
+            }
+
+            interaction.reply({ embeds: [getTraktEmbed] });
           });
+        })
+        .catch(() => {
+          reqSearch = args.split(' ').join('+');
+          notFound(reqSearch);
+        });
 
     // IMDB Function
     function fetchI(id) {
