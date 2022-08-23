@@ -119,16 +119,23 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     const parseText = interaction.options.getString('text');
+    if (parseText) {
+      let cnt;
 
-    let cnt;
+      const text = parseText;
+      const user = interaction.guild.members.cache.get(interaction.user.id);
 
-    const text = parseText;
-    const user = interaction.guild.members.cache.get(interaction.user.id);
-
-    if (status) {
-      if (user.permissions.has(PermissionsBitField.Flags.ManageGuild) || user.permissions.has(PermissionsBitField.Flags.Administrator)) {
-        const matches = text.match(urlRegexSafe());
-        cnt = text.replace(matches, ' || Discord Link Removed By Server Config. If this is a mistake, please contact a server administrator. || ');
+      if (status) {
+        if (user.permissions.has(PermissionsBitField.Flags.ManageGuild) || user.permissions.has(PermissionsBitField.Flags.Administrator)) {
+          const matches = text.match(urlRegexSafe());
+          cnt = text.replace(matches, ' || Discord Link Removed By Server Config. If this is a mistake, please contact a server administrator. || ');
+        } else {
+          try {
+            cnt = prettier.format(parseText, { semi: true, singleQuote: true, parser: 'babel' });
+          } catch {
+            cnt = parseText;
+          }
+        }
       } else {
         try {
           cnt = prettier.format(parseText, { semi: true, singleQuote: true, parser: 'babel' });
@@ -136,29 +143,23 @@ export const SlashCommandF = class extends SlashCommand {
           cnt = parseText;
         }
       }
-    } else {
-      try {
-        cnt = prettier.format(parseText, { semi: true, singleQuote: true, parser: 'babel' });
-      } catch {
-        cnt = parseText;
-      }
-    }
 
-    await haste
-      .post(cnt, 'js')
-      .then((link) => {
-        const hastEmb = new EmbedBuilder()
-          .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-          .addFields({ name: `**${this.client.user.username} - HasteBin**`, value: `**◎ Link:** ${link}\nPosted By: ${interaction.user}` })
-          .setURL(link);
-        interaction.reply({ embeds: [hastEmb] });
-      })
-      .catch(() => {
-        const error = new EmbedBuilder()
-          .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-          .addFields({ name: `**${this.client.user.username} - HasteBin**`, value: '**◎ Error:** An error occured!' });
-        interaction.reply({ ephemeral: true, embeds: [error] });
-      });
+      await haste
+        .post(cnt, 'js')
+        .then((link) => {
+          const hastEmb = new EmbedBuilder()
+            .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+            .addFields({ name: `**${this.client.user.username} - HasteBin**`, value: `**◎ Link:** ${link}\nPosted By: ${interaction.user}` })
+            .setURL(link);
+          interaction.reply({ embeds: [hastEmb] });
+        })
+        .catch(() => {
+          const error = new EmbedBuilder()
+            .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+            .addFields({ name: `**${this.client.user.username} - HasteBin**`, value: '**◎ Error:** An error occured!' });
+          interaction.reply({ ephemeral: true, embeds: [error] });
+        });
+    }
   }
 };
 
