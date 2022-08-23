@@ -126,7 +126,7 @@ export const EventF = class extends Event {
       ctx.closePath();
       ctx.clip();
 
-      const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ format: 'png' }));
+      const avatar = await Canvas.loadImage(member.user.displayAvatarURL({ extension: 'png' }));
 
       ctx.strokeStyle = '#ffffff';
       ctx.strokeRect(0, 0, canvas.width, canvas.height);

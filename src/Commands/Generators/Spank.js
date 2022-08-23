@@ -25,8 +25,8 @@ export const CommandF = class extends Command {
     }
 
     const img = await new DIG.Spank().getImage(
-      message.author.displayAvatarURL({ dynamic: false, format: 'png' }),
-      user.user.displayAvatarURL({ dynamic: false, format: 'png' })
+      message.author.displayAvatarURL({ extension: 'png' }),
+      user.user.displayAvatarURL({ extension: 'png' })
     );
     const attach = new AttachmentBuilder(img, { name: 'Spank.png' });
     message.channel.send({ files: [attach] });

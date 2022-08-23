@@ -24,10 +24,7 @@ export const CommandF = class extends Command {
       return;
     }
 
-    const img = await new DIG.Bed().getImage(
-      message.author.displayAvatarURL({ dynamic: false, format: 'png' }),
-      user.user.displayAvatarURL({ dynamic: false, format: 'png' })
-    );
+    const img = await new DIG.Bed().getImage(message.author.displayAvatarURL({ extension: 'png' }), user.user.displayAvatarURL({ extension: 'png' }));
     const attach = new AttachmentBuilder(img, { name: 'Bed.png' });
     message.channel.send({ files: [attach] });
   }

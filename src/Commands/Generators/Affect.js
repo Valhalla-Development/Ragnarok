@@ -16,9 +16,9 @@ export const CommandF = class extends Command {
     let avatar;
 
     if (message.mentions.members.first()) {
-      avatar = message.mentions.members.first().user.displayAvatarURL({ dynamic: false, format: 'png' });
+      avatar = message.mentions.members.first().user.displayAvatarURL({ extension: 'png' });
     } else {
-      avatar = message.author.displayAvatarURL({ dynamic: false, format: 'png' });
+      avatar = message.author.displayAvatarURL({ extension: 'png' });
     }
 
     const img = await new DIG.Affect().getImage(avatar);

@@ -408,7 +408,7 @@ export const CommandF = class extends Command {
     const rankText = 'RANK';
     const usergrab = user.username;
     const discrim = `#${user.discriminator}`;
-    const avatarGrab = user.displayAvatarURL({ format: 'png' });
+    const avatarGrab = user.displayAvatarURL({ extension: 'png' });
 
     class ProgressBar {
       constructor(dimension, color, percentage) {
