@@ -70,7 +70,6 @@ export const SlashCommandF = class extends SlashCommand {
 
     const buttonEco = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Economy').setCustomId('eco');
     const buttonFun = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Fun').setCustomId('fun');
-    const buttonGen = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Generators').setCustomId('gens');
     const buttonInfo = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Information').setCustomId('info');
     const buttonMod = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Moderation').setCustomId('mod');
     const buttonTicket = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Ticket').setCustomId('ticket');
@@ -85,8 +84,8 @@ export const SlashCommandF = class extends SlashCommand {
       .setLabel('🍕 Buy me a Pizza')
       .setURL('https://www.buymeacoffee.com/ragnarlothbrok');
 
-    const row = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonGen, buttonInfo);
-    const row2 = new ActionRowBuilder().addComponents(buttonMod, buttonTicket, buttonInv, buttonSupp, buttonPizza);
+    const row = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonInfo, buttonMod);
+    const row2 = new ActionRowBuilder().addComponents(buttonTicket, buttonInv, buttonSupp, buttonPizza);
 
     const m = await interaction.reply({ ephemeral: true, components: [row, row2], embeds: [embed] });
 
@@ -102,8 +101,8 @@ export const SlashCommandF = class extends SlashCommand {
 
         embed.spliceFields(0, 1);
 
-        const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonGen, buttonInfo);
-        const row2New = new ActionRowBuilder().addComponents(buttonMod, buttonTicket, buttonInv, buttonSupp, buttonPizza);
+        const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonInfo, buttonMod);
+        const row2New = new ActionRowBuilder().addComponents(buttonTicket, buttonInv, buttonSupp, buttonPizza);
 
         await b.update({ embeds: [embed], components: [rowNew, row2New] });
       }
@@ -122,8 +121,8 @@ export const SlashCommandF = class extends SlashCommand {
         embed.spliceFields(0, 1);
         embed.addFields({ name: '**Help - Economy**', value: `\`${categories.join('`, `')}\`` });
 
-        const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonGen, buttonInfo);
-        const row2New = new ActionRowBuilder().addComponents(buttonMod, buttonTicket, buttonInv, buttonSupp, buttonPizza);
+        const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonInfo, buttonMod);
+        const row2New = new ActionRowBuilder().addComponents(buttonTicket, buttonInv, buttonSupp, buttonPizza);
 
         await b.update({ embeds: [embed], components: [rowNew, row2New] });
         return;
@@ -142,28 +141,8 @@ export const SlashCommandF = class extends SlashCommand {
         embed.spliceFields(0, 1);
         embed.addFields({ name: '**Help - Fun**', value: `\`${categories.join('`, `')}\`` });
 
-        const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonGen, buttonInfo);
-        const row2New = new ActionRowBuilder().addComponents(buttonMod, buttonTicket, buttonInv, buttonSupp, buttonPizza);
-
-        await b.update({ embeds: [embed], components: [rowNew, row2New] });
-        return;
-      }
-      if (b.customId === 'gens') {
-        buttonHome.setDisabled(false);
-
-        const categories = this.client.utils.removeDuplicates(
-          this.client.slashCommands.filter((cmd) => cmd.category === 'Generators').map((cmd) => cmd.name)
-        );
-
-        for (let i = 0; i < categories.length; i += 1) {
-          categories[i] = categories[i][0].toUpperCase() + categories[i].substr(1);
-        }
-
-        embed.spliceFields(0, 1);
-        embed.addFields({ name: '**Help - Generators**', value: `\`${categories.join('`, `')}\`` });
-
-        const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonGen, buttonInfo);
-        const row2New = new ActionRowBuilder().addComponents(buttonMod, buttonTicket, buttonInv, buttonSupp, buttonPizza);
+        const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonInfo, buttonMod);
+        const row2New = new ActionRowBuilder().addComponents(buttonTicket, buttonInv, buttonSupp, buttonPizza);
 
         await b.update({ embeds: [embed], components: [rowNew, row2New] });
         return;
@@ -182,8 +161,8 @@ export const SlashCommandF = class extends SlashCommand {
         embed.spliceFields(0, 1);
         embed.addFields({ name: '**Help - Informative**', value: `\`${categories.join('`, `')}\`` });
 
-        const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonGen, buttonInfo);
-        const row2New = new ActionRowBuilder().addComponents(buttonMod, buttonTicket, buttonInv, buttonSupp, buttonPizza);
+        const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonInfo, buttonMod);
+        const row2New = new ActionRowBuilder().addComponents(buttonTicket, buttonInv, buttonSupp, buttonPizza);
 
         await b.update({ embeds: [embed], components: [rowNew, row2New] });
         return;
@@ -202,8 +181,8 @@ export const SlashCommandF = class extends SlashCommand {
         embed.spliceFields(0, 1);
         embed.addFields({ name: '**Help - Moderation**', value: `\`${categories.join('`, `')}\`` });
 
-        const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonGen, buttonInfo);
-        const row2New = new ActionRowBuilder().addComponents(buttonMod, buttonTicket, buttonInv, buttonSupp, buttonPizza);
+        const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonInfo, buttonMod);
+        const row2New = new ActionRowBuilder().addComponents(buttonTicket, buttonInv, buttonSupp, buttonPizza);
 
         await b.update({ embeds: [embed], components: [rowNew, row2New] });
         return;
@@ -222,8 +201,8 @@ export const SlashCommandF = class extends SlashCommand {
         embed.spliceFields(0, 1);
         embed.addFields({ name: '**Help - Ticket**', value: `\`${categories.join('`, `')}\`` });
 
-        const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonGen, buttonInfo);
-        const row2New = new ActionRowBuilder().addComponents(buttonMod, buttonTicket, buttonInv, buttonSupp, buttonPizza);
+        const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonInfo, buttonMod);
+        const row2New = new ActionRowBuilder().addComponents(buttonTicket, buttonInv, buttonSupp, buttonPizza);
 
         await b.update({ embeds: [embed], components: [rowNew, row2New] });
       }
@@ -233,7 +212,6 @@ export const SlashCommandF = class extends SlashCommand {
       // Disable button and update message
       buttonEco.setDisabled(true);
       buttonFun.setDisabled(true);
-      buttonGen.setDisabled(true);
       buttonInfo.setDisabled(true);
       buttonMod.setDisabled(true);
       buttonTicket.setDisabled(true);
