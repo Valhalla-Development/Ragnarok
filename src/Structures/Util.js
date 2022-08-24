@@ -11,10 +11,6 @@ import Command from './Command.js';
 import Event from './Event.js';
 import SlashCommand from './SlashCommand.js';
 
-import * as configFile from '../../config.json' assert { type: 'json' };
-
-const { supportGuild } = configFile.default;
-
 const globPromise = promisify(glob);
 
 export const Util = class Util {
@@ -140,7 +136,7 @@ export const Util = class Util {
       (async () => {
         try {
           if (testingCmds) {
-            await rest.put(Routes.applicationGuildCommands('509122286561787904', supportGuild), { body: testingCmds });
+            await rest.put(Routes.applicationGuildCommands('509122286561787904', this.client.config.supportGuild), { body: testingCmds });
             console.log(
               `${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${testingCmds.length}`)} ${chalk.whiteBright('Owner Only Slash commands!')}`
             );
