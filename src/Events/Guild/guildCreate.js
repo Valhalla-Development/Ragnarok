@@ -37,7 +37,7 @@ export const EventF = class extends Event {
     } else {
       guild.channels.cache.forEach((channel) => {
         if (channel.type === ChannelType.GuildText && defaultChannel === '') {
-          if (channel.permissionsFor(guild.members.me).has(PermissionsBitField.SendMessages)) {
+          if (channel.permissionsFor(guild.members.me).has(PermissionsBitField.Flags.SendMessages)) {
             defaultChannel = channel;
           }
         }

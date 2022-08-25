@@ -66,7 +66,7 @@ export const CommandF = class extends Command {
       }
 
       const user = message.guild.members.cache.get(message.author.id);
-      if (!user.permissionsIn(ch).has(PermissionsBitField.SendMessages)) {
+      if (!user.permissionsIn(ch).has(PermissionsBitField.Flags.SendMessages)) {
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
           .addFields({ name: `**${this.client.user.username} - Say**`, value: `**◎ Error:** You do not have permission to send messages to ${ch}!` });

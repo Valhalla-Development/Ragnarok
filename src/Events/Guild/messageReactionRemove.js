@@ -38,7 +38,7 @@ export const EventF = class extends Event {
     const starChannel = message.guild.channels.cache.find((channel) => channel.id === id.channel);
 
     // Check if bot has perms to send messages in starboard channel
-    if (!message.guild.members.me.permissionsIn(starChannel).has(PermissionsBitField.SendMessages)) return;
+    if (!message.guild.members.me.permissionsIn(starChannel).has(PermissionsBitField.Flags.SendMessages)) return;
 
     if (messageReaction.emoji.name !== '⭐') return;
 

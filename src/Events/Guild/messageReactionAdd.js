@@ -41,7 +41,7 @@ export const EventF = class extends Event {
     const starChannel = message.guild.channels.cache.find((channel) => channel.id === id.channel);
 
     // Check if bot has perms to send messages in starboard channel
-    if (!message.guild.members.me.permissionsIn(starChannel).has(PermissionsBitField.SendMessages)) {
+    if (!message.guild.members.me.permissionsIn(starChannel).has(PermissionsBitField.Flags.SendMessages)) {
       const embed = new EmbedBuilder().setColor(this.client.utils.color(message.guild.members.me.displayHexColor)).addFields({
         name: `**${this.client.user.username} - Starboard**`,
         value: '**◎ Error:** I am missing the permission `Send Messages` in the starboard channel.'
