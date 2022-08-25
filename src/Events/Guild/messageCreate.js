@@ -682,8 +682,11 @@ export const EventF = class extends Event {
             .setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
             .setColor(grabClient.utils.color(message.guild.members.me.displayHexColor))
             .setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
+
           if (!levelDb) {
-            message.channel.send({ embeds: [lvlup] }).then((m) => grabClient.utils.deletableCheck(m, 10000));
+            if (message.channel.permissionsFor(message.guild.members.me).has(PermissionsBitField.Flags.EmbedLinks)) {
+              message.channel.send({ embeds: [lvlup] }).then((m) => grabClient.utils.deletableCheck(m, 10000));
+            }
           }
         }
       }
