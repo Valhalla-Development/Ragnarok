@@ -1,61 +1,18 @@
-import { EmbedBuilder, SlashCommandBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } from 'discord.js';
-import SQLite from 'better-sqlite3';
+import { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } from 'discord.js';
 import SlashCommand from '../../Structures/SlashCommand.js';
 import * as packageFile from '../../../package.json' assert { type: 'json' };
 
 const { version } = packageFile.default;
 
-const data = new SlashCommandBuilder()
-  .setName('help')
-  .setDescription('Display command list / command usage.')
-  .addStringOption((option) => option.setName('command').setDescription('To see command specific instructions'));
-
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
     super(...args, {
-      description: 'Display command list / command usage.',
-      category: 'Informative',
-      usage: '[command]',
-      options: data
+      description: 'Display list of commands.',
+      category: 'Informative'
     });
   }
 
   async run(interaction) {
-    if (interaction.options.getString('command')) {
-      const cmd = this.client.slashCommands.get(interaction.options.getString('command'));
-
-      if (!cmd || cmd.category === 'Hidden') {
-        const embed1 = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
-          name: `**${this.client.user.username} - Help**`,
-          value: `**◎ Error:** Invalid command name: \`${interaction.options.getString('command')}\``
-        });
-        interaction.reply({ ephemeral: true, embeds: [embed1] });
-        return;
-      }
-
-      let reqPerm;
-      if (cmd.userPerms.bitfield === 0n) {
-        reqPerm = '**◎ Permission Required:** None.';
-      } else {
-        reqPerm = `**◎ Permission(s) Required:** \`${this.client.utils.formatArray(cmd.userPerms)}\``;
-      }
-
-      const embed = new EmbedBuilder()
-        .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-        .setAuthor({ name: `${this.client.utils.capitalise(cmd.name)} Command Help`, iconURL: this.client.user.displayAvatarURL() })
-        .setDescription(
-          `**◎ Description:** ${cmd.description}
-				**◎ Category:** ${cmd.category}
-				**◎ Usage:** ${cmd.usage}
-				${reqPerm}`
-        )
-        .setAuthor({ name: `${interaction.guild.name} Help`, iconURL: interaction.guild.iconURL() })
-        .setThumbnail(this.client.user.displayAvatarURL())
-        .setFooter({ text: `Bot Version ${version}`, iconURL: this.client.user.avatarURL() });
-      interaction.reply({ ephemeral: true, embeds: [embed] });
-      return;
-    }
-
     const embed = new EmbedBuilder()
       .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
       .setDescription(
