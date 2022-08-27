@@ -13,8 +13,18 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 const data = new SlashCommandBuilder()
   .setName('hastebin')
   .setDescription('Fetches search results from r/AirReps')
-  .addStringOption((option) => option.setName('text').setDescription('Text you wish to upload'))
-  .addAttachmentOption((option) => option.setName('attachment').setDescription('The file you wish to upload'));
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName('text')
+      .setDescription('Text you wish to upload')
+      .addStringOption((option) => option.setName('text').setDescription('Text you wish to upload').setRequired(true))
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName('attachment')
+      .setDescription('The file you wish to upload')
+      .addAttachmentOption((option) => option.setName('attachment').setDescription('The file you wish to upload').setRequired(true))
+  );
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -27,12 +37,14 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
+    await interaction.deferReply();
+
     if (!interaction.options.getAttachment('attachment') && !interaction.options.getString('text')) {
       const error = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
         name: `**${this.client.user.username} - Hastebin**`,
         value: '**◎ Error:** You must select either the `text` or `attachment` option!'
       });
-      interaction.reply({ ephemeral: true, embeds: [error] });
+      interaction.editReply({ ephemeral: true, embeds: [error] });
       return;
     }
 
@@ -79,7 +91,7 @@ export const SlashCommandF = class extends SlashCommand {
           name: `**${this.client.user.username} - Hastebin**`,
           value: `**◎ Error:** \`.${fileExtension}\` is not a valid file type!\n\n**Acceptable files:**\n\`${validExtensions.join(', ')}\``
         });
-        interaction.reply({ ephemeral: true, embeds: [invalidExt] });
+        interaction.editReply({ ephemeral: true, embeds: [invalidExt] });
         return;
       }
 
@@ -90,7 +102,7 @@ export const SlashCommandF = class extends SlashCommand {
             const emptyFile = new EmbedBuilder()
               .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
               .addFields({ name: `**${this.client.user.username} - Hastebin**`, value: '**◎ Error:** You can not upload an empty file!' });
-            interaction.reply({ ephemeral: true, embeds: [emptyFile] });
+            interaction.editReply({ ephemeral: true, embeds: [emptyFile] });
             return;
           }
 
@@ -101,20 +113,20 @@ export const SlashCommandF = class extends SlashCommand {
                 .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
                 .addFields({ name: `**${this.client.user.username} - HasteBin**`, value: `**◎ Link:** ${res}\nPosted By: ${interaction.user}` })
                 .setURL(res);
-              interaction.reply({ embeds: [hastEmb] });
+              interaction.editReply({ embeds: [hastEmb] });
             })
             .catch(() => {
               const error = new EmbedBuilder()
                 .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
                 .addFields({ name: `**${this.client.user.username} - HasteBin**`, value: '**◎ Error:** An error occured!' });
-              interaction.reply({ ephemeral: true, embeds: [error] });
+              interaction.editReply({ ephemeral: true, embeds: [error] });
             });
         })
         .catch(() => {
           const error = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({ name: `**${this.client.user.username} - HasteBin**`, value: '**◎ Error:** An error occured!' });
-          interaction.reply({ ephemeral: true, embeds: [error] });
+          interaction.editReply({ ephemeral: true, embeds: [error] });
         });
     }
 
@@ -151,13 +163,13 @@ export const SlashCommandF = class extends SlashCommand {
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({ name: `**${this.client.user.username} - HasteBin**`, value: `**◎ Link:** ${link}\nPosted By: ${interaction.user}` })
             .setURL(link);
-          interaction.reply({ embeds: [hastEmb] });
+          interaction.editReply({ embeds: [hastEmb] });
         })
         .catch(() => {
           const error = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({ name: `**${this.client.user.username} - HasteBin**`, value: '**◎ Error:** An error occured!' });
-          interaction.reply({ ephemeral: true, embeds: [error] });
+          interaction.editReply({ ephemeral: true, embeds: [error] });
         });
     }
   }
