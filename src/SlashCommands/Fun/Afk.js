@@ -7,7 +7,7 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 const data = new SlashCommandBuilder()
   .setName('afk')
   .setDescription('Sets your AFK status')
-  .addStringOption((option) => option.setName('reason').setDescription('The reason you are going AFK').setMaxLength(100));
+  .addStringOption((option) => option.setName('reason').setDescription('The reason you are going AFK').setRequired(true).setMaxLength(100));
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
