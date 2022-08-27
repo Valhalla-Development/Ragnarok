@@ -20,31 +20,31 @@ const data = new SlashCommandBuilder()
     subcommand
       .setName('affect')
       .setDescription('Generate a Affect image')
-      .addUserOption((option) => option.setName('target').setDescription('The user'))
+      .addUserOption((option) => option.setName('user').setDescription('The user'))
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName('batslap')
       .setDescription('Generate a BatSlap image')
-      .addUserOption((option) => option.setName('target').setDescription('The user').setRequired(true))
+      .addUserOption((option) => option.setName('user').setDescription('The user').setRequired(true))
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName('beautiful')
       .setDescription('Generate a Beautiful image')
-      .addUserOption((option) => option.setName('target').setDescription('The user'))
+      .addUserOption((option) => option.setName('user').setDescription('The user'))
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName('bed')
       .setDescription('Generate a Bed image')
-      .addUserOption((option) => option.setName('target').setDescription('The user').setRequired(true))
+      .addUserOption((option) => option.setName('user').setDescription('The user').setRequired(true))
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName('bobross')
       .setDescription('Generate a BobRoss image')
-      .addUserOption((option) => option.setName('target').setDescription('The user'))
+      .addUserOption((option) => option.setName('user').setDescription('The user'))
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -56,19 +56,19 @@ const data = new SlashCommandBuilder()
     subcommand
       .setName('delete')
       .setDescription('Generate a Delete image')
-      .addUserOption((option) => option.setName('target').setDescription('The user'))
+      .addUserOption((option) => option.setName('user').setDescription('The user'))
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName('jail')
       .setDescription('Generate a Jail image')
-      .addUserOption((option) => option.setName('target').setDescription('The user'))
+      .addUserOption((option) => option.setName('user').setDescription('The user'))
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName('kiss')
       .setDescription('Generate a Kiss image')
-      .addUserOption((option) => option.setName('target').setDescription('The user').setRequired(true))
+      .addUserOption((option) => option.setName('user').setDescription('The user').setRequired(true))
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -80,43 +80,43 @@ const data = new SlashCommandBuilder()
     subcommand
       .setName('notstonks')
       .setDescription('Generate a NotStonks image')
-      .addUserOption((option) => option.setName('target').setDescription('The user'))
+      .addUserOption((option) => option.setName('user').setDescription('The user'))
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName('rip')
       .setDescription('Generate a Rip image')
-      .addUserOption((option) => option.setName('target').setDescription('The user'))
+      .addUserOption((option) => option.setName('user').setDescription('The user'))
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName('spank')
       .setDescription('Generate a Spank image')
-      .addUserOption((option) => option.setName('target').setDescription('The user').setRequired(true))
+      .addUserOption((option) => option.setName('user').setDescription('The user').setRequired(true))
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName('stonks')
       .setDescription('Generate a Stonks image')
-      .addUserOption((option) => option.setName('target').setDescription('The user'))
+      .addUserOption((option) => option.setName('user').setDescription('The user'))
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName('tatoo')
       .setDescription('Generate a Tatoo image')
-      .addUserOption((option) => option.setName('target').setDescription('The user'))
+      .addUserOption((option) => option.setName('user').setDescription('The user'))
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName('trash')
       .setDescription('Generate a Trash image')
-      .addUserOption((option) => option.setName('target').setDescription('The user'))
+      .addUserOption((option) => option.setName('user').setDescription('The user'))
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName('triggered')
       .setDescription('Generate a Triggered image')
-      .addUserOption((option) => option.setName('target').setDescription('The user'))
+      .addUserOption((option) => option.setName('user').setDescription('The user'))
   );
 
 export const SlashCommandF = class extends SlashCommand {
@@ -160,7 +160,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'affect') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
       const avatar = member.user.displayAvatarURL({ extension: 'png' });
 
       const img = await new DIG.Affect().getImage(avatar);
@@ -170,7 +170,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'batslap') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
 
       const img = await new DIG.Batslap().getImage(
         interaction.user.displayAvatarURL({ extension: 'png' }),
@@ -182,7 +182,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'beautiful') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
       const avatar = member.user.displayAvatarURL({ extension: 'png' });
 
       const img = await new DIG.Beautiful().getImage(avatar);
@@ -192,7 +192,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'bed') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
 
       const img = await new DIG.Bed().getImage(
         interaction.user.displayAvatarURL({ extension: 'png' }),
@@ -204,7 +204,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'bobross') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
       const avatar = member.user.displayAvatarURL({ extension: 'png' });
 
       const img = await new DIG.Bobross().getImage(avatar);
@@ -238,7 +238,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'delete') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
       const avatar = member.user.displayAvatarURL({ extension: 'png' });
 
       const img = await new DIG.Delete().getImage(avatar);
@@ -248,7 +248,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'jail') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
       const avatar = member.user.displayAvatarURL({ extension: 'png' });
 
       const img = await new DIG.Jail().getImage(avatar);
@@ -258,7 +258,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'kiss') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
 
       const img = await new DIG.Kiss().getImage(
         interaction.user.displayAvatarURL({ extension: 'png' }),
@@ -279,7 +279,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'notstonks') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
       const avatar = member.user.displayAvatarURL({ extension: 'png' });
 
       const img = await new DIG.NotStonk().getImage(avatar);
@@ -289,7 +289,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'rip') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
       const avatar = member.user.displayAvatarURL({ extension: 'png' });
 
       const img = await new DIG.Rip().getImage(avatar);
@@ -299,7 +299,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'spank') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
 
       const img = await new DIG.Spank().getImage(
         interaction.user.displayAvatarURL({ extension: 'png' }),
@@ -311,7 +311,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'stonks') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
       const avatar = member.user.displayAvatarURL({ extension: 'png' });
 
       const img = await new DIG.Stonk().getImage(avatar);
@@ -321,7 +321,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'tatoo') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
       const avatar = member.user.displayAvatarURL({ extension: 'png' });
 
       const img = await new DIG.Tatoo().getImage(avatar);
@@ -331,7 +331,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'trash') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
       const avatar = member.user.displayAvatarURL({ extension: 'png' });
 
       const img = await new DIG.Trash().getImage(avatar);
@@ -341,7 +341,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (type === 'triggered') {
-      const member = interaction.options.getMember('target') || interaction.member;
+      const member = interaction.options.getMember('user') || interaction.member;
       const avatar = member.user.displayAvatarURL({ extension: 'png' });
 
       const img = await new DIG.Triggered().getImage(avatar);

@@ -39,7 +39,7 @@ const types = {
 const data = new SlashCommandBuilder()
   .setName('userinfo')
   .setDescription('Displays information on user.')
-  .addUserOption((option) => option.setName('target').setDescription('Select a user').setRequired(true));
+  .addUserOption((option) => option.setName('user').setDescription('Select a user').setRequired(true));
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -52,7 +52,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const member = interaction.options.getMember('target') || interaction.member;
+    const member = interaction.options.getMember('user') || interaction.member;
 
     const roles = member.roles.cache
       .sort((a, b) => b.position - a.position)
