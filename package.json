@@ -19,7 +19,7 @@
     "countries-list": "^2.6.1",
     "cron": "^2.1.0",
     "cryptocurrencies": "^7.0.0",
-    "discord-blackjack": "^4.0.0",
+    "custom-bj": "^4.0.1",
     "discord-giveaways": "^6.0.1",
     "discord-html-transcripts": "^2.6.1",
     "discord-image-generation": "^1.4.13",

@@ -1037,6 +1037,14 @@ cssstyle@^2.3.0:
   dependencies:
     cssom "~0.3.6"
 
+custom-bj@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/custom-bj/-/custom-bj-4.0.1.tgz#3e035af3f748401e98b1cfcf2eff8ca8f4df2d58"
+  integrity sha512-C3RjFV1pv7Ktfo4kRPOwstzSKICIN6kMpCjpnnq+n6ewVVbsi26OM4t3C2FMIDyh6luXWqYjz8k0KTbqFbPDfw==
+  dependencies:
+    discord.js "^13.6.0"
+    shuffle-array "^1.0.1"
+
 dashdash@^1.12.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/dashdash/-/dashdash-1.14.1.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"
@@ -1162,14 +1170,6 @@ discord-api-types@^0.37.3:
   version "0.37.4"
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.37.4.tgz#fe36f37114c944e7178ee7f878f2638326f3d266"
   integrity sha512-QgqYlUokWM++hdwvAtgVNLjmFumPBzFy+uWnnfVDiwBXKm+5jXHJPk2lx2eilkv/706UpAJPLSk/uVCY9NocjA==
-
-discord-blackjack@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/discord-blackjack/-/discord-blackjack-4.0.0.tgz#b3d6ad06ca74fce777636346a7c97d21ce738986"
-  integrity sha512-7zB6CeG2TsAXUJopaHERj98bVCIBXgseoTiKwSmpg2/6HiR0XszWwLE24P4GpHdRqyP/7BhprFa8WJ170tY63w==
-  dependencies:
-    discord.js "^13.6.0"
-    shuffle-array "^1.0.1"
 
 discord-giveaways@^6.0.1:
   version "6.0.1"
