@@ -18,6 +18,8 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
+    await interaction.deferReply();
+
     const searchTerm = interaction.options.getString('query').split(' ').join('%20');
 
     fetch(`https://www.reddit.com/r/AirReps/search.json?q=${searchTerm}&restrict_sr=1&limit=3`)
@@ -36,13 +38,13 @@ export const SlashCommandF = class extends SlashCommand {
 					[**◎ ${res[1].data.title}**](${res[1].data.url})\n  \`\`\`${res[1].data.selftext.substring(0, 150)}...\`\`\`\n
 					[**◎ ${res[2].data.title}**](${res[2].data.url})\n  \`\`\`${res[2].data.selftext.substring(0, 150)}...\`\`\`\n
 					[**__Search Results...__**](https://www.reddit.com/r/AirReps/search/?q=${searchTerm}&restrict_sr=1)`);
-        interaction.reply({ embeds: [embed] });
+        interaction.editReply({ embeds: [embed] });
       })
       .catch(() => {
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
           .addFields({ name: `**${this.client.user.username} - AirReps**`, value: '**◎ Error:** No results found!' });
-        interaction.reply({ ephemeral: true, embeds: [embed] });
+        interaction.editReply({ ephemeral: true, embeds: [embed] });
       });
   }
 };

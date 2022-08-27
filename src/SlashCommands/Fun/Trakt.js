@@ -29,6 +29,8 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
+    await interaction.deferReply();
+
     // Define some variables
     let reqImage;
     let reqTitle;
@@ -63,7 +65,7 @@ export const SlashCommandF = class extends SlashCommand {
         name: `**${this.client.user.username} - Trakt.tv**`,
         value: `**◎ Error:** I couldn't find the content you were looking for.\n[Try again or try on Trakt by clicking here.](https://trakt.tv/search?query=${searchQuery})`
       });
-      interaction.reply({ ephemeral: true, embeds: [embed] });
+      interaction.editReply({ ephemeral: true, embeds: [embed] });
     };
 
     // Fetch the supplied content from the interaction
@@ -125,7 +127,7 @@ export const SlashCommandF = class extends SlashCommand {
               getTraktEmbed.setImage(reqImage);
             }
 
-            interaction.reply({ embeds: [getTraktEmbed] });
+            interaction.editReply({ embeds: [getTraktEmbed] });
           }
           // If the type of content is a movie
           if (argsType === 'show') {
@@ -176,7 +178,7 @@ export const SlashCommandF = class extends SlashCommand {
                 getTraktEmbed.setImage(reqImage);
               }
 
-              interaction.reply({ embeds: [getTraktEmbed] });
+              interaction.editReply({ embeds: [getTraktEmbed] });
             });
           }
         })
@@ -239,7 +241,7 @@ export const SlashCommandF = class extends SlashCommand {
               getTraktEmbed.setImage(reqImage);
             }
 
-            interaction.reply({ embeds: [getTraktEmbed] });
+            interaction.editReply({ embeds: [getTraktEmbed] });
           }
         })
         .catch(() => {
@@ -297,7 +299,7 @@ export const SlashCommandF = class extends SlashCommand {
               getTraktEmbed.setImage(reqImage);
             }
 
-            interaction.reply({ embeds: [getTraktEmbed] });
+            interaction.editReply({ embeds: [getTraktEmbed] });
           });
         })
         .catch(() => {
