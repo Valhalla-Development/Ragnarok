@@ -31,7 +31,7 @@ export const SlashCommandF = class extends SlashCommand {
 
   async autoComplete(interaction) {
     const focusedValue = interaction.options.getFocused();
-    const choices = ['roles', 'emojis'];
+    const choices = ['server', 'roles', 'emojis'];
     const filtered = choices.filter((choice) => choice.startsWith(focusedValue));
     await interaction.respond(filtered.map((choice) => ({ name: choice, value: choice })));
   }
@@ -92,19 +92,20 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    const guildOwner = await interaction.guild.fetchOwner();
-    const channels = interaction.guild.channels.cache;
+    if (interaction.options.getString('options') === 'server') {
+      const guildOwner = await interaction.guild.fetchOwner();
+      const channels = interaction.guild.channels.cache;
 
-    const textChan = channels.filter((channel) => channel.type === ChannelType.GuildText);
-    const voiceChan = channels.filter((channel) => channel.type === ChannelType.GuildVoice);
+      const textChan = channels.filter((channel) => channel.type === ChannelType.GuildText);
+      const voiceChan = channels.filter((channel) => channel.type === ChannelType.GuildVoice);
 
-    const embed = new EmbedBuilder()
-      .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-      .setThumbnail(interaction.guild.iconURL())
-      .setAuthor({ name: `Viewing information for ${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
-      .addFields({
-        name: 'Guild information',
-        value: `**◎ 👑 Owner:** ${guildOwner.user}
+      const embed = new EmbedBuilder()
+        .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+        .setThumbnail(interaction.guild.iconURL())
+        .setAuthor({ name: `Viewing information for ${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
+        .addFields({
+          name: 'Guild information',
+          value: `**◎ 👑 Owner:** ${guildOwner.user}
 				**◎ 🆔 ID:** \`${interaction.guild.id}\`
 				**◎ 📅 Created At:** <t:${Math.round(interaction.guild.createdTimestamp / 1000)}> - (<t:${Math.round(interaction.guild.createdTimestamp / 1000)}:R>)
 				**◎ 🔐 Verification Level:** \`${verificationLevels[interaction.guild.verificationLevel]}\`
@@ -112,26 +113,27 @@ export const SlashCommandF = class extends SlashCommand {
 				**◎ 🧑‍🤝‍🧑 Guild Members:** \`${interaction.guild.memberCount - interaction.guild.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}\`
 				**◎ 🤖 Guild Bots:** \`${interaction.guild.members.cache.filter((m) => m.user.bot).size.toLocaleString('en')}\`
 				\u200b`
-      })
-      .addFields(
-        {
-          name: `**Guild Channels** [${textChan.size + voiceChan.size}]`,
-          value: `<:TextChannel:855591004236546058> | Text: \`${textChan.size}\`\n<:VoiceChannel:855591004300115998> | Voice: \`${voiceChan.size}\``,
-          inline: true
-        },
-        {
-          name: '**Guild Perks**',
-          value: `<a:Booster:855593231294267412> | Boost Tier: \`${interaction.guild.premiumTier}\`\n<a:Booster:855593231294267412> | Boosts: \`${interaction.guild.premiumSubscriptionCount}\``,
-          inline: true
-        },
-        {
-          name: '**Assets**',
-          value: `**Server Roles [${roles.length}]**: To view all roles, run\n\`/serverinfo roles\`\n**Server Emojis [${emojis.size}]**: To view all emojis, run\n\`/serverinfo emojis\``,
-          inline: false
-        }
-      )
-      .setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL() });
-    interaction.reply({ embeds: [embed] });
+        })
+        .addFields(
+          {
+            name: `**Guild Channels** [${textChan.size + voiceChan.size}]`,
+            value: `<:TextChannel:855591004236546058> | Text: \`${textChan.size}\`\n<:VoiceChannel:855591004300115998> | Voice: \`${voiceChan.size}\``,
+            inline: true
+          },
+          {
+            name: '**Guild Perks**',
+            value: `<a:Booster:855593231294267412> | Boost Tier: \`${interaction.guild.premiumTier}\`\n<a:Booster:855593231294267412> | Boosts: \`${interaction.guild.premiumSubscriptionCount}\``,
+            inline: true
+          },
+          {
+            name: '**Assets**',
+            value: `**Server Roles [${roles.length}]**: To view all roles, run\n\`/serverinfo roles\`\n**Server Emojis [${emojis.size}]**: To view all emojis, run\n\`/serverinfo emojis\``,
+            inline: false
+          }
+        )
+        .setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL() });
+      interaction.reply({ embeds: [embed] });
+    }
   }
 };
 
