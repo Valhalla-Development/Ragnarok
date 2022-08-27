@@ -112,7 +112,6 @@ export const Util = class Util {
             category: command.category,
             ownerOnly: command.ownerOnly ? command.ownerOnly : null,
             options: command.options ? command.options.options : null,
-            usage: command.usage,
             userPerms: command.userPerms ? command.userPerms : null,
             botPerms: command.botPerms ? command.botPerms : null
           });
@@ -124,7 +123,6 @@ export const Util = class Util {
             category: command.category,
             ownerOnly: command.ownerOnly ? command.ownerOnly : null,
             options: command.options ? command.options.options : null,
-            usage: command.usage,
             userPerms: command.userPerms ? command.userPerms : null,
             botPerms: command.botPerms ? command.botPerms : null
           });

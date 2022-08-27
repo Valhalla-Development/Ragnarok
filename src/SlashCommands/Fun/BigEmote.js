@@ -13,7 +13,6 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Displays an emote at full size',
       category: 'Fun',
-      usage: '<emote>',
       options: data
     });
   }

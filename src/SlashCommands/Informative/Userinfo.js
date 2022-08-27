@@ -46,8 +46,7 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Displays information on user.',
       category: 'Informative',
-      options: data,
-      usage: '[@user]'
+      options: data
     });
   }
 

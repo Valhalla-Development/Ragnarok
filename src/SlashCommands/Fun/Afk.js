@@ -14,8 +14,7 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Sets your AFK status',
       category: 'Fun',
-      options: data,
-      usage: '[reason]'
+      options: data
     });
   }
 

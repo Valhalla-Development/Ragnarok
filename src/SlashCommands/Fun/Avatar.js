@@ -11,8 +11,7 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Display users profile picture',
       category: 'Fun',
-      options: data,
-      usage: '[@user]'
+      options: data
     });
   }
 

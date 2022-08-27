@@ -31,8 +31,7 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Posts text/file to paste.io.',
       category: 'Fun',
-      options: data,
-      usage: '<text/attachment>'
+      options: data
     });
   }
 

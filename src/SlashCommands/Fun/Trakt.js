@@ -16,7 +16,6 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Fetches Trakt information for specified movie/show.',
       category: 'Fun',
-      usage: '<show/movie> [show: show] [movie: movie]',
       options: data
     });
   }

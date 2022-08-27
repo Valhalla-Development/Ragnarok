@@ -43,7 +43,6 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Displays level of a user',
       category: 'Fun',
-      usage: '[@user] [image <URL> [off]] [country <country-code> [off]]',
       botPerms: ['AttachFiles'],
       options: data
     });

@@ -15,8 +15,7 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Fetches specified crypto price.',
       category: 'Fun',
-      options: data,
-      usage: '<crypto> [currency]'
+      options: data
     });
   }
 

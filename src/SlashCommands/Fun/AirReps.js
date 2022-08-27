@@ -12,8 +12,7 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Fetches search results from r/AirReps',
       category: 'Fun',
-      options: data,
-      usage: '<query>'
+      options: data
     });
   }
 
