@@ -29,29 +29,18 @@ export const EventF = class extends Event {
       if (!command) return;
 
       try {
-        const userPermCheck = command.userPerms ? this.client.defaultPerms.add(command.userPerms) : this.client.defaultPerms;
-        if (!this.client.utils.checkOwner(interaction.user.id) && userPermCheck) {
-          const missing = interaction.channel.permissionsFor(interaction.member).missing(userPermCheck);
-          if (missing.length) {
-            const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
-              name: `**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
-              value: `**◎ Error:** You are missing \`${this.client.utils.formatArray(
-                missing.map(this.client.utils.formatPerms)
-              )}\` permissions, they are required for this command.`
-            });
-            interaction.reply({ ephemeral: true, embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-            return;
-          }
-        }
-
         const botPermCheck = command.botPerms ? this.client.defaultPerms.add(command.botPerms) : this.client.defaultPerms;
         if (botPermCheck) {
           const missing = interaction.channel.permissionsFor(this.client.user).missing(botPermCheck);
           if (missing.length) {
-            if (missing.includes('SendMessages')) {
-              const errorMsg = `'[PERMISSIONS ERROR]' An attempt to run command: '${command.name}' in guild '${interaction.guild.name}' was made, but I am missing the 'Send Messages' permission.`;
+            if (missing.includes('SendMessages') || missing.includes('EmbedLinks') || missing.includes('ViewChannel')) {
+              const errorMsg = `'[PERMISSIONS ERROR]' An attempt to run SlashCommand: '${command.name}' in guild '${
+                interaction.guild.name
+              }' was made, but I am missing '${missing.join(', ')}' permission.`;
               console.error(
-                `[\x1b[31mPERMISSIONS ERROR\x1b[0m] An attempt to run command: '\x1b[92m${command.name}\x1b[0m' in guild \x1b[31m${interaction.guild.name}\x1b[0m was made, but I am missing the '\x1b[92mSend Messages\x1b[0m' permission.`
+                `[\x1b[31mPERMISSIONS ERROR\x1b[0m] An attempt to run SlashCommand: '\x1b[92m${command.name}\x1b[0m' in guild \x1b[31m${
+                  interaction.guild.name
+                }\x1b[0m was made, but I am missing '\x1b[92m${missing.join(', ')}s\x1b[0m' permission.`
               );
               const channel = this.client.channels.cache.get('685973401772621843');
               if (!channel) return;
@@ -65,6 +54,21 @@ export const EventF = class extends Event {
               )}\` permissions, they are required for this command.`
             });
             interaction.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+            return;
+          }
+        }
+
+        const userPermCheck = command.userPerms ? this.client.defaultPerms.add(command.userPerms) : this.client.defaultPerms;
+        if (!this.client.utils.checkOwner(interaction.user.id) && userPermCheck) {
+          const missing = interaction.channel.permissionsFor(interaction.member).missing(userPermCheck);
+          if (missing.length) {
+            const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+              name: `**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
+              value: `**◎ Error:** You are missing \`${this.client.utils.formatArray(
+                missing.map(this.client.utils.formatPerms)
+              )}\` permissions, they are required for this command.`
+            });
+            interaction.reply({ ephemeral: true, embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
             return;
           }
         }
