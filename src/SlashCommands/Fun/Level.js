@@ -29,13 +29,13 @@ const data = new SlashCommandBuilder()
     subcommand
       .setName('image')
       .setDescription('Set custom image')
-      .addStringOption((option) => option.setName('date').setDescription('Set custom image').setRequired(true))
+      .addStringOption((option) => option.setName('image').setDescription('Set custom image').setRequired(true))
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName('country')
       .setDescription('Sets your country')
-      .addStringOption((option) => option.setName('date').setDescription('Set custom country').setRequired(true))
+      .addStringOption((option) => option.setName('country').setDescription('Set custom country').setRequired(true))
   );
 
 export const SlashCommandF = class extends SlashCommand {
