@@ -10,12 +10,7 @@ Canvas.registerFont('./Storage/Canvas/Fonts/Roboto-Thin.ttf', {
 const data = new SlashCommandBuilder()
   .setName('generators')
   .setDescription('Generate an image')
-  .addSubcommand((subcommand) =>
-    subcommand
-      .setName('all')
-      .setDescription('List of available generators')
-      .addStringOption((option) => option.setName('all').setDescription('View all commands'))
-  )
+  .addSubcommand((subcommand) => subcommand.setName('all').setDescription('List of available generators'))
   .addSubcommand((subcommand) =>
     subcommand
       .setName('affect')
