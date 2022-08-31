@@ -1,24 +1,8 @@
 import { EmbedBuilder, ChannelType, PermissionsBitField, ActivityType } from 'discord.js';
-import SQLite from 'better-sqlite3';
 import Event from '../../Structures/Event.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
 
 export const EventF = class extends Event {
   async run(guild) {
-    // Custom prefixes
-    function customPrefix() {
-      const prefixes = db.prepare('SELECT count(*) FROM setprefix WHERE guildid = ?').get(guild.id);
-      if (!prefixes['count(*)']) {
-        const insert = db.prepare('INSERT INTO setprefix (guildid, prefix) VALUES (@guildid, @prefix);');
-        insert.run({
-          guildid: `${guild.id}`,
-          prefix: '-'
-        });
-      }
-    }
-    customPrefix();
-
     console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.members.memberCount} members!`);
     this.client.user.setActivity(
       `${this.client.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache
@@ -54,9 +38,9 @@ export const EventF = class extends Event {
         iconURL: guild.iconURL({ extension: 'png' })
       })
       .setColor(this.client.utils.color(guild.members.me.displayHexColor))
-      .setTitle('Hello, I\'m **Ragnarok**! Thanks for inviting me!')
+      .setTitle(`Hello, I\'m **${this.client.user.username}**! Thanks for inviting me!`)
       .setDescription(
-        `The prefix for all my commands is \`${this.client.prefix}\`, e.g: \`${this.client.prefix}help\`.\nIf you find any bugs, report them with \`${this.client.prefix}bugreport <bug>\`\nCheck \`${this.client.prefix}stats\` to see the latest announcements!`
+        'To get started, you can run `/help`.\nIf you find any bugs, or have a suggestion, please use: `/suggest <message>`\nCheck `/stats` to see the latest announcements!'
       );
     defaultChannel.send({ embeds: [embed] });
   }
