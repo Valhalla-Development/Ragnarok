@@ -16,10 +16,8 @@ export const SlashCommandF = class extends SlashCommand {
     const embed = new EmbedBuilder()
       .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
       .setDescription(
-        `Hey, I'm [**__Ragnarok__**]! A multi-purpose bot!
-				Type \`/help\` to see available options
-				
-				Command Parameters: \`<>\` is strict & \`[]\` is optional`
+        `Hey, I'm **__${this.client.user.username}__**, A multi-purpose bot!
+      You can press a button below to see available commands within its category.`
       )
       .setAuthor({ name: `${interaction.guild.name} Help`, iconURL: interaction.guild.iconURL() })
       .setThumbnail(this.client.user.displayAvatarURL())
