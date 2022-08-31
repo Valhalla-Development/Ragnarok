@@ -16,7 +16,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const member = interaction.options.getMember('user') || interaction.member;
+    const member = interaction.options.getMember('user');
 
     const embed = new EmbedBuilder()
       .setAuthor({ name: `${member.user.username}'s Avatar`, iconURL: member.user.avatarURL() })
