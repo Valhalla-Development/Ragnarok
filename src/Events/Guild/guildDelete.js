@@ -65,12 +65,6 @@ export const EventF = class extends Event {
       db.prepare('DELETE FROM rolemenu WHERE guildid = ?').run(guild.id);
     }
 
-    // setprefix table
-    const delpre = db.prepare('SELECT count(*) FROM setprefix WHERE guildid = ?;').get(guild.id);
-    if (delpre['count(*)']) {
-      db.prepare('DELETE FROM setprefix WHERE guildid = ?').run(guild.id);
-    }
-
     // setwelcome table
     const delwel = db.prepare('SELECT count(*) FROM setwelcome WHERE guildid = ?;').get(guild.id);
     if (delwel['count(*)']) {
