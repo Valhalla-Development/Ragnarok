@@ -8,7 +8,7 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 export const EventF = class extends Event {
   async run(message) {
     if (message.guild) {
-      if (!message.author || !message.content || message.author.bot) return;
+      if (!message.author || !message || !message.content || message.author.bot) return;
 
       const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
       if (!id) return;
