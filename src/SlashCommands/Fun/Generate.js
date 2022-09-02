@@ -8,7 +8,7 @@ Canvas.registerFont('./Storage/Canvas/Fonts/Roboto-Thin.ttf', {
 });
 
 const data = new SlashCommandBuilder()
-  .setName('generators')
+  .setName('generate')
   .setDescription('Generate an image')
   .addSubcommand((subcommand) => subcommand.setName('all').setDescription('List of available generators'))
   .addSubcommand((subcommand) =>
