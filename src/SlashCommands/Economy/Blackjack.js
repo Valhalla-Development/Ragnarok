@@ -1,0 +1,97 @@
+/* eslint-disable default-case */
+/* eslint-disable prefer-destructuring */
+/* eslint-disable no-unused-expressions */
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import blackjack from 'custom-bj';
+import SlashCommand from '../../Structures/SlashCommand.js';
+
+const data = new SlashCommandBuilder()
+  .setName('blackjack')
+  .setDescription('Play a game of blackjack')
+  .addSubcommand((subcommand) => subcommand.setName('all').setDescription('Bet your entire balance'))
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName('amount')
+      .setDescription('The amount to gamble')
+      .addIntegerOption((option) => option.setName('amount').setDescription('The amount to gamble').setMinValue(10).setRequired(true))
+  );
+
+export const SlashCommandF = class extends SlashCommand {
+  constructor(...args) {
+    super(...args, {
+      description: 'Play a game of blackjack',
+      category: 'Economy',
+      options: data
+    });
+  }
+
+  async run(interaction) {
+    const subOptions = interaction.options.getSubcommand();
+
+    const balance = this.client.getBalance.get(`${interaction.user.id}-${interaction.guild.id}`);
+
+    if (!balance) {
+      const limitE = new EmbedBuilder()
+        .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
+        .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - BlackJack**`, value: '**◎ Error:** You do not have any balance!' });
+      interaction.reply({ ephemeral: true, embeds: [limitE] });
+      return;
+    }
+
+    let betAmt;
+
+    if (subOptions === 'all') {
+      betAmt = balance.bank;
+    } else if (subOptions === 'amount') {
+      betAmt = interaction.options.getInteger('amount');
+    }
+
+    if (Number(betAmt) > balance.bank) {
+      const wrongUsage = new EmbedBuilder()
+        .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
+        .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+        .addFields({
+          name: `**${this.client.user.username} - BlackJack**`,
+          value: `**◎ Error:** You do not have enough to bet <:coin:706659001164628008> \`${Number(betAmt).toLocaleString(
+            'en'
+          )}\`, you have <:coin:706659001164628008> \`${Number(balance.bank).toLocaleString('en')}\` available in your bank.`
+        });
+      interaction.reply({ embeds: [wrongUsage] });
+      return;
+    }
+
+    const houseBet = betAmt;
+
+    const game = await blackjack(interaction, {
+      resultEmbed: true,
+      buttons: true,
+      transition: 'edit',
+      split: 'false',
+      doubledown: 'false',
+      betAmt
+    });
+
+    switch (game.result) {
+      case 'WIN':
+        balance.bank += Number(houseBet);
+        balance.total += Number(houseBet);
+        this.client.setBalance.run(balance);
+        break;
+      case 'LOSE':
+        balance.bank -= Number(betAmt);
+        balance.total -= Number(betAmt);
+        this.client.setBalance.run(balance);
+        break;
+
+      case 'TIE':
+        break;
+      case 'CANCEL':
+        break;
+      case 'TIMEOUT':
+        break;
+    }
+  }
+};
+
+export default SlashCommandF;
