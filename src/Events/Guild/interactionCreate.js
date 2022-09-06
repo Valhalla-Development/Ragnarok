@@ -25,6 +25,7 @@ const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 export const EventF = class extends Event {
   async run(interaction) {
     if (interaction.isChatInputCommand()) {
+      if (!interaction.guild) return;
       const command = this.client.slashCommands.get(interaction.commandName.toLowerCase());
       if (!command) return;
 
