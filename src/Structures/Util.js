@@ -7,7 +7,6 @@ import { PermissionsBitField, REST, Routes } from 'discord.js';
 import glob from 'glob';
 import url from 'url';
 import chalk from 'chalk';
-import Command from './Command.js';
 import Event from './Event.js';
 import SlashCommand from './SlashCommand.js';
 
@@ -148,24 +147,6 @@ export const Util = class Util {
           console.log(err);
         }
       })();
-    });
-  }
-
-  async loadCommands() {
-    return globPromise(`${this.directory}Commands/**/*.js`).then(async (commands) => {
-      for (const commandFile of commands) {
-        const { name } = path.parse(commandFile);
-        const { default: File } = await import(commandFile);
-        if (!this.isClass(File)) throw new TypeError(`Command ${name} doesn't export a class!`);
-        const command = new File(this.client, name.toLowerCase());
-        if (!(command instanceof Command)) throw new TypeError(`Command ${name} doesn't belong in the Commands directory.`);
-        this.client.commands.set(command.name, command);
-        if (command.aliases.length) {
-          for (const alias of command.aliases) {
-            this.client.aliases.set(alias, command.name);
-          }
-        }
-      }
     });
   }
 

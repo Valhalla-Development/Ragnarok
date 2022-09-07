@@ -21,13 +21,6 @@ export const EventF = class extends Event {
       });
       const deletionLog = fetchedLogs.entries.first();
 
-      // Check if message deleted was a command, return if it was
-      const cmd = message.content.substring(1).replace(/ .*/, '').toLowerCase();
-      const commandfile = this.client.commands.get(cmd) || this.client.commands.get(this.client.aliases.get(cmd));
-      if (commandfile) {
-        return;
-      }
-
       if (!deletionLog) {
         const noLogE = new EmbedBuilder()
           .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))

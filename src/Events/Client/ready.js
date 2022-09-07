@@ -20,7 +20,6 @@ export const EventF = class extends Event {
     console.log(
       [
         `${chalk.whiteBright('Logged in as')} ${chalk.red.bold.underline(`${this.client.user.tag}`)}`,
-        `${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${this.client.commands.size}`)} ${chalk.whiteBright('commands!')}`,
         `${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${this.client.events.size}`)} ${chalk.whiteBright('events!')}`,
         `${chalk.whiteBright('I am currently in')} ${chalk.red.bold(`${this.client.guilds.cache.size.toLocaleString('en')}`)} ${chalk.whiteBright(
           'guilds!'

@@ -29,8 +29,6 @@ export const RagnarokClient = class RagnarokClient extends Client {
     });
     this.validate(options);
 
-    this.commands = new Collection();
-
     this.slashCommands = new Collection();
 
     this.aliases = new Collection();
@@ -242,7 +240,6 @@ export const RagnarokClient = class RagnarokClient extends Client {
   }
 
   async start(token = this.token) {
-    await this.utils.loadCommands();
     await this.utils.loadSlashCommands();
     await this.utils.loadEvents();
     await this.utils.loadFunctions();
