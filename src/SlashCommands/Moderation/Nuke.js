@@ -5,7 +5,9 @@ export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
     super(...args, {
       description: 'Clones the channel and deletes the original.',
-      category: 'Moderation'
+      category: 'Moderation',
+      userPerms: ['ManageChannels'],
+      botPerms: ['ManageChannels']
     });
   }
 

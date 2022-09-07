@@ -11,8 +11,8 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Posts given input in an embed',
       category: 'Moderation',
-      userPerms: ['ManageGuild'],
-      options: data
+      options: data,
+      userPerms: ['ManageGuild']
     });
   }
 

@@ -15,7 +15,9 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Bans user from the guild',
       category: 'Moderation',
-      options: data
+      options: data,
+      userPerms: ['BanMembers'],
+      botPerms: ['BanMembers']
     });
   }
 
@@ -149,7 +151,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
     });
     collector.on('end', () => {
-      m.delete(); //! TEST
+      m.delete(); // ! TEST
     });
 
     if (id) {

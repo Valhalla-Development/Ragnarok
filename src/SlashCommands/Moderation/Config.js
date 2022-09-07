@@ -152,7 +152,9 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Configuration related commands',
       category: 'Moderation',
-      options: data
+      options: data,
+      userPerms: ['ManageGuild'],
+      botPerms: ['ManageGuild']
     });
   }
 

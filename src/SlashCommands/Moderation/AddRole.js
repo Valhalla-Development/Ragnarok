@@ -12,7 +12,9 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Add a role to user',
       category: 'Moderation',
-      options: data
+      options: data,
+      userPerms: ['ManageRoles', 'ManageGuild'],
+      botPerms: ['ManageRoles', 'ManageGuild']
     });
   }
 

@@ -12,7 +12,9 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Post a message as another user',
       category: 'Moderation',
-      options: data
+      options: data,
+      userPerms: ['ManageMessages'],
+      botPerms: ['ManageWebhooks']
     });
   }
 

@@ -15,7 +15,9 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Kicks tagged user from the guild.',
       category: 'Moderation',
-      options: data
+      options: data,
+      userPerms: ['KickMembers'],
+      botPerms: ['KickMembers']
     });
   }
 

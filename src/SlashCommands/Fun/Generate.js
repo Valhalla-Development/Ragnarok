@@ -119,7 +119,8 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Generate an image',
       category: 'fun',
-      options: data
+      options: data,
+      botPerms: ['AttachFiles']
     });
   }
 

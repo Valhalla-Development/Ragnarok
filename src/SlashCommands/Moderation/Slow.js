@@ -18,7 +18,9 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Sets slow mode in channel',
       category: 'Moderation',
-      options: data
+      options: data,
+      userPerms: ['ManageChannels'],
+      botPerms: ['ManageChannels']
     });
   }
 

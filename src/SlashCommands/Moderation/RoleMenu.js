@@ -9,7 +9,8 @@ export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
     super(...args, {
       description: 'Posts the role menu with pre-defiend roles.',
-      category: 'Moderation'
+      category: 'Moderation',
+      userPerms: ['ManageGuild']
     });
   }
 

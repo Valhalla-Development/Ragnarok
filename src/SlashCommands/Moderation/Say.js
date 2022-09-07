@@ -12,7 +12,8 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Makes the bot post given text',
       category: 'Moderation',
-      options: data
+      options: data,
+      userPerms: ['ManageMessages']
     });
   }
 

@@ -13,7 +13,9 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Deletes specified amount of messages from the channel.',
       category: 'Moderation',
-      options: data
+      options: data,
+      userPerms: ['ManageMessages'],
+      botPerms: ['ManageMessages']
     });
   }
 

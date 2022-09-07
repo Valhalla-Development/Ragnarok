@@ -61,7 +61,8 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Ticket related commands',
       category: 'Moderation',
-      options: slashData
+      options: slashData,
+      botPerms: ['ManageChannels']
     });
   }
 
@@ -100,14 +101,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      const user = interaction.options.getMember('user'); //! TEST
-      if (!user) {
-        const nouser = new EmbedBuilder()
-          .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-          .addFields({ name: `**${this.client.user.username} - Add**`, value: '**◎ Error:** Sorry! I could not find the specified user!' });
-        interaction.reply({ ephemeral: true, embeds: [nouser] });
-        return;
-      }
+      const user = interaction.options.getMember('user');
 
       const channelArgs = interaction.channel.name.split('-');
       const foundTicket = db.prepare(`SELECT * FROM tickets WHERE guildid = ${interaction.guild.id} AND ticketid = (@ticketid)`).get({
@@ -132,7 +126,7 @@ export const SlashCommandF = class extends SlashCommand {
         const nouser = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
           .addFields({ name: `**${this.client.user.username} - Add**`, value: `**◎ Success:** ${user} has been added to the ticket!` });
-        interaction.channel.send({ embeds: [nouser] });
+        interaction.reply({ embeds: [nouser] });
 
         const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${interaction.guild.id};`).get();
         if (!logget) return;

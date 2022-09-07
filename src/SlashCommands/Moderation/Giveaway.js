@@ -46,7 +46,9 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Use Giveaway module',
       category: 'Moderation',
-      options: data
+      options: data,
+      userPerms: ['ManageMessages'],
+      botPerms: ['AddReactions']
     });
   }
 

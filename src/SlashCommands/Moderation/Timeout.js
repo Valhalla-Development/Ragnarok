@@ -28,7 +28,9 @@ export const SlashCommandF = class extends SlashCommand {
     super(...args, {
       description: 'Timeouts tagged user',
       category: 'Moderation',
-      options: data
+      options: data,
+      userPerms: ['ModerateMembers'],
+      botPerms: ['ModerateMembers']
     });
   }
 
