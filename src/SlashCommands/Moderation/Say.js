@@ -57,7 +57,10 @@ export const SlashCommandF = class extends SlashCommand {
       });
       interaction.reply({ ephemeral: true, embeds: [embed] });
     } else {
-      interaction.reply(input);
+      await interaction.deferReply();
+      interaction.deleteReply();
+
+      interaction.channel.send(input);
     }
   }
 };
