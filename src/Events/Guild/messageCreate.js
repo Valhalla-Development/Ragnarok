@@ -967,7 +967,7 @@ export const EventF = class extends Event {
     chatBot(this.client);
 
     const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
-    if (!prefixgrab) return; //! figure all this out,
+    if (!prefixgrab) return;
     const prefixcommand = prefixgrab.prefix;
     // eslint-disable-next-line no-unused-vars
     const [cmd, ...args] = message.content.slice(prefixcommand.length).trim().split(/ +/g);
@@ -1141,7 +1141,7 @@ export const EventF = class extends Event {
         .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
         .setTitle(`${this.client.user.username}`)
         .setDescription(`${message.author}, __**${this.client.user.username}**__ commands now use slash commands rather than message prefixes.
-[You can learn more about the changes in the news post titled **'Ragnarok V4.????'** by clicking here...](https://ragnarokbot.com/#news)
+[You can learn more about the changes in the news post titled **'Slash Commands Migration'** by clicking here...](https://ragnarokbot.com/#news)
 
 To use the \`${command.name}\` command, you should try \`/${command.name}\` or find the command within the \`/help\` menu.
 
