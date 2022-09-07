@@ -315,12 +315,22 @@ export const EventF = class extends Event {
         }
       }
 
+      const modRole = interaction.guild.roles.cache.find((supId) => supId.id === fetchRole.role);
+
       const fetchTick = db.prepare('SELECT * FROM tickets').all();
       if (!fetchTick) return;
 
       // Filter fetchTick where chanid === interaction.channel.id
       const ticket = fetchTick.find((t) => t.chanid === interaction.channel.id);
       if (!ticket) return;
+
+      if (!interaction.member.roles.cache.has(fetchRole.role) && interaction.user.id !== interaction.guild.ownerID) {
+        const donthaveRole = new EmbedBuilder()
+          .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+          .addFields({ name: `**${this.client.user.username} - Add**`, value: `**◎ Error:** Sorry! You do not have the **${modRole}** role.` });
+        interaction.reply({ ephemeral: true, embeds: [donthaveRole] });
+        return;
+      }
 
       // Check if bot has perms
       if (!guild.members.me.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
