@@ -17,7 +17,7 @@ export const SlashCommandF = class extends SlashCommand {
     const buttonA = new ButtonBuilder()
       .setStyle(ButtonStyle.Link)
       .setLabel('Invite')
-      .setURL('https://discordapp.com/oauth2/authorize?client_id=508756879564865539&scope=bot%20applications.commands&permissions=1514550062326');
+      .setURL(`https://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot%20applications.commands&permissions=1514550062326`);
 
     const row = new ActionRowBuilder().addComponents(buttonA);
     interaction.reply({ components: [row], embeds: [embed] });
