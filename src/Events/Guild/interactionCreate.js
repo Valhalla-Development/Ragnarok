@@ -50,9 +50,7 @@ export const EventF = class extends Event {
             }
             const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
               name: `**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
-              value: `**◎ Error:** I am missing \`${this.client.utils.formatArray(
-                missing.map(this.client.utils.formatPerms)
-              )}\` permissions, they are required for this command.`
+              value: `**◎ Error:** I am missing \`${missing.join(', ')}\` permissions, they are required for this command.`
             });
             interaction.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
             return;
@@ -65,9 +63,7 @@ export const EventF = class extends Event {
           if (missing.length) {
             const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
               name: `**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
-              value: `**◎ Error:** You are missing \`${this.client.utils.formatArray(
-                missing.map(this.client.utils.formatPerms)
-              )}\` permissions, they are required for this command.`
+              value: `**◎ Error:** You are missing \`${missing.join(', ')}\` permissions, they are required for this command.`
             });
             interaction.reply({ ephemeral: true, embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
             return;
