@@ -14,7 +14,7 @@ export const SlashCommandF = class extends SlashCommand {
       category: 'Moderation',
       options: data,
       userPerms: ['ManageRoles', 'ManageGuild'],
-      botPerms: ['ManageRoles', 'ManageGuild']
+      botPerms: ['ManageGuild']
     });
   }
 
