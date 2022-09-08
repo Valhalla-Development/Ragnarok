@@ -882,10 +882,12 @@ export const SlashCommandF = class extends SlashCommand {
     // Autorole Command
     if (subGroup === 'autorole') {
       this.client.getTable = db.prepare('SELECT * FROM autorole WHERE guildid = ?');
-      const role = this.client.getTable.get(interaction.guild.id);
+      const status = this.client.getTable.get(interaction.guild.id);
+
+      const role = interaction.options.getRole('role');
 
       if (subCommand === 'off') {
-        if (!role) {
+        if (!status) {
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
             value: '**◎ Error:** AutoRole is not enabled on this guild! To enable it, please use `/config autorole @role`'
@@ -903,7 +905,28 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      if (role) {
+      if (role.position >= interaction.member.roles.highest.position) {
+        const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+          name: `**${this.client.user.username} - Config**`,
+          value: '**◎ Error:** You can not set a role that is higher than your highest.'
+        });
+        interaction.reply({ ephemeral: true, embeds: [embed] });
+        return;
+      }
+
+      // Fetch bot
+      const botUser = interaction.guild.members.cache.get(this.client.user.id);
+
+      if (role.position >= botUser.roles.highest.position) {
+        const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+          name: `**${this.client.user.username} - Config**`,
+          value: '**◎ Error:** You can not set a role that is higher than my role.'
+        });
+        interaction.reply({ ephemeral: true, embeds: [embed] });
+        return;
+      }
+
+      if (status) {
         const update = db.prepare('UPDATE autorole SET role = (@role) WHERE guildid = (@guildid);');
         update.run({
           guildid: `${interaction.guild.id}`,
