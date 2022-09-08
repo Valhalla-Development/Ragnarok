@@ -1127,21 +1127,18 @@ export const EventF = class extends Event {
       'ticket'
     ];
 
-    const command = commandArray.includes(cmd.toLowerCase());
+    const command = commandArray.filter((obj) => obj === cmd.toLowerCase());
 
     if (!message.content.startsWith(prefixcommand)) return;
 
     if (command) {
-      if (command.ownerOnly && !this.client.utils.checkOwner(message.author.id)) {
-        return;
-      }
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
         .setTitle(`${this.client.user.username}`)
         .setDescription(`${message.author}, __**${this.client.user.username}**__ commands now use slash commands rather than message prefixes.
 [You can learn more about the changes in the news post titled **'Slash Commands Migration'** by clicking here...](https://ragnarokbot.com/#news)
 
-To use the \`${command.name}\` command, you should try \`/${command.name}\` or find the command within the \`/help\` menu.
+To use the \`${command}\` command, you should try \`/${command}\` or find the command within the \`/help\` menu.
 
 *Stuck? Join the* [**Support Server**](https://discord.gg/Q3ZhdRJ).`);
       message.reply({ embeds: [embed] });
