@@ -54,9 +54,6 @@ export const SlashCommandF = class extends SlashCommand {
     let args;
     interaction.options.data[0] ? (args = interaction.options.data[0].name) : '';
 
-    const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(interaction.guild.id);
-    const { prefix } = prefixgrab;
-
     const levelDb = db.prepare(`SELECT status FROM level WHERE guildid = ${interaction.guild.id};`).get();
 
     if (levelDb) {
@@ -181,7 +178,8 @@ export const SlashCommandF = class extends SlashCommand {
         if (!option) {
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Level**`,
-            value: `**◎ Error:** Incorrect Usage! An example of this command would be: \`${prefix}level image <url-to-image>\` or to disable: \`${prefix}level image off\``
+            value:
+              '**◎ Error:** Incorrect Usage! An example of this command would be: `/level image <url-to-image>` or to disable: `/level image off`'
           });
           interaction.editReply({ ephemeral: true, embeds: [embed] });
           return;

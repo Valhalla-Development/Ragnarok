@@ -8,9 +8,6 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 export const EventF = class extends Event {
   async run(role) {
     function checkRoleMenu(clientGrab) {
-      const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(role.guild.id);
-      const { prefix } = prefixgrab;
-
       const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${role.guild.id}`).get();
       if (!foundRoleMenu || !foundRoleMenu.roleList || !foundRoleMenu.roleList.length) return;
 
@@ -55,7 +52,8 @@ export const EventF = class extends Event {
             } catch {
               const embed = new EmbedBuilder().setColor(clientGrab.utils.color(role.guild.members.me.displayHexColor)).addFields({
                 name: `**${clientGrab.user.username} - Config**`,
-                value: `**◎ Error:** A role in the role menu was deleted, I was unable to update the active role menu. Please run the following command to refresh it.\n\`${prefix}rolemenu\``
+                value:
+                  '**◎ Error:** A role in the role menu was deleted, I was unable to update the active role menu. Please run the following command to refresh it.\n`/rolemenu`'
               });
               ch.send({ embeds: [embed] }).then((m) => clientGrab.utils.deletableCheck(m, 10000));
             }
