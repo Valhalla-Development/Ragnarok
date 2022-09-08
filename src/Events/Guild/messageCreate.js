@@ -193,7 +193,7 @@ export const EventF = class extends Event {
             const suppRole = db.prepare(`SELECT role FROM ticketConfig WHERE guildid = ${fetchGuild.id}`).get();
 
             // "Support" role
-            if (!fetchGuild.roles.cache.find((r) => r.name === 'Support Team') && !suppRole) {
+            if (!suppRole) {
               this.client.utils.deletableCheck(m, 0);
 
               const nomodRole = new EmbedBuilder().setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor)).addFields({
@@ -252,8 +252,7 @@ export const EventF = class extends Event {
                 reason
               });
               // Create the channel with the name "ticket-" then the user's ID.
-              const role =
-                fetchGuild.roles.cache.find((x) => x.name === 'Support Team') || fetchGuild.roles.cache.find((r) => r.id === suppRole.role);
+              const role = fetchGuild.roles.cache.find((r) => r.id === suppRole.role);
               const role2 = fetchGuild.roles.everyone;
               fetchGuild.channels
                 .create({
@@ -398,8 +397,7 @@ export const EventF = class extends Event {
                 });
               }
 
-              const role =
-                fetchGuild.roles.cache.find((x) => x.name === 'Support Team') || fetchGuild.roles.cache.find((r) => r.id === suppRole.role);
+              const role = fetchGuild.roles.cache.find((r) => r.id === suppRole.role);
               const role2 = fetchGuild.roles.everyone;
               // Create the channel with the name "ticket-" then the user's ID.
               fetchGuild.channels
