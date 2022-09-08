@@ -43,7 +43,7 @@ export const EventF = class extends Event {
     }, 1000);
 
     this.client.user.setActivity(
-      `${this.client.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache
+      `/help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache
         .reduce((a, b) => a + b.memberCount, 0)
         .toLocaleString('en')} Users`,
       {

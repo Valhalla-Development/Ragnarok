@@ -18,7 +18,7 @@ Canvas.registerFont('./Storage/Canvas/Fonts/Montserrat-SemiBold.ttf', {
 export const EventF = class extends Event {
   async run(member) {
     this.client.user.setActivity(
-      `${this.client.prefix}help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache
+      `/help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache
         .reduce((a, b) => a + b.memberCount, 0)
         .toLocaleString('en')} Users`,
       {
@@ -119,7 +119,7 @@ export const EventF = class extends Event {
       ctx.font = '20px Montserrat';
       ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'left';
-      ctx.fillText(`${ordinal(member.guild.members.memberCount - member.guild.members.cache.filter((m) => m.user.bot).size)} member!`, 5, 232);
+      ctx.fillText(`${ordinal(member.guild.memberCount - member.guild.members.cache.filter((m) => m.user.bot).size)} member!`, 5, 232);
 
       ctx.beginPath();
       ctx.arc(350, 150, 85, 0, Math.PI * 2, true);
