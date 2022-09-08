@@ -85,7 +85,7 @@ export const SlashCommandF = class extends SlashCommand {
       // Do nothing
     }
 
-    // Kick the user and send the embed
+    // Ban the user and send the embed
     interaction.guild.members.ban(user, { deleteMessageDays: 1, reason: `${reasonArgs}` }).catch(() => {
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -109,16 +109,14 @@ export const SlashCommandF = class extends SlashCommand {
 
     const row = new ActionRowBuilder().addComponents(buttonA);
 
-    if (id && id.channel && id.channel === interaction.channel.id) return;
-
-    const m = await interaction.channel.send({ components: [row], embeds: [embed] });
+    const m = await interaction.reply({ components: [row], embeds: [embed] });
     const filter = (but) => but.user.id === interaction.user.id;
 
     const collector = m.createMessageComponentCollector({ filter, time: 15000 });
 
     collector.on('collect', async (b) => {
       if (b.customId === 'unban') {
-        interaction.guild.bans.fetch().then((bans) => {
+        interaction.guild.bans.fetch().then(async (bans) => {
           if (bans.size === 0) {
             const embed1 = new EmbedBuilder()
               .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -151,7 +149,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
     });
     collector.on('end', () => {
-      m.delete(); // ! TEST
+      interaction.deleteReply();
     });
 
     if (id) {
