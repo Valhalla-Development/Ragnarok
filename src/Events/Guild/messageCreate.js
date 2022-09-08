@@ -941,16 +941,18 @@ export const EventF = class extends Event {
 
           message.channel.sendTyping();
 
+          // Old thing
+          // `https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=${this.client.user.username}&ownername=Ragnar&user=${message.author.id}`;
+
+          const indexOfSpace = message.content.indexOf(' ');
+          const trimmed = message.content.substring(indexOfSpace + 1);
+
           try {
-            await fetch(
-              `https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=${this.client.user.username}&ownername=Ragnar&user=${
-                message.author.id
-              }`
-            )
+            await fetch(`http://api.brainshop.ai/get?bid=169096&key=4EniC9NJwnodt29j&uid=${message.author.id}&msg=${encodeURIComponent(trimmed)}`)
               .then((res) => res.json())
               .then((json) =>
                 message.reply({
-                  content: json.message,
+                  content: json.cnt,
                   allowedMentions: { repliedUser: false }
                 })
               );
