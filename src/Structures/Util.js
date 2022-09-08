@@ -82,10 +82,6 @@ export const Util = class Util {
       .replace(/Use Vad/g, 'Use Voice Activity');
   }
 
-  formatArray(array, type = 'conjunction') {
-    return new Intl.ListFormat('en-GB', { style: 'short', type }).format(array);
-  }
-
   checkOwner(target) {
     return this.client.owners.includes(target);
   }
