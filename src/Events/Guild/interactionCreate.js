@@ -52,7 +52,7 @@ export const EventF = class extends Event {
               name: `**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
               value: `**◎ Error:** I am missing \`${missing.join(', ')}\` permissions, they are required for this command.`
             });
-            interaction.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+            interaction.reply({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
             return;
           }
         }
@@ -331,7 +331,7 @@ export const EventF = class extends Event {
           name: `**${this.client.user.username} - Ticket**`,
           value: '**◎ Error:** It seems you have removed the `Manage Channels` permission from me. I cannot function properly without it :cry:'
         });
-        interaction.channel.send({ embeds: [botPerm] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+        interaction.reply({ embeds: [botPerm] }).then((m) => this.client.utils.deletableCheck(m, 10000));
         await interaction.deferUpdate();
         return;
       }
@@ -343,7 +343,7 @@ export const EventF = class extends Event {
           value:
             '**◎ Error:** This server doesn\'t have a `Support Team` role made, so the ticket can\'t be opened.\nIf you are an administrator, you can run the command `/config ticket role @role`.'
         });
-        interaction.channel.send({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+        interaction.reply({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
         await interaction.deferUpdate();
         return;
       }
@@ -355,7 +355,7 @@ export const EventF = class extends Event {
           name: `**${this.client.user.username} - Ticket**`,
           value: 'Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.'
         });
-        interaction.channel.send({ embeds: [embed] });
+        interaction.reply({ embeds: [embed] });
 
         // Generate random string
         const random = (length = 40) => {

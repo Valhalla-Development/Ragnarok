@@ -121,7 +121,7 @@ export const SlashCommandF = class extends SlashCommand {
             const embed1 = new EmbedBuilder()
               .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
               .addFields({ name: `**${this.client.user.username} - Un-Ban**`, value: '**◎ Error:** An error occured, is the user banned?' });
-            interaction.channel.send({ ephemeral: true, embeds: [embed1] });
+            interaction.followUp({ ephemeral: true, embeds: [embed1] });
             return;
           }
           const bUser = bans.find((ba) => ba.user.id === user.user.id);
@@ -129,7 +129,7 @@ export const SlashCommandF = class extends SlashCommand {
             const embed2 = new EmbedBuilder()
               .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
               .addFields({ name: `**${this.client.user.username} - Un-Ban**`, value: '**◎ Error:** The user specified is not banned!' });
-            interaction.channel.send({ embeds: [embed2] });
+            interaction.followUp({ ephemeral: true, embeds: [embed2] });
             return;
           }
 

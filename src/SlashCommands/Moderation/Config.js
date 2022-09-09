@@ -166,7 +166,7 @@ export const SlashCommandF = class extends SlashCommand {
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
         .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Error:** Please only run this command once.' });
-      interaction.channel.send({ ephemeral: true, embeds: [embed] });
+      interaction.reply({ ephemeral: true, embeds: [embed] });
     }
 
     // All Commands

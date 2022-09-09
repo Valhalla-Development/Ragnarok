@@ -139,7 +139,7 @@ export const SlashCommandF = class extends SlashCommand {
             const notEnded = new EmbedBuilder()
               .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
               .addFields({ name: `**${this.client.user.username} - Giveaway**`, value: '**◎ Error:** This giveaway has not ended!' });
-            interaction.reply.send({ ephemeral: true, embeds: [notEnded] });
+            interaction.reply({ ephemeral: true, embeds: [notEnded] });
           } else {
             console.error(e);
             const error = new EmbedBuilder()
