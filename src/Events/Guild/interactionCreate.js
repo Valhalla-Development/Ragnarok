@@ -35,11 +35,11 @@ export const EventF = class extends Event {
           const missing = interaction.channel.permissionsFor(this.client.user).missing(botPermCheck);
           if (missing.length) {
             if (missing.includes('SendMessages') || missing.includes('EmbedLinks') || missing.includes('ViewChannel')) {
-              const errorMsg = `'[PERMISSIONS ERROR]' An attempt to run SlashCommand: '${command.name}' in guild '${
+              const errorMsg = `'[PERMISSIONS ERROR]' An attempt to run SlashCommand: '${interaction.toString()}' in guild '${
                 interaction.guild.name
               }' was made, but I am missing '${missing.join(', ')}' permission.`;
               console.error(
-                `[\x1b[31mPERMISSIONS ERROR\x1b[0m] An attempt to run SlashCommand: '\x1b[92m${command.name}\x1b[0m' in guild \x1b[31m${
+                `[\x1b[31mPERMISSIONS ERROR\x1b[0m] An attempt to run SlashCommand: '\x1b[92m${interaction.toString()}\x1b[0m' in guild \x1b[31m${
                   interaction.guild.name
                 }\x1b[0m was made, but I am missing '\x1b[92m${missing.join(', ')}s\x1b[0m' permission.`
               );
@@ -83,11 +83,13 @@ export const EventF = class extends Event {
 
         logembed.addFields({
           name: `Guild: ${interaction.guild.name} | Date: <t:${nowInSecond}>`,
-          value: codeBlock('kotlin', `'${command.name}' SlashCommand was executed by ${interaction.user.tag}`)
+          value: codeBlock('kotlin', `'${interaction.toString()}' SlashCommand was executed by ${interaction.user.tag}`)
         });
-        const LoggingNoArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] '\x1b[92m${command.name}\x1b[0m' SlashCommand was executed by \x1b[31m${
-          interaction.user.tag
-        }\x1b[0m (Guild: \x1b[31m${interaction.guild.name}\x1b[0m)`;
+        const LoggingNoArgs = `[\x1b[31m${moment().format(
+          'LLLL'
+        )}\x1b[0m] '\x1b[92m${interaction.toString()}\x1b[0m' SlashCommand was executed by \x1b[31m${interaction.user.tag}\x1b[0m (Guild: \x1b[31m${
+          interaction.guild.name
+        }\x1b[0m)`;
         this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
         console.log(LoggingNoArgs);
       }
