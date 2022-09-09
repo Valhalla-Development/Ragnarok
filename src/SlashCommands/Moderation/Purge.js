@@ -23,14 +23,14 @@ export const SlashCommandF = class extends SlashCommand {
     const messageCount = interaction.options.getInteger('amount');
 
     try {
-      const fetch = await interaction.channel.messages.fetch({ limit: Number(messageCount) + 1 });
+      const fetch = await interaction.channel.messages.fetch({ limit: Number(messageCount) });
       await interaction.channel.bulkDelete(fetch, true);
 
       const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
         name: `**${this.client.user.username} - Purge**`,
-        value: `**◎ Success:** ${Number(messageCount)} message${Number(messageCount) > 1 ? 's' : ''} were removed.`
+        value: `**◎ Success:** ${Number(messageCount)} message${Number(messageCount) > 1 ? 's were' : ' was'} removed.`
       });
-      interaction.reply({ embeds: [embed] });
+      interaction.reply({ ephemeral: true, embeds: [embed] });
     } catch {
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
