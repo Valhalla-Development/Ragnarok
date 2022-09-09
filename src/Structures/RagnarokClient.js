@@ -231,10 +231,6 @@ export const RagnarokClient = class RagnarokClient extends Client {
     if (options.logging !== true && options.logging !== false) throw new Error('The \'logging\' value must be true or false.');
     this.logging = options.logging;
 
-    if (!options.prefix) throw new Error('You must pass a prefix for the client.');
-    if (typeof options.prefix !== 'string') throw new TypeError('Prefix should be a type of String.');
-    this.prefix = options.prefix;
-
     if (!options.defaultPerms) throw new Error('You must pass default perm(s) for the Client.');
     this.defaultPerms = new PermissionsBitField(options.defaultPerms).freeze();
   }
