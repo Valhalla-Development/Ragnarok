@@ -49,7 +49,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       try {
-        user.timeout(0);
+        user.timeout(null);
       } catch {
         const valueLow = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -69,7 +69,7 @@ export const SlashCommandF = class extends SlashCommand {
         .setFooter({ text: 'User Timeout Logs' })
         .setTimestamp();
 
-      interaction.channel.send({ embeds: [embed] });
+      interaction.reply({ embeds: [embed] });
 
       const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${interaction.guild.id};`).get();
       if (dbid && dbid.channel && dbid.channel === interaction.channel.id) return;
@@ -177,7 +177,7 @@ export const SlashCommandF = class extends SlashCommand {
       .setFooter({ text: 'User Timeout Logs' })
       .setTimestamp();
 
-    interaction.channel.send({ embeds: [embed] });
+    interaction.reply({ embeds: [embed] });
 
     const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${interaction.guild.id};`).get();
     if (dbid && dbid.channel && dbid.channel === interaction.channel.id) return;
