@@ -215,13 +215,13 @@ export const SlashCommandF = class extends SlashCommand {
             const ticket = fetchTick.find((t) => t.chanid === interaction.channel.id);
             if (!ticket) return;
 
-            const closeReason = interaction.options.getString('name') || '';
+            const closeReason = interaction.options.getString('name') || 'No reason provided.';
 
             const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
               name: `**${this.client.user.username} - Ticket**`,
               value: 'Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.'
             });
-            interaction.channel.send({ embeds: [embed] });
+            interaction.followUp({ embeds: [embed] });
 
             // Generate random string
             const random = (length = 40) => {
