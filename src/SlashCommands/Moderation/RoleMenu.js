@@ -62,6 +62,9 @@ export const SlashCommandF = class extends SlashCommand {
         row.addComponents(new ButtonBuilder().setCustomId(`rm-${role.id}`).setLabel(`${role.name}`).setStyle(ButtonStyle.Success));
       }
 
+      await interaction.deferReply();
+      interaction.deleteReply();
+
       const roleMenuEmbed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
         .setTitle('Assign a Role')
