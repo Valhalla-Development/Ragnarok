@@ -132,16 +132,6 @@ export const EventF = class extends Event {
       db.pragma('journal_mode = wal');
     }
 
-    // setprefix table
-    const setprefix = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'setprefix\';').get();
-    if (!setprefix['count(*)']) {
-      console.log('setprefix table created!');
-      db.prepare('CREATE TABLE setprefix (guildid TEXT PRIMARY KEY, prefix TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_setprefix_id ON setprefix (guildid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
-
     // setwelcome table
     const setwelcome = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'setwelcome\';').get();
     if (!setwelcome['count(*)']) {
