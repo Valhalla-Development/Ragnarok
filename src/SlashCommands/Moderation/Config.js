@@ -496,6 +496,27 @@ export const SlashCommandF = class extends SlashCommand {
       const rRole = interaction.options.getRole('role');
 
       if (subCommand === 'add') {
+        if (rRole.position >= interaction.member.roles.highest.position) {
+          const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+            name: `**${this.client.user.username} - Config**`,
+            value: '**◎ Error:** You can not set a role that is higher than your highest.'
+          });
+          interaction.reply({ ephemeral: true, embeds: [embed] });
+          return;
+        }
+
+        // Fetch bot
+        const botUser = interaction.guild.members.cache.get(this.client.user.id);
+
+        if (rRole.position >= botUser.roles.highest.position) {
+          const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+            name: `**${this.client.user.username} - Config**`,
+            value: '**◎ Error:** You can not set a role that is higher than my role.'
+          });
+          interaction.reply({ ephemeral: true, embeds: [embed] });
+          return;
+        }
+
         const roleList = [];
 
         const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${interaction.guild.id}`).get();
