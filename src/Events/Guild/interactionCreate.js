@@ -93,6 +93,32 @@ export const EventF = class extends Event {
         this.client.channels.cache.get('694680953133596682').send({ embeds: [logembed] });
         console.log(LoggingNoArgs);
       }
+
+      // Logging command exectuion
+      const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${interaction.guild.id};`).get();
+      if (!id) return;
+
+      const logs = id.channel;
+      if (!logs) return;
+
+      if (id) {
+        if (id.channel === null) {
+          db.prepare(`DELETE FROM logging WHERE guildid = ${interaction.guild.id}`).run();
+          return;
+        }
+        if (!interaction.guild.channels.cache.find((channel) => channel.id === id.channel)) {
+          db.prepare(`DELETE FROM logging WHERE guildid = ${interaction.guild.id}`).run();
+          return;
+        }
+      }
+
+      const logEmbed = new EmbedBuilder()
+        .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+        .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.guild.iconURL() })
+        .setDescription(`**◎ ${interaction.user} used command in ${interaction.channel}**\n${codeBlock('yaml', `${interaction.toString()}`)}`)
+        .setFooter({ text: `ID: ${interaction.channel.id}` })
+        .setTimestamp();
+      this.client.channels.cache.get(logs).send({ embeds: [logEmbed] });
     }
 
     if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
