@@ -25,7 +25,7 @@ export const SlashCommandF = class extends SlashCommand {
       if (channel.type !== ChannelType.GuildText) {
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-          .addFields({ name: `**${this.client.user.username} - Say**`, value: '**◎ Error:** Please input a valid channel!' });
+          .addFields({ name: `**${this.client.user.username} - Say**`, value: '**◎ Error:** Please input a valid **Text** channel!' });
         interaction.reply({ ephemeral: true, embeds: [embed] });
         return;
       }
