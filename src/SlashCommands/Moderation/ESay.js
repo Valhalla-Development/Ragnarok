@@ -17,7 +17,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    interaction.deferReply();
+    await interaction.deferReply();
     interaction.deleteReply();
 
     const input = interaction.options.getString('input');
