@@ -8,6 +8,9 @@ const data = new SlashCommandBuilder()
   .setName('ban')
   .setDescription('Bans user from the guild')
   .addUserOption((option) => option.setName('user').setDescription('User to ban').setRequired(true))
+  .addStringOption((option) =>
+    option.setName('delete_messages').setDescription('How many messages to delete from the user').setRequired(true).setAutocomplete(true)
+  )
   .addStringOption((option) => option.setName('reason').setDescription('Reason for ban').setMinLength(4).setMaxLength(40));
 
 export const SlashCommandF = class extends SlashCommand {
@@ -21,10 +24,39 @@ export const SlashCommandF = class extends SlashCommand {
     });
   }
 
+  async autoComplete(interaction) {
+    const focusedValue = interaction.options.getFocused();
+    const choices = [
+      'Don\'t Delete Any',
+      'Previous Hour',
+      'Previous 6 Hours',
+      'Previous 12 Hours',
+      'Previous 24 Hours',
+      'Previous 3 Days',
+      'Previous 7 Days'
+    ];
+    const filtered = choices.filter((choice) => choice.startsWith(focusedValue));
+    await interaction.respond(filtered.map((choice) => ({ name: choice, value: choice })));
+  }
+
   async run(interaction) {
+    const deleteTime = {
+      'Don\'t Delete Any': 0,
+      'Previous Hour': 3600,
+      'Previous 6 Hours': 21600,
+      'Previous 12 Hours': 43200,
+      'Previous 24 Hours': 86400,
+      'Previous 3 Days': 259200,
+      'Previous 7 Days': 604800
+    };
+
     const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${interaction.guild.id};`).get();
 
+    const deleteMessageFetch = interaction.options.getString('delete_messages');
     const user = interaction.options.getMember('user');
+    const reasonArgs = interaction.options.getString('reason') || 'No reason provided.';
+
+    const deleteMessage = deleteTime[deleteMessageFetch];
 
     // If user id = message id
     if (user.user.id === interaction.user.id) {
@@ -67,8 +99,6 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    const reasonArgs = interaction.options.getString('reason') || 'No reason provided.';
-
     const authoMes = new EmbedBuilder()
       .setThumbnail(this.client.user.displayAvatarURL())
       .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -86,7 +116,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     // Ban the user and send the embed
-    interaction.guild.members.ban(user, { deleteMessageDays: 1, reason: `${reasonArgs}` }).catch(() => {
+    interaction.guild.members.ban(user, { deleteMessageSeconds: deleteMessage, reason: `${reasonArgs}` }).catch(() => {
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
         .addFields({ name: `**${this.client.user.username} - Ban**`, value: '**◎ Error:** An error occured!' });
