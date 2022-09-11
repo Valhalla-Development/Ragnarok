@@ -222,7 +222,7 @@ export const EventF = class extends Event {
     if (!ticketConfigTable['count(*)']) {
       console.log('ticketConfig table created!');
       db.prepare(
-        'CREATE TABLE ticketConfig (guildid TEXT PRIMARY KEY, category TEXT, log TEXT, role TEXT, ticketembed TEXT, ticketembedchan TEXT);'
+        'CREATE TABLE ticketConfig (guildid TEXT PRIMARY KEY, category TEXT, log TEXT, role TEXT, ticketembed TEXT, ticketembedchan TEXT, blacklist BLOB);'
       ).run();
       db.prepare('CREATE UNIQUE INDEX idx_ticketConfig_id ON ticketConfig (guildid);').run();
       db.pragma('synchronous = 1');
