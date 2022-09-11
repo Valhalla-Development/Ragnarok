@@ -40,7 +40,7 @@ export const EventF = class extends Event {
       };
 
       const staticFileNameGen = random();
-      const staticFileName = `${modal.channel.name}-_-${staticFileNameGen}.html`;
+      const staticFileName = `${noSpecialCharacters(modal.channel.name)}-_-${staticFileNameGen}.html`;
       const { channel } = modal;
 
       channel.name = staticFileName;
@@ -190,6 +190,9 @@ export const EventF = class extends Event {
         )
         .setTimestamp();
       logchan.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] });
+    }
+    function noSpecialCharacters(str) {
+      return str.replace(/[^a-zA-Z0-9,;\-.!? ]/g, '');
     }
   }
 };

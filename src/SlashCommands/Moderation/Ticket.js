@@ -243,7 +243,7 @@ export const SlashCommandF = class extends SlashCommand {
               interaction.followUp({ embeds: [embed] });
 
               // Generate random string
-              const random = (length = 40) => {
+              const random = (length = 20) => {
                 // Declare all characters
                 const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -257,7 +257,7 @@ export const SlashCommandF = class extends SlashCommand {
               };
 
               const staticFileNameGen = random();
-              const staticFileName = `${interaction.channel.name}-_-${staticFileNameGen}.html`;
+              const staticFileName = `${noSpecialCharacters(interaction.channel.name)}-_-${staticFileNameGen}.html`;
               const { channel } = interaction;
 
               channel.name = staticFileName;
@@ -432,8 +432,6 @@ export const SlashCommandF = class extends SlashCommand {
         // Ticket Embed
         const fetchTick = db.prepare(`SELECT * FROM ticketConfig WHERE guildid = ${interaction.guild.id}`).get();
 
-        const channel = interaction.guild.channels.cache.get(fetchTick.ticketembedchan);
-
         if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
           const botPerm = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Ticket**`,
@@ -517,7 +515,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         // Create the channel with the name "ticket-" then the user's ID.
         const role = interaction.guild.roles.cache.find((r) => r.id === fetchTick.role);
-        const role2 = channel.guild.roles.everyone;
+        const role2 = interaction.guild.roles.everyone;
 
         // Check how many channels are in the category
         const category = interaction.guild.channels.cache.find((chan) => chan.id === id.category);
@@ -897,6 +895,9 @@ export const SlashCommandF = class extends SlashCommand {
           interaction.reply({ ephemeral: true, embeds: [embed] });
         }
       }
+    }
+    function noSpecialCharacters(str) {
+      return str.replace(/[^a-zA-Z0-9,;\-.!? ]/g, '');
     }
   }
 };

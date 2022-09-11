@@ -165,7 +165,7 @@ export const EventF = class extends Event {
         };
 
         const staticFileNameGen = random();
-        const staticFileName = `${interaction.channel.name}-_-${staticFileNameGen}.html`;
+        const staticFileName = `${noSpecialCharacters(interaction.channel.name)}-_-${staticFileNameGen}.html`;
         const { channel } = interaction;
 
         channel.name = staticFileName;
@@ -400,7 +400,7 @@ export const EventF = class extends Event {
         };
 
         const staticFileNameGen = random();
-        const staticFileName = `${interaction.channel.name}-_-${staticFileNameGen}.html`;
+        const staticFileName = `${noSpecialCharacters(interaction.channel.name)}-_-${staticFileNameGen}.html`;
         const { channel } = interaction;
 
         channel.name = staticFileName;
@@ -910,6 +910,9 @@ export const EventF = class extends Event {
             interaction.reply({ embeds: [embed], ephemeral: true });
           });
       }
+    }
+    function noSpecialCharacters(str) {
+      return str.replace(/[^a-zA-Z0-9,;\-.!? ]/g, '');
     }
   }
 };
