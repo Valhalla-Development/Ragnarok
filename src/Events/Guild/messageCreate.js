@@ -204,6 +204,25 @@ export const EventF = class extends Event {
               return;
             }
 
+            const fetchBlacklist = db.prepare(`SELECT blacklist FROM ticketConfig WHERE guildid=${fetchGuild.id}`).get();
+
+            let foundBlacklist;
+
+            if (!fetchBlacklist.blacklist) {
+              foundBlacklist = [];
+            } else {
+              foundBlacklist = await JSON.parse(fetchBlacklist.blacklist);
+            }
+
+            if (foundBlacklist.includes(message.author.id)) {
+              const embedA = new EmbedBuilder().setColor(this.client.utils.color(fetchGuild.members.me.displayHexColor)).addFields({
+                name: `**${this.client.user.username} - Ticket**`,
+                value: '**◎ Error:** You are blacklisted from creating tickets in this guild.'
+              });
+              message.channel.send({ ephemeral: true, embeds: [embedA] });
+              return;
+            }
+
             // Make sure this is the user's only ticket.
             const foundTicket = db.prepare(`SELECT authorid FROM tickets WHERE guildid = ${fetchGuild.id} AND authorid = (@authorid)`);
             const checkTicketEx = db.prepare(`SELECT chanid FROM tickets WHERE guildid = ${fetchGuild.id} AND authorid = ${message.author.id}`).get();

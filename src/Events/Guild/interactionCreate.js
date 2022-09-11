@@ -603,6 +603,25 @@ export const EventF = class extends Event {
         return;
       }
 
+      const fetchBlacklist = db.prepare(`SELECT blacklist FROM ticketConfig WHERE guildid=${interaction.guild.id}`).get();
+
+      let foundBlacklist;
+
+      if (!fetchBlacklist.blacklist) {
+        foundBlacklist = [];
+      } else {
+        foundBlacklist = await JSON.parse(fetchBlacklist.blacklist);
+      }
+
+      if (foundBlacklist.includes(interaction.user.id)) {
+        const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+          name: `**${this.client.user.username} - Ticket**`,
+          value: '**◎ Error:** You are blacklisted from creating tickets in this guild.'
+        });
+        interaction.reply({ ephemeral: true, embeds: [embed] });
+        return;
+      }
+
       // "Support" role
       if (!fetch.role) {
         const nomodRole = new EmbedBuilder().setColor(this.client.utils.color(guild.members.me.displayHexColor)).addFields({
