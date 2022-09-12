@@ -5,9 +5,6 @@ import fetch from 'node-fetch';
 import Canvas from 'canvas';
 import SlashCommand from '../../Structures/SlashCommand.js';
 
-const comCooldown = new Set();
-const comCooldownSeconds = 10;
-
 const db = new SQLite('./Storage/DB/db.sqlite');
 
 const data = new SlashCommandBuilder()
@@ -162,13 +159,6 @@ export const SlashCommandF = class extends SlashCommand {
     const subGroup = interaction.options.getSubcommandGroup();
     const subCommand = interaction.options.getSubcommand();
 
-    if (comCooldown.has(interaction.user.id)) {
-      const embed = new EmbedBuilder()
-        .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-        .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Error:** Please only run this command once.' });
-      interaction.reply({ ephemeral: true, embeds: [embed] });
-    }
-
     // All Commands
     if (subCommand === 'all') {
       const home = new ButtonBuilder().setCustomId('home').setEmoji('🏠').setStyle(ButtonStyle.Success).setDisabled(true);
@@ -200,15 +190,6 @@ export const SlashCommandF = class extends SlashCommand {
       const filter = (but) => but.user.id !== this.client.user.id;
 
       const collector = m.createMessageComponentCollector({ filter, time: 15000 });
-
-      if (!comCooldown.has(interaction.user.id)) {
-        comCooldown.add(interaction.user.id);
-      }
-      setTimeout(() => {
-        if (comCooldown.has(interaction.user.id)) {
-          comCooldown.delete(interaction.user.id);
-        }
-      }, comCooldownSeconds * 1000);
 
       collector.on('collect', async (b) => {
         collector.resetTimer();
@@ -397,10 +378,6 @@ export const SlashCommandF = class extends SlashCommand {
       });
 
       collector.on('end', (_, reason) => {
-        if (comCooldown.has(interaction.user.id)) {
-          comCooldown.delete(interaction.user.id);
-        }
-
         if (reason === 'time') {
           // Disable button and update message
           home.setDisabled(true);
@@ -447,6 +424,15 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (bChannel) {
+        if (bChannel.type !== ChannelType.GuildText) {
+          const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+            name: `**${this.client.user.username} - Config**`,
+            value: '**◎ Error:** Please enter a valid **text** channel.'
+          });
+          interaction.reply({ ephemeral: true, embeds: [embed] });
+          return;
+        }
+
         if (!status) {
           const insert = db.prepare('INSERT INTO birthdayConfig (guildid, channel) VALUES (@guildid, @channel);');
           insert.run({
@@ -573,8 +559,9 @@ export const SlashCommandF = class extends SlashCommand {
             if (activeMenu) {
               const ch = interaction.guild.channels.cache.get(activeMenu.channel);
 
-              try {
-                ch.messages.fetch({ message: activeMenu.message }).then((ms) => {
+              ch.messages
+                .fetch({ message: activeMenu.message })
+                .then((ms) => {
                   const roleArray = JSON.parse(foundRoleMenu.roleList);
 
                   const row = new ActionRowBuilder();
@@ -589,6 +576,12 @@ export const SlashCommandF = class extends SlashCommand {
 
                   row.addComponents(new ButtonBuilder().setCustomId(`rm-${rRole.id}`).setLabel(`${rRole.name}`).setStyle(ButtonStyle.Success)); //! TEST
 
+                  const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+                    name: `**${this.client.user.username} - Config**`,
+                    value: '**◎ Success:** Roles successfully set in the assignable role menu!\nYour current menu has been updated'
+                  });
+                  interaction.reply({ ephemeral: true, embeds: [embed] });
+
                   setTimeout(() => {
                     // I added this timeout because I couldn’t be bothered fixing, please don’t remove or I cry
                     const roleMenuEmbed = new EmbedBuilder()
@@ -597,21 +590,15 @@ export const SlashCommandF = class extends SlashCommand {
                       .setDescription('Select the role you wish to assign to yourself.');
                     ms.edit({ embeds: [roleMenuEmbed], components: [row] });
                   });
-                }, 1000);
-
-                const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
-                  name: `**${this.client.user.username} - Config**`,
-                  value: '**◎ Success:** Roles successfully set in the assignable role menu!\nYour current menu has been updated'
+                }, 1000)
+                .catch(() => {
+                  const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+                    name: `**${this.client.user.username} - Config**`,
+                    value:
+                      '**◎ Success:** Roles successfully set in the assignable role menu!\n**However** I was unable to update the current rolemenu, you will have to run `/rolemenu` to create a menu again.'
+                  });
+                  interaction.reply({ ephemeral: true, embeds: [embed] });
                 });
-                interaction.reply({ ephemeral: true, embeds: [embed] });
-              } catch {
-                const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
-                  name: `**${this.client.user.username} - Config**`,
-                  value:
-                    '**◎ Success:** Roles successfully set in the assignable role menu!\n**However** I was unable to update the current rolemenu, you will have to run `/rolemenu` to create a menu again.'
-                });
-                interaction.reply({ ephemeral: true, embeds: [embed] });
-              }
             }
           }
 
@@ -640,11 +627,59 @@ export const SlashCommandF = class extends SlashCommand {
         if (roleList.includes(rRole.id)) {
           const index = roleList.indexOf(rRole.id);
           roleList.splice(index, 1);
-          const updateRoleList = db.prepare('UPDATE rolemenu SET roleList = (@roleList) WHERE guildid = (@guildid)');
-          updateRoleList.run({
-            guildid: `${interaction.guild.id}`,
-            roleList: JSON.stringify(roleList)
-          });
+
+          if (!roleList.length) {
+            if (foundRoleMenu.activeRoleMenuID) {
+              const activeMenu = JSON.parse(foundRoleMenu.activeRoleMenuID);
+
+              if (activeMenu) {
+                const ch = interaction.guild.channels.cache.get(activeMenu.channel);
+
+                ch.messages
+                  .fetch({ message: activeMenu.message })
+                  .then((ms) => {
+                    ms.delete();
+                    const embedA = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+                      name: `**${this.client.user.username} - Config**`,
+                      value:
+                        '**◎ Success:** Specified roles have successfully been removed from the Role Menu!\nSince no roles are present, I have removed the rolemenu.'
+                    });
+                    interaction.reply({ ephemeral: true, embeds: [embedA] });
+                  })
+                  .catch(() => {
+                    const embedA = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+                      name: `**${this.client.user.username} - Config**`,
+                      value:
+                        '**◎ Error:** **◎ Success:** Specified roles have successfully been removed from the Role Menu!\nNo roles exist in the database, I was unable to delete the active role menu.'
+                    });
+                    interaction.reply({ ephemeral: true, embeds: [embedA] });
+                  });
+              }
+              db.prepare(`DELETE FROM rolemenu WHERE guildid=${interaction.guild.id}`).run();
+
+              return;
+            }
+
+            const embedA = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+              name: `**${this.client.user.username} - Config**`,
+              value: '**◎ Success:** Specified roles have successfully been removed from the Role Menu!'
+            });
+            interaction.reply({ ephemeral: true, embeds: [embedA] });
+
+            db.prepare(`DELETE FROM rolemenu WHERE guildid=${interaction.guild.id}`).run();
+          } else {
+            const embedA = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+              name: `**${this.client.user.username} - Config**`,
+              value: '**◎ Success:** Specified roles have successfully been removed from the Role Menu!'
+            });
+            interaction.reply({ ephemeral: true, embeds: [embedA] });
+
+            const updateRoleList = db.prepare('UPDATE rolemenu SET roleList = (@roleList) WHERE guildid = (@guildid)');
+            updateRoleList.run({
+              guildid: `${interaction.guild.id}`,
+              roleList: JSON.stringify(roleList)
+            });
+          }
         } else {
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -660,8 +695,9 @@ export const SlashCommandF = class extends SlashCommand {
           if (activeMenu) {
             const ch = interaction.guild.channels.cache.get(activeMenu.channel);
 
-            try {
-              ch.messages.fetch({ message: activeMenu.message }).then((ms) => {
+            ch.messages
+              .fetch({ message: activeMenu.message })
+              .then((ms) => {
                 // Update the message with the new array of roles
                 const row = new ActionRowBuilder();
 
@@ -673,6 +709,12 @@ export const SlashCommandF = class extends SlashCommand {
                   );
                 }
 
+                const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+                  name: `**${this.client.user.username} - Config**`,
+                  value: '**◎ Success:** Specified roles have successfully been removed from the Role Menu!'
+                });
+                interaction.reply({ ephemeral: true, embeds: [embed] });
+
                 setTimeout(() => {
                   // I added this timeout because I couldn’t be bothered fixing, please don’t remove or I cry
                   const roleMenuEmbed = new EmbedBuilder()
@@ -681,21 +723,15 @@ export const SlashCommandF = class extends SlashCommand {
                     .setDescription('Select the role you wish to assign to yourself.');
                   ms.edit({ embeds: [roleMenuEmbed], components: [row] });
                 });
-              }, 1000);
-
-              const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
-                name: `**${this.client.user.username} - Config**`,
-                value: '**◎ Success:** Specified roles have successfully been removed from the Role Menu!'
+              }, 1000)
+              .catch(() => {
+                const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+                  name: `**${this.client.user.username} - Config**`,
+                  value:
+                    '**◎ Error:** Specified roles have successfully been removed from the rolemene. However, I was unable to update the existing menu, you will have to run `/rolemenu` again to reset the menu.'
+                });
+                interaction.reply({ ephemeral: true, embeds: [embed] });
               });
-              interaction.reply({ ephemeral: true, embeds: [embed] });
-            } catch {
-              const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
-                name: `**${this.client.user.username} - Config**`,
-                value:
-                  '**◎ Error:** Specified roles have successfully been removed from the rolemene. However, I was unable to update the existing menu, you will have to run `/rolemenu` again to reset the menu.'
-              });
-              interaction.reply({ ephemeral: true, embeds: [embed] });
-            }
           }
         }
         return;
