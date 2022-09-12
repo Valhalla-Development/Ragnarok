@@ -4,7 +4,7 @@ import SlashCommand from '../../Structures/SlashCommand.js';
 const data = new SlashCommandBuilder()
   .setName('avatar')
   .setDescription('Display users profile picture')
-  .addUserOption((option) => option.setName('user').setDescription('Select a user').setRequired(true));
+  .addUserOption((option) => option.setName('user').setDescription('Select a user'));
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -16,7 +16,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const member = interaction.options.getUser('user');
+    const member = interaction.options.getUser('user') || interaction.user;
     await member.fetch().then((usr) => {
       const avatar = usr.avatarURL({ size: 2048 });
 
