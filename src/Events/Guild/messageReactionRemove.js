@@ -48,7 +48,7 @@ export const EventF = class extends Event {
     if (message.channel.id === starChannel.id) {
       if (user.id !== this.client.user.id) {
         if (message && message.embeds[0]) {
-          if (message.embeds[0].footer.text.startsWith('⭐')) {
+          if (message.embeds[0].footer && message.embeds[0].footer.text.startsWith('⭐')) {
             // We fetch the ID of the message already on the starboard.
             const starMsg = await starChannel.messages.fetch({
               message: message.id
@@ -95,7 +95,9 @@ export const EventF = class extends Event {
     const filtered = fetchedMessages.filter((m) => m.embeds.length > 0);
 
     // We check the messages within the fetch object to see if the message that was reacted to is already a message in the starboard
-    const stars = filtered.find((m) => m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(message.id));
+    const stars = filtered.find(
+      (m) => m.embeds[0].footer && m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(message.id)
+    );
     if (stars) {
       // We fetch the ID of the message already on the starboard.
       const starMsg = await starChannel.messages.fetch({ message: stars.id });

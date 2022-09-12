@@ -59,6 +59,7 @@ export const EventF = class extends Event {
         value: `**◎ Error:** ${message.author}, You cannot star your own messages.`
       });
       message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      messageReaction.users.remove(messageReaction.message.author.id);
       return;
     }
 
@@ -69,7 +70,7 @@ export const EventF = class extends Event {
     if (message.channel.id === starChannel.id) {
       if (user.id !== this.client.user.id) {
         if (message && message.embeds[0]) {
-          if (message.embeds[0].footer.text.startsWith('⭐')) {
+          if (message.embeds[0].footer && message.embeds[0].footer.text.startsWith('⭐')) {
             // We fetch the ID of the message already on the starboard.
             const starMsg = await starChannel.messages.fetch(message.id);
             if (!starMsg) return;
@@ -106,7 +107,9 @@ export const EventF = class extends Event {
     const filtered = fetchedMessages.filter((m) => m.embeds.length > 0);
 
     // We check the messages within the fetch object to see if the message that was reacted to is already a message in the starboard
-    const stars = filtered.find((m) => m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(message.id));
+    const stars = filtered.find(
+      (m) => m.embeds[0].footer && m.embeds[0].footer.text.startsWith('⭐') && m.embeds[0].footer.text.endsWith(message.id)
+    );
 
     // Now we setup an if statement for if the message is found within the starboard.
     if (stars) {
@@ -135,10 +138,7 @@ export const EventF = class extends Event {
       // We fetch the ID of the message already on the starboard.
       // And now we edit the message with the new embed!
       await starMsg.edit({ embeds: [embed] });
-    }
-
-    // Now we use an if statement for if a message isn't found in the starboard for the message.
-    if (!stars) {
+    } else {
       // We use the this.extension function to see if there is anything attached to the message.
       const image = message.attachments.size > 0 ? await this.extension(messageReaction, message.attachments.first().url) : '';
       // If the message is empty, we don't allow the user to star the message.
