@@ -25,7 +25,7 @@ export const pagination = class pagination {
 
     const row = new ActionRowBuilder().addComponents(back, home, next);
 
-    const m = await message.channel.send({
+    const m = await message.reply({
       embeds: [embeds[0]],
       components: [row]
     });
