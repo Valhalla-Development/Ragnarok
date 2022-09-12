@@ -151,7 +151,7 @@ export const EventF = class extends Event {
       const autorole = autoroletable.role;
       if (!autorole) return;
 
-      const myRole = member.guild.roles.cache.find((role) => role.name === autorole);
+      const myRole = member.guild.roles.cache.find((role) => role.id === autorole);
       if (!myRole) return;
 
       member.roles.add(myRole);
