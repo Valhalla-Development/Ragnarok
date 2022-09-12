@@ -55,7 +55,7 @@ export const EventF = class extends Event {
     // welcome
     async function welcomeMessage(clientGrab) {
       // Return if user is my testing alt
-      if (member.user.id === '488717256897855519') return;
+      // if (member.user.id === '488717256897855519') return;
 
       const setwelcome = db.prepare(`SELECT * FROM setwelcome WHERE guildid = ${member.guild.id};`).get();
       if (!setwelcome) return;
@@ -89,20 +89,16 @@ export const EventF = class extends Event {
       ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
       // bars
-      ctx.globalAlpha = 0.4;
-      ctx.rect(-1, 7, 702, 52);
-      ctx.fillStyle = '#000000';
-      ctx.fill();
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = '#ffffff';
-      ctx.stroke();
+      ctx.globalAlpha = 0.75;
 
+      ctx.rect(-1, 7, 702, 52);
       ctx.rect(-1, 240, 702, 52);
       ctx.fillStyle = '#000000';
       ctx.fill();
       ctx.lineWidth = 1;
       ctx.strokeStyle = '#ffffff';
       ctx.stroke();
+
       ctx.globalAlpha = 1;
 
       // text
@@ -116,10 +112,10 @@ export const EventF = class extends Event {
       ctx.textAlign = 'center';
       ctx.fillText(`${member.user.username}`, canvas.width / 2, 280);
 
-      ctx.font = '20px Montserrat';
+      ctx.font = '15px Montserrat';
       ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'left';
-      ctx.fillText(`${ordinal(member.guild.memberCount - member.guild.members.cache.filter((m) => m.user.bot).size)} member!`, 5, 232);
+      ctx.fillText(`${ordinal(member.guild.memberCount - member.guild.members.cache.filter((m) => m.user.bot).size)} member!`, 3.5, 45);
 
       ctx.beginPath();
       ctx.arc(350, 150, 85, 0, Math.PI * 2, true);

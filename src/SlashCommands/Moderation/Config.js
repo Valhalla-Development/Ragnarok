@@ -103,7 +103,7 @@ const data = new SlashCommandBuilder()
         subcommand
           .setName('category')
           .setDescription('The category tickets should be added to')
-          .addChannelOption((option) => option.setName('channel').setDescription('The category tickets should be added to').setRequired(true))
+          .addChannelOption((option) => option.setName('category').setDescription('The category tickets should be added to').setRequired(true))
       )
       .addSubcommand((subcommand) =>
         subcommand
@@ -1310,6 +1310,15 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (subCommand === 'channel') {
         const lchan = interaction.options.getChannel('channel');
+
+        if (lchan.type !== ChannelType.GuildText) {
+          const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+            name: `**${this.client.user.username} - Config**`,
+            value: '**◎ Error:** Please select a valid **text** channel.'
+          });
+          interaction.reply({ ephemeral: true, embeds: [embed] });
+          return;
+        }
 
         if (!status) {
           const insert = db.prepare('INSERT INTO setwelcome (guildid, channel) VALUES (@guildid, @channel);');
