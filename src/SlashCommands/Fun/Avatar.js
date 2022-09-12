@@ -16,13 +16,24 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const member = interaction.options.getMember('user');
+    const member = interaction.options.getUser('user');
+    await member.fetch().then((usr) => {
+      const avatar = usr.avatarURL({ size: 2048 });
 
-    const embed = new EmbedBuilder()
-      .setAuthor({ name: `${member.user.username}'s Avatar`, iconURL: member.user.avatarURL() })
-      .setImage(member.user.avatarURL({ size: 1024 }))
-      .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor));
-    interaction.reply({ embeds: [embed] });
+      if (!avatar) {
+        const embed = new EmbedBuilder()
+          .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+          .addFields({ name: `**${this.client.user.username} - Avatar**`, value: `**◎ Error:** ${usr} does not have an avatar set.` });
+        interaction.reply({ ephemeral: true, embeds: [embed] });
+        return;
+      }
+
+      const embed = new EmbedBuilder()
+        .setAuthor({ name: `${usr.username}'s Avatar`, iconURL: usr.avatarURL() })
+        .setImage(avatar)
+        .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor));
+      interaction.reply({ embeds: [embed] });
+    });
   }
 };
 
