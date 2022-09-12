@@ -18,9 +18,6 @@ const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 
 const db = new SQLite('./Storage/DB/db.sqlite');
 
-const comCooldown = new Set();
-const comCooldownSeconds = 20;
-
 const slashData = new SlashCommandBuilder()
   .setName('ticket')
   .setDescription('Ticket commands')
@@ -197,177 +194,113 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (!comCooldown.has(interaction.user.id)) {
-          const buttonA = new ButtonBuilder().setStyle(ButtonStyle.Success).setLabel('Close').setCustomId('close');
-          const buttonB = new ButtonBuilder().setStyle(ButtonStyle.Danger).setLabel('Cancel').setCustomId('cancel');
+        const buttonA = new ButtonBuilder().setStyle(ButtonStyle.Success).setLabel('Close').setCustomId('close');
+        const buttonB = new ButtonBuilder().setStyle(ButtonStyle.Danger).setLabel('Cancel').setCustomId('cancel');
 
-          const row = new ActionRowBuilder().addComponents(buttonA, buttonB);
+        const row = new ActionRowBuilder().addComponents(buttonA, buttonB);
 
-          const initial = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
-            name: `**${this.client.user.username} - Close**`,
-            value: '**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!'
-          });
+        const initial = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+          name: `**${this.client.user.username} - Close**`,
+          value: '**◎ Confirmation:** Are you sure? Once confirmed, you cannot reverse this action!'
+        });
 
-          const m = await interaction.reply({ components: [row], embeds: [initial] });
+        const m = await interaction.reply({ components: [row], embeds: [initial] });
 
-          const filter = (but) => but.user.id === interaction.user.id;
+        const filter = (but) => but.user.id === interaction.user.id;
 
-          const collector = m.createMessageComponentCollector({ filter, time: 15000 });
+        const collector = m.createMessageComponentCollector({ filter, time: 15000 });
 
-          if (!comCooldown.has(interaction.user.id)) {
-            comCooldown.add(interaction.user.id);
-          }
-          setTimeout(() => {
-            if (comCooldown.has(interaction.user.id)) {
-              comCooldown.delete(interaction.user.id);
+        collector.on('collect', async (b) => {
+          await b.deferUpdate();
+
+          if (b.customId === 'close') {
+            const fetchTick = db.prepare('SELECT * FROM tickets').all();
+            if (!fetchTick) return;
+
+            // Filter fetchTick where chanid === interaction.channel.id
+            const ticket = fetchTick.find((t) => t.chanid === interaction.channel.id);
+            if (!ticket) return;
+
+            const closeReason = interaction.options.getString('name') || 'No reason provided.';
+
+            const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+              name: `**${this.client.user.username} - Ticket**`,
+              value: 'Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.'
+            });
+            interaction.followUp({ embeds: [embed] });
+
+            // Generate random string
+            const random = (length = 20) => {
+              // Declare all characters
+              const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+              // Pick characers randomly
+              let str = '';
+              for (let i = 0; i < length; i += 1) {
+                str += chars.charAt(Math.floor(Math.random() * chars.length));
+              }
+
+              return str;
+            };
+
+            const staticFileNameGen = random();
+            const staticFileName = `${noSpecialCharacters(interaction.channel.name)}-_-${staticFileNameGen}.html`;
+            const { channel } = interaction;
+
+            channel.name = staticFileName;
+
+            const fixedName = interaction.channel.name.substr(0, interaction.channel.name.indexOf('-_-'));
+
+            const attachment = await discordTranscripts.createTranscript(channel, {
+              limit: -1,
+              returnBuffer: true,
+              saveImages: true,
+              fileName: staticFileName
+            });
+            const buffered = Buffer.from(attachment.attachment).toString();
+
+            const authorizationSecret = 'pmzg!SD#9H8E#PzGMhe5dr&Qo5EQReLy@cqf87QB';
+
+            const response = await fetch('https://www.ragnarokbot.com/index.php', {
+              method: 'POST',
+              body: buffered,
+              headers: { 'X-Auth': authorizationSecret }
+            });
+
+            const data = await response.status;
+
+            let transLinkText;
+            let openTranscript;
+            let transcriptRow;
+
+            if (data !== 200) {
+              transLinkText = '`Unavailable`';
+            } else {
+              transLinkText = `[**Click Here**](https://www.ragnarokbot.com/transcripts/${staticFileName})`;
+              // Transcript button
+              openTranscript = new ButtonBuilder()
+                .setStyle(ButtonStyle.Link)
+                .setEmoji('<:ticketTranscript:998229979609440266>')
+                .setLabel('View Transcript')
+                .setURL(`https://www.ragnarokbot.com/transcripts/${staticFileName}`);
+
+              transcriptRow = new ActionRowBuilder().addComponents(openTranscript);
             }
-          }, comCooldownSeconds * 1000);
 
-          collector.on('collect', async (b) => {
-            await b.deferUpdate();
+            if (interaction.channel) {
+              channel.name = fixedName;
+              interaction.channel.delete();
+            }
 
-            if (b.customId === 'close') {
-              const fetchTick = db.prepare('SELECT * FROM tickets').all();
-              if (!fetchTick) return;
+            const deleteTicket = db.prepare(`DELETE FROM tickets WHERE guildid = ${interaction.guild.id} AND ticketid = (@ticketid)`);
+            deleteTicket.run({
+              ticketid: channelArgs[channelArgs.length - 1]
+            });
 
-              // Filter fetchTick where chanid === interaction.channel.id
-              const ticket = fetchTick.find((t) => t.chanid === interaction.channel.id);
-              if (!ticket) return;
+            const epoch = Math.floor(new Date().getTime() / 1000);
 
-              const closeReason = interaction.options.getString('name') || 'No reason provided.';
-
-              const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
-                name: `**${this.client.user.username} - Ticket**`,
-                value: 'Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.'
-              });
-              interaction.followUp({ embeds: [embed] });
-
-              // Generate random string
-              const random = (length = 20) => {
-                // Declare all characters
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-                // Pick characers randomly
-                let str = '';
-                for (let i = 0; i < length; i += 1) {
-                  str += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-
-                return str;
-              };
-
-              const staticFileNameGen = random();
-              const staticFileName = `${noSpecialCharacters(interaction.channel.name)}-_-${staticFileNameGen}.html`;
-              const { channel } = interaction;
-
-              channel.name = staticFileName;
-
-              const fixedName = interaction.channel.name.substr(0, interaction.channel.name.indexOf('-_-'));
-
-              const attachment = await discordTranscripts.createTranscript(channel, {
-                limit: -1,
-                returnBuffer: true,
-                saveImages: true,
-                fileName: staticFileName
-              });
-              const buffered = Buffer.from(attachment.attachment).toString();
-
-              const authorizationSecret = 'pmzg!SD#9H8E#PzGMhe5dr&Qo5EQReLy@cqf87QB';
-
-              const response = await fetch('https://www.ragnarokbot.com/index.php', {
-                method: 'POST',
-                body: buffered,
-                headers: { 'X-Auth': authorizationSecret }
-              });
-
-              const data = await response.status;
-
-              let transLinkText;
-              let openTranscript;
-              let transcriptRow;
-
-              if (data !== 200) {
-                transLinkText = '`Unavailable`';
-              } else {
-                transLinkText = `[**Click Here**](https://www.ragnarokbot.com/transcripts/${staticFileName})`;
-                // Transcript button
-                openTranscript = new ButtonBuilder()
-                  .setStyle(ButtonStyle.Link)
-                  .setEmoji('<:ticketTranscript:998229979609440266>')
-                  .setLabel('View Transcript')
-                  .setURL(`https://www.ragnarokbot.com/transcripts/${staticFileName}`);
-
-                transcriptRow = new ActionRowBuilder().addComponents(openTranscript);
-              }
-
-              if (interaction.channel) {
-                channel.name = fixedName;
-                interaction.channel.delete();
-              }
-
-              const deleteTicket = db.prepare(`DELETE FROM tickets WHERE guildid = ${interaction.guild.id} AND ticketid = (@ticketid)`);
-              deleteTicket.run({
-                ticketid: channelArgs[channelArgs.length - 1]
-              });
-
-              const epoch = Math.floor(new Date().getTime() / 1000);
-
-              const user = this.client.users.cache.find((a) => a.id === ticket.authorid);
-              if (user) {
-                const logEmbed = new EmbedBuilder()
-                  .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-                  .setAuthor({
-                    name: 'Ticket Closed',
-                    iconURL: interaction.guild.iconURL({ extension: 'png' })
-                  })
-                  .addFields(
-                    {
-                      name: '<:ticketId:998229977004781618> **Ticket ID**',
-                      value: `\`${channelArgs[channelArgs.length - 1]}\``,
-                      inline: true
-                    },
-                    {
-                      name: '<:ticketOpen:998229978267258881> **Opened By**',
-                      value: `${user}`,
-                      inline: true
-                    },
-                    {
-                      name: '<:ticketClose:998229974634991646> **Closed By**',
-                      value: `${interaction.user}`,
-                      inline: true
-                    },
-                    {
-                      name: '<:ticketTranscript:998229979609440266> **Transcript**',
-                      value: `${transLinkText}`,
-                      inline: true
-                    },
-                    {
-                      name: '<:ticketCloseTime:998229975931048028> **Time Closed**',
-                      value: `<t:${epoch}>`,
-                      inline: true
-                    },
-                    { name: '\u200b', value: '\u200b', inline: true },
-                    { name: '🖋️ **Reason**', value: `${closeReason}` }
-                  )
-                  .setTimestamp();
-                user
-                  .send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] })
-                  .then(() => {
-                    // eslint-disable-next-line arrow-body-style
-                  })
-                  .catch(() => {});
-              }
-
-              const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${interaction.guild.id};`).get();
-              if (!logget) {
-                return;
-              }
-
-              const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.log);
-              if (!logchan) {
-                return;
-              }
-
+            const user = this.client.users.cache.find((a) => a.id === ticket.authorid);
+            if (user) {
               const logEmbed = new EmbedBuilder()
                 .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
                 .setAuthor({
@@ -404,28 +337,72 @@ export const SlashCommandF = class extends SlashCommand {
                   { name: '🖋️ **Reason**', value: `${closeReason}` }
                 )
                 .setTimestamp();
-              logchan.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] });
-              if (comCooldown.has(interaction.user.id)) {
-                comCooldown.delete(interaction.user.id);
-              }
-              collector.stop('close');
-            }
-            if (b.customId === 'cancel') {
-              collector.stop('cancel');
-            }
-          });
-          collector.on('end', (_, reason) => {
-            if (comCooldown.has(interaction.user.id)) {
-              comCooldown.delete(interaction.user.id);
+              user
+                .send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] })
+                .then(() => {
+                  // eslint-disable-next-line arrow-body-style
+                })
+                .catch(() => {});
             }
 
-            if (reason === 'cancel' || reason === 'time') {
-              interaction.deleteReply();
+            const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${interaction.guild.id};`).get();
+            if (!logget) {
+              return;
             }
-          });
-        } else {
-          return;
-        }
+
+            const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.log);
+            if (!logchan) {
+              return;
+            }
+
+            const logEmbed = new EmbedBuilder()
+              .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+              .setAuthor({
+                name: 'Ticket Closed',
+                iconURL: interaction.guild.iconURL({ extension: 'png' })
+              })
+              .addFields(
+                {
+                  name: '<:ticketId:998229977004781618> **Ticket ID**',
+                  value: `\`${channelArgs[channelArgs.length - 1]}\``,
+                  inline: true
+                },
+                {
+                  name: '<:ticketOpen:998229978267258881> **Opened By**',
+                  value: `${user}`,
+                  inline: true
+                },
+                {
+                  name: '<:ticketClose:998229974634991646> **Closed By**',
+                  value: `${interaction.user}`,
+                  inline: true
+                },
+                {
+                  name: '<:ticketTranscript:998229979609440266> **Transcript**',
+                  value: `${transLinkText}`,
+                  inline: true
+                },
+                {
+                  name: '<:ticketCloseTime:998229975931048028> **Time Closed**',
+                  value: `<t:${epoch}>`,
+                  inline: true
+                },
+                { name: '\u200b', value: '\u200b', inline: true },
+                { name: '🖋️ **Reason**', value: `${closeReason}` }
+              )
+              .setTimestamp();
+            logchan.send(transcriptRow ? { components: [transcriptRow], embeds: [logEmbed] } : { embeds: [logEmbed] });
+            collector.stop('close');
+          }
+          if (b.customId === 'cancel') {
+            collector.stop('cancel');
+          }
+        });
+        collector.on('end', (_, reason) => {
+          if (reason === 'cancel' || reason === 'time') {
+            interaction.deleteReply();
+          }
+        });
       }
 
       if (subOptions === 'new') {
@@ -720,53 +697,38 @@ export const SlashCommandF = class extends SlashCommand {
 
         if (foundTicket) {
           const getChan = interaction.channel;
-          if (comCooldown.has(`${interaction.user.id}-${getChan.id}`)) {
+
+          const argResult = interaction.options.getString('name');
+          if (!argResult) {
+            const donthaveRole = new EmbedBuilder()
+              .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+              .addFields({ name: `**${this.client.user.username} - Rename**`, value: '**◎ Error:** Sorry! Please input a valid string.' });
+            interaction.reply({ ephemeral: true, embeds: [donthaveRole] });
+            return;
+          }
+          if (argResult.length > 40 || argResult.length < 4) {
             const donthaveRole = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
               name: `**${this.client.user.username} - Rename**`,
-              value: '**◎ Error:** Sorry! You must wait at least 10 minutes before changing the channel name again due to an API restriction.'
+              value: '**◎ Error:** Sorry! Please keep the name length **below** 40 and **above** 4.'
             });
             interaction.reply({ ephemeral: true, embeds: [donthaveRole] });
             return;
           }
-          if (!comCooldown.has(`${interaction.user.id}-${getChan.id}`)) {
-            const argResult = interaction.options.getString('name');
-            if (!argResult) {
-              const donthaveRole = new EmbedBuilder()
-                .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-                .addFields({ name: `**${this.client.user.username} - Rename**`, value: '**◎ Error:** Sorry! Please input a valid string.' });
-              interaction.reply({ ephemeral: true, embeds: [donthaveRole] });
-              return;
-            }
-            if (argResult.length > 40 || argResult.length < 4) {
-              const donthaveRole = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
-                name: `**${this.client.user.username} - Rename**`,
-                value: '**◎ Error:** Sorry! Please keep the name length **below** 40 and **above** 4.'
-              });
-              interaction.reply({ ephemeral: true, embeds: [donthaveRole] });
-              return;
-            }
-            const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
-              name: `**${this.client.user.username} - Rename**`,
-              value: `**◎ Success:** <@${interaction.user.id}> renamed ticket to \`${argResult}\``
-            });
-            interaction.reply({ embeds: [embed] });
+          const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+            name: `**${this.client.user.username} - Rename**`,
+            value: `**◎ Success:** <@${interaction.user.id}> renamed ticket to \`${argResult}\``
+          });
+          interaction.reply({ embeds: [embed] });
 
-            getChan.setName(`ticket-${argResult}-${foundTicket.ticketid}`);
-            const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${interaction.guild.id};`).get();
-            const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.log);
-            if (!logchan) return;
-            const loggingembed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
-              name: `**${this.client.user.username} - Rename**`,
-              value: `**◎ Success:** <@${interaction.user.id}> renamed ticket from \`#${getChan.name}\` to <#${getChan.id}>`
-            });
-            logchan.send({ embeds: [loggingembed] });
-            comCooldown.add(`${interaction.user.id}-${getChan.id}`);
-            setTimeout(() => {
-              if (comCooldown.has(`${interaction.user.id}-${getChan.id}`)) {
-                comCooldown.delete(`${interaction.user.id}-${getChan.id}`);
-              }
-            }, comCooldownSeconds * 1000);
-          }
+          getChan.setName(`ticket-${argResult}-${foundTicket.ticketid}`);
+          const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${interaction.guild.id};`).get();
+          const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.log);
+          if (!logchan) return;
+          const loggingembed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+            name: `**${this.client.user.username} - Rename**`,
+            value: `**◎ Success:** <@${interaction.user.id}> renamed ticket from \`#${getChan.name}\` to <#${getChan.id}>`
+          });
+          logchan.send({ embeds: [loggingembed] });
         } else {
           const errEmbed = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
