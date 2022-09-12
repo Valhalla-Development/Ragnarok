@@ -1,4 +1,4 @@
-import { ButtonBuilder, ActionRowBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { ButtonBuilder, ActionRowBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder, codeBlock } from 'discord.js';
 import SlashCommand from '../../Structures/SlashCommand.js';
 
 const data = new SlashCommandBuilder()
@@ -28,10 +28,15 @@ export const SlashCommandF = class extends SlashCommand {
       .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
       .addFields({
         name: `**${this.client.user.username} - Suggest**`,
-        value: `**◎ NOTE** This is a **${this.client.user}** suggestion/bug report, not a **SERVER** suggestion/bug.\nThis message will be forwarded to the bot owner.\n\n**◎ Are you sure you want to send this suggestion?**`
+        value: `**◎ NOTE** This is a **${
+          this.client.user
+        }** suggestion/bug report, not a **SERVER** suggestion/bug.\nThis message will be forwarded to the bot owner.\n${codeBlock(
+          'text',
+          sArgs
+        )}\n\n**◎ Are you sure you want to send this suggestion?**`
       });
 
-    const m = await interaction.reply({ components: [row], embeds: [questionE] });
+    const m = await interaction.reply({ ephemeral: true, components: [row], embeds: [questionE] });
 
     const filter = (but) => but.user.id !== this.client.user.id;
 
@@ -42,7 +47,7 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (b.customId === 'yes') {
         const embed = new EmbedBuilder()
-          .setColor(this.client.utils.color(this.client.guilds.cache.get(this.client.config.supportGuild).me.displayHexColor))
+          .setColor(this.client.utils.color(this.client.guilds.cache.get(this.client.config.supportGuild).members.me.displayHexColor))
           .setTitle('Suggestion')
           .setDescription(`**◎ User: <@${interaction.user.id}> - **\`${interaction.user.tag}\`\n**Suggestion:** ${sArgs}`)
           .setFooter({ text: `${interaction.guild.name} - ${interaction.guild.id}` });
@@ -54,17 +59,25 @@ export const SlashCommandF = class extends SlashCommand {
         const loggedEmbed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-          .addFields({ name: `**${this.client.user.username} - Suggest**`, value: '**◎ Success:** Suggestion/bug has been successfully sent!' });
-        interaction.followUp({ embeds: [loggedEmbed] });
+          .addFields({
+            name: `**${this.client.user.username} - Suggest**`,
+            value: `**◎ Success:** Suggestion/bug has been successfully sent!\n${codeBlock('text', sArgs)}`
+          });
+        interaction.editReply({ ephemeral: true, embeds: [loggedEmbed], components: [] });
       }
+
       if (b.customId === 'no') {
-        interaction.deleteReply();
+        collector.stop('no');
       }
     });
 
     collector.on('end', (_, reason) => {
-      if (reason === 'time') {
-        interaction.deleteReply();
+      if (reason === 'time' || reason === 'no') {
+        const loggedEmbed = new EmbedBuilder()
+          .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
+          .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+          .addFields({ name: `**${this.client.user.username} - Suggest**`, value: '**◎ Success:** Cancelled' });
+        interaction.editReply({ ephemeral: true, embeds: [loggedEmbed], components: [] });
       }
     });
   }
