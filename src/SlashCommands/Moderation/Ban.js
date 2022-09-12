@@ -99,22 +99,6 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    const authoMes = new EmbedBuilder()
-      .setThumbnail(this.client.user.displayAvatarURL())
-      .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-      .addFields({
-        name: `You have been banned from: \`${interaction.guild.name}\``,
-        value: `**◎ Reason:** ${reasonArgs}
-				**◎ Moderator:** ${interaction.user.tag}`
-      })
-      .setFooter({ text: 'You have been banned' })
-      .setTimestamp();
-    try {
-      user.send({ embeds: [authoMes] });
-    } catch {
-      // Do nothing
-    }
-
     // Ban the user and send the embed
     interaction.guild.members.ban(user, { deleteMessageSeconds: deleteMessage, reason: `${reasonArgs}` }).catch(() => {
       const embed = new EmbedBuilder()
@@ -122,6 +106,23 @@ export const SlashCommandF = class extends SlashCommand {
         .addFields({ name: `**${this.client.user.username} - Ban**`, value: '**◎ Error:** An error occured!' });
       interaction.reply({ ephemeral: true, embeds: [embed] });
     });
+
+    try {
+      const authoMes = new EmbedBuilder()
+        .setThumbnail(this.client.user.displayAvatarURL())
+        .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+        .addFields({
+          name: `You have been banned from: \`${interaction.guild.name}\``,
+          value: `**◎ Reason:** ${reasonArgs}
+				**◎ Moderator:** ${interaction.user.tag}`
+        })
+        .setFooter({ text: 'You have been banned' })
+        .setTimestamp();
+
+      user.send({ embeds: [authoMes] });
+    } catch {
+      // Do nothing
+    }
 
     const embed = new EmbedBuilder()
       .setThumbnail(this.client.user.displayAvatarURL())
