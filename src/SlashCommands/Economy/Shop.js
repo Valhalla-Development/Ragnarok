@@ -524,24 +524,24 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({
             name: `**${this.client.user.username} - Shop - Buy**`,
             value: `**◎ Farming Seeds: (Amount optional)**
-						\u3000 \`/shop buy corn [amount]\` - 10 Seeds per pack - ${
+						\u3000 \`/shop buy corn\` - 10 Seeds per pack - ${
               !foundItemList.cornSeeds
                 ? `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\``
                 : `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\` - \`Owned ${foundItemList.cornSeeds.toLocaleString('en')}\``
             }
-						\u3000 \`/shop buy wheat [amount]\` - 10 Seeds per pack - ${
+						\u3000 \`/shop buy wheat\` - 10 Seeds per pack - ${
               !foundItemList.wheatSeeds
                 ? `<:coin:706659001164628008> \`${wheatSeedPrice.toLocaleString('en')}\``
                 : `<:coin:706659001164628008> \`${wheatSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.wheatSeeds.toLocaleString('en')}\``
             }
-						\u3000 \`/shop buy potato [amount]\` - 10 Seeds per pack - ${
+						\u3000 \`/shop buy potato\` - 10 Seeds per pack - ${
               !foundItemList.potatoSeeds
                 ? `<:coin:706659001164628008> \`${potatoeSeedPrice.toLocaleString('en')}\``
                 : `<:coin:706659001164628008> \`${potatoeSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.potatoSeeds.toLocaleString(
                     'en'
                   )}\``
             }
-						\u3000 \`/shop buy tomato [amount]\` - 10 Seeds per pack - ${
+						\u3000 \`/shop buy tomato\` - 10 Seeds per pack - ${
               !foundItemList.tomatoSeeds
                 ? `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\``
                 : `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`- \`Owned ${foundItemList.tomatoSeeds.toLocaleString(
