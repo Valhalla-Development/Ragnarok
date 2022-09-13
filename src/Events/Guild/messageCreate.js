@@ -116,7 +116,7 @@ export const EventF = class extends Event {
 
         // For each finalButtonArray, create a ActionRowBuilder()
         const actionRows = [];
-        for (let i = 0; i < finalButtonArray.length; i += 1) {
+        for (let i = 0; i < finalButtonArray.length; i++) {
           const actionRow = new ActionRowBuilder().addComponents(finalButtonArray[i]);
           actionRows.push(actionRow);
         }

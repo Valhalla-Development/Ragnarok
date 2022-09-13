@@ -51,8 +51,7 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     await interaction.deferReply();
 
-    let args;
-    interaction.options.data[0] ? (args = interaction.options.data[0].name) : '';
+    const args = interaction.options.getSubcommand();
 
     const levelDb = db.prepare(`SELECT status FROM level WHERE guildid = ${interaction.guild.id};`).get();
 

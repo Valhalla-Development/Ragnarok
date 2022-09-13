@@ -5,7 +5,7 @@ export const pagination = class pagination {
     this.client = client;
   }
 
-  async pagination(message, embeds, emojiNext, emojiHome, emojiBack) {
+  async pagination(interaction, embeds, emojiNext, emojiHome, emojiBack) {
     const back = new ButtonBuilder()
       .setCustomId('back')
       .setEmoji(emojiBack || '◀️')
@@ -25,12 +25,12 @@ export const pagination = class pagination {
 
     const row = new ActionRowBuilder().addComponents(back, home, next);
 
-    const m = await message.reply({
+    const m = await interaction.reply({
       embeds: [embeds[0]],
       components: [row]
     });
 
-    const filter = (i) => i.user.id === message.author.id;
+    const filter = (i) => i.user.id === interaction.user.id;
 
     const collector = m.createMessageComponentCollector({
       filter,
@@ -48,7 +48,7 @@ export const pagination = class pagination {
             next.setDisabled(false);
           }
 
-          currentPage -= 1;
+          currentPage--;
 
           if (currentPage === 0) {
             back.setDisabled(true);
@@ -66,7 +66,7 @@ export const pagination = class pagination {
 
       if (b.customId === 'next') {
         if (currentPage < embeds.length - 1) {
-          currentPage += 1;
+          currentPage++;
 
           if (currentPage === embeds.length - 1) {
             next.setDisabled(true);

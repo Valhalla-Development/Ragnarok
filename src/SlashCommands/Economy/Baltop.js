@@ -23,7 +23,7 @@ export const SlashCommandF = class extends SlashCommand {
     let total = '';
     let j = 0;
 
-    for (let i = 0; i < top10.length; i += 1) {
+    for (let i = 0; i < top10.length; i++) {
       const data = top10[i];
       const fetchUsers = interaction.guild.members.cache.get(data.user);
 
@@ -31,7 +31,7 @@ export const SlashCommandF = class extends SlashCommand {
         continue;
       }
 
-      j += 1;
+      j++;
 
       userNames += `◎ \`${j}\` ${fetchUsers}\n`;
       total += `<:coin:706659001164628008> \`${data.total.toLocaleString('en')}\`\n`;

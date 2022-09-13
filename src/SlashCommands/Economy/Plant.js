@@ -96,7 +96,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     async function cropCreator(type, status, time, count) {
       let cropCounter;
-      for (cropCounter = 0; cropCounter < count; cropCounter += 1) {
+      for (cropCounter = 0; cropCounter < count; cropCounter++) {
         foundPlotList.push({ cropType: type, cropStatus: status, cropGrowTime: time, decay: 0 });
       }
 

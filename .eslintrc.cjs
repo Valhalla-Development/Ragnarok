@@ -27,6 +27,7 @@ module.exports = {
       }
     ],
     'no-use-before-define': ['error', { functions: false }],
-    radix: 'off'
+    radix: 'off',
+    'no-plusplus': 'off'
   }
 };

@@ -68,7 +68,7 @@ export const SlashCommandF = class extends SlashCommand {
           this.client.slashCommands.filter((cmd) => cmd.category === 'Economy').map((cmd) => cmd.name)
         );
 
-        for (let i = 0; i < categories.length; i += 1) {
+        for (let i = 0; i < categories.length; i++) {
           categories[i] = categories[i][0].toUpperCase() + categories[i].substr(1);
         }
 
@@ -88,7 +88,7 @@ export const SlashCommandF = class extends SlashCommand {
           this.client.slashCommands.filter((cmd) => cmd.category === 'Fun').map((cmd) => cmd.name)
         );
 
-        for (let i = 0; i < categories.length; i += 1) {
+        for (let i = 0; i < categories.length; i++) {
           categories[i] = categories[i][0].toUpperCase() + categories[i].substr(1);
         }
 
@@ -108,7 +108,7 @@ export const SlashCommandF = class extends SlashCommand {
           this.client.slashCommands.filter((cmd) => cmd.category === 'Informative').map((cmd) => cmd.name)
         );
 
-        for (let i = 0; i < categories.length; i += 1) {
+        for (let i = 0; i < categories.length; i++) {
           categories[i] = categories[i][0].toUpperCase() + categories[i].substr(1);
         }
 
@@ -128,7 +128,7 @@ export const SlashCommandF = class extends SlashCommand {
           this.client.slashCommands.filter((cmd) => cmd.category === 'Moderation').map((cmd) => cmd.name)
         );
 
-        for (let i = 0; i < categories.length; i += 1) {
+        for (let i = 0; i < categories.length; i++) {
           categories[i] = categories[i][0].toUpperCase() + categories[i].substr(1);
         }
 
