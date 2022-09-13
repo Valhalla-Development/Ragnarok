@@ -10,7 +10,7 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 const data = new SlashCommandBuilder()
   .setName('balance')
   .setDescription('Displays balance of user')
-  .addUserOption((option) => option.setName('user').setDescription('Select a user').setRequired(true));
+  .addUserOption((option) => option.setName('user').setDescription('Select a user'));
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -22,7 +22,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const member = interaction.options.getMember('user');
+    const member = interaction.options.getMember('user') || interaction.member;
 
     const balance = this.client.getBalance.get(`${member.user.id}-${interaction.guild.id}`);
 
