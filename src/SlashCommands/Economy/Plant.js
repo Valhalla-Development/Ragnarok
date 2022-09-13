@@ -29,8 +29,8 @@ export const SlashCommandF = class extends SlashCommand {
 
   async run(interaction) {
     // Fetch the supplied content from the interaction
-    const argsAmount = interaction.options.getInteger('amount');
     const args = interaction.options.getString('type');
+    const argsAmount = interaction.options.getInteger('amount');
 
     const balance = this.client.getBalance.get(`${interaction.user.id}-${interaction.guild.id}`);
 
@@ -106,7 +106,7 @@ export const SlashCommandF = class extends SlashCommand {
       });
     }
 
-    if (args[0] === 'corn') {
+    if (args === 'corn') {
       if (argsAmount <= 0) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -172,7 +172,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    if (args[0] === 'wheat') {
+    if (args === 'wheat') {
       if (argsAmount <= 0) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -238,7 +238,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    if (args[0] === 'potato') {
+    if (args === 'potato') {
       if (argsAmount <= 0) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -304,7 +304,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    if (args[0] === 'tomato') {
+    if (args === 'tomato') {
       if (argsAmount <= 0) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
