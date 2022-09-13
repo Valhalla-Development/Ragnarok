@@ -119,7 +119,7 @@ export const SlashCommandF = class extends SlashCommand {
             value: `**◎ Success:** Current crop status:
 						${arr.splice(0, 5).join('\n')}`
           })
-          .setFooter({ text: `${TotalPage > 1 ? `Page: ${(PageNo += 1)}/${TotalPage}` : ''}` });
+          .setFooter({ text: `${TotalPage > 1 ? `Page: ${PageNo++}/${TotalPage}` : 'Page 1/1'}` });
         Embeds.push(Embed);
       }
       TotalPage > 1 ? this.client.functions.pagination(interaction, Embeds) : interaction.reply({ embeds: [Embeds[0]] });
@@ -220,19 +220,19 @@ export const SlashCommandF = class extends SlashCommand {
             'en'
           )}\`\nThis value of each crop will continue to depreciate, I recommend you sell your crops.`
         })
-        .setFooter({ text: `${TotalPage > 1 ? `Page: ${(PageNo += 1)}/${TotalPage}` : ''}` });
+        .setFooter({ text: `${TotalPage > 1 ? `Page: ${PageNo++}/${TotalPage}` : 'Page 1/1'}` });
       Embeds.push(Embed);
     }
     TotalPage > 1 ? this.client.functions.pagination(interaction, Embeds) : interaction.reply({ embeds: [Embeds[0]] });
 
     function harvestCrops() {
-      for (let removeCounter = 0, harvestCounter = 0; removeCounter < foundPlotList.length && harvestCounter < availableSpots; removeCounter += 1) {
+      for (let removeCounter = 0, harvestCounter = 0; removeCounter < foundPlotList.length && harvestCounter < availableSpots; removeCounter++) {
         if (foundPlotList[removeCounter].cropStatus === 'harvest') {
           const removedArray = foundPlotList.splice(removeCounter, 1);
           foundHarvestedList.push(removedArray[0]);
           harvestedFunc.push(removedArray[0]);
-          harvestCounter += 1;
-          removeCounter -= 1;
+          harvestCounter++;
+          removeCounter--;
         }
       }
       return foundHarvestedList;
