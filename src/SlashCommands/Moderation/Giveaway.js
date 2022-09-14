@@ -5,28 +5,13 @@ import SlashCommand from '../../Structures/SlashCommand.js';
 const data = new SlashCommandBuilder()
   .setName('giveaway')
   .setDescription('Use Giveaway module')
-  .addSubcommandGroup((group) =>
-    group
+  .addSubcommand((subcommand) =>
+    subcommand
       .setName('start')
       .setDescription('Start a Giveaway')
-      .addSubcommand((subcommand) =>
-        subcommand
-          .setName('time')
-          .setDescription('How long the Giveaway should last')
-          .addStringOption((option) => option.setName('time').setDescription('How long the Giveaway should last').setRequired(true))
-      )
-      .addSubcommand((subcommand) =>
-        subcommand
-          .setName('amount')
-          .setDescription('How many winners in the Giveaway')
-          .addIntegerOption((option) => option.setName('amount').setDescription('How many winners in the Giveaway').setMinValue(1).setRequired(true))
-      )
-      .addSubcommand((subcommand) =>
-        subcommand
-          .setName('prize')
-          .setDescription('The prize of the Giveaway')
-          .addStringOption((option) => option.setName('prize').setDescription('The prize of the Giveaway').setRequired(true))
-      )
+      .addStringOption((option) => option.setName('time').setDescription('How long the Giveaway should last').setRequired(true))
+      .addIntegerOption((option) => option.setName('amount').setDescription('How many winners in the Giveaway').setMinValue(1).setRequired(true))
+      .addStringOption((option) => option.setName('prize').setDescription('The prize of the Giveaway').setRequired(true))
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -53,10 +38,9 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const subGroup = interaction.options.getSubcommandGroup();
     const subCommand = interaction.options.getSubcommand();
 
-    if (subGroup === 'start') {
+    if (subCommand === 'start') {
       const gTime = interaction.options.getString('time');
       const gAmount = interaction.options.getInteger('amount');
       const gPrize = interaction.options.getString('prize');
@@ -110,13 +94,18 @@ export const SlashCommandF = class extends SlashCommand {
           embedColor: '#FF0000'
         }
       });
+
+      const invalidDur = new EmbedBuilder()
+        .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+        .addFields({ name: `**${this.client.user.username} - Giveaway**`, value: '**◎ Success:** Giveaway has started' });
+      interaction.reply({ ephemeral: true, embeds: [invalidDur] });
     }
 
     if (subCommand === 'reroll') {
       const gReroll = interaction.options.getString('message');
 
-      const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.guildId === interaction.guildId && g.messageId === gReroll);
-
+      const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.guildId === interaction.guild.id && g.messageId === gReroll);
+      console.log(giveaway);
       if (!giveaway) {
         const noGiveaway = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
           name: `**${this.client.user.username} - Giveaway**`,
@@ -127,7 +116,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       this.client.giveawaysManager
-        .reroll(giveaway.messageID)
+        .reroll(giveaway.messageId)
         .then(() => {
           const rerolled = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -135,7 +124,7 @@ export const SlashCommandF = class extends SlashCommand {
           interaction.reply({ ephemeral: true, embeds: [rerolled] });
         })
         .catch((e) => {
-          if (e.startsWith(`Giveaway with message ID ${giveaway.messageID} is not ended.`)) {
+          if (e.startsWith(`Giveaway with message ID ${giveaway.messageId} is not ended.`)) {
             const notEnded = new EmbedBuilder()
               .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
               .addFields({ name: `**${this.client.user.username} - Giveaway**`, value: '**◎ Error:** This giveaway has not ended!' });
@@ -153,7 +142,7 @@ export const SlashCommandF = class extends SlashCommand {
     if (subCommand === 'stop') {
       const gStop = interaction.options.getString('message');
 
-      const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.guildId === interaction.guildId && g.messageId === gStop);
+      const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.guildId === interaction.guild.id && g.messageId === gStop);
 
       if (!giveaway) {
         const noGiveaway = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -165,18 +154,18 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       this.client.giveawaysManager
-        .edit(giveaway.messageID, {
+        .edit(giveaway.messageId, {
           setEndTimestamp: Date.now()
         })
         .then(() => {
           const stopped = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Giveaway**`,
-            value: `**◎ Success:** Giveaway will end in less than ${this.client.giveawaysManager.options.updateCountdownEvery / 1000} seconds.`
+            value: `**◎ Success:** Giveaway will end in less than ${this.client.giveawaysManager.options.forceUpdateEvery / 1000} seconds.`
           });
           interaction.reply({ ephemeral: true, embeds: [stopped] });
         })
         .catch((e) => {
-          if (e.startsWith(`Giveaway with message ID ${giveaway.messageID} is already ended.`)) {
+          if (e.startsWith(`Giveaway with message ID ${giveaway.messageId} is already ended.`)) {
             const alreadyEnded = new EmbedBuilder()
               .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
               .addFields({ name: `**${this.client.user.username} - Giveaway**`, value: '**◎ Error:** This giveaway has already ended!' });
