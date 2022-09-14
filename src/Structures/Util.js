@@ -128,16 +128,26 @@ export const Util = class Util {
 
       (async () => {
         try {
-          if (testingCmds) {
-            await rest.put(Routes.applicationGuildCommands('509122286561787904', this.client.config.supportGuild), { body: testingCmds });
+          if (this.client.config.applicationID === '509122286561787904') {
+            const allCmds = [...testingCmds, ...cmds];
+            await rest.put(Routes.applicationGuildCommands(this.client.config.applicationID, this.client.config.supportGuild), { body: allCmds });
             console.log(
-              `${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${testingCmds.length}`)} ${chalk.whiteBright('Owner Only Slash commands!')}`
+              `${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${testingCmds.length + cmds.length}`)} ${chalk.whiteBright('Slash commands!')}`
             );
-          }
+          } else {
+            if (testingCmds) {
+              await rest.put(Routes.applicationGuildCommands(this.client.config.applicationID, this.client.config.supportGuild), {
+                body: testingCmds
+              });
+              console.log(
+                `${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${testingCmds.length}`)} ${chalk.whiteBright('Owner Only Slash commands!')}`
+              );
+            }
 
-          if (cmds) {
-            await rest.put(Routes.applicationCommands('509122286561787904'), { body: cmds });
-            console.log(`${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${cmds.length}`)} ${chalk.whiteBright('Slash commands!')}`);
+            if (cmds) {
+              await rest.put(Routes.applicationCommands(this.client.config.applicationID), { body: cmds });
+              console.log(`${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${cmds.length}`)} ${chalk.whiteBright('Slash commands!')}`);
+            }
           }
         } catch (err) {
           console.log(err);
