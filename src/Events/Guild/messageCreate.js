@@ -1149,10 +1149,9 @@ export const EventF = class extends Event {
     ];
 
     const command = commandArray.filter((obj) => obj === cmd.toLowerCase());
-
     if (!message.content.startsWith(prefixcommand)) return;
 
-    if (command) {
+    if (command.length) {
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
         .setTitle(`${this.client.user.username}`)
