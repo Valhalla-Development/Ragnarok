@@ -138,7 +138,7 @@ export const SlashCommandF = class extends SlashCommand {
       interaction.reply({ ephemeral: true, embeds: [embed] });
     });
 
-    const nowInMs = Date.now() + duration;
+    const nowInMs = Date.now() + ms(duration);
     const epoch = Math.round(nowInMs / 1000);
 
     try {
