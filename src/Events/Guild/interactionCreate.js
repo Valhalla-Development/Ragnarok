@@ -150,21 +150,7 @@ export const EventF = class extends Event {
         });
         interaction.followUp({ embeds: [embed] });
 
-        // Generate random string
-        const random = (length = 40) => {
-          // Declare all characters
-          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-          // Pick characers randomly
-          let str = '';
-          for (let i = 0; i < length; i++) {
-            str += chars.charAt(Math.floor(Math.random() * chars.length));
-          }
-
-          return str;
-        };
-
-        const staticFileNameGen = random();
+        const staticFileNameGen = Date.now();
         const staticFileName = `${noSpecialCharacters(interaction.channel.name)}-_-${staticFileNameGen}.html`;
         const { channel } = interaction;
 
@@ -385,21 +371,7 @@ export const EventF = class extends Event {
         });
         interaction.reply({ embeds: [embed] });
 
-        // Generate random string
-        const random = (length = 40) => {
-          // Declare all characters
-          const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-          // Pick characers randomly
-          let str = '';
-          for (let i = 0; i < length; i++) {
-            str += chars.charAt(Math.floor(Math.random() * chars.length));
-          }
-
-          return str;
-        };
-
-        const staticFileNameGen = random();
+        const staticFileNameGen = Date.now();
         const staticFileName = `${noSpecialCharacters(interaction.channel.name)}-_-${staticFileNameGen}.html`;
         const { channel } = interaction;
 

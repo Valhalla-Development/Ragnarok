@@ -25,21 +25,7 @@ export const EventF = class extends Event {
       });
       modal.followUp({ embeds: [embed] });
 
-      // Generate random string
-      const random = (length = 40) => {
-        // Declare all characters
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-        // Pick characers randomly
-        let str = '';
-        for (let i = 0; i < length; i++) {
-          str += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-
-        return str;
-      };
-
-      const staticFileNameGen = random();
+      const staticFileNameGen = Date.now();
       const staticFileName = `${noSpecialCharacters(modal.channel.name)}-_-${staticFileNameGen}.html`;
       const { channel } = modal;
 
