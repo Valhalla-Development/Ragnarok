@@ -146,7 +146,7 @@ export const SlashCommandF = class extends SlashCommand {
         .setThumbnail(this.client.user.displayAvatarURL())
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
         .addFields({
-          name: `You have been banned temporarily banned from: \`${interaction.guild.name}\``,
+          name: `You have been temporarily banned from: \`${interaction.guild.name}\``,
           value: `**◎ Reason:** ${reasonArgs}
 				**◎ Moderator:** ${interaction.user.tag}
         **◎ Expires:** <t:${epoch}:F>`
