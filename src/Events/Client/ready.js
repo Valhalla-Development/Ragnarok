@@ -483,10 +483,10 @@ export const EventF = class extends Event {
               try {
                 guild.members.unban(r.userid, 'tempban');
 
-                const channelGrab = db.prepare('SELECT channel FROM ban WHERE id = ?').get(`${guild.id}-${r.userid}`);
-                const findChannel = this.client.channels.cache.get(channelGrab.channel);
+                // const channelGrab = db.prepare('SELECT channel FROM ban WHERE id = ?').get(`${guild.id}-${r.userid}`);
+                // const findChannel = this.client.channels.cache.get(channelGrab.channel);
 
-                findChannel.send({ embeds: [embed] });
+                // findChannel.send({ embeds: [embed] });
 
                 db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
               } catch {
