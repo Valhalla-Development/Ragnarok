@@ -126,7 +126,7 @@ const data = new SlashCommandBuilder()
       .addSubcommand((subcommand) =>
         subcommand
           .setName('image')
-          .setDescription('The background of the welcome image')
+          .setDescription('The background of the welcome image (700x300)')
           .addStringOption((option) => option.setName('image').setDescription('The background of the welcome image').setRequired(true))
       )
       .addSubcommand((subcommand) => subcommand.setName('off').setDescription('Disable the Welcome module'))
