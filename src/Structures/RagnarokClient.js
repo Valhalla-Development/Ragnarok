@@ -170,12 +170,10 @@ export const RagnarokClient = class RagnarokClient extends Client {
 
     // Error function for notifiers
     function sendError(client, message) {
-      if (client.user && client.user.id === '508756879564865539') {
-        const channel = client.channels.cache.get('685973401772621843');
-        if (!channel) return;
+      const channel = client.channels.cache.get('685973401772621843');
+      if (!channel) return;
 
-        channel.send(`\`\`\`js\n${message}\`\`\``);
-      }
+      channel.send(`\`\`\`js\n${message}\`\`\``);
     }
 
     // Error Notifiers
@@ -215,6 +213,11 @@ export const RagnarokClient = class RagnarokClient extends Client {
       .on('warn', (info) => console.log(info));
     // .on('shardReady', () => console.log(`Connected!`))
     // .on('shardResume', () => console.log(`Connected!`));
+
+    process.on('uncaughtException', (error) => {
+      console.error(error);
+      sendError(this, error.stack);
+    });
 
     process.on('unhandledRejection', (error) => {
       console.error(error);
