@@ -12,7 +12,7 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const embed = new EmbedBuilder()
       .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-      .addFields({ name: `**${this.client.user.username} - Ping**`, value: `Want to invite ${this.client.user}?` });
+      .addFields({ name: `**${this.client.user.username} - Invite**`, value: `Want to invite ${this.client.user}?` });
 
     const buttonA = new ButtonBuilder()
       .setStyle(ButtonStyle.Link)
