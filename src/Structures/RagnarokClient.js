@@ -1,5 +1,5 @@
 /* eslint-disable import/no-named-as-default-member */
-import { Client, Collection, PermissionsBitField, GatewayIntentBits, Partials } from 'discord.js';
+import { Client, Collection, PermissionsBitField, GatewayIntentBits, Partials, codeBlock } from 'discord.js';
 import db from 'quick.db';
 import { GiveawaysManager } from 'discord-giveaways';
 import Util from './Util.js';
@@ -173,7 +173,7 @@ export const RagnarokClient = class RagnarokClient extends Client {
       const channel = client.channels.cache.get('685973401772621843');
       if (!channel) return;
 
-      channel.send(`\`\`\`js\n${message}\`\`\``);
+      channel.send(codeBlock('js', message));
     }
 
     // Error Notifiers
@@ -213,11 +213,6 @@ export const RagnarokClient = class RagnarokClient extends Client {
       .on('warn', (info) => console.log(info));
     // .on('shardReady', () => console.log(`Connected!`))
     // .on('shardResume', () => console.log(`Connected!`));
-
-    process.on('uncaughtException', (error) => {
-      console.error(error);
-      sendError(this, error.stack);
-    });
 
     process.on('unhandledRejection', (error) => {
       console.error(error);

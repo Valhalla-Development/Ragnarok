@@ -45,7 +45,7 @@ export const EventF = class extends Event {
               );
               const channel = this.client.channels.cache.get('685973401772621843');
               if (!channel) return;
-              channel.send(`\`\`\`js\n${errorMsg}\`\`\``);
+              channel.send(codeBlock('js', errorMsg));
               return;
             }
             const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -884,6 +884,7 @@ export const EventF = class extends Event {
       }
     }
     function noSpecialCharacters(str) {
+      str.replace(' ', '-');
       return str.replace(/[^a-zA-Z0-9,;\-.!? ]/g, '');
     }
   }
