@@ -12,11 +12,13 @@ const flags = {
   BugHunterLevel1: '<:DiscordBugHunter1:748651259724300364>',
   HypeSquadOnlineHouse1: '<:HypeSquadBravery:748651259845673020>',
   Hypesquad: '<:HypeSquadEvents:748651259761786981>',
+  Quarantined: '<:Quarantined:1021867285582983208>',
   TeamPseudoUser: 'Team User',
   BugHunterLevel2: '<:DiscordBugHunter2:748651259741077574>',
   HypeSquadOnlineHouse2: '<:HypeSquadBrilliance:748651259933753464>',
   Partner: '<:DiscordPartner:748985364022165694>',
   VerifiedBot: '<:VerifiedBot:854725852101476382>',
+  Spammer: '<:Spammer:1021857158280794172>',
   Bot: '<:Bot:854724408458870814>'
 };
 
