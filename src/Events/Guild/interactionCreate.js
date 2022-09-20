@@ -52,7 +52,7 @@ export const EventF = class extends Event {
               name: `**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
               value: `**◎ Error:** I am missing \`${missing.join(', ')}\` permissions, they are required for this command.`
             });
-            interaction.reply({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+            interaction.reply({ embeds: [embed] });
             return;
           }
         }
@@ -65,7 +65,7 @@ export const EventF = class extends Event {
               name: `**${this.client.user.username} - ${this.client.utils.capitalise(command.name)}**`,
               value: `**◎ Error:** You are missing \`${missing.join(', ')}\` permissions, they are required for this command.`
             });
-            interaction.reply({ ephemeral: true, embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+            interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
           }
         }
@@ -345,7 +345,7 @@ export const EventF = class extends Event {
           name: `**${this.client.user.username} - Ticket**`,
           value: '**◎ Error:** It seems you have removed the `Manage Channels` permission from me. I cannot function properly without it :cry:'
         });
-        interaction.reply({ embeds: [botPerm] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+        interaction.reply({ embeds: [botPerm] });
         await interaction.deferUpdate();
         return;
       }
@@ -357,7 +357,7 @@ export const EventF = class extends Event {
           value:
             '**◎ Error:** This server doesn\'t have a `Support Team` role made, so the ticket can\'t be opened.\nIf you are an administrator, you can run the command `/config ticket role @role`.'
         });
-        interaction.reply({ embeds: [nomodRole] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+        interaction.reply({ embeds: [nomodRole] });
         await interaction.deferUpdate();
         return;
       }

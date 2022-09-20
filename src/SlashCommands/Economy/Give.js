@@ -31,7 +31,7 @@ export const SlashCommandF = class extends SlashCommand {
           name: `**${this.client.user.username} - Give**`,
           value: '**◎ Error:** You can not give yourself money. <:wut:745408596233289839>'
         });
-      interaction.reply({ ephemeral: true, embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      interaction.reply({ ephemeral: true, embeds: [embed] });
       return;
     }
 
@@ -45,7 +45,7 @@ export const SlashCommandF = class extends SlashCommand {
           name: `**${this.client.user.username} - Give**`,
           value: `**◎ Error:** ${user} does not have an economy account. They will instantly open one when they speak.`
         });
-      interaction.reply({ ephemeral: true, embeds: [errorE] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      interaction.reply({ ephemeral: true, embeds: [errorE] });
       return;
     }
 
@@ -54,7 +54,7 @@ export const SlashCommandF = class extends SlashCommand {
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
         .addFields({ name: `**${this.client.user.username} - Give**`, value: '**◎ Error:** Uh oh! You currently have no money in your bank!' });
-      interaction.reply({ ephemeral: true, embeds: [noBal] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      interaction.reply({ ephemeral: true, embeds: [noBal] });
       return;
     }
 
@@ -68,7 +68,7 @@ export const SlashCommandF = class extends SlashCommand {
             'en'
           )}\`. Please try again with a valid amount.`
         });
-      interaction.reply({ ephemeral: true, embeds: [wrongUsage] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+      interaction.reply({ ephemeral: true, embeds: [wrongUsage] });
       return;
     }
 

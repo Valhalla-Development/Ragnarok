@@ -1206,7 +1206,7 @@ export const SlashCommandF = class extends SlashCommand {
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
           .addFields({ name: `**${this.client.user.username} - Config**`, value: `**◎ Success:** Support Role updated to ${suppRole}` });
-        interaction.reply({ ephemeral: true, embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
+        interaction.reply({ ephemeral: true, embeds: [embed] });
       }
     }
 
