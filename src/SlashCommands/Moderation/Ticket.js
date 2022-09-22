@@ -133,7 +133,7 @@ export const SlashCommandF = class extends SlashCommand {
             return;
           }
 
-          interaction.channel.permissionOverwrites //! TEST
+          interaction.channel.permissionOverwrites
             .create(user, {
               ViewChannel: true,
               SendMessages: true
@@ -625,7 +625,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        const rUser = interaction.options.getMember('user'); //! TEST
+        const rUser = interaction.options.getMember('user');
 
         const channelArgs = interaction.channel.name.split('-');
         const foundTicket = db.prepare(`SELECT * FROM tickets WHERE guildid = ${interaction.guild.id} AND ticketid = (@ticketid)`).get({

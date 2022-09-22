@@ -574,7 +574,7 @@ export const SlashCommandF = class extends SlashCommand {
                     );
                   }
 
-                  row.addComponents(new ButtonBuilder().setCustomId(`rm-${rRole.id}`).setLabel(`${rRole.name}`).setStyle(ButtonStyle.Success)); //! TEST
+                  row.addComponents(new ButtonBuilder().setCustomId(`rm-${rRole.id}`).setLabel(`${rRole.name}`).setStyle(ButtonStyle.Success));
 
                   const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
                     name: `**${this.client.user.username} - Config**`,
