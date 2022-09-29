@@ -17,7 +17,7 @@ const mfa = {
 const data = new SlashCommandBuilder()
   .setName('serverinfo')
   .setDescription('Displays stats on the guild.')
-  .addStringOption((option) => option.setName('options').setDescription('Optional sub-commands').setAutocomplete(true));
+  .addStringOption((option) => option.setName('options').setDescription('Optional sub-commands').setAutocomplete(true).setRequired(true));
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -64,7 +64,7 @@ export const SlashCommandF = class extends SlashCommand {
           }`
         )
         .setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL() });
-      interaction.reply({ ephemeral: true, embeds: [embed] });
+      interaction.reply({ embeds: [embed] });
       return;
     }
 
@@ -87,7 +87,7 @@ export const SlashCommandF = class extends SlashCommand {
           }`
         )
         .setFooter({ text: `${this.client.user.username}`, iconURL: this.client.user.displayAvatarURL() });
-      interaction.reply({ ephemeral: true, embeds: [embed] });
+      interaction.reply({ embeds: [embed] });
       return;
     }
 
