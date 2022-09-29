@@ -16,14 +16,7 @@ export const EventF = class extends Event {
 
     const mod = entry.executor.id;
 
-    let { reason } = entry;
-
-    if (reason === 'No reason given.') {
-      reason = 'No reason given.';
-    } else {
-      // eslint-disable-next-line prefer-destructuring
-      reason = entry.reason;
-    }
+    const { reason } = entry;
 
     const embed = new EmbedBuilder()
       .setThumbnail(this.client.user.displayAvatarURL())
