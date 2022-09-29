@@ -54,12 +54,16 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      const row = new ActionRowBuilder();
+      const buttonsArr = [];
+      const rows = [];
 
       for (const buttonObject of roleArrayCleaned) {
         const role = interaction.guild.roles.cache.get(buttonObject);
+        buttonsArr.push(new ButtonBuilder().setCustomId(`rm-${role.id}`).setLabel(`${role.name}`).setStyle(ButtonStyle.Success));
+      }
 
-        row.addComponents(new ButtonBuilder().setCustomId(`rm-${role.id}`).setLabel(`${role.name}`).setStyle(ButtonStyle.Success));
+      for (const rowObject of chunkArrayInGroups(buttonsArr, 5)) {
+        rows.push(new ActionRowBuilder().addComponents(...rowObject));
       }
 
       await interaction.deferReply();
@@ -69,7 +73,7 @@ export const SlashCommandF = class extends SlashCommand {
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
         .setTitle('Assign a Role')
         .setDescription('Select the role you wish to assign to yourself.');
-      interaction.channel.send({ embeds: [roleMenuEmbed], components: [row] }).then(async (reactEmbed) => {
+      interaction.channel.send({ embeds: [roleMenuEmbed], components: [...rows] }).then(async (reactEmbed) => {
         activeMenu.channel = interaction.channel.id;
         activeMenu.message = reactEmbed.id;
 
@@ -79,6 +83,16 @@ export const SlashCommandF = class extends SlashCommand {
           guildid: `${interaction.guild.id}`
         });
       });
+    }
+
+    function chunkArrayInGroups(arr, size) {
+      const result = [];
+      let pos = 0;
+      while (pos < arr.length) {
+        result.push(arr.slice(pos, pos + size));
+        pos += size;
+      }
+      return result;
     }
   }
 };

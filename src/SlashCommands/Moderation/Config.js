@@ -564,17 +564,21 @@ export const SlashCommandF = class extends SlashCommand {
                 .then((ms) => {
                   const roleArray = JSON.parse(foundRoleMenu.roleList);
 
-                  const row = new ActionRowBuilder();
+                  const buttonsArr = [];
+                  const rows = [];
 
                   for (const buttonObject of roleArray) {
                     const currentRoles = interaction.guild.roles.cache.get(buttonObject);
-
-                    row.addComponents(
+                    buttonsArr.push(
                       new ButtonBuilder().setCustomId(`rm-${currentRoles.id}`).setLabel(`${currentRoles.name}`).setStyle(ButtonStyle.Success)
                     );
                   }
 
-                  row.addComponents(new ButtonBuilder().setCustomId(`rm-${rRole.id}`).setLabel(`${rRole.name}`).setStyle(ButtonStyle.Success));
+                  buttonsArr.push(new ButtonBuilder().setCustomId(`rm-${rRole.id}`).setLabel(`${rRole.name}`).setStyle(ButtonStyle.Success));
+
+                  for (const rowObject of chunkArrayInGroups(buttonsArr, 5)) {
+                    rows.push(new ActionRowBuilder().addComponents(...rowObject));
+                  }
 
                   const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
                     name: `**${this.client.user.username} - Config**`,
@@ -588,7 +592,7 @@ export const SlashCommandF = class extends SlashCommand {
                       .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
                       .setTitle('Assign a Role')
                       .setDescription('Select the role you wish to assign to yourself.');
-                    ms.edit({ embeds: [roleMenuEmbed], components: [row] });
+                    ms.edit({ embeds: [roleMenuEmbed], components: [...rows] });
                   });
                 }, 1000)
                 .catch(() => {
@@ -600,6 +604,12 @@ export const SlashCommandF = class extends SlashCommand {
                   interaction.reply({ ephemeral: true, embeds: [embed] });
                 });
             }
+          } else {
+            const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+              name: `**${this.client.user.username} - Config**`,
+              value: '**◎ Success:** Roles successfully set in the assignable role menu!\nYou can now rum `/rolemenu` to generate a menu.'
+            });
+            interaction.reply({ ephemeral: true, embeds: [embed] });
           }
 
           const updateRoleMenu = db.prepare(`UPDATE rolemenu SET roleList = (@roleList) WHERE guildid=${interaction.guild.id}`);
@@ -656,7 +666,6 @@ export const SlashCommandF = class extends SlashCommand {
                   });
               }
               db.prepare(`DELETE FROM rolemenu WHERE guildid=${interaction.guild.id}`).run();
-
               return;
             }
 
@@ -699,14 +708,20 @@ export const SlashCommandF = class extends SlashCommand {
               .fetch({ message: activeMenu.message })
               .then((ms) => {
                 // Update the message with the new array of roles
-                const row = new ActionRowBuilder();
+                const buttonsArr = [];
+                const rows = [];
 
                 for (const buttonObject of roleList) {
                   const currentRoles = interaction.guild.roles.cache.get(buttonObject);
-
-                  row.addComponents(
+                  buttonsArr.push(
                     new ButtonBuilder().setCustomId(`rm-${currentRoles.id}`).setLabel(`${currentRoles.name}`).setStyle(ButtonStyle.Success)
                   );
+                }
+
+                buttonsArr.push(new ButtonBuilder().setCustomId(`rm-${rRole.id}`).setLabel(`${rRole.name}`).setStyle(ButtonStyle.Success));
+
+                for (const rowObject of chunkArrayInGroups(buttonsArr, 5)) {
+                  rows.push(new ActionRowBuilder().addComponents(...rowObject));
                 }
 
                 const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -721,7 +736,7 @@ export const SlashCommandF = class extends SlashCommand {
                     .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
                     .setTitle('Assign a Role')
                     .setDescription('Select the role you wish to assign to yourself.');
-                  ms.edit({ embeds: [roleMenuEmbed], components: [row] });
+                  ms.edit({ embeds: [roleMenuEmbed], components: [...rows] });
                 });
               }, 1000)
               .catch(() => {
@@ -1405,6 +1420,16 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({ name: `**${this.client.user.username} - Config**`, value: `**◎ Success:** Starboard updated to ${lchan}` });
         interaction.reply({ ephemeral: true, embeds: [embed] });
       }
+    }
+
+    function chunkArrayInGroups(arr, size) {
+      const result = [];
+      let pos = 0;
+      while (pos < arr.length) {
+        result.push(arr.slice(pos, pos + size));
+        pos += size;
+      }
+      return result;
     }
   }
 };

@@ -30,14 +30,18 @@ export const EventF = class extends Event {
 
             try {
               ch.messages.fetch({ message: activeMenu.message }).then((ms) => {
-                const row = new ActionRowBuilder();
+                const buttonsArr = [];
+                const rows = [];
 
                 for (const buttonObject of roleArray) {
                   const currentRoles = role.guild.roles.cache.get(buttonObject);
-
-                  row.addComponents(
+                  buttonsArr.push(
                     new ButtonBuilder().setCustomId(`rm-${currentRoles.id}`).setLabel(`${currentRoles.name}`).setStyle(ButtonStyle.Success)
                   );
+                }
+
+                for (const rowObject of chunkArrayInGroups(buttonsArr, 5)) {
+                  rows.push(new ActionRowBuilder().addComponents(...rowObject));
                 }
 
                 setTimeout(() => {
@@ -46,7 +50,7 @@ export const EventF = class extends Event {
                     .setColor(clientGrab.utils.color(role.guild.members.me.displayHexColor))
                     .setTitle('Assign a Role')
                     .setDescription('Select the role you wish to assign to yourself.');
-                  ms.edit({ embeds: [roleMenuEmbed], components: [row] });
+                  ms.edit({ embeds: [roleMenuEmbed], components: [...rows] });
                 });
               }, 1000);
             } catch {
@@ -75,6 +79,16 @@ export const EventF = class extends Event {
       .setColor(this.client.utils.color(role.guild.members.me.displayHexColor))
       .setTimestamp();
     this.client.channels.cache.get(logs).send({ embeds: [logembed] });
+
+    function chunkArrayInGroups(arr, size) {
+      const result = [];
+      let pos = 0;
+      while (pos < arr.length) {
+        result.push(arr.slice(pos, pos + size));
+        pos += size;
+      }
+      return result;
+    }
   }
 };
 
