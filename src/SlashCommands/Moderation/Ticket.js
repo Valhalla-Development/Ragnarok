@@ -752,19 +752,19 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        const checkEmbedEx = db.prepare(`SELECT ticketembed FROM ticketConfig WHERE guildid = ${interaction.guild.id}`).get();
-        if (checkEmbedEx) {
-          await interaction.reply({ components: [row], embeds: [embed] }).then(async (a) => {
-            const update = db.prepare(
-              'UPDATE ticketConfig SET ticketembed = (@ticketembed), ticketembedchan = (@ticketEChan) WHERE guildid = (@guildid);'
-            );
-            update.run({
-              guildid: `${interaction.guild.id}`,
-              ticketembed: `${a.id}`,
-              ticketEChan: `${interaction.channel.id}`
-            });
+        await interaction.deferReply();
+        interaction.deleteReply();
+
+        await interaction.channel.send({ components: [row], embeds: [embed] }).then(async (a) => {
+          const update = db.prepare(
+            'UPDATE ticketConfig SET ticketembed = (@ticketembed), ticketembedchan = (@ticketEChan) WHERE guildid = (@guildid);'
+          );
+          update.run({
+            guildid: `${interaction.guild.id}`,
+            ticketembed: `${a.id}`,
+            ticketEChan: `${interaction.channel.id}`
           });
-        }
+        });
       }
     }
 
