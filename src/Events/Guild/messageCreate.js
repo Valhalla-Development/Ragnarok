@@ -739,13 +739,13 @@ export const EventF = class extends Event {
           db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(message.guild.id);
           return;
         }
-        if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+        if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages) && !message.channel.name.startsWith('ticket-')) {
           const matches = urlRegexSafe({ strict: false }).test(message.content.toLowerCase());
           if (matches) {
             if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
               grabClient.utils.messageDelete(message, 0);
               message.channel.send(`**◎ Your message contained a link and it was deleted, ${message.author}**`).then((msg) => {
-                grabClient.utils.deletableCheck(msg, 10000);
+                grabClient.utils.deletableCheck(msg, 5000);
               });
             }
           }
