@@ -522,9 +522,17 @@ export const EventF = class extends Event {
         if (!chn) return;
 
         try {
+          const fields = [];
+
           const word = await todayWord.getWord();
           const str = word.pronunciation;
           const res = str.split(']', 1);
+
+          fields.push({ name: '**Definition:**', value: `>>> *${word.meaning}*` });
+
+          if (word.examples.length) {
+            fields.push({ name: '**Examples:**', value: `>>> **◎**${boldString(word.examples.join('\n**◎** '), word.word)}` });
+          }
 
           const embed = new EmbedBuilder()
             .setColor(this.client.utils.color(guild.members.me.displayHexColor))
@@ -534,13 +542,7 @@ export const EventF = class extends Event {
               iconURL: guild.iconURL({ extension: 'png' })
             })
             .setDescription(`>>> **${this.client.utils.capitalise(word.word)}**\n*${res} ]*\n*${word.pos}*`)
-            .addFields(
-              { name: '**Definition:**', value: `>>> *${word.meaning}*` },
-              {
-                name: '**Examples:**',
-                value: `>>> **◎**${boldString(word.examples.join('\n**◎** '), word.word)}`
-              }
-            );
+            .addFields(...fields);
           chn.send({ embeds: [embed] });
         } catch (error) {
           console.log(error);
