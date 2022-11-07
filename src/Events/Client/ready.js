@@ -4,7 +4,8 @@ import chalk from 'chalk';
 import { EmbedBuilder, ActivityType } from 'discord.js';
 import moment from 'moment';
 import { CronJob } from 'cron';
-import todayWord from 'today-word';
+import fetch from 'node-fetch';
+import { load } from 'cheerio';
 import Event from '../../Structures/Event.js';
 
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -522,35 +523,60 @@ export const EventF = class extends Event {
         if (!chn) return;
 
         try {
-          const fields = [];
+          const url = 'https://www.merriam-webster.com/word-of-the-day';
+          const response = await fetch(url);
 
-          const word = await todayWord.getWord();
-          const str = word.pronunciation;
-          const res = str.split(']', 1);
+          if (response.ok) {
+            const arr = [];
 
-          fields.push({ name: '**Definition:**', value: `>>> *${word.meaning}*` });
+            const body = await response.text();
+            const $ = load(body);
 
-          if (word.examples.length) {
-            fields.push({ name: '**Examples:**', value: `>>> **◎**${boldString(word.examples.join('\n**◎** '), word.word)}` });
+            // Word
+            const wordClass = $('.word-and-pronunciation');
+            const word = wordClass.find('h1').text();
+
+            // Word Attributes
+            const typeFetch = $('.main-attr');
+            const type = typeFetch.text();
+            const syllablesFetch = $('.word-syllables');
+            const syllables = syllablesFetch.text();
+
+            // Definiton
+            const wordDef = $('.wod-definition-container');
+            if (wordDef) {
+              const def = wordDef.html();
+              try {
+                const wordDefSplit1 = def.substring(def.indexOf('<p>') + 3);
+                const wordDefSplit2 = wordDefSplit1.split('</p>')[0];
+                arr.push({ name: '**Definition:**', value: `>>> *${wordDefSplit2}*` });
+              } catch {
+                // Do nothing (:
+              }
+            }
+
+            // Example
+            const wordEx = $('.left-content-box');
+            if (wordEx) {
+              const wordEx1 = wordEx.text();
+              const wordEx2 = wordEx1.trim();
+              arr.push({ name: '**Example:**', value: `>>> ${wordEx2}` });
+            }
+
+            // Embed
+            const embed = new EmbedBuilder()
+              .setColor(this.client.utils.color(guild.members.me.displayHexColor))
+              .setAuthor({
+                name: 'Word of the Day',
+                url: 'https://www.merriam-webster.com/word-of-the-day',
+                iconURL: guild.iconURL({ extension: 'png' })
+              })
+              .setDescription(`>>> **${this.client.utils.capitalise(word)}**\n*[ ${syllables} ]*\n*${type}*`)
+              .addFields(...arr);
+            chn.send({ embeds: [embed] });
           }
-
-          const embed = new EmbedBuilder()
-            .setColor(this.client.utils.color(guild.members.me.displayHexColor))
-            .setAuthor({
-              name: 'Word of the Day',
-              url: 'https://www.dictionary.com/e/word-of-the-day/',
-              iconURL: guild.iconURL({ extension: 'png' })
-            })
-            .setDescription(`>>> **${this.client.utils.capitalise(word.word)}**\n*${res} ]*\n*${word.pos}*`)
-            .addFields(...fields);
-          chn.send({ embeds: [embed] });
         } catch (error) {
           console.log(error);
-        }
-
-        function boldString(str, substr) {
-          const strRegExp = new RegExp(substr, 'g');
-          return str.replace(strRegExp, `**${substr}**`);
         }
       },
       null,
