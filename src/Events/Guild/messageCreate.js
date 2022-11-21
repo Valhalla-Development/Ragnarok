@@ -726,6 +726,47 @@ export const EventF = class extends Event {
     }
     dadBot();
 
+    async function antiScam(grabClient) {
+      const antiscam = db.prepare('SELECT count(*) FROM antiscam WHERE guildid = ?').get(message.guild.id);
+      if (antiscam['count(*)']) {
+        if (!message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+          const npPerms = new EmbedBuilder().setColor(grabClient.utils.color(message.guild.members.me.displayHexColor)).addFields({
+            name: `**${grabClient.user.username} - Anti Scam**`,
+            value: '**◎ Error:** I do not have the `MANAGE_MESSAGES` permissions. Disabling Anti Scam.'
+          });
+          message.channel.send({ embeds: [npPerms] }).then((m) => grabClient.utils.messageDelete(m, 0));
+          db.prepare('DELETE FROM antiscam WHERE guildid = ?').run(message.guild.id);
+          return;
+        }
+
+        const reasons = [];
+
+        // Scam Links
+        const rawLinks = await fetch('https://spen.tk/api/v1/links');
+        const linksJson = await rawLinks.json();
+        if (linksJson.status === 200) {
+          const linksContent = linksJson.links;
+          if (linksContent.some((link) => message.content.toLowerCase().includes(link))) reasons.push('Malicious Link');
+        }
+
+        /* const rawTerms = await fetch(`https://spen.tk/api/v1/isMaliciousTerm/?text=${message.content.toLowerCase()}`);
+        const termsJson = await rawTerms.json();
+        if (termsJson.status === 200 && termsJson.hasMatch === true) reasons.push('Malicious Term'); */
+
+        if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+          if (reasons.length) {
+            if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+              grabClient.utils.messageDelete(message, 0);
+              message.channel.send(`**◎ Your message contains: \`${reasons.join(', ')}\` and it was deleted, ${message.author}**`).then((msg) => {
+                grabClient.utils.deletableCheck(msg, 5000);
+              });
+            }
+          }
+        }
+      }
+    }
+    antiScam(this.client);
+
     // Ads protection checks
     function adsProt(grabClient) {
       const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(message.guild.id);
@@ -739,6 +780,7 @@ export const EventF = class extends Event {
           db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(message.guild.id);
           return;
         }
+
         if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages) && !message.channel.name.startsWith('ticket-')) {
           const matches = urlRegexSafe({ strict: false }).test(message.content.toLowerCase());
           if (matches) {
