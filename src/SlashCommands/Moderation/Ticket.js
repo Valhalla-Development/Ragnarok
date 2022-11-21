@@ -239,7 +239,7 @@ export const SlashCommandF = class extends SlashCommand {
 
             const attachment = await discordTranscripts.createTranscript(channel, {
               limit: -1,
-              returnBuffer: true,
+              returnType: 'buffer',
               saveImages: true,
               fileName: staticFileName
             });
