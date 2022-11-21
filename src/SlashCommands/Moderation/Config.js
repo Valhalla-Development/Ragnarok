@@ -142,6 +142,12 @@ const data = new SlashCommandBuilder()
           .addChannelOption((option) => option.setName('channel').setDescription('The channel messages should be send to').setRequired(true))
       )
       .addSubcommand((subcommand) => subcommand.setName('off').setDescription('Disable the Starboard module'))
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName('antiscam')
+      .setDescription('Configure the Anti Scam module')
+      .addBooleanOption((option) => option.setName('toggle').setDescription('Enable/Disable Anti Scam module?').setRequired(true))
   );
 
 export const SlashCommandF = class extends SlashCommand {
@@ -163,6 +169,7 @@ export const SlashCommandF = class extends SlashCommand {
     if (subCommand === 'all') {
       const home = new ButtonBuilder().setCustomId('home').setEmoji('🏠').setStyle(ButtonStyle.Success).setDisabled(true);
       const buttonAd = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Ad Prot').setCustomId('ads');
+      const buttonScam = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Anti Scam').setCustomId('antiscam');
       const buttonAuto = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Autorole').setCustomId('autorole');
       const buttonBirth = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Birthday').setCustomId('birthday');
       const buttonDad = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Dad').setCustomId('dad');
@@ -173,9 +180,9 @@ export const SlashCommandF = class extends SlashCommand {
       const buttonWelc = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Welcome').setCustomId('welcome');
       const buttonStar = new ButtonBuilder().setStyle(ButtonStyle.Primary).setLabel('Starboard').setCustomId('starboard');
 
-      const row = new ActionRowBuilder().addComponents(home, buttonAd, buttonAuto, buttonBirth, buttonDad);
-      const row2 = new ActionRowBuilder().addComponents(buttonHaste, buttonLog, buttonRole, buttonTick, buttonWelc);
-      const row3 = new ActionRowBuilder().addComponents(buttonStar);
+      const row = new ActionRowBuilder().addComponents(home, buttonAd, buttonScam, buttonAuto, buttonBirth);
+      const row2 = new ActionRowBuilder().addComponents(buttonDad, buttonHaste, buttonLog, buttonRole, buttonTick);
+      const row3 = new ActionRowBuilder().addComponents(buttonWelc, buttonStar);
 
       const initial = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -197,9 +204,9 @@ export const SlashCommandF = class extends SlashCommand {
         if (b.customId === 'home') {
           home.setDisabled(true);
 
-          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonAuto, buttonBirth, buttonDad);
-          const row2New = new ActionRowBuilder().addComponents(buttonHaste, buttonLog, buttonRole, buttonTick, buttonWelc);
-          const row3New = new ActionRowBuilder().addComponents(buttonStar);
+          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonScam, buttonAuto, buttonBirth);
+          const row2New = new ActionRowBuilder().addComponents(buttonDad, buttonHaste, buttonLog, buttonRole, buttonTick);
+          const row3New = new ActionRowBuilder().addComponents(buttonWelc, buttonStar);
 
           await b.update({ embeds: [initial], components: [rowNew, row2New, row3New] });
           return;
@@ -208,9 +215,9 @@ export const SlashCommandF = class extends SlashCommand {
         if (b.customId === 'ads') {
           home.setDisabled(false);
 
-          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonAuto, buttonBirth, buttonDad);
-          const row2New = new ActionRowBuilder().addComponents(buttonHaste, buttonLog, buttonRole, buttonTick, buttonWelc);
-          const row3New = new ActionRowBuilder().addComponents(buttonStar);
+          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonScam, buttonAuto, buttonBirth);
+          const row2New = new ActionRowBuilder().addComponents(buttonDad, buttonHaste, buttonLog, buttonRole, buttonTick);
+          const row3New = new ActionRowBuilder().addComponents(buttonWelc, buttonStar);
 
           const ads = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -221,12 +228,28 @@ export const SlashCommandF = class extends SlashCommand {
           await b.update({ embeds: [ads], components: [rowNew, row2New, row3New] });
           return;
         }
+        if (b.customId === 'antiscam') {
+          home.setDisabled(false);
+
+          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonScam, buttonAuto, buttonBirth);
+          const row2New = new ActionRowBuilder().addComponents(buttonDad, buttonHaste, buttonLog, buttonRole, buttonTick);
+          const row3New = new ActionRowBuilder().addComponents(buttonWelc, buttonStar);
+
+          const ads = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+            name: `**${this.client.user.username} - Config**`,
+            value: `**◎ Anti Scam:**
+							\u3000\`/config antiscam <true/false>\` : Toggles Anti Scam`
+          });
+
+          await b.update({ embeds: [ads], components: [rowNew, row2New, row3New] });
+          return;
+        }
         if (b.customId === 'autorole') {
           home.setDisabled(false);
 
-          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonAuto, buttonBirth, buttonDad);
-          const row2New = new ActionRowBuilder().addComponents(buttonHaste, buttonLog, buttonRole, buttonTick, buttonWelc);
-          const row3New = new ActionRowBuilder().addComponents(buttonStar);
+          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonScam, buttonAuto, buttonBirth);
+          const row2New = new ActionRowBuilder().addComponents(buttonDad, buttonHaste, buttonLog, buttonRole, buttonTick);
+          const row3New = new ActionRowBuilder().addComponents(buttonWelc, buttonStar);
 
           const auto = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -241,9 +264,9 @@ export const SlashCommandF = class extends SlashCommand {
         if (b.customId === 'birthday') {
           home.setDisabled(false);
 
-          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonAuto, buttonBirth, buttonDad);
-          const row2New = new ActionRowBuilder().addComponents(buttonHaste, buttonLog, buttonRole, buttonTick, buttonWelc);
-          const row3New = new ActionRowBuilder().addComponents(buttonStar);
+          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonScam, buttonAuto, buttonBirth);
+          const row2New = new ActionRowBuilder().addComponents(buttonDad, buttonHaste, buttonLog, buttonRole, buttonTick);
+          const row3New = new ActionRowBuilder().addComponents(buttonWelc, buttonStar);
 
           const bday = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -259,9 +282,9 @@ export const SlashCommandF = class extends SlashCommand {
         if (b.customId === 'dad') {
           home.setDisabled(false);
 
-          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonAuto, buttonBirth, buttonDad);
-          const row2New = new ActionRowBuilder().addComponents(buttonHaste, buttonLog, buttonRole, buttonTick, buttonWelc);
-          const row3New = new ActionRowBuilder().addComponents(buttonStar);
+          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonScam, buttonAuto, buttonBirth);
+          const row2New = new ActionRowBuilder().addComponents(buttonDad, buttonHaste, buttonLog, buttonRole, buttonTick);
+          const row3New = new ActionRowBuilder().addComponents(buttonWelc, buttonStar);
 
           const dad = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -275,9 +298,9 @@ export const SlashCommandF = class extends SlashCommand {
         if (b.customId === 'hastebin') {
           home.setDisabled(false);
 
-          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonAuto, buttonBirth, buttonDad);
-          const row2New = new ActionRowBuilder().addComponents(buttonHaste, buttonLog, buttonRole, buttonTick, buttonWelc);
-          const row3New = new ActionRowBuilder().addComponents(buttonStar);
+          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonScam, buttonAuto, buttonBirth);
+          const row2New = new ActionRowBuilder().addComponents(buttonDad, buttonHaste, buttonLog, buttonRole, buttonTick);
+          const row3New = new ActionRowBuilder().addComponents(buttonWelc, buttonStar);
 
           const haste = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -291,9 +314,9 @@ export const SlashCommandF = class extends SlashCommand {
         if (b.customId === 'logging') {
           home.setDisabled(false);
 
-          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonAuto, buttonBirth, buttonDad);
-          const row2New = new ActionRowBuilder().addComponents(buttonHaste, buttonLog, buttonRole, buttonTick, buttonWelc);
-          const row3New = new ActionRowBuilder().addComponents(buttonStar);
+          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonScam, buttonAuto, buttonBirth);
+          const row2New = new ActionRowBuilder().addComponents(buttonDad, buttonHaste, buttonLog, buttonRole, buttonTick);
+          const row3New = new ActionRowBuilder().addComponents(buttonWelc, buttonStar);
 
           const log = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -308,9 +331,9 @@ export const SlashCommandF = class extends SlashCommand {
         if (b.customId === 'rolemenu') {
           home.setDisabled(false);
 
-          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonAuto, buttonBirth, buttonDad);
-          const row2New = new ActionRowBuilder().addComponents(buttonHaste, buttonLog, buttonRole, buttonTick, buttonWelc);
-          const row3New = new ActionRowBuilder().addComponents(buttonStar);
+          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonScam, buttonAuto, buttonBirth);
+          const row2New = new ActionRowBuilder().addComponents(buttonDad, buttonHaste, buttonLog, buttonRole, buttonTick);
+          const row3New = new ActionRowBuilder().addComponents(buttonWelc, buttonStar);
 
           const rlm = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -326,9 +349,9 @@ export const SlashCommandF = class extends SlashCommand {
         if (b.customId === 'tickets') {
           home.setDisabled(false);
 
-          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonAuto, buttonBirth, buttonDad);
-          const row2New = new ActionRowBuilder().addComponents(buttonHaste, buttonLog, buttonRole, buttonTick, buttonWelc);
-          const row3New = new ActionRowBuilder().addComponents(buttonStar);
+          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonScam, buttonAuto, buttonBirth);
+          const row2New = new ActionRowBuilder().addComponents(buttonDad, buttonHaste, buttonLog, buttonRole, buttonTick);
+          const row3New = new ActionRowBuilder().addComponents(buttonWelc, buttonStar);
 
           const tck = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -345,9 +368,9 @@ export const SlashCommandF = class extends SlashCommand {
         if (b.customId === 'welcome') {
           home.setDisabled(false);
 
-          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonAuto, buttonBirth, buttonDad);
-          const row2New = new ActionRowBuilder().addComponents(buttonHaste, buttonLog, buttonRole, buttonTick, buttonWelc);
-          const row3New = new ActionRowBuilder().addComponents(buttonStar);
+          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonScam, buttonAuto, buttonBirth);
+          const row2New = new ActionRowBuilder().addComponents(buttonDad, buttonHaste, buttonLog, buttonRole, buttonTick);
+          const row3New = new ActionRowBuilder().addComponents(buttonWelc, buttonStar);
 
           const wlc = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -363,9 +386,9 @@ export const SlashCommandF = class extends SlashCommand {
         if (b.customId === 'starboard') {
           home.setDisabled(false);
 
-          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonAuto, buttonBirth, buttonDad);
-          const row2New = new ActionRowBuilder().addComponents(buttonHaste, buttonLog, buttonRole, buttonTick, buttonWelc);
-          const row3New = new ActionRowBuilder().addComponents(buttonStar);
+          const rowNew = new ActionRowBuilder().addComponents(home, buttonAd, buttonScam, buttonAuto, buttonBirth);
+          const row2New = new ActionRowBuilder().addComponents(buttonDad, buttonHaste, buttonLog, buttonRole, buttonTick);
+          const row3New = new ActionRowBuilder().addComponents(buttonWelc, buttonStar);
 
           const str = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -382,6 +405,7 @@ export const SlashCommandF = class extends SlashCommand {
           // Disable button and update message
           home.setDisabled(true);
           buttonAd.setDisabled(true);
+          buttonScam.setDisabled(true);
           buttonAuto.setDisabled(true);
           buttonBirth.setDisabled(true);
           buttonDad.setDisabled(true);
@@ -947,6 +971,56 @@ export const SlashCommandF = class extends SlashCommand {
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
           .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Success:** Ads Protection was disabled!' });
+        interaction.reply({ ephemeral: true, embeds: [embed] });
+      }
+    }
+
+    // Anti Scam Command
+    if (subCommand === 'antiscam') {
+      // preparing count
+      this.client.getTable = db.prepare('SELECT * FROM antiscam WHERE guildid = ?');
+      const status = this.client.getTable.get(interaction.guild.id);
+
+      const subType = interaction.options.getBoolean('toggle');
+
+      if (subType === true) {
+        // if already on
+        if (status) {
+          const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+            name: `**${this.client.user.username} - Config**`,
+            value: '**◎ Error:** Anti Scam is already enabled on this guild! To disable it, please use `/config antiscam False`'
+          });
+          interaction.reply({ ephemeral: true, embeds: [embed] });
+          return;
+        }
+        const insert = db.prepare('INSERT INTO antiscam (guildid, status) VALUES (@guildid, @status);');
+        insert.run({
+          guildid: `${interaction.guild.id}`,
+          status: 'on'
+        });
+
+        const embed = new EmbedBuilder()
+          .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+          .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Success:** Anti Scam was enabled.' });
+        interaction.reply({ ephemeral: true, embeds: [embed] });
+
+        // if args = off
+      } else if (subType === false) {
+        // if already off
+        if (!status) {
+          const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+            name: `**${this.client.user.username} - Config**`,
+            value: '**◎ Error:** Anti Scam is not enabled on this guild! To activate it, please use `/config antiscam True`'
+          });
+          interaction.reply({ ephemeral: true, embeds: [embed] });
+          return;
+        }
+
+        db.prepare('DELETE FROM antiscam WHERE guildid = ?').run(interaction.guild.id);
+
+        const embed = new EmbedBuilder()
+          .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+          .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Success:** Anti Scam was disabled!' });
         interaction.reply({ ephemeral: true, embeds: [embed] });
       }
     }
