@@ -208,6 +208,16 @@ export const EventF = class extends Event {
       db.pragma('journal_mode = wal');
     }
 
+    // anti scam table
+    const antiscamtable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'antiscam\';').get();
+    if (!antiscamtable['count(*)']) {
+      console.log('antiscam table created!');
+      db.prepare('CREATE TABLE antiscam (guildid TEXT PRIMARY KEY, status TEXT);').run();
+      db.prepare('CREATE UNIQUE INDEX idx_antiscam_id ON antiscam (guildid);').run();
+      db.pragma('synchronous = 1');
+      db.pragma('journal_mode = wal');
+    }
+
     // logging table
     const loggingtable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'logging\';').get();
     if (!loggingtable['count(*)']) {
@@ -549,7 +559,7 @@ export const EventF = class extends Event {
               try {
                 const wordDefSplit1 = def.substring(def.indexOf('<p>') + 3);
                 const wordDefSplit2 = wordDefSplit1.split('</p>')[0];
-                arr.push({ name: '**Definition:**', value: `>>> *${wordDefSplit2}*` });
+                arr.push({ name: '**Definition:**', value: `>>> *${replEm(wordDefSplit2)}*` });
               } catch {
                 // Do nothing (:
               }
@@ -588,6 +598,15 @@ export const EventF = class extends Event {
     twentySecondTimer.start();
     twoMinuteTimer.start();
     twentyFourTimer.start();
+
+    function replEm(str) {
+      const re1 = /<a href=".*?</g;
+      const re2 = /<em>/g;
+      const re3 = /<\/em>/g;
+      const re4 = /<\/a>/g;
+      const re5 = /em>/g;
+      return str.replaceAll(re1, '').replace(re2, '**').replace(re3, '**').replace(re4, '').replace(re5, '**');
+    }
   }
 };
 
