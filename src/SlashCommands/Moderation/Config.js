@@ -928,7 +928,7 @@ export const SlashCommandF = class extends SlashCommand {
     // Adsprot Command
     if (subCommand === 'adsprot') {
       const antiscam = db.prepare('SELECT count(*) FROM antiscam WHERE guildid = ?').get(interaction.guild.id);
-      if (antiscam) {
+      if (antiscam['count(*)']) {
         const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
           name: `**${this.client.user.username} - Config**`,
           value:
@@ -989,7 +989,8 @@ export const SlashCommandF = class extends SlashCommand {
     // Anti Scam Command
     if (subCommand === 'antiscam') {
       const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(interaction.guild.id);
-      if (adsprot) {
+
+      if (adsprot['count(*)']) {
         const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
           name: `**${this.client.user.username} - Config**`,
           value:
