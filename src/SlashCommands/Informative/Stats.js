@@ -48,7 +48,7 @@ export const SlashCommandF = class extends SlashCommand {
         name: 'General Information',
         value: `**◎ 🤖 Name:** \`${this.client.user.tag}\`
 				**◎ 📈 Uptime:** <t:${nowInSecond}:R>
-				**◎ 🧾 Commands:** \`${this.client.commands.filter((cmd) => cmd.category !== 'Hidden').size}\`
+				**◎ 🧾 Commands:** \`${this.client.slashCommands.filter((cmd) => cmd.category !== 'Hidden').size}\`
 				**◎ 🔖 Servers:** \`${this.client.guilds.cache.size.toLocaleString()}\`
 				**◎ 👯 Users:** \`${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')}\`
 				**◎ 📝 Channels:** \`${this.client.channels.cache.size.toLocaleString()}\`
