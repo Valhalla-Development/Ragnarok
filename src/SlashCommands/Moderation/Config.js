@@ -927,6 +927,17 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Adsprot Command
     if (subCommand === 'adsprot') {
+      const antiscam = db.prepare('SELECT count(*) FROM antiscam WHERE guildid = ?').get(interaction.guild.id);
+      if (antiscam) {
+        const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+          name: `**${this.client.user.username} - Config**`,
+          value:
+            '**◎ Error:** Anti Scam is enabled, you can only only have either `Anti Scam` **OR** `Ads Protection` enabled! To deactivate it, please use `/config antiscam False`'
+        });
+        interaction.reply({ ephemeral: true, embeds: [embed] });
+        return;
+      }
+
       // preparing count
       this.client.getTable = db.prepare('SELECT * FROM adsprot WHERE guildid = ?');
       const status = this.client.getTable.get(interaction.guild.id);
@@ -977,6 +988,17 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Anti Scam Command
     if (subCommand === 'antiscam') {
+      const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(interaction.guild.id);
+      if (adsprot) {
+        const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+          name: `**${this.client.user.username} - Config**`,
+          value:
+            '**◎ Error:** Ads Protection is enabled, you can only only have either `Anti Scam` **OR** `Ads Protection` enabled! To deactivate it, please use `/config adsprot False`'
+        });
+        interaction.reply({ ephemeral: true, embeds: [embed] });
+        return;
+      }
+
       // preparing count
       this.client.getTable = db.prepare('SELECT * FROM antiscam WHERE guildid = ?');
       const status = this.client.getTable.get(interaction.guild.id);
