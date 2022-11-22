@@ -566,11 +566,14 @@ export const EventF = class extends Event {
             }
 
             // Example
-            const wordEx = $('.left-content-box');
+            const wordEx = $('.wod-definition-container p:eq(1)');
             if (wordEx) {
-              const wordEx1 = wordEx.text();
-              const wordEx2 = wordEx1.trim();
-              arr.push({ name: '**Example:**', value: `>>> ${wordEx2}` });
+              const def = wordEx.html();
+              try {
+                arr.push({ name: '**Example:**', value: `>>> ${replEm(def).substring(3)}` });
+              } catch {
+                // Do nothing lmao because why the fuck not (:
+              }
             }
 
             // Embed
