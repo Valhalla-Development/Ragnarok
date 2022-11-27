@@ -165,7 +165,7 @@ export const EventF = class extends Event {
           fileName: staticFileName
         });
 
-        const buffered = Buffer.from(attachment.attachment).toString();
+        const buffered = Buffer.from(attachment).toString();
 
         const authorizationSecret = 'pmzg!SD#9H8E#PzGMhe5dr&Qo5EQReLy@cqf87QB';
 
@@ -385,7 +385,7 @@ export const EventF = class extends Event {
           saveImages: true,
           fileName: staticFileName
         });
-        const buffered = Buffer.from(attachment.attachment).toString();
+        const buffered = Buffer.from(attachment).toString();
 
         const authorizationSecret = 'pmzg!SD#9H8E#PzGMhe5dr&Qo5EQReLy@cqf87QB';
 

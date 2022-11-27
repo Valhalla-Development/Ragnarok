@@ -243,7 +243,7 @@ export const SlashCommandF = class extends SlashCommand {
               saveImages: true,
               fileName: staticFileName
             });
-            const buffered = Buffer.from(attachment.attachment).toString();
+            const buffered = Buffer.from(attachment).toString();
 
             const authorizationSecret = 'pmzg!SD#9H8E#PzGMhe5dr&Qo5EQReLy@cqf87QB';
 
