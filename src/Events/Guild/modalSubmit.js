@@ -37,7 +37,8 @@ export const EventF = class extends Event {
         limit: -1,
         returnType: 'buffer',
         saveImages: true,
-        fileName: staticFileName
+        fileName: staticFileName,
+        poweredBy: false
       });
       const buffered = Buffer.from(attachment).toString();
 
