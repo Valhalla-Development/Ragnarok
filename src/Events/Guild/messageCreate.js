@@ -742,12 +742,12 @@ export const EventF = class extends Event {
         const reasons = [];
 
         // Scam Links
-        const rawLinks = await fetch('https://spen.tk/api/v1/links');
-        const linksJson = await rawLinks.json();
-        if (linksJson.status === 200) {
-          const linksContent = linksJson.links;
-          if (linksContent.some((link) => message.content.toLowerCase().includes(link))) reasons.push('Malicious Link');
-        }
+        // const rawLinks = await fetch('https://spen.tk/api/v1/links');
+        // const linksJson = await rawLinks.json();
+        // if (linksJson.status === 200) {
+        const linksContent = this.client.stenLinks;
+        if (linksContent.some((link) => message.content.toLowerCase().includes(link))) reasons.push('Malicious Link');
+        // }
 
         /* const rawTerms = await fetch(`https://spen.tk/api/v1/isMaliciousTerm/?text=${message.content.toLowerCase()}`);
         const termsJson = await rawTerms.json();

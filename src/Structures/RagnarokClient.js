@@ -4,6 +4,8 @@ import db from 'quick.db';
 import { GiveawaysManager } from 'discord-giveaways';
 import Util from './Util.js';
 
+import * as stenLinks from '../../Storage/spenLinks.json' assert { type: 'json' };
+
 if (!Array.isArray(db.get('giveaways'))) db.set('giveaways', []);
 
 export const RagnarokClient = class RagnarokClient extends Client {
@@ -112,6 +114,8 @@ export const RagnarokClient = class RagnarokClient extends Client {
     };
 
     this.ecoPrices = balancePrice;
+
+    this.stenLinks = stenLinks;
 
     const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
       // This function is called when the manager needs to get all giveaways which are stored in the database.
@@ -226,7 +230,7 @@ export const RagnarokClient = class RagnarokClient extends Client {
     if (!options.token) throw new Error('You must pass the token for the client.');
     this.token = options.token;
 
-    if (options.logging !== true && options.logging !== false) throw new Error('The \'logging\' value must be true or false.');
+    if (options.logging !== true && options.logging !== false) throw new Error("The 'logging' value must be true or false.");
     this.logging = options.logging;
 
     if (!options.defaultPerms) throw new Error('You must pass default perm(s) for the Client.');
