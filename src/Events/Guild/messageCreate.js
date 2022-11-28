@@ -745,7 +745,7 @@ export const EventF = class extends Event {
         // const rawLinks = await fetch('https://spen.tk/api/v1/links');
         // const linksJson = await rawLinks.json();
         // if (linksJson.status === 200) {
-        const linksContent = this.client.stenLinks;
+        const linksContent = grabClient.stenLinks;
         if (linksContent.some((link) => message.content.toLowerCase().includes(link))) reasons.push('Malicious Link');
         // }
 

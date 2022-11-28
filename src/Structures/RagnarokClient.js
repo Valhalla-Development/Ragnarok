@@ -115,7 +115,7 @@ export const RagnarokClient = class RagnarokClient extends Client {
 
     this.ecoPrices = balancePrice;
 
-    this.stenLinks = stenLinks;
+    this.stenLinks = stenLinks.default;
 
     const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
       // This function is called when the manager needs to get all giveaways which are stored in the database.
