@@ -9,7 +9,8 @@ export const EventF = class extends Event {
   async run(role) {
     function checkRoleMenu(clientGrab) {
       const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${role.guild.id}`).get();
-      if (!foundRoleMenu || !foundRoleMenu.roleList || !foundRoleMenu.roleList.length) return;
+
+      if (!foundRoleMenu?.roleList?.length) return;
 
       const roleArray = JSON.parse(foundRoleMenu.roleList);
 
