@@ -27,32 +27,27 @@ export const Util = class Util {
 
   trimArray(arr, maxLen) {
     if (arr.length > maxLen) {
-      const len = arr.length - maxLen;
-      arr = arr.slice(0, maxLen);
-      arr.push(` ${len} more...`);
+      arr.splice(maxLen, arr.length - maxLen, ` ${arr.length - maxLen} more...`);
     }
     return arr;
   }
 
   removeDuplicates(arr) {
-    return [...new Set(arr)];
+    if (!Array.isArray(arr)) {
+      throw new TypeError('Expected an array as input');
+    }
+    return new Set(arr);
   }
 
   capitalise(string) {
-    return string
-      .split(' ')
-      .map((str) => str.slice(0, 1).toUpperCase() + str.slice(1))
-      .join(' ');
+    return string.replace(/\S+/g, (word) => word.slice(0, 1).toUpperCase() + word.slice(1));
   }
 
   color(me) {
-    let color;
-    if (me === '#000000') {
-      color = '#A10000';
-    } else {
-      color = me;
+    if (typeof me === 'string' && me.toLowerCase() === '#000000') {
+      return '#A10000';
     }
-    return color;
+    return me;
   }
 
   messageDelete(message, time) {
@@ -76,7 +71,7 @@ export const Util = class Util {
   formatPerms(perms) {
     return perms
       .toLowerCase()
-      .replace(/(^|"|_)(\S)/g, (s) => s.toUpperCase())
+      .replace(/_(?=\S)/g, (match) => match.toUpperCase())
       .replace(/_/g, ' ')
       .replace(/Guild/g, 'Server')
       .replace(/Use Vad/g, 'Use Voice Activity');
@@ -87,8 +82,8 @@ export const Util = class Util {
   }
 
   async loadSlashCommands() {
-    const testingCmds = [];
-    const cmds = [];
+    const ownerOnlyCommands = [];
+    const regularCommands = [];
 
     return globPromise(`${this.directory}SlashCommands/**/*.js`).then(async (commands) => {
       for (const commandFile of commands) {
@@ -100,7 +95,7 @@ export const Util = class Util {
         this.client.slashCommands.set(command.name, command);
 
         if (command.ownerOnly) {
-          testingCmds.push({
+          ownerOnlyCommands.push({
             name: command.name,
             type: command.type ? command.type : 1,
             description: command.description ? command.description : 'No description provided.',
@@ -111,7 +106,7 @@ export const Util = class Util {
             botPerms: command.botPerms ? command.botPerms : null
           });
         } else {
-          cmds.push({
+          regularCommands.push({
             name: command.name,
             type: command.type ? command.type : 1,
             description: command.description ? command.description : 'No description provided.',
@@ -126,33 +121,30 @@ export const Util = class Util {
 
       const rest = new REST({ version: '10' }).setToken(this.client.token);
 
-      (async () => {
-        try {
-          if (this.client.config.applicationID === '509122286561787904') {
-            const allCmds = [...testingCmds, ...cmds];
-            await rest.put(Routes.applicationGuildCommands(this.client.config.applicationID, this.client.config.supportGuild), { body: allCmds });
-            console.log(
-              `${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${testingCmds.length + cmds.length}`)} ${chalk.whiteBright('Slash commands!')}`
-            );
-          } else {
-            if (testingCmds) {
-              await rest.put(Routes.applicationGuildCommands(this.client.config.applicationID, this.client.config.supportGuild), {
-                body: testingCmds
-              });
-              console.log(
-                `${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${testingCmds.length}`)} ${chalk.whiteBright('Owner Only Slash commands!')}`
-              );
-            }
-
-            if (cmds) {
-              await rest.put(Routes.applicationCommands(this.client.config.applicationID), { body: cmds });
-              console.log(`${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${cmds.length}`)} ${chalk.whiteBright('Slash commands!')}`);
-            }
-          }
-        } catch (err) {
-          console.log(err);
+      const isSupportGuild = this.client.config.applicationID === '509122286561787904';
+      if (isSupportGuild) {
+        const allCommands = [...ownerOnlyCommands, ...regularCommands];
+        await rest.put(Routes.applicationGuildCommands(this.client.config.applicationID, this.client.config.supportGuild), { body: allCommands });
+        console.log(
+          `${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${ownerOnlyCommands.length + regularCommands.length}`)} ${chalk.whiteBright(
+            'Slash commands!'
+          )}`
+        );
+      } else {
+        if (ownerOnlyCommands) {
+          await rest.put(Routes.applicationGuildCommands(this.client.config.applicationID, this.client.config.supportGuild), {
+            body: ownerOnlyCommands
+          });
+          console.log(
+            `${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${ownerOnlyCommands.length}`)} ${chalk.whiteBright('Owner Only Slash commands!')}`
+          );
         }
-      })();
+
+        if (regularCommands) {
+          await rest.put(Routes.applicationCommands(this.client.config.applicationID), { body: regularCommands });
+          console.log(`${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${regularCommands.length}`)} ${chalk.whiteBright('Slash commands!')}`);
+        }
+      }
     });
   }
 
