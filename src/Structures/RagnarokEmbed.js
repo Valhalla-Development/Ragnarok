@@ -2,7 +2,7 @@ import { EmbedBuilder } from 'discord.js';
 
 export const RagnarokEmbed = class RagnarokEmbed extends EmbedBuilder {
   splitFields(title, content) {
-    if (typeof title === 'undefined') return this; //! TEST THIS
+    if (typeof title === 'undefined') return this;
 
     let contentToUse = content;
     let titleToUse = title;

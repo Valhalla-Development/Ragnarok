@@ -160,7 +160,7 @@ export const EventF = class extends Event {
 
         const attachment = await discordTranscripts.createTranscript(channel, {
           limit: -1,
-          returnType: 'buffer', //! TEST
+          returnType: 'buffer',
           saveImages: true,
           fileName: staticFileName,
           poweredBy: false

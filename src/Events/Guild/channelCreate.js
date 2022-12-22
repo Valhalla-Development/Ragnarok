@@ -28,7 +28,7 @@ export const EventF = class extends Event {
         iconURL: channel.guild.iconURL()
       })
       .setTitle('Channel Created')
-      .setFooter({ text: `ID: ${channel.id}` }) //! TEST
+      .setFooter({ text: `ID: ${channel.id}` })
       .setTimestamp();
 
     let updateMessage;
