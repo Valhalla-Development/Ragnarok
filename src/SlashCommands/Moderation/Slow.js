@@ -29,8 +29,16 @@ export const SlashCommandF = class extends SlashCommand {
     const time = interaction.options.getString('time');
     const { channel } = interaction;
 
-    //! also check if slow mode is even enabled
     if (sSub === 'off') {
+      if (channel.rateLimitPerUser <= 0) {
+        const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+          name: `**${this.client.user.username} - Slow**`,
+          value: '**◎ Error:** Slow mode is not enabled in this channel.'
+        });
+        interaction.reply({ ephemeral: true, embeds: [embed] });
+        return;
+      }
+
       await channel.setRateLimitPerUser(0);
 
       const embed = new EmbedBuilder()
