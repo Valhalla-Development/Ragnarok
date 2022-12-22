@@ -4,9 +4,11 @@ export const sudo = class sudo {
   }
 
   async sudo(message, text, user) {
-    message.channel
+    const { username } = user.user;
+
+    await message.channel
       .createWebhook({
-        name: user.user.username,
+        name: username,
         channel: message.channel,
         avatar: user.user.displayAvatarURL({ extension: 'png' })
       })
@@ -15,6 +17,9 @@ export const sudo = class sudo {
         setTimeout(() => {
           webhook.delete();
         }, 3000);
+      })
+      .catch((error) => {
+        console.error(error);
       });
   }
 };
