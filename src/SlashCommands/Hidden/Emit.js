@@ -26,24 +26,25 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const args = interaction.options.getString('type');
 
-    if (args === 'guildMemberAdd') {
-      this.client.emit('guildMemberAdd', interaction.member);
-    }
+    try {
+      // Use an object to map the possible values of args to event names.
+      const events = {
+        guildMemberAdd: 'guildMemberAdd',
+        guildMemberRemove: 'guildMemberRemove',
+        guildBanAdd: 'guildBanAdd',
+        channelUpdate: 'channelUpdate',
+        guildBanRemove: 'guildBanRemove'
+      };
 
-    if (args === 'guildMemberRemove') {
-      this.client.emit('guildMemberRemove', interaction.member);
-    }
-
-    if (args === 'guildBanAdd') {
-      this.client.emit('guildBanAdd', interaction.member);
-    }
-
-    if (args === 'channelUpdate') {
-      this.client.emit('channelUpdate', interaction.member);
-    }
-
-    if (args === 'guildBanRemove') {
-      this.client.emit('guildBanRemove', interaction.member);
+      // Check if the args variable has a corresponding property in the object.
+      if (Object.prototype.hasOwnProperty.call(events, args)) {
+        // Call the emit() method with the event name associated with the property.
+        this.client.emit(events[args], interaction.member);
+      } else {
+        // Handle the error...
+      }
+    } catch (error) {
+      // Log or handle the error...
     }
   }
 };
