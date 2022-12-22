@@ -6,13 +6,13 @@ const db = new SQLite('./Storage/DB/db.sqlite');
 
 export const EventF = class extends Event {
   async run(channel) {
-    const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${channel.guild.id};`).get();
-    if (!id) return;
+    const channelId = db.prepare(`SELECT channel FROM logging WHERE guildid = ${channel.guild.id};`).get();
+    if (!channelId) return;
 
-    const logs = id.channel;
+    const logs = channelId.channel;
     if (!logs) return;
 
-    const logembed = new EmbedBuilder()
+    const logEmbed = new EmbedBuilder()
       .setColor(this.client.utils.color(channel.guild.members.me.displayHexColor))
       .setAuthor({
         name: `${channel.guild.name}`,
@@ -22,24 +22,24 @@ export const EventF = class extends Event {
       .setFooter({ text: `ID: ${channel.id}` })
       .setTimestamp();
 
-    let updateM;
+    let updateMessage;
 
     if (channel.type === ChannelType.GuildText) {
-      updateM = `**◎ Text Channel Deleted:**\n\`#${channel.name}\``;
-      logembed.setDescription(updateM);
-      this.client.channels.cache.get(logs).send({ embeds: [logembed] });
+      updateMessage = `**◎ Text Channel Deleted:**\n\`#${channel.name}\``;
+      logEmbed.setDescription(updateMessage);
+      this.client.channels.cache.get(logs).send({ embeds: [logEmbed] });
     }
 
     if (channel.type === ChannelType.GuildVoice) {
-      updateM = `**◎ Voice Channel Deleted:**\n\`${channel.name}\``;
-      logembed.setDescription(updateM);
-      this.client.channels.cache.get(logs).send({ embeds: [logembed] });
+      updateMessage = `**◎ Voice Channel Deleted:**\n\`${channel.name}\``;
+      logEmbed.setDescription(updateMessage);
+      this.client.channels.cache.get(logs).send({ embeds: [logEmbed] });
     }
 
     if (channel.type === ChannelType.GuildCategory) {
-      updateM = `**◎ Category Deleted:**\n\`${channel.name}\``;
-      logembed.setDescription(updateM);
-      this.client.channels.cache.get(logs).send({ embeds: [logembed] });
+      updateMessage = `**◎ Category Deleted:**\n\`${channel.name}\``;
+      logEmbed.setDescription(updateMessage);
+      this.client.channels.cache.get(logs).send({ embeds: [logEmbed] });
     }
   }
 };
