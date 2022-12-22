@@ -1,57 +1,32 @@
 import { EmbedBuilder } from 'discord.js';
 
-const ZWS = '\u200B';
-
 export const RagnarokEmbed = class RagnarokEmbed extends EmbedBuilder {
-  splitFields(contentOrTitle, rawContent) {
-    if (typeof contentOrTitle === 'undefined') return this;
+  splitFields(title, content) {
+    if (typeof title === 'undefined') return this; //! TEST THIS
 
-    let title;
-    let content;
-    if (typeof rawContent === 'undefined') {
-      title = ZWS;
-      content = contentOrTitle;
+    let contentToUse = content;
+    let titleToUse = title;
+    if (typeof contentToUse === 'undefined') {
+      contentToUse = title;
+      titleToUse = '\u200B';
     } else {
-      title = contentOrTitle;
-      content = rawContent;
+      titleToUse = title;
     }
 
-    if (Array.isArray(content)) content = content.join('\n');
-    if (title === ZWS && !this.data.description && content.length < 2048) {
-      this.data.description = content;
+    if (Array.isArray(contentToUse)) contentToUse = contentToUse.join('\n');
+    if (titleToUse === '\u200B' && !this.data.description && contentToUse.length < 2048) {
+      this.data.description = contentToUse;
       return this;
     }
 
-    let x;
-    let slice;
-    while (content.length) {
-      if (content.length < 1024) {
-        if (this.data.fields) {
-          this.data.fields.push({ name: title, value: content, inline: false });
-        } else {
-          this.data.fields = [{ name: title, value: content, inline: false }];
-        }
-        return this;
-      }
+    const chunks = contentToUse.match(/.{1,1024}/g);
+    if (!chunks) return this;
 
-      slice = content.slice(0, 1024);
-      x = slice.lastIndexOf('\n');
-      if (x === -1) x = slice.lastIndexOf('');
-      if (x === -1) x = 1024;
-
-      if (this.data.fields) {
-        this.data.fields.push({
-          name: title,
-          value: content.trim().slice(0, x),
-          inline: false
-        });
-      } else {
-        this.data.fields = [{ name: title, value: content.trim().slice(0, x), inline: false }];
-      }
-
-      content = content.slice(x + 1);
-      title = ZWS;
-    }
+    this.data.fields = [];
+    chunks.forEach((chunk) => {
+      this.data.fields.push({ name: titleToUse, value: chunk.trim() });
+      titleToUse = '\u200B';
+    });
     return this;
   }
 };
