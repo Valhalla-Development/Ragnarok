@@ -280,29 +280,27 @@ export const EventF = class extends Event {
             return;
           }
 
+          const checkDate = new Date();
+          checkDate.setFullYear('2018');
+          checkDate.setHours('0');
+          checkDate.setMilliseconds('0');
+          checkDate.setSeconds('0');
+          checkDate.setMinutes('0');
+
           grabBdays.forEach((b) => {
-            // Check if b.userid is in guild
+            // Check if user is in the guild
             const usr = guild.members.cache.get(b.userid);
             if (!usr) return;
 
-            const grabUser = db.prepare(`SELECT * FROM birthdays WHERE userid = ${usr.user.id};`).get();
+            const grabUser = db.prepare(`SELECT * FROM birthdays WHERE userid = ${usr.id};`).get();
 
             const now = moment();
 
             let foundLastRun = JSON.parse(grabUser.lastRun);
 
             if (!foundLastRun) {
-              foundLastRun = [];
+              foundLastRun = {};
             }
-
-            if (foundLastRun.includes(`${guild.id}-${now.year().toString()}`)) return;
-
-            const checkDate = new Date();
-            checkDate.setFullYear('2018');
-            checkDate.setHours('0');
-            checkDate.setMilliseconds('0');
-            checkDate.setSeconds('0');
-            checkDate.setMinutes('0');
 
             const savedDate = new Date(grabUser.birthday);
             savedDate.setFullYear('2018');
@@ -312,6 +310,11 @@ export const EventF = class extends Event {
             savedDate.setMinutes('0');
 
             if (checkDate.getTime() === savedDate.getTime()) {
+              // Check if the message has already been sent in this guild within the last 24 hours
+              if (foundLastRun[guild.id] && now.unix() < foundLastRun[guild.id] + 86400) {
+                return;
+              }
+
               let msg;
 
               const role = guild.roles.cache.get(a.role);
@@ -323,14 +326,8 @@ export const EventF = class extends Event {
               }
               channel.send(msg);
 
-              const lastYear = now.year() - 1;
-              if (foundLastRun.includes(`${guild.id}-${lastYear}`)) {
-                const findString = foundLastRun.indexOf(`${guild.id}-${lastYear}`);
-                foundLastRun[findString] = `${guild.id}-${now.year().toString()}`;
-              } else {
-                foundLastRun.push(`${guild.id}-${now.year().toString()}`);
-              }
-
+              // Update the lastRun property with the current timestamp
+              foundLastRun[guild.id] = now.unix();
               db.prepare('UPDATE birthdays SET lastRun = (@lastRun);').run({
                 lastRun: JSON.stringify(foundLastRun)
               });
