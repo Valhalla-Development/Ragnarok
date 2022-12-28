@@ -1,5 +1,5 @@
 /* eslint-disable import/no-named-as-default-member */
-import { Client, Collection, PermissionsBitField, GatewayIntentBits, Partials, codeBlock } from 'discord.js';
+import { Client, Collection, PermissionsBitField, GatewayIntentBits, Partials, codeBlock, EmbedBuilder } from 'discord.js';
 import db from 'quick.db';
 import { GiveawaysManager } from 'discord-giveaways';
 import Util from './Util.js';
@@ -49,15 +49,25 @@ export const RagnarokClient = class RagnarokClient extends Client {
       minPerM: 10,
       // Time new users have to wait until using the claim command
       newUserTime: 604800000, // 7 Days
+
       // Claim amount
-      hourlyClaimMin: 50,
-      hourlyClaimMax: 150,
-      dailyClaimMin: 150,
-      dailyClaimMax: 300,
-      weeklyClaimMin: 750,
-      weeklyClaimMax: 1000,
-      monthlyClaimMin: 4000,
-      monthlyClaimMax: 6000,
+      hourlyClaim: {
+        min: 50,
+        max: 150
+      },
+      dailyClaim: {
+        min: 150,
+        max: 300
+      },
+      weeklyClaim: {
+        min: 750,
+        max: 1000
+      },
+      monthlyClaim: {
+        min: 4000,
+        max: 6000
+      },
+
       // Fishing related prices
       fishBagFirst: 50,
       fishBagLimit: 1000,
@@ -68,9 +78,11 @@ export const RagnarokClient = class RagnarokClient extends Client {
       swordfish: 1500,
       kingSalmon: 500,
       trout: 150,
+
       // Fishing related timeouts
       fishWinTime: 600000, // 10 Minutes
       fishFailtime: 900000, // 15 Minutes
+
       // Farming with tools prices
       farmPlotFirst: 10,
       farmPlotLimit: 1000,
@@ -85,22 +97,27 @@ export const RagnarokClient = class RagnarokClient extends Client {
       wheat: 500,
       potatoes: 400,
       tomatoes: 350,
+
       // Planting Times
       cornPlant: 600000, // 10 minutes
       wheatPlant: 450000, // 7 min 30
       potatoPlant: 210000, // 3 min 30
       tomatoPlant: 90000, // 1 min 30
+
       // Decay rate
       decayRate: 0.02,
+
       // Farming without tools prices
       goldNugget: 15000,
       barley: 1200,
       spinach: 600,
       strawberries: 200,
       lettuce: 60,
+
       // Farming without tools timeouts
       farmWinTime: 600000, // 10 Minutes
       farmFailTime: 900000, // 15 Minutes,
+
       // Seed prices
       seedBagFirst: 50, // Inital bag purchase
       seedBagLimit: 1000, // Max upgrade possible
@@ -109,6 +126,7 @@ export const RagnarokClient = class RagnarokClient extends Client {
       wheatSeed: 3300,
       potatoSeed: 2900,
       tomatoSeed: 2800,
+
       // Beg timeout
       begTimer: 120000
     };
@@ -225,15 +243,20 @@ export const RagnarokClient = class RagnarokClient extends Client {
   }
 
   validate(options) {
-    if (typeof options !== 'object') throw new TypeError('Options should be a type of Object.');
+    const invalidOptionsTypeError = 'Options should be a type of Object.';
+    const missingTokenError = 'You must pass the token for the client.';
+    const invalidLoggingValueError = "The 'logging' value must be true or false.";
+    const missingDefaultPermsError = 'You must pass default perm(s) for the Client.';
+    //!TEST
+    if (typeof options !== 'object') throw new TypeError(invalidOptionsTypeError);
 
-    if (!options.token) throw new Error('You must pass the token for the client.');
+    if (!options.token) throw new Error(missingTokenError);
     this.token = options.token;
 
-    if (options.logging !== true && options.logging !== false) throw new Error("The 'logging' value must be true or false.");
+    if (options.logging !== true && options.logging !== false) throw new Error(invalidLoggingValueError);
     this.logging = options.logging;
 
-    if (!options.defaultPerms) throw new Error('You must pass default perm(s) for the Client.');
+    if (!options.defaultPerms) throw new Error(missingDefaultPermsError);
     this.defaultPerms = new PermissionsBitField(options.defaultPerms).freeze();
   }
 
