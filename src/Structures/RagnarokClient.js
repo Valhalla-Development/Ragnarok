@@ -247,7 +247,7 @@ export const RagnarokClient = class RagnarokClient extends Client {
     const missingTokenError = 'You must pass the token for the client.';
     const invalidLoggingValueError = "The 'logging' value must be true or false.";
     const missingDefaultPermsError = 'You must pass default perm(s) for the Client.';
-    //!TEST
+
     if (typeof options !== 'object') throw new TypeError(invalidOptionsTypeError);
 
     if (!options.token) throw new Error(missingTokenError);
