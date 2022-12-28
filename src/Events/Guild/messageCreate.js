@@ -552,8 +552,7 @@ export const EventF = class extends Event {
 
     // AFK Module
     function afkModule(client) {
-      const regex = /<@![0-9]{0,18}>/g;
-      const found = message.content.match(regex);
+      const { mentions } = message;
       const pingCheck = db.prepare('SELECT * FROM afk WHERE guildid = ?').get(message.guild.id);
       const afkGrab = db.prepare('SELECT * FROM afk WHERE user = ? AND guildid = ?').get(message.author.id, message.guild.id);
 
@@ -564,26 +563,26 @@ export const EventF = class extends Event {
           user: message.author.id
         });
 
-        const embed = new EmbedBuilder().setColor(client.utils.color(message.guild.members.me.displayHexColor)).addFields({
+        const embed = new EmbedBuilder().setColor(message.member.displayHexColor).addFields({
           name: `**${client.user.username} - AFK**`,
-          value: `**◎** ${message.author} is no longer AFK.`
+          value: `**◎** ${message.author.tag} is no longer AFK.`
         });
-        message.channel.send({ embeds: [embed] });
+        message.channel.send({ embeds: [embed] }).then((m) => client.utils.deletableCheck(m, 10000));
         return;
       }
 
-      if (found && pingCheck) {
-        const afkCheck = db.prepare('SELECT * FROM afk WHERE user = ? AND guildid = ?').get(found[0].slice(3, 21), message.guild.id);
+      if (mentions.users.size > 0 && pingCheck) {
+        const afkCheck = db.prepare('SELECT * FROM afk WHERE user = ? AND guildid = ?').get(mentions.users.first().id, message.guild.id);
         if (afkCheck) {
-          const error = new EmbedBuilder().setColor(client.utils.color(message.guild.members.me.displayHexColor)).addFields({
+          const error = new EmbedBuilder().setColor(message.member.displayHexColor).addFields({
             name: `**${client.user.username} - AFK**`,
-            value: `**◎** Please do not ping ${found}, they are currently AFK with the reason:\n\n${afkCheck.reason}`
+            value: `**◎** Please do not ping ${mentions.users.first()}, they are currently AFK with the reason:\n\n${afkCheck.reason}`
           });
           message.channel.send({ embeds: [error] }).then((m) => client.utils.deletableCheck(m, 10000));
         }
       }
     }
-    afkModule(this.client);
+    afkModule(this.client, message);
 
     // Easter Egg/s
     if (message.content.includes('(╯°□°）╯︵ ┻━┻')) {
@@ -594,11 +593,10 @@ export const EventF = class extends Event {
 
     // Balance (balance)
     if (message.author.bot) return;
-    let balance;
-    balance = this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
+    let balance = this.client.getBalance.get(`${message.author.id}-${message.guild.id}`);
+
     if (!balance) {
       const claimNewUserTime = new Date().getTime() + this.client.ecoPrices.newUserTime;
-
       balance = {
         id: `${message.author.id}-${message.guild.id}`,
         user: message.author.id,
@@ -622,9 +620,11 @@ export const EventF = class extends Event {
         lottery: null
       };
     }
+
     const curBal = balance.cash;
     const curBan = balance.bank;
     const coinAmt = Math.floor(Math.random() * this.client.ecoPrices.maxPerM) + this.client.ecoPrices.minPerM;
+
     if (coinAmt) {
       if (!coinCooldown.has(message.author.id)) {
         balance.cash = curBal + coinAmt;
@@ -638,49 +638,55 @@ export const EventF = class extends Event {
     }
 
     // Scores (level)
-    function levelSystem(grabClient) {
+    function levelSystem(client) {
       // Level disabled check
       const levelDb = db.prepare(`SELECT status FROM level WHERE guildid = ${message.guild.id};`).get();
-      let score;
-      if (message.guild) {
-        score = grabClient.getScore.get(message.author.id, message.guild.id);
-        if (!score) {
-          score = {
-            id: `${message.guild.id}-${message.author.id}`,
-            user: message.author.id,
-            guild: message.guild.id,
-            points: 0,
-            level: 0,
-            country: null,
-            image: null
-          };
-        }
-        const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
-        const curxp = score.points; // Current points
-        const curlvl = score.level; // Current level
-        const levelNoMinus = score.level + 1;
-        const nxtLvl = (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
-        score.points = curxp + xpAdd;
-        if (nxtLvl <= score.points) {
-          score.level = curlvl + 1;
-          if (score.level === 0) return;
-          if (xpCooldown.has(message.author.id)) return;
-          const lvlup = new EmbedBuilder()
-            .setAuthor({ name: `Congratulations ${message.author.username}` })
-            .setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
-            .setColor(grabClient.utils.color(message.guild.members.me.displayHexColor))
-            .setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
 
-          if (!levelDb) {
-            if (message.channel.permissionsFor(message.guild.members.me).has(PermissionsBitField.Flags.EmbedLinks)) {
-              message.channel.send({ embeds: [lvlup] }).then((m) => grabClient.utils.deletableCheck(m, 10000));
-            }
+      // Initialize score object
+      let score = {
+        id: `${message.guild.id}-${message.author.id}`,
+        user: message.author.id,
+        guild: message.guild.id,
+        points: 0,
+        level: 0,
+        country: null,
+        image: null
+      };
+
+      // Fetch existing score data, if any
+      const existingScore = client.getScore.get(message.author.id, message.guild.id);
+      if (existingScore) {
+        score = existingScore;
+      }
+
+      // Calculate XP and level-up
+      const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
+      const curxp = score.points; // Current points
+      const curlvl = score.level; // Current level
+      const levelNoMinus = score.level + 1;
+      const nxtLvl = (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
+      score.points = curxp + xpAdd;
+      if (nxtLvl <= score.points) {
+        score.level = curlvl + 1;
+        if (score.level === 0) return;
+        if (xpCooldown.has(message.author.id)) return;
+        const lvlup = new EmbedBuilder()
+          .setAuthor({ name: `Congratulations ${message.author.username}` })
+          .setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
+          .setColor(client.utils.color(message.guild.members.me.displayHexColor))
+          .setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
+
+        if (!levelDb) {
+          if (message.channel.permissionsFor(message.guild.members.me).has(PermissionsBitField.Flags.EmbedLinks)) {
+            message.channel.send({ embeds: [lvlup] }).then((m) => client.utils.deletableCheck(m, 10000));
           }
         }
       }
+
+      // Update score in database, if not on cooldown
       if (!xpCooldown.has(message.author.id)) {
         xpCooldown.add(message.author.id);
-        grabClient.setScore.run(score);
+        client.setScore.run(score);
         setTimeout(() => {
           xpCooldown.delete(message.author.id);
         }, xpCooldownSeconds * 1000);
@@ -696,27 +702,30 @@ export const EventF = class extends Event {
       }
 
       if (dadCooldown.has(message.author.id)) return;
-      if (message.content.toLowerCase().startsWith('im ') || message.content.toLowerCase().startsWith('i\'m ')) {
-        if (message.content.length > 10) {
-          return;
-        }
-        if (messageArray.length === 1) {
-          return;
-        }
-        const matches = urlRegexSafe({ strict: false }).test(message.content.toLowerCase());
 
-        if (matches) {
-          message.channel.send({
-            files: ['./Storage/Images/dadNo.png']
-          });
-        } else if (message.content.toLowerCase().startsWith('im dad') || message.content.toLowerCase().startsWith('i\'m dad')) {
-          message.channel.send({ content: 'No, I\'m Dad!' });
-        } else if (message.content.toLowerCase().includes('@everyone') || message.content.toLowerCase().includes('@here')) {
-          message.reply({ content: '<:pepebruh:987742251297931274>' });
-        } else {
-          message.channel.send({ content: `Hi ${oargresult}, I'm Dad!` });
-        }
+      const messageContent = message.content.toLowerCase();
+      if (!(messageContent.startsWith('im ') || messageContent.startsWith('i\'m '))) {
+        return;
       }
+
+      const messageArr = messageContent.split(' ');
+      if (messageArr.length === 1) {
+        return;
+      }
+
+      const matches = urlRegexSafe({ strict: false }).test(messageContent);
+      if (matches) {
+        message.channel.send({
+          files: ['./Storage/Images/dadNo.png']
+        });
+      } else if (messageContent.startsWith('im dad') || messageContent.startsWith('i\'m dad')) {
+        message.channel.send({ content: 'No, I\'m Dad!' });
+      } else if (messageContent.includes('@everyone') || messageContent.includes('@here')) {
+        message.reply({ content: '<:pepebruh:987742251297931274>' });
+      } else {
+        message.channel.send({ content: `Hi ${oargresult}, I'm Dad!` });
+      }
+
       if (!dadCooldown.has(message.author.id)) {
         dadCooldown.add(message.author.id);
         setTimeout(() => {
@@ -741,26 +750,15 @@ export const EventF = class extends Event {
 
         const reasons = [];
 
-        // Scam Links
-        // const rawLinks = await fetch('https://spen.tk/api/v1/links');
-        // const linksJson = await rawLinks.json();
-        // if (linksJson.status === 200) {
         const linksContent = grabClient.stenLinks;
         if (linksContent.some((link) => message.content.toLowerCase().includes(link))) reasons.push('Malicious Link');
-        // }
-
-        /* const rawTerms = await fetch(`https://spen.tk/api/v1/isMaliciousTerm/?text=${message.content.toLowerCase()}`);
-        const termsJson = await rawTerms.json();
-        if (termsJson.status === 200 && termsJson.hasMatch === true) reasons.push('Malicious Term'); */
 
         if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-          if (reasons.length) {
-            if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-              grabClient.utils.messageDelete(message, 0);
-              message.channel.send(`**◎ Your message contains: \`${reasons.join(', ')}\` and it was deleted, ${message.author}**`).then((msg) => {
-                grabClient.utils.deletableCheck(msg, 5000);
-              });
-            }
+          if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+            grabClient.utils.messageDelete(message, 0);
+            message.channel.send(`**◎ Your message contains: \`${reasons.join(', ')}\` and it was deleted, ${message.author}**`).then((msg) => {
+              grabClient.utils.deletableCheck(msg, 5000);
+            });
           }
         }
       }
@@ -798,119 +796,13 @@ export const EventF = class extends Event {
 
     // Link Mention Function
     async function linkTag(grabClient) {
-      const mainReg = /https:\/\/discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,19}/;
-      const ptbReg = /https:\/\/ptb\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,19}/;
-      const disReg = /https:\/\/discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,19}/;
-      const ptReg = /https:\/\/ptb\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,19}/;
-      const caReg = /https:\/\/canary\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,19}/;
-      const canApReg = /https:\/\/canary\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,19}/;
+      const discordRegex = /https?:\/\/(?:ptb\.)?(?:canary\.)?(discordapp|discord)\.com\/channels\/(\d{1,18})\/(\d{1,18})\/(\d{1,19})/g;
 
-      const mainCheck = mainReg.test(message.content.toLowerCase());
-      const ptbCheck = ptbReg.test(message.content.toLowerCase());
-      const disCheck = disReg.test(message.content.toLowerCase());
-      const ptbdisCheck = ptReg.test(message.content.toLowerCase());
-      const canCheck = caReg.test(message.content.toLowerCase());
-      const canACheck = canApReg.test(message.content.toLowerCase());
+      const exec = discordRegex.exec(message.content.toLowerCase());
 
-      const exec =
-        mainReg.exec(message.content.toLowerCase()) ||
-        ptbReg.exec(message.content.toLowerCase()) ||
-        disReg.exec(message.content.toLowerCase()) ||
-        ptReg.exec(message.content.toLowerCase()) ||
-        caReg.exec(message.content.toLowerCase()) ||
-        canApReg.exec(message.content.toLowerCase());
-
-      let guildID;
-      let channelID;
-      let messageID;
-      let URL;
-
-      if (mainCheck || ptbCheck || disCheck || ptbdisCheck || canCheck || canACheck) {
-        const mainGlob = /https:\/\/discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,19}/g;
-        const ptbGlob = /https:\/\/ptb\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,19}/g;
-        const disGlob = /https:\/\/discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,19}/g;
-        const ptGlob = /https:\/\/ptb\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,19}/g;
-        const caGlob = /https:\/\/canary\.discord\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,19}/g;
-        const canAGlob = /https:\/\/canary\.discordapp\.com\/channels\/\d{1,18}\/\d{1,18}\/\d{1,19}/g;
-
-        let lengthMain;
-        let lengthPtb;
-
-        if (mainGlob.test(message.content.toLowerCase()) === true) {
-          lengthMain = message.content.toLowerCase().match(mainGlob).length;
-        } else {
-          lengthMain = 0;
-        }
-        if (ptbGlob.test(message.content.toLowerCase()) === true) {
-          lengthPtb = message.content.toLowerCase().match(ptbGlob).length;
-        } else {
-          lengthPtb = 0;
-        }
-        if (disGlob.test(message.content.toLowerCase()) === true) {
-          lengthMain = message.content.toLowerCase().match(disGlob).length;
-        } else {
-          lengthMain = 0;
-        }
-        if (ptGlob.test(message.content.toLowerCase()) === true) {
-          lengthPtb = message.content.toLowerCase().match(ptGlob).length;
-        } else {
-          lengthPtb = 0;
-        }
-        if (caGlob.test(message.content.toLowerCase()) === true) {
-          lengthMain = message.content.toLowerCase().match(caGlob).length;
-        } else {
-          lengthMain = 0;
-        }
-        if (canAGlob.test(message.content.toLowerCase()) === true) {
-          lengthPtb = message.content.toLowerCase().match(canAGlob).length;
-        } else {
-          lengthPtb = 0;
-        }
-
-        if (lengthMain + lengthPtb > 1) return;
-
-        const mesLink = exec[0];
-        if (mainCheck) {
-          guildID = mesLink.substring(32, mesLink.length - 39);
-          channelID = mesLink.substring(51, mesLink.length - 20);
-          messageID = mesLink.substring(70);
-          URL = `https://discordapp.com/channels/${guildID}/${channelID}/${messageID}`;
-        } else if (ptbCheck) {
-          guildID = mesLink.substring(36, mesLink.length - 39);
-          channelID = mesLink.substring(55, mesLink.length - 20);
-          messageID = mesLink.substring(74);
-          URL = `https://ptb.discordapp.com/channels/${guildID}/${channelID}/${messageID}`;
-        } else if (disCheck) {
-          guildID = mesLink.substring(29, mesLink.length - 39);
-          channelID = mesLink.substring(48, mesLink.length - 20);
-          messageID = mesLink.substring(67);
-          URL = `https://discord.com/channels/${guildID}/${channelID}/${messageID}`;
-        } else if (ptbdisCheck) {
-          guildID = mesLink.substring(33, mesLink.length - 39);
-          channelID = mesLink.substring(52, mesLink.length - 20);
-          messageID = mesLink.substring(71);
-          URL = `https://ptb.discord.com/channels/${guildID}/${channelID}/${messageID}`;
-        } else if (canCheck) {
-          guildID = mesLink.substring(36, mesLink.length - 39);
-          channelID = mesLink.substring(55, mesLink.length - 20);
-          messageID = mesLink.substring(74);
-          URL = `https://canary.discord.com/channels/${guildID}/${channelID}/${messageID}`;
-        } else if (canACheck) {
-          guildID = mesLink.substring(39, mesLink.length - 39);
-          channelID = mesLink.substring(58, mesLink.length - 20);
-          messageID = mesLink.substring(77);
-          URL = `https://canary.discordapp.com/channels/${guildID}/${channelID}/${messageID}`;
-        }
-
-        if (!guildID) {
-          return;
-        }
-        if (!channelID) {
-          return;
-        }
-        if (!messageID) {
-          return;
-        }
+      if (exec) {
+        const URL = exec[0];
+        const [, , guildID, channelID, messageID] = exec;
 
         const embed = new EmbedBuilder()
           .setAuthor({
@@ -920,6 +812,7 @@ export const EventF = class extends Event {
           .setColor(grabClient.utils.color(message.guild.members.me.displayHexColor))
           .setFooter({ text: `Requested by ${message.author.username}` })
           .setTimestamp();
+
         if (message.guild.id === guildID) {
           const findGuild = grabClient.guilds.cache.get(guildID);
           const findChannel = findGuild.channels.cache.get(channelID);
@@ -940,15 +833,15 @@ export const EventF = class extends Event {
                       : message.author.displayAvatarURL({ extension: 'png' })
                 });
 
-                if (res.embeds[0]) {
-                  // fail bruh
-                  if (res.embeds[0].url) {
-                    const fileExtension = res.embeds[0].url.substring(res.embeds[0].url.lastIndexOf('.') + 1);
+                const imageUrl = res.embeds[0]?.data?.image?.url;
+                if (imageUrl) {
+                  if (res.embeds[0].data && res.embeds[0].data.image && res.embeds[0].data.image.url) {
+                    const fileExtension = res.embeds[0].data.image.url.substring(res.embeds[0].data.image.url.lastIndexOf('.') + 1);
                     if (validExtensions.includes(fileExtension)) {
                       embed.setDescription(
                         `**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.length > 1048 ? res.content.substring(0, 1048) : res.content}`
                       );
-                      embed.setImage(res.embeds[0].url);
+                      embed.setImage(res.embeds[0].data.image.url);
                       message.channel.send({ embeds: [embed] });
                     }
                     return;
@@ -992,18 +885,14 @@ export const EventF = class extends Event {
     linkTag(this.client);
 
     async function chatBot(grabClient) {
-      const apiArgs = message.content.slice().trim().split(/ +/g);
-      apiArgs.splice(0, 1);
-
       if (message.guild) {
         if (message.author.bot) return;
         if (message.content.startsWith(`<@${grabClient.user.id}>`) || message.content.startsWith(`<@!${grabClient.user.id}>`)) {
+          const apiArgs = message.content.trim().split(/ +/g).join(' ').split(' ');
+
           if (!apiArgs.length) return;
 
           message.channel.sendTyping();
-
-          // Old thing
-          // `https://api.affiliateplus.xyz/api/chatbot?message=${apiArgs.join('%20')}&botname=${this.client.user.username}&ownername=Ragnar&user=${message.author.id}`;
 
           const indexOfSpace = message.content.indexOf(' ');
           const trimmed = message.content.substring(indexOfSpace + 1);
@@ -1026,191 +915,6 @@ export const EventF = class extends Event {
       }
     }
     chatBot(this.client);
-
-    const prefixgrab = db.prepare('SELECT prefix FROM setprefix WHERE guildid = ?').get(message.guild.id);
-    if (!prefixgrab) return;
-    const prefixcommand = prefixgrab.prefix;
-    // eslint-disable-next-line no-unused-vars
-    const [cmd, ...args] = message.content.slice(prefixcommand.length).trim().split(/ +/g);
-
-    const commandArray = [
-      'balance',
-      'bal',
-      'coins',
-      'money',
-      'baltop',
-      'rich',
-      'bank',
-      'dep',
-      'deposit',
-      'claim',
-      'rewards',
-      'claimable',
-      'reward',
-      'collect',
-      'c',
-      'coinflip',
-      'cf',
-      'farm',
-      'fish',
-      'give',
-      'pay',
-      'harvest',
-      'items',
-      'inv',
-      'plant',
-      'rob',
-      'steal',
-      'rockpaperscissors',
-      'rps',
-      'shop',
-      'upgrade',
-      'boosts',
-      'store',
-      'withdraw',
-      'afk',
-      'airreps',
-      'avatar',
-      'pfp',
-      'bigemote',
-      'birthday',
-      'bday',
-      'calc',
-      'math',
-      'crypto',
-      'cryptocurrency',
-      'doctorwho',
-      'drwho',
-      'hastebin',
-      'haste',
-      'hb',
-      'hug',
-      'leader',
-      'leaderboard',
-      'level',
-      'rank',
-      'meme',
-      'funny',
-      'npm',
-      'trakt',
-      'movie',
-      'show',
-      'affect',
-      'batslap',
-      'slap',
-      'beautiful',
-      'beauty',
-      'bed',
-      'bobross',
-      'captcha',
-      'delete',
-      'del',
-      'jail',
-      'kiss',
-      'lisa',
-      'notstonks',
-      'notstonk',
-      'rip',
-      'ded',
-      'spank',
-      'stonks',
-      'stonk',
-      'tattoo',
-      'trash',
-      'triggered',
-      'a4k',
-      'announcement',
-      'cat',
-      'dog',
-      'emit',
-      'eval',
-      'fban',
-      'freevbucks',
-      'vbucks',
-      'fortnite',
-      'reload',
-      'rl',
-      'sudo',
-      'taco',
-      'bugreport',
-      'bug',
-      'help',
-      'halp',
-      'invite',
-      'ping',
-      'pong',
-      'serverinfo',
-      'server',
-      'guild',
-      'guildinfo',
-      'stats',
-      'botinfo',
-      'info',
-      'suggest',
-      'suggest',
-      'support',
-      'uptime',
-      'userinfo',
-      'whois',
-      'addrole',
-      'ban',
-      'begone',
-      'config',
-      'conf',
-      'esay',
-      'embed',
-      'giveaway',
-      'g',
-      'kick',
-      'markdown',
-      'nuke',
-      'poll',
-      'purge',
-      'reply',
-      'sayreply',
-      'rolemenu',
-      'say',
-      'echo',
-      'slow',
-      'slowmo',
-      'slowmode',
-      'panik',
-      'tempban',
-      'timeout',
-      'shh',
-      'mute',
-      'unban',
-      'add',
-      'close',
-      'new',
-      'open',
-      'remove',
-      'rename',
-      'tembed',
-      'ticket'
-    ];
-
-    const command = commandArray.filter((obj) => obj === cmd.toLowerCase());
-    if (!message.content.startsWith(prefixcommand)) return;
-
-    if (command.length) {
-      const embed = new EmbedBuilder()
-        .setColor(this.client.utils.color(message.guild.members.me.displayHexColor))
-        .setTitle(`${this.client.user.username}`)
-        .setDescription(`${message.author}, __**${this.client.user.username}**__ commands now use slash commands rather than message prefixes.
-[You can learn more about the changes in the news post titled **'Slash Commands Migration'** by clicking here...](https://ragnarokbot.com/#news)
-
-To use the \`${command}\` command, you should try \`/${command}\` or find the command within the \`/help\` menu.
-
-*Stuck? Join the* [**Support Server**](https://discord.gg/Q3ZhdRJ).`);
-      message.reply({ embeds: [embed] });
-
-      setTimeout(() => {
-        if (message) {
-          message.delete();
-        }
-      }, 1000);
-    }
   }
 };
 
