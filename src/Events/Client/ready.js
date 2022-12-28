@@ -164,95 +164,82 @@ export const EventF = class extends Event {
     });
 
     // Cooldowns
+    // Define a function to update the farms for a given user
+    function updateFarms(userId, guildId, dbFetch, client) {
+      //! FAM THIS NEEDS HEAVY TESTING
+      // Fetch the farmPlot and harvestedCrops columns for the user
+      const userData = dbFetch.prepare('SELECT farmPlot, harvestedCrops FROM balance WHERE id = ?').get(`${userId}-${guildId}`);
+
+      // Parse the JSON strings into arrays
+      const farmPlot = userData.farmPlot ? JSON.parse(userData.farmPlot) : [];
+      const harvestedCrops = userData.harvestedCrops ? JSON.parse(userData.harvestedCrops) : [];
+
+      // Use the moment library to create moment objects for the current time and the cropGrowTime
+      const currentTime = moment();
+
+      // Use the map method to transform the farmPlot array into a new array with updated values
+      const updatedFarmPlot = farmPlot.map((plot) => {
+        // Check if the crop is ready to harvest
+        const plotGrowTime = moment.unix(plot.cropGrowTime / 1000);
+        if (currentTime.diff(plotGrowTime) >= 0) {
+          plot.cropStatus = 'harvest';
+          plot.cropGrowTime = 'na';
+          plot.decay = 0;
+        }
+
+        // Check if the crop is ready to decay
+        if (plot.cropStatus === 'harvest') {
+          if (plot.decay >= 100) {
+            // If the decay is at 100, remove the plot from the array
+            return null;
+          }
+
+          // Increase the decay by the decay rate
+          plot.decay += client.ecoPrices.decayRate;
+        }
+
+        // Return the updated plot object
+        return plot;
+      });
+
+      // Filter out any null values from the updatedFarmPlot array
+      const cleanedFarmPlot = updatedFarmPlot.filter(Boolean);
+
+      // Use the map method to transform the harvestedCrops array into a new array with updated values
+      const updatedHarvestedCrops = harvestedCrops.map((crop) => {
+        if (crop.decay >= 100) {
+          // If the decay is at 100, remove the crop from the array
+          return null;
+        }
+
+        // Increase the decay by the decay rate
+        crop.decay += client.ecoPrices.decayRate;
+
+        // Return the updated crop object
+        return crop;
+      });
+
+      // Filter out any null values from the updatedHarvestedCrops array
+      const cleanedHarvestedCrops = updatedHarvestedCrops.filter(Boolean);
+
+      // Update the farmPlot and harvestedCrops columns in the database
+      dbFetch
+        .prepare('UPDATE balance SET farmPlot = ?, harvestedCrops = ? WHERE id = ?')
+        .run(JSON.stringify(cleanedFarmPlot), JSON.stringify(cleanedHarvestedCrops), `${userId}-${guildId}`);
+    }
+
+    // Use a CronJob to run the updateAllFarms function every minute
     const tenSecondTimer = new CronJob(
       '*/10 * * * * *',
       () => {
-        // Run every 10 seconds
-        // Economy
-        // Fetch all balance from db
-        const grabBal = db.prepare('SELECT * FROM balance').all();
-        // Filter grabBal where farmPlot or harvestedCrops are null
-        const grabBalFilter = grabBal.filter((a) => a.farmPlot !== null || a.harvestedCrops !== null);
+        // Fetch all balance records from the database
+        const balances = db.prepare('SELECT * FROM balance').all();
 
-        // For each grabBalFilter
-        grabBalFilter.forEach((a) => {
-          let foundPlotList = JSON.parse(a.farmPlot);
+        // Use the map method to transform the balances array into an array of user IDs and guild IDs
+        const userIds = balances.map(({ user, guild }) => [user, guild]);
 
-          if (!foundPlotList) {
-            foundPlotList = [];
-          }
-
-          let harvestList = JSON.parse(a.harvestedCrops);
-
-          if (!harvestList) {
-            harvestList = [];
-          }
-
-          foundPlotList.forEach((key) => {
-            // Check if crop is ready to harvest and update db if so
-            if (Date.now() > key.cropGrowTime) {
-              key.cropStatus = 'harvest';
-              key.cropGrowTime = 'na';
-              key.decay = 0;
-
-              db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
-                farmPlot: JSON.stringify(foundPlotList),
-                id: `${a.user}-${a.guild}`
-              });
-            }
-
-            // Check if crop is ready to decay and update db if so
-            if (key.cropStatus === 'harvest') {
-              if (key.decay >= 100) {
-                foundPlotList = foundPlotList.filter((c) => c.decay <= 100);
-
-                if (foundPlotList.length <= 0) {
-                  db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
-                    farmPlot: null,
-                    id: `${a.user}-${a.guild}`
-                  });
-                  return;
-                }
-
-                db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
-                  farmPlot: JSON.stringify(foundPlotList),
-                  id: `${a.user}-${a.guild}`
-                });
-                return;
-              }
-
-              key.decay += Number(this.client.ecoPrices.decayRate);
-
-              db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
-                farmPlot: JSON.stringify(foundPlotList),
-                id: `${a.user}-${a.guild}`
-              });
-            }
-          });
-
-          // Decay harvested crops over time
-          harvestList.forEach((obj) => {
-            if (obj.decay >= 100) {
-              harvestList = harvestList.filter((c) => c.decay <= 100);
-              return;
-            }
-
-            obj.decay += Number(this.client.ecoPrices.decayRate);
-          });
-
-          if (harvestList.length <= 0) {
-            db.prepare('UPDATE balance SET harvestedCrops = (@harvestedCrops) WHERE id = (@id);').run({
-              harvestedCrops: null,
-              id: `${a.user}-${a.guild}`
-            });
-            return;
-          }
-
-          db.prepare('UPDATE balance SET harvestedCrops = (@harvestedCrops) WHERE id = (@id);').run({
-            harvestedCrops: JSON.stringify(harvestList),
-            id: `${a.user}-${a.guild}`
-          });
-        });
+        // Use the forEach method to update the farms for each user
+        userIds.forEach(([userId, guildId]) => updateFarms(userId, guildId, db, this.client));
       },
       null,
       true
