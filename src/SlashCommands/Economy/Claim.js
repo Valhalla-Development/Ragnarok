@@ -90,20 +90,20 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (!balance.hourly)
         fullPrice +=
-          Math.floor(Math.random() * this.client.ecoPrices.hourlyClaimMax - this.client.ecoPrices.hourlyClaimMin + 1) +
-          this.client.ecoPrices.hourlyClaimMin;
+          Math.floor(Math.random() * this.client.ecoPrices.hourlyClaim.max - this.client.ecoPrices.hourlyClaim.min + 1) +
+          this.client.ecoPrices.hourlyClaim.min;
       if (!balance.daily)
         fullPrice +=
-          Math.floor(Math.random() * this.client.ecoPrices.dailyClaimMax - this.client.ecoPrices.dailyClaimMin + 1) +
-          this.client.ecoPrices.dailyClaimMin;
+          Math.floor(Math.random() * this.client.ecoPrices.dailyClaim.max - this.client.ecoPrices.dailyClaim.min + 1) +
+          this.client.ecoPrices.dailyClaim.min;
       if (!balance.weekly)
         fullPrice +=
-          Math.floor(Math.random() * this.client.ecoPrices.weeklyClaimMax - this.client.ecoPrices.weeklyClaimMin + 1) +
-          this.client.ecoPrices.weeklyClaimMin;
+          Math.floor(Math.random() * this.client.ecoPrices.weeklyClaim.max - this.client.ecoPrices.weeklyClaim.min + 1) +
+          this.client.ecoPrices.weeklyClaim.min;
       if (!balance.monthly)
         fullPrice +=
-          Math.floor(Math.random() * this.client.ecoPrices.monthlyClaimMax - this.client.ecoPrices.monthlyClaimMin + 1) +
-          this.client.ecoPrices.monthlyClaimMin;
+          Math.floor(Math.random() * this.client.ecoPrices.monthlyClaim.max - this.client.ecoPrices.monthlyClaim.min + 1) +
+          this.client.ecoPrices.monthlyClaim.min;
 
       const endTime = new Date().getTime();
 
