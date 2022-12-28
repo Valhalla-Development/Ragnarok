@@ -19,34 +19,36 @@ export const EventF = class extends Event {
 
   run() {
     console.log(
-      [
-        `${chalk.whiteBright('Logged in as')} ${chalk.red.bold.underline(`${this.client.user.tag}`)}`,
-        `${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${this.client.events.size}`)} ${chalk.whiteBright('events!')}`,
-        `${chalk.whiteBright('I am currently in')} ${chalk.red.bold(`${this.client.guilds.cache.size.toLocaleString('en')}`)} ${chalk.whiteBright(
-          'guilds!'
-        )}`,
-        `${chalk.whiteBright('I currently serve')} ${chalk.red.bold(
-          `${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')}`
-        )} ${chalk.whiteBright('users!')}`,
-        '\u3000',
-        `Scanning for guilds...\n\x1b[31m[-]\x1b[0m ${this.client.guilds.cache
-          .map((n) => `${n.name} (ID: \x1b[31m${n.id}\x1b[0m)`)
-          .join('\x1b[31m\n[-]\x1b[0m ')}`
-      ].join('\n')
+      `${chalk.whiteBright('Logged in as')} ${chalk.red.bold.underline(this.client.user.tag)}\n`,
+      `${chalk.whiteBright('Loaded')} ${chalk.red.bold(this.client.events.size)} ${chalk.whiteBright('events!')}\n`,
+      `${chalk.whiteBright('I am currently in')} ${chalk.red.bold(this.client.guilds.cache.size.toLocaleString('en'))} ${chalk.whiteBright(
+        'guilds!'
+      )}\n`,
+      `${chalk.whiteBright('I currently serve')} ${chalk.red.bold(
+        this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')
+      )} ${chalk.whiteBright('users!')}\n`,
+      '\u3000\n',
+      'Scanning for guilds...'
+    );
+    console.table(
+      this.client.guilds.cache.map((guild) => ({
+        Name: guild.name,
+        ID: guild.id
+      }))
     );
 
     setTimeout(() => {
       console.log(
-        `Invite link: ${chalk.blue.bold.underline(
+        `Invite Link: ${chalk.blue.bold.underline(
           `https://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot&permissions=2050485471`
         )}\n`
       );
     }, 1000);
 
     this.client.user.setActivity(
-      `/help | ${this.client.guilds.cache.size.toLocaleString('en')} Guilds ${this.client.guilds.cache
-        .reduce((a, b) => a + b.memberCount, 0)
-        .toLocaleString('en')} Users`,
+      `/help |
+  ${this.client.guilds.cache.size.toLocaleString('en')} Guilds
+  ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
       {
         type: ActivityType.Watching
       }
