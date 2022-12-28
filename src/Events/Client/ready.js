@@ -17,7 +17,7 @@ export const EventF = class extends Event {
     });
   }
 
-  run() {
+  async run() {
     console.log(
       `${chalk.whiteBright('Logged in as')} ${chalk.red.bold.underline(this.client.user.tag)}\n`,
       `${chalk.whiteBright('Loaded')} ${chalk.red.bold(this.client.events.size)} ${chalk.whiteBright('events!')}\n`,
@@ -55,118 +55,53 @@ export const EventF = class extends Event {
     );
 
     // Database Creation
-    // Birthday table
-    const birthdaystable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'birthdays\';').get();
-    if (!birthdaystable['count(*)']) {
-      console.log('birthdays table created!');
-      db.prepare('CREATE TABLE birthdays (userid TEXT PRIMARY KEY, birthday TEXT, lastRun BLOB);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_birthdays_id ON birthdays (userid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
+    async function createTableIfNotExists(tableName, tableSchema, unique) {
+      const tableExists = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = ?').get(tableName);
+      if (!tableExists['count(*)']) {
+        console.log(`${tableName} table created!`);
+        await db.prepare(`CREATE TABLE IF NOT EXISTS ${tableName} ${tableSchema}`).run();
+        await db.prepare(`CREATE UNIQUE INDEX idx_${tableName}_id ON ${tableName} (${unique})`).run();
+        await db.pragma('synchronous', { value: 1 });
+        await db.pragma('journal_mode', { value: 'wal' });
+      }
     }
+
+    // Birthday table
+    await createTableIfNotExists('birthdays', '(userid TEXT PRIMARY KEY, birthday TEXT, lastRun BLOB)', 'userid');
 
     // Birthday Config table
-    const birthdayconfigtable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'birthdayConfig\';').get();
-    if (!birthdayconfigtable['count(*)']) {
-      console.log('birthday config table created!');
-      db.prepare('CREATE TABLE birthdayConfig (guildid TEXT PRIMARY KEY, channel TEXT, role TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_birthdayConfig_id ON birthdayConfig (guildid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('birthdayConfig', '(guildid TEXT PRIMARY KEY, channel TEXT, role TEXT)', 'guildid');
 
     // Ban table
-    const bantable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'ban\';').get();
-    if (!bantable['count(*)']) {
-      console.log('ban table created!');
-      db.prepare('CREATE TABLE ban (id TEXT PRIMARY KEY, guildid TEXT, userid TEXT, endtime TEXT, channel TEXT, username TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_ban_id ON ban (id);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('ban', '(id TEXT PRIMARY KEY, guildid TEXT, userid TEXT, endtime TEXT, channel TEXT, username TEXT)', 'id');
 
     // Level table
-    const levelstatustable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'level\';').get();
-    if (!levelstatustable['count(*)']) {
-      console.log('level table created!');
-      db.prepare('CREATE TABLE level (guildid TEXT PRIMARY KEY, status TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_level_id ON level (guildid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('level', '(guildid TEXT PRIMARY KEY, status TEXT)', 'guildid');
 
     // Hastebin Table
-    const hastetb = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'hastebin\';').get();
-    if (!hastetb['count(*)']) {
-      console.log('hastebin table created!');
-      db.prepare('CREATE TABLE hastebin (guildid TEXT PRIMARY KEY, status TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_hastebin_id ON hastebin (guildid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('hastebin', '(guildid TEXT PRIMARY KEY, status TEXT)', 'guildid');
 
     // Dad Bot Table
-    const dadbot = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'dadbot\';').get();
-    if (!dadbot['count(*)']) {
-      console.log('dadbot table created!');
-      db.prepare('CREATE TABLE dadbot (guildid TEXT PRIMARY KEY, status TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_dadbot_id ON dadbot (guildid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('dadbot', '(guildid TEXT PRIMARY KEY, status TEXT)', 'guildid');
 
     // Announcement Table
-    const announcement = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'announcement\';').get();
-    if (!announcement['count(*)']) {
-      console.log('announcement table created!');
-      db.prepare('CREATE TABLE announcement (msg TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_announcement_id ON announcement (msg);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('announcement', '(msg TEXT)', 'msg');
 
     // RoleMenu Table
-    const rolemenu = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'rolemenu\';').get();
-    if (!rolemenu['count(*)']) {
-      console.log('rolemenu table created!');
-      db.prepare('CREATE TABLE rolemenu (guildid TEXT PRIMARY KEY, activeRoleMenuID TEXT, roleList BLOB);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_rolemenu_id ON rolemenu (guildid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('rolemenu', '(guildid TEXT PRIMARY KEY, activeRoleMenuID TEXT, roleList BLOB)', 'guildid');
 
     // setwelcome table
-    const setwelcome = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'setwelcome\';').get();
-    if (!setwelcome['count(*)']) {
-      console.log('setwelcome table created!');
-      db.prepare('CREATE TABLE setwelcome (guildid TEXT PRIMARY KEY, channel TEXT, image TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_setwelcome_id ON setwelcome (guildid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('setwelcome', '(guildid TEXT PRIMARY KEY, channel TEXT, image TEXT)', 'guildid');
 
     // autorole table
-    const autorole = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'autorole\';').get();
-    if (!autorole['count(*)']) {
-      console.log('autorole table created!');
-      db.prepare('CREATE TABLE autorole (guildid TEXT PRIMARY KEY, role TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_autorole_id ON autorole (guildid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('autorole', '(guildid TEXT PRIMARY KEY, role TEXT)', 'guildid');
 
     // balance table
-    const balancetable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'balance\';').get();
-    if (!balancetable['count(*)']) {
-      console.log('balance table created!');
-      db.prepare(
-        'CREATE TABLE balance (id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly INTEGER, daily INTEGER, weekly INTEGER, monthly INTEGER, stealcool INTEGER, fishcool INTEGER, farmcool INTEGER, boosts BLOB, items BLOB, cash INTEGER, bank INTEGER, total INTEGER, claimNewUser INTEGER, farmPlot BLOB, dmHarvest TEXT, harvestedCrops BLOB, lottery BLOB);'
-      ).run();
-      db.prepare('CREATE UNIQUE INDEX idx_balance_id ON balance (id);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
-
+    await createTableIfNotExists(
+      'balance',
+      '(id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly INTEGER, daily INTEGER, weekly INTEGER, monthly INTEGER, stealcool INTEGER, fishcool INTEGER, farmcool INTEGER, boosts BLOB, items BLOB, cash INTEGER, bank INTEGER, total INTEGER, claimNewUser INTEGER, farmPlot BLOB, dmHarvest TEXT, harvestedCrops BLOB, lottery BLOB)',
+      'id'
+    );
     this.client.getBalance = db.prepare('SELECT * FROM balance WHERE id = ?');
     this.client.setBalance = db.prepare(
       'INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, stealcool, fishcool, farmcool, boosts, items, cash, bank, total, claimNewUser, farmPlot, dmHarvest, harvestedCrops, lottery) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @stealcool, @fishcool, @farmcool, @boosts, @items, @cash, @bank, @total, @claimNewUser, @farmPlot, @dmHarvest, @harvestedCrops, @lottery);'
@@ -176,101 +111,43 @@ export const EventF = class extends Event {
     );
 
     // balance config Table
-    const balancconftable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'balanceConfig\';').get();
-    if (!balancconftable['count(*)']) {
-      console.log('balanceConfig table created!');
-      db.prepare('CREATE TABLE balanceConfig (guildid TEXT PRIMARY KEY, status TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_balanceConfig_id ON balanceConfig (guildid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('balanceConfig', '(guildid TEXT PRIMARY KEY, status TEXT)', 'guildid');
 
     // scores table
-    const table = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'scores\';').get();
-    if (!table['count(*)']) {
-      console.log('scores table created!');
-      db.prepare('CREATE TABLE scores (id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, country TEXT, image TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_scores_id ON scores (id);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
-
+    await createTableIfNotExists(
+      'scores',
+      '(id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, country TEXT, image TEXT)',
+      'id'
+    );
     this.client.getScore = db.prepare('SELECT * FROM scores WHERE user = ? AND guild = ?');
     this.client.setScore = db.prepare(
       'INSERT OR REPLACE INTO scores (id, user, guild, points, level, country) VALUES (@id, @user, @guild, @points, @level, @country);'
     );
 
     // adsprot table
-    const adsprottable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'adsprot\';').get();
-    if (!adsprottable['count(*)']) {
-      console.log('adsprot table created!');
-      db.prepare('CREATE TABLE adsprot (guildid TEXT PRIMARY KEY, status TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_adsprot_id ON adsprot (guildid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('adsprot', '(guildid TEXT PRIMARY KEY, status TEXT)', 'guildid');
 
     // anti scam table
-    const antiscamtable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'antiscam\';').get();
-    if (!antiscamtable['count(*)']) {
-      console.log('antiscam table created!');
-      db.prepare('CREATE TABLE antiscam (guildid TEXT PRIMARY KEY, status TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_antiscam_id ON antiscam (guildid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('antiscam', '(guildid TEXT PRIMARY KEY, status TEXT)', 'guildid');
 
     // logging table
-    const loggingtable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'logging\';').get();
-    if (!loggingtable['count(*)']) {
-      console.log('logging table created!');
-      db.prepare('CREATE TABLE logging (guildid TEXT PRIMARY KEY, channel TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_logging_id ON logging (guildid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('logging', '(guildid TEXT PRIMARY KEY, channel TEXT)', 'guildid');
 
     // Ticket Config Table
-    const ticketConfigTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'ticketConfig\';').get();
-    if (!ticketConfigTable['count(*)']) {
-      console.log('ticketConfig table created!');
-      db.prepare(
-        'CREATE TABLE ticketConfig (guildid TEXT PRIMARY KEY, category TEXT, log TEXT, role TEXT, ticketembed TEXT, ticketembedchan TEXT, blacklist BLOB);'
-      ).run();
-      db.prepare('CREATE UNIQUE INDEX idx_ticketConfig_id ON ticketConfig (guildid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists(
+      'ticketConfig',
+      '(guildid TEXT PRIMARY KEY, category TEXT, log TEXT, role TEXT, ticketembed TEXT, ticketembedchan TEXT, blacklist BLOB)',
+      'guildid'
+    );
 
     // Stored Tickets Table
-    const ticketsTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'tickets\';').get();
-    if (!ticketsTable['count(*)']) {
-      console.log('tickets table created!');
-      db.prepare('CREATE TABLE tickets (guildid TEXT, ticketid TEXT PRIMARY KEY, authorid TEXT, reason TEXT, chanid TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_tickets_id ON tickets (ticketid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('tickets', '(guildid TEXT, ticketid TEXT PRIMARY KEY, authorid TEXT, reason TEXT, chanid TEXT)', 'ticketid');
 
     // AFK Table
-    const afkTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'afk\';').get();
-    if (!afkTable['count(*)']) {
-      console.log('afk table created!');
-      db.prepare('CREATE TABLE afk (id TEXT PRIMARY KEY, guildid TEXT, user TEXT, reason TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_afk_id ON afk (id);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('afk', '(id TEXT PRIMARY KEY, guildid TEXT, user TEXT, reason TEXT)', 'id');
 
     // starboard table
-    const starTable = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = \'starboard\';').get();
-    if (!starTable['count(*)']) {
-      console.log('starboard table created!');
-      db.prepare('CREATE TABLE starboard (guildid TEXT PRIMARY KEY, channel TEXT);').run();
-      db.prepare('CREATE UNIQUE INDEX idx_starboard_id ON starboard (guildid);').run();
-      db.pragma('synchronous = 1');
-      db.pragma('journal_mode = wal');
-    }
+    await createTableIfNotExists('starboard', '(guildid TEXT PRIMARY KEY, channel TEXT)', 'guildid');
 
     // Starboard
     const grabStarboard = db.prepare('SELECT * FROM starboard').all();
