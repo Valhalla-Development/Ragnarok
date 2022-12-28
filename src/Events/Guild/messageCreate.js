@@ -751,14 +751,16 @@ export const EventF = class extends Event {
         const reasons = [];
 
         const linksContent = grabClient.stenLinks;
-        if (linksContent.some((link) => message.content.toLowerCase().includes(link))) reasons.push('Malicious Link');
+        if (linksContent.some((link) => message.content.toLowerCase().includes(link))) {
+          reasons.push('Malicious Link');
 
-        if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-          if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-            grabClient.utils.messageDelete(message, 0);
-            message.channel.send(`**◎ Your message contains: \`${reasons.join(', ')}\` and it was deleted, ${message.author}**`).then((msg) => {
-              grabClient.utils.deletableCheck(msg, 5000);
-            });
+          if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+            if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+              grabClient.utils.messageDelete(message, 0);
+              message.channel.send(`**◎ Your message contains: \`${reasons.join(', ')}\` and it was deleted, ${message.author}**`).then((msg) => {
+                grabClient.utils.deletableCheck(msg, 5000);
+              });
+            }
           }
         }
       }
