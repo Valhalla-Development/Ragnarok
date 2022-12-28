@@ -332,54 +332,46 @@ export const EventF = class extends Event {
         // Run every 2 minutes
         // Bans
         const grabBans = db.prepare('SELECT * FROM ban').all();
-        grabBans.forEach((r) => {
-          this.client.guilds.fetch(r.guildid).then((guild) => {
-            if (!guild) return;
+        grabBans.forEach(async (r) => {
+          const guild = await this.client.guilds.fetch(r.guildid);
+          if (!guild) return;
 
-            guild.bans.fetch().then((bans) => {
-              const userCheck = bans.filter((ban) => ban.user.id === r.userid);
-              if (!userCheck.first()) {
-                db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
-              }
-            });
+          const bans = await guild.bans.fetch();
+          const userCheck = bans.filter((ban) => ban.user.id === r.userid);
+          if (!userCheck.first()) {
+            db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+          }
 
-            if (Date.now() > r.endtime) {
-              const embed = new EmbedBuilder()
-                .setThumbnail(this.client.user.displayAvatarURL())
-                .setColor(this.client.utils.color(guild.members.me.displayHexColor))
-                .addFields({
-                  name: 'Action | Un-Ban',
-                  value: `**◎ User:** ${r.username}
-							**◎ Reason:** Ban time ended.`
-                })
-                .setTimestamp();
+          if (Date.now() > r.endtime) {
+            const embed = new EmbedBuilder()
+              .setThumbnail(this.client.user.displayAvatarURL())
+              .setColor(this.client.utils.color(guild.members.me.displayHexColor))
+              .addFields({
+                name: 'Action | Un-Ban',
+                value: `**◎ User:** ${r.username}
+            **◎ Reason:** Ban time ended.`
+              })
+              .setTimestamp();
 
-              try {
-                guild.members.unban(r.userid, 'tempban');
-
-                // const channelGrab = db.prepare('SELECT channel FROM ban WHERE id = ?').get(`${guild.id}-${r.userid}`);
-                // const findChannel = this.client.channels.cache.get(channelGrab.channel);
-
-                // findChannel.send({ embeds: [embed] });
-
-                db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
-              } catch {
-                db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
-                return;
-              }
-
-              const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`).get();
-              const dblogs = dbid.channel;
-              const chnCheck = this.client.channels.cache.get(dblogs);
-              if (!chnCheck) {
-                db.prepare('DELETE FROM logging WHERE guildid = ?').run(guild.id);
-              }
-
-              if (dbid) {
-                this.client.channels.cache.get(dblogs).send({ embeds: [embed] });
-              }
+            try {
+              await guild.members.unban(r.userid, 'tempban');
+              db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+            } catch {
+              db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+              return;
             }
-          });
+
+            const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`).get();
+            const dblogs = dbid.channel;
+            const chnCheck = this.client.channels.cache.get(dblogs);
+            if (!chnCheck) {
+              db.prepare('DELETE FROM logging WHERE guildid = ?').run(guild.id);
+            }
+
+            if (dbid) {
+              this.client.channels.cache.get(dblogs).send({ embeds: [embed] });
+            }
+          }
         });
       },
       null,
