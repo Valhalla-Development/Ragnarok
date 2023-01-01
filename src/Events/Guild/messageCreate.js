@@ -743,7 +743,7 @@ export const EventF = class extends Event {
             name: `**${grabClient.user.username} - Anti Scam**`,
             value: '**◎ Error:** I do not have the `MANAGE_MESSAGES` permissions. Disabling Anti Scam.'
           });
-          message.channel.send({ embeds: [npPerms] }).then((m) => grabClient.utils.messageDelete(m, 0));
+          message.channel.send({ embeds: [npPerms] }).then((m) => grabClient.utils.deletableCheck(m, 0));
           db.prepare('DELETE FROM antiscam WHERE guildid = ?').run(message.guild.id);
           return;
         }
@@ -751,12 +751,17 @@ export const EventF = class extends Event {
         const reasons = [];
 
         const linksContent = grabClient.stenLinks;
-        if (linksContent.some((link) => message.content.toLowerCase().includes(link))) {
+
+        const linksRegex = new RegExp(`\\b${linksContent.join('\\b|\\b')}\\b`, 'ig');
+        const match = linksRegex.exec(message.content.toLowerCase());
+        if (match) {
+          const matchedLink = match[0];
+          console.log(`Matched link: ${matchedLink}`);
           reasons.push('Malicious Link');
 
           if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
             if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-              grabClient.utils.messageDelete(message, 0);
+              await grabClient.utils.messageDelete(message, 0);
               message.channel.send(`**◎ Your message contains: \`${reasons.join(', ')}\` and it was deleted, ${message.author}**`).then((msg) => {
                 grabClient.utils.deletableCheck(msg, 5000);
               });
@@ -768,7 +773,7 @@ export const EventF = class extends Event {
     antiScam(this.client);
 
     // Ads protection checks
-    function adsProt(grabClient) {
+    async function adsProt(grabClient) {
       const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(message.guild.id);
       if (adsprot['count(*)']) {
         if (!message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
@@ -776,7 +781,7 @@ export const EventF = class extends Event {
             name: `**${grabClient.user.username} - Ads Protection**`,
             value: '**◎ Error:** I do not have the `MANAGE_MESSAGES` permissions. Disabling Ads Protection.'
           });
-          message.channel.send({ embeds: [npPerms] }).then((m) => grabClient.utils.messageDelete(m, 0));
+          message.channel.send({ embeds: [npPerms] }).then((m) => grabClient.utils.deletableCheck(m, 0));
           db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(message.guild.id);
           return;
         }
@@ -785,7 +790,7 @@ export const EventF = class extends Event {
           const matches = urlRegexSafe({ strict: false }).test(message.content.toLowerCase());
           if (matches) {
             if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-              grabClient.utils.messageDelete(message, 0);
+              await grabClient.utils.messageDelete(message, 0);
               message.channel.send(`**◎ Your message contained a link and it was deleted, ${message.author}**`).then((msg) => {
                 grabClient.utils.deletableCheck(msg, 5000);
               });
