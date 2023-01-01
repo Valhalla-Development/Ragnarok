@@ -212,7 +212,7 @@ export const EventF = class extends Event {
         }
 
         // Increase the decay by the decay rate
-        crop.decay += client.ecoPrices.decayRate;
+        crop.decay += client.ecoPrices.decayRate * 6;
 
         // Return the updated crop object
         return crop;
@@ -228,8 +228,8 @@ export const EventF = class extends Event {
     }
 
     // Use a CronJob to run the updateAllFarms function every minute
-    const tenSecondTimer = new CronJob(
-      '*/10 * * * * *',
+    const oneMinTimer = new CronJob(
+      '* * * * * *',
       () => {
         // Fetch all balance records from the database
         const balances = db.prepare('SELECT * FROM balance').all();
@@ -467,7 +467,7 @@ export const EventF = class extends Event {
     );
 
     // Run cron jobs
-    tenSecondTimer.start();
+    oneMinTimer.start();
     oneDayTimer.start();
     twoMinuteTimer.start();
     twentyFourTimer.start();
