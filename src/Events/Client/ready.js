@@ -244,10 +244,10 @@ export const EventF = class extends Event {
       true
     );
 
-    const twentySecondTimer = new CronJob(
-      '*/20 * * * * *',
+    const oneDayTimer = new CronJob(
+      '0 0 0 * * *',
       () => {
-        // Run every 20 seconds
+        // Run every day
         // Birthdays
         const grabBdays = db.prepare('SELECT * FROM birthdays').all();
         const grabBdaysConfig = db.prepare('SELECT * FROM birthdayConfig').all();
@@ -267,7 +267,6 @@ export const EventF = class extends Event {
           }
 
           const checkDate = new Date();
-          checkDate.setFullYear('2018');
           checkDate.setHours('0');
           checkDate.setMilliseconds('0');
           checkDate.setSeconds('0');
@@ -288,8 +287,8 @@ export const EventF = class extends Event {
               foundLastRun = {};
             }
 
-            const savedDate = new Date(grabUser.birthday);
-            savedDate.setFullYear('2018');
+            const savedDate = new Date(Date.parse(grabUser.birthday));
+            savedDate.setFullYear(checkDate.getFullYear());
             savedDate.setHours('0');
             savedDate.setMilliseconds('0');
             savedDate.setSeconds('0');
@@ -469,7 +468,7 @@ export const EventF = class extends Event {
 
     // Run cron jobs
     tenSecondTimer.start();
-    twentySecondTimer.start();
+    oneDayTimer.start();
     twoMinuteTimer.start();
     twentyFourTimer.start();
   }
