@@ -50,11 +50,15 @@ export const Util = class Util {
     return me;
   }
 
-  messageDelete(message, time) {
+  async messageDelete(message, time) {
     if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-      setTimeout(() => {
-        if (message && message.deletable) {
-          message.delete();
+      setTimeout(async () => {
+        try {
+          if (message && message.deletable) {
+            await message.delete();
+          }
+        } catch {
+          // Do nothing
         }
       }, time);
     }
