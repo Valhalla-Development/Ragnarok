@@ -76,7 +76,7 @@ export const EventF = class extends Event {
             // And now we edit the message with the new embed!
             await starMsg.edit({ embeds: [embed] });
             if (parseInt(star[1]) - 1 === 0) {
-              this.client.utils.messageDelete(starMsg, 0);
+              this.client.utils.deletableCheck(starMsg, 0);
               return;
             }
           }
@@ -121,7 +121,7 @@ export const EventF = class extends Event {
       }
       await starMsg.edit({ embeds: [embed] });
       if (parseInt(star[1]) - 1 === 0) {
-        this.client.utils.messageDelete(starMsg, 0);
+        await this.client.utils.messageDelete(starMsg, 0);
       }
     }
   }

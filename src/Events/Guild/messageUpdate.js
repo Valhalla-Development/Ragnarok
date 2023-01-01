@@ -16,7 +16,7 @@ export const EventF = class extends Event {
           name: `**${this.client.user.username} - Ads Protection**`,
           value: '**◎ Error:** I do not have the `Manage Messages` permissions. Disabling Ads Protection.'
         });
-        newMessage.channel.send({ embeds: [npPerms] }).then((m) => newMessage.utils.messageDelete(m, 0));
+        newMessage.channel.send({ embeds: [npPerms] }).then((m) => newMessage.utils.deletableCheck(m, 0));
         db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(newMessage.guild.id);
         return;
       }
@@ -24,7 +24,7 @@ export const EventF = class extends Event {
         const matches = urlRegexSafe({ strict: false }).test(newMessage.content.toLowerCase());
         if (matches) {
           if (newMessage.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-            this.client.utils.messageDelete(newMessage, 0);
+            await this.client.utils.messageDelete(newMessage, 0);
             newMessage.channel.send(`**◎ Your message contained a link and it was deleted, ${newMessage.author}**`).then((msg) => {
               this.client.utils.deletableCheck(msg, 10000);
             });
