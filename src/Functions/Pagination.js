@@ -97,9 +97,10 @@ export const pagination = class pagination {
     });
 
     collector.on('end', () => {
-      if (m && m.deletable) {
-        m.delete();
-      }
+      home.setDisabled(true);
+      back.setDisabled(true);
+      next.setDisabled(true);
+      interaction.editReply({ embeds: [embeds[currentPage]], components: [row] });
     });
 
     collector.on('error', (e) => console.log(e));
