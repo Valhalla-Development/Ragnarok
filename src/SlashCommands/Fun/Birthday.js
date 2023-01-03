@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-unused-expressions */
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import SQLite from 'better-sqlite3';
 import moment from 'moment';
@@ -22,7 +25,8 @@ const data = new SlashCommandBuilder()
       .setDescription('Sets your birthday')
       .addStringOption((option) => option.setName('date').setDescription('Sets your birthday, format: MM/DD/YYYY').setRequired(true))
   )
-  .addSubcommand((subcommand) => subcommand.setName('delete').setDescription('Deletes your birthday'));
+  .addSubcommand((subcommand) => subcommand.setName('delete').setDescription('Deletes your birthday'))
+  .addSubcommand((subcommand) => subcommand.setName('list').setDescription('View all birthdays in the server'));
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -178,6 +182,112 @@ export const SlashCommandF = class extends SlashCommand {
           birthday: argsDate,
           lastRun: null
         });
+      }
+    }
+
+    if (args === 'list') {
+      // Fetch all of the birthdays from the database
+      const rows = db.prepare('SELECT * FROM birthdays').all();
+
+      // Filter the rows to only include users who are in the guild
+      const filteredRows = rows.filter((row) => {
+        const member = interaction.guild.members.cache.get(row.userid);
+        return member;
+      });
+
+      // sort the birthdays by the number of days until each one
+      const sortedRows = filteredRows.sort((a, b) => {
+        const today = moment();
+
+        // parse the birthday strings into moment objects
+        const momentA = moment(a.birthday.substring(0, a.birthday.length - 5), 'MM/DD');
+        const momentB = moment(b.birthday.substring(0, b.birthday.length - 5), 'MM/DD');
+
+        // if either birthday has already passed this year, add one year to the moment object so we compare the correct dates
+        if (momentA.isBefore(today)) {
+          momentA.add(1, 'year');
+        }
+        if (momentB.isBefore(today)) {
+          momentB.add(1, 'year');
+        }
+
+        // return the difference in days between the two moment objects
+        return momentA.diff(momentB, 'days');
+      });
+
+      // Create a paginated list of users and their birthdays
+      const itemsPerPage = 10;
+      const pages = [];
+      for (let i = 0; i < sortedRows.length; i += itemsPerPage) {
+        pages.push(sortedRows.slice(i, i + itemsPerPage));
+      }
+
+      // Create an embed for each page
+      const embeds = [];
+      for (let i = 0; i < pages.length; i++) {
+        // Create a new embed
+        const embed = new EmbedBuilder()
+          .setAuthor({ name: `Birthdays for ${interaction.guild.name}`, iconURL: interaction.guild.iconURL({ extension: 'png' }) })
+          .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor));
+        // Add fields to the embed
+        embed.addFields(
+          {
+            name: 'User',
+            value: pages[i]
+              .map((row) => {
+                const member = interaction.guild.members.cache.get(row.userid);
+                return member.toString();
+              })
+              .join('\n'),
+            inline: true
+          },
+          {
+            name: 'Date',
+            value: pages[i]
+              .map((row) => {
+                const date = moment(row.birthday, 'MM/DD/YYYY').format('Do MMMM');
+                return `\`${date}\``;
+              })
+              .join('\n'),
+            inline: true
+          },
+          {
+            name: 'In',
+            value: pages[i]
+              .map((row) => {
+                let year;
+
+                const bdayNow = moment();
+                const nextBirthday = row.birthday.slice(0, row.birthday.length - 4);
+
+                const birthdayNext = new Date(nextBirthday + bdayNow.year());
+                const getNow = new Date();
+                if (birthdayNext > getNow) {
+                  year = bdayNow.year();
+                } else {
+                  year = bdayNow.year() + 1;
+                }
+
+                const then = moment(nextBirthday + year, 'MM/DD/YYYY');
+                return `\`${ms(then - bdayNow, { long: true })}\``;
+              })
+              .join('\n'),
+            inline: true
+          }
+        );
+
+        if (pages.length > 1) {
+          embed.setFooter({ text: `Page ${i + 1}/${pages.length}` });
+        }
+        // Add the embed to the list
+        embeds.push(embed);
+      }
+
+      // Send the paginated list to the channel
+      if (embeds.length > 1) {
+        this.client.functions.pagination(interaction, embeds);
+      } else {
+        interaction.reply({ embeds: [embeds[0]] });
       }
     }
   }
