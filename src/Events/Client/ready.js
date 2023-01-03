@@ -1,11 +1,11 @@
 /* eslint-disable no-param-reassign */
 import SQLite from 'better-sqlite3';
-import chalk from 'chalk';
 import { EmbedBuilder, ActivityType } from 'discord.js';
 import moment from 'moment';
 import { CronJob } from 'cron';
 import fetch from 'node-fetch';
 import { load } from 'cheerio';
+import Table from 'cli-table3';
 import Event from '../../Structures/Event.js';
 
 const db = new SQLite('./Storage/DB/db.sqlite');
@@ -19,29 +19,33 @@ export const EventF = class extends Event {
 
   async run() {
     console.log(
-      `${chalk.whiteBright('Logged in as')} ${chalk.red.bold.underline(this.client.user.tag)}\n`,
-      `${chalk.whiteBright('Loaded')} ${chalk.red.bold(this.client.events.size)} ${chalk.whiteBright('events!')}\n`,
-      `${chalk.whiteBright('I am currently in')} ${chalk.red.bold(this.client.guilds.cache.size.toLocaleString('en'))} ${chalk.whiteBright(
-        'guilds!'
-      )}\n`,
-      `${chalk.whiteBright('I currently serve')} ${chalk.red.bold(
-        this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')
-      )} ${chalk.whiteBright('users!')}\n`,
+      `\u001b[37m\u001b[1mLogged in as\u001b[22m \u001b[31m\u001b[1m\u001b[4m${this.client.user.tag}\u001b[24m\u001b[39m\u001b[22m\n`,
+      `\u001b[37m\u001b[1mLoaded\u001b[22m \u001b[31m\u001b[1m${this.client.events.size}\u001b[22m \u001b[37m\u001b[1mevents!\u001b[22m\n`,
+      `\u001b[37m\u001b[1mI am currently in\u001b[22m \u001b[31m\u001b[1m${this.client.guilds.cache.size.toLocaleString(
+        'en'
+      )}\u001b[22m \u001b[37m\u001b[1mguilds!\u001b[22m\n`,
+      `\u001b[37m\u001b[1mI currently serve\u001b[22m \u001b[31m\u001b[1m${this.client.guilds.cache
+        .reduce((a, b) => a + b.memberCount, 0)
+        .toLocaleString('en')}\u001b[22m \u001b[37m\u001b[1musers!\u001b[22m\n`,
       '\u3000\n',
       'Scanning for guilds...'
     );
-    console.table(
-      this.client.guilds.cache.map((guild) => ({
-        Name: guild.name,
-        ID: guild.id
-      }))
-    );
+
+    const table = new Table({
+      head: ['Count', 'Name', 'ID']
+    });
+
+    let count = 1;
+    this.client.guilds.cache.forEach((guild) => {
+      table.push([count, guild.name, guild.id]);
+      count++;
+    });
+
+    console.log(table.toString());
 
     setTimeout(() => {
       console.log(
-        `Invite Link: ${chalk.blue.bold.underline(
-          `https://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot&permissions=2050485471`
-        )}\n`
+        `Invite Link: \u001b[34m\u001b[1m\u001b[4mhttps://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot&permissions=2050485471\u001b[24m\u001b[39m\u001b[22m\n`
       );
     }, 1000);
 

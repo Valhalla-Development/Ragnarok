@@ -6,7 +6,6 @@ import { promisify } from 'util';
 import { PermissionsBitField, REST, Routes } from 'discord.js';
 import glob from 'glob';
 import url from 'url';
-import chalk from 'chalk';
 import Event from './Event.js';
 import SlashCommand from './SlashCommand.js';
 
@@ -130,9 +129,9 @@ export const Util = class Util {
         const allCommands = [...ownerOnlyCommands, ...regularCommands];
         await rest.put(Routes.applicationGuildCommands(this.client.config.applicationID, this.client.config.supportGuild), { body: allCommands });
         console.log(
-          `${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${ownerOnlyCommands.length + regularCommands.length}`)} ${chalk.whiteBright(
-            'Slash commands!'
-          )}`
+          `\u001b[37m\u001b[1mLoaded\u001b[22m \u001b[31m\u001b[1m${
+            ownerOnlyCommands.length + regularCommands.length
+          }\u001b[22m \u001b[37m\u001b[1mSlash commands!\u001b[22m`
         );
       } else {
         if (ownerOnlyCommands) {
@@ -140,13 +139,15 @@ export const Util = class Util {
             body: ownerOnlyCommands
           });
           console.log(
-            `${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${ownerOnlyCommands.length}`)} ${chalk.whiteBright('Owner Only Slash commands!')}`
+            `\u001b[37m\u001b[1mLoaded\u001b[22m \u001b[31m\u001b[1m${ownerOnlyCommands.length}\u001b[22m \u001b[37m\u001b[1mOwner Only Slash commands!\u001b[22m`
           );
         }
 
         if (regularCommands) {
           await rest.put(Routes.applicationCommands(this.client.config.applicationID), { body: regularCommands });
-          console.log(`${chalk.whiteBright('Loaded')} ${chalk.red.bold(`${regularCommands.length}`)} ${chalk.whiteBright('Slash commands!')}`);
+          console.log(
+            `\u001b[37m\u001b[1mLoaded\u001b[22m \u001b[31m\u001b[1m${regularCommands.length}\u001b[22m \u001b[37m\u001b[1mSlash commands!\u001b[22m`
+          );
         }
       }
     });
