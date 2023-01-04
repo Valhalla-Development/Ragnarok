@@ -21,6 +21,8 @@
     "cron": "^2.1.0",
     "cryptocurrencies": "^7.0.0",
     "custom-bj": "^4.0.3",
+    "dbd-soft-ui": "^1.5.52-beta.1",
+    "discord-dashboard": "^2.3.6",
     "discord-giveaways": "^6.0.1",
     "discord-html-transcripts": "^3.1.2",
     "discord-image-generation": "^1.4.15",
