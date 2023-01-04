@@ -8,6 +8,7 @@ import glob from 'glob';
 import url from 'url';
 import Event from './Event.js';
 import SlashCommand from './SlashCommand.js';
+import RagnarokDashboard from './RagnarokDashboard.js';
 
 const globPromise = promisify(glob);
 
@@ -175,6 +176,12 @@ export const Util = class Util {
         this.client.functions[File.name] = new File(this)[File.name];
       });
     });
+  }
+
+  // Dashboard
+  async loadDashboard() {
+    const dashboard = new RagnarokDashboard(this.client);
+    dashboard.dashboard(this.client);
   }
 };
 
