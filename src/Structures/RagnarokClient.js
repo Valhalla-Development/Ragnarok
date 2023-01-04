@@ -195,7 +195,22 @@ export const RagnarokClient = class RagnarokClient extends Client {
       const channel = client.channels.cache.get('685973401772621843');
       if (!channel) return;
 
-      channel.send(codeBlock('js', message));
+      const typeOfError = message.split(':')[0];
+      const fullError = message.replace(/^[^:]+:/, '').trimStart();
+      const timeOfError = `<t:${Math.floor(new Date().getTime() / 1000)}>`;
+      const fullString = `From: \`${typeOfError}\`\nTime: ${timeOfError}\n\nError:\n${codeBlock('js', fullError)}`;
+
+      function truncateDescription(description) {
+        const maxLength = 2048;
+        if (description.length > maxLength) {
+          const numTruncatedChars = description.length - maxLength;
+          return `${description.slice(0, maxLength)}... ${numTruncatedChars} more`;
+        }
+        return description;
+      }
+
+      const embed = new EmbedBuilder().setTitle('Error').setDescription(truncateDescription(fullString));
+      channel.send({ embeds: [embed] });
     }
 
     // Error Notifiers
@@ -264,6 +279,7 @@ export const RagnarokClient = class RagnarokClient extends Client {
     await this.utils.loadSlashCommands();
     await this.utils.loadEvents();
     await this.utils.loadFunctions();
+    await this.utils.loadDashboard();
     await super.login(token);
   }
 };
