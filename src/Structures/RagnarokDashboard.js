@@ -14,6 +14,7 @@ export const RagnarokDashboard = class RagnarokDashboard {
 
   async dashboard(client) {
     const Handler = new DBD.Handler();
+    //console.log(await Handler.fetch('495602800802398212', 'birthday'));
 
     // Stats
     async function cpuUsage() {
@@ -67,24 +68,42 @@ export const RagnarokDashboard = class RagnarokDashboard {
         commands.push(commandCategory);
       }
 
+      const arr = [];
+      let usage = '[ ';
+      if (command?.options?.options) {
+        command.options.options.forEach((cmd, index) => {
+          usage += cmd.name;
+          if (index < command.options.options.length - 1) {
+            usage += ' | ';
+          }
+        });
+        usage += ' ]';
+        arr.push({
+          name: command.name,
+          usage
+        });
+      }
+
+      const commandUsage = arr.find((obj) => obj.name === command.name)?.usage || 'N/A';
+
       // Add the command to the list of the appropriate category
       commandCategory.list.push({
-        commandName: command.name,
-        commandUsage: command.usage || 'N/A',
+        commandName: `/${command.name}`,
+        commandUsage: commandUsage,
         commandDescription: command.description
       });
     });
 
-    await DBD.useLicense(client.config.dbd.license);
+    await DBD.useLicense(client.config.DBD_LICENSE);
     DBD.Dashboard = DBD.UpdatedClass();
 
     const Dashboard = new DBD.Dashboard({
       acceptPrivacyPolicy: true,
-      port: client.config.dbd.port,
-      client: client.config.discord.client,
-      redirectUri: `${client.config.dbd.domain}${client.config.dbd.redirectUri}`,
-      domain: client.config.dbd.domain,
-      ownerIDs: client.config.dbd.ownerIDs,
+      port: client.config.DBD_PORT,
+      client: { id: client.config.DISCORD_CLIENT_ID, secret: client.config.DISCORD_CLIENT_SECRET },
+      redirectUri: `${client.config.DBD_DOMAIN}${client.config.DBD_REDIRECT_URI}`,
+      domain: client.config.DBD_DOMAIN,
+      ownerIDs: client.config.DBD_OWNER_IDS,
       useThemeMaintenance: false,
       useTheme404: true,
       bot: client,
@@ -309,19 +328,7 @@ export const RagnarokDashboard = class RagnarokDashboard {
         },
         commands
       }),
-      settings: [
-        new Handler.Category()
-          .setId('mod')
-          .setName('Moderation')
-          .setDescription('Easily moderate your community with commands such as ban, kick, and poll, among other useful options.')
-          .addOptions(
-            new Handler.Option()
-              .setId('birthday')
-              .setName('Birthday Channel')
-              .setDescription('Configure the Birthday channel')
-              .setType(DBD.formTypes.switach(false))
-          )
-      ]
+      settings: []
     });
     Dashboard.init();
 
