@@ -33,8 +33,6 @@ export const RagnarokClient = class RagnarokClient extends Client {
 
     this.slashCommands = new Collection();
 
-    this.aliases = new Collection();
-
     this.events = new Collection();
 
     this.utils = new Util(this);
