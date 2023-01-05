@@ -1074,6 +1074,20 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
+      const userHasPermission = interaction.member.permissions.has('ManageRoles');
+      const botHasPermission = interaction.guild.members.me.permissions.has('ManageRoles');
+
+      if (!userHasPermission || !botHasPermission) {
+        const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+          name: `**${this.client.user.username} - Config**`,
+          value: userHasPermission
+            ? '**◎ Error:** I need the `Manage Roles` permission to use this command.'
+            : '**◎ Error:** You need the `Manage Roles` permission to use this command.'
+        });
+        interaction.reply({ ephemeral: true, embeds: [embed] });
+        return;
+      }
+
       if (role.position >= interaction.member.roles.highest.position) {
         const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
           name: `**${this.client.user.username} - Config**`,
