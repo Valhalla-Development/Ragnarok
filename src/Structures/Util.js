@@ -125,10 +125,10 @@ export const Util = class Util {
 
       const rest = new REST({ version: '10' }).setToken(this.client.token);
 
-      const isSupportGuild = this.client.config.applicationID === '509122286561787904';
+      const isSupportGuild = this.client.config.APPLICATION_ID === '509122286561787904';
       if (isSupportGuild) {
         const allCommands = [...ownerOnlyCommands, ...regularCommands];
-        await rest.put(Routes.applicationGuildCommands(this.client.config.applicationID, this.client.config.supportGuild), { body: allCommands });
+        await rest.put(Routes.applicationGuildCommands(this.client.config.APPLICATION_ID, this.client.config.SUPPORT_GUILD), { body: allCommands });
         console.log(
           `\u001b[37m\u001b[1mLoaded\u001b[22m \u001b[31m\u001b[1m${
             ownerOnlyCommands.length + regularCommands.length
@@ -136,7 +136,7 @@ export const Util = class Util {
         );
       } else {
         if (ownerOnlyCommands) {
-          await rest.put(Routes.applicationGuildCommands(this.client.config.applicationID, this.client.config.supportGuild), {
+          await rest.put(Routes.applicationGuildCommands(this.client.config.APPLICATION_ID, this.client.config.SUPPORT_GUILD), {
             body: ownerOnlyCommands
           });
           console.log(
@@ -145,7 +145,7 @@ export const Util = class Util {
         }
 
         if (regularCommands) {
-          await rest.put(Routes.applicationCommands(this.client.config.applicationID), { body: regularCommands });
+          await rest.put(Routes.applicationCommands(this.client.config.APPLICATION_ID), { body: regularCommands });
           console.log(
             `\u001b[37m\u001b[1mLoaded\u001b[22m \u001b[31m\u001b[1m${regularCommands.length}\u001b[22m \u001b[37m\u001b[1mSlash commands!\u001b[22m`
           );

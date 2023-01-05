@@ -47,13 +47,13 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (b.customId === 'yes') {
         const embed = new EmbedBuilder()
-          .setColor(this.client.utils.color(this.client.guilds.cache.get(this.client.config.supportGuild).members.me.displayHexColor))
+          .setColor(this.client.utils.color(this.client.guilds.cache.get(this.client.config.SUPPORT_GUILD).members.me.displayHexColor))
           .setTitle('Suggestion')
           .setDescription(`**◎ User: <@${interaction.user.id}> - **\`${interaction.user.tag}\`\n**Suggestion:** ${sArgs}`)
           .setFooter({ text: `${interaction.guild.name} - ${interaction.guild.id}` });
         this.client.guilds.cache
-          .get(this.client.config.supportGuild)
-          .channels.cache.get(this.client.config.suggestChan)
+          .get(this.client.config.SUPPORT_GUILD)
+          .channels.cache.get(this.client.config.SUGGEST_CHAN)
           .send({ embeds: [embed] });
 
         const loggedEmbed = new EmbedBuilder()

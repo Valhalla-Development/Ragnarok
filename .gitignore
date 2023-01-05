@@ -10,7 +10,7 @@ Storage/DB/db.sqlite-wal
 Storage/lavalink/logs
 
 # Config File
-config.json
+.env
 
 # Irritating file create by Mac
 .DS_Store

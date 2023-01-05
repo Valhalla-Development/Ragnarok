@@ -40,14 +40,14 @@ export const SlashCommandF = class extends SlashCommand {
     let imdbRt;
 
     // Define keys
-    const { traktKey } = this.client.config;
-    const { traktSecret } = this.client.config;
-    const { fanartKey } = this.client.config;
+    const { TRAKT_KEY } = this.client.config;
+    const { TRAKT_SECRET } = this.client.config;
+    const { FANART_KEY } = this.client.config;
 
     // Define the Trakt client
     const trakt = new Trakt({
-      client_id: traktKey,
-      client_secret: traktSecret
+      client_id: TRAKT_KEY,
+      client_secret: TRAKT_SECRET
     });
 
     // Define the getTrakt function
@@ -80,7 +80,7 @@ export const SlashCommandF = class extends SlashCommand {
           if (argsType === 'movie') {
             // If the type of content is a movie
             // Fetch the artwork
-            const artwork = await fetch(`http://webservice.fanart.tv/v3/movies/${info[0].movie.ids.tmdb}?api_key=${fanartKey}`);
+            const artwork = await fetch(`http://webservice.fanart.tv/v3/movies/${info[0].movie.ids.tmdb}?api_key=${FANART_KEY}`);
             const fanartData = await artwork.json();
 
             // Set the fanartData
@@ -102,7 +102,7 @@ export const SlashCommandF = class extends SlashCommand {
 
             // Fetch IMDB rating
             if (info[0].movie.ids.imdb) {
-              await imdbFetch(info[0].movie.ids.imdb);
+              // await imdbFetch(info[0].movie.ids.imdb);
             }
 
             const getTraktEmbed = new EmbedBuilder()
@@ -131,7 +131,7 @@ export const SlashCommandF = class extends SlashCommand {
           // If the type of content is a movie
           if (argsType === 'show') {
             // Fetch the artwork
-            fetch(`http://webservice.fanart.tv/v3/tv/${info[0].show.ids.tvdb}?api_key=${fanartKey}`).then(async (res) => {
+            fetch(`http://webservice.fanart.tv/v3/tv/${info[0].show.ids.tvdb}?api_key=${FANART_KEY}`).then(async (res) => {
               const fanartData = await res.json();
 
               // Set the fanartData
@@ -153,7 +153,7 @@ export const SlashCommandF = class extends SlashCommand {
 
               // Fetch IMDB rating
               if (info[0].show.ids.imdb) {
-                await imdbFetch(info[0].show.ids.imdb);
+                // await imdbFetch(info[0].show.ids.imdb);
               }
 
               const getTraktEmbed = new EmbedBuilder()
@@ -194,7 +194,7 @@ export const SlashCommandF = class extends SlashCommand {
           // If the type of content is a movie
           if (argsType === 'movie') {
             // Fetch the artwork
-            const artwork = await fetch(`http://webservice.fanart.tv/v3/movies/${info[0].movie.ids.tmdb}?api_key=${fanartKey}`);
+            const artwork = await fetch(`http://webservice.fanart.tv/v3/movies/${info[0].movie.ids.tmdb}?api_key=${FANART_KEY}`);
             const fanartData = await artwork.json();
 
             // Set the fanartData
@@ -216,7 +216,7 @@ export const SlashCommandF = class extends SlashCommand {
 
             // Fetch IMDB rating
             if (info[0].movie.ids.imdb) {
-              await imdbFetch(info[0].movie.ids.imdb);
+              // await imdbFetch(info[0].movie.ids.imdb);
             }
 
             const getTraktEmbed = new EmbedBuilder()
@@ -252,7 +252,7 @@ export const SlashCommandF = class extends SlashCommand {
       getTrakt(args, 'show')
         .then(async (info) => {
           // Fetch the artwork
-          fetch(`http://webservice.fanart.tv/v3/tv/${info[0].show.ids.tvdb}?api_key=${fanartKey}`).then(async (res) => {
+          fetch(`http://webservice.fanart.tv/v3/tv/${info[0].show.ids.tvdb}?api_key=${FANART_KEY}`).then(async (res) => {
             const fanartData = await res.json();
 
             // Set the fanartData
@@ -274,7 +274,7 @@ export const SlashCommandF = class extends SlashCommand {
 
             // Fetch IMDB rating
             if (info[0].show.ids.imdb) {
-              await imdbFetch(info[0].show.ids.imdb);
+              // await imdbFetch(info[0].show.ids.imdb);
             }
 
             const getTraktEmbed = new EmbedBuilder()

@@ -1,6 +1,8 @@
 import RagnarokClient from './Structures/RagnarokClient.js';
 
-import * as config from '../config.json' assert { type: 'json' };
+import 'dotenv/config';
 
-const client = new RagnarokClient(config.default);
+const config = process.env;
+
+const client = new RagnarokClient(config);
 client.start();

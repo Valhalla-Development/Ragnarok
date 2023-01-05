@@ -37,7 +37,7 @@ export const RagnarokClient = class RagnarokClient extends Client {
 
     this.utils = new Util(this);
 
-    this.owners = options.ownerID;
+    this.owners = options.OWNER_ID;
 
     this.config = options;
 
@@ -263,14 +263,15 @@ export const RagnarokClient = class RagnarokClient extends Client {
 
     if (typeof options !== 'object') throw new TypeError(invalidOptionsTypeError);
 
-    if (!options.token) throw new Error(missingTokenError);
-    this.token = options.token;
+    if (!options.TOKEN) throw new Error(missingTokenError);
+    this.token = options.TOKEN;
 
-    if (options.logging !== true && options.logging !== false) throw new Error(invalidLoggingValueError);
-    this.logging = options.logging;
+    if (options.LOGGING !== 'true' && options.LOGGING !== 'false') throw new Error(invalidLoggingValueError);
+    this.logging = options.LOGGING;
 
-    if (!options.defaultPerms) throw new Error(missingDefaultPermsError);
-    this.defaultPerms = new PermissionsBitField(options.defaultPerms).freeze();
+    if (!options.DEFAULT_PERMS) throw new Error(missingDefaultPermsError);
+    const defaultPerms = options.DEFAULT_PERMS.split(',');
+    this.defaultPerms = new PermissionsBitField(defaultPerms).freeze();
   }
 
   async start(token = this.token) {
