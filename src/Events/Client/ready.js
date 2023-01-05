@@ -344,6 +344,13 @@ export const EventF = class extends Event {
             db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
           }
 
+          const botHasPermission = guild.members.me.permissions.has('BanMembers');
+
+          if (!botHasPermission) {
+            db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+            return;
+          }
+
           if (Date.now() > r.endtime) {
             const embed = new EmbedBuilder()
               .setThumbnail(this.client.user.displayAvatarURL())
