@@ -150,6 +150,12 @@ export const EventF = class extends Event {
       const myRole = member.guild.roles.cache.find((role) => role.id === autorole);
       if (!myRole) return;
 
+      const botHasPermission = member.guild.members.me.permissions.has('ManageRoles');
+      if (!botHasPermission) {
+        db.prepare('DELETE FROM autorole WHERE guildid = ?').run(member.guild.id);
+        return;
+      }
+
       member.roles.add(myRole);
     }
     autoRole();
