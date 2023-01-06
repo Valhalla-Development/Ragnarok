@@ -359,39 +359,9 @@ export const RagnarokDashboard = class RagnarokDashboard {
               .setDescription('Build your own Welcome Embed, and send it to a specified channel!')
               .setType(
                 DBD.formTypes.embedBuilder({
-                  username: null,
-                  avatarURL: null,
-                  defaultJson: {
-                    content: '',
-                    embed: {
-                      timestamp: '',
-                      url: '',
-                      description: '',
-                      author: {
-                        name: '',
-                        url: '',
-                        icon_url: ''
-                      },
-                      image: {
-                        url: ''
-                      },
-                      footer: {
-                        text: '',
-                        icon_url: ''
-                      },
-                      fields: [
-                        {
-                          name: '',
-                          value: ''
-                        },
-                        {
-                          name: '',
-                          value: '',
-                          inline: false
-                        }
-                      ]
-                    }
-                  }
+                  username: 'Ragnarok#1948',
+                  avatarURL: 'https://cdn.discordapp.com/avatars/508756879564865539/cf3b93aaee0351708a4f65593e6fe6b4.webp',
+                  defaultJson: {}
                 })
               )
           )
