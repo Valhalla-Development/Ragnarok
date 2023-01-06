@@ -3,6 +3,9 @@
 import DBD from 'discord-dashboard';
 import SoftUI from 'dbd-soft-ui';
 import si from 'systeminformation';
+import FileStore from 'session-file-store';
+import session from 'express-session';
+
 import * as packageFile from '../../package.json' assert { type: 'json' };
 
 const { version } = packageFile.default;
@@ -13,8 +16,9 @@ export const RagnarokDashboard = class RagnarokDashboard {
   }
 
   async dashboard(client) {
+    const filestorage = FileStore(session);
     const Handler = new DBD.Handler();
-    //console.log(await Handler.fetch('495602800802398212', 'birthday'));
+    // console.log(await Handler.fetch('495602800802398212', 'birthday'));
 
     // Stats
     async function cpuUsage() {
@@ -69,7 +73,7 @@ export const RagnarokDashboard = class RagnarokDashboard {
       }
 
       const arr = [];
-      let usage = '[ ';
+      let usage = '';
       if (command?.options?.options) {
         command.options.options.forEach((cmd, index) => {
           usage += cmd.name;
@@ -77,19 +81,18 @@ export const RagnarokDashboard = class RagnarokDashboard {
             usage += ' | ';
           }
         });
-        usage += ' ]';
         arr.push({
           name: command.name,
           usage
         });
       }
 
-      const commandUsage = arr.find((obj) => obj.name === command.name)?.usage || 'N/A';
+      const commandUsage = arr.find((obj) => obj.name === command.name)?.usage || '';
 
       // Add the command to the list of the appropriate category
       commandCategory.list.push({
-        commandName: `/${command.name}`,
-        commandUsage: commandUsage,
+        commandName: command.name,
+        commandUsage,
         commandDescription: command.description
       });
     });
@@ -99,8 +102,24 @@ export const RagnarokDashboard = class RagnarokDashboard {
 
     const Dashboard = new DBD.Dashboard({
       acceptPrivacyPolicy: true,
+      sessionSaveSession: new filestorage({ logFn: function () {} }),
+      minimizedConsoleLogs: true,
+      invite: {
+        clientId: client.config.DISCORD_CLIENT_ID,
+        scopes: ['bot'],
+        permissions: 415306870006,
+        redirectUri: client.config.DBD_REDIRECT_URI
+        // otherParams: (String = '')
+      },
+      supportServer: {
+        slash: '/support-server',
+        inviteUrl: 'https://discord.gg/Q3ZhdRJ'
+      },
       port: client.config.DBD_PORT,
-      client: { id: client.config.DISCORD_CLIENT_ID, secret: client.config.DISCORD_CLIENT_SECRET },
+      client: {
+        id: client.config.DISCORD_CLIENT_ID,
+        secret: client.config.DISCORD_CLIENT_SECRET
+      },
       redirectUri: `${client.config.DBD_DOMAIN}${client.config.DBD_REDIRECT_URI}`,
       domain: client.config.DBD_DOMAIN,
       ownerIDs: client.config.DBD_OWNER_IDS,
@@ -172,7 +191,7 @@ export const RagnarokDashboard = class RagnarokDashboard {
                 // category: 'Soft UI',
                 title: 'Ragnarok - Dashboard',
                 description: `On November 4, 2018, I began my journey of learning how to code by creating my own Discord bot, Ragnarok. Despite having no prior experience with programming, I was determined to make my bot a success.<br>Over the years, I have put in a lot of hard work and dedication to improve my coding skills and the functionality of Ragnarok.<br><br>Today, I am proud to say that Ragnarok has reached <b>version ${version}</b> and is in a stable state, allowing me to focus on expanding its features even further.<br>It has been an amazing journey, and I am grateful for the progress and growth I have experienced along the way.`
-                //footer: 'Learn More'
+                // footer: 'Learn More'
               },
               feedsTitle: 'Feeds',
               graphTitle: 'Graphs'
@@ -234,7 +253,7 @@ export const RagnarokDashboard = class RagnarokDashboard {
                 }
               },
               preloader: {
-                //text: 'Page is loading...'
+                // text: 'Page is loading...'
               },
               premium: {
                 title: 'Want more from Ragnarok?',
@@ -328,7 +347,55 @@ export const RagnarokDashboard = class RagnarokDashboard {
         },
         commands
       }),
-      settings: []
+      settings: [
+        new Handler.Category()
+          .setId('mod')
+          .setName('Moderation')
+          .setDescription('Easily moderate your community with commands such as ban, kick, and poll, among other useful options.')
+          .addOptions(
+            new Handler.Option()
+              .setId('embedCreator')
+              .setName('Embed Creator')
+              .setDescription('Build your own Welcome Embed, and send it to a specified channel!')
+              .setType(
+                DBD.formTypes.embedBuilder({
+                  username: null,
+                  avatarURL: null,
+                  defaultJson: {
+                    content: '',
+                    embed: {
+                      timestamp: '',
+                      url: '',
+                      description: '',
+                      author: {
+                        name: '',
+                        url: '',
+                        icon_url: ''
+                      },
+                      image: {
+                        url: ''
+                      },
+                      footer: {
+                        text: '',
+                        icon_url: ''
+                      },
+                      fields: [
+                        {
+                          name: '',
+                          value: ''
+                        },
+                        {
+                          name: '',
+                          value: '',
+                          inline: false
+                        }
+                      ]
+                    }
+                  }
+                })
+              )
+          )
+      ]
     });
     Dashboard.init();
 
@@ -342,7 +409,7 @@ export const RagnarokDashboard = class RagnarokDashboard {
 
 <h2>Log Files</h2>
 
-<p>Ragnarok follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this and a part of hosting services' analytics. The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of the information is for analyzing trends, administering the site, tracking users' movement on the website, and gathering demographic information. Our Privacy Policy was created with the help of the <a href="https://www.privacypolicygenerator.org">Privacy Policy Generator</a>.</p>
+<p>Ragnarok follows a standard procedure of using log files. These files log visitors when they visit websites. All hosting companies do this and a part of hosting services' analytics. The information collected by log files include internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable. The purpose of the information is for analyzing trends, administering the site, tracking users' movement on the website, and gathering demographic information.</p>
 
 
 
