@@ -5,7 +5,7 @@ import SoftUI from 'dbd-soft-ui';
 import si from 'systeminformation';
 import FileStore from 'session-file-store';
 import session from 'express-session';
-
+import TEMPEMBED from '../DashboardCommands/Embed.js';
 import * as packageFile from '../../package.json' assert { type: 'json' };
 
 const { version } = packageFile.default;
@@ -347,25 +347,7 @@ export const RagnarokDashboard = class RagnarokDashboard {
         },
         commands
       }),
-      settings: [
-        new Handler.Category()
-          .setId('mod')
-          .setName('Moderation')
-          .setDescription('Easily moderate your community with commands such as ban, kick, and poll, among other useful options.')
-          .addOptions(
-            new Handler.Option()
-              .setId('embedCreator')
-              .setName('Embed Creator')
-              .setDescription('Build your own Welcome Embed, and send it to a specified channel!')
-              .setType(
-                DBD.formTypes.embedBuilder({
-                  username: 'Ragnarok#1948',
-                  avatarURL: 'https://cdn.discordapp.com/avatars/508756879564865539/cf3b93aaee0351708a4f65593e6fe6b4.webp',
-                  defaultJson: {}
-                })
-              )
-          )
-      ]
+      settings: [TEMPEMBED(client)]
     });
     Dashboard.init();
 
