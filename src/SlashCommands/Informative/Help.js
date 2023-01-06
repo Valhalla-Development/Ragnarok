@@ -31,7 +31,7 @@ export const SlashCommandF = class extends SlashCommand {
     const buttonInv = new ButtonBuilder()
       .setStyle(ButtonStyle.Link)
       .setLabel('Invite Me')
-      .setURL('https://discordapp.com/oauth2/authorize?client_id=508756879564865539&scope=bot%20applications.commands&permissions=1514550062326');
+      .setURL('https://discordapp.com/oauth2/authorize?client_id=508756879564865539&scope=bot%20applications.commands&permissions=415306870006');
     const buttonSupp = new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel('Support Server').setURL('https://discord.gg/Q3ZhdRJ');
     const buttonPizza = new ButtonBuilder()
       .setStyle(ButtonStyle.Link)
@@ -73,7 +73,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         embed.spliceFields(0, 1);
-        embed.addFields({ name: '**Help - Economy**', value: `\`${categories.join('`, `')}\`` });
+        embed.addFields({ name: '**Help - Economy**', value: `\`${Array.from(categories).join('`, `')}\`` });
 
         const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonInfo, buttonMod);
         const row2New = new ActionRowBuilder().addComponents(buttonInv, buttonSupp, buttonPizza);
@@ -93,7 +93,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         embed.spliceFields(0, 1);
-        embed.addFields({ name: '**Help - Fun**', value: `\`${categories.join('`, `')}\`` });
+        embed.addFields({ name: '**Help - Fun**', value: `\`${Array.from(categories).join('`, `')}\`` });
 
         const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonInfo, buttonMod);
         const row2New = new ActionRowBuilder().addComponents(buttonInv, buttonSupp, buttonPizza);
@@ -113,7 +113,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         embed.spliceFields(0, 1);
-        embed.addFields({ name: '**Help - Informative**', value: `\`${categories.join('`, `')}\`` });
+        embed.addFields({ name: '**Help - Informative**', value: `\`${Array.from(categories).join('`, `')}\`` });
 
         const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonInfo, buttonMod);
         const row2New = new ActionRowBuilder().addComponents(buttonInv, buttonSupp, buttonPizza);
@@ -133,7 +133,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         embed.spliceFields(0, 1);
-        embed.addFields({ name: '**Help - Moderation**', value: `\`${categories.join('`, `')}\`` });
+        embed.addFields({ name: '**Help - Moderation**', value: `\`${Array.from(categories).join('`, `')}\`` });
 
         const rowNew = new ActionRowBuilder().addComponents(buttonHome, buttonEco, buttonFun, buttonInfo, buttonMod);
         const row2New = new ActionRowBuilder().addComponents(buttonInv, buttonSupp, buttonPizza);
