@@ -4,6 +4,7 @@
 /* eslint-disable no-restricted-syntax */
 import { EmbedBuilder, ChannelType, codeBlock } from 'discord.js';
 import DBD from 'discord-dashboard';
+import validator from 'discord-embed-validator';
 
 const Handler = new DBD.Handler();
 
@@ -37,14 +38,23 @@ export default (client) => {
   };
 
   embedEmbed.setNew = async ({ guild, user, newData }) => {
+    const modifiedData = { ...newData };
     try {
-      if (!newData || Object.keys(newData).length === 0) {
+      if (!modifiedData || Object.keys(modifiedData).length === 0) {
         return { error: 'Please save a valid Embed' };
       }
+      if (modifiedData.embed) {
+        const result = validator.validate(removeEmptyValues(modifiedData.embed));
+        if (result.error) {
+          console.log(removeEmptyValues(modifiedData.embed));
+          return { error: result.error.details[0]?.message };
+        }
+        modifiedData.embed = removeEmptyValues(modifiedData.embed);
+      }
 
-      newDataValues.str = newData;
+      newDataValues.str = modifiedData;
 
-      if (newDataValues.channel) {
+      if (newDataValues.channel && newDataValues.str) {
         sendEmbed(newDataValues.channel, newDataValues.str);
       }
     } catch (e) {
@@ -58,11 +68,7 @@ export default (client) => {
     try {
       newDataValues.channel = newData;
 
-      if (newDataValues.str && newDataValues.channel) {
-        if (Object.keys(newDataValues.str.embed).length === 0) {
-          return { error: 'Please save a valid Embed' };
-        }
-
+      if (newDataValues.channel && newDataValues.str) {
         sendEmbed(newDataValues.channel, newDataValues.str);
       }
     } catch (e) {
@@ -108,6 +114,34 @@ export default (client) => {
     }
 
     return output;
+  }
+
+  function removeEmptyValues(obj) {
+    const newObj = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (Array.isArray(value)) {
+        const newArray = value.map((item) => {
+          if (typeof item === 'object') {
+            return removeEmptyValues(item);
+          }
+          return item;
+        });
+        const filteredArray = newArray.filter((item) => Object.keys(item).length > 0);
+        if (filteredArray.length > 0) {
+          newObj[key] = filteredArray;
+        }
+      } else if (value !== '') {
+        if (typeof value === 'object') {
+          const nestedObj = removeEmptyValues(value);
+          if (Object.keys(nestedObj).length > 0) {
+            newObj[key] = nestedObj;
+          }
+        } else {
+          newObj[key] = value;
+        }
+      }
+    }
+    return newObj;
   }
 
   // Error function for notifiers
