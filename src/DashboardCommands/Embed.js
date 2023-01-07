@@ -1,5 +1,8 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-inner-declarations */
 /* eslint-disable no-restricted-syntax */
-import { EmbedBuilder, ChannelType } from 'discord.js';
+import { EmbedBuilder, ChannelType, codeBlock } from 'discord.js';
 import DBD from 'discord-dashboard';
 
 const Handler = new DBD.Handler();
@@ -28,23 +31,44 @@ export default (client) => {
     channel: null
   };
 
+  const sendEmbed = (channel, str) => {
+    const c = client.channels.cache.get(channel);
+    c.send(getOutput(str));
+  };
+
   embedEmbed.setNew = async ({ guild, user, newData }) => {
-    newDataValues.str = newData;
-    if (newDataValues.channel && newDataValues.str) {
-      const c = client.channels.cache.get(newDataValues.channel);
-      c.send(getOutput(newDataValues.str));
-    } else {
-      return { error: 'Please save both Embed, and Channel' };
+    try {
+      if (!newData || Object.keys(newData).length === 0) {
+        return { error: 'Please save a valid Embed' };
+      }
+
+      newDataValues.str = newData;
+
+      if (newDataValues.channel) {
+        sendEmbed(newDataValues.channel, newDataValues.str);
+      }
+    } catch (e) {
+      console.log(e);
+      sendError(client, e.stack);
+      return { error: 'You found a bug! Please contact an Administrator.' };
     }
   };
 
   embedChan.setNew = async ({ guild, user, newData }) => {
-    newDataValues.channel = newData;
-    if (newDataValues.channel && newDataValues.str) {
-      const c = client.channels.cache.get(newDataValues.channel);
-      c.send(getOutput(newDataValues.str));
-    } else {
-      return { error: 'Please save both Embed, and Channel' };
+    try {
+      newDataValues.channel = newData;
+
+      if (newDataValues.str && newDataValues.channel) {
+        if (Object.keys(newDataValues.str.embed).length === 0) {
+          return { error: 'Please save a valid Embed' };
+        }
+
+        sendEmbed(newDataValues.channel, newDataValues.str);
+      }
+    } catch (e) {
+      console.log(e);
+      sendError(client, e.stack);
+      return { error: 'You found a bug! Please contact an Administrator.' };
     }
   };
 
@@ -84,6 +108,33 @@ export default (client) => {
     }
 
     return output;
+  }
+
+  // Error function for notifiers
+  function sendError(cl, message) {
+    try {
+      const channel = cl.channels.cache.get('685973401772621843');
+      if (!channel) return;
+
+      const typeOfError = message.split(':')[0];
+      const fullError = message.replace(/^[^:]+:/, '').trimStart();
+      const timeOfError = `<t:${Math.floor(new Date().getTime() / 1000)}>`;
+      const fullString = `From: \`${typeOfError}\`\nTime: ${timeOfError}\n\nError:\n${codeBlock('js', fullError)}`;
+
+      function truncateDescription(description) {
+        const maxLength = 2048;
+        if (description.length > maxLength) {
+          const numTruncatedChars = description.length - maxLength;
+          return `${description.slice(0, maxLength)}... ${numTruncatedChars} more`;
+        }
+        return description;
+      }
+
+      const embed = new EmbedBuilder().setTitle('Dashboard Error').setDescription(truncateDescription(fullString));
+      channel.send({ embeds: [embed] });
+    } catch (e) {
+      console.log(e.stack);
+    }
   }
 
   return embedCat;
