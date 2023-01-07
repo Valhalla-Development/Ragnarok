@@ -27,19 +27,29 @@ export default (client) => {
     .setDescription('Pick a channel to send the embed to.')
     .setType(DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false));
 
-  const newDataValues = {
+  let newDataValues = {
     str: null,
-    channel: null
+    channel: null,
+    guild: null
   };
 
   const sendEmbed = (channel, str) => {
-    const c = client.channels.cache.get(channel);
+    const c = client.channels.cache.get(newDataValues.channel);
     c.send(getOutput(str));
   };
 
   embedEmbed.setNew = async ({ guild, user, newData }) => {
-    const modifiedData = { ...newData };
     try {
+      if (newDataValues.guild !== guild.id) {
+        newDataValues = {
+          str: null,
+          channel: null,
+          guild: null
+        };
+      }
+
+      const modifiedData = { ...newData };
+
       if (!modifiedData || Object.keys(modifiedData).length === 0) {
         return { error: 'Please save a valid Embed' };
       }
@@ -53,9 +63,10 @@ export default (client) => {
       }
 
       newDataValues.str = modifiedData;
+      newDataValues.guild = guild.id;
 
       if (newDataValues.channel && newDataValues.str) {
-        sendEmbed(newDataValues.channel, newDataValues.str);
+        sendEmbed(newDataValues.str); // THIS IS SENDING TO 2 DIFFERENT CHANNELS BECAUSE BOTH EVENTS HAVE SENDEMBED
       }
     } catch (e) {
       console.log(e);
@@ -66,10 +77,18 @@ export default (client) => {
 
   embedChan.setNew = async ({ guild, user, newData }) => {
     try {
+      if (newDataValues.guild !== guild.id) {
+        newDataValues = {
+          str: null,
+          channel: null,
+          guild: null
+        };
+      }
       newDataValues.channel = newData;
+      newDataValues.guild = guild.id;
 
       if (newDataValues.channel && newDataValues.str) {
-        sendEmbed(newDataValues.channel, newDataValues.str);
+        sendEmbed(newDataValues.str);
       }
     } catch (e) {
       console.log(e);
