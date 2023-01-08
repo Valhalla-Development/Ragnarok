@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-inner-declarations */
@@ -6,83 +7,92 @@ import { EmbedBuilder, ChannelType, codeBlock } from 'discord.js';
 import DBD from 'discord-dashboard';
 import validator from 'discord-embed-validator';
 
-const Handler = new DBD.Handler();
-
 export default (client) => {
-  const embedEmbed = new Handler.Option()
-    .setId('embedCreator')
-    .setName('Embed Creator')
-    .setDescription('Build your own Welcome Embed, and send it to a specified channel!')
-    .setType(
-      DBD.formTypes.embedBuilder({
-        username: 'Ragnarok#1948',
-        avatarURL: 'https://cdn.discordapp.com/avatars/508756879564865539/cf3b93aaee0351708a4f65593e6fe6b4.webp',
-        defaultJson: {}
-      })
-    );
-
-  const embedChan = new Handler.Option()
-    .setId('embedChannel')
-    .setName('Embed Channel')
-    .setDescription('Pick a channel to send the embed to.')
-    .setType(DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false));
-
-  const newDataValues = {
-    str: null,
-    channel: null
-  };
-
   const sendEmbed = (channel, str) => {
     const c = client.channels.cache.get(channel);
     c.send(getOutput(str));
   };
 
-  embedEmbed.setNew = async ({ guild, user, newData }) => {
-    const modifiedData = { ...newData };
-    try {
-      if (!modifiedData || Object.keys(modifiedData).length === 0) {
-        return { error: 'Please save a valid Embed' };
+  const Embed = {
+    categoryId: 'embedCreator',
+    categoryName: 'Embed Creator',
+    categoryDescription: 'Build your own Embed, and send it to a specified channel!',
+    getActualSet: async ({ guild }) => [
+      {
+        optionId: 'embed'
+      },
+      {
+        optionId: 'channel'
       }
-      if (modifiedData.embed) {
-        const result = validator.validate(removeEmptyValues(modifiedData.embed));
-        if (result.error) {
-          console.log(removeEmptyValues(modifiedData.embed));
-          return { error: result.error.details[0]?.message };
-        }
-        modifiedData.embed = removeEmptyValues(modifiedData.embed);
+    ],
+    setNew: async ({ guild, user, data }) => {
+      if (
+        data.some((option) => option.optionId === 'embed' && Object.keys(option.data).length > 0) &&
+        data.some((option) => option.optionId === 'channel' && option.data)
+      ) {
+        const [returnedChannel, returnedEmbed, error] = forThingyLoop(data);
+        if (error) return error;
+        sendEmbed(returnedChannel, returnedEmbed);
       }
-
-      newDataValues.str = modifiedData;
-
-      if (newDataValues.channel && newDataValues.str) {
-        sendEmbed(newDataValues.channel, newDataValues.str);
+      const [returnedChannel, returnedEmbed, error] = forThingyLoop(data);
+      if (error) return error;
+      if (!returnedChannel && Object.keys(returnedEmbed).length <= 0) {
+        return { error: 'Please save a valid Embed, and Channel.' };
       }
-    } catch (e) {
-      console.log(e);
-      sendError(client, e.stack);
-      return { error: 'You found a bug! Please contact an Administrator.' };
-    }
+      if (!returnedChannel) {
+        return { error: 'Please save a valid Channel.' };
+      }
+      if (Object.keys(returnedEmbed).length <= 0) {
+        return { error: 'Please save a valid Embed.' };
+      }
+    },
+    categoryOptionsList: [
+      {
+        optionId: 'embed',
+        optionName: 'Embed Creator',
+        optionDescription: 'Build your own Embed, and send it to a specified channel!',
+        optionType: DBD.formTypes.embedBuilder({
+          username: 'Ragnarok',
+          avatarURL: 'https://cdn.discordapp.com/avatars/508756879564865539/cf3b93aaee0351708a4f65593e6fe6b4.webp',
+          defaultJson: {}
+        })
+      },
+      {
+        optionId: 'channel',
+        optionName: 'Embed Channel',
+        optionDescription: 'Pick a channel to send the embed to.',
+        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false)
+      }
+    ]
   };
 
-  embedChan.setNew = async ({ guild, user, newData }) => {
-    try {
-      newDataValues.channel = newData;
+  function forThingyLoop(data) {
+    let channel;
+    let embed;
+    let error;
 
-      if (newDataValues.channel && newDataValues.str) {
-        sendEmbed(newDataValues.channel, newDataValues.str);
+    for (const item of data) {
+      let result;
+      switch (item.optionId) {
+        case 'embed':
+          embed = removeEmptyValues(item.data);
+          if (embed.embed) {
+            result = validator.validate(removeEmptyValues(embed.embed));
+            if (result.error) {
+              error = { error: result.error.details[0]?.message };
+              return [channel, embed, error];
+            }
+          }
+
+          break;
+        case 'channel':
+          channel = item.data;
+          break;
       }
-    } catch (e) {
-      console.log(e);
-      sendError(client, e.stack);
-      return { error: 'You found a bug! Please contact an Administrator.' };
     }
-  };
 
-  const embedCat = new Handler.Category()
-    .setId('embed')
-    .setName('Embed Creation')
-    .setDescription('Easily create an embed and send it to a specified channel!')
-    .addOptions(embedEmbed, embedChan);
+    return [channel, embed, error];
+  }
 
   function getOutput(str) {
     // create a copy of str
@@ -171,5 +181,5 @@ export default (client) => {
     }
   }
 
-  return embedCat;
+  return Embed;
 };
