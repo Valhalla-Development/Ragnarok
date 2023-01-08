@@ -1,15 +1,17 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-restricted-syntax */
 import DBD from 'discord-dashboard';
-import SoftUI from 'dbd-soft-ui';
 import si from 'systeminformation';
 import FileStore from 'session-file-store';
 import session from 'express-session';
-import TEMPEMBED from '../DashboardCommands/Embed.js';
-import * as packageFile from '../../package.json' assert { type: 'json' };
 import DarkDashboard from 'dbd-dark-dashboard';
+import { promisify } from 'util';
+import glob from 'glob';
+import url from 'url';
+import * as packageFile from '../../package.json' assert { type: 'json' };
 const { version } = packageFile.default;
-import { EmbedBuilder, ChannelType, codeBlock } from 'discord.js';
+
+const globPromise = promisify(glob);
 
 export const RagnarokDashboard = class RagnarokDashboard {
   constructor(client) {
@@ -17,6 +19,18 @@ export const RagnarokDashboard = class RagnarokDashboard {
   }
 
   async dashboard(client) {
+    async function loadCommands(cl) {
+      const directory = url.fileURLToPath(new URL('..', import.meta.url));
+      const settings = [];
+      return globPromise(`${directory}DashboardCommands/*.js`).then(async (cmds) => {
+        for (const cmdFile of cmds) {
+          const File = await import(cmdFile);
+          settings.push(File.default(cl));
+        }
+        return settings;
+      });
+    }
+
     const filestorage = FileStore(session);
     const Handler = new DBD.Handler();
     // console.log(await Handler.fetch('495602800802398212', 'birthday'));
@@ -104,7 +118,7 @@ export const RagnarokDashboard = class RagnarokDashboard {
     const Dashboard = new DBD.Dashboard({
       useCategorySet: true,
       acceptPrivacyPolicy: true,
-      sessionSaveSession: new filestorage({ logFn: function () {} }),
+      sessionSaveSession: new filestorage({ logFn() {} }),
       minimizedConsoleLogs: true,
       invite: {
         clientId: client.config.DISCORD_CLIENT_ID,
@@ -148,27 +162,28 @@ export const RagnarokDashboard = class RagnarokDashboard {
         index: {
           card: {
             category: "Ragnarok's Panel - WIP",
-            title: `This is a temp theme!<br>The theme I would prefer currently has some missing variables for my settings config.<br><br>Once it has been updated, this page will be updated.`
-            //image: 'https://i.imgur.com/axnP93g.png'
-            //footer: 'Footer'
+            title:
+              'This is a temp theme!<br>The theme I would prefer currently has some missing variables for my settings config.<br><br>Once it has been updated, this page will be updated.'
+            // image: 'https://i.imgur.com/axnP93g.png'
+            // footer: 'Footer'
           },
           information: {
-            //category: 'Category',
-            //title: 'Information',
-            //description: `This bot and panel is currently a work in progress so contact me if you find any issues on discord.`,
-            //footer: 'Footer'
+            // category: 'Category',
+            // title: 'Information',
+            // description: `This bot and panel is currently a work in progress so contact me if you find any issues on discord.`,
+            // footer: 'Footer'
           },
           feeds: {
-            //category: 'Category',
-            //title: 'Information',
-            //description: `This bot and panel is currently a work in progress so contact me if you find any issues on discord.`,
-            //footer: 'Footer'
+            // category: 'Category',
+            // title: 'Information',
+            // description: `This bot and panel is currently a work in progress so contact me if you find any issues on discord.`,
+            // footer: 'Footer'
           }
         },
 
         commands
       }),
-      settings: [TEMPEMBED(client)]
+      settings: await loadCommands(client)
     });
     Dashboard.init();
 
