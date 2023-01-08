@@ -21,6 +21,7 @@
     "cron": "^2.1.0",
     "cryptocurrencies": "^7.0.0",
     "custom-bj": "^4.0.3",
+    "dbd-dark-dashboard": "^1.6.61",
     "dbd-soft-ui": "^1.5.52-beta.1",
     "discord-dashboard": "^2.3.6",
     "discord-embed-validator": "^1.0.1",

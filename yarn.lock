@@ -1381,6 +1381,14 @@ data-uri-to-buffer@^4.0.0:
   resolved "https://registry.yarnpkg.com/data-uri-to-buffer/-/data-uri-to-buffer-4.0.0.tgz#b5db46aea50f6176428ac05b73be39a57701a64b"
   integrity sha512-Vr3mLBA8qWmcuschSLAOogKgQ/Jwxulv3RNE4FXnYWRGujzrRWQI4m12fQqRkwX06C0KanhLr4hK+GydchZsaA==
 
+dbd-dark-dashboard@^1.6.61:
+  version "1.6.61"
+  resolved "https://registry.yarnpkg.com/dbd-dark-dashboard/-/dbd-dark-dashboard-1.6.61.tgz#47306fea457ad2d0e192e3205b23574b3a9b66bb"
+  integrity sha512-mWoQgcKibGzDKs02+wwc/5LKIoaQsd6/LnLulGpYg6jjNwEPUFz51fAhRcZHmH8TI/l6eyMbRHUw1kwadokskg==
+  dependencies:
+    discord-dashboard "*"
+    node-fetch "2.6.7"
+
 dbd-soft-ui@^1.5.52-beta.1:
   version "1.5.52-beta.1"
   resolved "https://registry.yarnpkg.com/dbd-soft-ui/-/dbd-soft-ui-1.5.52-beta.1.tgz#f3ce446e1f2535e3fdafcb32e9ef1ffd8307ae49"
@@ -1518,31 +1526,7 @@ discord-dashboard-pp-system@^1.0.2:
   dependencies:
     uuid "*"
 
-discord-dashboard@^2.3.39:
-  version "2.3.492"
-  resolved "https://registry.yarnpkg.com/discord-dashboard/-/discord-dashboard-2.3.492.tgz#61199bd4052b9cfeb4f4ede5ba0850c00241bdd5"
-  integrity sha512-9Llv5DR1TdP1rWcmN7qQ2jSENXEzV5BrGJiYoYgAUvKHIz8EOxotGrmgVWXbvGB3A1g1aztOowlgiOOwCorEBw==
-  dependencies:
-    assistants-safe-storage "^1.0.0"
-    body-parser "^1.20.0"
-    colors "^1.4.0"
-    cookie-parser "^1.4.6"
-    discord-dashboard "^2.3.39"
-    discord-dashboard-pp-system "^1.0.2"
-    discord-oauth2 "^2.10.0"
-    discord.js "*"
-    ejs "^3.1.8"
-    express "^4.17.3"
-    express-partials "^0.3.0"
-    express-rate-limit "^6.4.0"
-    express-session "^1.17.3"
-    https "^1.0.0"
-    node-fetch "^2.6.7"
-    readline-sync "^1.4.10"
-    socket.io "^4.5.1"
-    uuid "^8.3.2"
-
-discord-dashboard@^2.3.6:
+discord-dashboard@*, discord-dashboard@^2.3.6:
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/discord-dashboard/-/discord-dashboard-2.3.6.tgz#2fa3d4b1e3039aa834e9b5c57be178e24adb77b5"
   integrity sha512-Lz+07Pi/wi1edqQ9cz1OQUMkPVt1QzGhmLb5ZDBEEBg+2wbBR/se7/7xVgrfI1lKQMue18xMy1HrxhKlXOhMUw==
@@ -1562,6 +1546,30 @@ discord-dashboard@^2.3.6:
     express-session "^1.17.3"
     https "^1.0.0"
     keyv "^4.5.2"
+    node-fetch "^2.6.7"
+    readline-sync "^1.4.10"
+    socket.io "^4.5.1"
+    uuid "^8.3.2"
+
+discord-dashboard@^2.3.39:
+  version "2.3.492"
+  resolved "https://registry.yarnpkg.com/discord-dashboard/-/discord-dashboard-2.3.492.tgz#61199bd4052b9cfeb4f4ede5ba0850c00241bdd5"
+  integrity sha512-9Llv5DR1TdP1rWcmN7qQ2jSENXEzV5BrGJiYoYgAUvKHIz8EOxotGrmgVWXbvGB3A1g1aztOowlgiOOwCorEBw==
+  dependencies:
+    assistants-safe-storage "^1.0.0"
+    body-parser "^1.20.0"
+    colors "^1.4.0"
+    cookie-parser "^1.4.6"
+    discord-dashboard "^2.3.39"
+    discord-dashboard-pp-system "^1.0.2"
+    discord-oauth2 "^2.10.0"
+    discord.js "*"
+    ejs "^3.1.8"
+    express "^4.17.3"
+    express-partials "^0.3.0"
+    express-rate-limit "^6.4.0"
+    express-session "^1.17.3"
+    https "^1.0.0"
     node-fetch "^2.6.7"
     readline-sync "^1.4.10"
     socket.io "^4.5.1"
