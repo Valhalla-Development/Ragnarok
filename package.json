@@ -1,6 +1,6 @@
 {
   "name": "ragnarok",
-  "version": "4.536",
+  "version": "5.000",
   "description": "A multi-purpose Discord bot.",
   "main": "src/index",
   "repository": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git",
@@ -36,6 +36,7 @@
     "imdb-light": "^1.1.5",
     "mathjs": "^11.5.0",
     "moment": "^2.29.4",
+    "mongoose": "^6.8.3",
     "ms": "^2.1.3",
     "nanoid": "^4.0.0",
     "node-fetch": "^3.3.0",
