@@ -278,6 +278,7 @@ export const RagnarokClient = class RagnarokClient extends Client {
     await this.utils.loadSlashCommands();
     await this.utils.loadEvents();
     await this.utils.loadFunctions();
+    await this.utils.loadMongoEvents();
     await this.utils.loadDashboard();
     await super.login(token);
   }
