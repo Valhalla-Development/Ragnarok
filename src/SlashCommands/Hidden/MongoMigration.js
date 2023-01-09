@@ -1,0 +1,481 @@
+/* eslint-disable no-await-in-loop */
+/* eslint-disable no-restricted-syntax */
+import mongoose from 'mongoose';
+import SQLite from 'better-sqlite3';
+import SlashCommand from '../../Structures/SlashCommand.js';
+
+import AdsProtection from '../../Mongo/Schemas/AdsProtection.js';
+import AFK from '../../Mongo/Schemas/AFK.js';
+import Announcement from '../../Mongo/Schemas/Announcement.js';
+import AntiScam from '../../Mongo/Schemas/AntiScam.js';
+import AutoRole from '../../Mongo/Schemas/AutoRole.js';
+import Balance from '../../Mongo/Schemas/Balance.js';
+import BirthdayConfig from '../../Mongo/Schemas/BirthdayConfig.js';
+import Birthdays from '../../Mongo/Schemas/Birthdays.js';
+import Dad from '../../Mongo/Schemas/Dad.js';
+import Hastebin from '../../Mongo/Schemas/Hastebin.js';
+import Level from '../../Mongo/Schemas/Level.js';
+import LevelConfig from '../../Mongo/Schemas/LevelConfig.js';
+import Logging from '../../Mongo/Schemas/Logging.js';
+import RoleMenu from '../../Mongo/Schemas/RoleMenu.js';
+import StarBoard from '../../Mongo/Schemas/StarBoard.js';
+import TempBan from '../../Mongo/Schemas/TempBan.js';
+import TicketConfig from '../../Mongo/Schemas/TicketConfig.js';
+import Tickets from '../../Mongo/Schemas/Tickets.js';
+import Welcome from '../../Mongo/Schemas/Welcome.js';
+
+export const SlashCommandF = class extends SlashCommand {
+  constructor(...args) {
+    super(...args, {
+      description: 'Migrate from better-sqlite3 to mongoose',
+      category: 'Hidden',
+      ownerOnly: true
+    });
+  }
+
+  async run() {
+    /*
+     * Steps to migrate, mark when done!
+
+     * 1: Create schemas for mongoose ✓
+     * 2: Migrate ANY and ALL code that refers to better-sqlite3 database (hint: I think it's findOneAndUpdate)
+     * 3: Run the migration script to a database called 'Ragnarok' - DON'T FORGET TO CHANGE .ENV TO 'Ragnarok'
+     * 4: Test that every call to mongoose works as expected! IMPORTANT!
+     * 5: Add a test command to VPS, to ensure it can reach mongo, you may need to add the VPS IP to mongo
+     * 6: Everything is now ready for production, so follow these:
+        * 6a: BACKUP EVERYTHING, leave database file as it will be easier to switch back
+        * 6b: Use migration script
+        * 6c: Make announcement, use ChatGPT to make it sound smart... Don't forget to say how long downtime is, migration script tells you at the bottom
+        * 6d: Stop Ragnarok
+        * 6e: Move new files
+        * 6f: Start Ragnarok
+        * 6g: Make a sacrifice to the Gods so everything works without issue
+        * 6h: Make announcement with ChatGPT again, ask to report any issues!
+     */
+
+    const db = new SQLite('./Storage/DB/db.sqlite');
+
+    const adsprot = await db.prepare('SELECT * FROM adsprot').all();
+    const afk = await db.prepare('SELECT * FROM afk').all();
+    const announcement = await db.prepare('SELECT * FROM announcement').all();
+    const antiscam = await db.prepare('SELECT * FROM antiscam').all();
+    const autorole = await db.prepare('SELECT * FROM autorole').all();
+    const balance = await db.prepare('SELECT * FROM balance').all();
+    const ban = await db.prepare('SELECT * FROM ban').all();
+    const birthdayConfig = await db.prepare('SELECT * FROM birthdayConfig').all();
+    const birthdays = await db.prepare('SELECT * FROM birthdays').all();
+    const dadbot = await db.prepare('SELECT * FROM dadbot').all();
+    const hastebin = await db.prepare('SELECT * FROM hastebin').all();
+    const level = await db.prepare('SELECT * FROM level').all();
+    const logging = await db.prepare('SELECT * FROM logging').all();
+    const rolemenu = await db.prepare('SELECT * FROM rolemenu').all();
+    const scores = await db.prepare('SELECT * FROM scores').all();
+    const setwelcome = await db.prepare('SELECT * FROM setwelcome').all();
+    const starboard = await db.prepare('SELECT * FROM starboard').all();
+    const ticketConfig = await db.prepare('SELECT * FROM ticketConfig').all();
+    const tickets = await db.prepare('SELECT * FROM tickets').all();
+
+    const totalLength =
+      adsprot.length +
+      afk.length +
+      announcement.length +
+      antiscam.length +
+      autorole.length +
+      balance.length +
+      ban.length +
+      birthdayConfig.length +
+      birthdays.length +
+      dadbot.length +
+      hastebin.length +
+      level.length +
+      logging.length +
+      rolemenu.length +
+      scores.length +
+      setwelcome.length +
+      starboard.length +
+      ticketConfig.length +
+      tickets.length;
+
+    const logProgress = async (name, item, i) => {
+      if (item.length > 1) {
+        console.log(`${name} ${i}/${item.length.toLocaleString('en')}`);
+      }
+    };
+
+    try {
+      const startTime = new Date();
+
+      (async () => {
+        if (adsprot.length) {
+          let i = 0;
+          for (const entry of adsprot) {
+            await new AdsProtection({
+              _id: mongoose.Types.ObjectId(),
+              guildId: entry.guildid,
+              status: entry.status === 'on'
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Ads Protection', adsprot, i, i);
+          }
+          console.log(`Ads Protection Finished Migrating ${adsprot.length.toLocaleString('en')} properties!`);
+        }
+
+        if (afk.length) {
+          let i = 0;
+          for (const entry of afk) {
+            await new AFK({
+              _id: mongoose.Types.ObjectId(),
+              idJoined: entry.id,
+              guildId: entry.guildid,
+              userId: entry.user,
+              reason: entry.reason
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('AFK', afk, i, i);
+          }
+          console.log(`AFK Finished Migrating ${adsprot.length.toLocaleString('en')} properties!`);
+        }
+
+        if (announcement.length) {
+          let i = 0;
+          for (const entry of announcement) {
+            await new Announcement({
+              _id: mongoose.Types.ObjectId(),
+              message: entry.msg
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Announcement', announcement, i);
+          }
+          console.log(`Announcement Finished Migrating ${announcement.length.toLocaleString('en')} properties!`);
+        }
+
+        if (antiscam.length) {
+          let i = 0;
+          for (const entry of antiscam) {
+            await new AntiScam({
+              _id: mongoose.Types.ObjectId(),
+              guildId: entry.guildid,
+              status: entry.status === 'on'
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('AntiScam', antiscam, i);
+          }
+          console.log(`AntiScam Finished Migrating ${antiscam.length.toLocaleString('en')} properties!`);
+        }
+
+        if (autorole.length) {
+          let i = 0;
+          for (const entry of autorole) {
+            await new AutoRole({
+              _id: mongoose.Types.ObjectId(),
+              guildId: entry.guildid,
+              role: entry.status === 'on'
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Autorole', autorole, i);
+          }
+          console.log(`Autorole Finished Migrating ${autorole.length.toLocaleString('en')} properties!`);
+        }
+
+        if (balance.length) {
+          let i = 0;
+          for (const entry of balance) {
+            await new Balance({
+              _id: mongoose.Types.ObjectId(),
+              idJoined: entry.id,
+              user: entry.user,
+              guildId: entry.guild,
+              hourly: entry.hourly,
+              daily: entry.daily,
+              weekly: entry.weekly,
+              monthly: entry.montly,
+              stealCool: entry.stealcool,
+              fishCool: entry.fishcool,
+              farmCool: entry.farmcool,
+              boosts: entry.boosts,
+              items: entry.items,
+              cash: entry.cash,
+              bank: entry.bank,
+              total: entry.total,
+              claimNewUser: entry.claimNewUser,
+              farmPlot: entry.farmPlot,
+              dmHarvest: entry.dmHarvest,
+              harvestedCrops: entry.harvestedCrops,
+              lottery: entry.lottery
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Balance', balance, i);
+          }
+          console.log(`Balance Finished Migrating ${balance.length.toLocaleString('en')} properties!`);
+        }
+
+        if (ban.length) {
+          let i = 0;
+          for (const entry of ban) {
+            await new TempBan({
+              _id: mongoose.Types.ObjectId(),
+              idJoined: entry.id,
+              guildId: entry.guildid,
+              userId: entry.userid,
+              endTime: entry.endtime,
+              channel: entry.channel,
+              username: entry.username
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Ban', ban, i);
+          }
+          console.log(`Ban Finished Migrating ${ban.length.toLocaleString('en')} properties!`);
+        }
+
+        if (birthdayConfig.length) {
+          let i = 0;
+          for (const entry of birthdayConfig) {
+            await new BirthdayConfig({
+              _id: mongoose.Types.ObjectId(),
+              guildId: entry.guildid,
+              channel: entry.channel,
+              role: entry.role
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Birthday Config', birthdayConfig, i);
+          }
+          console.log(`Birthday Config Finished Migrating ${birthdayConfig.length.toLocaleString('en')} properties!`);
+        }
+
+        if (birthdays.length) {
+          let i = 0;
+          for (const entry of birthdays) {
+            await new Birthdays({
+              _id: mongoose.Types.ObjectId(),
+              userId: entry.userid,
+              date: entry.birthday,
+              lastRun: entry.lastRun
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Birthdays', birthdays, i);
+          }
+          console.log(`Birthdays Finished Migrating ${birthdays.length.toLocaleString('en')} properties!`);
+        }
+
+        if (dadbot.length) {
+          let i = 0;
+          for (const entry of dadbot) {
+            await new Dad({
+              _id: mongoose.Types.ObjectId(),
+              guildId: entry.guildid,
+              status: entry.status === 'on'
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Dad', dadbot, i);
+          }
+          console.log(`Dad Finished Migrating ${dadbot.length.toLocaleString('en')} properties!`);
+        }
+
+        if (hastebin.length) {
+          let i = 0;
+          for (const entry of hastebin) {
+            await new Hastebin({
+              _id: mongoose.Types.ObjectId(),
+              guildId: entry.guildid,
+              status: entry.status === 'on'
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Hastebin', hastebin, i);
+          }
+          console.log(`Hastebin Finished Migrating ${hastebin.length.toLocaleString('en')} properties!`);
+        }
+
+        if (level.length) {
+          let i = 0;
+          for (const entry of level) {
+            await new LevelConfig({
+              _id: mongoose.Types.ObjectId(),
+              guildId: entry.guildid,
+              status: entry.status === 'killME'
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Autorole', autorole, i);
+          }
+          console.log(`Autorole Finished Migrating ${autorole.length.toLocaleString('en')} properties!`);
+        }
+
+        if (logging.length) {
+          let i = 0;
+          for (const entry of logging) {
+            await new Logging({
+              _id: mongoose.Types.ObjectId(),
+              guildId: entry.guildid,
+              channel: entry.channel
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Logging', logging, i);
+          }
+          console.log(`Logging Finished Migrating ${logging.length.toLocaleString('en')} properties!`);
+        }
+
+        if (rolemenu.length) {
+          let i = 0;
+          for (const entry of rolemenu) {
+            await new RoleMenu({
+              _id: mongoose.Types.ObjectId(),
+              guildId: entry.guildid,
+              roleMenuId: entry.activeRoleMenuID,
+              roleList: entry.roleList
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Rolemenu', rolemenu, i);
+          }
+          console.log(`Rolemenu Finished Migrating ${rolemenu.length.toLocaleString('en')} properties!`);
+        }
+
+        if (scores.length) {
+          let i = 0;
+          for (const entry of scores) {
+            await new Level({
+              _id: mongoose.Types.ObjectId(),
+              idJoined: entry.id,
+              userId: entry.user,
+              guildId: entry.guild,
+              xp: entry.points,
+              level: entry.level,
+              country: entry.country,
+              image: entry.image
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Scores', scores, i);
+          }
+          console.log(`Scores Finished Migrating ${scores.length.toLocaleString('en')} properties!`);
+        }
+
+        if (setwelcome.length) {
+          let i = 0;
+          for (const entry of setwelcome) {
+            await new Welcome({
+              _id: mongoose.Types.ObjectId(),
+              guildId: entry.guildid,
+              channel: entry.channel,
+              image: entry.image
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('SetWelcome', setwelcome, i);
+          }
+          console.log(`SetWelcome Finished Migrating ${setwelcome.length.toLocaleString('en')} properties!`);
+        }
+
+        if (starboard.length) {
+          let i = 0;
+          for (const entry of starboard) {
+            await new StarBoard({
+              _id: mongoose.Types.ObjectId(),
+              guildId: entry.guildid,
+              channel: entry.channel
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Starboard', starboard, i);
+          }
+          console.log(`Starboard Finished Migrating ${starboard.length.toLocaleString('en')} properties!`);
+        }
+
+        if (ticketConfig.length) {
+          let i = 0;
+          for (const entry of ticketConfig) {
+            await new TicketConfig({
+              _id: mongoose.Types.ObjectId(),
+              guildId: entry.guildid,
+              category: entry.category,
+              logChannel: entry.log,
+              role: entry.role,
+              embed: entry.ticketembed,
+              embedChannel: entry.ticketembedchan,
+              blacklist: entry.blacklist
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('TicketConfig', ticketConfig, i);
+          }
+          console.log(`TicketConfig Finished Migrating ${ticketConfig.length.toLocaleString('en')} properties!`);
+        }
+
+        if (tickets.length) {
+          let i = 0;
+          for (const entry of tickets) {
+            await new Tickets({
+              _id: mongoose.Types.ObjectId(),
+              guildId: entry.guildid,
+              ticketId: entry.ticketid,
+              authorId: entry.authorid,
+              reason: entry.reason,
+              channelId: entry.chanid
+            })
+              .save()
+              .catch(console.error);
+            i++;
+            logProgress('Tickets', tickets, i);
+          }
+          console.log(`Tickets Finished Migrating ${tickets.length.toLocaleString('en')} properties!`);
+        }
+
+        const endTime = new Date();
+        const timeDifference = endTime - startTime;
+
+        const minutes = Math.floor(timeDifference / 60000);
+        const seconds = Math.floor((timeDifference % 60000) / 1000);
+
+        console.log(`\n\n[DB Migration] Completed ${totalLength} properties!\nTime taken: ${minutes} minutes ${seconds} seconds\n\n`);
+      })();
+    } catch (e) {
+      console.log(e);
+    }
+    // Example code
+    /* let levelStatus = await LevelSchema.findOne({ guildId: '541592050043453441' });
+        if (!levelStatus) {
+          levelStatus = await new LevelSchema({
+            _id: mongoose.Types.ObjectId(),
+            guildId: interaction.guild.id,
+            status: true
+          });
+          await levelStatus.save().catch(console.error);
+    i++
+          console.log('new saved', levelStatus);
+        } else {
+          console.log(levelStatus);
+        } */
+  }
+};
+
+export default SlashCommandF;
