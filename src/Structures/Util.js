@@ -6,6 +6,7 @@ import { promisify } from 'util';
 import { PermissionsBitField, REST, Routes } from 'discord.js';
 import glob from 'glob';
 import url from 'url';
+import mongoose from 'mongoose';
 import Event from './Event.js';
 import SlashCommand from './SlashCommand.js';
 import RagnarokDashboard from './RagnarokDashboard.js';
@@ -175,6 +176,25 @@ export const Util = class Util {
         const { default: File } = await import(m);
         this.client.functions[File.name] = new File(this)[File.name];
       });
+    });
+  }
+
+  async loadMongoEvents() {
+    (async () => {
+      await mongoose.connect(this.client.config.DATABASE_TOKEN).catch(console.error);
+    })();
+
+    return globPromise(`${this.directory}Mongo/MongoEvents/*.js`).then(async (events) => {
+      for (const eventFile of events) {
+        const File = await import(eventFile);
+        const fileDefault = File.default;
+        const { once } = fileDefault;
+        if (once) {
+          mongoose.connection.once(fileDefault.name, (...args) => fileDefault.run(...args, this.client));
+        } else {
+          mongoose.connection.on(fileDefault.name, (...args) => fileDefault.run(...args, this.client));
+        }
+      }
     });
   }
 
