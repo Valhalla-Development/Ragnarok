@@ -1,11 +1,10 @@
 import { EmbedBuilder } from 'discord.js';
 import os from 'os';
 import si from 'systeminformation';
-import SQLite from 'better-sqlite3';
 import * as packageFile from '../../../package.json' assert { type: 'json' };
 import SlashCommand from '../../Structures/SlashCommand.js';
+import Announcement from '../../Mongo/Schemas/Announcement.js';
 
-const db = new SQLite('./Storage/DB/db.sqlite');
 const { version } = packageFile.default;
 
 export const SlashCommandF = class extends SlashCommand {
@@ -17,10 +16,11 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const dbGrab = db.prepare('SELECT msg FROM announcement').get();
+    const dbGrab = await Announcement.find();
+
     let annc;
     if (dbGrab) {
-      annc = dbGrab.msg;
+      annc = dbGrab[0].message;
     } else {
       annc = 'N/A';
     }
