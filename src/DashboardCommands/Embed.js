@@ -30,11 +30,11 @@ export default (client) => {
         data.some((option) => option.optionId === 'embed' && Object.keys(option.data).length > 0) &&
         data.some((option) => option.optionId === 'channel' && option.data)
       ) {
-        const [returnedChannel, returnedEmbed, error] = forThingyLoop(data);
+        const [returnedChannel, returnedEmbed, error] = forLoopThingy(data);
         if (error) return error;
         sendEmbed(returnedChannel, returnedEmbed);
       }
-      const [returnedChannel, returnedEmbed, error] = forThingyLoop(data);
+      const [returnedChannel, returnedEmbed, error] = forLoopThingy(data);
       if (error) return error;
       if (!returnedChannel && Object.keys(returnedEmbed).length <= 0) {
         return { error: 'Please save a valid Embed, and Channel.' };
@@ -66,7 +66,7 @@ export default (client) => {
     ]
   };
 
-  function forThingyLoop(data) {
+  function forLoopThingy(data) {
     let channel;
     let embed;
     let error;
