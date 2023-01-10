@@ -1,8 +1,7 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import SQLite from 'better-sqlite3';
+import mongoose from 'mongoose';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import AFK from '../../Mongo/Schemas/AFK.js';
 
 const data = new SlashCommandBuilder()
   .setName('afk')
@@ -19,24 +18,27 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const afkGrab = db.prepare('SELECT * FROM afk WHERE id = ?').get(`${interaction.user.id}-${interaction.guild.id}`);
-
     const reason = interaction.options.getString('reason') || 'AFK';
 
-    if (afkGrab) {
-      await db.prepare('UPDATE afk SET reason = (@reason) WHERE (user, guildid, id) = (@user, @guildid, @id);').run({
-        reason,
-        user: interaction.user.id,
-        guildid: interaction.guild.id,
-        id: `${interaction.user.id}-${interaction.guild.id}`
-      });
+    const afk = await AFK.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
+
+    if (!afk) {
+      await new AFK({
+        _id: mongoose.Types.ObjectId(),
+        idJoined: `${interaction.user.id}-${interaction.guild.id}`,
+        guildId: interaction.guild.id,
+        userId: interaction.user.id,
+        reason
+      }).save();
     } else {
-      await db.prepare('INSERT INTO afk (reason, user, guildid, id) values (@reason, @user, @guildid, @id);').run({
-        reason,
-        user: interaction.user.id,
-        guildid: interaction.guild.id,
-        id: `${interaction.user.id}-${interaction.guild.id}`
-      });
+      await AFK.findOneAndUpdate(
+        {
+          idJoined: `${interaction.user.id}-${interaction.guild.id}`
+        },
+        {
+          reason
+        }
+      );
     }
 
     const badChannel = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({

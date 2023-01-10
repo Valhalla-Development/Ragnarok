@@ -1,14 +1,12 @@
 import { EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from 'discord.js';
 import Hastebin from 'hastebin.js';
 import fetch from 'node-fetch';
-import SQLite from 'better-sqlite3';
 import urlRegexSafe from 'url-regex-safe';
 import prettier from 'prettier';
 import SlashCommand from '../../Structures/SlashCommand.js';
+import HasteBin from '../../Mongo/Schemas/Hastebin.js';
 
 const haste = new Hastebin({ url: 'https://pastie.io' });
-
-const db = new SQLite('./Storage/DB/db.sqlite');
 
 const data = new SlashCommandBuilder()
   .setName('hastebin')
@@ -47,8 +45,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    this.client.getTable = db.prepare('SELECT * FROM hastebin WHERE guildid = ?');
-    const status = this.client.getTable.get(interaction.guild.id);
+    const status = await HasteBin.findOne({ guildId: interaction.guild.id });
 
     const parseAttachment = interaction.options.getAttachment('attachment');
     if (parseAttachment) {

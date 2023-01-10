@@ -3,14 +3,15 @@
 /* eslint-disable no-nested-ternary */
 import { AttachmentBuilder, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import abbreviate from 'number-abbreviate';
-import SQLite from 'better-sqlite3';
 import { parse } from 'twemoji-parser';
 import countryList from 'countries-list';
 import fetch from 'node-fetch';
 import Canvas from 'canvas';
+import mongoose from 'mongoose';
+import converter from 'number-to-words-en';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import LevelConfig from '../../Mongo/Schemas/LevelConfig.js';
+import Level from '../../Mongo/Schemas/Level.js';
 
 Canvas.registerFont('./Storage/Canvas/Fonts/Shapirit.otf', {
   family: 'Shapirit'
@@ -53,7 +54,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     const args = interaction.options.getSubcommand();
 
-    const levelDb = db.prepare(`SELECT status FROM level WHERE guildid = ${interaction.guild.id};`).get();
+    const levelDb = await LevelConfig.findOne({ guildId: interaction.guild.id });
 
     if (levelDb) {
       const embed = new EmbedBuilder()
@@ -63,31 +64,27 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    this.client.getScore = db.prepare('SELECT * FROM scores WHERE user = ? AND guild = ?');
-    this.client.setScore = db.prepare(
-      'INSERT OR REPLACE INTO scores (id, user, guild, points, level, country, image) VALUES (@id, @user, @guild, @points, @level, @country, @image);'
-    );
-
     if (args === 'country') {
       const option = interaction.options.getString('country');
 
       let score;
       if (interaction.guild) {
-        score = this.client.getScore.get(interaction.user.id, interaction.guild.id);
+        score = await Level.findOne({ idJoined: `${interaction.guild.id}-${interaction.user.id}` });
       }
 
       if (!score) {
         const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
-        const newData = {
-          id: `${interaction.guild.id}-${interaction.user.id}`,
-          user: interaction.user.id,
-          guild: interaction.guild.id,
-          points: xpAdd,
+
+        await new Level({
+          _id: mongoose.Types.ObjectId(),
+          idJoined: `${interaction.guild.id}-${interaction.user.id}`,
+          userId: interaction.user.id,
+          guildId: interaction.guild.id,
+          xp: xpAdd,
           level: 0,
           country: null,
           image: null
-        };
-        await this.client.setScore.run(newData);
+        }).save();
       }
 
       if (option === 'off') {
@@ -104,7 +101,7 @@ export const SlashCommandF = class extends SlashCommand {
         interaction.editReply({ ephemeral: true, embeds: [embed] });
 
         score.country = null;
-        await this.client.setScore.run(score);
+        await score.save();
         return;
       }
 
@@ -112,8 +109,10 @@ export const SlashCommandF = class extends SlashCommand {
         const fetchCountry = countryList.countries[option.toUpperCase()];
         const url = await parse(fetchCountry.emoji);
 
+        url[0].url = url[0].url.replace('twemoji.maxcdn.com/v/latest/', 'cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/');
+        // temporary fix because maxcdn has stopped supporting twemoji
         score.country = url[0].url;
-        await this.client.setScore.run(score);
+        await score.save();
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -135,21 +134,23 @@ export const SlashCommandF = class extends SlashCommand {
 
       let score;
       if (interaction.guild) {
-        score = this.client.getScore.get(interaction.user.id, interaction.guild.id);
+        score = await Level.findOne({ idJoined: `${interaction.guild.id}-${interaction.user.id}` });
       }
 
       if (!score) {
+        //! test because the next code may error because !score
         const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
-        const newData = {
-          id: `${interaction.guild.id}-${interaction.user.id}`,
-          user: interaction.user.id,
-          guild: interaction.guild.id,
-          points: xpAdd,
+
+        await new Level({
+          _id: mongoose.Types.ObjectId(),
+          idJoined: `${interaction.guild.id}-${interaction.user.id}`,
+          userId: interaction.user.id,
+          guildId: interaction.guild.id,
+          xp: xpAdd,
           level: 0,
           country: null,
           image: null
-        };
-        await this.client.setScore.run(newData);
+        }).save();
       }
 
       if (interaction.guild.id) {
@@ -161,11 +162,15 @@ export const SlashCommandF = class extends SlashCommand {
             interaction.editReply({ ephemeral: true, embeds: [embed] });
             return;
           }
-          const update = db.prepare('UPDATE scores SET image = (@image) WHERE user = (@user);');
-          update.run({
-            user: `${interaction.user.id}`,
-            image: null
-          });
+
+          await Level.findOneAndUpdate(
+            {
+              idJoined: `${interaction.guild.id}-${interaction.user.id}`
+            },
+            {
+              image: null
+            }
+          );
 
           const embed = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -220,11 +225,15 @@ export const SlashCommandF = class extends SlashCommand {
               return;
             }
 
-            const update = db.prepare('UPDATE scores SET image = (@image) WHERE user = (@user);');
-            update.run({
-              user: `${interaction.user.id}`,
-              image: option
-            });
+            await Level.findOneAndUpdate(
+              {
+                idJoined: `${interaction.guild.id}-${interaction.user.id}`
+              },
+              {
+                image: option
+              }
+            );
+
             const embed = new EmbedBuilder()
               .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
               .setImage(option)
@@ -264,23 +273,24 @@ export const SlashCommandF = class extends SlashCommand {
 
     const colorGrab = this.client.utils.color(interaction.guild.members.cache.find((grabUser) => grabUser.id === user.id).displayHexColor);
 
-    let score = this.client.getScore.get(user.id, interaction.guild.id);
+    let score = await Level.findOne({ idJoined: `${interaction.guild.id}-${user.id}` });
 
     if (!score) {
       // Random amount between 15 - 25
       const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
-      const newData = {
-        id: `${interaction.guild.id}-${user.id}`,
-        user: user.id,
-        guild: interaction.guild.id,
-        points: xpAdd,
+
+      await new Level({
+        _id: mongoose.Types.ObjectId(),
+        idJoined: `${interaction.guild.id}-${user.id}`,
+        userId: user.id,
+        guildId: interaction.guild.id,
+        xp: xpAdd,
         level: 0,
         country: null,
         image: null
-      };
-      await this.client.setScore.run(newData);
+      }).save();
 
-      score = newData;
+      score = await Level.findOne({ idJoined: `${interaction.guild.id}-${user.id}` });
     }
 
     let levelImg;
@@ -315,7 +325,7 @@ export const SlashCommandF = class extends SlashCommand {
       xpPercent = 0;
     } else {
       level = score.level;
-      points = score.points;
+      points = score.xp;
       levelNoMinus = score.level + 1;
       currentLvl = score.level;
       nxtLvlXp = (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
@@ -326,9 +336,10 @@ export const SlashCommandF = class extends SlashCommand {
       xpPercent = (inLevel / toLevel) * 100;
     }
 
-    const userRank = db
-      .prepare('SELECT count(*) FROM scores WHERE points >= ? AND guild = ? AND user ORDER BY points DESC')
-      .all(points, interaction.guild.id);
+    const getRank = await Level.find({ guildId: interaction.guild.id }).sort({ xp: -1 });
+    const filterRank = getRank.find((b) => b.idJoined === `${interaction.guild.id}-${interaction.user.id}`);
+    const rankPos = converter.toOrdinal(getRank.indexOf(filterRank) + 1);
+
     const canvas = Canvas.createCanvas(934, 282);
     const ctx = canvas.getContext('2d');
 
@@ -392,7 +403,7 @@ export const SlashCommandF = class extends SlashCommand {
     // Levels / Ranks
     const levelNumber = level;
     const levelText = 'LEVEL';
-    const rankNumber = `#${userRank[0]['count(*)']}`;
+    const rankNumber = `#${rankPos}`;
     const rankText = 'RANK';
     const usergrab = user.user.username;
     const discrim = `#${user.user.discriminator}`;
@@ -482,6 +493,9 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     if (score && score.country) {
+      // it broke:
+      score.country = score.country.replace('twemoji.maxcdn.com/v/latest/', 'cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/');
+
       try {
         const img = await Canvas.loadImage(score.country);
         // Draw Contry Emoji

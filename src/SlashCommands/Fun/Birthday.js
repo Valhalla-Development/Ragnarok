@@ -2,13 +2,13 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-unused-expressions */
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import SQLite from 'better-sqlite3';
 import moment from 'moment';
+import mongoose from 'mongoose';
 import ms from 'ms';
+import Birthdays from '../../Mongo/Schemas/Birthdays.js';
+import BirthdayConfig from '../../Mongo/Schemas/BirthdayConfig.js';
 
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
 
 const data = new SlashCommandBuilder()
   .setName('birthday')
@@ -40,18 +40,18 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const args = interaction.options.getSubcommand();
 
-    const birthdayConfigDB = db.prepare(`SELECT * FROM birthdayConfig WHERE guildid = ${interaction.guild.id};`).get();
+    const birthdayConfigDB = await BirthdayConfig.findOne({ guildId: interaction.guild.id });
 
     if (args === 'view') {
       const user = interaction.options.getMember('user');
 
-      const birthdayDB = db.prepare(`SELECT * FROM birthdays WHERE userid = ${user.id};`).get();
+      const birthdayDB = await Birthdays.findOne({ userId: user.id });
 
       if (!birthdayConfigDB && birthdayDB) {
         let year;
 
         const bdayNow = moment();
-        const nextBirthday = birthdayDB.birthday.slice(0, birthdayDB.birthday.length - 4);
+        const nextBirthday = birthdayDB.date.slice(0, birthdayDB.date.length - 4);
 
         const birthdayNext = new Date(nextBirthday + bdayNow.year());
         const getNow = new Date();
@@ -96,7 +96,7 @@ export const SlashCommandF = class extends SlashCommand {
         let year;
 
         const bdayNow = moment();
-        const nextBirthday = birthdayDB.birthday.slice(0, birthdayDB.birthday.length - 4);
+        const nextBirthday = birthdayDB.date.slice(0, birthdayDB.date.length - 4);
 
         const birthdayNext = new Date(nextBirthday + bdayNow.year());
         const getNow = new Date();
@@ -117,7 +117,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
     }
 
-    const birthdayDB = db.prepare(`SELECT * FROM birthdays WHERE userid = ${interaction.user.id};`).get();
+    const birthdayDB = await Birthdays.findOne({ userId: interaction.user.id });
 
     if (args === 'delete') {
       if (!birthdayDB) {
@@ -128,7 +128,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      await db.prepare('DELETE FROM birthdays WHERE userid = ?').run(interaction.user.id);
+      await birthdayDB.deleteOne({ userId: interaction.user.id }); //!
 
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -170,38 +170,51 @@ export const SlashCommandF = class extends SlashCommand {
       interaction.reply({ ephemeral: true, embeds: [embed] });
 
       if (birthdayDB) {
-        await db.prepare('UPDATE birthdays SET birthday = (@birthday), lastRun = (@lastRun) WHERE userid = (@userid);').run({
-          userid: interaction.user.id,
-          birthday: argsDate,
-          lastRun: null
-        });
+        await Birthdays.findOneAndUpdate(
+          {
+            userId: interaction.user.id
+          },
+          {
+            date: argsDate,
+            lastRun: null
+          }
+        );
       } else {
-        const insert = db.prepare('INSERT INTO birthdays (userid, birthday, lastRun) VALUES (@userid, @birthday, @lastRun);');
-        insert.run({
-          userid: interaction.user.id,
-          birthday: argsDate,
+        await new Birthdays({
+          _id: mongoose.Types.ObjectId(),
+          userId: interaction.user.id,
+          date: argsDate,
           lastRun: null
-        });
+        }).save();
       }
     }
 
     if (args === 'list') {
       // Fetch all of the birthdays from the database
-      const rows = db.prepare('SELECT * FROM birthdays').all();
+      const rows = await Birthdays.find();
 
       // Filter the rows to only include users who are in the guild
       const filteredRows = rows.filter((row) => {
-        const member = interaction.guild.members.cache.get(row.userid);
+        const member = interaction.guild.members.cache.get(row.userId);
         return member;
       });
+
+      if (!rows) {
+        const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
+          name: `**${this.client.user.username} - Birthday**`,
+          value: '**◎ Error:** No users have a birthday defined within this guild'
+        });
+        interaction.reply({ ephemeral: true, embeds: [embed] }); //! TEST
+        return;
+      }
 
       // sort the birthdays by the number of days until each one
       const sortedRows = filteredRows.sort((a, b) => {
         const today = moment();
 
         // parse the birthday strings into moment objects
-        const momentA = moment(a.birthday.substring(0, a.birthday.length - 5), 'MM/DD');
-        const momentB = moment(b.birthday.substring(0, b.birthday.length - 5), 'MM/DD');
+        const momentA = moment(a.date.substring(0, a.date.length - 5), 'MM/DD');
+        const momentB = moment(b.date.substring(0, b.date.length - 5), 'MM/DD');
 
         // if either birthday has already passed this year, add one year to the moment object so we compare the correct dates
         if (momentA.isBefore(today)) {
@@ -235,7 +248,7 @@ export const SlashCommandF = class extends SlashCommand {
             name: 'User',
             value: pages[i]
               .map((row) => {
-                const member = interaction.guild.members.cache.get(row.userid);
+                const member = interaction.guild.members.cache.get(row.userId);
                 return member.toString();
               })
               .join('\n'),
@@ -245,7 +258,7 @@ export const SlashCommandF = class extends SlashCommand {
             name: 'Date',
             value: pages[i]
               .map((row) => {
-                const date = moment(row.birthday, 'MM/DD/YYYY').format('Do MMMM');
+                const date = moment(row.date, 'MM/DD/YYYY').format('Do MMMM');
                 return `\`${date}\``;
               })
               .join('\n'),
@@ -258,7 +271,7 @@ export const SlashCommandF = class extends SlashCommand {
                 let year;
 
                 const bdayNow = moment();
-                const nextBirthday = row.birthday.slice(0, row.birthday.length - 4);
+                const nextBirthday = row.date.slice(0, row.date.length - 4);
 
                 const birthdayNext = new Date(nextBirthday + bdayNow.year());
                 const getNow = new Date();

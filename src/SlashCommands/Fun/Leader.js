@@ -1,9 +1,8 @@
 /* eslint-disable no-continue */
 import { EmbedBuilder } from 'discord.js';
-import SQLite from 'better-sqlite3';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import LevelConfig from '../../Mongo/Schemas/LevelConfig.js';
+import Level from '../../Mongo/Schemas/Level.js';
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -14,7 +13,8 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const levelDb = db.prepare(`SELECT status FROM level WHERE guildid = ${interaction.guild.id};`).get();
+    const levelDb = await LevelConfig.findOne({ guildId: interaction.guild.id });
+
     if (levelDb) {
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -23,7 +23,8 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    const top10 = db.prepare('SELECT * FROM scores WHERE guild = ? ORDER BY points DESC;').all(interaction.guild.id);
+    const top10 = await Level.find({ guildId: interaction.guild.id }).sort({ xp: -1 });
+
     if (!top10) {
       return;
     }
@@ -35,7 +36,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     for (let i = 0; i < top10.length; i++) {
       const data = top10[i];
-      const fetchUsers = interaction.guild.members.cache.get(data.user);
+      const fetchUsers = interaction.guild.members.cache.get(data.userId);
 
       if (fetchUsers === undefined) {
         continue;
@@ -45,7 +46,7 @@ export const SlashCommandF = class extends SlashCommand {
 
       userNames += `◎ \`${j}\` ${fetchUsers}\n`;
       levels += `\`${data.level}\`\n`;
-      xp += `\`${data.points.toLocaleString('en')}\`\n`;
+      xp += `\`${data.xp.toLocaleString('en')}\`\n`;
       if (j === 10) break;
     }
 
