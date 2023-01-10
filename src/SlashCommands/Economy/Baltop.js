@@ -1,9 +1,7 @@
 /* eslint-disable no-continue */
 import { EmbedBuilder } from 'discord.js';
-import SQLite from 'better-sqlite3';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import Balance from '../../Mongo/Schemas/Balance.js';
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -14,7 +12,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const top10 = db.prepare('SELECT * FROM balance WHERE guild = ? ORDER BY total DESC;').all(interaction.guild.id);
+    const top10 = await Balance.find({ guildId: interaction.guild.id }).sort({ total: -1 });
     if (!top10) {
       return;
     }

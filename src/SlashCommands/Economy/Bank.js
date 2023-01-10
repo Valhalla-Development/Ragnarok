@@ -1,5 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import SlashCommand from '../../Structures/SlashCommand.js';
+import Balance from '../../Mongo/Schemas/Balance.js';
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -10,7 +11,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const balance = this.client.getBalance.get(`${interaction.user.id}-${interaction.guild.id}`);
+    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     if (balance.cash === 0) {
       const limitE = new EmbedBuilder()
@@ -37,7 +38,7 @@ export const SlashCommandF = class extends SlashCommand {
     balance.bank = bankCalc;
     balance.total = bankCalc;
 
-    this.client.setBalance.run(balance);
+    await balance.save();
   }
 };
 

@@ -1,9 +1,7 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import prettyMilliseconds from 'pretty-ms';
-import SQLite from 'better-sqlite3';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import Balance from '../../Mongo/Schemas/Balance.js';
 
 const data = new SlashCommandBuilder()
   .setName('plant')
@@ -32,7 +30,7 @@ export const SlashCommandF = class extends SlashCommand {
     const args = interaction.options.getString('type');
     const argsAmount = interaction.options.getInteger('amount');
 
-    const balance = this.client.getBalance.get(`${interaction.user.id}-${interaction.guild.id}`);
+    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     let foundPlotList;
 
@@ -100,10 +98,8 @@ export const SlashCommandF = class extends SlashCommand {
         foundPlotList.push({ cropType: type, cropStatus: status, cropGrowTime: time, decay: 0 });
       }
 
-      await db.prepare('UPDATE balance SET farmPlot = (@crops) WHERE id = (@id);').run({
-        crops: JSON.stringify(foundPlotList),
-        id: `${interaction.user.id}-${interaction.guild.id}`
-      });
+      balance.crops = JSON.stringify(foundPlotList);
+      await balance.save();
     }
 
     if (args === 'corn') {
@@ -152,10 +148,8 @@ export const SlashCommandF = class extends SlashCommand {
 
       cropCreator('corn', 'planting', new Date().getTime() + Number(cornGrow), argsAmount);
 
-      await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-        items: JSON.stringify(foundItemList),
-        id: `${interaction.user.id}-${interaction.guild.id}`
-      });
+      balance.items = JSON.stringify(foundItemList);
+      await balance.save();
 
       const embed = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -218,10 +212,8 @@ export const SlashCommandF = class extends SlashCommand {
 
       cropCreator('wheat', 'planting', new Date().getTime() + Number(wheatGrow), argsAmount);
 
-      await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-        items: JSON.stringify(foundItemList),
-        id: `${interaction.user.id}-${interaction.guild.id}`
-      });
+      balance.items = JSON.stringify(foundItemList);
+      await balance.save();
 
       const embed = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -284,10 +276,8 @@ export const SlashCommandF = class extends SlashCommand {
 
       cropCreator('potato', 'planting', new Date().getTime() + Number(potatoGrow), argsAmount);
 
-      await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-        items: JSON.stringify(foundItemList),
-        id: `${interaction.user.id}-${interaction.guild.id}`
-      });
+      balance.items = JSON.stringify(foundItemList);
+      await balance.save();
 
       const embed = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -350,10 +340,8 @@ export const SlashCommandF = class extends SlashCommand {
 
       cropCreator('tomato', 'planting', new Date().getTime() + Number(tomatoeGrow), argsAmount);
 
-      await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-        items: JSON.stringify(foundItemList),
-        id: `${interaction.user.id}-${interaction.guild.id}`
-      });
+      balance.items = JSON.stringify(foundItemList);
+      await balance.save();
 
       const embed = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })

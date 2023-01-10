@@ -1,9 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import ms from 'ms';
-import SQLite from 'better-sqlite3';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import Balance from '../../Mongo/Schemas/Balance.js';
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -14,7 +12,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const balance = this.client.getBalance.get(`${interaction.user.id}-${interaction.guild.id}`);
+    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     let foundItemList;
 
@@ -27,16 +25,16 @@ export const SlashCommandF = class extends SlashCommand {
     let name;
     let price;
 
-    if (balance.farmcool !== null) {
-      if (Date.now() > balance.farmcool) {
-        balance.farmcool = null;
+    if (balance.farmCool !== null) {
+      if (Date.now() > balance.farmCool) {
+        balance.farmCool = null;
       } else {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
           .addFields({
             name: `**${this.client.user.username} - Farm**`,
-            value: `**◎ Error:** Please wait another \`${ms(balance.farmcool - new Date().getTime(), { long: true })}\` before using this command.`
+            value: `**◎ Error:** Please wait another \`${ms(balance.farmCool - new Date().getTime(), { long: true })}\` before using this command.`
           });
         interaction.reply({ ephemeral: true, embeds: [embed] });
         return;
@@ -109,15 +107,11 @@ export const SlashCommandF = class extends SlashCommand {
 
         const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
-        balance.farmcool = Math.round(endTime);
+        balance.farmCool = Math.round(endTime);
       }
 
-      this.client.setBalance.run(balance);
-
-      await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-        items: JSON.stringify(foundItemList),
-        id: `${interaction.user.id}-${interaction.guild.id}`
-      });
+      balance.items = JSON.stringify(foundItemList);
+      await balance.save();
 
       embed.addFields({
         name: `**${this.client.user.username} - Farm**`,
@@ -148,14 +142,10 @@ export const SlashCommandF = class extends SlashCommand {
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
-      balance.farmcool = Math.round(endTime);
+      balance.farmCool = Math.round(endTime);
 
-      this.client.setBalance.run(balance);
-
-      await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-        items: JSON.stringify(foundItemList),
-        id: `${interaction.user.id}-${interaction.guild.id}`
-      });
+      balance.items = JSON.stringify(foundItemList);
+      await balance.save();
 
       embed.addFields({
         name: `**${this.client.user.username} - Farm**`,
@@ -186,14 +176,10 @@ export const SlashCommandF = class extends SlashCommand {
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
-      balance.farmcool = Math.round(endTime);
+      balance.farmCool = Math.round(endTime);
 
-      this.client.setBalance.run(balance);
-
-      await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-        items: JSON.stringify(foundItemList),
-        id: `${interaction.user.id}-${interaction.guild.id}`
-      });
+      balance.items = JSON.stringify(foundItemList);
+      await balance.save();
 
       embed.addFields({
         name: `**${this.client.user.username} - Farm**`,
@@ -224,14 +210,10 @@ export const SlashCommandF = class extends SlashCommand {
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
-      balance.farmcool = Math.round(endTime);
+      balance.farmCool = Math.round(endTime);
 
-      this.client.setBalance.run(balance);
-
-      await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-        items: JSON.stringify(foundItemList),
-        id: `${interaction.user.id}-${interaction.guild.id}`
-      });
+      balance.items = JSON.stringify(foundItemList);
+      await balance.save();
 
       embed.addFields({
         name: `**${this.client.user.username} - Farm**`,
@@ -261,14 +243,10 @@ export const SlashCommandF = class extends SlashCommand {
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
-      balance.farmcool = Math.round(endTime);
+      balance.farmCool = Math.round(endTime);
 
-      this.client.setBalance.run(balance);
-
-      await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-        items: JSON.stringify(foundItemList),
-        id: `${interaction.user.id}-${interaction.guild.id}`
-      });
+      balance.items = JSON.stringify(foundItemList);
+      await balance.save();
 
       embed.addFields({
         name: `**${this.client.user.username} - Farm**`,
@@ -287,9 +265,9 @@ export const SlashCommandF = class extends SlashCommand {
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmFailTime;
 
-      balance.farmcool = Math.round(endTime);
+      balance.farmCool = Math.round(endTime);
 
-      this.client.setBalance.run(balance);
+      await balance.save();
 
       embed.addFields({ name: `**${this.client.user.username} - Farm**`, value: '**◎ Fail:** You farmed nothing!' });
       interaction.reply({ embeds: [embed] });

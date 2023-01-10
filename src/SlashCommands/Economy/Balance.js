@@ -2,10 +2,8 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import converter from 'number-to-words-en';
 import ms from 'ms';
-import SQLite from 'better-sqlite3';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import Balance from '../../Mongo/Schemas/Balance.js';
 
 const data = new SlashCommandBuilder()
   .setName('balance')
@@ -24,7 +22,7 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const member = interaction.options.getMember('user') || interaction.member;
 
-    const balance = this.client.getBalance.get(`${member.user.id}-${interaction.guild.id}`);
+    const balance = await Balance.findOne({ idJoined: `${member.user.id}-${interaction.guild.id}` });
 
     if (!balance) {
       const limitE = new EmbedBuilder()
@@ -41,11 +39,9 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    const userRank = db
-      .prepare('SELECT count(*) FROM balance WHERE total >= ? AND guild = ? AND user ORDER BY total DESC')
-      .all(balance.total, interaction.guild.id);
-
-    const rankPos = converter.toOrdinal(`${userRank[0]['count(*)']}`);
+    const userRank = await Balance.find({ guildId: interaction.guild.id }).sort({ total: -1 });
+    const user = userRank.find((b) => b.idJoined === `${member.user.id}-${interaction.guild.id}`);
+    const rankPos = converter.toOrdinal(userRank.indexOf(user) + 1);
 
     const date = new Date().getTime();
 
@@ -157,7 +153,7 @@ export const SlashCommandF = class extends SlashCommand {
           },
           {
             name: 'Steal Cooldown',
-            value: `${Date.now() > balance.stealcool ? '`Available!`' : `\`${ms(balance.stealcool - date, { long: true })}\``}`,
+            value: `${Date.now() > balance.stealCool ? '`Available!`' : `\`${ms(balance.stealCool - date, { long: true })}\``}`,
             inline: true
           },
           {
@@ -165,15 +161,15 @@ export const SlashCommandF = class extends SlashCommand {
             value: `${
               !foundItemList.fishingRod
                 ? '`Rod Not Owned`'
-                : Date.now() > balance.fishcool
+                : Date.now() > balance.fishCool
                 ? '`Available!`'
-                : `\`${ms(balance.fishcool - date, { long: true })}\``
+                : `\`${ms(balance.fishCool - date, { long: true })}\``
             }`,
             inline: true
           },
           {
             name: 'Farm Cooldown',
-            value: `${Date.now() > balance.farmcool ? '`Available!`' : `\`${ms(balance.farmcool - date, { long: true })}\``}`,
+            value: `${Date.now() > balance.farmCool ? '`Available!`' : `\`${ms(balance.farmCool - date, { long: true })}\``}`,
             inline: true
           },
           {

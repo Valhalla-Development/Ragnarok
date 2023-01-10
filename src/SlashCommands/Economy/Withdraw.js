@@ -1,5 +1,6 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import SlashCommand from '../../Structures/SlashCommand.js';
+import Balance from '../../Mongo/Schemas/Balance.js';
 
 const data = new SlashCommandBuilder()
   .setName('withdraw')
@@ -16,7 +17,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const balance = this.client.getBalance.get(`${interaction.user.id}-${interaction.guild.id}`);
+    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     const numberCov = interaction.options.getInteger('amount');
 
@@ -50,7 +51,7 @@ export const SlashCommandF = class extends SlashCommand {
     balance.cash = cashA;
     balance.bank = bankA;
     balance.total = totaA;
-    this.client.setBalance.run(balance);
+    await balance.save();
 
     const depAll = new EmbedBuilder()
       .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })

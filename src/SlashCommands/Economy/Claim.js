@@ -1,6 +1,7 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import ms from 'ms';
 import SlashCommand from '../../Structures/SlashCommand.js';
+import Balance from '../../Mongo/Schemas/Balance.js';
 
 const data = new SlashCommandBuilder()
   .setName('claim')
@@ -18,7 +19,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const balance = await this.client.getBalance.get(`${interaction.user.id}-${interaction.guild.id}`);
+    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     const type = interaction.options.getSubcommand();
 
@@ -114,7 +115,7 @@ export const SlashCommandF = class extends SlashCommand {
       balance.bank += fullPrice;
       balance.total += fullPrice;
 
-      this.client.setBalance.run(balance);
+      await balance.save();
 
       const newTot = balance.total + fullPrice;
 

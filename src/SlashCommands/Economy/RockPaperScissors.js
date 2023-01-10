@@ -3,6 +3,7 @@
 /* eslint-disable no-unused-expressions */
 import { EmbedBuilder, SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
 import SlashCommand from '../../Structures/SlashCommand.js';
+import Balance from '../../Mongo/Schemas/Balance.js';
 
 const data = new SlashCommandBuilder()
   .setName('rockpaperscissors')
@@ -21,7 +22,7 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const amt = interaction.options.getInteger('amount');
 
-    const balance = this.client.getBalance.get(`${interaction.user.id}-${interaction.guild.id}`);
+    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     if (!balance) {
       const limitE = new EmbedBuilder()
@@ -165,12 +166,12 @@ export const SlashCommandF = class extends SlashCommand {
       if (reason === 'win') {
         balance.bank += houseBet;
         balance.total += houseBet;
-        this.client.setBalance.run(balance);
+        await balance.save();
       }
       if (reason === 'lose') {
         balance.bank -= amt;
         balance.total -= amt;
-        this.client.setBalance.run(balance);
+        await balance.save();
       }
 
       if (reason === 'cancel' || reason === 'time') {

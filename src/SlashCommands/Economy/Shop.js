@@ -1,8 +1,6 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import SQLite from 'better-sqlite3';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import Balance from '../../Mongo/Schemas/Balance.js';
 
 const data = new SlashCommandBuilder()
   .setName('shop')
@@ -30,7 +28,7 @@ export const SlashCommandF = class extends SlashCommand {
     const argsChoice = interaction.options.getString('option');
     const argsItem = interaction.options.getString('item');
 
-    const balance = this.client.getBalance.get(`${interaction.user.id}-${interaction.guild.id}`);
+    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     let foundItemList = JSON.parse(balance.items);
     let foundBoostList = JSON.parse(balance.boosts);
@@ -287,15 +285,11 @@ export const SlashCommandF = class extends SlashCommand {
         balance.bank = Number(balance.bank) - foundBoostList.seedBag * seedBagPrice * 3;
         balance.total = Number(balance.total) - foundBoostList.seedBag * seedBagPrice * 3;
 
-        this.client.setBalance.run(balance);
-
         const calc = Number(foundBoostList.seedBag) + Number(15);
         foundBoostList.seedBag = calc.toString();
 
-        await db.prepare('UPDATE balance SET boosts = (@boosts) WHERE id = (@id);').run({
-          boosts: JSON.stringify(foundBoostList),
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.boosts = JSON.stringify(foundBoostList);
+        await balance.save();
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -355,15 +349,11 @@ export const SlashCommandF = class extends SlashCommand {
         balance.bank = Number(balance.bank) - foundBoostList.fishBag * fishBagPrice * 3;
         balance.total = Number(balance.total) - foundBoostList.fishBag * fishBagPrice * 3;
 
-        this.client.setBalance.run(balance);
-
         const calc = Number(foundBoostList.fishBag) + Number(15);
         foundBoostList.fishBag = calc.toString();
 
-        await db.prepare('UPDATE balance SET boosts = (@boosts) WHERE id = (@id);').run({
-          boosts: JSON.stringify(foundBoostList),
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.boosts = JSON.stringify(foundBoostList);
+        await balance.save();
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -423,15 +413,11 @@ export const SlashCommandF = class extends SlashCommand {
         balance.bank = Number(balance.bank) - foundBoostList.farmBag * farmBagPrice * 3;
         balance.total = Number(balance.total) - foundBoostList.farmBag * farmBagPrice * 3;
 
-        this.client.setBalance.run(balance);
-
         const calc = Number(foundBoostList.farmBag) + Number(15);
         foundBoostList.farmBag = calc.toString();
 
-        await db.prepare('UPDATE balance SET boosts = (@boosts) WHERE id = (@id);').run({
-          boosts: JSON.stringify(foundBoostList),
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.boosts = JSON.stringify(foundBoostList);
+        await balance.save();
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -491,15 +477,11 @@ export const SlashCommandF = class extends SlashCommand {
         balance.bank = Number(balance.bank) - foundBoostList.farmPlot * farmPlotPrice * 3;
         balance.total = Number(balance.total) - foundBoostList.farmPlot * farmPlotPrice * 3;
 
-        this.client.setBalance.run(balance);
-
         const calc = Number(foundBoostList.farmPlot) + Number(15);
         foundBoostList.farmPlot = calc.toString();
 
-        await db.prepare('UPDATE balance SET boosts = (@boosts) WHERE id = (@id);').run({
-          boosts: JSON.stringify(foundBoostList),
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.boosts = JSON.stringify(foundBoostList);
+        await balance.save();
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -621,7 +603,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.bank = Number(balance.bank) - Number(cornTot);
         balance.total = Number(balance.total) - Number(cornTot);
-        this.client.setBalance.run(balance);
+        await balance.save();
 
         let calc = 0;
         if (foundItemList.cornSeeds) {
@@ -656,10 +638,8 @@ export const SlashCommandF = class extends SlashCommand {
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/CornSeeds.png'] });
 
-        await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-          items: JSON.stringify(foundItemList),
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.items = JSON.stringify(foundItemList);
+        await balance.save();
         return;
       }
 
@@ -685,7 +665,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.bank = Number(balance.bank) - Number(wheatTot);
         balance.total = Number(balance.total) - Number(wheatTot);
-        this.client.setBalance.run(balance);
+        await balance.save();
 
         let calc = 0;
         if (foundItemList.wheatSeeds) {
@@ -720,10 +700,8 @@ export const SlashCommandF = class extends SlashCommand {
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/WheatSeeds.png'] });
 
-        await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-          items: JSON.stringify(foundItemList),
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.items = JSON.stringify(foundItemList);
+        await balance.save();
         return;
       }
 
@@ -749,7 +727,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.bank = Number(balance.bank) - Number(potatoeTot);
         balance.total = Number(balance.total) - Number(potatoeTot);
-        this.client.setBalance.run(balance);
+        await balance.save();
 
         let calc = 0;
         if (foundItemList.potatoSeeds) {
@@ -784,10 +762,8 @@ export const SlashCommandF = class extends SlashCommand {
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/Potatoe.png'] });
 
-        await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-          items: JSON.stringify(foundItemList),
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.items = JSON.stringify(foundItemList);
+        await balance.save();
         return;
       }
 
@@ -813,7 +789,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.bank = Number(balance.bank) - Number(tomatoeTot);
         balance.total = Number(balance.total) - Number(tomatoeTot);
-        this.client.setBalance.run(balance);
+        await balance.save();
 
         let calc = 0;
         if (foundItemList.tomatoSeeds) {
@@ -848,10 +824,8 @@ export const SlashCommandF = class extends SlashCommand {
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/Tomatoes.png'] });
 
-        await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-          items: JSON.stringify(foundItemList),
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.items = JSON.stringify(foundItemList);
+        await balance.save();
         return;
       }
 
@@ -883,16 +857,14 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.bank = Number(balance.bank) - Number(fishingPrice);
         balance.total = Number(balance.total) - Number(fishingPrice);
-        this.client.setBalance.run(balance);
+        await balance.save();
 
         foundItemList.fishingRod = Number(1).toString();
         foundBoostList.fishBag = Number(initalSeedBag).toString();
 
-        await db.prepare('UPDATE balance SET items = (@items), boosts = (@boosts) WHERE id = (@id);').run({
-          items: JSON.stringify(foundItemList),
-          boosts: JSON.stringify(foundBoostList),
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.items = JSON.stringify(foundItemList);
+        balance.boosts = JSON.stringify(foundBoostList);
+        await balance.save();
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -932,11 +904,9 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.farmcool) {
-          await db.prepare('UPDATE balance SET farmcool = (@farmcool) WHERE id = (@id);').run({
-            farmcool: null,
-            id: `${interaction.user.id}-${interaction.guild.id}`
-          });
+        if (balance.farmCool) {
+          balance.farmCool = null;
+          await balance.save();
         }
 
         let fullPrice = 0;
@@ -948,7 +918,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.bank = Number(balance.bank) - Number(farmingPrice) + fullPrice;
         balance.total = Number(balance.total) - Number(farmingPrice) + fullPrice;
-        this.client.setBalance.run(balance);
+        await balance.save();
 
         foundItemList.farmingTools = Number(1).toString();
         foundBoostList.farmBag = Number(initalFarmBag).toString();
@@ -976,11 +946,9 @@ export const SlashCommandF = class extends SlashCommand {
         if (foundItemList.strawberries) delete foundItemList.strawberries;
         if (foundItemList.lettuce) delete foundItemList.lettuce;
 
-        await db.prepare('UPDATE balance SET items = (@items), boosts = (@boosts) WHERE id = (@id);').run({
-          items: JSON.stringify(foundItemList),
-          boosts: JSON.stringify(foundBoostList),
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.items = JSON.stringify(foundItemList);
+        balance.boosts = JSON.stringify(foundBoostList);
+        await balance.save();
         return;
       }
     }
@@ -1201,7 +1169,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.bank += fullPrice;
         balance.total = totalAdd;
-        this.client.setBalance.run(balance);
+        await balance.save();
 
         if (foundItemList.treasure) delete foundItemList.treasure;
         if (foundItemList.trout) delete foundItemList.trout;
@@ -1215,11 +1183,9 @@ export const SlashCommandF = class extends SlashCommand {
         if (foundItemList.strawberries) delete foundItemList.strawberries;
         if (foundItemList.lettuce) delete foundItemList.lettuce;
 
-        await db.prepare('UPDATE balance SET items = (@items), harvestedCrops = (@harvestedCrops) WHERE id = (@id);').run({
-          items: JSON.stringify(foundItemList),
-          harvestedCrops: null,
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.items = JSON.stringify(foundItemList);
+        balance.harvestedCrops = null;
+        balance.save();
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -1267,17 +1233,15 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.bank += fullPrice;
         balance.total = totalAdd;
-        this.client.setBalance.run(balance);
+        await balance.save();
 
         if (foundItemList.trout) delete foundItemList.trout;
         if (foundItemList.kingSalmon) delete foundItemList.kingSalmon;
         if (foundItemList.swordfish) delete foundItemList.swordfish;
         if (foundItemList.pufferfish) delete foundItemList.pufferfish;
 
-        await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-          items: JSON.stringify(foundItemList),
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.items = JSON.stringify(foundItemList);
+        balance.save();
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -1317,16 +1281,14 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.bank += fullPrice;
         balance.total = totalAdd;
-        this.client.setBalance.run(balance);
+        await balance.save();
 
         if (foundItemList.treasure) delete foundItemList.treasure;
         if (foundItemList.goldBar) delete foundItemList.goldBar;
         if (foundItemList.goldNugget) delete foundItemList.goldNugget;
 
-        await db.prepare('UPDATE balance SET items = (@items) WHERE id = (@id);').run({
-          items: JSON.stringify(foundItemList),
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.items = JSON.stringify(foundItemList);
+        await balance.save();
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -1391,18 +1353,16 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.bank += fullPrice;
         balance.total = totalAdd;
-        this.client.setBalance.run(balance);
+        await balance.save();
 
         if (foundItemList.barley) delete foundItemList.barley;
         if (foundItemList.spinach) delete foundItemList.spinach;
         if (foundItemList.strawberries) delete foundItemList.strawberries;
         if (foundItemList.lettuce) delete foundItemList.lettuce;
 
-        await db.prepare('UPDATE balance SET items = (@items), harvestedCrops = (@harvestedCrops) WHERE id = (@id);').run({
-          items: JSON.stringify(foundItemList),
-          harvestedCrops: null,
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.items = JSON.stringify(foundItemList);
+        balance.harvestedCrops = null;
+        await balance.save();
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })

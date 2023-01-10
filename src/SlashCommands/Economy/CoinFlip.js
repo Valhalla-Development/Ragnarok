@@ -1,5 +1,6 @@
 import { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, SlashCommandBuilder } from 'discord.js';
 import SlashCommand from '../../Structures/SlashCommand.js';
+import Balance from '../../Mongo/Schemas/Balance.js';
 
 const data = new SlashCommandBuilder()
   .setName('coinflip')
@@ -24,7 +25,7 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const subOptions = interaction.options.getSubcommand();
 
-    const balance = this.client.getBalance.get(`${interaction.user.id}-${interaction.guild.id}`);
+    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     if (!balance) {
       const limitE = new EmbedBuilder()
@@ -110,14 +111,14 @@ export const SlashCommandF = class extends SlashCommand {
           b.update({ components: [rowNew], embeds: [win] });
           balance.bank += Number(houseBet);
           balance.total += Number(houseBet);
-          this.client.setBalance.run(balance);
+          await balance.save();
           collector.stop('win');
           return;
         }
         b.update({ components: [rowNew], embeds: [lose] });
         balance.bank -= Number(betAmt);
         balance.total -= Number(betAmt);
-        this.client.setBalance.run(balance);
+        await balance.save();
         collector.stop('lose');
         return;
       }
@@ -126,14 +127,14 @@ export const SlashCommandF = class extends SlashCommand {
           b.update({ components: [rowNew], embeds: [win] });
           balance.bank += Number(houseBet);
           balance.total += Number(houseBet);
-          this.client.setBalance.run(balance);
+          await balance.save();
           collector.stop('win');
           return;
         }
         b.update({ components: [rowNew], embeds: [lose] });
         balance.bank -= Number(betAmt);
         balance.total -= Number(betAmt);
-        this.client.setBalance.run(balance);
+        await balance.save();
         collector.stop('lose');
         return;
       }

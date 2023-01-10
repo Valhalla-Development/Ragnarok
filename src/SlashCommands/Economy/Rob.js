@@ -1,6 +1,7 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import ms from 'ms';
 import SlashCommand from '../../Structures/SlashCommand.js';
+import Balance from '../../Mongo/Schemas/Balance.js';
 
 const data = new SlashCommandBuilder()
   .setName('balance')
@@ -30,8 +31,8 @@ export const SlashCommandF = class extends SlashCommand {
 
     if (user.bot) return;
 
-    const balance = this.client.getBalance.get(`${interaction.user.id}-${interaction.guild.id}`);
-    const otherB = this.client.getBalance.get(`${user.id}-${interaction.guild.id}`);
+    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
+    const otherB = await Balance.findOne({ idJoined: `${user.id}-${interaction.guild.id}` });
 
     if (!otherB) {
       const errorE = new EmbedBuilder()
@@ -45,8 +46,8 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    if (Date.now() > balance.stealcool) {
-      balance.stealcool = null;
+    if (Date.now() > balance.stealCool) {
+      balance.stealCool = null;
 
       if (otherB.cash < 10) {
         const wrongUsage = new EmbedBuilder()
@@ -83,16 +84,17 @@ export const SlashCommandF = class extends SlashCommand {
 
         otherB.cash = calc;
         otherB.total = totalCalc;
-        this.client.setUserBalance.run(otherB);
+        await otherB.save();
 
         const endTime = new Date().getTime() + 120000;
 
-        balance.stealcool = endTime;
+        balance.stealCool = endTime;
         balance.cash = calc2;
         balance.total = totalCalc2;
-        this.client.setBalance.run(balance);
+        await balance.save();
 
         const succMessage = [
+          // 30
           `You held ${user} at gun-point and stole <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
           `You stabbed ${user} and took <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\` from their wallet.`,
           `You hired someone to mug ${user}, you received <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.`,
@@ -105,7 +107,42 @@ export const SlashCommandF = class extends SlashCommand {
           `You noticed ${user} was drunk so you stole <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\` from them.`,
           `${user} tried to mug you, but you had an uno reverse card. You stole <:coin:706659001164628008> \`${stealAmount.toLocaleString(
             'en'
-          )}\` from them.`
+          )}\` from them.`,
+          `You successfully snuck into ${user}'s vault and made off with <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}.`,
+          `You and your crew pulled off a daring heist, robbing ${user}'s safe and getting away with <:coin:706659001164628008> ${stealAmount.toLocaleString(
+            'en'
+          )}.`,
+          `You hacked into ${user}'s accounts and transferred <:coin:706659001164628008> ${stealAmount.toLocaleString('en')} into your own account.`,
+          `You disguised yourself as a delivery person and stole <:coin:706659001164628008> ${stealAmount.toLocaleString(
+            'en'
+          )} from ${user}'s company's safe.`,
+          `You masterminded a successful con, tricking ${user} into giving up <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}.`,
+          `You pulled off a high-stakes heist, successfully stealing <:coin:706659001164628008> ${stealAmount.toLocaleString(
+            'en'
+          )} from ${user}'s casino.`,
+          `You led your team of thieves to success, making off with <:coin:706659001164628008> ${stealAmount.toLocaleString(
+            'en'
+          )} from ${user}'s mansion.`,
+          `You infiltrated ${user}'s organization and made off with a cool <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}`,
+          `You pulled off the perfect heist, stealing <:coin:706659001164628008> ${stealAmount.toLocaleString(
+            'en'
+          )} from ${user}'s high-security vault.`,
+          `You disguised yourself as a janitor and stole <:coin:706659001164628008> ${stealAmount.toLocaleString('en')} from ${user}'s office.`,
+          `You used your charm and wit to swindle <:coin:706659001164628008> ${stealAmount.toLocaleString('en')} from ${user}.`,
+          `You robbed ${user}'s armored car and made off with <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}`,
+          `You successfully pulled off a cyber heist, stealing <:coin:706659001164628008> ${stealAmount.toLocaleString(
+            'en'
+          )} from ${user}'s online accounts.`,
+          `You and your team executed a flawless heist, stealing <:coin:706659001164628008> ${stealAmount.toLocaleString(
+            'en'
+          )} from ${user}'s high-end jewelry store.`,
+          `You posed as a wealthy investor and swindled <:coin:706659001164628008> ${stealAmount.toLocaleString('en')} from ${user}.`,
+          `You robbed ${user}'s train and made off with <:coin:706659001164628008> ${stealAmount.toLocaleString('en')}`,
+          `You successfully hacked ${user}'s accounts and transferred <:coin:706659001164628008> ${stealAmount.toLocaleString(
+            'en'
+          )} to your own accounts.`,
+          `You pulled off a daring heist and made off with <:coin:706659001164628008> ${stealAmount.toLocaleString('en')} from ${user}'s bank.`,
+          `You outsmarted ${user} and stole <:coin:706659001164628016> ${stealAmount.toLocaleString('en')}`
         ];
 
         const depArg = new EmbedBuilder()
@@ -129,16 +166,17 @@ export const SlashCommandF = class extends SlashCommand {
 
         otherB.bank = calc;
         otherB.total = totalCalc;
-        this.client.setUserBalance.run(otherB);
+        await otherB.save();
 
         const endTime = new Date().getTime() + 240000;
 
-        balance.stealcool = endTime;
+        balance.stealCool = endTime;
         balance.bank = calc2;
         balance.total = totalCalc2;
-        this.client.setBalance.run(balance);
+        await balance.save();
 
         const failMessage = [
+          // 13
           `You tried to mug ${user} but they over-powered you${
             stealAmount > 1 ? ` and took <:coin:706659001164628008> \`${stealAmount.toLocaleString('en')}\`.` : '.'
           }`,
@@ -193,7 +231,7 @@ export const SlashCommandF = class extends SlashCommand {
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
         .addFields({
           name: `**${this.client.user.username} - Steal**`,
-          value: `**◎ Error:** Please wait \`${ms(balance.stealcool - new Date().getTime(), { long: true })}\`, before using this command again!`
+          value: `**◎ Error:** Please wait \`${ms(balance.stealCool - new Date().getTime(), { long: true })}\`, before using this command again!`
         });
       interaction.reply({ ephemeral: true, embeds: [embed] });
     }

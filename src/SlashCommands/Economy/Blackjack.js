@@ -4,6 +4,7 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import blackjack from 'custom-bj';
 import SlashCommand from '../../Structures/SlashCommand.js';
+import Balance from '../../Mongo/Schemas/Balance.js';
 
 const data = new SlashCommandBuilder()
   .setName('blackjack')
@@ -28,7 +29,7 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const subOptions = interaction.options.getSubcommand();
 
-    const balance = this.client.getBalance.get(`${interaction.user.id}-${interaction.guild.id}`);
+    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     if (!balance) {
       const limitE = new EmbedBuilder()
@@ -76,12 +77,12 @@ export const SlashCommandF = class extends SlashCommand {
       case 'WIN':
         balance.bank += Number(houseBet);
         balance.total += Number(houseBet);
-        this.client.setBalance.run(balance);
+        await balance.save();
         break;
       case 'LOSE':
         balance.bank -= Number(betAmt);
         balance.total -= Number(betAmt);
-        this.client.setBalance.run(balance);
+        await balance.save();
         break;
 
       case 'TIE':

@@ -1,5 +1,6 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import SlashCommand from '../../Structures/SlashCommand.js';
+import Balance from '../../Mongo/Schemas/Balance.js';
 
 const data = new SlashCommandBuilder()
   .setName('give')
@@ -20,8 +21,8 @@ export const SlashCommandF = class extends SlashCommand {
     const user = interaction.options.getMember('user');
     const amt = interaction.options.getInteger('amount');
 
-    const balance = this.client.getBalance.get(`${interaction.user.id}-${interaction.guild.id}`);
-    const otherB = this.client.getBalance.get(`${user.id}-${interaction.guild.id}`);
+    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
+    const otherB = await Balance.findOne({ idJoined: `${user.id}-${interaction.guild.id}` });
 
     if (user.id === interaction.user.id) {
       const embed = new EmbedBuilder()
@@ -78,13 +79,13 @@ export const SlashCommandF = class extends SlashCommand {
 
     otherB.bank += numberCov;
     otherB.total = totaCalc1;
-    this.client.setUserBalance.run(otherB);
+    await otherB.save();
 
     const totaCalc2 = balance.total - numberCov;
 
     balance.bank -= numberCov;
     balance.total = totaCalc2;
-    this.client.setBalance.run(balance);
+    await balance.save();
 
     const depArg = new EmbedBuilder()
       .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })

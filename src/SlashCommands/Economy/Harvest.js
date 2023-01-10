@@ -4,10 +4,8 @@
 /* eslint-disable no-param-reassign */
 import { EmbedBuilder } from 'discord.js';
 import prettyMilliseconds from 'pretty-ms';
-import SQLite from 'better-sqlite3';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import Balance from '../../Mongo/Schemas/Balance.js';
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -18,7 +16,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const balance = await this.client.getBalance.get(`${interaction.user.id}-${interaction.guild.id}`);
+    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     let foundBoostList = await JSON.parse(balance.boosts);
 
@@ -44,16 +42,14 @@ export const SlashCommandF = class extends SlashCommand {
       foundPlotList = [];
     }
 
-    foundPlotList.forEach((key) => {
+    foundPlotList.forEach(async (key) => {
       if (Date.now() > key.cropGrowTime) {
         key.cropStatus = 'harvest';
         key.cropGrowTime = 'na';
         key.decay = 0;
 
-        db.prepare('UPDATE balance SET farmPlot = (@farmPlot) WHERE id = (@id);').run({
-          farmPlot: JSON.stringify(foundPlotList),
-          id: `${interaction.user.id}-${interaction.guild.id}`
-        });
+        balance.farmPlot = JSON.stringify(foundPlotList);
+        await balance.save();
       }
     });
 
@@ -201,7 +197,7 @@ export const SlashCommandF = class extends SlashCommand {
     balance.farmPlot = foundPlotList.length ? JSON.stringify(foundPlotList) : null;
     balance.harvestedCrops = JSON.stringify(foundHarvestedList);
 
-    this.client.setBalance.run(balance);
+    await balance.save();
 
     const Embeds = [];
     const TestPages = arr.length;
