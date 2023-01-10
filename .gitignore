@@ -17,7 +17,3 @@ Storage/lavalink/logs
 
 # Giveaway database
 json.sqlite
-
-# Dashboard Sessions
-sessions/*
-!sessions/.gitkeep 
