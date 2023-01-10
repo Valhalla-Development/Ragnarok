@@ -1,13 +1,14 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-restricted-syntax */
 import DBD from 'discord-dashboard';
+import SoftUI from 'dbd-soft-ui';
 import si from 'systeminformation';
-import FileStore from 'session-file-store';
-import session from 'express-session';
-import DarkDashboard from 'dbd-dark-dashboard';
 import { promisify } from 'util';
 import glob from 'glob';
 import url from 'url';
+import MongoStore from 'connect-mongo';
+
 import * as packageFile from '../../package.json' assert { type: 'json' };
 const { version } = packageFile.default;
 
@@ -30,10 +31,6 @@ export const RagnarokDashboard = class RagnarokDashboard {
         return settings;
       });
     }
-
-    const filestorage = FileStore(session);
-    const Handler = new DBD.Handler();
-    // console.log(await Handler.fetch('495602800802398212', 'birthday'));
 
     // Stats
     async function cpuUsage() {
@@ -116,9 +113,11 @@ export const RagnarokDashboard = class RagnarokDashboard {
     DBD.Dashboard = DBD.UpdatedClass();
 
     const Dashboard = new DBD.Dashboard({
-      useCategorySet: true,
       acceptPrivacyPolicy: true,
-      sessionSaveSession: new filestorage({ logFn() {} }),
+      useCategorySet: true,
+      sessionSaveSession: MongoStore.create({
+        mongoUrl: client.config.DBD_DATABASE
+      }),
       minimizedConsoleLogs: true,
       invite: {
         clientId: client.config.DISCORD_CLIENT_ID,
@@ -142,45 +141,226 @@ export const RagnarokDashboard = class RagnarokDashboard {
       useThemeMaintenance: false,
       useTheme404: true,
       bot: client,
-      theme: DarkDashboard({
-        information: {
-          createdBy: 'Ragnarok',
-          websiteTitle: 'Ragnarok',
-          websiteName: 'Ragnarok',
-          websiteUrl: 'https://ragnarokbot.com/',
-          dashboardUrl: 'https://panel.ragnarokbot.com/',
-          supporteMail: 'ragnarlothbrokjr@proton.me',
-          supportServer: 'https://discord.gg/Q3ZhdRJ',
-          imageFavicon: 'https://ragnarokbot.com/assets/favicon.ico',
-          iconURL: 'https://www.ragnarokbot.com/assets/img/logo.png',
-          loggedIn: 'Successfully signed in.',
-          mainColor: '#2CA8FF',
-          subColor: '#ebdbdb',
-          preloader: 'Loading...'
-        },
+      theme: SoftUI({
+        dbdriver: client.config.DBD_DATABASE,
+        customThemeOptions: {
+          index: async ({ req, res, config }) => {
+            const cards = [
+              {
+                title: 'Current Users',
+                icon: 'single-02',
+                getValue: client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en'),
+                progressBar: {
+                  enabled: false,
+                  getProgress: 50 // 0 - 100 (get a percentage of the progress)
+                }
+              },
+              {
+                title: 'Current Guilds',
+                icon: 'single-02',
+                getValue: client.guilds.cache.size.toLocaleString('en'),
+                progressBar: {
+                  enabled: false,
+                  getProgress: 50 // 0 - 100 (get a percentage of the progress)
+                }
+              },
+              {
+                title: 'CPU Usage',
+                icon: 'single-copy-04',
+                getValue: await cpuUsage(),
+                progressBar: {
+                  enabled: false,
+                  getProgress: 50 // 0 - 100 (get a percentage of the progress)
+                }
+              },
+              {
+                title: 'RAM Usage',
+                icon: 'single-copy-04',
+                getValue: await memUsage(),
+                progressBar: {
+                  enabled: false,
+                  getProgress: 50 // 0 - 100 (get a percentage of the progress)
+                }
+              }
+            ];
 
-        index: {
-          card: {
-            category: "Ragnarok's Panel - WIP",
-            title:
-              'This is a temp theme!<br>The theme I would prefer currently has some missing variables for my settings config.<br><br>Once it has been updated, this page will be updated.'
-            // image: 'https://i.imgur.com/axnP93g.png'
-            // footer: 'Footer'
-          },
-          information: {
-            // category: 'Category',
-            // title: 'Information',
-            // description: `This bot and panel is currently a work in progress so contact me if you find any issues on discord.`,
-            // footer: 'Footer'
-          },
-          feeds: {
-            // category: 'Category',
-            // title: 'Information',
-            // description: `This bot and panel is currently a work in progress so contact me if you find any issues on discord.`,
-            // footer: 'Footer'
+            const graph = {
+              values: [690, 524, 345, 645, 478, 592, 468, 783, 459, 230, 621, 345],
+              labels: ['1m', '2m', '3m', '4m', '5m', '6m', '7m', '8m', '9m', '10m']
+            };
+
+            return {
+              cards,
+              graph
+            };
           }
         },
-
+        websiteName: 'Ragnarok',
+        colorScheme: 'red',
+        supporteMail: 'ragnarlothbrokjr@proton.me',
+        locales: {
+          enUS: {
+            name: 'English',
+            index: {
+              feeds: ['Current Users', 'Current Guilds', 'CPU Usage', 'RAM Usage'],
+              card: {
+                // category: 'Soft UI',
+                title: 'Ragnarok - Dashboard',
+                description: `<b>Please note, this is a WIP. It is not connected to any database, so any changes made will NOT take affect. An announcement will be made on the <a href="https://discord.gg/Q3ZhdRJ">support guild</a> when it is complete.</b><br><br>On November 4, 2018, I began my journey of learning how to code by creating my own Discord bot, Ragnarok. Despite having no prior experience with programming, I was determined to make my bot a success.<br>Over the years, I have put in a lot of hard work and dedication to improve my coding skills and the functionality of Ragnarok.<br><br>Today, I am proud to say that Ragnarok has reached <b>version ${version}</b> and is in a stable state, allowing me to focus on expanding its features even further.<br>It has been an amazing journey, and I am grateful for the progress and growth I have experienced along the way.`
+                // footer: 'Learn More'
+              },
+              feedsTitle: 'Feeds',
+              graphTitle: 'Graphs'
+            },
+            manage: {
+              settings: {
+                memberCount: 'Members',
+                info: {
+                  info: 'Info',
+                  server: 'Server Information'
+                }
+              }
+            },
+            privacyPolicy: {
+              title: 'Privacy Policy',
+              description: 'Privacy Policy and Terms of Service',
+              pp: privacyPolicy()
+            },
+            partials: {
+              sidebar: {
+                dash: 'Dashboard',
+                manage: 'Manage Guilds',
+                commands: 'Commands',
+                pp: 'Privacy Policy',
+                admin: 'Admin',
+                account: 'Account Pages',
+                login: 'Sign In',
+                logout: 'Sign Out'
+              },
+              navbar: {
+                home: 'Home',
+                pages: {
+                  manage: 'Manage Guilds',
+                  settings: 'Manage Guilds',
+                  commands: 'Commands',
+                  pp: 'Privacy Policy',
+                  admin: 'Admin Panel',
+                  error: 'Error',
+                  credits: 'Credits',
+                  debug: 'Debug',
+                  leaderboard: 'Leaderboard',
+                  profile: 'Profile',
+                  maintenance: 'Under Maintenance'
+                }
+              },
+              title: {
+                pages: {
+                  manage: 'Manage Guilds',
+                  settings: 'Manage Guilds',
+                  commands: 'Commands',
+                  pp: 'Privacy Policy',
+                  admin: 'Admin Panel',
+                  error: 'Error',
+                  credits: 'Credits',
+                  debug: 'Debug',
+                  leaderboard: 'Leaderboard',
+                  profile: 'Profile',
+                  maintenance: 'Under Maintenance'
+                }
+              },
+              preloader: {
+                // text: 'Page is loading...'
+              },
+              premium: {
+                title: 'Want more from Ragnarok?',
+                description: 'Check out premium features below!',
+                buttonText: 'Become Premium'
+              },
+              settings: {
+                title: 'Site Configuration',
+                description: 'Configurable Viewing Options',
+                theme: {
+                  title: 'Site Theme',
+                  description: 'Make the site more appealing for your eyes!'
+                },
+                language: {
+                  title: 'Site Language',
+                  description: 'Select your preffered language!'
+                }
+              }
+            }
+          }
+        },
+        icons: {
+          favicon: 'https://ragnarokbot.com/assets/favicon.ico',
+          noGuildIcon: 'https://pnggrid.com/wp-content/uploads/2021/05/Discord-Logo-Circle-1024x1024.png',
+          sidebar: {
+            darkUrl: 'https://www.ragnarokbot.com/assets/img/logo.png',
+            lightUrl: 'https://www.ragnarokbot.com/assets/img/logo.png',
+            hideName: true,
+            borderRadius: false,
+            alignCenter: true
+          }
+        },
+        index: {
+          card: {
+            category: 'Soft UI',
+            title: 'Assistants - The center of everything',
+            description:
+              "Assistants Discord Bot management panel. Assistants Bot was created to give others the ability to do what they want. Just.<br>That's an example text.<br><br><b><i>Feel free to use HTML</i></b>",
+            image: '/img/soft-ui.webp',
+            link: {
+              enabled: true,
+              url: 'https://ragnarokbot.com/'
+            }
+          },
+          graph: {
+            enabled: false,
+            lineGraph: false,
+            title: 'Memory Usage',
+            tag: 'Memory (MB)',
+            max: 100
+          }
+        },
+        preloader: {
+          image: '/img/soft-ui.webp',
+          spinner: true,
+          text: 'Page is loading'
+        },
+        sidebar: {
+          gestures: {
+            disabled: false,
+            gestureTimer: 200,
+            gestureSensitivity: 50
+          }
+        },
+        error: {
+          error404: {
+            title: 'Error 404',
+            subtitle: 'Page Not Found',
+            description: 'It seems you have stumbled into the abyss. Click the button below to return to the dashboard'
+          },
+          dbdError: {
+            disableSecretMenu: false,
+            secretMenuCombination: ['69', '82', '82', '79', '82']
+          }
+        },
+        sweetalert: {
+          errors: {
+            requirePremium: 'You need to be a premium member to do this.'
+          },
+          success: {
+            login: 'Successfully logged in.'
+          }
+        },
+        admin: {
+          pterodactyl: {
+            enabled: false,
+            apiKey: 'apiKey',
+            panelLink: 'https://panel.ragnarokbot.com',
+            serverUUIDs: []
+          }
+        },
         commands
       }),
       settings: await loadCommands(client)
@@ -188,7 +368,7 @@ export const RagnarokDashboard = class RagnarokDashboard {
     Dashboard.init();
 
     function privacyPolicy() {
-      const privacyPolicy = `<h1>Privacy Policy for Ragnarok</h1>
+      const policy = `<h1>Privacy Policy for Ragnarok</h1>
 
 <p>At Ragnarok, accessible from <a href="https://ragnarokbot.com">https://ragnarokbot.com</a> and <a href="https://panel.ragnarokbot.com">https://panel.ragnarokbot.com</a>;
 , one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by Ragnarok and how we use it.</p>
@@ -222,7 +402,7 @@ export const RagnarokDashboard = class RagnarokDashboard {
 <h2>Consent</h2>
 
 <p>By using our website, you hereby consent to our Privacy Policy and agree to its Terms and Conditions.</p>`;
-      return privacyPolicy;
+      return policy;
     }
   }
 };
