@@ -98,7 +98,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     const logProgress = async (name, item, i) => {
       if (item.length > 1) {
-        console.log(`${name} ${i}/${item.length.toLocaleString('en')}`);
+        console.log(`${name} ${i.toLocaleString('en')}/${item.length.toLocaleString('en')}`);
       }
     };
 
@@ -177,7 +177,7 @@ export const SlashCommandF = class extends SlashCommand {
             await new AutoRole({
               _id: mongoose.Types.ObjectId(),
               guildId: entry.guildid,
-              role: entry.status === 'on'
+              role: entry.role
             })
               .save()
               .catch(console.error);
@@ -198,7 +198,7 @@ export const SlashCommandF = class extends SlashCommand {
               hourly: entry.hourly,
               daily: entry.daily,
               weekly: entry.weekly,
-              monthly: entry.montly,
+              monthly: entry.monthly,
               stealCool: entry.stealcool,
               fishCool: entry.fishcool,
               farmCool: entry.farmcool,
@@ -456,7 +456,9 @@ export const SlashCommandF = class extends SlashCommand {
         const minutes = Math.floor(timeDifference / 60000);
         const seconds = Math.floor((timeDifference % 60000) / 1000);
 
-        console.log(`\n\n[DB Migration] Completed ${totalLength} properties!\nTime taken: ${minutes} minutes ${seconds} seconds\n\n`);
+        console.log(
+          `\n\n[DB Migration] Completed ${totalLength.toLocaleString('en')} properties!\nTime taken: ${minutes} minutes ${seconds} seconds\n\n`
+        );
       })();
     } catch (e) {
       console.log(e);
@@ -470,7 +472,6 @@ export const SlashCommandF = class extends SlashCommand {
             status: true
           });
           await levelStatus.save().catch(console.error);
-    i++
           console.log('new saved', levelStatus);
         } else {
           console.log(levelStatus);
