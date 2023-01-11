@@ -275,12 +275,24 @@ export const RagnarokClient = class RagnarokClient extends Client {
   }
 
   async start(token = this.token) {
-    await this.utils.loadSlashCommands();
-    await this.utils.loadEvents();
-    await this.utils.loadFunctions();
-    await this.utils.loadMongoEvents();
-    await this.utils.loadDashboard();
-    await super.login(token);
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    const time = 200;
+
+    const loadSequentially = async () => {
+      await this.utils.loadSlashCommands();
+      await sleep(time);
+      await this.utils.loadEvents();
+      await sleep(time);
+      await this.utils.loadFunctions();
+      await sleep(time);
+      await this.utils.loadMongoEvents();
+      await sleep(time);
+      await super.login(token);
+      await sleep(time);
+      await this.utils.loadDashboard();
+    };
+
+    loadSequentially();
   }
 };
 
