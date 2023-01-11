@@ -9,7 +9,7 @@ import url from 'url';
 import mongoose from 'mongoose';
 import Event from './Event.js';
 import SlashCommand from './SlashCommand.js';
-import RagnarokDashboard from './RagnarokDashboard.js';
+import RagnarokDashboard from '../Dashboard/RagnarokDashboard.js';
 
 const globPromise = promisify(glob);
 
