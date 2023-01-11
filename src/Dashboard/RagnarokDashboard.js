@@ -136,18 +136,18 @@ export const RagnarokDashboard = class RagnarokDashboard {
         infoCards: [
           {
             title: client.slashCommands.size.toLocaleString('en'),
-            subtitle: 'Commands',
-            description: `Ragnarok is constantly expanding, there are currently ${client.slashCommands.size.toLocaleString('en')} commands!`
+            subtitle: 'Commands'
+            // description: `Ragnarok is constantly expanding, there are currently ${client.slashCommands.size.toLocaleString('en')} commands!`
           },
           {
             title: client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en'),
-            subtitle: 'Users',
-            description: `Ragnarok serves ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} users!`
+            subtitle: 'Users'
+            // description: `Ragnarok serves ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} users!`
           },
           {
             title: client.guilds.cache.size.toLocaleString('en'),
-            subtitle: 'Guilds',
-            description: `Ragnarok is currently serving ${client.guilds.cache.size.toLocaleString('en')} guilds!`
+            subtitle: 'Guilds'
+            // description: `Ragnarok is currently serving ${client.guilds.cache.size.toLocaleString('en')} guilds!`
           }
         ]
       },
