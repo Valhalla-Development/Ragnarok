@@ -3,7 +3,9 @@
 /* eslint-disable no-unused-vars */
 import SoftUI from 'dbd-soft-ui';
 import si from 'systeminformation';
+import Keyv from '@keyv/mongo';
 import * as packageFile from '../../../package.json' assert { type: 'json' };
+
 const { version } = packageFile.default;
 
 async function ThemeConfig(client) {
@@ -85,16 +87,14 @@ async function ThemeConfig(client) {
   }
 
   const config = SoftUI({
-    dbdriver: client.config.DBD_DATABASE,
+    dbdriver: new Keyv(client.config.DBD_DATABASE),
     customThemeOptions: {
-      info: async ({ config }) => {
-        return {
-          useUnderMaintenance: true,
-          ownerIDs: [],
-          blacklistIDs: [],
-          premiumCard: false
-        };
-      },
+      info: async ({ config }) => ({
+        useUnderMaintenance: true,
+        ownerIDs: [],
+        blacklistIDs: [],
+        premiumCard: false
+      }),
       index: async ({ req, res, config }) => {
         const cards = [
           {
