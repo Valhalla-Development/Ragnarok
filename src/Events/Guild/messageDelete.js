@@ -1,9 +1,7 @@
 import { EmbedBuilder, AuditLogEvent } from 'discord.js';
-import SQLite from 'better-sqlite3';
+import Logging from '../../Mongo/Schemas/Logging.js';
 import Event from '../../Structures/Event.js';
 import RagnarokEmbedF from '../../Structures/RagnarokEmbed.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
 
 export const EventF = class extends Event {
   async run(message) {
@@ -11,7 +9,7 @@ export const EventF = class extends Event {
     if (message.guild) {
       if (!message.author || message.author.bot) return;
 
-      const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${message.guild.id};`).get();
+      const id = await Logging.findOne({ guildId: message.guild.id });
       if (!id) return;
       const logs = id.channel;
       if (!logs) return;

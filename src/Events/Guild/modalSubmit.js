@@ -1,15 +1,14 @@
-import SQLite from 'better-sqlite3';
 import { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } from 'discord.js';
 import discordTranscripts from 'discord-html-transcripts';
 import fetch from 'node-fetch';
 import Event from '../../Structures/Event.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import TicketConfig from '../../Mongo/Schemas/TicketConfig.js';
+import Tickets from '../../Mongo/Schemas/Tickets.js';
 
 export const EventF = class extends Event {
   async run(modal) {
     if (modal.customId === `modal-${modal.channelId}`) {
-      const fetchTick = db.prepare('SELECT * FROM tickets').all();
+      const fetchTick = await Tickets.find();
       if (!fetchTick) return;
 
       // Filter fetchTick where chanid === interaction.channel.id
@@ -77,10 +76,7 @@ export const EventF = class extends Event {
 
       const channelArgs = modal.channel.name.split('-');
 
-      const deleteTicket = db.prepare(`DELETE FROM tickets WHERE guildid = ${modal.guild.id} AND ticketid = (@ticketid)`);
-      deleteTicket.run({
-        ticketid: channelArgs[channelArgs.length - 1]
-      });
+      await Tickets.deleteOne({ guildId: modal.guild.id, ticketId: channelArgs[channelArgs.length - 1] }); //!
 
       const epoch = Math.floor(new Date().getTime() / 1000);
 
@@ -130,7 +126,7 @@ export const EventF = class extends Event {
           .catch(() => {});
       }
 
-      const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${modal.guild.id};`).get();
+      const logget = await TicketConfig.findOne({ guildId: modal.guild.id });
       if (!logget) {
         return;
       }

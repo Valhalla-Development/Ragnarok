@@ -1,14 +1,13 @@
 /* eslint-disable no-restricted-syntax */
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import SQLite from 'better-sqlite3';
 import Event from '../../Structures/Event.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import RoleMenu from '../../Mongo/Schemas/RoleMenu.js';
+import Logging from '../../Mongo/Schemas/Logging.js';
 
 export const EventF = class extends Event {
   async run(role) {
-    function checkRoleMenu(clientGrab) {
-      const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${role.guild.id}`).get();
+    async function checkRoleMenu(clientGrab) {
+      const foundRoleMenu = await RoleMenu.findOne({ guildId: role.guild.id });
 
       if (!foundRoleMenu?.roleList?.length) return;
 
@@ -17,10 +16,14 @@ export const EventF = class extends Event {
       if (roleArray.includes(role.id)) {
         roleArray.splice(roleArray.indexOf(role.id), 1);
 
-        const updateRoleMenu = db.prepare(`UPDATE rolemenu SET roleList = (@roleList) WHERE guildid=${role.guild.id}`);
-        updateRoleMenu.run({
-          roleList: JSON.stringify(roleArray)
-        });
+        await RoleMenu.findOneAndUpdate(
+          {
+            guildId: role.guild.id
+          },
+          {
+            roleList: JSON.stringify(roleArray)
+          }
+        );
 
         // Update rolemenu if exists
         if (foundRoleMenu.activeRoleMenuID) {
@@ -68,7 +71,7 @@ export const EventF = class extends Event {
     }
     checkRoleMenu(this.client);
 
-    const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${role.guild.id};`).get();
+    const id = await Logging.findOne({ guildId: role.guild.id });
     if (!id) return;
 
     const logs = id.channel;

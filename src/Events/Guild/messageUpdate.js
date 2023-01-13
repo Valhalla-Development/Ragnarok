@@ -1,23 +1,22 @@
 import { EmbedBuilder, PermissionsBitField } from 'discord.js';
-import SQLite from 'better-sqlite3';
 import urlRegexSafe from 'url-regex-safe';
 import RagnarokEmbedF from '../../Structures/RagnarokEmbed.js';
 import Event from '../../Structures/Event.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import Logging from '../../Mongo/Schemas/Logging.js';
+import AdsProtection from '../../Mongo/Schemas/AdsProtection.js';
 
 export const EventF = class extends Event {
   async run(oldMessage, newMessage) {
     if (!newMessage.guild || oldMessage.content === newMessage.content || newMessage.author.bot) return;
-    const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(newMessage.guild.id);
-    if (adsprot['count(*)']) {
+    const adsprot = await AdsProtection.findOne({ guildId: newMessage.guild.id });
+    if (adsprot) {
       if (!newMessage.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
         const npPerms = new EmbedBuilder().setColor(this.client.utils.color(newMessage.guild.members.me.displayHexColor)).addFields({
           name: `**${this.client.user.username} - Ads Protection**`,
           value: '**◎ Error:** I do not have the `Manage Messages` permissions. Disabling Ads Protection.'
         });
         newMessage.channel.send({ embeds: [npPerms] }).then((m) => newMessage.utils.deletableCheck(m, 0));
-        db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(newMessage.guild.id);
+        await AdsProtection.deleteOne({ guildId: newMessage.guild.id }); //!
         return;
       }
       if (!newMessage.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
@@ -33,7 +32,7 @@ export const EventF = class extends Event {
       }
     }
 
-    const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${oldMessage.guild.id};`).get();
+    const id = await Logging.findOne({ guildId: oldMessage.guild.id });
     if (!id) return;
 
     const logs = id.channel;

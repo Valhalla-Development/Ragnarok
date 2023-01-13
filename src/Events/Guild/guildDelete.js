@@ -1,8 +1,17 @@
-import SQLite from 'better-sqlite3';
 import { ActivityType } from 'discord.js';
+import AdsProtection from '../../Mongo/Schemas/AdsProtection.js';
+import AutoRole from '../../Mongo/Schemas/AutoRole.js';
+import BirthdayConfig from '../../Mongo/Schemas/BirthdayConfig.js';
+import Dad from '../../Mongo/Schemas/Dad.js';
+import Hastebin from '../../Mongo/Schemas/Hastebin.js';
+import Logging from '../../Mongo/Schemas/Logging.js';
+import RoleMenu from '../../Mongo/Schemas/RoleMenu.js';
+import TempBan from '../../Mongo/Schemas/TempBan.js';
+import TicketConfig from '../../Mongo/Schemas/TicketConfig.js';
+import Welcome from '../../Mongo/Schemas/Welcome.js';
+import Tickets from '../../Mongo/Schemas/Tickets.js';
 import Event from '../../Structures/Event.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import StarBoard from '../../Mongo/Schemas/StarBoard.js';
 
 export const EventF = class extends Event {
   async run(guild) {
@@ -18,76 +27,40 @@ export const EventF = class extends Event {
     );
 
     // adsprot table
-    const delads = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?;').get(guild.id);
-    if (delads['count(*)']) {
-      db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(guild.id);
-    }
+    await AdsProtection.deleteMany({ guildId: guild.id });
 
     // autorole table
-    const delaut = db.prepare('SELECT count(*) FROM autorole WHERE guildid = ?;').get(guild.id);
-    if (delaut['count(*)']) {
-      db.prepare('DELETE FROM autorole WHERE guildid = ?').run(guild.id);
-    }
+    await AutoRole.deleteMany({ guildId: guild.id });
 
     // ban table
-    const delban = db.prepare('SELECT count(*) FROM ban WHERE guildid = ?;').get(guild.id);
-    if (delban['count(*)']) {
-      db.prepare('DELETE FROM ban WHERE guildid = ?').run(guild.id);
-    }
+    await TempBan.deleteMany({ guildId: guild.id });
 
     // birthdayConfig table
-    const delbdayconf = db.prepare('SELECT count(*) FROM birthdayConfig WHERE guildid = ?;').get(guild.id);
-    if (delbdayconf['count(*)']) {
-      db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(guild.id);
-    }
+    await BirthdayConfig.deleteMany({ guildId: guild.id });
 
     // dadbot table
-    const deldad = db.prepare('SELECT count(*) FROM dadbot WHERE guildid = ?;').get(guild.id);
-    if (deldad['count(*)']) {
-      db.prepare('DELETE FROM dadbot WHERE guildid = ?').run(guild.id);
-    }
+    await Dad.deleteMany({ guildId: guild.id });
 
     // hastebin table
-    const delhaste = db.prepare('SELECT count(*) FROM hastebin WHERE guildid = ?;').get(guild.id);
-    if (delhaste['count(*)']) {
-      db.prepare('DELETE FROM hastebin WHERE guildid = ?').run(guild.id);
-    }
+    await Hastebin.deleteMany({ guildId: guild.id });
 
     // logging table
-    const dellog = db.prepare('SELECT count(*) FROM logging WHERE guildid = ?;').get(guild.id);
-    if (dellog['count(*)']) {
-      db.prepare('DELETE FROM logging WHERE guildid = ?').run(guild.id);
-    }
+    await Logging.deleteMany({ guildId: guild.id });
 
     // rolemenu table
-    const delrol = db.prepare('SELECT count(*) FROM rolemenu WHERE guildid = ?;').get(guild.id);
-    if (delrol['count(*)']) {
-      db.prepare('DELETE FROM rolemenu WHERE guildid = ?').run(guild.id);
-    }
+    await RoleMenu.deleteMany({ guildId: guild.id });
 
     // setwelcome table
-    const delwel = db.prepare('SELECT count(*) FROM setwelcome WHERE guildid = ?;').get(guild.id);
-    if (delwel['count(*)']) {
-      db.prepare('DELETE FROM setwelcome WHERE guildid = ?').run(guild.id);
-    }
+    await Welcome.deleteMany({ guildId: guild.id });
 
     // ticketConfig table
-    const deltic = db.prepare('SELECT count(*) FROM ticketConfig WHERE guildid = ?;').get(guild.id);
-    if (deltic['count(*)']) {
-      db.prepare('DELETE FROM ticketConfig WHERE guildid = ?').run(guild.id);
-    }
+    await TicketConfig.deleteMany({ guildId: guild.id });
 
     // tickets table
-    const delticlog = db.prepare('SELECT count(*) FROM tickets WHERE guildid = ?;').get(guild.id);
-    if (delticlog['count(*)']) {
-      db.prepare('DELETE FROM tickets WHERE guildid = ?').run(guild.id);
-    }
+    await Tickets.deleteMany({ guildId: guild.id });
 
     // starboard table
-    const delstarboard = db.prepare('SELECT count(*) FROM starboard WHERE guildid = ?;').get(guild.id);
-    if (delstarboard['count(*)']) {
-      db.prepare('DELETE FROM starboard WHERE guildid = ?').run(guild.id);
-    }
+    await StarBoard.deleteMany({ guildId: guild.id });
   }
 };
 

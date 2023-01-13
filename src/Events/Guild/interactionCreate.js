@@ -12,13 +12,15 @@ import {
   codeBlock
 } from 'discord.js';
 import moment from 'moment';
-import SQLite from 'better-sqlite3';
 import { customAlphabet } from 'nanoid';
 import discordTranscripts from 'discord-html-transcripts';
 import fetchPkg from 'node-fetch';
+import mongoose from 'mongoose';
 import Event from '../../Structures/Event.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import Logging from '../../Mongo/Schemas/Logging.js';
+import Tickets from '../../Mongo/Schemas/Tickets.js';
+import TicketConfig from '../../Mongo/Schemas/TicketConfig.js';
+import RoleMenu from '../../Mongo/Schemas/RoleMenu.js';
 
 const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 
@@ -95,7 +97,7 @@ export const EventF = class extends Event {
       }
 
       // Logging command exectuion
-      const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${interaction.guild.id};`).get();
+      const id = await Logging.findOne({ guildId: interaction.guild.id });
       if (!id) return;
 
       const logs = id.channel;
@@ -103,11 +105,11 @@ export const EventF = class extends Event {
 
       if (id) {
         if (id.channel === null) {
-          db.prepare(`DELETE FROM logging WHERE guildid = ${interaction.guild.id}`).run();
+          await Logging.deleteOne({ guildId: interaction.guild.id });
           return;
         }
         if (!interaction.guild.channels.cache.find((channel) => channel.id === id.channel)) {
-          db.prepare(`DELETE FROM logging WHERE guildid = ${interaction.guild.id}`).run();
+          await Logging.deleteOne({ guildId: interaction.guild.id });
           return;
         }
       }
@@ -134,7 +136,7 @@ export const EventF = class extends Event {
 
     if (interaction.type === InteractionType.ModalSubmit) {
       if (interaction.customId === `modal-${interaction.channelId}`) {
-        const fetchTick = db.prepare('SELECT * FROM tickets').all();
+        const fetchTick = await Tickets.find();
         if (!fetchTick) return;
 
         // Filter fetchTick where chanid === interaction.channel.id
@@ -203,14 +205,11 @@ export const EventF = class extends Event {
 
         const channelArgs = interaction.channel.name.split('-');
 
-        const deleteTicket = db.prepare(`DELETE FROM tickets WHERE guildid = ${interaction.guild.id} AND ticketid = (@ticketid)`);
-        deleteTicket.run({
-          ticketid: channelArgs[channelArgs.length - 1]
-        });
+        await Tickets.deleteOne({ guildId: interaction.guild.id, ticketId: channelArgs[channelArgs.length - 1] }); //!
 
         const epoch = Math.floor(new Date().getTime() / 1000);
 
-        const user = this.client.users.cache.find((a) => a.id === ticket.authorid);
+        const user = this.client.users.cache.find((a) => a.id === ticket.authorId);
         if (user) {
           const logEmbed = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -256,7 +255,7 @@ export const EventF = class extends Event {
             .catch(() => {});
         }
 
-        const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${interaction.guild.id};`).get();
+        const logget = await TicketConfig.findOne({ guildId: interaction.guild.id });
         if (!logget) {
           return;
         }
@@ -311,21 +310,25 @@ export const EventF = class extends Event {
     if (interaction.customId === 'closeTicket' || interaction.customId === 'closeTicketReason') {
       // Check if the button is inside a valid ticket
       const guild = this.client.guilds.cache.get(interaction.guild.id);
-      const fetchRole = db.prepare(`SELECT * FROM ticketConfig WHERE guildid = ${guild.id}`).get();
+      const fetchRole = await TicketConfig.findOne({ guildId: guild.id });
       if (!fetchRole) return;
 
       if (fetchRole.role) {
         if (!guild.roles.cache.find((role) => role.id === fetchRole.role)) {
-          const updateRole = db.prepare(`UPDATE ticketConfig SET role = (@role) WHERE guildid = ${guild.id}`);
-          updateRole.run({
-            role: null
-          });
+          await TicketConfig.findOneAndUpdate(
+            {
+              guildId: guild.id
+            },
+            {
+              role: null
+            }
+          );
         }
       }
 
       const modRole = interaction.guild.roles.cache.find((supId) => supId.id === fetchRole.role);
 
-      const fetchTick = db.prepare('SELECT * FROM tickets').all();
+      const fetchTick = await Tickets.find();
       if (!fetchTick) return;
 
       // Filter fetchTick where chanid === interaction.channel.id
@@ -424,14 +427,11 @@ export const EventF = class extends Event {
 
         const channelArgs = interaction.channel.name.split('-');
 
-        const deleteTicket = db.prepare(`DELETE FROM tickets WHERE guildid = ${guild.id} AND ticketid = (@ticketid)`);
-        deleteTicket.run({
-          ticketid: channelArgs[channelArgs.length - 1]
-        });
+        await Tickets.deleteOne({ guildId: interaction.guild.id, ticketId: channelArgs[channelArgs.length - 1] }); //!
 
         const epoch = Math.floor(new Date().getTime() / 1000);
 
-        const user = this.client.users.cache.find((a) => a.id === ticket.authorid);
+        const user = this.client.users.cache.find((a) => a.id === ticket.authorId);
         if (user) {
           const logEmbed = new EmbedBuilder()
             .setColor(this.client.utils.color(guild.members.me.displayHexColor))
@@ -476,10 +476,7 @@ export const EventF = class extends Event {
             .catch(() => {});
         }
 
-        const logget = db.prepare(`SELECT log FROM ticketConfig WHERE guildid = ${guild.id};`).get();
-        if (!logget) {
-          return;
-        }
+        const logget = await TicketConfig.findOne({ guildId: guild.id });
 
         const logchan = guild.channels.cache.find((chan) => chan.id === logget.log);
         if (!logchan) {
@@ -550,7 +547,7 @@ export const EventF = class extends Event {
     if (interaction.customId === 'createTicket') {
       // Ticket Embed
       const guild = this.client.guilds.cache.get(interaction.guild.id);
-      const fetch = db.prepare(`SELECT * FROM ticketConfig WHERE guildid = ${guild.id}`).get();
+      const fetch = await TicketConfig.findOne({ guildId: guild.id });
       if (!fetch) {
         const alreadyTicket = new EmbedBuilder().setColor(this.client.utils.color(guild.members.me.displayHexColor)).addFields({
           name: `**${this.client.user.username} - Ticket**`,
@@ -577,7 +574,7 @@ export const EventF = class extends Event {
         return;
       }
 
-      const fetchBlacklist = db.prepare(`SELECT blacklist FROM ticketConfig WHERE guildid=${interaction.guild.id}`).get();
+      const fetchBlacklist = await TicketConfig.findOne({ guildId: interaction.guild.id });
 
       let foundBlacklist;
 
@@ -609,29 +606,33 @@ export const EventF = class extends Event {
       }
 
       // Make sure this is the user's only ticket.
-      const foundTicket = db.prepare(`SELECT authorid FROM tickets WHERE guildid = ${guild.id} AND authorid = (@authorid)`);
-      const checkTicketEx = db.prepare(`SELECT chanid FROM tickets WHERE guildid = ${guild.id} AND authorid = ${interaction.user.id}`).get();
+      const checkTicketEx = await Tickets.findOne({ guildId: guild.id, authorId: interaction.user.id });
 
       if (checkTicketEx) {
         if (checkTicketEx.chanid === null) {
-          db.prepare(`DELETE FROM tickets WHERE guildid = ${guild.id} AND authorid = ${interaction.user.id}`).run();
+          await Tickets.deleteOne({ guildId: guild.id, authorId: interaction.user.id }); //!
         }
         if (!guild.channels.cache.find((ch) => ch.id === checkTicketEx.chanid)) {
-          db.prepare(`DELETE FROM tickets WHERE guildid = ${guild.id} AND authorid = ${interaction.user.id}`).run();
+          await Tickets.deleteOne({ guildId: guild.id, authorId: interaction.user.id }); //!
         }
       }
 
       if (fetch.role) {
         if (!guild.roles.cache.find((role) => role.id === fetch.role)) {
-          const updateRole = db.prepare(`UPDATE ticketConfig SET role = (@role) WHERE guildid = ${guild.id}`);
-          updateRole.run({
-            role: null
-          });
+          await TicketConfig.findOneAndUpdate(
+            {
+              guildId: guild.id
+            },
+            {
+              role: null
+            }
+          );
         }
       }
 
       // Already has a ticket
-      if (foundTicket.get({ authorid: interaction.user.id })) {
+      const foundTicket = await Tickets.findOne({ guildId: guild.id, authorId: interaction.user.id });
+      if (foundTicket) {
         try {
           const cha = guild.channels.cache.get(checkTicketEx.chanid);
           const alreadyTicket = new EmbedBuilder().setColor(this.client.utils.color(guild.members.me.displayHexColor)).addFields({
@@ -648,27 +649,31 @@ export const EventF = class extends Event {
       }
 
       // Make Ticket
-      const id = db.prepare(`SELECT category FROM ticketConfig WHERE guildid = ${guild.id};`).get();
+      const id = await TicketConfig.findOne({ guildId: guild.id });
       const reason = '';
       const randomString = nanoid();
       const nickName = guild.members.cache.get(interaction.user.id).displayName;
 
-      const newTicket = db.prepare('INSERT INTO tickets (guildid, ticketid, authorid, reason) values (@guildid, @ticketid, @authorid, @reason);');
-      newTicket.run({
-        guildid: guild.id,
-        ticketid: randomString,
-        authorid: interaction.user.id,
+      await new Tickets({
+        _id: mongoose.Types.ObjectId(),
+        guildId: guild.id,
+        ticketId: randomString,
+        authorId: interaction.user.id,
         reason
-      });
+      }).save();
 
       let ticategory;
       if (interaction.guild.channels.cache.find((chan) => chan.id === id.category)) {
         ticategory = id.category;
       } else {
-        const deleteCat = db.prepare(`UPDATE ticketConfig SET category = (@category) WHERE guildid = ${interaction.guild.id}`);
-        deleteCat.run({
-          category: null
-        });
+        await TicketConfig.findOneAndUpdate(
+          {
+            guildId: interaction.guild.id
+          },
+          {
+            category: null
+          }
+        );
       }
 
       // Create the channel with the name "ticket-" then the user's ID.
@@ -688,18 +693,21 @@ export const EventF = class extends Event {
             name: `${category.name}`,
             reason: 'max channels per category reached'
           })
-          .then((chn) => {
+          .then(async (chn) => {
             chn.setParent(category.parentId);
             chn.setPosition(category.rawPosition + 1);
 
             newId = chn.id;
 
             // Update the database
-            const update = db.prepare('UPDATE ticketConfig SET category = (@category) WHERE guildid = (@guildid);');
-            update.run({
-              guildid: `${interaction.guild.id}`,
-              category: `${chn.id}`
-            });
+            await TicketConfig.findOneAndUpdate(
+              {
+                guildId: interaction.guild.id
+              },
+              {
+                category: chn.id
+              }
+            );
           });
       }
 
@@ -731,12 +739,17 @@ export const EventF = class extends Event {
             }
           ]
         })
-        .then((c) => {
-          const updateTicketChannel = db.prepare(`UPDATE tickets SET chanid = (@chanid) WHERE guildid = ${guild.id} AND ticketid = (@ticketid)`);
-          updateTicketChannel.run({
-            chanid: c.id,
-            ticketid: randomString
-          });
+        .then(async (c) => {
+          await Tickets.findOneAndUpdate(
+            {
+              guildId: guild.id,
+              ticketId: randomString
+            },
+            {
+              channelId: c.id
+            }
+          );
+
           const newTicketE = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Ticket**`,
             value: `**◎ Success:** Your ticket has been created, <#${c.id}>.`
@@ -820,7 +833,7 @@ export const EventF = class extends Event {
       const role = guild.roles.cache.get(roleTrim);
 
       // Fetch the db
-      const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${interaction.guild.id}`).get();
+      const foundRoleMenu = await RoleMenu.findOne({ guildId: interaction.guild.id });
 
       // Parse the data
       const roleArray = JSON.parse(foundRoleMenu.roleList);
@@ -840,10 +853,14 @@ export const EventF = class extends Event {
         });
         interaction.reply({ embeds: [alreadyRole], ephemeral: true });
 
-        db.prepare('UPDATE rolemenu SET activeRoleMenuID = (@activeRoleMenuID), roleList = (@roleList) WHERE guildid = (@guildid);').run({
-          roleList: JSON.stringify(roleArrayCleaned),
-          guildid: `${interaction.guild.id}`
-        });
+        await RoleMenu.findOneAndUpdate(
+          {
+            guildId: interaction.guild.id
+          },
+          {
+            roleList: JSON.stringify(roleArrayCleaned)
+          }
+        );
         return;
       }
 

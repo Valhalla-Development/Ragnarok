@@ -1,10 +1,8 @@
 /* eslint-disable max-depth */
 /* eslint-disable no-useless-escape */
 import { EmbedBuilder, PermissionsBitField } from 'discord.js';
-import SQLite from 'better-sqlite3';
+import StarBoard from '../../Mongo/Schemas/StarBoard.js';
 import Event from '../../Structures/Event.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
 
 export const EventF = class extends Event {
   async run(messageReaction, user) {
@@ -21,19 +19,19 @@ export const EventF = class extends Event {
     if (!message) return;
 
     // Starboard check
-    const id = db.prepare(`SELECT channel FROM starboard WHERE guildid = ${message.guild.id};`).get();
+    const id = await StarBoard.findOne({ guildId: message.guild.id });
     if (!id) return;
 
     const chn = id.channel;
     if (!chn) return;
 
     if (id.channel === null) {
-      db.prepare(`DELETE FROM starboard WHERE guildid = ${message.guild.id}`).run();
+      await StarBoard.deleteOne({ guildId: message.guild.id }); //!
       return;
     }
 
     if (!message.guild.channels.cache.find((channel) => channel.id === id.channel)) {
-      db.prepare(`DELETE FROM starboard WHERE guildid = ${message.guild.id}`).run();
+      await StarBoard.deleteOne({ guildId: message.guild.id }); //!
       return;
     }
 

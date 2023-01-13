@@ -1,8 +1,6 @@
-import SQLite from 'better-sqlite3';
 import { ChannelType } from 'discord.js';
 import Event from '../../Structures/Event.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import TicketConfig from '../../Mongo/Schemas/TicketConfig.js';
 
 export const EventF = class extends Event {
   async run(event) {
@@ -16,12 +14,20 @@ export const EventF = class extends Event {
         if (channel.type === ChannelType.DM) return;
 
         if (data.user_id === grabClient.user.id) return;
-        const getTicketEmbed = db.prepare(`SELECT * FROM ticketConfig WHERE guildid = ${data.guild_id}`).get();
+
+        const getTicketEmbed = await TicketConfig.findOne({ guildId: data.guild_id });
         if (!getTicketEmbed || !getTicketEmbed.ticketembed) {
           return;
         }
         if (getTicketEmbed.ticketconfig === data.id) {
-          db.prepare(`UPDATE ticketConfig SET ticketembed = '' WHERE guildid = ${data.guild_id}`).run();
+          await TicketConfig.findOneAndUpdate(
+            {
+              guildId: data.guild_id
+            },
+            {
+              embed: null
+            }
+          );
         }
       }
     }

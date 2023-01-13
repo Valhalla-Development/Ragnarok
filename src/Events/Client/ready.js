@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-import SQLite from 'better-sqlite3';
 import { EmbedBuilder, ActivityType } from 'discord.js';
 import moment from 'moment';
 import { CronJob } from 'cron';
@@ -7,8 +6,12 @@ import fetch from 'node-fetch';
 import { load } from 'cheerio';
 import Table from 'cli-table3';
 import Event from '../../Structures/Event.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import StarBoard from '../../Mongo/Schemas/StarBoard.js';
+import Balance from '../../Mongo/Schemas/Balance.js';
+import Birthdays from '../../Mongo/Schemas/Birthdays.js';
+import BirthdayConfig from '../../Mongo/Schemas/BirthdayConfig.js';
+import TempBan from '../../Mongo/Schemas/TempBan.js';
+import Logging from '../../Mongo/Schemas/Logging.js';
 
 export const EventF = class extends Event {
   constructor(...args) {
@@ -43,11 +46,9 @@ export const EventF = class extends Event {
 
     console.log(table.toString());
 
-    setTimeout(() => {
-      console.log(
-        `Invite Link: \u001b[34m\u001b[1m\u001b[4mhttps://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot&permissions=2050485471\u001b[24m\u001b[39m\u001b[22m\n`
-      );
-    }, 1000);
+    console.log(
+      `Invite Link: \u001b[34m\u001b[1m\u001b[4mhttps://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot&permissions=2050485471\u001b[24m\u001b[39m\u001b[22m\n`
+    );
 
     this.client.user.setActivity(
       `/help |
@@ -58,106 +59,11 @@ export const EventF = class extends Event {
       }
     );
 
-    // Database Creation
-    async function createTableIfNotExists(tableName, tableSchema, unique) {
-      const tableExists = db.prepare('SELECT count(*) FROM sqlite_master WHERE type=\'table\' AND name = ?').get(tableName);
-      if (!tableExists['count(*)']) {
-        console.log(`${tableName} table created!`);
-        await db.prepare(`CREATE TABLE IF NOT EXISTS ${tableName} ${tableSchema}`).run();
-        await db.prepare(`CREATE UNIQUE INDEX idx_${tableName}_id ON ${tableName} (${unique})`).run();
-        await db.pragma('synchronous', { value: 1 });
-        await db.pragma('journal_mode', { value: 'wal' });
-      }
-    }
-
-    // Birthday table
-    await createTableIfNotExists('birthdays', '(userid TEXT PRIMARY KEY, birthday TEXT, lastRun BLOB)', 'userid');
-
-    // Birthday Config table
-    await createTableIfNotExists('birthdayConfig', '(guildid TEXT PRIMARY KEY, channel TEXT, role TEXT)', 'guildid');
-
-    // Ban table
-    await createTableIfNotExists('ban', '(id TEXT PRIMARY KEY, guildid TEXT, userid TEXT, endtime TEXT, channel TEXT, username TEXT)', 'id');
-
-    // Level table
-    await createTableIfNotExists('level', '(guildid TEXT PRIMARY KEY, status TEXT)', 'guildid');
-
-    // Hastebin Table
-    await createTableIfNotExists('hastebin', '(guildid TEXT PRIMARY KEY, status TEXT)', 'guildid');
-
-    // Dad Bot Table
-    await createTableIfNotExists('dadbot', '(guildid TEXT PRIMARY KEY, status TEXT)', 'guildid');
-
-    // Announcement Table
-    await createTableIfNotExists('announcement', '(msg TEXT)', 'msg');
-
-    // RoleMenu Table
-    await createTableIfNotExists('rolemenu', '(guildid TEXT PRIMARY KEY, activeRoleMenuID TEXT, roleList BLOB)', 'guildid');
-
-    // setwelcome table
-    await createTableIfNotExists('setwelcome', '(guildid TEXT PRIMARY KEY, channel TEXT, image TEXT)', 'guildid');
-
-    // autorole table
-    await createTableIfNotExists('autorole', '(guildid TEXT PRIMARY KEY, role TEXT)', 'guildid');
-
-    // balance table
-    await createTableIfNotExists(
-      'balance',
-      '(id TEXT PRIMARY KEY, user TEXT, guild TEXT, hourly INTEGER, daily INTEGER, weekly INTEGER, monthly INTEGER, stealcool INTEGER, fishcool INTEGER, farmcool INTEGER, boosts BLOB, items BLOB, cash INTEGER, bank INTEGER, total INTEGER, claimNewUser INTEGER, farmPlot BLOB, dmHarvest TEXT, harvestedCrops BLOB, lottery BLOB)',
-      'id'
-    );
-    this.client.getBalance = db.prepare('SELECT * FROM balance WHERE id = ?');
-    this.client.setBalance = db.prepare(
-      'INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, stealcool, fishcool, farmcool, boosts, items, cash, bank, total, claimNewUser, farmPlot, dmHarvest, harvestedCrops, lottery) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @stealcool, @fishcool, @farmcool, @boosts, @items, @cash, @bank, @total, @claimNewUser, @farmPlot, @dmHarvest, @harvestedCrops, @lottery);'
-    );
-    this.client.setUserBalance = db.prepare(
-      'INSERT OR REPLACE INTO balance (id, user, guild, hourly, daily, weekly, monthly, stealcool, fishcool, farmcool, boosts, items, cash, bank, total, claimNewUser, farmPlot, dmHarvest, harvestedCrops, lottery) VALUES (@id, @user, @guild, @hourly, @daily, @weekly, @monthly, @stealcool, @fishcool, @farmcool, @boosts, @items, @cash, @bank, @total, @claimNewUser, @farmPlot, @dmHarvest, @harvestedCrops, @lottery);'
-    );
-
-    // balance config Table
-    await createTableIfNotExists('balanceConfig', '(guildid TEXT PRIMARY KEY, status TEXT)', 'guildid');
-
-    // scores table
-    await createTableIfNotExists(
-      'scores',
-      '(id TEXT PRIMARY KEY, user TEXT, guild TEXT, points INTEGER, level INTEGER, country TEXT, image TEXT)',
-      'id'
-    );
-    this.client.getScore = db.prepare('SELECT * FROM scores WHERE user = ? AND guild = ?');
-    this.client.setScore = db.prepare(
-      'INSERT OR REPLACE INTO scores (id, user, guild, points, level, country) VALUES (@id, @user, @guild, @points, @level, @country);'
-    );
-
-    // adsprot table
-    await createTableIfNotExists('adsprot', '(guildid TEXT PRIMARY KEY, status TEXT)', 'guildid');
-
-    // anti scam table
-    await createTableIfNotExists('antiscam', '(guildid TEXT PRIMARY KEY, status TEXT)', 'guildid');
-
-    // logging table
-    await createTableIfNotExists('logging', '(guildid TEXT PRIMARY KEY, channel TEXT)', 'guildid');
-
-    // Ticket Config Table
-    await createTableIfNotExists(
-      'ticketConfig',
-      '(guildid TEXT PRIMARY KEY, category TEXT, log TEXT, role TEXT, ticketembed TEXT, ticketembedchan TEXT, blacklist BLOB)',
-      'guildid'
-    );
-
-    // Stored Tickets Table
-    await createTableIfNotExists('tickets', '(guildid TEXT, ticketid TEXT PRIMARY KEY, authorid TEXT, reason TEXT, chanid TEXT)', 'ticketid');
-
-    // AFK Table
-    await createTableIfNotExists('afk', '(id TEXT PRIMARY KEY, guildid TEXT, user TEXT, reason TEXT)', 'id');
-
-    // starboard table
-    await createTableIfNotExists('starboard', '(guildid TEXT PRIMARY KEY, channel TEXT)', 'guildid');
-
     // Starboard
-    const grabStarboard = db.prepare('SELECT * FROM starboard').all();
+    const grabStarboard = await StarBoard.find(); //! test
 
     grabStarboard.forEach((s) => {
-      const guild = this.client.guilds.cache.get(s.guildid);
+      const guild = this.client.guilds.cache.get(s.guildId);
       if (!guild) return;
 
       const channel = guild.channels.cache.get(s.channel);
@@ -169,9 +75,9 @@ export const EventF = class extends Event {
 
     // Cooldowns
     // Define a function to update the farms for a given user
-    function updateFarms(userId, guildId, dbFetch, client) {
+    async function updateFarms(userId, guildId, client) {
       // Fetch the farmPlot and harvestedCrops columns for the user
-      const userData = dbFetch.prepare('SELECT farmPlot, harvestedCrops FROM balance WHERE id = ?').get(`${userId}-${guildId}`);
+      const userData = await Balance.findOne({ idJoined: `${userId}-${guildId}` }); //! test BIG TIME BIG BRUH DO IT
 
       // Parse the JSON strings into arrays
       const farmPlot = userData.farmPlot ? JSON.parse(userData.farmPlot) : [];
@@ -226,23 +132,29 @@ export const EventF = class extends Event {
       const cleanedHarvestedCrops = updatedHarvestedCrops.filter(Boolean);
 
       // Update the farmPlot and harvestedCrops columns in the database
-      dbFetch
-        .prepare('UPDATE balance SET farmPlot = ?, harvestedCrops = ? WHERE id = ?')
-        .run(JSON.stringify(cleanedFarmPlot), JSON.stringify(cleanedHarvestedCrops), `${userId}-${guildId}`);
+      await Balance.findOneAndUpdate(
+        {
+          idJoined: `${userId}-${guildId}`
+        },
+        {
+          farmPlot: JSON.stringify(cleanedFarmPlot),
+          harvestedCrops: JSON.stringify(cleanedHarvestedCrops) //! LIKE LEGIT IDK IF ANY OF THIS WORKS NOW!
+        }
+      );
     }
 
     // Use a CronJob to run the updateAllFarms function every minute
     const oneMinTimer = new CronJob(
       '* * * * * *',
-      () => {
+      async () => {
         // Fetch all balance records from the database
-        const balances = db.prepare('SELECT * FROM balance').all();
+        const balances = await Balance.find(); //! test BIG TIME
 
         // Use the map method to transform the balances array into an array of user IDs and guild IDs
         const userIds = balances.map(({ user, guild }) => [user, guild]);
 
         // Use the forEach method to update the farms for each user
-        userIds.forEach(([userId, guildId]) => updateFarms(userId, guildId, db, this.client));
+        userIds.forEach(([userId, guildId]) => updateFarms(userId, guildId, this.client));
       },
       null,
       true
@@ -250,23 +162,23 @@ export const EventF = class extends Event {
 
     const oneDayTimer = new CronJob(
       '0 0 0 * * *',
-      () => {
+      async () => {
         // Run every day
         // Birthdays
-        const grabBdays = db.prepare('SELECT * FROM birthdays').all();
-        const grabBdaysConfig = db.prepare('SELECT * FROM birthdayConfig').all();
+        const grabBdays = await Birthdays.find();
+        const grabBdaysConfig = await BirthdayConfig.find();
 
-        grabBdaysConfig.forEach((a) => {
+        grabBdaysConfig.forEach(async (a) => {
           // Check if bot is in the guild
-          const guild = this.client.guilds.cache.get(a.guildid);
+          const guild = this.client.guilds.cache.get(a.guildId);
           if (!guild) {
-            db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(a.guildid);
+            await BirthdayConfig.deleteMany({ guildId: a.guildId });
             return;
           }
 
           const channel = guild.channels.cache.get(a.channel);
           if (!channel) {
-            db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(a.guildid);
+            await BirthdayConfig.deleteMany({ guildId: a.guildId });
             return;
           }
 
@@ -276,12 +188,12 @@ export const EventF = class extends Event {
           checkDate.setSeconds('0');
           checkDate.setMinutes('0');
 
-          grabBdays.forEach((b) => {
+          grabBdays.forEach(async (b) => {
             // Check if user is in the guild
-            const usr = guild.members.cache.get(b.userid);
+            const usr = guild.members.cache.get(b.userId);
             if (!usr) return;
 
-            const grabUser = db.prepare(`SELECT * FROM birthdays WHERE userid = ${usr.id};`).get();
+            const grabUser = await Birthdays.findOne({ userId: usr.id });
 
             const now = moment();
 
@@ -317,9 +229,15 @@ export const EventF = class extends Event {
 
               // Update the lastRun property with the current timestamp
               foundLastRun[guild.id] = now.unix();
-              db.prepare('UPDATE birthdays SET lastRun = (@lastRun);').run({
-                lastRun: JSON.stringify(foundLastRun)
-              });
+
+              await Birthdays.findOneAndUpdate(
+                {
+                  userId: usr.id //! TEST idk if usr.id is right
+                },
+                {
+                  lastRun: JSON.stringify(foundLastRun)
+                }
+              );
             }
           });
         });
@@ -330,28 +248,28 @@ export const EventF = class extends Event {
 
     const twoMinuteTimer = new CronJob(
       '*/30 * * * * *',
-      () => {
+      async () => {
         // Run every 2 minutes
         // Bans
-        const grabBans = db.prepare('SELECT * FROM ban').all();
+        const grabBans = await TempBan.find();
         grabBans.forEach(async (r) => {
-          const guild = await this.client.guilds.fetch(r.guildid);
+          const guild = await this.client.guilds.fetch(r.guildId);
           if (!guild) return;
 
           const bans = await guild.bans.fetch();
-          const userCheck = bans.filter((ban) => ban.user.id === r.userid);
+          const userCheck = bans.filter((ban) => ban.user.id === r.userId);
           if (!userCheck.first()) {
-            db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+            await TempBan.deleteOne({ idJoined: `${guild.id}-${r.userId}` });
           }
 
           const botHasPermission = guild.members.me.permissions.has('BanMembers');
 
           if (!botHasPermission) {
-            db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+            await TempBan.deleteOne({ idJoined: `${guild.id}-${r.userId}` });
             return;
           }
 
-          if (Date.now() > r.endtime) {
+          if (Date.now() > r.endTime) {
             const embed = new EmbedBuilder()
               .setThumbnail(this.client.user.displayAvatarURL())
               .setColor(this.client.utils.color(guild.members.me.displayHexColor))
@@ -363,18 +281,18 @@ export const EventF = class extends Event {
               .setTimestamp();
 
             try {
-              await guild.members.unban(r.userid, 'tempban');
-              db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+              await guild.members.unban(r.userId, 'tempban');
+              await TempBan.deleteOne({ idJoined: `${guild.id}-${r.userId}` });
             } catch {
-              db.prepare('DELETE FROM ban WHERE id = ?').run(`${guild.id}-${r.userid}`);
+              await TempBan.deleteOne({ idJoined: `${guild.id}-${r.userId}` });
               return;
             }
 
-            const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${guild.id};`).get();
+            const dbid = await Logging.findOne({ guildId: guild.id }); //! test BIG TIME BIG BRUH DO IT
             const dblogs = dbid.channel;
             const chnCheck = this.client.channels.cache.get(dblogs);
             if (!chnCheck) {
-              db.prepare('DELETE FROM logging WHERE guildid = ?').run(guild.id);
+              await Logging.deleteOne({ guildId: guild.id });
             }
 
             if (dbid) {

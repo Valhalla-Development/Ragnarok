@@ -1,12 +1,10 @@
 import { EmbedBuilder, ChannelType } from 'discord.js';
-import SQLite from 'better-sqlite3';
+import Logging from '../../Mongo/Schemas/Logging.js';
 import Event from '../../Structures/Event.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
 
 export const EventF = class extends Event {
   async run(oldChannel, newChannel) {
-    const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${oldChannel.guild.id};`).get();
+    const id = await Logging.findOne({ guildId: oldChannel.guild.id });
     if (!id) return;
 
     const logs = id.channel;

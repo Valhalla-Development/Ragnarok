@@ -1,8 +1,7 @@
 import { EmbedBuilder, ActivityType } from 'discord.js';
-import SQLite from 'better-sqlite3';
 import Event from '../../Structures/Event.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import Tickets from '../../Mongo/Schemas/Tickets.js';
+import Logging from '../../Mongo/Schemas/Logging.js';
 
 export const EventF = class extends Event {
   async run(member) {
@@ -15,10 +14,10 @@ export const EventF = class extends Event {
       }
     );
 
-    function checkTicket(client) {
+    async function checkTicket(client) {
       // Check if the user has a ticket
-      const foundTicket = db.prepare(`SELECT * FROM tickets WHERE guildid = ${member.guild.id} AND authorid = (@authorid)`);
-      if (foundTicket.get({ authorid: member.user.id })) {
+      const foundTicket = await Tickets.findOne({ guildId: member.guild.id, authorId: member.user.id });
+      if (foundTicket) {
         // Fetch the channel
         const channel = member.guild.channels.cache.get(foundTicket.get({ authorid: member.user.id }).chanid);
 
@@ -35,8 +34,8 @@ export const EventF = class extends Event {
     }
     checkTicket(this.client);
 
-    function logging(grabClient) {
-      const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${member.guild.id};`).get();
+    async function logging(grabClient) {
+      const id = await Logging.findOne({ guildId: member.guild.id });
       if (!id) return;
 
       const logs = id.channel;
@@ -44,7 +43,7 @@ export const EventF = class extends Event {
 
       const chnCheck = grabClient.channels.cache.get(logs);
       if (!chnCheck) {
-        db.prepare('DELETE FROM logging WHERE guildid = ?').run(member.guild.id);
+        await Logging.deleteOne({ guildId: member.guild.id });
       }
 
       const logembed = new EmbedBuilder()

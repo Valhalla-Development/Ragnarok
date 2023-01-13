@@ -1,11 +1,12 @@
 import { EmbedBuilder, AttachmentBuilder, ActivityType } from 'discord.js';
-import SQLite from 'better-sqlite3';
 import Canvas from 'canvas';
 import ordinal from 'ordinal';
 import fetch from 'node-fetch';
 import Event from '../../Structures/Event.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import Tickets from '../../Mongo/Schemas/Tickets.js';
+import Welcome from '../../Mongo/Schemas/Welcome.js';
+import AutoRole from '../../Mongo/Schemas/AutoRole.js';
+import Logging from '../../Mongo/Schemas/Logging.js';
 
 Canvas.registerFont('./Storage/Canvas/Fonts/Handlee-Regular.ttf', {
   family: 'Handlee'
@@ -26,10 +27,10 @@ export const EventF = class extends Event {
       }
     );
 
-    function checkTicket(client) {
+    async function checkTicket(client) {
       // Check if the user has a ticket
-      const foundTicket = db.prepare(`SELECT * FROM tickets WHERE guildid = ${member.guild.id} AND authorid = (@authorid)`);
-      if (foundTicket.get({ authorid: member.user.id })) {
+      const foundTicket = await Tickets.findOne({ guildId: member.guild.id, authorId: member.user.id });
+      if (foundTicket) {
         // Fetch the channel
         const channel = member.guild.channels.cache.get(foundTicket.get({ authorid: member.user.id }).chanid);
 
@@ -57,14 +58,14 @@ export const EventF = class extends Event {
       // Return if user is my testing alt
       // if (member.user.id === '488717256897855519') return;
 
-      const setwelcome = db.prepare(`SELECT * FROM setwelcome WHERE guildid = ${member.guild.id};`).get();
+      const setwelcome = await Welcome.findOne({ guildId: member.guild.id });
       if (!setwelcome) return;
 
       const sendchannel = setwelcome.channel;
       const chnsen = member.guild.channels.cache.find((channel) => channel.id === sendchannel);
 
       if (!chnsen) {
-        db.prepare('DELETE FROM setwelcome WHERE guildid = ?').run(member.guild.id);
+        await Welcome.deleteMany({ guildId: member.guild.id });
         return;
       }
 
@@ -140,8 +141,8 @@ export const EventF = class extends Event {
     welcomeMessage(this.client);
 
     // autorole
-    function autoRole() {
-      const autoroletable = db.prepare(`SELECT role FROM autorole WHERE guildid = ${member.guild.id};`).get();
+    async function autoRole() {
+      const autoroletable = await AutoRole.findOne({ guildId: member.guild.id });
       if (!autoroletable) return;
 
       const autorole = autoroletable.role;
@@ -152,7 +153,7 @@ export const EventF = class extends Event {
 
       const botHasPermission = member.guild.members.me.permissions.has('ManageRoles');
       if (!botHasPermission) {
-        db.prepare('DELETE FROM autorole WHERE guildid = ?').run(member.guild.id);
+        await AutoRole.deleteMany({ guildId: member.guild.id });
         return;
       }
 
@@ -161,8 +162,8 @@ export const EventF = class extends Event {
     autoRole();
 
     // Logs
-    function logging(grabClient) {
-      const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${member.guild.id};`).get();
+    async function logging(grabClient) {
+      const id = await Logging.findOne({ guildId: member.guild.id });
       if (!id) return;
 
       const logs = id.channel;

@@ -1,15 +1,13 @@
 import { EmbedBuilder, ChannelType } from 'discord.js';
-import SQLite from 'better-sqlite3';
+import Logging from '../../Mongo/Schemas/Logging.js';
 
 import Event from '../../Structures/Event.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
 
 export const EventF = class extends Event {
   async run(channel) {
     if (channel.type === ChannelType.DM) return;
 
-    const channelId = db.prepare(`SELECT channel FROM logging WHERE guildid = ${channel.guild.id};`).get();
+    const channelId = await Logging.findOne({ guildId: channel.guild.id });
     if (!channelId) return;
 
     const logs = channelId.channel;
@@ -17,7 +15,7 @@ export const EventF = class extends Event {
 
     const chnCheck = this.client.channels.cache.get(logs);
     if (!chnCheck) {
-      db.prepare('DELETE FROM logging WHERE guildid = ?').run(channel.guild.id);
+      await Logging.deleteOne({ guildId: channel.guild.id }); //!
       return;
     }
 
