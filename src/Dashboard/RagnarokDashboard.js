@@ -101,7 +101,7 @@ export const RagnarokDashboard = class RagnarokDashboard {
       minimizedConsoleLogs: true,
       invite: {
         clientId: client.config.DISCORD_CLIENT_ID,
-        scopes: ['bot'],
+        scopes: ['bot', 'applications.commands'],
         permissions: 415306870006,
         redirectUri: client.config.DBD_REDIRECT_URI
         // otherParams: (String = '')
