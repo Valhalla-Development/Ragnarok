@@ -75,85 +75,85 @@ export const EventF = class extends Event {
 
     // Cooldowns
     // Define a function to update the farms for a given user
-    async function updateFarms(userId, guildId, client) {
-      // Fetch the farmPlot and harvestedCrops columns for the user
-      const userData = await Balance.findOne({ idJoined: `${userId}-${guildId}` }); //! test BIG TIME BIG BRUH DO IT
-      if (!userData) return;
-
-      // Parse the JSON strings into arrays
-      const farmPlot = userData.farmPlot ? JSON.parse(userData.farmPlot) : [];
-      const harvestedCrops = userData.harvestedCrops ? JSON.parse(userData.harvestedCrops) : [];
+    async function updateFarms(userIds, guildIds, db, client) {
+      // Fetch the farmPlot and harvestedCrops columns for the users
+      const userData = db.filter((balance) => userIds.includes(balance.user) && guildIds.includes(balance.guildId));
 
       // Use the moment library to create moment objects for the current time and the cropGrowTime
       const currentTime = moment();
 
-      // Use the map method to transform the farmPlot array into a new array with updated values
-      const updatedFarmPlot = farmPlot.map((plot) => {
-        // Check if the crop is ready to harvest
-        const plotGrowTime = moment.unix(plot.cropGrowTime / 1000);
-        if (currentTime.diff(plotGrowTime) >= 0) {
-          plot.cropStatus = 'harvest';
-          plot.cropGrowTime = 'na';
-          plot.decay = 0;
-        }
+      userData.map((data) => {
+        // Parse the JSON strings into arrays
+        const farmPlot = data.farmPlot ? JSON.parse(data.farmPlot) : [];
+        const harvestedCrops = data.harvestedCrops ? JSON.parse(data.harvestedCrops) : [];
 
-        // Check if the crop is ready to decay
-        if (plot.cropStatus === 'harvest') {
-          if (plot.decay >= 100) {
-            // If the decay is at 100, remove the plot from the array
+        // Use the map method to transform the farmPlot array into a new array with updated values
+        const updatedFarmPlot = farmPlot.map((plot) => {
+          // Check if the crop is ready to harvest
+          const plotGrowTime = moment.unix(plot.cropGrowTime / 1000);
+          if (currentTime.diff(plotGrowTime) >= 0) {
+            plot.cropStatus = 'harvest';
+            plot.cropGrowTime = 'na';
+            plot.decay = 0;
+          }
+
+          // Check if the crop is ready to decay
+          if (plot.cropStatus === 'harvest') {
+            if (plot.decay >= 100) {
+              // If the decay is at 100, remove the plot from the array
+              return null;
+            }
+
+            // Increase the decay by the decay rate
+            plot.decay += client.ecoPrices.decayRate;
+          }
+
+          // Return the updated plot object
+          return plot;
+        });
+
+        // Filter out any null values from the updatedFarmPlot array
+        const cleanedFarmPlot = updatedFarmPlot.filter(Boolean);
+
+        // Use the map method to transform the harvestedCrops array into a new array with updated values
+        const updatedHarvestedCrops = harvestedCrops.map((crop) => {
+          if (crop.decay >= 100) {
+            // If the decay is at 100, remove the crop from the array
             return null;
           }
 
           // Increase the decay by the decay rate
-          plot.decay += client.ecoPrices.decayRate;
-        }
+          crop.decay += client.ecoPrices.decayRate * 6;
 
-        // Return the updated plot object
-        return plot;
+          // Return the updated crop object
+          return crop;
+        });
+
+        // Filter out any null values from the updatedHarvestedCrops array
+        const cleanedHarvestedCrops = updatedHarvestedCrops.filter(Boolean);
+
+        return {
+          filter: { idJoined: `${data.user}-${data.guildId}` },
+          update: {
+            $set: {
+              farmPlot: JSON.stringify(cleanedFarmPlot),
+              harvestedCrops: JSON.stringify(cleanedHarvestedCrops)
+            }
+          }
+        };
       });
-
-      // Filter out any null values from the updatedFarmPlot array
-      const cleanedFarmPlot = updatedFarmPlot.filter(Boolean);
-
-      // Use the map method to transform the harvestedCrops array into a new array with updated values
-      const updatedHarvestedCrops = harvestedCrops.map((crop) => {
-        if (crop.decay >= 100) {
-          // If the decay is at 100, remove the crop from the array
-          return null;
-        }
-
-        // Increase the decay by the decay rate
-        crop.decay += client.ecoPrices.decayRate * 6;
-
-        // Return the updated crop object
-        return crop;
-      });
-
-      // Filter out any null values from the updatedHarvestedCrops array
-      const cleanedHarvestedCrops = updatedHarvestedCrops.filter(Boolean);
-
-      // Update the farmPlot and harvestedCrops columns in the database
-      await Balance.findOneAndUpdate(
-        {
-          idJoined: `${userId}-${guildId}`
-        },
-        {
-          farmPlot: JSON.stringify(cleanedFarmPlot),
-          harvestedCrops: JSON.stringify(cleanedHarvestedCrops) //! LIKE LEGIT IDK IF ANY OF THIS WORKS NOW!
-        }
-      );
     }
 
     // Use a CronJob to run the updateAllFarms function every minute
     const oneMinTimer = new CronJob(
-      '* * * * * *',
+      '0 * * * * *',
       async () => {
         // Fetch all balance records from the database
         const balances = await Balance.find(); //! test BIG TIME
         // Use the map method to transform the balances array into an array of user IDs and guild IDs
-        const userIds = balances.map(({ user, guildId }) => [user, guildId]);
-        // Use the forEach method to update the farms for each user
-        userIds.forEach(([userId, guildId]) => updateFarms(userId, guildId, this.client));
+        const [userIds, guildIds] = balances.map(({ user, guildId }) => [user, guildId]);
+        const updates = updateFarms(userIds, guildIds, balances, this.client);
+        await Balance.updateMany(updates);
       },
       null,
       true
@@ -166,6 +166,10 @@ export const EventF = class extends Event {
         // Birthdays
         const grabBdays = await Birthdays.find();
         const grabBdaysConfig = await BirthdayConfig.find();
+        const findUserBday = async (id) => {
+          const fetchBday = await Birthdays.findOne({ userId: id });
+          return fetchBday;
+        }; //! TEST
 
         grabBdaysConfig.forEach(async (a) => {
           // Check if bot is in the guild
@@ -192,7 +196,7 @@ export const EventF = class extends Event {
             const usr = guild.members.cache.get(b.userId);
             if (!usr) return;
 
-            const grabUser = await Birthdays.findOne({ userId: usr.id });
+            const grabUser = findUserBday(usr.id); //! TEST
 
             const now = moment();
 
