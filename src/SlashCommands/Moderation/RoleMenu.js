@@ -1,9 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 import { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } from 'discord.js';
-import SQLite from 'better-sqlite3';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import RoleMenu from '../../Mongo/Schemas/RoleMenu.js';
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -15,7 +13,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${interaction.guild.id}`).get();
+    const foundRoleMenu = await RoleMenu.findOne({ guildId: interaction.guild.id });
 
     if (!foundRoleMenu || !foundRoleMenu.roleList || JSON.parse(foundRoleMenu.roleList).length <= 0) {
       const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -24,7 +22,7 @@ export const SlashCommandF = class extends SlashCommand {
       });
       interaction.reply({ ephemeral: true, embeds: [embed] });
 
-      db.prepare(`DELETE FROM rolemenu WHERE guildid=${interaction.guild.id}`).run();
+      await RoleMenu.deleteOne({ guildId: interaction.guild.id });
     } else {
       let activeMenu;
       if (!foundRoleMenu.activeRoleMenuID) {
@@ -50,7 +48,8 @@ export const SlashCommandF = class extends SlashCommand {
           value: '**◎ Error:** The roles for the menu have been removed from the server. Please try again later.'
         });
         interaction.reply({ ephemeral: true, embeds: [embed] });
-        db.prepare(`DELETE FROM rolemenu WHERE guildid=${interaction.guild.id}`).run();
+
+        await RoleMenu.deleteOne({ guildId: interaction.guild.id });
         return;
       }
 
@@ -77,11 +76,15 @@ export const SlashCommandF = class extends SlashCommand {
         activeMenu.channel = interaction.channel.id;
         activeMenu.message = reactEmbed.id;
 
-        db.prepare('UPDATE rolemenu SET activeRoleMenuID = (@activeRoleMenuID), roleList = (@roleList) WHERE guildid = (@guildid);').run({
-          activeRoleMenuID: JSON.stringify(activeMenu),
-          roleList: JSON.stringify(roleArrayCleaned),
-          guildid: `${interaction.guild.id}`
-        });
+        await RoleMenu.findOneAndUpdate(
+          {
+            guildId: interaction.guild.id
+          },
+          {
+            roleMenuId: JSON.stringify(activeMenu),
+            roleList: JSON.stringify(roleArrayCleaned)
+          }
+        );
       });
     }
 

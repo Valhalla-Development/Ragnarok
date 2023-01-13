@@ -1,11 +1,20 @@
 /* eslint-disable no-restricted-syntax */
 import { EmbedBuilder, PermissionsBitField, ButtonBuilder, ActionRowBuilder, ChannelType, ButtonStyle, SlashCommandBuilder } from 'discord.js';
-import SQLite from 'better-sqlite3';
 import fetch from 'node-fetch';
 import Canvas from 'canvas';
+import mongoose from 'mongoose';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import BirthdayConfig from '../../Mongo/Schemas/BirthdayConfig.js';
+import RoleMenu from '../../Mongo/Schemas/RoleMenu.js';
+import Hastebin from '../../Mongo/Schemas/Hastebin.js';
+import Dad from '../../Mongo/Schemas/Dad.js';
+import AdsProtection from '../../Mongo/Schemas/AdsProtection.js';
+import AntiScam from '../../Mongo/Schemas/AntiScam.js';
+import AutoRole from '../../Mongo/Schemas/AutoRole.js';
+import Logging from '../../Mongo/Schemas/Logging.js';
+import TicketConfig from '../../Mongo/Schemas/TicketConfig.js';
+import Welcome from '../../Mongo/Schemas/Welcome.js';
+import StarBoard from '../../Mongo/Schemas/StarBoard.js';
 
 const data = new SlashCommandBuilder()
   .setName('config')
@@ -423,8 +432,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Birthday Command
     if (subGroup === 'birthday') {
-      this.client.getTable = db.prepare('SELECT * FROM birthdayConfig WHERE guildid = ?');
-      const status = this.client.getTable.get(interaction.guild.id);
+      const status = await BirthdayConfig.findOne({ guildId: interaction.guild.id });
 
       const bChannel = interaction.options.getChannel('channel');
       const bRole = interaction.options.getRole('role');
@@ -443,7 +451,7 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Success:** Birthday function disabled!' });
         interaction.reply({ ephemeral: true, embeds: [embed] });
 
-        db.prepare('DELETE FROM birthdayConfig WHERE guildid = ?').run(interaction.guild.id);
+        await BirthdayConfig.deleteOne({ guildId: interaction.guild.id });
         return;
       }
 
@@ -458,17 +466,20 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (!status) {
-          const insert = db.prepare('INSERT INTO birthdayConfig (guildid, channel) VALUES (@guildid, @channel);');
-          insert.run({
-            guildid: `${interaction.guild.id}`,
-            channel: `${bChannel.id}`
-          });
+          await new BirthdayConfig({
+            _id: mongoose.Types.ObjectId(),
+            guildId: interaction.guild.id,
+            channel: bChannel.id
+          }).save();
         } else {
-          const update = db.prepare('UPDATE birthdayConfig SET channel = (@channel) WHERE guildid = (@guildid);');
-          update.run({
-            guildid: `${interaction.guild.id}`,
-            channel: `${bChannel.id}`
-          });
+          await BirthdayConfig.findOneAndUpdate(
+            {
+              guildId: interaction.guild.id
+            },
+            {
+              channel: bChannel.id
+            }
+          );
         }
 
         const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -488,11 +499,14 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        const update = db.prepare('UPDATE birthdayConfig SET role = (@role) WHERE guildid = (@guildid);');
-        update.run({
-          guildid: `${interaction.guild.id}`,
-          role: `${bRole.id}`
-        });
+        await BirthdayConfig.findOneAndUpdate(
+          {
+            guildId: interaction.guild.id
+          },
+          {
+            role: bRole.id
+          }
+        );
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -543,15 +557,16 @@ export const SlashCommandF = class extends SlashCommand {
 
         const roleList = [];
 
-        const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${interaction.guild.id}`).get();
+        const foundRoleMenu = await RoleMenu.findOne({ guildId: interaction.guild.id });
+
         if (!foundRoleMenu) {
           roleList.push(rRole.id);
 
-          const newRoleMenu = db.prepare('INSERT INTO rolemenu (guildid, roleList) VALUES (@guildid, @roleList);');
-          newRoleMenu.run({
-            guildid: `${interaction.guild.id}`,
+          await new RoleMenu({
+            _id: mongoose.Types.ObjectId(),
+            guildId: interaction.guild.id,
             roleList: JSON.stringify(roleList)
-          });
+          }).save();
 
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -650,16 +665,20 @@ export const SlashCommandF = class extends SlashCommand {
             interaction.reply({ ephemeral: true, embeds: [embed] });
           }
 
-          const updateRoleMenu = db.prepare(`UPDATE rolemenu SET roleList = (@roleList) WHERE guildid=${interaction.guild.id}`);
-          updateRoleMenu.run({
-            roleList: JSON.stringify(foundRoleList)
-          });
+          await RoleMenu.findOneAndUpdate(
+            {
+              guildId: interaction.guild.id
+            },
+            {
+              roleList: JSON.stringify(foundRoleList)
+            }
+          );
         }
         return;
       }
 
       if (subCommand === 'remove') {
-        const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid = ${interaction.guild.id}`).get();
+        const foundRoleMenu = await RoleMenu.findOne({ guildId: interaction.guild.id });
 
         if (!foundRoleMenu) {
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -703,7 +722,8 @@ export const SlashCommandF = class extends SlashCommand {
                     interaction.reply({ ephemeral: true, embeds: [embedA] });
                   });
               }
-              db.prepare(`DELETE FROM rolemenu WHERE guildid=${interaction.guild.id}`).run();
+
+              await RoleMenu.deleteOne({ guildId: interaction.guild.id }); //!
               return;
             }
 
@@ -713,7 +733,7 @@ export const SlashCommandF = class extends SlashCommand {
             });
             interaction.reply({ ephemeral: true, embeds: [embedA] });
 
-            db.prepare(`DELETE FROM rolemenu WHERE guildid=${interaction.guild.id}`).run();
+            await RoleMenu.deleteOne({ guildId: interaction.guild.id }); //!
           } else {
             const embedA = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
               name: `**${this.client.user.username} - Config**`,
@@ -721,11 +741,14 @@ export const SlashCommandF = class extends SlashCommand {
             });
             interaction.reply({ ephemeral: true, embeds: [embedA] });
 
-            const updateRoleList = db.prepare('UPDATE rolemenu SET roleList = (@roleList) WHERE guildid = (@guildid)');
-            updateRoleList.run({
-              guildid: `${interaction.guild.id}`,
-              roleList: JSON.stringify(roleList)
-            });
+            await RoleMenu.findOneAndUpdate(
+              {
+                guildId: interaction.guild.id
+              },
+              {
+                roleList: JSON.stringify(roleList)
+              }
+            );
           }
         } else {
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -791,7 +814,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (subCommand === 'clear') {
-        const foundRoleMenu = db.prepare(`SELECT * FROM rolemenu WHERE guildid=${interaction.guild.id}`).get();
+        const foundRoleMenu = await RoleMenu.findOne({ guildId: interaction.guild.id });
         if (!foundRoleMenu) {
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -827,7 +850,7 @@ export const SlashCommandF = class extends SlashCommand {
           }
         }
 
-        db.prepare(`DELETE FROM rolemenu WHERE guildid=${interaction.guild.id}`).run();
+        await RoleMenu.deleteOne({ guildId: interaction.guild.id });
 
         if (!foundRoleMenu.activeRoleMenuID) {
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -842,8 +865,7 @@ export const SlashCommandF = class extends SlashCommand {
     // Hastebin Command
     if (subCommand === 'hastebin') {
       // preparing count
-      this.client.getTable = db.prepare('SELECT * FROM hastebin WHERE guildid = ?');
-      const status = this.client.getTable.get(interaction.guild.id);
+      const status = await Hastebin.findOne({ guildId: interaction.guild.id });
 
       const subType = interaction.options.getBoolean('toggle');
 
@@ -857,11 +879,12 @@ export const SlashCommandF = class extends SlashCommand {
           interaction.reply({ ephemeral: true, embeds: [embed] });
           return;
         }
-        const insert = db.prepare('INSERT INTO hastebin (guildid, status) VALUES (@guildid, @status);');
-        insert.run({
-          guildid: `${interaction.guild.id}`,
-          status: 'on'
-        });
+
+        await new Hastebin({
+          _id: mongoose.Types.ObjectId(),
+          guildId: interaction.guild.id,
+          status: true
+        }).save();
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -880,7 +903,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        db.prepare('DELETE FROM hastebin WHERE guildid = ?').run(interaction.guild.id);
+        await Hastebin.deleteOne({ guildId: interaction.guild.id });
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -892,8 +915,7 @@ export const SlashCommandF = class extends SlashCommand {
     // Dadbot Command
     if (subCommand === 'dadbot') {
       // preparing count
-      this.client.getTable = db.prepare('SELECT * FROM dadbot WHERE guildid = ?');
-      const status = this.client.getTable.get(interaction.guild.id);
+      const status = await Dad.findOne({ guildId: interaction.guild.id });
 
       const subType = interaction.options.getBoolean('toggle');
 
@@ -907,11 +929,12 @@ export const SlashCommandF = class extends SlashCommand {
           interaction.reply({ ephemeral: true, embeds: [embed] });
           return;
         }
-        const insert = db.prepare('INSERT INTO dadbot (guildid, status) VALUES (@guildid, @status);');
-        insert.run({
-          guildid: `${interaction.guild.id}`,
-          status: 'on'
-        });
+
+        await new Dad({
+          _id: mongoose.Types.ObjectId(),
+          guildId: interaction.guild.id,
+          status: true
+        }).save();
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -930,7 +953,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        db.prepare('DELETE FROM dadbot WHERE guildid = ?').run(interaction.guild.id);
+        await Dad.deleteOne({ guildId: interaction.guild.id });
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -941,8 +964,10 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Adsprot Command
     if (subCommand === 'adsprot') {
-      const antiscam = db.prepare('SELECT count(*) FROM antiscam WHERE guildid = ?').get(interaction.guild.id);
-      if (antiscam['count(*)']) {
+      //! TEST THIS ONE BECAUSE THE BETTER-SQLITE3 WAS A COUNT NOT JUST FIND
+      const antiscam = await AntiScam.findOne({ guildId: interaction.guild.id });
+
+      if (antiscam) {
         const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
           name: `**${this.client.user.username} - Config**`,
           value:
@@ -953,8 +978,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       // preparing count
-      this.client.getTable = db.prepare('SELECT * FROM adsprot WHERE guildid = ?');
-      const status = this.client.getTable.get(interaction.guild.id);
+      const status = await AdsProtection.findOne({ guildId: interaction.guild.id });
 
       const subType = interaction.options.getBoolean('toggle');
 
@@ -968,11 +992,12 @@ export const SlashCommandF = class extends SlashCommand {
           interaction.reply({ ephemeral: true, embeds: [embed] });
           return;
         }
-        const insert = db.prepare('INSERT INTO adsprot (guildid, status) VALUES (@guildid, @status);');
-        insert.run({
-          guildid: `${interaction.guild.id}`,
-          status: 'on'
-        });
+
+        await new AdsProtection({
+          _id: mongoose.Types.ObjectId(),
+          guildId: interaction.guild.id,
+          status: true
+        }).save();
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -991,7 +1016,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        db.prepare('DELETE FROM adsprot WHERE guildid = ?').run(interaction.guild.id);
+        await AdsProtection.deleteOne({ guildId: interaction.guild.id });
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1002,9 +1027,9 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Anti Scam Command
     if (subCommand === 'antiscam') {
-      const adsprot = db.prepare('SELECT count(*) FROM adsprot WHERE guildid = ?').get(interaction.guild.id);
+      const adsprot = await AdsProtection.findOne({ guildId: interaction.guild.id });
 
-      if (adsprot['count(*)']) {
+      if (adsprot) {
         const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
           name: `**${this.client.user.username} - Config**`,
           value:
@@ -1015,8 +1040,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       // preparing count
-      this.client.getTable = db.prepare('SELECT * FROM antiscam WHERE guildid = ?');
-      const status = this.client.getTable.get(interaction.guild.id);
+      const status = await AntiScam.findOne({ guildId: interaction.guild.id });
 
       const subType = interaction.options.getBoolean('toggle');
 
@@ -1030,11 +1054,12 @@ export const SlashCommandF = class extends SlashCommand {
           interaction.reply({ ephemeral: true, embeds: [embed] });
           return;
         }
-        const insert = db.prepare('INSERT INTO antiscam (guildid, status) VALUES (@guildid, @status);');
-        insert.run({
-          guildid: `${interaction.guild.id}`,
-          status: 'on'
-        });
+
+        await new AntiScam({
+          _id: mongoose.Types.ObjectId(),
+          guildId: interaction.guild.id,
+          status: true
+        }).save();
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1053,7 +1078,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        db.prepare('DELETE FROM antiscam WHERE guildid = ?').run(interaction.guild.id);
+        await AntiScam.deleteOne({ guildId: interaction.guild.id });
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1064,8 +1089,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Autorole Command
     if (subGroup === 'autorole') {
-      this.client.getTable = db.prepare('SELECT * FROM autorole WHERE guildid = ?');
-      const status = this.client.getTable.get(interaction.guild.id);
+      const status = await AutoRole.findOne({ guildId: interaction.guild.id });
 
       const role = interaction.options.getRole('role');
 
@@ -1079,7 +1103,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        db.prepare('DELETE FROM autorole WHERE guildid = ?').run(interaction.guild.id);
+        await AutoRole.deleteOne({ guildId: interaction.guild.id });
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1124,11 +1148,14 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (status) {
-        const update = db.prepare('UPDATE autorole SET role = (@role) WHERE guildid = (@guildid);');
-        update.run({
-          guildid: `${interaction.guild.id}`,
-          role: `${role.id}`
-        });
+        await AutoRole.findOneAndUpdate(
+          {
+            guildId: interaction.guild.id
+          },
+          {
+            role: role.id
+          }
+        );
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1137,11 +1164,11 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      const insert = db.prepare('INSERT INTO autorole (guildid, role) VALUES (@guildid, @role);');
-      insert.run({
-        guildid: `${interaction.guild.id}`,
-        role: `${role.id}`
-      });
+      await new AutoRole({
+        _id: mongoose.Types.ObjectId(),
+        guildId: interaction.guild.id,
+        role: role.id
+      }).save();
 
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1160,10 +1187,9 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      this.client.getTable = db.prepare('SELECT * FROM logging WHERE guildid = ?');
+      const status = await Logging.findOne({ guildId: interaction.guild.id });
 
       const lchan = interaction.options.getChannel('channel');
-      const status = this.client.getTable.get(interaction.guild.id);
 
       if (subCommand === 'off') {
         // to turn logging off
@@ -1180,7 +1206,7 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Success:** Logging disabled!' });
         interaction.reply({ ephemeral: true, embeds: [embed] });
 
-        db.prepare('DELETE FROM logging WHERE guildid = ?').run(interaction.guild.id);
+        await Logging.deleteOne({ guildId: interaction.guild.id });
         return;
       }
 
@@ -1194,11 +1220,11 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (!status) {
-        const insert = db.prepare('INSERT INTO logging (guildid, channel) VALUES (@guildid, @channel);');
-        insert.run({
-          guildid: `${interaction.guild.id}`,
-          channel: `${lchan.id}`
-        });
+        await new Logging({
+          _id: mongoose.Types.ObjectId(),
+          guildId: interaction.guild.id,
+          channel: lchan.id
+        }).save();
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1207,11 +1233,14 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      const update = db.prepare('UPDATE logging SET channel = (@channel) WHERE guildid = (@guildid);');
-      update.run({
-        guildid: `${interaction.guild.id}`,
-        channel: `${lchan.id}`
-      });
+      await Logging.findOneAndUpdate(
+        {
+          guildId: interaction.guild.id
+        },
+        {
+          channel: lchan.id
+        }
+      );
 
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1221,8 +1250,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Ticket Command
     if (subGroup === 'ticket') {
-      this.client.getTable = db.prepare('SELECT category FROM ticketConfig WHERE guildid = ?');
-      const status = this.client.getTable.get(interaction.guild.id);
+      const status = await TicketConfig.findOne({ guildId: interaction.guild.id });
 
       if (subCommand === 'off') {
         if (!status) {
@@ -1238,7 +1266,7 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Success:** Tickets disabled!' });
         interaction.reply({ ephemeral: true, embeds: [embed] });
 
-        db.prepare('DELETE FROM ticketConfig WHERE guildid = ?').run(interaction.guild.id);
+        await TicketConfig.deleteOne({ guildId: interaction.guild.id });
         return;
       }
 
@@ -1255,11 +1283,11 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (!status) {
-          const insert = db.prepare('INSERT INTO ticketConfig (guildid, category) VALUES (@guildid, @category);');
-          insert.run({
-            guildid: `${interaction.guild.id}`,
-            category: `${category.id}`
-          });
+          await new TicketConfig({
+            _id: mongoose.Types.ObjectId(),
+            guildId: interaction.guild.id,
+            category: category.id
+          }).save();
 
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -1269,11 +1297,14 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        const update = db.prepare('UPDATE ticketConfig SET category = (@category) WHERE guildid = (@guildid);');
-        update.run({
-          guildid: `${interaction.guild.id}`,
-          category: `${category.id}`
-        });
+        await TicketConfig.findOneAndUpdate(
+          {
+            guildId: interaction.guild.id
+          },
+          {
+            category: category.id
+          }
+        );
 
         const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
           name: `**${this.client.user.username} - Config**`,
@@ -1295,11 +1326,11 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (!status) {
-          const insert = db.prepare('INSERT INTO ticketConfig (guildid, log) VALUES (@guildid, @channel);');
-          insert.run({
-            guildid: `${interaction.guild.id}`,
-            channel: `${lchan.id}`
-          });
+          await new TicketConfig({
+            _id: mongoose.Types.ObjectId(),
+            guildId: interaction.guild.id,
+            channel: lchan.id
+          }).save();
 
           const embed = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1308,11 +1339,14 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        const update = db.prepare('UPDATE ticketConfig SET log = (@log) WHERE guildid = (@guildid);');
-        update.run({
-          guildid: `${interaction.guild.id}`,
-          log: `${lchan.id}`
-        });
+        await TicketConfig.findOneAndUpdate(
+          {
+            guildId: interaction.guild.id
+          },
+          {
+            logChannel: lchan.id
+          }
+        );
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1324,11 +1358,11 @@ export const SlashCommandF = class extends SlashCommand {
         const suppRole = interaction.options.getRole('role');
 
         if (!status) {
-          const update = db.prepare('INSERT INTO ticketConfig (role, guildid) VALUES (@role, @guildid);');
-          update.run({
-            guildid: `${interaction.guild.id}`,
-            role: `${suppRole.id}`
-          });
+          await new TicketConfig({
+            _id: mongoose.Types.ObjectId(),
+            guildId: interaction.guild.id,
+            role: suppRole.id
+          }).save();
 
           const embed = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1337,11 +1371,14 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        const update = db.prepare('UPDATE ticketConfig SET role = (@role) WHERE guildid = (@guildid);');
-        update.run({
-          guildid: `${interaction.guild.id}`,
-          role: `${suppRole.id}`
-        });
+        await TicketConfig.findOneAndUpdate(
+          {
+            guildId: interaction.guild.id
+          },
+          {
+            role: suppRole.id
+          }
+        );
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1352,8 +1389,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Welcome Command
     if (subGroup === 'welcome') {
-      this.client.getTable = db.prepare('SELECT * FROM setwelcome WHERE guildid = ?');
-      const status = this.client.getTable.get(interaction.guild.id);
+      const status = await Welcome.findOne({ guildId: interaction.guild.id });
 
       if (subCommand === 'off') {
         if (!status) {
@@ -1369,7 +1405,7 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Success:** Welcome disabled!' });
         interaction.reply({ ephemeral: true, embeds: [embed] });
 
-        db.prepare('DELETE FROM setwelcome WHERE guildid = ?').run(interaction.guild.id);
+        await Welcome.deleteOne({ guildId: interaction.guild.id });
         return;
       }
 
@@ -1420,11 +1456,14 @@ export const SlashCommandF = class extends SlashCommand {
                 return;
               }
 
-              const update = db.prepare('UPDATE setwelcome SET image = (@image) WHERE guildid = (@guildid);');
-              update.run({
-                guildid: `${interaction.guild.id}`,
-                image: subImage
-              });
+              await Welcome.findOneAndUpdate(
+                {
+                  guildId: interaction.guild.id
+                },
+                {
+                  image: subImage
+                }
+              );
 
               const embed = new EmbedBuilder()
                 .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1461,22 +1500,25 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (!status) {
-          const insert = db.prepare('INSERT INTO setwelcome (guildid, channel) VALUES (@guildid, @channel);');
-          insert.run({
-            guildid: `${interaction.guild.id}`,
-            channel: `${lchan.id}`
-          });
+          await new Welcome({
+            _id: mongoose.Types.ObjectId(),
+            guildId: interaction.guild.id,
+            channel: lchan.id
+          }).save();
 
           const embed = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({ name: `**${this.client.user.username} - Config**`, value: `**◎ Success:** Welcome channel is now set to ${lchan}` });
           interaction.reply({ ephemeral: true, embeds: [embed] });
         } else {
-          const update = db.prepare('UPDATE setwelcome SET channel = (@channel) WHERE guildid = (@guildid);');
-          update.run({
-            guildid: `${interaction.guild.id}`,
-            channel: `${lchan.id}`
-          });
+          await Welcome.findOneAndUpdate(
+            {
+              guildId: interaction.guild.id
+            },
+            {
+              channel: lchan.id
+            }
+          );
 
           const embed = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1488,8 +1530,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Starboard Command
     if (subGroup === 'starboard') {
-      this.client.getTable = db.prepare('SELECT * FROM starboard WHERE guildid = ?');
-      const status = this.client.getTable.get(interaction.guild.id);
+      const status = await StarBoard.findOne({ guildId: interaction.guild.id });
 
       if (subCommand === 'off') {
         if (!status) {
@@ -1505,7 +1546,7 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Success:** Starboard disabled!' });
         interaction.reply({ ephemeral: true, embeds: [embed] });
 
-        db.prepare('DELETE FROM starboard WHERE guildid = ?').run(interaction.guild.id);
+        await StarBoard.deleteOne({ guildId: interaction.guild.id });
         return;
       }
 
@@ -1521,11 +1562,11 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
         if (!status) {
-          const insert = db.prepare('INSERT INTO starboard (guildid, channel) VALUES (@guildid, @channel);');
-          insert.run({
-            guildid: `${interaction.guild.id}`,
-            channel: `${lchan.id}`
-          });
+          await new StarBoard({
+            _id: mongoose.Types.ObjectId(),
+            guildId: interaction.guild.id,
+            channel: lchan.id
+          }).save();
 
           const embed = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1534,11 +1575,14 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        const update = db.prepare('UPDATE starboard SET channel = (@channel) WHERE guildid = (@guildid);');
-        update.run({
-          guildid: `${interaction.guild.id}`,
-          channel: `${lchan.id}`
-        });
+        await StarBoard.findOneAndUpdate(
+          {
+            guildId: interaction.guild.id
+          },
+          {
+            channel: lchan.id
+          }
+        );
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))

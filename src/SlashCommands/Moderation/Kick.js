@@ -1,8 +1,6 @@
 import { EmbedBuilder, SlashCommandBuilder, PermissionsBitField } from 'discord.js';
-import SQLite from 'better-sqlite3';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import Logging from '../../Mongo/Schemas/Logging.js'; //! TEST ANY OF THESE
 
 const data = new SlashCommandBuilder()
   .setName('kick')
@@ -22,7 +20,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${interaction.guild.id};`).get();
+    const id = await Logging.findOne({ guildId: interaction.guild.id });
 
     const user = interaction.options.getMember('user');
 

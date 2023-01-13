@@ -1,9 +1,7 @@
 import { EmbedBuilder, SlashCommandBuilder, PermissionsBitField } from 'discord.js';
 import ms from 'ms';
-import SQLite from 'better-sqlite3';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import Logging from '../../Mongo/Schemas/Logging.js';
 
 const data = new SlashCommandBuilder()
   .setName('timeout')
@@ -71,7 +69,7 @@ export const SlashCommandF = class extends SlashCommand {
 
       interaction.reply({ embeds: [embed] });
 
-      const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${interaction.guild.id};`).get();
+      const dbid = await Logging.findOne({ guildId: interaction.guild.id });
       if (dbid && dbid.channel && dbid.channel === interaction.channel.id) return;
       if (!dbid) return;
 
@@ -179,7 +177,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     interaction.reply({ embeds: [embed] });
 
-    const dbid = db.prepare(`SELECT channel FROM logging WHERE guildid = ${interaction.guild.id};`).get();
+    const dbid = await Logging.findOne({ guildId: interaction.guild.id });
     if (dbid && dbid.channel && dbid.channel === interaction.channel.id) return;
 
     if (!dbid) return;

@@ -1,8 +1,6 @@
 import { EmbedBuilder, SlashCommandBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
-import SQLite from 'better-sqlite3';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import Logging from '../../Mongo/Schemas/Logging.js';
 
 const data = new SlashCommandBuilder()
   .setName('ban')
@@ -50,7 +48,7 @@ export const SlashCommandF = class extends SlashCommand {
       'Previous 7 Days': 604800
     };
 
-    const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${interaction.guild.id};`).get();
+    const id = await Logging.findOne({ guildId: interaction.guild.id });
 
     const deleteMessageFetch = interaction.options.getString('delete_messages');
     const user = interaction.options.getMember('user');

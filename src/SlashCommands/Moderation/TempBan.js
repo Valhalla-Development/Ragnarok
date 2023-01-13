@@ -1,9 +1,9 @@
 import { EmbedBuilder, SlashCommandBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
-import SQLite from 'better-sqlite3';
 import ms from 'ms';
+import mongoose from 'mongoose';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
-const db = new SQLite('./Storage/DB/db.sqlite');
+import Logging from '../../Mongo/Schemas/Logging.js';
+import TempBan from '../../Mongo/Schemas/TempBan.js';
 
 const data = new SlashCommandBuilder()
   .setName('tempban')
@@ -52,7 +52,7 @@ export const SlashCommandF = class extends SlashCommand {
       'Previous 7 Days': 604800
     };
 
-    const id = db.prepare(`SELECT channel FROM logging WHERE guildid = ${interaction.guild.id};`).get();
+    const id = await Logging.findOne({ guildId: interaction.guild.id });
 
     const deleteMessageFetch = interaction.options.getString('delete_messages');
     const user = interaction.options.getMember('user');
@@ -161,17 +161,15 @@ export const SlashCommandF = class extends SlashCommand {
 
     const endTime = new Date().getTime() + ms(duration);
 
-    const insert = db.prepare(
-      'INSERT INTO ban (id, guildid, userid, endtime, channel, username) VALUES (@id, @guildid, @userid, @endtime, @channel, @username);'
-    );
-    insert.run({
-      id: `${interaction.guild.id}-${user.user.id}`,
-      guildid: interaction.guild.id,
-      userid: user.user.id,
-      endtime: endTime,
+    await new TempBan({
+      _id: mongoose.Types.ObjectId(),
+      idJoined: `${interaction.guild.id}-${user.user.id}`,
+      guildId: interaction.guild.id,
+      userId: user.user.id,
+      endTime,
       channel: interaction.channel.id,
       username: user.user.tag
-    });
+    }).save();
 
     const embed = new EmbedBuilder()
       .setThumbnail(this.client.user.displayAvatarURL())
@@ -214,7 +212,7 @@ export const SlashCommandF = class extends SlashCommand {
             return;
           }
 
-          db.prepare('DELETE FROM ban WHERE id = ?').run(`${interaction.guild.id}-${user.user.userid}`);
+          await TempBan.deleteOne({ idJoined: `${interaction.guild.id}-${user.user.userid}` });
 
           const unbanEmbed = new EmbedBuilder()
             .setThumbnail(this.client.user.displayAvatarURL())
