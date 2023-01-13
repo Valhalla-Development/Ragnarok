@@ -19,7 +19,7 @@ export const RagnarokDashboard = class RagnarokDashboard {
     async function loadCommands(cl) {
       const directory = url.fileURLToPath(new URL('..', import.meta.url));
       const settings = [];
-      return globPromise(`${directory}DashboardCommands/*.js`).then(async (cmds) => {
+      return globPromise(`${directory}Dashboard/DashboardCommands/*.js`).then(async (cmds) => {
         for (const cmdFile of cmds) {
           const File = await import(cmdFile);
           settings.push(File.default(cl));
