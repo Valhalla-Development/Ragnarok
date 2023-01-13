@@ -6,7 +6,6 @@ import { EmbedBuilder, PermissionsBitField, ButtonBuilder, ActionRowBuilder, But
 import urlRegexSafe from 'url-regex-safe';
 import fetch from 'node-fetch';
 import { customAlphabet } from 'nanoid';
-import mongoose from 'mongoose';
 import Event from '../../Structures/Event.js';
 import TicketConfig from '../../Mongo/Schemas/TicketConfig.js';
 import Tickets from '../../Mongo/Schemas/Tickets.js';
@@ -16,6 +15,7 @@ import Dad from '../../Mongo/Schemas/Dad.js';
 import AntiScam from '../../Mongo/Schemas/AntiScam.js';
 import AdsProtection from '../../Mongo/Schemas/AdsProtection.js';
 import Balance from '../../Mongo/Schemas/Balance.js';
+import Level from '../../Mongo/Schemas/Level.js';
 
 const coinCooldown = new Set();
 const coinCooldownSeconds = 60;
@@ -275,7 +275,6 @@ export const EventF = class extends Event {
             const randomString = nanoid();
             if (!id) {
               await new Tickets({
-                _id: mongoose.Types.ObjectId(),
                 guildId: fetchGuild.id,
                 ticketId: randomString,
                 authorId: message.author.id,
@@ -415,7 +414,6 @@ export const EventF = class extends Event {
               }
 
               await new Tickets({
-                _id: mongoose.Types.ObjectId(),
                 guildId: fetchGuild.id,
                 ticketId: randomString,
                 authorId: message.author.id,
@@ -618,16 +616,16 @@ export const EventF = class extends Event {
     if (!balance) {
       const claimNewUserTime = new Date().getTime() + this.client.ecoPrices.newUserTime;
       balance = {
-        id: `${message.author.id}-${message.guild.id}`,
+        idJoined: `${message.author.id}-${message.guild.id}`,
         user: message.author.id,
-        guild: message.guild.id,
+        guildId: message.guild.id,
         hourly: null,
         daily: null,
         weekly: null,
         monthly: null,
-        stealcool: null,
-        fishcool: null,
-        farmcool: null,
+        stealCool: null,
+        fishCool: null,
+        farmCool: null,
         boosts: null,
         items: null,
         cash: 0,
@@ -663,20 +661,22 @@ export const EventF = class extends Event {
       const levelDb = await LevelConfig.findOne({ guildId: message.guild.id });
 
       // Initialize score object
-      let score = {
-        id: `${message.guild.id}-${message.author.id}`,
-        user: message.author.id,
-        guild: message.guild.id,
-        xp: 0,
-        level: 0,
-        country: null,
-        image: null
-      };
+      let score;
 
       // Fetch existing score data, if any
-      const existingScore = client.getScore.get(message.author.id, message.guild.id);
+      const existingScore = await Level.findOne({ idJoined: `${message.guild.id}-${message.author.id}` });
       if (existingScore) {
         score = existingScore;
+      } else {
+        score = {
+          idJoined: `${message.guild.id}-${message.author.id}`,
+          userId: message.author.id,
+          guildId: message.guild.id,
+          xp: 0,
+          level: 0,
+          country: null,
+          image: null
+        };
       }
 
       // Calculate XP and level-up
@@ -706,7 +706,27 @@ export const EventF = class extends Event {
       // Update score in database, if not on cooldown
       if (!xpCooldown.has(message.author.id)) {
         xpCooldown.add(message.author.id);
-        client.setScore.run(score);
+        if (!existingScore) {
+          await new Level({
+            idJoined: score.idJoined,
+            userId: score.userId,
+            guildId: score.guildId,
+            xp: score.xp,
+            level: score.level,
+            country: score.country,
+            image: score.image
+          }).save();
+        } else {
+          await Level.findOneAndUpdate(
+            {
+              idJoined: `${message.guild.id}-${message.author.id}`
+            },
+            {
+              xp: score.xp,
+              level: score.level
+            }
+          );
+        }
         setTimeout(() => {
           xpCooldown.delete(message.author.id);
         }, xpCooldownSeconds * 1000);
