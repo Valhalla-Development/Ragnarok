@@ -17,6 +17,7 @@ export default (client) => {
     categoryId: 'embedCreator',
     categoryName: 'Embed Creator',
     categoryDescription: 'Build your own Embed, and send it to a specified channel!',
+    categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
     getActualSet: async ({ guild }) => [
       {
         optionId: 'embed'
