@@ -606,8 +606,8 @@ export const SlashCommandF = class extends SlashCommand {
             return;
           }
 
-          if (foundRoleMenu.activeRoleMenuID) {
-            const activeMenu = JSON.parse(foundRoleMenu.activeRoleMenuID);
+          if (foundRoleMenu.roleMenuId) {
+            const activeMenu = JSON.parse(foundRoleMenu.roleMenuId);
 
             if (activeMenu) {
               const ch = interaction.guild.channels.cache.get(activeMenu.channel);
@@ -696,8 +696,8 @@ export const SlashCommandF = class extends SlashCommand {
           roleList.splice(index, 1);
 
           if (!roleList.length) {
-            if (foundRoleMenu.activeRoleMenuID) {
-              const activeMenu = JSON.parse(foundRoleMenu.activeRoleMenuID);
+            if (foundRoleMenu.roleMenuId) {
+              const activeMenu = JSON.parse(foundRoleMenu.roleMenuId);
 
               if (activeMenu) {
                 const ch = interaction.guild.channels.cache.get(activeMenu.channel);
@@ -759,8 +759,8 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (foundRoleMenu.activeRoleMenuID) {
-          const activeMenu = JSON.parse(foundRoleMenu.activeRoleMenuID);
+        if (foundRoleMenu.roleMenuId) {
+          const activeMenu = JSON.parse(foundRoleMenu.roleMenuId);
 
           if (activeMenu) {
             const ch = interaction.guild.channels.cache.get(activeMenu.channel);
@@ -825,8 +825,8 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         // delete the rolemenu message if it exists
-        if (foundRoleMenu.activeRoleMenuID) {
-          const activeMenu = JSON.parse(foundRoleMenu.activeRoleMenuID);
+        if (foundRoleMenu.roleMenuId) {
+          const activeMenu = JSON.parse(foundRoleMenu.roleMenuId);
 
           if (activeMenu) {
             const ch = interaction.guild.channels.cache.get(activeMenu.channel);
@@ -852,7 +852,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         await RoleMenu.deleteOne({ guildId: interaction.guild.id });
 
-        if (!foundRoleMenu.activeRoleMenuID) {
+        if (!foundRoleMenu.roleMenuId) {
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
             value: '**◎ Success:** All roles have successfully been cleared from the rolemenu!'

@@ -32,7 +32,7 @@ export const EventF = class extends Event {
       const foundTicket = await Tickets.findOne({ guildId: member.guild.id, authorId: member.user.id });
       if (foundTicket) {
         // Fetch the channel
-        const channel = member.guild.channels.cache.get(foundTicket.get({ authorid: member.user.id }).chanid);
+        const channel = member.guild.channels.cache.get(foundTicket.channelId);
 
         // Check if the channel exists
         if (channel) {

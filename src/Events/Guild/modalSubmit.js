@@ -12,7 +12,7 @@ export const EventF = class extends Event {
       if (!fetchTick) return;
 
       // Filter fetchTick where chanid === interaction.channel.id
-      const ticket = fetchTick.find((t) => t.chanid === modal.channelId);
+      const ticket = fetchTick.find((t) => t.channelId === modal.channelId);
       if (!ticket) return;
 
       const firstResponse = modal.getTextInputValue(`textinput-${modal.channelId}`);
@@ -80,7 +80,7 @@ export const EventF = class extends Event {
 
       const epoch = Math.floor(new Date().getTime() / 1000);
 
-      const user = this.client.users.cache.find((a) => a.id === ticket.authorid);
+      const user = this.client.users.cache.find((a) => a.id === ticket.authorId);
       if (user) {
         const logEmbed = new EmbedBuilder()
           .setColor(this.client.utils.color(modal.guild.members.me.displayHexColor))
@@ -131,7 +131,7 @@ export const EventF = class extends Event {
         return;
       }
 
-      const logchan = modal.guild.channels.cache.find((chan) => chan.id === logget.log);
+      const logchan = modal.guild.channels.cache.find((chan) => chan.id === logget.logChannel);
       if (!logchan) {
         return;
       }

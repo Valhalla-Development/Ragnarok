@@ -25,10 +25,10 @@ export const SlashCommandF = class extends SlashCommand {
       await RoleMenu.deleteOne({ guildId: interaction.guild.id });
     } else {
       let activeMenu;
-      if (!foundRoleMenu.activeRoleMenuID) {
+      if (!foundRoleMenu.roleMenuId) {
         activeMenu = {};
       } else {
-        activeMenu = JSON.parse(foundRoleMenu.activeRoleMenuID);
+        activeMenu = JSON.parse(foundRoleMenu.roleMenuId);
       }
 
       const roleArray = JSON.parse(foundRoleMenu.roleList);

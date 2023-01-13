@@ -26,8 +26,8 @@ export const EventF = class extends Event {
         );
 
         // Update rolemenu if exists
-        if (foundRoleMenu.activeRoleMenuID) {
-          const activeMenu = JSON.parse(foundRoleMenu.activeRoleMenuID);
+        if (foundRoleMenu.roleMenuId) {
+          const activeMenu = JSON.parse(foundRoleMenu.roleMenuId);
 
           if (activeMenu) {
             const ch = role.guild.channels.cache.get(activeMenu.channel);

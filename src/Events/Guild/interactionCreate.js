@@ -140,7 +140,7 @@ export const EventF = class extends Event {
         if (!fetchTick) return;
 
         // Filter fetchTick where chanid === interaction.channel.id
-        const ticket = fetchTick.find((t) => t.chanid === interaction.channelId);
+        const ticket = fetchTick.find((t) => t.channelId === interaction.channelId);
         if (!ticket) return;
 
         const firstResponse = interaction.fields.getTextInputValue(`textinput-${interaction.channelId}`);
@@ -260,7 +260,7 @@ export const EventF = class extends Event {
           return;
         }
 
-        const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.log);
+        const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.logChannel);
         if (!logchan) {
           return;
         }
@@ -332,7 +332,7 @@ export const EventF = class extends Event {
       if (!fetchTick) return;
 
       // Filter fetchTick where chanid === interaction.channel.id
-      const ticket = fetchTick.find((t) => t.chanid === interaction.channel.id);
+      const ticket = fetchTick.find((t) => t.channelId === interaction.channel.id);
       if (!ticket) return;
 
       if (!interaction.member.roles.cache.has(fetchRole.role) && interaction.user.id !== interaction.guild.ownerID) {
@@ -478,7 +478,7 @@ export const EventF = class extends Event {
 
         const logget = await TicketConfig.findOne({ guildId: guild.id });
 
-        const logchan = guild.channels.cache.find((chan) => chan.id === logget.log);
+        const logchan = guild.channels.cache.find((chan) => chan.id === logget.logChannel);
         if (!logchan) {
           return;
         }
@@ -522,10 +522,10 @@ export const EventF = class extends Event {
       }
 
       if (interaction.customId === 'closeTicketReason') {
-        const modal = new ModalBuilder().setCustomId(`modal-${ticket.chanid}`).setTitle('Close Ticket');
+        const modal = new ModalBuilder().setCustomId(`modal-${ticket.channelId}`).setTitle('Close Ticket');
 
         const reasonModal = new TextInputBuilder()
-          .setCustomId(`textinput-${ticket.chanid}`)
+          .setCustomId(`textinput-${ticket.channelId}`)
           .setLabel('Reason')
           .setStyle('Paragraph')
           .setMinLength(4)
@@ -609,10 +609,10 @@ export const EventF = class extends Event {
       const checkTicketEx = await Tickets.findOne({ guildId: guild.id, authorId: interaction.user.id });
 
       if (checkTicketEx) {
-        if (checkTicketEx.chanid === null) {
+        if (checkTicketEx.channelId === null) {
           await Tickets.deleteOne({ guildId: guild.id, authorId: interaction.user.id }); //!
         }
-        if (!guild.channels.cache.find((ch) => ch.id === checkTicketEx.chanid)) {
+        if (!guild.channels.cache.find((ch) => ch.id === checkTicketEx.channelId)) {
           await Tickets.deleteOne({ guildId: guild.id, authorId: interaction.user.id }); //!
         }
       }
@@ -634,7 +634,7 @@ export const EventF = class extends Event {
       const foundTicket = await Tickets.findOne({ guildId: guild.id, authorId: interaction.user.id });
       if (foundTicket) {
         try {
-          const cha = guild.channels.cache.get(checkTicketEx.chanid);
+          const cha = guild.channels.cache.get(checkTicketEx.channelId);
           const alreadyTicket = new EmbedBuilder().setColor(this.client.utils.color(guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Ticket**`,
             value: `**◎ Error:** It seems you already have a ticket open. | ${cha}`
@@ -778,11 +778,11 @@ export const EventF = class extends Event {
           c.send({ components: [row], embeds: [embed] });
 
           if (id) {
-            if (!fetch.log) {
+            if (!fetch.logChannel) {
               return;
             }
 
-            const logchan = guild.channels.cache.find((chan) => chan.id === fetch.log);
+            const logchan = guild.channels.cache.find((chan) => chan.id === fetch.logChannel);
             if (!logchan) return;
 
             const openEpoch = Math.floor(new Date().getTime() / 1000);

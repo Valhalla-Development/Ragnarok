@@ -235,10 +235,10 @@ export const EventF = class extends Event {
             const checkTicketEx = await Tickets.findOne({ guildId: fetchGuild.id, authorId: message.author.id });
             const roleCheckEx = await Tickets.findOne({ guildId: fetchGuild.id });
             if (checkTicketEx) {
-              if (checkTicketEx.chanid === null) {
+              if (checkTicketEx.channelId === null) {
                 await Tickets.deleteOne({ guildId: fetchGuild.id, authorId: message.author.id });
               }
-              if (!fetchGuild.channels.cache.find((channel) => channel.id === checkTicketEx.chanid)) {
+              if (!fetchGuild.channels.cache.find((channel) => channel.id === checkTicketEx.channelId)) {
                 await Tickets.deleteOne({ guildId: fetchGuild.id, authorId: message.author.id });
               }
             }
@@ -345,7 +345,7 @@ export const EventF = class extends Event {
                   if (!logget) {
                     return;
                   }
-                  const logchan = fetchGuild.channels.cache.find((chan) => chan.id === logget.log);
+                  const logchan = fetchGuild.channels.cache.find((chan) => chan.id === logget.logChannel);
                   if (!logchan) return;
 
                   const openEpoch = Math.floor(new Date().getTime() / 1000);
@@ -511,7 +511,7 @@ export const EventF = class extends Event {
                     return;
                   }
 
-                  const logchan = fetchGuild.channels.cache.find((chan) => chan.id === logget.log);
+                  const logchan = fetchGuild.channels.cache.find((chan) => chan.id === logget.logChannel);
                   if (!logchan) return;
 
                   const openEpoch = Math.floor(new Date().getTime() / 1000);
@@ -667,7 +667,7 @@ export const EventF = class extends Event {
         id: `${message.guild.id}-${message.author.id}`,
         user: message.author.id,
         guild: message.guild.id,
-        points: 0,
+        xp: 0,
         level: 0,
         country: null,
         image: null
@@ -681,12 +681,12 @@ export const EventF = class extends Event {
 
       // Calculate XP and level-up
       const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
-      const curxp = score.points; // Current points
+      const curxp = score.xp; // Current xp
       const curlvl = score.level; // Current level
       const levelNoMinus = score.level + 1;
       const nxtLvl = (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
-      score.points = curxp + xpAdd;
-      if (nxtLvl <= score.points) {
+      score.xp = curxp + xpAdd;
+      if (nxtLvl <= score.xp) {
         score.level = curlvl + 1;
         if (score.level === 0) return;
         if (xpCooldown.has(message.author.id)) return;

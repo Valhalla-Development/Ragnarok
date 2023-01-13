@@ -307,7 +307,7 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     let level;
-    let points;
+    let xp;
     let levelNoMinus;
     let nxtLvlXp;
     let currentxpLvl;
@@ -318,20 +318,20 @@ export const SlashCommandF = class extends SlashCommand {
     let xpPercent;
     if (!score) {
       level = '0';
-      points = '0';
+      xp = '0';
       toLevel = '100';
       inLevel = '0';
       xpLevel = '0/100 XP';
       xpPercent = 0;
     } else {
       level = score.level;
-      points = score.xp;
+      xp = score.xp;
       levelNoMinus = score.level + 1;
       currentLvl = score.level;
       nxtLvlXp = (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
       currentxpLvl = (5 / 6) * currentLvl * (2 * currentLvl * currentLvl + 27 * currentLvl + 91);
       toLevel = Math.floor(nxtLvlXp - currentxpLvl);
-      inLevel = Math.floor(points - currentxpLvl);
+      inLevel = Math.floor(xp - currentxpLvl);
       xpLevel = `${abbreviate(inLevel, 2)}/${abbreviate(toLevel, 2)} XP`;
       xpPercent = (inLevel / toLevel) * 100;
     }

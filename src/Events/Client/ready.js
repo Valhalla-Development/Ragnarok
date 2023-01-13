@@ -78,6 +78,7 @@ export const EventF = class extends Event {
     async function updateFarms(userId, guildId, client) {
       // Fetch the farmPlot and harvestedCrops columns for the user
       const userData = await Balance.findOne({ idJoined: `${userId}-${guildId}` }); //! test BIG TIME BIG BRUH DO IT
+      if (!userData) return;
 
       // Parse the JSON strings into arrays
       const farmPlot = userData.farmPlot ? JSON.parse(userData.farmPlot) : [];
@@ -149,10 +150,8 @@ export const EventF = class extends Event {
       async () => {
         // Fetch all balance records from the database
         const balances = await Balance.find(); //! test BIG TIME
-
         // Use the map method to transform the balances array into an array of user IDs and guild IDs
-        const userIds = balances.map(({ user, guild }) => [user, guild]);
-
+        const userIds = balances.map(({ user, guildId }) => [user, guildId]);
         // Use the forEach method to update the farms for each user
         userIds.forEach(([userId, guildId]) => updateFarms(userId, guildId, this.client));
       },
@@ -203,7 +202,7 @@ export const EventF = class extends Event {
               foundLastRun = {};
             }
 
-            const savedDate = new Date(Date.parse(grabUser.birthday));
+            const savedDate = new Date(Date.parse(grabUser.date));
             savedDate.setFullYear(checkDate.getFullYear());
             savedDate.setHours('0');
             savedDate.setMilliseconds('0');
