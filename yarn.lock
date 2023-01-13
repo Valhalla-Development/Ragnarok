@@ -2135,10 +2135,10 @@ dbd-dark-dashboard@^1.6.61:
     discord-dashboard "*"
     node-fetch "2.6.7"
 
-dbd-soft-ui@^1.5.57-beta.1:
-  version "1.5.57-beta.1"
-  resolved "https://registry.yarnpkg.com/dbd-soft-ui/-/dbd-soft-ui-1.5.57-beta.1.tgz#f4384261e825ff722d6913dc87d9d7645acadcfc"
-  integrity sha512-ps/RauDIedjOXwFGpqwacnXEtCexAZKeOvDVQceP1Xjz03ocawKXFB6qRq/ZAwJ4SuAyot5omSCUCtMd5RtmiA==
+dbd-soft-ui@^1.5.59-beta.1:
+  version "1.5.59-beta.1"
+  resolved "https://registry.yarnpkg.com/dbd-soft-ui/-/dbd-soft-ui-1.5.59-beta.1.tgz#320a649a27e7408a84eb2acbedb874c7c200d362"
+  integrity sha512-70rSu3Mvf+kdQjiSY/JeX962SzSnRxEhlnq0gLF2N2YSpqSJ/5aSU7W05pJ9+oFv6zz/S2QWgH1PWDYHG6uNGg==
   dependencies:
     "@keyv/sqlite" "^3.6.1"
     colors "1.4.0"
@@ -5686,10 +5686,10 @@ yallist@^4.0.0:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
-yarn-upgrade-all@^0.7.1:
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/yarn-upgrade-all/-/yarn-upgrade-all-0.7.1.tgz#167a5a78127c7051c4ed15396bd5f68e3b5cc744"
-  integrity sha512-KoYfSs8jGH5fp4+12ezF3uMMIxx70X8l9efmUvsI0KQmmF4nVssEmXw4Q2aZVrRZHF30b3+cyzMIp8iU6sb9aw==
+yarn-upgrade-all@^0.7.2:
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/yarn-upgrade-all/-/yarn-upgrade-all-0.7.2.tgz#5d2afa9230661c55f22d3f848f22258db732ae20"
+  integrity sha512-iVxmoBuNdpxeahAIehJ039Pp6S8zQ/qTENQRMV5hp7x/2tLGUzytCODIKZFjfUwcRRKT3boGgHheUEWC7+VlQw==
 
 yocto-queue@^0.1.0:
   version "0.1.0"

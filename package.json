@@ -10,7 +10,8 @@
     "node": ">=16"
   },
   "scripts": {
-    "audit": "npx eslint ./"
+    "audit": "npx eslint ./",
+    "upgrade": "yarn yarn-upgrade-all"
   },
   "type": "module",
   "dependencies": {
@@ -27,7 +28,7 @@
     "cryptocurrencies": "^7.0.0",
     "custom-bj": "^4.0.3",
     "dbd-dark-dashboard": "^1.6.61",
-    "dbd-soft-ui": "^1.5.57-beta.1",
+    "dbd-soft-ui": "^1.5.59-beta.1",
     "discord-dashboard": "^2.3.6",
     "discord-embed-validator": "^1.0.1",
     "discord-giveaways": "^6.0.1",
@@ -67,7 +68,7 @@
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-import": "^2.27.4",
     "eslint-plugin-prettier": "^4.2.1",
-    "yarn-upgrade-all": "^0.7.1"
+    "yarn-upgrade-all": "^0.7.2"
   },
   "yarn-upgrade-all": {
     "ignore": [
