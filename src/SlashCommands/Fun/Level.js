@@ -7,7 +7,6 @@ import { parse } from 'twemoji-parser';
 import countryList from 'countries-list';
 import fetch from 'node-fetch';
 import Canvas from 'canvas';
-import mongoose from 'mongoose';
 import converter from 'number-to-words-en';
 import SlashCommand from '../../Structures/SlashCommand.js';
 import LevelConfig from '../../Mongo/Schemas/LevelConfig.js';
@@ -76,7 +75,6 @@ export const SlashCommandF = class extends SlashCommand {
         const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
 
         await new Level({
-          _id: mongoose.Types.ObjectId(),
           idJoined: `${interaction.guild.id}-${interaction.user.id}`,
           userId: interaction.user.id,
           guildId: interaction.guild.id,
@@ -142,7 +140,6 @@ export const SlashCommandF = class extends SlashCommand {
         const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
 
         await new Level({
-          _id: mongoose.Types.ObjectId(),
           idJoined: `${interaction.guild.id}-${interaction.user.id}`,
           userId: interaction.user.id,
           guildId: interaction.guild.id,
@@ -280,7 +277,6 @@ export const SlashCommandF = class extends SlashCommand {
       const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
 
       await new Level({
-        _id: mongoose.Types.ObjectId(),
         idJoined: `${interaction.guild.id}-${user.id}`,
         userId: user.id,
         guildId: interaction.guild.id,
@@ -476,14 +472,14 @@ export const SlashCommandF = class extends SlashCommand {
     progressbar.draw();
 
     // Draw XP
-    function drawXP(x, y, xp) {
+    function drawXP(x, y, xpa) {
       ctx.font = '22px Shapirit';
       ctx.fillStyle = '#FFFFFF';
       ctx.textAlign = 'right';
       ctx.strokeStyle = 'black';
       ctx.lineWidth = 0.25;
-      ctx.fillText(xp, x, y);
-      ctx.strokeText(xp, x, y);
+      ctx.fillText(xpa, x, y);
+      ctx.strokeText(xpa, x, y);
       ctx.save();
     }
     drawXP(880, 165.4, xpLevel);

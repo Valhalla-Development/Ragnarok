@@ -1,6 +1,5 @@
 import { EmbedBuilder, SlashCommandBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
 import ms from 'ms';
-import mongoose from 'mongoose';
 import SlashCommand from '../../Structures/SlashCommand.js';
 import Logging from '../../Mongo/Schemas/Logging.js';
 import TempBan from '../../Mongo/Schemas/TempBan.js';
@@ -162,7 +161,6 @@ export const SlashCommandF = class extends SlashCommand {
     const endTime = new Date().getTime() + ms(duration);
 
     await new TempBan({
-      _id: mongoose.Types.ObjectId(),
       idJoined: `${interaction.guild.id}-${user.user.id}`,
       guildId: interaction.guild.id,
       userId: user.user.id,

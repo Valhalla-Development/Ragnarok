@@ -1,9 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-import mongoose from 'mongoose';
 import SQLite from 'better-sqlite3';
 import SlashCommand from '../../Structures/SlashCommand.js';
-
 import AdsProtection from '../../Mongo/Schemas/AdsProtection.js';
 import AFK from '../../Mongo/Schemas/AFK.js';
 import Announcement from '../../Mongo/Schemas/Announcement.js';
@@ -110,7 +108,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of adsprot) {
             await new AdsProtection({
-              _id: mongoose.Types.ObjectId(),
               guildId: entry.guildid,
               status: entry.status === 'on'
             })
@@ -126,7 +123,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of afk) {
             await new AFK({
-              _id: mongoose.Types.ObjectId(),
               idJoined: entry.id,
               guildId: entry.guildid,
               userId: entry.user,
@@ -144,7 +140,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of announcement) {
             await new Announcement({
-              _id: mongoose.Types.ObjectId(),
               message: entry.msg
             })
               .save()
@@ -159,7 +154,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of antiscam) {
             await new AntiScam({
-              _id: mongoose.Types.ObjectId(),
               guildId: entry.guildid,
               status: entry.status === 'on'
             })
@@ -175,7 +169,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of autorole) {
             await new AutoRole({
-              _id: mongoose.Types.ObjectId(),
               guildId: entry.guildid,
               role: entry.role
             })
@@ -191,7 +184,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of balance) {
             await new Balance({
-              _id: mongoose.Types.ObjectId(),
               idJoined: entry.id,
               user: entry.user,
               guildId: entry.guild,
@@ -225,7 +217,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of ban) {
             await new TempBan({
-              _id: mongoose.Types.ObjectId(),
               idJoined: entry.id,
               guildId: entry.guildid,
               userId: entry.userid,
@@ -245,7 +236,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of birthdayConfig) {
             await new BirthdayConfig({
-              _id: mongoose.Types.ObjectId(),
               guildId: entry.guildid,
               channel: entry.channel,
               role: entry.role
@@ -262,7 +252,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of birthdays) {
             await new Birthdays({
-              _id: mongoose.Types.ObjectId(),
               userId: entry.userid,
               date: entry.birthday,
               lastRun: entry.lastRun
@@ -279,7 +268,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of dadbot) {
             await new Dad({
-              _id: mongoose.Types.ObjectId(),
               guildId: entry.guildid,
               status: entry.status === 'on'
             })
@@ -295,7 +283,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of hastebin) {
             await new Hastebin({
-              _id: mongoose.Types.ObjectId(),
               guildId: entry.guildid,
               status: entry.status === 'on'
             })
@@ -311,7 +298,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of level) {
             await new LevelConfig({
-              _id: mongoose.Types.ObjectId(),
               guildId: entry.guildid,
               status: entry.status === 'killME'
             })
@@ -327,7 +313,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of logging) {
             await new Logging({
-              _id: mongoose.Types.ObjectId(),
               guildId: entry.guildid,
               channel: entry.channel
             })
@@ -343,7 +328,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of rolemenu) {
             await new RoleMenu({
-              _id: mongoose.Types.ObjectId(),
               guildId: entry.guildid,
               roleMenuId: entry.activeRoleMenuID,
               roleList: entry.roleList
@@ -360,7 +344,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of scores) {
             await new Level({
-              _id: mongoose.Types.ObjectId(),
               idJoined: entry.id,
               userId: entry.user,
               guildId: entry.guild,
@@ -381,7 +364,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of setwelcome) {
             await new Welcome({
-              _id: mongoose.Types.ObjectId(),
               guildId: entry.guildid,
               channel: entry.channel,
               image: entry.image
@@ -398,7 +380,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of starboard) {
             await new StarBoard({
-              _id: mongoose.Types.ObjectId(),
               guildId: entry.guildid,
               channel: entry.channel
             })
@@ -414,7 +395,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of ticketConfig) {
             await new TicketConfig({
-              _id: mongoose.Types.ObjectId(),
               guildId: entry.guildid,
               category: entry.category,
               logChannel: entry.log,
@@ -435,7 +415,6 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of tickets) {
             await new Tickets({
-              _id: mongoose.Types.ObjectId(),
               guildId: entry.guildid,
               ticketId: entry.ticketid,
               authorId: entry.authorid,

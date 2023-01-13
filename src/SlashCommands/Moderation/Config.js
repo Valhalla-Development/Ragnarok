@@ -2,7 +2,6 @@
 import { EmbedBuilder, PermissionsBitField, ButtonBuilder, ActionRowBuilder, ChannelType, ButtonStyle, SlashCommandBuilder } from 'discord.js';
 import fetch from 'node-fetch';
 import Canvas from 'canvas';
-import mongoose from 'mongoose';
 import SlashCommand from '../../Structures/SlashCommand.js';
 import BirthdayConfig from '../../Mongo/Schemas/BirthdayConfig.js';
 import RoleMenu from '../../Mongo/Schemas/RoleMenu.js';
@@ -467,7 +466,6 @@ export const SlashCommandF = class extends SlashCommand {
 
         if (!status) {
           await new BirthdayConfig({
-            _id: mongoose.Types.ObjectId(),
             guildId: interaction.guild.id,
             channel: bChannel.id
           }).save();
@@ -563,7 +561,6 @@ export const SlashCommandF = class extends SlashCommand {
           roleList.push(rRole.id);
 
           await new RoleMenu({
-            _id: mongoose.Types.ObjectId(),
             guildId: interaction.guild.id,
             roleList: JSON.stringify(roleList)
           }).save();
@@ -881,7 +878,6 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         await new Hastebin({
-          _id: mongoose.Types.ObjectId(),
           guildId: interaction.guild.id,
           status: true
         }).save();
@@ -931,7 +927,6 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         await new Dad({
-          _id: mongoose.Types.ObjectId(),
           guildId: interaction.guild.id,
           status: true
         }).save();
@@ -994,7 +989,6 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         await new AdsProtection({
-          _id: mongoose.Types.ObjectId(),
           guildId: interaction.guild.id,
           status: true
         }).save();
@@ -1056,7 +1050,6 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         await new AntiScam({
-          _id: mongoose.Types.ObjectId(),
           guildId: interaction.guild.id,
           status: true
         }).save();
@@ -1165,7 +1158,6 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       await new AutoRole({
-        _id: mongoose.Types.ObjectId(),
         guildId: interaction.guild.id,
         role: role.id
       }).save();
@@ -1221,7 +1213,6 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (!status) {
         await new Logging({
-          _id: mongoose.Types.ObjectId(),
           guildId: interaction.guild.id,
           channel: lchan.id
         }).save();
@@ -1284,7 +1275,6 @@ export const SlashCommandF = class extends SlashCommand {
 
         if (!status) {
           await new TicketConfig({
-            _id: mongoose.Types.ObjectId(),
             guildId: interaction.guild.id,
             category: category.id
           }).save();
@@ -1327,7 +1317,6 @@ export const SlashCommandF = class extends SlashCommand {
 
         if (!status) {
           await new TicketConfig({
-            _id: mongoose.Types.ObjectId(),
             guildId: interaction.guild.id,
             channel: lchan.id
           }).save();
@@ -1359,7 +1348,6 @@ export const SlashCommandF = class extends SlashCommand {
 
         if (!status) {
           await new TicketConfig({
-            _id: mongoose.Types.ObjectId(),
             guildId: interaction.guild.id,
             role: suppRole.id
           }).save();
@@ -1501,7 +1489,6 @@ export const SlashCommandF = class extends SlashCommand {
 
         if (!status) {
           await new Welcome({
-            _id: mongoose.Types.ObjectId(),
             guildId: interaction.guild.id,
             channel: lchan.id
           }).save();
@@ -1563,7 +1550,6 @@ export const SlashCommandF = class extends SlashCommand {
         }
         if (!status) {
           await new StarBoard({
-            _id: mongoose.Types.ObjectId(),
             guildId: interaction.guild.id,
             channel: lchan.id
           }).save();

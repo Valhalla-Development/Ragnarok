@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose';
 
 const Tickets = new Schema({
-  _id: Schema.Types.ObjectId,
   guildId: String,
   ticketId: { type: String, unique: true },
   authorId: String,

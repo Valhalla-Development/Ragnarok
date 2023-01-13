@@ -11,7 +11,6 @@ import {
 import discordTranscripts from 'discord-html-transcripts';
 import fetch from 'node-fetch';
 import { customAlphabet } from 'nanoid';
-import mongoose from 'mongoose';
 import SlashCommand from '../../Structures/SlashCommand.js';
 import TicketConfig from '../../Mongo/Schemas/TicketConfig.js';
 import Tickets from '../../Mongo/Schemas/Tickets.js';
@@ -456,7 +455,6 @@ export const SlashCommandF = class extends SlashCommand {
         const nickName = interaction.guild.members.cache.get(interaction.user.id).displayName;
 
         await new Tickets({
-          _id: mongoose.Types.ObjectId(),
           guildId: interaction.guild.id,
           ticketId: randomString,
           authorId: interaction.user.id,

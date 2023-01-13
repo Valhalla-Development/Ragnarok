@@ -15,7 +15,6 @@ import moment from 'moment';
 import { customAlphabet } from 'nanoid';
 import discordTranscripts from 'discord-html-transcripts';
 import fetchPkg from 'node-fetch';
-import mongoose from 'mongoose';
 import Event from '../../Structures/Event.js';
 import Logging from '../../Mongo/Schemas/Logging.js';
 import Tickets from '../../Mongo/Schemas/Tickets.js';
@@ -655,7 +654,6 @@ export const EventF = class extends Event {
       const nickName = guild.members.cache.get(interaction.user.id).displayName;
 
       await new Tickets({
-        _id: mongoose.Types.ObjectId(),
         guildId: guild.id,
         ticketId: randomString,
         authorId: interaction.user.id,

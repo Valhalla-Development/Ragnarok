@@ -1,5 +1,4 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import mongoose from 'mongoose';
 import SlashCommand from '../../Structures/SlashCommand.js';
 import AFK from '../../Mongo/Schemas/AFK.js';
 
@@ -24,7 +23,6 @@ export const SlashCommandF = class extends SlashCommand {
 
     if (!afk) {
       await new AFK({
-        _id: mongoose.Types.ObjectId(),
         idJoined: `${interaction.user.id}-${interaction.guild.id}`,
         guildId: interaction.guild.id,
         userId: interaction.user.id,

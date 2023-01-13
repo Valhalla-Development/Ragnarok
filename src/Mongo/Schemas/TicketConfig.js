@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose';
 
 const TicketConfig = new Schema({
-  _id: Schema.Types.ObjectId,
   guildId: { type: String, unique: true },
   category: String,
   logChannel: String,

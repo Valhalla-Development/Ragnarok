@@ -181,7 +181,6 @@ export const SlashCommandF = class extends SlashCommand {
         );
       } else {
         await new Birthdays({
-          _id: mongoose.Types.ObjectId(),
           userId: interaction.user.id,
           date: argsDate,
           lastRun: null

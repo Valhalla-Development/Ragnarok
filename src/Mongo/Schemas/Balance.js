@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose';
 
 const Balance = new Schema({
-  _id: Schema.Types.ObjectId,
   idJoined: { type: String, unique: true },
   user: String,
   guildId: String,
