@@ -181,6 +181,7 @@ export const Util = class Util {
 
   async loadMongoEvents() {
     (async () => {
+      mongoose.set('strictQuery', false);
       await mongoose.connect(this.client.config.DATABASE_TOKEN).catch(console.error);
     })();
 
