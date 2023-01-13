@@ -463,19 +463,6 @@ export const SlashCommandF = class extends SlashCommand {
     } catch (e) {
       console.log(e);
     }
-    // Example code
-    /* let levelStatus = await LevelSchema.findOne({ guildId: '541592050043453441' });
-        if (!levelStatus) {
-          levelStatus = await new LevelSchema({
-            _id: mongoose.Types.ObjectId(),
-            guildId: interaction.guild.id,
-            status: true
-          });
-          await levelStatus.save().catch(console.error);
-          console.log('new saved', levelStatus);
-        } else {
-          console.log(levelStatus);
-        } */
   }
 };
 
