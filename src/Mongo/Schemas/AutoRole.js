@@ -5,4 +5,4 @@ const AutoRole = new Schema({
   role: String
 });
 
-export default model('AutoRole', AutoRole);
+export default model('AutoRole', AutoRole, 'AutoRole');

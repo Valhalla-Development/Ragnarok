@@ -10,4 +10,4 @@ const TicketConfig = new Schema({
   blacklist: String
 });
 
-export default model('TicketConfig', TicketConfig);
+export default model('TicketConfig', TicketConfig, 'TicketConfig');

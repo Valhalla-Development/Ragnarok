@@ -10,4 +10,4 @@ const Level = new Schema({
   image: String
 });
 
-export default model('Level', Level);
+export default model('Level', Level, 'Level');

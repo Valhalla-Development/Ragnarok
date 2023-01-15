@@ -7,4 +7,4 @@ const AFK = new Schema({
   reason: String
 });
 
-export default model('AFK', AFK);
+export default model('AFK', AFK, 'AFK');

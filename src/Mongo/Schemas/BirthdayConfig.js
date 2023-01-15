@@ -6,4 +6,4 @@ const BirthdayConfig = new Schema({
   role: String
 });
 
-export default model('BirthdayConfig', BirthdayConfig);
+export default model('BirthdayConfig', BirthdayConfig, 'BirthdayConfig');

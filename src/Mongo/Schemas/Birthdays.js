@@ -6,4 +6,4 @@ const Birthdays = new Schema({
   lastRun: String
 });
 
-export default model('Birthdays', Birthdays);
+export default model('Birthdays', Birthdays, 'Birthdays');

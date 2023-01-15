@@ -6,4 +6,4 @@ const Welcome = new Schema({
   image: String
 });
 
-export default model('Welcome', Welcome);
+export default model('Welcome', Welcome, 'Welcome');

@@ -9,4 +9,4 @@ const TempBan = new Schema({
   username: String
 });
 
-export default model('TempBan', TempBan);
+export default model('TempBan', TempBan, 'TempBan');

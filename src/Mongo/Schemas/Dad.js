@@ -5,4 +5,4 @@ const Dad = new Schema({
   status: Boolean
 });
 
-export default model('Dad', Dad);
+export default model('Dad', Dad, 'Dad');

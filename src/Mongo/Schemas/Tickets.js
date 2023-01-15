@@ -8,4 +8,4 @@ const Tickets = new Schema({
   channelId: String
 });
 
-export default model('Tickets', Tickets);
+export default model('Tickets', Tickets, 'Tickets');

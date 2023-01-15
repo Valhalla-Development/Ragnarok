@@ -5,4 +5,4 @@ const AdsProtection = new Schema({
   status: Boolean
 });
 
-export default model('AdsProtection', AdsProtection);
+export default model('AdsProtection', AdsProtection, 'AdsProtection');
