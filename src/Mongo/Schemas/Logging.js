@@ -5,4 +5,4 @@ const Logging = new Schema({
   channel: String
 });
 
-export default model('Logging', Logging, 'Logging');
+export default model('Logging', Logging);

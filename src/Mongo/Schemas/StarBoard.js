@@ -5,4 +5,4 @@ const StarBoard = new Schema({
   channel: String
 });
 
-export default model('StarBoard', StarBoard, 'StarBoard');
+export default model('StarBoard', StarBoard);

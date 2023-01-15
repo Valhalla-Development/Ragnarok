@@ -23,4 +23,4 @@ const Balance = new Schema({
   lottery: String
 });
 
-export default model('Balance', Balance, 'Balance');
+export default model('Balance', Balance);

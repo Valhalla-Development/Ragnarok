@@ -5,4 +5,4 @@ const Hastebin = new Schema({
   status: Boolean
 });
 
-export default model('Hastebin', Hastebin, 'Hastebin');
+export default model('Hastebin', Hastebin);

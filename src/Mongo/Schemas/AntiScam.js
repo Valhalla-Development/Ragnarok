@@ -5,4 +5,4 @@ const AntiScam = new Schema({
   status: Boolean
 });
 
-export default model('AntiScam', AntiScam, 'AntiScam');
+export default model('AntiScam', AntiScam);

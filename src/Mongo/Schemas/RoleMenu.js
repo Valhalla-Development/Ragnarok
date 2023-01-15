@@ -6,4 +6,4 @@ const RoleMenu = new Schema({
   roleList: String
 });
 
-export default model('RoleMenu', RoleMenu, 'RoleMenu');
+export default model('RoleMenu', RoleMenu);

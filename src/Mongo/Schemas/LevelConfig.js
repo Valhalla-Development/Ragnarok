@@ -5,4 +5,4 @@ const LevelConfig = new Schema({
   status: Boolean
 });
 
-export default model('LevelConfig', LevelConfig, 'LevelConfig');
+export default model('LevelConfig', LevelConfig);
