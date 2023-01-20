@@ -76,7 +76,7 @@ export const EventF = class extends Event {
         console.log(error);
       }
 
-      if (this.client.logging === true) {
+      if (this.client.logging === 'true') {
         const nowInMs = Date.now();
         const nowInSecond = Math.round(nowInMs / 1000);
 
