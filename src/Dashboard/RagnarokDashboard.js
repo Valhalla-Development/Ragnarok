@@ -103,7 +103,7 @@ export const RagnarokDashboard = class RagnarokDashboard {
         clientId: client.config.DISCORD_CLIENT_ID,
         scopes: ['bot', 'applications.commands'],
         permissions: 415306870006,
-        redirectUri: client.config.DBD_REDIRECT_URI
+        redirectUri: `${client.config.DBD_DOMAIN}${client.config.DBD_REDIRECT_URI}`
         // otherParams: (String = '')
       },
       supportServer: {
