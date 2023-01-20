@@ -6,7 +6,11 @@
 import { EmbedBuilder, ChannelType, codeBlock } from 'discord.js';
 import DBD from 'discord-dashboard';
 import validator from 'discord-embed-validator';
-
+//! add https://docs.assistantscenter.com/discord-dashboard/v2/config/settings
+//! allowedCheck: async ({guild,user}) => {
+//! maybe manage messages perm?
+//! also find a way to only make it show channels that the bot AND user has permission to send messages to and view the channel
+//! switch to the select form type and pass the channel array
 export default (client) => {
   const sendEmbed = (channel, str) => {
     const c = client.channels.cache.get(channel);
@@ -14,7 +18,7 @@ export default (client) => {
   };
 
   const Embed = {
-    categoryId: 'embedCreator',
+    categoryId: 'EmbedCreator',
     categoryName: 'Embed Creator',
     categoryDescription: 'Build your own Embed, and send it to a specified channel!',
     categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
@@ -153,33 +157,6 @@ export default (client) => {
       }
     }
     return newObj;
-  }
-
-  // Error function for notifiers
-  function sendError(cl, message) {
-    try {
-      const channel = cl.channels.cache.get('685973401772621843');
-      if (!channel) return;
-
-      const typeOfError = message.split(':')[0];
-      const fullError = message.replace(/^[^:]+:/, '').trimStart();
-      const timeOfError = `<t:${Math.floor(new Date().getTime() / 1000)}>`;
-      const fullString = `From: \`${typeOfError}\`\nTime: ${timeOfError}\n\nError:\n${codeBlock('js', fullError)}`;
-
-      function truncateDescription(description) {
-        const maxLength = 2048;
-        if (description.length > maxLength) {
-          const numTruncatedChars = description.length - maxLength;
-          return `${description.slice(0, maxLength)}... ${numTruncatedChars} more`;
-        }
-        return description;
-      }
-
-      const embed = new EmbedBuilder().setTitle('Dashboard Error').setDescription(truncateDescription(fullString));
-      channel.send({ embeds: [embed] });
-    } catch (e) {
-      console.log(e.stack);
-    }
   }
 
   return Embed;
