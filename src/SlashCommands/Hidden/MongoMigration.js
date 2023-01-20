@@ -21,6 +21,7 @@ import TempBan from '../../Mongo/Schemas/TempBan.js';
 import TicketConfig from '../../Mongo/Schemas/TicketConfig.js';
 import Tickets from '../../Mongo/Schemas/Tickets.js';
 import Welcome from '../../Mongo/Schemas/Welcome.js';
+import Guilds from '../../Mongo/Schemas/Guilds.js';
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
@@ -428,6 +429,21 @@ export const SlashCommandF = class extends SlashCommand {
           }
           console.log(`Tickets Finished Migrating ${tickets.length.toLocaleString('en')} properties!`);
         }
+
+        const guildsab = this.client.guilds.cache;
+        let i = 0;
+        guildsab.forEach(async (a) => {
+          await new Guilds({
+            guildId: a.id,
+            name: a.name,
+            iconUrl: a.iconURL()
+          })
+            .save()
+            .catch(console.error);
+          i++;
+          logProgress('Guilds', this.client.guilds.cache.size, i);
+        });
+        console.log(`Guilds Finished Migrating ${this.client.guilds.cache.size.toLocaleString('en')} properties!`);
 
         const endTime = new Date();
         const timeDifference = endTime - startTime;
