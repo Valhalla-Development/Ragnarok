@@ -52,8 +52,8 @@ export default (client) => {
         }
       }
 
-      let birthdayRol = result?.role;
-      let birthdayChan = result?.channel;
+      let birthdayRol = result?.role || null;
+      let birthdayChan = result?.channel || null;
       const birthdayroleObj = data.find((obj) => obj.optionId === 'birthdayRole');
       const birthdayChannelObj = data.find((obj) => obj.optionId === 'birthdayChannel');
       birthdayRol = birthdayroleObj?.data || birthdayRol;
