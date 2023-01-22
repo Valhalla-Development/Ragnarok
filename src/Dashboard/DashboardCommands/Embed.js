@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-inner-declarations */
 /* eslint-disable no-restricted-syntax */
-import { EmbedBuilder, ChannelType, codeBlock } from 'discord.js';
+import { ChannelType } from 'discord.js';
 import DBD from 'discord-dashboard';
 import validator from 'discord-embed-validator';
 //! add https://docs.assistantscenter.com/discord-dashboard/v2/config/settings
