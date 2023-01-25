@@ -12,6 +12,7 @@ import Welcome from '../../Mongo/Schemas/Welcome.js';
 import Tickets from '../../Mongo/Schemas/Tickets.js';
 import Event from '../../Structures/Event.js';
 import StarBoard from '../../Mongo/Schemas/StarBoard.js';
+import Guilds from '../../Mongo/Schemas/Guilds.js';
 
 export const EventF = class extends Event {
   async run(guild) {
@@ -26,41 +27,43 @@ export const EventF = class extends Event {
       }
     );
 
+    await Guilds.deleteOne({ GuildId: guild.id });
+
     // adsprot table
-    await AdsProtection.deleteMany({ guildId: guild.id });
+    await AdsProtection.deleteMany({ GuildId: guild.id });
 
     // autorole table
-    await AutoRole.deleteMany({ guildId: guild.id });
+    await AutoRole.deleteMany({ GuildId: guild.id });
 
     // ban table
-    await TempBan.deleteMany({ guildId: guild.id });
+    await TempBan.deleteMany({ GuildId: guild.id });
 
     // birthdayConfig table
-    await BirthdayConfig.deleteMany({ guildId: guild.id });
+    await BirthdayConfig.deleteMany({ GuildId: guild.id });
 
     // dadbot table
-    await Dad.deleteMany({ guildId: guild.id });
+    await Dad.deleteMany({ GuildId: guild.id });
 
     // hastebin table
-    await Hastebin.deleteMany({ guildId: guild.id });
+    await Hastebin.deleteMany({ GuildId: guild.id });
 
     // logging table
-    await Logging.deleteMany({ guildId: guild.id });
+    await Logging.deleteMany({ GuildId: guild.id });
 
     // rolemenu table
-    await RoleMenu.deleteMany({ guildId: guild.id });
+    await RoleMenu.deleteMany({ GuildId: guild.id });
 
     // setwelcome table
-    await Welcome.deleteMany({ guildId: guild.id });
+    await Welcome.deleteMany({ GuildId: guild.id });
 
     // ticketConfig table
-    await TicketConfig.deleteMany({ guildId: guild.id });
+    await TicketConfig.deleteMany({ GuildId: guild.id });
 
     // tickets table
-    await Tickets.deleteMany({ guildId: guild.id });
+    await Tickets.deleteMany({ GuildId: guild.id });
 
     // starboard table
-    await StarBoard.deleteMany({ guildId: guild.id });
+    await StarBoard.deleteMany({ GuildId: guild.id });
   }
 };
 
