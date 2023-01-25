@@ -1,9 +1,46 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 import DBD from 'discord-dashboard';
+import { PermissionsBitField } from 'discord.js';
 import AutoRoleSchema from '../../Mongo/Schemas/AutoRole.js';
 
 export default (client) => {
+  const allowedCheck = async ({ guild, user }) => {
+    // Fetch guild
+    const fetchGuild = client.guilds.cache.get(guild.id);
+    // Fetch user
+    const fetchUser = fetchGuild.members.cache.get(user.id);
+    // Check if user has perm 'ManageMessages'
+    if (!fetchUser.permissions.has(PermissionsBitField.Flags.ManageRoles))
+      return {
+        allowed: false,
+        errorMessage: 'You cannot use this option - Manage Roles permission required.'
+      };
+
+    return {
+      allowed: true,
+      errorMessage: null
+    };
+  };
+
+  const allowedCheck1 = async ({ guild, user }) => {
+    // Fetch guild
+    const fetchGuild = client.guilds.cache.get(guild.id);
+    // Fetch user
+    const fetchUser = fetchGuild.members.cache.get(user.id);
+    // Check if user has perm 'ManageMessages'
+    if (!fetchUser.permissions.has(PermissionsBitField.Flags.ManageGuild))
+      return {
+        allowed: false,
+        errorMessage: 'You cannot use this option - Manage Guild permission required.'
+      };
+
+    return {
+      allowed: true,
+      errorMessage: null
+    };
+  };
+
   const AutoRole = {
     categoryId: 'AutoRole',
     categoryName: 'Auto Role',
@@ -65,13 +102,15 @@ export default (client) => {
         optionId: 'autoRole',
         optionName: 'Role',
         optionDescription: 'Select the role to set.',
-        optionType: DBD.formTypes.rolesSelect()
+        optionType: DBD.formTypes.rolesSelect(),
+        allowedCheck
       },
       {
         optionId: 'autoRoleToggle',
         optionName: 'Toggle',
         optionDescription: 'Toggle the AutoRole.',
-        optionType: DBD.formTypes.switch()
+        optionType: DBD.formTypes.switch(),
+        allowedCheck1
       }
     ]
   };

@@ -1,12 +1,30 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 import DBD from 'discord-dashboard';
-import { ChannelType } from 'discord.js';
+import { ChannelType, PermissionsBitField } from 'discord.js';
 import fetch from 'node-fetch';
 import Canvas from 'canvas';
 import WelcomeSchema from '../../Mongo/Schemas/Welcome.js';
 
 export default (client) => {
+  const allowedCheck = async ({ guild, user }) => {
+    // Fetch guild
+    const fetchGuild = client.guilds.cache.get(guild.id);
+    // Fetch user
+    const fetchUser = fetchGuild.members.cache.get(user.id);
+    // Check if user has perm 'ManageMessages'
+    if (!fetchUser.permissions.has(PermissionsBitField.Flags.ManageGuild))
+      return {
+        allowed: false,
+        errorMessage: 'You cannot use this option - Manage Server permission required.'
+      };
+
+    return {
+      allowed: true,
+      errorMessage: null
+    };
+  };
+
   const Welcome = {
     categoryId: 'Welcome',
     categoryName: 'Welcome',
@@ -104,20 +122,23 @@ export default (client) => {
         optionId: 'welcomeChannel',
         optionName: 'Channel',
         optionDescription: 'Select the channel to set.',
-        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false)
+        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false),
+        allowedCheck
       },
       {
         optionId: 'welcomeImage',
         optionName: 'Image',
         optionDescription:
           'Select the (optional) image. An absolute URL must be provided to the image you wish to be displayed. Allowed extensions are: jpg, jpeg, png',
-        optionType: DBD.formTypes.textarea()
+        optionType: DBD.formTypes.textarea(),
+        allowedCheck
       },
       {
         optionId: 'welcomeToggle',
         optionName: 'Toggle',
         optionDescription: 'Toggle the Welcome module.',
-        optionType: DBD.formTypes.switch()
+        optionType: DBD.formTypes.switch(),
+        allowedCheck
       }
     ]
   };

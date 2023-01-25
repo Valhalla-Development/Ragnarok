@@ -3,18 +3,32 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-inner-declarations */
 /* eslint-disable no-restricted-syntax */
-import { ChannelType } from 'discord.js';
+import { ChannelType, PermissionsBitField } from 'discord.js';
 import DBD from 'discord-dashboard';
 import validator from 'discord-embed-validator';
-//! add https://docs.assistantscenter.com/discord-dashboard/v2/config/settings
-//! allowedCheck: async ({guild,user}) => {
-//! maybe manage messages perm?
-//! also find a way to only make it show channels that the bot AND user has permission to send messages to and view the channel
-//! switch to the select form type and pass the channel array
+
 export default (client) => {
   const sendEmbed = (channel, str) => {
     const c = client.channels.cache.get(channel);
     c.send(getOutput(str));
+  };
+
+  const allowedCheck = async ({ guild, user }) => {
+    // Fetch guild
+    const fetchGuild = client.guilds.cache.get(guild.id);
+    // Fetch user
+    const fetchUser = fetchGuild.members.cache.get(user.id);
+    // Check if user has perm 'ManageMessages'
+    if (!fetchUser.permissions.has(PermissionsBitField.Flags.ManageMessages))
+      return {
+        allowed: false,
+        errorMessage: 'You cannot use this option - Manage Messages permission required.'
+      };
+
+    return {
+      allowed: true,
+      errorMessage: null
+    };
   };
 
   const Embed = {
@@ -60,13 +74,15 @@ export default (client) => {
           username: 'Ragnarok',
           avatarURL: 'https://cdn.discordapp.com/avatars/508756879564865539/cf3b93aaee0351708a4f65593e6fe6b4.webp',
           defaultJson: {}
-        })
+        }),
+        allowedCheck
       },
       {
         optionId: 'channel',
         optionName: 'Embed Channel',
         optionDescription: 'Pick a channel to send the embed to.',
-        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false)
+        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false),
+        allowedCheck
       }
     ]
   };
