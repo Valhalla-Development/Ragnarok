@@ -1,5 +1,6 @@
 import { EmbedBuilder, ChannelType, PermissionsBitField, ActivityType } from 'discord.js';
 import Event from '../../Structures/Event.js';
+import Guilds from '../../Mongo/Schemas/Guilds.js';
 
 export const EventF = class extends Event {
   async run(guild) {
@@ -12,6 +13,12 @@ export const EventF = class extends Event {
         type: ActivityType.Watching
       }
     );
+
+    await new Guilds({
+      GuildId: guild.id,
+      Name: guild.name,
+      IconUrl: guild.iconURL()
+    }).save();
 
     let defaultChannel = '';
 
