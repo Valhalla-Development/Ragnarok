@@ -57,7 +57,11 @@ export const EventF = class extends Event {
         value: `**◎ Error:** ${message.author}, You cannot star your own messages.`
       });
       message.channel.send({ embeds: [embed] }).then((m) => this.client.utils.deletableCheck(m, 10000));
-      messageReaction.users.remove(messageReaction.message.author.id);
+      try {
+        messageReaction.users.remove(messageReaction.message.author.id);
+      } catch {
+        // nothing ayy lmao
+      }
       return;
     }
 
