@@ -104,7 +104,7 @@ export const SlashCommandF = class extends SlashCommand {
     if (subCommand === 'reroll') {
       const gReroll = interaction.options.getString('message');
 
-      const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.guildId === interaction.guild.id && g.messageId === gReroll);
+      const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.GuildId === interaction.guild.id && g.messageId === gReroll);
       console.log(giveaway);
       if (!giveaway) {
         const noGiveaway = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -142,7 +142,7 @@ export const SlashCommandF = class extends SlashCommand {
     if (subCommand === 'stop') {
       const gStop = interaction.options.getString('message');
 
-      const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.guildId === interaction.guild.id && g.messageId === gStop);
+      const giveaway = this.client.giveawaysManager.giveaways.find((g) => g.GuildId === interaction.guild.id && g.messageId === gStop);
 
       if (!giveaway) {
         const noGiveaway = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({

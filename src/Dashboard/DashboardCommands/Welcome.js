@@ -14,9 +14,9 @@ export default (client) => {
     categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
     refreshOnSave: true,
     getActualSet: async ({ guild }) => {
-      const result = await WelcomeSchema.findOne({ guildId: guild.id });
-      const channelStatus = result ? result.channel : null;
-      const imageStatus = result ? result.image : null;
+      const result = await WelcomeSchema.findOne({ GuildId: guild.id });
+      const channelStatus = result ? result.ChannelId : null;
+      const imageStatus = result ? result.Image : null;
       const status = !!result;
 
       return [
@@ -35,21 +35,21 @@ export default (client) => {
       ];
     },
     setNew: async ({ guild, user, data }) => {
-      const result = await WelcomeSchema.findOne({ guildId: guild.id });
+      const result = await WelcomeSchema.findOne({ GuildId: guild.id });
 
       if (data.some((option) => option.optionId === 'welcomeToggle' && option.data === false)) {
-        await WelcomeSchema.deleteOne({ guildId: guild.id });
+        await WelcomeSchema.deleteOne({ GuildId: guild.id });
         return;
       }
 
       if (data.some((option) => option.optionId === 'welcomeImage') && !data.some((option) => option.optionId === 'welcomeChannel')) {
-        if (!result?.channel) {
+        if (!result?.ChannelId) {
           return { error: 'Please set a channel before setting the image!' };
         }
       }
 
       if (!data.some((option) => option.optionId === 'welcomeChannel')) {
-        if (!result?.channel) {
+        if (!result?.ChannelId) {
           return { error: 'Please set a channel.' };
         }
       }
@@ -75,26 +75,26 @@ export default (client) => {
       }
 
       console.log('6');
-      let welcomeImg = result?.image || null;
-      let welcomeChan = result?.channel || null;
+      let welcomeImg = result?.Image || null;
+      let welcomeChan = result?.ChannelId || null;
       const welcomeChannelObject = data.find((obj) => obj.optionId === 'welcomeChannel');
       welcomeImg = welcomeImgObject?.data || welcomeImg;
       welcomeChan = welcomeChannelObject?.data || welcomeChan;
 
       if (!result) {
         await new WelcomeSchema({
-          guildId: guild.id,
-          channel: welcomeChan,
-          image: welcomeImg
+          GuildId: guild.id,
+          ChannelId: welcomeChan,
+          Image: welcomeImg
         }).save();
       } else {
         await WelcomeSchema.findOneAndUpdate(
           {
-            guildId: guild.id
+            GuildId: guild.id
           },
           {
-            channel: welcomeChan,
-            image: welcomeImg
+            ChannelId: welcomeChan,
+            Image: welcomeImg
           }
         );
       }

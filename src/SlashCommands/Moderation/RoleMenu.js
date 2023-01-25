@@ -13,25 +13,25 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const foundRoleMenu = await RoleMenu.findOne({ guildId: interaction.guild.id });
+    const foundRoleMenu = await RoleMenu.findOne({ GuildId: interaction.guild.id });
 
-    if (!foundRoleMenu || !foundRoleMenu.roleList || JSON.parse(foundRoleMenu.roleList).length <= 0) {
+    if (!foundRoleMenu || !foundRoleMenu.RoleList || JSON.parse(foundRoleMenu.RoleList).length <= 0) {
       const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
         name: `**${this.client.user.username} - RoleMenu**`,
         value: '**◎ Error:** The roles for the menu have not been set yet. Please try again later.'
       });
       interaction.reply({ ephemeral: true, embeds: [embed] });
 
-      await RoleMenu.deleteOne({ guildId: interaction.guild.id });
+      await RoleMenu.deleteOne({ GuildId: interaction.guild.id });
     } else {
       let activeMenu;
-      if (!foundRoleMenu.roleMenuId) {
+      if (!foundRoleMenu.RoleMenuId) {
         activeMenu = {};
       } else {
-        activeMenu = JSON.parse(foundRoleMenu.roleMenuId);
+        activeMenu = JSON.parse(foundRoleMenu.RoleMenuId);
       }
 
-      const roleArray = JSON.parse(foundRoleMenu.roleList);
+      const roleArray = JSON.parse(foundRoleMenu.RoleList);
 
       // Check if roles in the array exist in the server, if it does not, remove it from the array
       const roleArrayCleaned = roleArray.filter((role) => {
@@ -49,7 +49,7 @@ export const SlashCommandF = class extends SlashCommand {
         });
         interaction.reply({ ephemeral: true, embeds: [embed] });
 
-        await RoleMenu.deleteOne({ guildId: interaction.guild.id });
+        await RoleMenu.deleteOne({ GuildId: interaction.guild.id });
         return;
       }
 
@@ -78,11 +78,11 @@ export const SlashCommandF = class extends SlashCommand {
 
         await RoleMenu.findOneAndUpdate(
           {
-            guildId: interaction.guild.id
+            GuildId: interaction.guild.id
           },
           {
-            roleMenuId: JSON.stringify(activeMenu),
-            roleList: JSON.stringify(roleArrayCleaned)
+            RoleMenuId: JSON.stringify(activeMenu),
+            RoleList: JSON.stringify(roleArrayCleaned)
           }
         );
       });

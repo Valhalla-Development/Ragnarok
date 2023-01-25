@@ -4,10 +4,10 @@ import Event from '../../Structures/Event.js';
 
 export const EventF = class extends Event {
   async run(oldChannel, newChannel) {
-    const id = await Logging.findOne({ guildId: oldChannel.guild.id });
+    const id = await Logging.findOne({ GuildId: oldChannel.guild.id });
     if (!id) return;
 
-    const logs = id.channel;
+    const logs = id.ChannelId;
     if (!logs) return;
 
     let updateM;

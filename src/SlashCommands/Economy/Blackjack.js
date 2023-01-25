@@ -29,7 +29,7 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const subOptions = interaction.options.getSubcommand();
 
-    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
+    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     if (!balance) {
       const limitE = new EmbedBuilder()
@@ -43,12 +43,12 @@ export const SlashCommandF = class extends SlashCommand {
     let betAmt;
 
     if (subOptions === 'all') {
-      betAmt = balance.bank;
+      betAmt = balance.Bank;
     } else if (subOptions === 'amount') {
       betAmt = interaction.options.getInteger('amount');
     }
 
-    if (Number(betAmt) > balance.bank) {
+    if (Number(betAmt) > balance.Bank) {
       const wrongUsage = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -56,7 +56,7 @@ export const SlashCommandF = class extends SlashCommand {
           name: `**${this.client.user.username} - BlackJack**`,
           value: `**◎ Error:** You do not have enough to bet <:coin:706659001164628008> \`${Number(betAmt).toLocaleString(
             'en'
-          )}\`, you have <:coin:706659001164628008> \`${Number(balance.bank).toLocaleString('en')}\` available in your bank.`
+          )}\`, you have <:coin:706659001164628008> \`${Number(balance.Bank).toLocaleString('en')}\` available in your Bank.`
         });
       interaction.reply({ embeds: [wrongUsage] });
       return;
@@ -75,13 +75,13 @@ export const SlashCommandF = class extends SlashCommand {
 
     switch (game.result) {
       case 'WIN':
-        balance.bank += Number(houseBet);
-        balance.total += Number(houseBet);
+        balance.Bank += Number(houseBet);
+        balance.Total += Number(houseBet);
         await balance.save();
         break;
       case 'LOSE':
-        balance.bank -= Number(betAmt);
-        balance.total -= Number(betAmt);
+        balance.Bank -= Number(betAmt);
+        balance.Total -= Number(betAmt);
         await balance.save();
         break;
 

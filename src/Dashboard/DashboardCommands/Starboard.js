@@ -12,8 +12,8 @@ export default (client) => {
     refreshOnSave: true,
     categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
     getActualSet: async ({ guild }) => {
-      const result = await StarBoardSchema.findOne({ guildId: guild.id });
-      const channelStatus = result ? result.channel : null;
+      const result = await StarBoardSchema.findOne({ GuildId: guild.id });
+      const channelStatus = result ? result.ChannelId : null;
       const status = !!result;
 
       return [
@@ -28,10 +28,10 @@ export default (client) => {
       ];
     },
     setNew: async ({ guild, user, data }) => {
-      const result = await StarBoardSchema.findOne({ guildId: guild.id });
+      const result = await StarBoardSchema.findOne({ GuildId: guild.id });
 
       if (data.some((option) => option.optionId === 'starToggle' && option.data === false)) {
-        await StarBoardSchema.deleteOne({ guildId: guild.id });
+        await StarBoardSchema.deleteOne({ GuildId: guild.id });
         return;
       }
 
@@ -40,16 +40,16 @@ export default (client) => {
 
       if (!result) {
         await new StarBoardSchema({
-          guildId: guild.id,
-          channel: starObject.data
+          GuildId: guild.id,
+          ChannelId: starObject.data
         }).save();
       } else {
         await StarBoardSchema.findOneAndUpdate(
           {
-            guildId: guild.id
+            GuildId: guild.id
           },
           {
-            channel: starObject.data
+            ChannelId: starObject.data
           }
         );
       }

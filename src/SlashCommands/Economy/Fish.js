@@ -12,9 +12,9 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
+    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
-    if (!balance.items) {
+    if (!balance.Items) {
       const embed = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -26,7 +26,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    const foundItemList = JSON.parse(balance.items);
+    const foundItemList = JSON.parse(balance.Items);
 
     if (!foundItemList.fishingRod) {
       const embed = new EmbedBuilder()
@@ -40,8 +40,8 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    if (Date.now() > balance.fishCool) {
-      balance.fishCool = null;
+    if (Date.now() > balance.FishCool) {
+      balance.FishCool = null;
 
       let fishPrice;
       let amt;
@@ -52,7 +52,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const endTime = new Date().getTime() + this.client.ecoPrices.fishWinTime;
 
-        balance.fishCool = Math.round(endTime);
+        balance.FishCool = Math.round(endTime);
 
         if (foundItemList.treasure) {
           amt = Number(foundItemList.treasure) + Number(1);
@@ -61,7 +61,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
         foundItemList.treasure = amt.toString();
 
-        balance.items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -81,7 +81,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const endTime = new Date().getTime() + this.client.ecoPrices.fishWinTime;
 
-        balance.fishCool = Math.round(endTime);
+        balance.FishCool = Math.round(endTime);
 
         if (foundItemList.pufferfish) {
           amt = Number(foundItemList.pufferfish) + Number(1);
@@ -90,7 +90,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
         foundItemList.pufferfish = amt.toString();
 
-        balance.items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -110,7 +110,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const endTime = new Date().getTime() + this.client.ecoPrices.fishWinTime;
 
-        balance.fishCool = Math.round(endTime);
+        balance.FishCool = Math.round(endTime);
 
         if (foundItemList.swordfish) {
           amt = Number(foundItemList.swordfish) + Number(1);
@@ -119,7 +119,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
         foundItemList.swordfish = amt.toString();
 
-        balance.items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -139,7 +139,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const endTime = new Date().getTime() + this.client.ecoPrices.fishWinTime;
 
-        balance.fishCool = Math.round(endTime);
+        balance.FishCool = Math.round(endTime);
 
         if (foundItemList.kingSalmon) {
           amt = Number(foundItemList.kingSalmon) + Number(1);
@@ -148,7 +148,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
         foundItemList.kingSalmon = amt.toString();
 
-        balance.items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -168,7 +168,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const endTime = new Date().getTime() + this.client.ecoPrices.fishWinTime;
 
-        balance.fishCool = Math.round(endTime);
+        balance.FishCool = Math.round(endTime);
 
         if (foundItemList.trout) {
           amt = Number(foundItemList.trout) + Number(1);
@@ -177,7 +177,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
         foundItemList.trout = amt.toString();
 
-        balance.items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -195,7 +195,7 @@ export const SlashCommandF = class extends SlashCommand {
         // 12.82&
         const endTime = new Date().getTime() + this.client.ecoPrices.fishFailtime;
 
-        balance.fishCool = Math.round(endTime);
+        balance.FishCool = Math.round(endTime);
 
         await balance.save();
 
@@ -211,7 +211,7 @@ export const SlashCommandF = class extends SlashCommand {
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
         .addFields({
           name: `**${this.client.user.username} - Fish**`,
-          value: `**◎ Error:** Please wait another \`${ms(balance.fishCool - new Date().getTime(), { long: true })}\` before using this command.`
+          value: `**◎ Error:** Please wait another \`${ms(balance.FishCool - new Date().getTime(), { long: true })}\` before using this command.`
         });
       interaction.reply({ ephemeral: true, embeds: [embed] });
     }

@@ -9,9 +9,9 @@ export const EventF = class extends Event {
     if (message.guild) {
       if (!message.author || message.author.bot) return;
 
-      const id = await Logging.findOne({ guildId: message.guild.id });
+      const id = await Logging.findOne({ GuildId: message.guild.id });
       if (!id) return;
-      const logs = id.channel;
+      const logs = id.ChannelId;
       if (!logs) return;
 
       const fetchedLogs = await message.guild.fetchAuditLogs({

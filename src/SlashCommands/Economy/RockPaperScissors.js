@@ -22,7 +22,7 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const amt = interaction.options.getInteger('amount');
 
-    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
+    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     if (!balance) {
       const limitE = new EmbedBuilder()
@@ -33,7 +33,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    if (Number(amt) > balance.bank) {
+    if (Number(amt) > balance.Bank) {
       const wrongUsage = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -41,7 +41,7 @@ export const SlashCommandF = class extends SlashCommand {
           name: `**${this.client.user.username} - Coin Flip**`,
           value: `**◎ Error:** You do not have enough to bet <:coin:706659001164628008> \`${Number(amt).toLocaleString(
             'en'
-          )}\`, you have <:coin:706659001164628008> \`${Number(balance.bank).toLocaleString('en')}\` available in your bank.`
+          )}\`, you have <:coin:706659001164628008> \`${Number(balance.Bank).toLocaleString('en')}\` available in your Bank.`
         });
       interaction.reply({ ephemeral: true, embeds: [wrongUsage] });
       return;
@@ -86,7 +86,7 @@ export const SlashCommandF = class extends SlashCommand {
       .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
       .addFields({
         name: `**${this.client.user.username} - Rock Paper Scissors**`,
-        value: `**◎** ${interaction.user} won <:coin:706659001164628008> \`${houseBet.toLocaleString('en')}\` has been credited to your bank!`
+        value: `**◎** ${interaction.user} won <:coin:706659001164628008> \`${houseBet.toLocaleString('en')}\` has been credited to your Bank!`
       });
 
     const lose = new EmbedBuilder()
@@ -102,7 +102,7 @@ export const SlashCommandF = class extends SlashCommand {
       .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
       .addFields({
         name: `**${this.client.user.username} - Rock Paper Scissors**`,
-        value: `**◎** ${interaction.user} Tied! Your wager has been returned to your bank.`
+        value: `**◎** ${interaction.user} Tied! Your wager has been returned to your Bank.`
       });
 
     const m = await interaction.reply({ components: [group1], embeds: [initial] });
@@ -164,13 +164,13 @@ export const SlashCommandF = class extends SlashCommand {
     });
     collector.on('end', async (_, reason) => {
       if (reason === 'win') {
-        balance.bank += houseBet;
-        balance.total += houseBet;
+        balance.Bank += houseBet;
+        balance.Total += houseBet;
         await balance.save();
       }
       if (reason === 'lose') {
-        balance.bank -= amt;
-        balance.total -= amt;
+        balance.Bank -= amt;
+        balance.Total -= amt;
         await balance.save();
       }
 

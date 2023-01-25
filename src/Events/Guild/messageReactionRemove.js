@@ -17,23 +17,23 @@ export const EventF = class extends Event {
     if (!message) return;
 
     // Starboard check
-    const id = await StarBoard.findOne({ guildId: message.guild.id });
+    const id = await StarBoard.findOne({ GuildId: message.guild.id });
     if (!id) return;
 
-    const chn = id.channel;
+    const chn = id.ChannelId;
     if (!chn) return;
 
-    if (id.channel === null) {
-      await StarBoard.deleteOne({ guildId: message.guild.id }); //!
+    if (id.ChannelId === null) {
+      await StarBoard.deleteOne({ GuildId: message.guild.id }); //!
       return;
     }
 
-    if (!message.guild.channels.cache.find((channel) => channel.id === id.channel)) {
-      await StarBoard.deleteOne({ guildId: message.guild.id }); //!
+    if (!message.guild.channels.cache.find((channel) => channel.id === id.ChannelId)) {
+      await StarBoard.deleteOne({ GuildId: message.guild.id }); //!
       return;
     }
 
-    const starChannel = message.guild.channels.cache.find((channel) => channel.id === id.channel);
+    const starChannel = message.guild.channels.cache.find((channel) => channel.id === id.ChannelId);
 
     // Check if bot has perms to send messages in starboard channel
     if (!message.guild.members.me.permissionsIn(starChannel).has(PermissionsBitField.Flags.SendMessages)) return;

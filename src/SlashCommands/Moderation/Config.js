@@ -431,7 +431,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Birthday Command
     if (subGroup === 'birthday') {
-      const status = await BirthdayConfig.findOne({ guildId: interaction.guild.id });
+      const status = await BirthdayConfig.findOne({ GuildId: interaction.guild.id });
 
       const bChannel = interaction.options.getChannel('channel');
       const bRole = interaction.options.getRole('role');
@@ -450,7 +450,7 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Success:** Birthday function disabled!' });
         interaction.reply({ ephemeral: true, embeds: [embed] });
 
-        await BirthdayConfig.deleteOne({ guildId: interaction.guild.id });
+        await BirthdayConfig.deleteOne({ GuildId: interaction.guild.id });
         return;
       }
 
@@ -466,16 +466,16 @@ export const SlashCommandF = class extends SlashCommand {
 
         if (!status) {
           await new BirthdayConfig({
-            guildId: interaction.guild.id,
-            channel: bChannel.id
+            GuildId: interaction.guild.id,
+            ChannelId: bChannel.id
           }).save();
         } else {
           await BirthdayConfig.findOneAndUpdate(
             {
-              guildId: interaction.guild.id
+              GuildId: interaction.guild.id
             },
             {
-              channel: bChannel.id
+              ChannelId: bChannel.id
             }
           );
         }
@@ -499,10 +499,10 @@ export const SlashCommandF = class extends SlashCommand {
 
         await BirthdayConfig.findOneAndUpdate(
           {
-            guildId: interaction.guild.id
+            GuildId: interaction.guild.id
           },
           {
-            role: bRole.id
+            Role: bRole.id
           }
         );
 
@@ -555,14 +555,14 @@ export const SlashCommandF = class extends SlashCommand {
 
         const roleList = [];
 
-        const foundRoleMenu = await RoleMenu.findOne({ guildId: interaction.guild.id });
+        const foundRoleMenu = await RoleMenu.findOne({ GuildId: interaction.guild.id });
 
         if (!foundRoleMenu) {
           roleList.push(rRole.id);
 
           await new RoleMenu({
-            guildId: interaction.guild.id,
-            roleList: JSON.stringify(roleList)
+            GuildId: interaction.guild.id,
+            RoleList: JSON.stringify(roleList)
           }).save();
 
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -571,7 +571,7 @@ export const SlashCommandF = class extends SlashCommand {
           });
           interaction.reply({ ephemeral: true, embeds: [embed] });
         } else {
-          const foundRoleList = JSON.parse(foundRoleMenu.roleList);
+          const foundRoleList = JSON.parse(foundRoleMenu.RoleList);
 
           if (foundRoleList.length >= 25) {
             const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -603,16 +603,16 @@ export const SlashCommandF = class extends SlashCommand {
             return;
           }
 
-          if (foundRoleMenu.roleMenuId) {
-            const activeMenu = JSON.parse(foundRoleMenu.roleMenuId);
+          if (foundRoleMenu.RoleMenuId) {
+            const activeMenu = JSON.parse(foundRoleMenu.RoleMenuId);
 
             if (activeMenu) {
-              const ch = interaction.guild.channels.cache.get(activeMenu.channel);
+              const ch = interaction.guild.channels.cache.get(activeMenu.ChannelId);
 
               ch.messages
                 .fetch({ message: activeMenu.message })
                 .then((ms) => {
-                  const roleArray = JSON.parse(foundRoleMenu.roleList);
+                  const roleArray = JSON.parse(foundRoleMenu.RoleList);
 
                   const buttonsArr = [];
                   const rows = [];
@@ -664,10 +664,10 @@ export const SlashCommandF = class extends SlashCommand {
 
           await RoleMenu.findOneAndUpdate(
             {
-              guildId: interaction.guild.id
+              GuildId: interaction.guild.id
             },
             {
-              roleList: JSON.stringify(foundRoleList)
+              RoleList: JSON.stringify(foundRoleList)
             }
           );
         }
@@ -675,7 +675,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (subCommand === 'remove') {
-        const foundRoleMenu = await RoleMenu.findOne({ guildId: interaction.guild.id });
+        const foundRoleMenu = await RoleMenu.findOne({ GuildId: interaction.guild.id });
 
         if (!foundRoleMenu) {
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -686,18 +686,18 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        const roleList = JSON.parse(foundRoleMenu.roleList);
+        const roleList = JSON.parse(foundRoleMenu.RoleList);
 
         if (roleList.includes(rRole.id)) {
           const index = roleList.indexOf(rRole.id);
           roleList.splice(index, 1);
 
           if (!roleList.length) {
-            if (foundRoleMenu.roleMenuId) {
-              const activeMenu = JSON.parse(foundRoleMenu.roleMenuId);
+            if (foundRoleMenu.RoleMenuId) {
+              const activeMenu = JSON.parse(foundRoleMenu.RoleMenuId);
 
               if (activeMenu) {
-                const ch = interaction.guild.channels.cache.get(activeMenu.channel);
+                const ch = interaction.guild.channels.cache.get(activeMenu.ChannelId);
 
                 ch.messages
                   .fetch({ message: activeMenu.message })
@@ -720,7 +720,7 @@ export const SlashCommandF = class extends SlashCommand {
                   });
               }
 
-              await RoleMenu.deleteOne({ guildId: interaction.guild.id }); //!
+              await RoleMenu.deleteOne({ GuildId: interaction.guild.id }); //!
               return;
             }
 
@@ -730,7 +730,7 @@ export const SlashCommandF = class extends SlashCommand {
             });
             interaction.reply({ ephemeral: true, embeds: [embedA] });
 
-            await RoleMenu.deleteOne({ guildId: interaction.guild.id }); //!
+            await RoleMenu.deleteOne({ GuildId: interaction.guild.id }); //!
           } else {
             const embedA = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
               name: `**${this.client.user.username} - Config**`,
@@ -740,10 +740,10 @@ export const SlashCommandF = class extends SlashCommand {
 
             await RoleMenu.findOneAndUpdate(
               {
-                guildId: interaction.guild.id
+                GuildId: interaction.guild.id
               },
               {
-                roleList: JSON.stringify(roleList)
+                RoleList: JSON.stringify(roleList)
               }
             );
           }
@@ -756,11 +756,11 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (foundRoleMenu.roleMenuId) {
-          const activeMenu = JSON.parse(foundRoleMenu.roleMenuId);
+        if (foundRoleMenu.RoleMenuId) {
+          const activeMenu = JSON.parse(foundRoleMenu.RoleMenuId);
 
           if (activeMenu) {
-            const ch = interaction.guild.channels.cache.get(activeMenu.channel);
+            const ch = interaction.guild.channels.cache.get(activeMenu.ChannelId);
 
             ch.messages
               .fetch({ message: activeMenu.message })
@@ -811,7 +811,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (subCommand === 'clear') {
-        const foundRoleMenu = await RoleMenu.findOne({ guildId: interaction.guild.id });
+        const foundRoleMenu = await RoleMenu.findOne({ GuildId: interaction.guild.id });
         if (!foundRoleMenu) {
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
@@ -822,11 +822,11 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         // delete the rolemenu message if it exists
-        if (foundRoleMenu.roleMenuId) {
-          const activeMenu = JSON.parse(foundRoleMenu.roleMenuId);
+        if (foundRoleMenu.RoleMenuId) {
+          const activeMenu = JSON.parse(foundRoleMenu.RoleMenuId);
 
           if (activeMenu) {
-            const ch = interaction.guild.channels.cache.get(activeMenu.channel);
+            const ch = interaction.guild.channels.cache.get(activeMenu.ChannelId);
 
             try {
               ch.messages.fetch({ message: activeMenu.message }).then((ms) => {
@@ -847,9 +847,9 @@ export const SlashCommandF = class extends SlashCommand {
           }
         }
 
-        await RoleMenu.deleteOne({ guildId: interaction.guild.id });
+        await RoleMenu.deleteOne({ GuildId: interaction.guild.id });
 
-        if (!foundRoleMenu.roleMenuId) {
+        if (!foundRoleMenu.RoleMenuId) {
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
             value: '**◎ Success:** All roles have successfully been cleared from the rolemenu!'
@@ -862,7 +862,7 @@ export const SlashCommandF = class extends SlashCommand {
     // Hastebin Command
     if (subCommand === 'hastebin') {
       // preparing count
-      const status = await Hastebin.findOne({ guildId: interaction.guild.id });
+      const status = await Hastebin.findOne({ GuildId: interaction.guild.id });
 
       const subType = interaction.options.getBoolean('toggle');
 
@@ -878,8 +878,8 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         await new Hastebin({
-          guildId: interaction.guild.id,
-          status: true
+          GuildId: interaction.guild.id,
+          Status: true
         }).save();
 
         const embed = new EmbedBuilder()
@@ -899,7 +899,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        await Hastebin.deleteOne({ guildId: interaction.guild.id });
+        await Hastebin.deleteOne({ GuildId: interaction.guild.id });
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -911,7 +911,7 @@ export const SlashCommandF = class extends SlashCommand {
     // Dadbot Command
     if (subCommand === 'dadbot') {
       // preparing count
-      const status = await Dad.findOne({ guildId: interaction.guild.id });
+      const status = await Dad.findOne({ GuildId: interaction.guild.id });
 
       const subType = interaction.options.getBoolean('toggle');
 
@@ -927,8 +927,8 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         await new Dad({
-          guildId: interaction.guild.id,
-          status: true
+          GuildId: interaction.guild.id,
+          Status: true
         }).save();
 
         const embed = new EmbedBuilder()
@@ -948,7 +948,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        await Dad.deleteOne({ guildId: interaction.guild.id });
+        await Dad.deleteOne({ GuildId: interaction.guild.id });
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -960,7 +960,7 @@ export const SlashCommandF = class extends SlashCommand {
     // Adsprot Command
     if (subCommand === 'adsprot') {
       //! TEST THIS ONE BECAUSE THE BETTER-SQLITE3 WAS A COUNT NOT JUST FIND
-      const antiscam = await AntiScam.findOne({ guildId: interaction.guild.id });
+      const antiscam = await AntiScam.findOne({ GuildId: interaction.guild.id });
 
       if (antiscam) {
         const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -973,7 +973,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       // preparing count
-      const status = await AdsProtection.findOne({ guildId: interaction.guild.id });
+      const status = await AdsProtection.findOne({ GuildId: interaction.guild.id });
 
       const subType = interaction.options.getBoolean('toggle');
 
@@ -989,8 +989,8 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         await new AdsProtection({
-          guildId: interaction.guild.id,
-          status: true
+          GuildId: interaction.guild.id,
+          Status: true
         }).save();
 
         const embed = new EmbedBuilder()
@@ -1010,7 +1010,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        await AdsProtection.deleteOne({ guildId: interaction.guild.id });
+        await AdsProtection.deleteOne({ GuildId: interaction.guild.id });
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1021,7 +1021,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Anti Scam Command
     if (subCommand === 'antiscam') {
-      const adsprot = await AdsProtection.findOne({ guildId: interaction.guild.id });
+      const adsprot = await AdsProtection.findOne({ GuildId: interaction.guild.id });
 
       if (adsprot) {
         const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -1034,7 +1034,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       // preparing count
-      const status = await AntiScam.findOne({ guildId: interaction.guild.id });
+      const status = await AntiScam.findOne({ GuildId: interaction.guild.id });
 
       const subType = interaction.options.getBoolean('toggle');
 
@@ -1050,8 +1050,8 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         await new AntiScam({
-          guildId: interaction.guild.id,
-          status: true
+          GuildId: interaction.guild.id,
+          Status: true
         }).save();
 
         const embed = new EmbedBuilder()
@@ -1071,7 +1071,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        await AntiScam.deleteOne({ guildId: interaction.guild.id });
+        await AntiScam.deleteOne({ GuildId: interaction.guild.id });
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1082,7 +1082,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Autorole Command
     if (subGroup === 'autorole') {
-      const status = await AutoRole.findOne({ guildId: interaction.guild.id });
+      const status = await AutoRole.findOne({ GuildId: interaction.guild.id });
 
       const role = interaction.options.getRole('role');
 
@@ -1096,7 +1096,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        await AutoRole.deleteOne({ guildId: interaction.guild.id });
+        await AutoRole.deleteOne({ GuildId: interaction.guild.id });
 
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1143,10 +1143,10 @@ export const SlashCommandF = class extends SlashCommand {
       if (status) {
         await AutoRole.findOneAndUpdate(
           {
-            guildId: interaction.guild.id
+            GuildId: interaction.guild.id
           },
           {
-            role: role.id
+            Role: role.id
           }
         );
 
@@ -1158,8 +1158,8 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       await new AutoRole({
-        guildId: interaction.guild.id,
-        role: role.id
+        GuildId: interaction.guild.id,
+        Role: role.id
       }).save();
 
       const embed = new EmbedBuilder()
@@ -1179,7 +1179,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      const status = await Logging.findOne({ guildId: interaction.guild.id });
+      const status = await Logging.findOne({ GuildId: interaction.guild.id });
 
       const lchan = interaction.options.getChannel('channel');
 
@@ -1198,7 +1198,7 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Success:** Logging disabled!' });
         interaction.reply({ ephemeral: true, embeds: [embed] });
 
-        await Logging.deleteOne({ guildId: interaction.guild.id });
+        await Logging.deleteOne({ GuildId: interaction.guild.id });
         return;
       }
 
@@ -1213,8 +1213,8 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (!status) {
         await new Logging({
-          guildId: interaction.guild.id,
-          channel: lchan.id
+          GuildId: interaction.guild.id,
+          ChannelId: lchan.id
         }).save();
 
         const embed = new EmbedBuilder()
@@ -1226,10 +1226,10 @@ export const SlashCommandF = class extends SlashCommand {
 
       await Logging.findOneAndUpdate(
         {
-          guildId: interaction.guild.id
+          GuildId: interaction.guild.id
         },
         {
-          channel: lchan.id
+          ChannelId: lchan.id
         }
       );
 
@@ -1241,7 +1241,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Ticket Command
     if (subGroup === 'ticket') {
-      const status = await TicketConfig.findOne({ guildId: interaction.guild.id });
+      const status = await TicketConfig.findOne({ GuildId: interaction.guild.id });
 
       if (subCommand === 'off') {
         if (!status) {
@@ -1257,7 +1257,7 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Success:** Tickets disabled!' });
         interaction.reply({ ephemeral: true, embeds: [embed] });
 
-        await TicketConfig.deleteOne({ guildId: interaction.guild.id });
+        await TicketConfig.deleteOne({ GuildId: interaction.guild.id });
         return;
       }
 
@@ -1275,8 +1275,8 @@ export const SlashCommandF = class extends SlashCommand {
 
         if (!status) {
           await new TicketConfig({
-            guildId: interaction.guild.id,
-            category: category.id
+            GuildId: interaction.guild.id,
+            Category: category.id
           }).save();
 
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -1289,10 +1289,10 @@ export const SlashCommandF = class extends SlashCommand {
 
         await TicketConfig.findOneAndUpdate(
           {
-            guildId: interaction.guild.id
+            GuildId: interaction.guild.id
           },
           {
-            category: category.id
+            Category: category.id
           }
         );
 
@@ -1317,8 +1317,8 @@ export const SlashCommandF = class extends SlashCommand {
 
         if (!status) {
           await new TicketConfig({
-            guildId: interaction.guild.id,
-            channel: lchan.id
+            GuildId: interaction.guild.id,
+            ChannelId: lchan.id
           }).save();
 
           const embed = new EmbedBuilder()
@@ -1330,10 +1330,10 @@ export const SlashCommandF = class extends SlashCommand {
 
         await TicketConfig.findOneAndUpdate(
           {
-            guildId: interaction.guild.id
+            GuildId: interaction.guild.id
           },
           {
-            logChannel: lchan.id
+            LogChannel: lchan.id
           }
         );
 
@@ -1348,8 +1348,8 @@ export const SlashCommandF = class extends SlashCommand {
 
         if (!status) {
           await new TicketConfig({
-            guildId: interaction.guild.id,
-            role: suppRole.id
+            GuildId: interaction.guild.id,
+            Role: suppRole.id
           }).save();
 
           const embed = new EmbedBuilder()
@@ -1361,10 +1361,10 @@ export const SlashCommandF = class extends SlashCommand {
 
         await TicketConfig.findOneAndUpdate(
           {
-            guildId: interaction.guild.id
+            GuildId: interaction.guild.id
           },
           {
-            role: suppRole.id
+            Role: suppRole.id
           }
         );
 
@@ -1377,7 +1377,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Welcome Command
     if (subGroup === 'welcome') {
-      const status = await Welcome.findOne({ guildId: interaction.guild.id });
+      const status = await Welcome.findOne({ GuildId: interaction.guild.id });
 
       if (subCommand === 'off') {
         if (!status) {
@@ -1393,7 +1393,7 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Success:** Welcome disabled!' });
         interaction.reply({ ephemeral: true, embeds: [embed] });
 
-        await Welcome.deleteOne({ guildId: interaction.guild.id });
+        await Welcome.deleteOne({ GuildId: interaction.guild.id });
         return;
       }
 
@@ -1446,10 +1446,10 @@ export const SlashCommandF = class extends SlashCommand {
 
               await Welcome.findOneAndUpdate(
                 {
-                  guildId: interaction.guild.id
+                  GuildId: interaction.guild.id
                 },
                 {
-                  image: subImage
+                  Image: subImage
                 }
               );
 
@@ -1489,8 +1489,8 @@ export const SlashCommandF = class extends SlashCommand {
 
         if (!status) {
           await new Welcome({
-            guildId: interaction.guild.id,
-            channel: lchan.id
+            GuildId: interaction.guild.id,
+            ChannelId: lchan.id
           }).save();
 
           const embed = new EmbedBuilder()
@@ -1500,10 +1500,10 @@ export const SlashCommandF = class extends SlashCommand {
         } else {
           await Welcome.findOneAndUpdate(
             {
-              guildId: interaction.guild.id
+              GuildId: interaction.guild.id
             },
             {
-              channel: lchan.id
+              ChannelId: lchan.id
             }
           );
 
@@ -1517,7 +1517,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Starboard Command
     if (subGroup === 'starboard') {
-      const status = await StarBoard.findOne({ guildId: interaction.guild.id });
+      const status = await StarBoard.findOne({ GuildId: interaction.guild.id });
 
       if (subCommand === 'off') {
         if (!status) {
@@ -1533,7 +1533,7 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({ name: `**${this.client.user.username} - Config**`, value: '**◎ Success:** Starboard disabled!' });
         interaction.reply({ ephemeral: true, embeds: [embed] });
 
-        await StarBoard.deleteOne({ guildId: interaction.guild.id });
+        await StarBoard.deleteOne({ GuildId: interaction.guild.id });
         return;
       }
 
@@ -1550,8 +1550,8 @@ export const SlashCommandF = class extends SlashCommand {
         }
         if (!status) {
           await new StarBoard({
-            guildId: interaction.guild.id,
-            channel: lchan.id
+            GuildId: interaction.guild.id,
+            ChannelId: lchan.id
           }).save();
 
           const embed = new EmbedBuilder()
@@ -1563,10 +1563,10 @@ export const SlashCommandF = class extends SlashCommand {
 
         await StarBoard.findOneAndUpdate(
           {
-            guildId: interaction.guild.id
+            GuildId: interaction.guild.id
           },
           {
-            channel: lchan.id
+            ChannelId: lchan.id
           }
         );
 

@@ -9,7 +9,7 @@ export default (client) => {
     categoryDescription: 'Toggle the Advert Protection Module. When enabled, it will remove all links posted.',
     categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
     getActualSet: async ({ guild }) => {
-      const result = await AdsProtectionSchema.findOne({ guildId: guild.id });
+      const result = await AdsProtectionSchema.findOne({ GuildId: guild.id });
       const status = !!result;
       return [
         {
@@ -23,11 +23,11 @@ export default (client) => {
 
       if (toggle === true) {
         await new AdsProtectionSchema({
-          guildId: guild.id,
-          status: toggle
+          GuildId: guild.id,
+          Status: toggle
         }).save();
       } else {
-        await AdsProtectionSchema.deleteOne({ guildId: guild.id });
+        await AdsProtectionSchema.deleteOne({ GuildId: guild.id });
       }
     },
     categoryOptionsList: [

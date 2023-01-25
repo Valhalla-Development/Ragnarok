@@ -7,30 +7,30 @@ import Logging from '../../Mongo/Schemas/Logging.js';
 export const EventF = class extends Event {
   async run(role) {
     async function checkRoleMenu(clientGrab) {
-      const foundRoleMenu = await RoleMenu.findOne({ guildId: role.guild.id });
+      const foundRoleMenu = await RoleMenu.findOne({ GuildId: role.guild.id });
 
-      if (!foundRoleMenu?.roleList?.length) return;
+      if (!foundRoleMenu?.RoleList?.length) return;
 
-      const roleArray = JSON.parse(foundRoleMenu.roleList);
+      const roleArray = JSON.parse(foundRoleMenu.RoleList);
 
       if (roleArray.includes(role.id)) {
         roleArray.splice(roleArray.indexOf(role.id), 1);
 
         await RoleMenu.findOneAndUpdate(
           {
-            guildId: role.guild.id
+            GuildId: role.guild.id
           },
           {
-            roleList: JSON.stringify(roleArray)
+            RoleList: JSON.stringify(roleArray)
           }
         );
 
         // Update rolemenu if exists
-        if (foundRoleMenu.roleMenuId) {
-          const activeMenu = JSON.parse(foundRoleMenu.roleMenuId);
+        if (foundRoleMenu.RoleMenuId) {
+          const activeMenu = JSON.parse(foundRoleMenu.RoleMenuId);
 
           if (activeMenu) {
-            const ch = role.guild.channels.cache.get(activeMenu.channel);
+            const ch = role.guild.channels.cache.get(activeMenu.ChannelId);
 
             try {
               ch.messages.fetch({ message: activeMenu.message }).then((ms) => {
@@ -71,10 +71,10 @@ export const EventF = class extends Event {
     }
     checkRoleMenu(this.client);
 
-    const id = await Logging.findOne({ guildId: role.guild.id });
+    const id = await Logging.findOne({ GuildId: role.guild.id });
     if (!id) return;
 
-    const logs = id.channel;
+    const logs = id.ChannelId;
     if (!logs) return;
 
     const logembed = new EmbedBuilder()

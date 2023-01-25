@@ -29,17 +29,17 @@ export const EventF = class extends Event {
 
     async function checkTicket(client) {
       // Check if the user has a ticket
-      const foundTicket = await Tickets.findOne({ guildId: member.guild.id, authorId: member.user.id });
+      const foundTicket = await Tickets.findOne({ GuildId: member.guild.id, AuthorId: member.user.id });
       if (foundTicket) {
         // Fetch the channel
-        const channel = member.guild.channels.cache.get(foundTicket.channelId);
+        const channel = member.guild.channels.cache.get(foundTicket.ChannelId);
 
         // Check if the channel exists
         if (channel) {
           // Send a message that the user joined
           channel.permissionOverwrites
             .create(member, {
-              VIEW_CHANNEL: true,
+              VIEW_CHANNEL: true, //! ERROR, OLD PERMS
               SEND_MESSAGES: true
             })
             .catch(console.error);
@@ -58,22 +58,22 @@ export const EventF = class extends Event {
       // Return if user is my testing alt
       // if (member.user.id === '488717256897855519') return;
 
-      const setwelcome = await Welcome.findOne({ guildId: member.guild.id });
+      const setwelcome = await Welcome.findOne({ GuildId: member.guild.id });
       if (!setwelcome) return;
 
-      const sendchannel = setwelcome.channel;
+      const sendchannel = setwelcome.ChannelId;
       const chnsen = member.guild.channels.cache.find((channel) => channel.id === sendchannel);
 
       if (!chnsen) {
-        await Welcome.deleteMany({ guildId: member.guild.id });
+        await Welcome.deleteMany({ GuildId: member.guild.id });
         return;
       }
 
       let img;
-      if (setwelcome.image) {
-        await fetch(setwelcome.image).then((res) => {
+      if (setwelcome.Image) {
+        await fetch(setwelcome.Image).then((res) => {
           if (res.ok) {
-            img = setwelcome.image;
+            img = setwelcome.Image;
           } else {
             img = './Storage/Canvas/Images/welcome.jpg';
           }
@@ -142,10 +142,10 @@ export const EventF = class extends Event {
 
     // autorole
     async function autoRole() {
-      const autoroletable = await AutoRole.findOne({ guildId: member.guild.id });
+      const autoroletable = await AutoRole.findOne({ GuildId: member.guild.id });
       if (!autoroletable) return;
 
-      const autorole = autoroletable.role;
+      const autorole = autoroletable.Role;
       if (!autorole) return;
 
       const myRole = member.guild.roles.cache.find((role) => role.id === autorole);
@@ -153,7 +153,7 @@ export const EventF = class extends Event {
 
       const botHasPermission = member.guild.members.me.permissions.has('ManageRoles');
       if (!botHasPermission) {
-        await AutoRole.deleteMany({ guildId: member.guild.id });
+        await AutoRole.deleteMany({ GuildId: member.guild.id });
         return;
       }
 
@@ -163,10 +163,10 @@ export const EventF = class extends Event {
 
     // Logs
     async function logging(grabClient) {
-      const id = await Logging.findOne({ guildId: member.guild.id });
+      const id = await Logging.findOne({ GuildId: member.guild.id });
       if (!id) return;
 
-      const logs = id.channel;
+      const logs = id.ChannelId;
       if (!logs) return;
 
       const logembed = new EmbedBuilder()

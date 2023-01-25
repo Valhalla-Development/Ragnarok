@@ -4,10 +4,10 @@ import Logging from '../../Mongo/Schemas/Logging.js';
 
 export const EventF = class extends Event {
   async run(role) {
-    const id = await Logging.findOne({ guildId: role.guild.id });
+    const id = await Logging.findOne({ GuildId: role.guild.id });
     if (!id) return;
 
-    const logs = id.channel;
+    const logs = id.ChannelId;
     if (!logs) return;
 
     const logembed = new EmbedBuilder()

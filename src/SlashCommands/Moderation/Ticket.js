@@ -80,7 +80,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const fetchRole = await TicketConfig.findOne({ guildId: interaction.guild.id });
+    const fetchRole = await TicketConfig.findOne({ GuildId: interaction.guild.id });
 
     if (!fetchRole) {
       const nomodRole = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -92,20 +92,20 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    if (fetchRole.role) {
-      if (!interaction.guild.roles.cache.find((role) => role.id === fetchRole.role)) {
+    if (fetchRole.Role) {
+      if (!interaction.guild.roles.cache.find((role) => role.id === fetchRole.Role)) {
         await TicketConfig.findOneAndUpdate(
           {
-            guildId: interaction.guild.id
+            GuildId: interaction.guild.id
           },
           {
-            role: null
+            Role: null
           }
         );
       }
     }
 
-    const modRole = interaction.guild.roles.cache.find((supId) => supId.id === fetchRole.role);
+    const modRole = interaction.guild.roles.cache.find((supId) => supId.id === fetchRole.Role);
 
     const subOptions = interaction.options.getSubcommand();
     const subGroup = interaction.options.getSubcommandGroup();
@@ -124,7 +124,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const channelArgs = interaction.channel.name.split('-');
 
-        const foundTicket = await Tickets.findOne({ guildId: interaction.guild.id, ticketId: channelArgs[channelArgs.length - 1] }); //! TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); //! TEST
 
         if (foundTicket) {
           if (user.permissionsIn(interaction.channel).has([PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages])) {
@@ -146,9 +146,9 @@ export const SlashCommandF = class extends SlashCommand {
             .addFields({ name: `**${this.client.user.username} - Add**`, value: `**◎ Success:** ${user} has been added to the ticket!` });
           interaction.reply({ embeds: [nouser] });
 
-          const logget = await TicketConfig.findOne({ guildId: interaction.guild.id });
+          const logget = await TicketConfig.findOne({ GuildId: interaction.guild.id });
           if (!logget) return;
-          const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.logChannel);
+          const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.LogChannel);
           if (!logchan) return;
           const loggingembed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Add**`,
@@ -165,10 +165,10 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (subOptions === 'close') {
         const channelArgs = interaction.channel.name.split('-');
-        const foundTicket = await Tickets.findOne({ guildId: interaction.guild.id, ticketId: channelArgs[channelArgs.length - 1] }); //! TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); //! TEST
 
         // Make sure it's inside the ticket channel.
-        if (foundTicket && interaction.channel.id !== foundTicket.channelId) {
+        if (foundTicket && interaction.channel.id !== foundTicket.ChannelId) {
           const badChannel = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Close**`,
             value: '**◎ Error:** You can\'t use the close command outside of a ticket channel.'
@@ -218,7 +218,7 @@ export const SlashCommandF = class extends SlashCommand {
             if (!fetchTick) return;
 
             // Filter fetchTick where chanid === interaction.channel.id
-            const ticket = fetchTick.find((t) => t.channelId === interaction.channel.id); //! TEST
+            const ticket = fetchTick.find((t) => t.ChannelId === interaction.channel.id); //! TEST
             if (!ticket) return;
 
             const closeReason = interaction.options.getString('name') || 'No reason provided.';
@@ -279,11 +279,11 @@ export const SlashCommandF = class extends SlashCommand {
               interaction.channel.delete();
             }
 
-            await Tickets.deleteOne({ guildId: interaction.guild.id, ticketId: channelArgs[channelArgs.length - 1] }); //!
+            await Tickets.deleteOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); //!
 
             const epoch = Math.floor(new Date().getTime() / 1000);
 
-            const user = this.client.users.cache.find((a) => a.id === ticket.authorId);
+            const user = this.client.users.cache.find((a) => a.id === ticket.AuthorId);
             if (user) {
               const logEmbed = new EmbedBuilder()
                 .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -329,12 +329,12 @@ export const SlashCommandF = class extends SlashCommand {
                 .catch(() => {});
             }
 
-            const logget = await TicketConfig.findOne({ guildId: interaction.guild.id });
+            const logget = await TicketConfig.findOne({ GuildId: interaction.guild.id });
             if (!logget) {
               return;
             }
 
-            const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.logChannel);
+            const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.LogChannel);
             if (!logchan) {
               return;
             }
@@ -391,7 +391,7 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (subOptions === 'new') {
         // Ticket Embed
-        const fetchTick = await TicketConfig.findOne({ guildId: interaction.guild.id });
+        const fetchTick = await TicketConfig.findOne({ GuildId: interaction.guild.id });
 
         if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
           const botPerm = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -403,14 +403,14 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        const fetchBlacklist = await TicketConfig.findOne({ guildId: interaction.guild.id });
+        const fetchBlacklist = await TicketConfig.findOne({ GuildId: interaction.guild.id });
 
         let foundBlacklist;
 
-        if (!fetchBlacklist.blacklist) {
+        if (!fetchBlacklist.Blacklist) {
           foundBlacklist = [];
         } else {
-          foundBlacklist = await JSON.parse(fetchBlacklist.blacklist);
+          foundBlacklist = await JSON.parse(fetchBlacklist.Blacklist);
         }
 
         if (foundBlacklist.includes(interaction.user.id)) {
@@ -423,21 +423,21 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         // Make sure this is the user's only ticket.
-        const checkTicketEx = await Tickets.findOne({ guildId: interaction.guild.id, authorId: interaction.user.id }); //! TEST
+        const checkTicketEx = await Tickets.findOne({ GuildId: interaction.guild.id, AuthorId: interaction.user.id }); //! TEST
 
         if (checkTicketEx) {
-          if (checkTicketEx.channelId === null) {
-            await Tickets.deleteOne({ guildId: interaction.guild.id, authorId: interaction.user.id });
+          if (checkTicketEx.ChannelId === null) {
+            await Tickets.deleteOne({ GuildId: interaction.guild.id, AuthorId: interaction.user.id });
           }
-          if (!interaction.guild.channels.cache.find((ch) => ch.id === checkTicketEx.channelId)) {
-            await Tickets.deleteOne({ guildId: interaction.guild.id, authorId: interaction.user.id });
+          if (!interaction.guild.channels.cache.find((ch) => ch.id === checkTicketEx.ChannelId)) {
+            await Tickets.deleteOne({ GuildId: interaction.guild.id, AuthorId: interaction.user.id });
           }
         }
 
         // Already has a ticket
-        const foundTicket = await Tickets.findOne({ guildId: interaction.guild.id, authorId: interaction.user.id }); //! TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, AuthorId: interaction.user.id }); //! TEST
         if (foundTicket) {
-          const cha = interaction.guild.channels.cache.get(checkTicketEx.channelId);
+          const cha = interaction.guild.channels.cache.get(checkTicketEx.ChannelId);
           if (cha) {
             const alreadyTicket = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
               name: `**${this.client.user.username} - Ticket**`,
@@ -449,38 +449,38 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         // Make Ticket
-        const id = await TicketConfig.findOne({ guildId: interaction.guild.id });
+        const id = await TicketConfig.findOne({ GuildId: interaction.guild.id });
         const reason = interaction.options.getString('reason') || '';
         const randomString = nanoid();
         const nickName = interaction.guild.members.cache.get(interaction.user.id).displayName;
 
         await new Tickets({
-          guildId: interaction.guild.id,
-          ticketId: randomString,
-          authorId: interaction.user.id,
-          reason
+          GuildId: interaction.guild.id,
+          TicketId: randomString,
+          AuthorId: interaction.user.id,
+          Reason: reason
         }).save();
 
         let ticategory;
-        if (interaction.guild.channels.cache.find((chan) => chan.id === id.category)) {
-          ticategory = id.category;
+        if (interaction.guild.channels.cache.find((chan) => chan.id === id.Category)) {
+          ticategory = id.Category;
         } else {
           await TicketConfig.findOneAndUpdate(
             {
-              guildId: interaction.guild.id
+              GuildId: interaction.guild.id
             },
             {
-              category: null
+              Category: null
             }
           );
         }
 
         // Create the channel with the name "ticket-" then the user's ID.
-        const role = interaction.guild.roles.cache.find((r) => r.id === fetchTick.role);
+        const role = interaction.guild.roles.cache.find((r) => r.id === fetchTick.Role);
         const role2 = interaction.guild.roles.everyone;
 
         // Check how many channels are in the category
-        const category = interaction.guild.channels.cache.find((chan) => chan.id === id.category);
+        const category = interaction.guild.channels.cache.find((chan) => chan.id === id.Category);
         const categoryLength = category && category.children.cache.size ? category.children.cache.size : 0;
 
         let newId;
@@ -501,7 +501,7 @@ export const SlashCommandF = class extends SlashCommand {
               // Update the database
               await TicketConfig.findOneAndUpdate(
                 {
-                  guildId: interaction.guild.id
+                  GuildId: interaction.guild.id
                 },
                 {
                   channel: chn.id
@@ -541,11 +541,11 @@ export const SlashCommandF = class extends SlashCommand {
           .then(async (c) => {
             await Tickets.findOneAndUpdate(
               {
-                guildId: interaction.guild.id,
-                ticketId: randomString
+                GuildId: interaction.guild.id,
+                TicketId: randomString
               },
               {
-                channelId: c.id
+                ChannelId: c.id
               }
             );
 
@@ -581,7 +581,7 @@ export const SlashCommandF = class extends SlashCommand {
                 return;
               }
 
-              const logchan = interaction.guild.channels.cache.find((chan) => chan.id === fetchTick.logChannel);
+              const logchan = interaction.guild.channels.cache.find((chan) => chan.id === fetchTick.LogChannel);
               if (!logchan) return;
 
               const openEpoch = Math.floor(new Date().getTime() / 1000);
@@ -634,7 +634,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const channelArgs = interaction.channel.name.split('-');
 
-        const foundTicket = await Tickets.findOne({ guildId: interaction.guild.id, ticketId: channelArgs[channelArgs.length - 1] }); //! TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); //! TEST
 
         if (foundTicket) {
           const getChan = interaction.channel;
@@ -649,15 +649,15 @@ export const SlashCommandF = class extends SlashCommand {
 
           getChan.permissionOverwrites
             .create(rUser, {
-              VIEW_CHANNEL: false
+              VIEW_CHANNEL: false //! ERROR, OLD PERMS
             })
             .catch(console.error);
           const removed = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({ name: `**${this.client.user.username} - Remove**`, value: `**◎ Success:** ${rUser} has been removed from the ticket!` });
           getChan.send({ embeds: [removed] });
-          const logget = await TicketConfig.findOne({ guildId: interaction.guild.id });
-          const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.logChannel);
+          const logget = await TicketConfig.findOne({ GuildId: interaction.guild.id });
+          const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.LogChannel);
           if (!logchan) return;
           const loggingembed = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -682,7 +682,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const channelArgs = interaction.channel.name.split('-');
 
-        const foundTicket = await Tickets.findOne({ guildId: interaction.guild.id, ticketId: channelArgs[channelArgs.length - 1] }); //! TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); //! TEST
 
         if (foundTicket) {
           const getChan = interaction.channel;
@@ -709,10 +709,10 @@ export const SlashCommandF = class extends SlashCommand {
           });
           interaction.reply({ embeds: [embed] });
 
-          getChan.setName(`ticket-${argResult}-${foundTicket.ticketId}`);
+          getChan.setName(`ticket-${argResult}-${foundTicket.TicketId}`);
 
-          const logget = await TicketConfig.findOne({ guildId: interaction.guild.id });
-          const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.logChannel);
+          const logget = await TicketConfig.findOne({ GuildId: interaction.guild.id });
+          const logchan = interaction.guild.channels.cache.find((chan) => chan.id === logget.LogChannel);
           if (!logchan) return;
           const loggingembed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Rename**`,
@@ -747,7 +747,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const row = new ActionRowBuilder().addComponents(button);
 
-        const foundtEmbed = await TicketConfig.findOne({ guildId: interaction.guild.id });
+        const foundtEmbed = await TicketConfig.findOne({ GuildId: interaction.guild.id });
         if (!foundtEmbed) {
           const disabledTic = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -762,11 +762,11 @@ export const SlashCommandF = class extends SlashCommand {
         await interaction.channel.send({ components: [row], embeds: [embed] }).then(async (a) => {
           await TicketConfig.findOneAndUpdate(
             {
-              guildId: interaction.guild.id
+              GuildId: interaction.guild.id
             },
             {
-              embed: a.id,
-              embedChannel: interaction.channel.id
+              Embed: a.id,
+              EmbedChannel: interaction.channel.id
             }
           );
         });
@@ -795,14 +795,14 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      const fetchBlacklist = await TicketConfig.findOne({ guildId: interaction.guild.id });
+      const fetchBlacklist = await TicketConfig.findOne({ GuildId: interaction.guild.id });
 
       let foundBlacklist;
 
-      if (!fetchBlacklist.blacklist) {
+      if (!fetchBlacklist.Blacklist) {
         foundBlacklist = [];
       } else {
-        foundBlacklist = await JSON.parse(fetchBlacklist.blacklist);
+        foundBlacklist = await JSON.parse(fetchBlacklist.Blacklist);
       }
 
       if (subOptions === 'add') {
@@ -811,10 +811,10 @@ export const SlashCommandF = class extends SlashCommand {
 
           await TicketConfig.findOneAndUpdate(
             {
-              guildId: interaction.guild.id
+              GuildId: interaction.guild.id
             },
             {
-              blacklist: JSON.stringify(foundBlacklist)
+              Blacklist: JSON.stringify(foundBlacklist)
             }
           );
 
@@ -842,10 +842,10 @@ export const SlashCommandF = class extends SlashCommand {
 
           await TicketConfig.findOneAndUpdate(
             {
-              guildId: interaction.guild.id
+              GuildId: interaction.guild.id
             },
             {
-              blacklist: !filtered.length ? null : JSON.stringify(filtered)
+              Blacklist: !filtered.length ? null : JSON.stringify(filtered)
             }
           );
 

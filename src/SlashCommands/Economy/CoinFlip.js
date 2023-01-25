@@ -25,7 +25,7 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const subOptions = interaction.options.getSubcommand();
 
-    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
+    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     if (!balance) {
       const limitE = new EmbedBuilder()
@@ -39,12 +39,12 @@ export const SlashCommandF = class extends SlashCommand {
     let betAmt;
 
     if (subOptions === 'all') {
-      betAmt = balance.bank;
+      betAmt = balance.Bank;
     } else if (subOptions === 'amount') {
       betAmt = interaction.options.getInteger('amount');
     }
 
-    if (Number(betAmt) > balance.bank) {
+    if (Number(betAmt) > balance.Bank) {
       const wrongUsage = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -52,7 +52,7 @@ export const SlashCommandF = class extends SlashCommand {
           name: `**${this.client.user.username} - Coin Flip**`,
           value: `**◎ Error:** You do not have enough to bet <:coin:706659001164628008> \`${Number(betAmt).toLocaleString(
             'en'
-          )}\`, you have <:coin:706659001164628008> \`${Number(balance.bank).toLocaleString('en')}\` available in your bank.`
+          )}\`, you have <:coin:706659001164628008> \`${Number(balance.Bank).toLocaleString('en')}\` available in your Bank.`
         });
       interaction.reply({ ephemeral: true, embeds: [wrongUsage] });
       return;
@@ -89,7 +89,7 @@ export const SlashCommandF = class extends SlashCommand {
         name: `**${this.client.user.username} - Coin Flip**`,
         value: `**◎** ${interaction.user} won! <:coin:706659001164628008> \`${Number(houseBet).toLocaleString(
           'en'
-        )}\` has been credited to your bank!`
+        )}\` has been credited to your Bank!`
       });
 
     const lose = new EmbedBuilder()
@@ -109,15 +109,15 @@ export const SlashCommandF = class extends SlashCommand {
       if (b.customId === 'heads') {
         if (answer === 'heads') {
           b.update({ components: [rowNew], embeds: [win] });
-          balance.bank += Number(houseBet);
-          balance.total += Number(houseBet);
+          balance.Bank += Number(houseBet);
+          balance.Total += Number(houseBet);
           await balance.save();
           collector.stop('win');
           return;
         }
         b.update({ components: [rowNew], embeds: [lose] });
-        balance.bank -= Number(betAmt);
-        balance.total -= Number(betAmt);
+        balance.Bank -= Number(betAmt);
+        balance.Total -= Number(betAmt);
         await balance.save();
         collector.stop('lose');
         return;
@@ -125,15 +125,15 @@ export const SlashCommandF = class extends SlashCommand {
       if (b.customId === 'tails') {
         if (answer === 'tails') {
           b.update({ components: [rowNew], embeds: [win] });
-          balance.bank += Number(houseBet);
-          balance.total += Number(houseBet);
+          balance.Bank += Number(houseBet);
+          balance.Total += Number(houseBet);
           await balance.save();
           collector.stop('win');
           return;
         }
         b.update({ components: [rowNew], embeds: [lose] });
-        balance.bank -= Number(betAmt);
-        balance.total -= Number(betAmt);
+        balance.Bank -= Number(betAmt);
+        balance.Total -= Number(betAmt);
         await balance.save();
         collector.stop('lose');
         return;

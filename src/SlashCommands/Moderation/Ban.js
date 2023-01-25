@@ -48,7 +48,7 @@ export const SlashCommandF = class extends SlashCommand {
       'Previous 7 Days': 604800
     };
 
-    const id = await Logging.findOne({ guildId: interaction.guild.id });
+    const id = await Logging.findOne({ GuildId: interaction.guild.id });
 
     const deleteMessageFetch = interaction.options.getString('delete_messages');
     const user = interaction.options.getMember('user');
@@ -182,7 +182,7 @@ export const SlashCommandF = class extends SlashCommand {
     });
 
     if (id) {
-      const logch = id.channel;
+      const logch = id.ChannelId;
       const logsch = this.client.channels.cache.get(logch);
 
       if (!logsch) return;

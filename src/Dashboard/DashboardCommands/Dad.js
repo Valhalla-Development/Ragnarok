@@ -9,7 +9,7 @@ export default (client) => {
     categoryDescription: 'Toggle the Dad Module. When enabled, it will respond to messages starting with \'im\'.',
     categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
     getActualSet: async ({ guild }) => {
-      const result = await DadSchema.findOne({ guildId: guild.id });
+      const result = await DadSchema.findOne({ GuildId: guild.id });
       const status = !!result;
       return [
         {
@@ -23,11 +23,11 @@ export default (client) => {
 
       if (toggle === true) {
         await new DadSchema({
-          guildId: guild.id,
-          status: toggle
+          GuildId: guild.id,
+          Status: toggle
         }).save();
       } else {
-        await DadSchema.deleteOne({ guildId: guild.id });
+        await DadSchema.deleteOne({ GuildId: guild.id });
       }
     },
     categoryOptionsList: [

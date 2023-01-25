@@ -31,8 +31,8 @@ export const SlashCommandF = class extends SlashCommand {
 
     if (user.bot) return;
 
-    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
-    const otherB = await Balance.findOne({ idJoined: `${user.id}-${interaction.guild.id}` });
+    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
+    const otherB = await Balance.findOne({ IdJoined: `${user.id}-${interaction.guild.id}` });
 
     if (!otherB) {
       const errorE = new EmbedBuilder()
@@ -46,16 +46,16 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    if (Date.now() > balance.stealCool) {
-      balance.stealCool = null;
+    if (Date.now() > balance.StealCool) {
+      balance.StealCool = null;
 
-      if (otherB.cash < 10) {
+      if (otherB.Cash < 10) {
         const wrongUsage = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
           .addFields({
             name: `**${this.client.user.username} - Steal**`,
-            value: '**◎ Error:** The targeted user does not have enough cash to steal!'
+            value: '**◎ Error:** The targeted user does not have enough Cash to steal!'
           });
         interaction.reply({ ephemeral: true, embeds: [wrongUsage] });
         return;
@@ -72,25 +72,25 @@ export const SlashCommandF = class extends SlashCommand {
       const stealChance = Math.random(); // give you a random number between 0 and 1
       if (stealChance < 0.75) {
         // there’s a 75% chance of this happening
-        maxPerc = (otherB.cash / 100) * 85;
-        minPerc = (otherB.cash / 100) * 35;
+        maxPerc = (otherB.Cash / 100) * 85;
+        minPerc = (otherB.Cash / 100) * 35;
 
         stealAmount = Math.floor(Math.random() * (maxPerc - minPerc + 1) + minPerc); // * (max - min + 1) + min);
 
-        totalCalc = otherB.total - stealAmount;
-        calc = otherB.cash - stealAmount;
-        totalCalc2 = balance.total + stealAmount;
-        calc2 = balance.cash + stealAmount;
+        totalCalc = otherB.Total - stealAmount;
+        calc = otherB.Cash - stealAmount;
+        totalCalc2 = balance.Total + stealAmount;
+        calc2 = balance.Cash + stealAmount;
 
-        otherB.cash = calc;
-        otherB.total = totalCalc;
+        otherB.Cash = calc;
+        otherB.Total = totalCalc;
         await otherB.save();
 
         const endTime = new Date().getTime() + 120000;
 
-        balance.stealCool = endTime;
-        balance.cash = calc2;
-        balance.total = totalCalc2;
+        balance.StealCool = endTime;
+        balance.Cash = calc2;
+        balance.Total = totalCalc2;
         await balance.save();
 
         const succMessage = [
@@ -141,7 +141,7 @@ export const SlashCommandF = class extends SlashCommand {
           `You successfully hacked ${user}'s accounts and transferred <:coin:706659001164628008> ${stealAmount.toLocaleString(
             'en'
           )} to your own accounts.`,
-          `You pulled off a daring heist and made off with <:coin:706659001164628008> ${stealAmount.toLocaleString('en')} from ${user}'s bank.`,
+          `You pulled off a daring heist and made off with <:coin:706659001164628008> ${stealAmount.toLocaleString('en')} from ${user}'s Bank.`,
           `You outsmarted ${user} and stole <:coin:706659001164628016> ${stealAmount.toLocaleString('en')}`
         ];
 
@@ -154,25 +154,25 @@ export const SlashCommandF = class extends SlashCommand {
           });
         interaction.reply({ embeds: [depArg] });
       } else {
-        maxPerc = (balance.bank / 100) * 0.1;
-        minPerc = (balance.bank / 100) * 0.05;
+        maxPerc = (balance.Bank / 100) * 0.1;
+        minPerc = (balance.Bank / 100) * 0.05;
 
         stealAmount = Math.floor(Math.random() * (maxPerc - minPerc + 1) + minPerc); // * (max - min + 1) + min);
 
-        totalCalc = otherB.total + stealAmount;
-        calc = otherB.bank + stealAmount;
-        totalCalc2 = balance.total - stealAmount;
-        calc2 = balance.bank - stealAmount;
+        totalCalc = otherB.Total + stealAmount;
+        calc = otherB.Bank + stealAmount;
+        totalCalc2 = balance.Total - stealAmount;
+        calc2 = balance.Bank - stealAmount;
 
-        otherB.bank = calc;
-        otherB.total = totalCalc;
+        otherB.Bank = calc;
+        otherB.Total = totalCalc;
         await otherB.save();
 
         const endTime = new Date().getTime() + 240000;
 
-        balance.stealCool = endTime;
-        balance.bank = calc2;
-        balance.total = totalCalc2;
+        balance.StealCool = endTime;
+        balance.Bank = calc2;
+        balance.Total = totalCalc2;
         await balance.save();
 
         const failMessage = [
@@ -231,7 +231,7 @@ export const SlashCommandF = class extends SlashCommand {
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
         .addFields({
           name: `**${this.client.user.username} - Steal**`,
-          value: `**◎ Error:** Please wait \`${ms(balance.stealCool - new Date().getTime(), { long: true })}\`, before using this command again!`
+          value: `**◎ Error:** Please wait \`${ms(balance.StealCool - new Date().getTime(), { long: true })}\`, before using this command again!`
         });
       interaction.reply({ ephemeral: true, embeds: [embed] });
     }

@@ -12,29 +12,29 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
+    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     let foundItemList;
 
-    if (!balance.items) {
+    if (!balance.Items) {
       foundItemList = {};
     } else {
-      foundItemList = JSON.parse(balance.items);
+      foundItemList = JSON.parse(balance.Items);
     }
 
     let name;
     let price;
 
-    if (balance.farmCool !== null) {
-      if (Date.now() > balance.farmCool) {
-        balance.farmCool = null;
+    if (balance.FarmCool !== null) {
+      if (Date.now() > balance.FarmCool) {
+        balance.FarmCool = null;
       } else {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
           .addFields({
             name: `**${this.client.user.username} - Farm**`,
-            value: `**◎ Error:** Please wait another \`${ms(balance.farmCool - new Date().getTime(), { long: true })}\` before using this command.`
+            value: `**◎ Error:** Please wait another \`${ms(balance.FarmCool - new Date().getTime(), { long: true })}\` before using this command.`
           });
         interaction.reply({ ephemeral: true, embeds: [embed] });
         return;
@@ -107,10 +107,10 @@ export const SlashCommandF = class extends SlashCommand {
 
         const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
-        balance.farmCool = Math.round(endTime);
+        balance.FarmCool = Math.round(endTime);
       }
 
-      balance.items = JSON.stringify(foundItemList);
+      balance.Items = JSON.stringify(foundItemList);
       await balance.save();
 
       embed.addFields({
@@ -142,9 +142,9 @@ export const SlashCommandF = class extends SlashCommand {
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
-      balance.farmCool = Math.round(endTime);
+      balance.FarmCool = Math.round(endTime);
 
-      balance.items = JSON.stringify(foundItemList);
+      balance.Items = JSON.stringify(foundItemList);
       await balance.save();
 
       embed.addFields({
@@ -176,9 +176,9 @@ export const SlashCommandF = class extends SlashCommand {
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
-      balance.farmCool = Math.round(endTime);
+      balance.FarmCool = Math.round(endTime);
 
-      balance.items = JSON.stringify(foundItemList);
+      balance.Items = JSON.stringify(foundItemList);
       await balance.save();
 
       embed.addFields({
@@ -210,9 +210,9 @@ export const SlashCommandF = class extends SlashCommand {
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
-      balance.farmCool = Math.round(endTime);
+      balance.FarmCool = Math.round(endTime);
 
-      balance.items = JSON.stringify(foundItemList);
+      balance.Items = JSON.stringify(foundItemList);
       await balance.save();
 
       embed.addFields({
@@ -243,9 +243,9 @@ export const SlashCommandF = class extends SlashCommand {
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
-      balance.farmCool = Math.round(endTime);
+      balance.FarmCool = Math.round(endTime);
 
-      balance.items = JSON.stringify(foundItemList);
+      balance.Items = JSON.stringify(foundItemList);
       await balance.save();
 
       embed.addFields({
@@ -265,7 +265,7 @@ export const SlashCommandF = class extends SlashCommand {
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmFailTime;
 
-      balance.farmCool = Math.round(endTime);
+      balance.FarmCool = Math.round(endTime);
 
       await balance.save();
 

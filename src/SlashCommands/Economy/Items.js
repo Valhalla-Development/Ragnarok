@@ -11,13 +11,13 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
+    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
-    if (!balance.items) {
+    if (!balance.Items) {
       const embed = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-        .addFields({ name: `**${this.client.user.username} - Items**`, value: '**◎ Error:** You do not have any items.' });
+        .addFields({ name: `**${this.client.user.username} - Items**`, value: '**◎ Error:** You do not have any Items.' });
       interaction.reply({ ephemeral: true, embeds: [embed] });
       return;
     }
@@ -25,10 +25,10 @@ export const SlashCommandF = class extends SlashCommand {
     const fishingPrice = this.client.ecoPrices.fishingRod;
     const farmingPrice = this.client.ecoPrices.farmingTools;
 
-    let foundItemList = JSON.parse(balance.items);
-    let foundBoostList = JSON.parse(balance.boosts);
-    let foundPlotList = JSON.parse(balance.farmPlot);
-    let foundHarvestList = JSON.parse(balance.harvestedCrops);
+    let foundItemList = JSON.parse(balance.Items);
+    let foundBoostList = JSON.parse(balance.Boosts);
+    let foundPlotList = JSON.parse(balance.FarmPlot);
+    let foundHarvestList = JSON.parse(balance.HarvestedCrops);
 
     if (!foundBoostList) {
       foundBoostList = {};

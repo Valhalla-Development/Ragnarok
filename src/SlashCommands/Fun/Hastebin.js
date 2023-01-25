@@ -45,7 +45,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    const status = await HasteBin.findOne({ guildId: interaction.guild.id });
+    const status = await HasteBin.findOne({ GuildId: interaction.guild.id });
 
     const parseAttachment = interaction.options.getAttachment('attachment');
     if (parseAttachment) {

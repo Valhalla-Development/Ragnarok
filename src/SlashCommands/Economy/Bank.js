@@ -11,18 +11,18 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
+    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
-    if (balance.cash === 0) {
+    if (balance.Cash === 0) {
       const limitE = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-        .addFields({ name: `**${this.client.user.username} - Bank**`, value: '**◎ Error:** You do not have any cash to deposit!' });
+        .addFields({ name: `**${this.client.user.username} - Bank**`, value: '**◎ Error:** You do not have any Cash to deposit!' });
       interaction.reply({ ephemeral: true, embeds: [limitE] });
       return;
     }
 
-    const bankCalc = balance.cash + balance.bank;
+    const bankCalc = balance.Cash + balance.Bank;
 
     const depAll = new EmbedBuilder()
       .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -30,13 +30,13 @@ export const SlashCommandF = class extends SlashCommand {
       .setThumbnail('attachment://Bank.png')
       .addFields({
         name: `**${this.client.user.username} - Bank**`,
-        value: `**◎ Success:** You have deposited <:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\` to your bank.`
+        value: `**◎ Success:** You have deposited <:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\` to your Bank.`
       });
     interaction.reply({ embeds: [depAll], files: ['./Storage/Images/Economy/Bank.png'] });
 
-    balance.cash = 0;
-    balance.bank = bankCalc;
-    balance.total = bankCalc;
+    balance.Cash = 0;
+    balance.Bank = bankCalc;
+    balance.Total = bankCalc;
 
     await balance.save();
   }

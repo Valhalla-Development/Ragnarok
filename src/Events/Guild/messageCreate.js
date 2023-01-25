@@ -60,7 +60,7 @@ export const EventF = class extends Event {
         // Then filter which guilds have tickets enabled in the db
         const guildsWithTickets = guilds.filter(async (guild) => {
           // Fetch the row from the db where role is not null
-          const row = await TicketConfig.findOne({ guildId: guild.id, role: { $exists: true, $ne: null } }); //! TEST THIS AF BRUH
+          const row = await TicketConfig.findOne({ GuildId: guild.id, Role: { $exists: true, $ne: null } }); //! TEST THIS AF BRUH
           return row;
         });
 
@@ -197,7 +197,7 @@ export const EventF = class extends Event {
               return;
             }
 
-            const suppRole = await TicketConfig.findOne({ guildId: fetchGuild.id });
+            const suppRole = await TicketConfig.findOne({ GuildId: fetchGuild.id });
 
             // "Support" role
             if (!suppRole) {
@@ -211,14 +211,14 @@ export const EventF = class extends Event {
               return;
             }
 
-            const fetchBlacklist = await TicketConfig.findOne({ guildId: fetchGuild.id });
+            const fetchBlacklist = await TicketConfig.findOne({ GuildId: fetchGuild.id });
 
             let foundBlacklist;
 
-            if (!fetchBlacklist.blacklist) {
+            if (!fetchBlacklist.Blacklist) {
               foundBlacklist = [];
             } else {
-              foundBlacklist = await JSON.parse(fetchBlacklist.blacklist);
+              foundBlacklist = await JSON.parse(fetchBlacklist.Blacklist);
             }
 
             if (foundBlacklist.includes(message.author.id)) {
@@ -232,30 +232,30 @@ export const EventF = class extends Event {
 
             // Make sure this is the user's only ticket.
 
-            const checkTicketEx = await Tickets.findOne({ guildId: fetchGuild.id, authorId: message.author.id });
-            const roleCheckEx = await Tickets.findOne({ guildId: fetchGuild.id });
+            const checkTicketEx = await Tickets.findOne({ GuildId: fetchGuild.id, AuthorId: message.author.id });
+            const roleCheckEx = await Tickets.findOne({ GuildId: fetchGuild.id });
             if (checkTicketEx) {
-              if (checkTicketEx.channelId === null) {
-                await Tickets.deleteOne({ guildId: fetchGuild.id, authorId: message.author.id });
+              if (checkTicketEx.ChannelId === null) {
+                await Tickets.deleteOne({ GuildId: fetchGuild.id, AuthorId: message.author.id });
               }
-              if (!fetchGuild.channels.cache.find((channel) => channel.id === checkTicketEx.channelId)) {
-                await Tickets.deleteOne({ guildId: fetchGuild.id, authorId: message.author.id });
+              if (!fetchGuild.channels.cache.find((channel) => channel.id === checkTicketEx.ChannelId)) {
+                await Tickets.deleteOne({ GuildId: fetchGuild.id, AuthorId: message.author.id });
               }
             }
             if (roleCheckEx) {
-              if (!fetchGuild.roles.cache.find((role) => role.id === roleCheckEx.role)) {
+              if (!fetchGuild.roles.cache.find((role) => role.id === roleCheckEx.Role)) {
                 await TicketConfig.findOneAndUpdate(
                   {
-                    guildId: fetchGuild.id
+                    GuildId: fetchGuild.id
                   },
                   {
-                    role: null
+                    Role: null
                   }
                 );
               }
             }
 
-            const foundTicket = await Tickets.findOne({ guildId: fetchGuild.id, authorId: message.author.id });
+            const foundTicket = await Tickets.findOne({ GuildId: fetchGuild.id, AuthorId: message.author.id });
             if (foundTicket) {
               this.client.utils.deletableCheck(m, 0);
 
@@ -270,19 +270,19 @@ export const EventF = class extends Event {
             const nickName = fetchGuild.members.cache.get(message.author.id).displayName;
 
             // Make Ticket
-            const id = await TicketConfig.findOne({ guildId: fetchGuild.id });
+            const id = await TicketConfig.findOne({ GuildId: fetchGuild.id });
             const reason = message.content;
             const randomString = nanoid();
             if (!id) {
               await new Tickets({
-                guildId: fetchGuild.id,
-                ticketId: randomString,
-                authorId: message.author.id,
-                reason
+                GuildId: fetchGuild.id,
+                TicketId: randomString,
+                AuthorId: message.author.id,
+                Reason: reason
               }).save();
 
               // Create the channel with the name "ticket-" then the user's ID.
-              const role = fetchGuild.roles.cache.find((r) => r.id === suppRole.role);
+              const role = fetchGuild.roles.cache.find((r) => r.id === suppRole.Role);
               const role2 = fetchGuild.roles.everyone;
               fetchGuild.channels
                 .create({
@@ -314,11 +314,11 @@ export const EventF = class extends Event {
                 .then(async (c) => {
                   await Tickets.findOneAndUpdate(
                     {
-                      guildId: fetchGuild.id,
-                      ticketId: randomString
+                      GuildId: fetchGuild.id,
+                      TicketId: randomString
                     },
                     {
-                      channelId: c.id
+                      ChannelId: c.id
                     }
                   );
 
@@ -340,11 +340,11 @@ export const EventF = class extends Event {
                   c.send({ embeds: [newTicketEm] });
                   // And display any errors in the console.
 
-                  const logget = await TicketConfig.findOne({ guildId: fetchGuild.id });
+                  const logget = await TicketConfig.findOne({ GuildId: fetchGuild.id });
                   if (!logget) {
                     return;
                   }
-                  const logchan = fetchGuild.channels.cache.find((chan) => chan.id === logget.logChannel);
+                  const logchan = fetchGuild.channels.cache.find((chan) => chan.id === logget.LogChannel);
                   if (!logchan) return;
 
                   const openEpoch = Math.floor(new Date().getTime() / 1000);
@@ -382,7 +382,7 @@ export const EventF = class extends Event {
                 .catch(console.error);
             } else {
               // Check how many channels are in the category
-              const category = fetchGuild.channels.cache.find((chan) => chan.id === id.category);
+              const category = fetchGuild.channels.cache.find((chan) => chan.id === id.Category);
 
               const categoryLength = category && category.children.cache.size ? category.children.cache.size : 0;
 
@@ -404,37 +404,37 @@ export const EventF = class extends Event {
                     // Update the database
                     await TicketConfig.findOneAndUpdate(
                       {
-                        guildId: fetchGuild.id
+                        GuildId: fetchGuild.id
                       },
                       {
-                        category: chn.id
+                        Category: chn.id
                       }
                     );
                   });
               }
 
               await new Tickets({
-                guildId: fetchGuild.id,
-                ticketId: randomString,
-                authorId: message.author.id,
-                reason
+                GuildId: fetchGuild.id,
+                TicketId: randomString,
+                AuthorId: message.author.id,
+                Reason: reason
               }).save();
 
               let ticategory;
-              if (fetchGuild.channels.cache.find((chan) => chan.id === id.category)) {
-                ticategory = id.category;
+              if (fetchGuild.channels.cache.find((chan) => chan.id === id.Category)) {
+                ticategory = id.Category;
               } else {
                 await TicketConfig.findOneAndUpdate(
                   {
-                    guildId: fetchGuild.id
+                    GuildId: fetchGuild.id
                   },
                   {
-                    category: null
+                    Category: null
                   }
                 );
               }
 
-              const role = fetchGuild.roles.cache.find((r) => r.id === suppRole.role);
+              const role = fetchGuild.roles.cache.find((r) => r.id === suppRole.Role);
               const role2 = fetchGuild.roles.everyone;
               // Create the channel with the name "ticket-" then the user's ID.
               fetchGuild.channels
@@ -468,11 +468,11 @@ export const EventF = class extends Event {
                 .then(async (c) => {
                   await TicketConfig.findOneAndUpdate(
                     {
-                      guildId: fetchGuild.id,
-                      ticketId: randomString
+                      GuildId: fetchGuild.id,
+                      TicketId: randomString
                     },
                     {
-                      channelId: c.id
+                      ChannelId: c.id
                     }
                   );
 
@@ -504,12 +504,12 @@ export const EventF = class extends Event {
                     );
                   c.send({ components: [row], embeds: [embedTicket] });
                   // And display any errors in the console.
-                  const logget = await TicketConfig.findOne({ guildId: fetchGuild.id });
+                  const logget = await TicketConfig.findOne({ GuildId: fetchGuild.id });
                   if (!logget) {
                     return;
                   }
 
-                  const logchan = fetchGuild.channels.cache.find((chan) => chan.id === logget.logChannel);
+                  const logchan = fetchGuild.channels.cache.find((chan) => chan.id === logget.LogChannel);
                   if (!logchan) return;
 
                   const openEpoch = Math.floor(new Date().getTime() / 1000);
@@ -574,12 +574,12 @@ export const EventF = class extends Event {
     // AFK Module
     async function afkModule(client) {
       const { mentions } = message;
-      const pingCheck = await AFK.findOne({ guildId: message.guild.id });
-      const afkGrab = await AFK.findOne({ guildId: message.guild.id, userId: message.author.id });
+      const pingCheck = await AFK.findOne({ GuildId: message.guild.id });
+      const afkGrab = await AFK.findOne({ GuildId: message.guild.id, UserId: message.author.id });
 
       if (afkGrab) {
         // if (command && command.name === 'afk') return; // this wont work for /afk so figure it out hehe
-        await AFK.deleteOne({ guildId: message.guild.id, userId: message.author.id }); //!
+        await AFK.deleteOne({ GuildId: message.guild.id, UserId: message.author.id }); //!
 
         const embed = new EmbedBuilder().setColor(message.member.displayHexColor).addFields({
           name: `**${client.user.username} - AFK**`,
@@ -590,7 +590,7 @@ export const EventF = class extends Event {
       }
 
       if (mentions.users.size > 0 && pingCheck) {
-        const afkCheck = await AFK.findOne({ guildId: message.guild.id, userId: mentions.users.first().id }); //! test
+        const afkCheck = await AFK.findOne({ GuildId: message.guild.id, UserId: mentions.users.first().id }); //! test
         if (afkCheck) {
           const error = new EmbedBuilder().setColor(message.member.displayHexColor).addFields({
             name: `**${client.user.username} - AFK**`,
@@ -611,42 +611,42 @@ export const EventF = class extends Event {
 
     // Balance (balance)
     if (message.author.bot) return;
-    let balance = await Balance.findOne({ idJoined: `${message.author.id}-${message.guild.id}` }); //! test
+    let balance = await Balance.findOne({ IdJoined: `${message.author.id}-${message.guild.id}` }); //! test
 
     if (!balance) {
       const claimNewUserTime = new Date().getTime() + this.client.ecoPrices.newUserTime;
       balance = {
-        idJoined: `${message.author.id}-${message.guild.id}`,
-        user: message.author.id,
-        guildId: message.guild.id,
-        hourly: null,
-        daily: null,
-        weekly: null,
-        monthly: null,
-        stealCool: null,
-        fishCool: null,
-        farmCool: null,
-        boosts: null,
-        items: null,
-        cash: 0,
-        bank: 500,
-        total: 500,
-        claimNewUser: claimNewUserTime,
-        farmPlot: null,
-        dmHarvest: null,
-        harvestedCrops: null,
-        lottery: null
+        IdJoined: `${message.author.id}-${message.guild.id}`,
+        UserId: message.author.id,
+        GuildId: message.guild.id,
+        Hourly: null,
+        Daily: null,
+        Weekly: null,
+        Monthly: null,
+        StealCool: null,
+        FishCool: null,
+        FarmCool: null,
+        Boosts: null,
+        Items: null,
+        Cash: 0,
+        Bank: 500,
+        Total: 500,
+        ClaimNewUser: claimNewUserTime,
+        FarmPlot: null,
+        DmHarvest: null,
+        HarvestedCrops: null,
+        Lottery: null
       };
     }
 
-    const curBal = balance.cash;
-    const curBan = balance.bank;
+    const curBal = balance.Cash;
+    const curBan = balance.Bank;
     const coinAmt = Math.floor(Math.random() * this.client.ecoPrices.maxPerM) + this.client.ecoPrices.minPerM;
 
     if (coinAmt) {
       if (!coinCooldown.has(message.author.id)) {
-        balance.cash = curBal + coinAmt;
-        balance.total = curBal + curBan + coinAmt;
+        balance.Cash = curBal + coinAmt;
+        balance.Total = curBal + curBan + coinAmt;
         await balance.save(); //! test
         coinCooldown.add(message.author.id);
         setTimeout(() => {
@@ -655,40 +655,40 @@ export const EventF = class extends Event {
       }
     }
 
-    // Scores (level)
+    // Scores (Level)
     async function levelSystem(client) {
       // Level disabled check
-      const levelDb = await LevelConfig.findOne({ guildId: message.guild.id });
+      const levelDb = await LevelConfig.findOne({ GuildId: message.guild.id });
 
       // Initialize score object
       let score;
 
       // Fetch existing score data, if any
-      const existingScore = await Level.findOne({ idJoined: `${message.guild.id}-${message.author.id}` });
+      const existingScore = await Level.findOne({ IdJoined: `${message.guild.id}-${message.author.id}` });
       if (existingScore) {
         score = existingScore;
       } else {
         score = {
-          idJoined: `${message.guild.id}-${message.author.id}`,
-          userId: message.author.id,
-          guildId: message.guild.id,
-          xp: 0,
-          level: 0,
-          country: null,
-          image: null
+          IdJoined: `${message.guild.id}-${message.author.id}`,
+          UserId: message.author.id,
+          GuildId: message.guild.id,
+          Xp: 0,
+          Level: 0,
+          Country: null,
+          Image: null
         };
       }
 
-      // Calculate XP and level-up
+      // Calculate XP and Level-up
       const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
-      const curxp = score.xp; // Current xp
-      const curlvl = score.level; // Current level
-      const levelNoMinus = score.level + 1;
+      const curxp = score.Xp; // Current Xp
+      const curlvl = score.Level; // Current Level
+      const levelNoMinus = score.Level + 1;
       const nxtLvl = (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
-      score.xp = curxp + xpAdd;
-      if (nxtLvl <= score.xp) {
-        score.level = curlvl + 1;
-        if (score.level === 0) return;
+      score.Xp = curxp + xpAdd;
+      if (nxtLvl <= score.Xp) {
+        score.Level = curlvl + 1;
+        if (score.Level === 0) return;
         if (xpCooldown.has(message.author.id)) return;
         const lvlup = new EmbedBuilder()
           .setAuthor({ name: `Congratulations ${message.author.username}` })
@@ -708,22 +708,22 @@ export const EventF = class extends Event {
         xpCooldown.add(message.author.id);
         if (!existingScore) {
           await new Level({
-            idJoined: score.idJoined,
-            userId: score.userId,
-            guildId: score.guildId,
-            xp: score.xp,
-            level: score.level,
-            country: score.country,
-            image: score.image
+            IdJoined: score.IdJoined,
+            UserId: score.UserId,
+            GuildId: score.GuildId,
+            Xp: score.Xp,
+            Level: score.Level,
+            Country: score.Country,
+            Image: score.Image
           }).save();
         } else {
           await Level.findOneAndUpdate(
             {
-              idJoined: `${message.guild.id}-${message.author.id}`
+              IdJoined: `${message.guild.id}-${message.author.id}`
             },
             {
-              xp: score.xp,
-              level: score.level
+              Xp: score.Xp,
+              Level: score.Level
             }
           );
         }
@@ -736,7 +736,7 @@ export const EventF = class extends Event {
 
     // Dad Bot
     async function dadBot() {
-      const dadbot = await Dad.findOne({ guildId: message.guild.id });
+      const dadbot = await Dad.findOne({ GuildId: message.guild.id });
 
       if (!dadbot) {
         return;
@@ -777,7 +777,7 @@ export const EventF = class extends Event {
     dadBot();
 
     async function antiScam(grabClient) {
-      const antiscam = await AntiScam.findOne({ guildId: message.guild.id });
+      const antiscam = await AntiScam.findOne({ GuildId: message.guild.id });
       if (antiscam) {
         if (!message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
           const npPerms = new EmbedBuilder().setColor(grabClient.utils.color(message.guild.members.me.displayHexColor)).addFields({
@@ -785,7 +785,7 @@ export const EventF = class extends Event {
             value: '**◎ Error:** I do not have the `MANAGE_MESSAGES` permissions. Disabling Anti Scam.'
           });
           message.channel.send({ embeds: [npPerms] }).then((m) => grabClient.utils.deletableCheck(m, 0));
-          await AntiScam.deleteOne({ guildId: message.guild.id }); //!
+          await AntiScam.deleteOne({ GuildId: message.guild.id }); //!
           return;
         }
 
@@ -815,7 +815,7 @@ export const EventF = class extends Event {
 
     // Ads protection checks
     async function adsProt(grabClient) {
-      const adsprot = await AdsProtection.findOne({ guildId: message.guild.id });
+      const adsprot = await AdsProtection.findOne({ GuildId: message.guild.id });
       if (adsprot) {
         if (!message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
           const npPerms = new EmbedBuilder().setColor(grabClient.utils.color(message.guild.members.me.displayHexColor)).addFields({
@@ -823,7 +823,7 @@ export const EventF = class extends Event {
             value: '**◎ Error:** I do not have the `MANAGE_MESSAGES` permissions. Disabling Ads Protection.'
           });
           message.channel.send({ embeds: [npPerms] }).then((m) => grabClient.utils.deletableCheck(m, 0));
-          await AdsProtection.deleteOne({ guildId: message.guild.id }); //!
+          await AdsProtection.deleteOne({ GuildId: message.guild.id }); //!
           return;
         }
 

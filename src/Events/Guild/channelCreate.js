@@ -7,15 +7,15 @@ export const EventF = class extends Event {
   async run(channel) {
     if (channel.type === ChannelType.DM) return;
 
-    const channelId = await Logging.findOne({ guildId: channel.guild.id });
+    const channelId = await Logging.findOne({ GuildId: channel.guild.id });
     if (!channelId) return;
 
-    const logs = channelId.channel;
+    const logs = channelId.ChannelId;
     if (!logs) return;
 
     const chnCheck = this.client.channels.cache.get(logs);
     if (!chnCheck) {
-      await Logging.deleteOne({ guildId: channel.guild.id }); //!
+      await Logging.deleteOne({ GuildId: channel.guild.id }); //!
       return;
     }
 

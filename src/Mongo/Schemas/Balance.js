@@ -1,26 +1,26 @@
 import { Schema, model } from 'mongoose';
 
 const Balance = new Schema({
-  idJoined: { type: String, unique: true },
-  user: String,
-  guildId: String,
-  hourly: Number,
-  daily: Number,
-  weekly: Number,
-  monthly: Number,
-  stealCool: Number,
-  fishCool: Number,
-  farmCool: Number,
-  boosts: String,
-  items: String,
-  cash: Number,
-  bank: Number,
-  total: Number,
-  claimNewUser: Number,
-  farmPlot: String,
-  dmHarvest: String,
-  harvestedCrops: String,
-  lottery: String
+  IdJoined: { type: String, unique: true },
+  UserId: String,
+  GuildId: String,
+  Hourly: Number,
+  Daily: Number,
+  Weekly: Number,
+  Monthly: Number,
+  StealCool: Number,
+  FishCool: Number,
+  FarmCool: Number,
+  Boosts: String,
+  Items: String,
+  Cash: Number,
+  Bank: Number,
+  Total: Number,
+  ClaimNewUser: Number,
+  FarmPlot: String,
+  DmHarvest: String,
+  HarvestedCrops: String,
+  Lottery: String
 });
 
 export default model('Balance', Balance, 'Balance');

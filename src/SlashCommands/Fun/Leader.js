@@ -13,7 +13,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const levelDb = await LevelConfig.findOne({ guildId: interaction.guild.id });
+    const levelDb = await LevelConfig.findOne({ GuildId: interaction.guild.id });
 
     if (levelDb) {
       const embed = new EmbedBuilder()
@@ -23,7 +23,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    const top10 = await Level.find({ guildId: interaction.guild.id }).sort({ xp: -1 });
+    const top10 = await Level.find({ GuildId: interaction.guild.id }).sort({ Xp: -1 });
 
     if (!top10) {
       return;
@@ -36,7 +36,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     for (let i = 0; i < top10.length; i++) {
       const data = top10[i];
-      const fetchUsers = interaction.guild.members.cache.get(data.userId);
+      const fetchUsers = interaction.guild.members.cache.get(data.UserId);
 
       if (fetchUsers === undefined) {
         continue;
@@ -45,8 +45,8 @@ export const SlashCommandF = class extends SlashCommand {
       j++;
 
       userNames += `◎ \`${j}\` ${fetchUsers}\n`;
-      levels += `\`${data.level}\`\n`;
-      xp += `\`${data.xp.toLocaleString('en')}\`\n`;
+      levels += `\`${data.Level}\`\n`;
+      xp += `\`${data.Xp.toLocaleString('en')}\`\n`;
       if (j === 10) break;
     }
 

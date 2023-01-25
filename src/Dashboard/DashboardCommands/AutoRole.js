@@ -11,8 +11,8 @@ export default (client) => {
     categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
     refreshOnSave: true,
     getActualSet: async ({ guild }) => {
-      const result = await AutoRoleSchema.findOne({ guildId: guild.id });
-      const set = result ? result.role : null;
+      const result = await AutoRoleSchema.findOne({ GuildId: guild.id });
+      const set = result ? result.Role : null;
       const status = !!result;
 
       return [
@@ -27,10 +27,10 @@ export default (client) => {
       ];
     },
     setNew: async ({ guild, user, data }) => {
-      const result = await AutoRoleSchema.findOne({ guildId: guild.id });
+      const result = await AutoRoleSchema.findOne({ GuildId: guild.id });
 
       if (data.some((option) => option.optionId === 'autoRoleToggle' && option.data === false)) {
-        await AutoRoleSchema.deleteOne({ guildId: guild.id });
+        await AutoRoleSchema.deleteOne({ GuildId: guild.id });
         return;
       }
 
@@ -45,16 +45,16 @@ export default (client) => {
       if (autoRoleObject?.data) {
         if (!result) {
           await new AutoRoleSchema({
-            guildId: guild.id,
-            role: autoRoleObject.data
+            GuildId: guild.id,
+            Role: autoRoleObject.data
           }).save();
         } else {
           await AutoRoleSchema.findOneAndUpdate(
             {
-              guildId: guild.id
+              GuildId: guild.id
             },
             {
-              role: autoRoleObject.data
+              Role: autoRoleObject.data
             }
           );
         }

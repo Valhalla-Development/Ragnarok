@@ -51,7 +51,7 @@ export const SlashCommandF = class extends SlashCommand {
       'Previous 7 Days': 604800
     };
 
-    const id = await Logging.findOne({ guildId: interaction.guild.id });
+    const id = await Logging.findOne({ GuildId: interaction.guild.id });
 
     const deleteMessageFetch = interaction.options.getString('delete_messages');
     const user = interaction.options.getMember('user');
@@ -161,12 +161,12 @@ export const SlashCommandF = class extends SlashCommand {
     const endTime = new Date().getTime() + ms(duration);
 
     await new TempBan({
-      idJoined: `${interaction.guild.id}-${user.user.id}`,
-      guildId: interaction.guild.id,
-      userId: user.user.id,
-      endTime,
-      channel: interaction.channel.id,
-      username: user.user.tag
+      IdJoined: `${interaction.guild.id}-${user.user.id}`,
+      GuildId: interaction.guild.id,
+      UserId: user.user.id,
+      EndTime: endTime,
+      ChannelId: interaction.channel.id,
+      Username: user.user.tag
     }).save();
 
     const embed = new EmbedBuilder()
@@ -210,7 +210,7 @@ export const SlashCommandF = class extends SlashCommand {
             return;
           }
 
-          await TempBan.deleteOne({ idJoined: `${interaction.guild.id}-${user.user.userid}` }); //! log user.user.userid just to be sure
+          await TempBan.deleteOne({ IdJoined: `${interaction.guild.id}-${user.user.userid}` }); //! log user.user.userid just to be sure
 
           const unbanEmbed = new EmbedBuilder()
             .setThumbnail(this.client.user.displayAvatarURL())
@@ -232,7 +232,7 @@ export const SlashCommandF = class extends SlashCommand {
     });
 
     if (id) {
-      const logch = id.channel;
+      const logch = id.ChannelId;
       const logsch = this.client.channels.cache.get(logch);
 
       if (!logsch) return;

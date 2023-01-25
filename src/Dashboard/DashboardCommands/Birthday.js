@@ -12,9 +12,9 @@ export default (client) => {
     categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
     refreshOnSave: true,
     getActualSet: async ({ guild }) => {
-      const result = await BirthdayConfigSchema.findOne({ guildId: guild.id });
-      const channelStatus = result ? result.channel : null;
-      const roleStatus = result ? result.role : null;
+      const result = await BirthdayConfigSchema.findOne({ GuildId: guild.id });
+      const channelStatus = result ? result.ChannelId : null;
+      const roleStatus = result ? result.Role : null;
       const status = !!result;
 
       return [
@@ -33,27 +33,27 @@ export default (client) => {
       ];
     },
     setNew: async ({ guild, user, data }) => {
-      const result = await BirthdayConfigSchema.findOne({ guildId: guild.id });
+      const result = await BirthdayConfigSchema.findOne({ GuildId: guild.id });
 
       if (data.some((option) => option.optionId === 'birthdayToggle' && option.data === false)) {
-        await BirthdayConfigSchema.deleteOne({ guildId: guild.id });
+        await BirthdayConfigSchema.deleteOne({ GuildId: guild.id });
         return;
       }
 
       if (data.some((option) => option.optionId === 'birthdayRole') && !data.some((option) => option.optionId === 'birthdayChannel')) {
-        if (!result?.channel) {
+        if (!result?.ChannelId) {
           return { error: 'Please set a channel before setting the role!' };
         }
       }
 
       if (!data.some((option) => option.optionId === 'birthdayChannel')) {
-        if (!result?.channel) {
+        if (!result?.ChannelId) {
           return { error: 'Please set a channel.' };
         }
       }
 
-      let birthdayRol = result?.role || null;
-      let birthdayChan = result?.channel || null;
+      let birthdayRol = result?.Role || null;
+      let birthdayChan = result?.ChannelId || null;
       const birthdayroleObj = data.find((obj) => obj.optionId === 'birthdayRole');
       const birthdayChannelObj = data.find((obj) => obj.optionId === 'birthdayChannel');
       birthdayRol = birthdayroleObj?.data || birthdayRol;
@@ -61,18 +61,18 @@ export default (client) => {
       console.log(result);
       if (!result) {
         await new BirthdayConfigSchema({
-          guildId: guild.id,
-          channel: birthdayChan,
-          role: birthdayRol
+          GuildId: guild.id,
+          ChannelId: birthdayChan,
+          Role: birthdayRol
         }).save();
       } else {
         await BirthdayConfigSchema.findOneAndUpdate(
           {
-            guildId: guild.id
+            GuildId: guild.id
           },
           {
-            channel: birthdayChan,
-            role: birthdayRol
+            ChannelId: birthdayChan,
+            Role: birthdayRol
           }
         );
       }

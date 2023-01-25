@@ -9,7 +9,7 @@ export default (client) => {
     categoryDescription: 'Toggle the Anti Scam Module. When enabled, it will remove all known scam links (retreived from an API).',
     categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
     getActualSet: async ({ guild }) => {
-      const result = await AntiScamSchema.findOne({ guildId: guild.id });
+      const result = await AntiScamSchema.findOne({ GuildId: guild.id });
       const status = !!result;
       return [
         {
@@ -23,11 +23,11 @@ export default (client) => {
 
       if (toggle === true) {
         await new AntiScamSchema({
-          guildId: guild.id,
-          status: toggle
+          GuildId: guild.id,
+          Status: toggle
         }).save();
       } else {
-        await AntiScamSchema.deleteOne({ guildId: guild.id });
+        await AntiScamSchema.deleteOne({ GuildId: guild.id });
       }
     },
     categoryOptionsList: [

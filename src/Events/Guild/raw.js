@@ -15,17 +15,17 @@ export const EventF = class extends Event {
 
         if (data.user_id === grabClient.user.id) return;
 
-        const getTicketEmbed = await TicketConfig.findOne({ guildId: data.guild_id });
+        const getTicketEmbed = await TicketConfig.findOne({ GuildId: data.guild_id });
         if (!getTicketEmbed || !getTicketEmbed.ticketembed) {
           return;
         }
         if (getTicketEmbed.ticketconfig === data.id) {
           await TicketConfig.findOneAndUpdate(
             {
-              guildId: data.guild_id
+              GuildId: data.guild_id
             },
             {
-              embed: null
+              Embed: null
             }
           );
         }

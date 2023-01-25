@@ -12,7 +12,7 @@ export const EventF = class extends Event {
       if (!fetchTick) return;
 
       // Filter fetchTick where chanid === interaction.channel.id
-      const ticket = fetchTick.find((t) => t.channelId === modal.channelId);
+      const ticket = fetchTick.find((t) => t.ChannelId === modal.channelId);
       if (!ticket) return;
 
       const firstResponse = modal.getTextInputValue(`textinput-${modal.channelId}`);
@@ -76,11 +76,11 @@ export const EventF = class extends Event {
 
       const channelArgs = modal.channel.name.split('-');
 
-      await Tickets.deleteOne({ guildId: modal.guild.id, ticketId: channelArgs[channelArgs.length - 1] }); //!
+      await Tickets.deleteOne({ GuildId: modal.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); //!
 
       const epoch = Math.floor(new Date().getTime() / 1000);
 
-      const user = this.client.users.cache.find((a) => a.id === ticket.authorId);
+      const user = this.client.users.cache.find((a) => a.id === ticket.AuthorId);
       if (user) {
         const logEmbed = new EmbedBuilder()
           .setColor(this.client.utils.color(modal.guild.members.me.displayHexColor))
@@ -126,12 +126,12 @@ export const EventF = class extends Event {
           .catch(() => {});
       }
 
-      const logget = await TicketConfig.findOne({ guildId: modal.guild.id });
+      const logget = await TicketConfig.findOne({ GuildId: modal.guild.id });
       if (!logget) {
         return;
       }
 
-      const logchan = modal.guild.channels.cache.find((chan) => chan.id === logget.logChannel);
+      const logchan = modal.guild.channels.cache.find((chan) => chan.id === logget.LogChannel);
       if (!logchan) {
         return;
       }

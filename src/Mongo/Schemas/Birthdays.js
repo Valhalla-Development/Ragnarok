@@ -1,9 +1,9 @@
 import { Schema, model } from 'mongoose';
 
 const Birthdays = new Schema({
-  userId: { type: String, unique: true },
-  date: String,
-  lastRun: String
+  UserId: { type: String, unique: true },
+  Date: String,
+  LastRun: String
 });
 
 export default model('Birthdays', Birthdays, 'Birthdays');

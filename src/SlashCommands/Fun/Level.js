@@ -53,7 +53,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     const args = interaction.options.getSubcommand();
 
-    const levelDb = await LevelConfig.findOne({ guildId: interaction.guild.id });
+    const levelDb = await LevelConfig.findOne({ GuildId: interaction.guild.id });
 
     if (levelDb) {
       const embed = new EmbedBuilder()
@@ -68,25 +68,25 @@ export const SlashCommandF = class extends SlashCommand {
 
       let score;
       if (interaction.guild) {
-        score = await Level.findOne({ idJoined: `${interaction.guild.id}-${interaction.user.id}` });
+        score = await Level.findOne({ IdJoined: `${interaction.guild.id}-${interaction.user.id}` });
       }
 
       if (!score) {
         const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
 
         await new Level({
-          idJoined: `${interaction.guild.id}-${interaction.user.id}`,
-          userId: interaction.user.id,
-          guildId: interaction.guild.id,
-          xp: xpAdd,
-          level: 0,
-          country: null,
-          image: null
+          IdJoined: `${interaction.guild.id}-${interaction.user.id}`,
+          UserId: interaction.user.id,
+          GuildId: interaction.guild.id,
+          Xp: xpAdd,
+          Level: 0,
+          Country: null,
+          Image: null
         }).save();
       }
 
       if (option === 'off') {
-        if (score && !score.country) {
+        if (score && !score.Country) {
           const embed = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({ name: `**${this.client.user.username} - Level**`, value: '**◎ Error:** You do not have a country set.' });
@@ -98,7 +98,7 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({ name: `**${this.client.user.username} - Level**`, value: '**◎ Success:** I have disabled your country flag!' });
         interaction.editReply({ ephemeral: true, embeds: [embed] });
 
-        score.country = null;
+        score.Country = null;
         await score.save();
         return;
       }
@@ -109,7 +109,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         url[0].url = url[0].url.replace('twemoji.maxcdn.com/v/latest/', 'cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/');
         // temporary fix because maxcdn has stopped supporting twemoji
-        score.country = url[0].url;
+        score.Country = url[0].url;
         await score.save();
 
         const embed = new EmbedBuilder()
@@ -132,7 +132,7 @@ export const SlashCommandF = class extends SlashCommand {
 
       let score;
       if (interaction.guild) {
-        score = await Level.findOne({ idJoined: `${interaction.guild.id}-${interaction.user.id}` });
+        score = await Level.findOne({ IdJoined: `${interaction.guild.id}-${interaction.user.id}` });
       }
 
       if (!score) {
@@ -140,19 +140,19 @@ export const SlashCommandF = class extends SlashCommand {
         const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
 
         await new Level({
-          idJoined: `${interaction.guild.id}-${interaction.user.id}`,
-          userId: interaction.user.id,
-          guildId: interaction.guild.id,
-          xp: xpAdd,
-          level: 0,
-          country: null,
-          image: null
+          IdJoined: `${interaction.guild.id}-${interaction.user.id}`,
+          UserId: interaction.user.id,
+          GuildId: interaction.guild.id,
+          Xp: xpAdd,
+          Level: 0,
+          Country: null,
+          Image: null
         }).save();
       }
 
       if (interaction.guild.id) {
         if (option === 'off') {
-          if (!score.image) {
+          if (!score.Image) {
             const embed = new EmbedBuilder()
               .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
               .addFields({ name: `**${this.client.user.username} - Level**`, value: '**◎ Error:** You have no custom image enabled!' });
@@ -162,10 +162,10 @@ export const SlashCommandF = class extends SlashCommand {
 
           await Level.findOneAndUpdate(
             {
-              idJoined: `${interaction.guild.id}-${interaction.user.id}`
+              IdJoined: `${interaction.guild.id}-${interaction.user.id}`
             },
             {
-              image: null
+              Image: null
             }
           );
 
@@ -224,10 +224,10 @@ export const SlashCommandF = class extends SlashCommand {
 
             await Level.findOneAndUpdate(
               {
-                idJoined: `${interaction.guild.id}-${interaction.user.id}`
+                IdJoined: `${interaction.guild.id}-${interaction.user.id}`
               },
               {
-                image: option
+                Image: option
               }
             );
 
@@ -270,30 +270,30 @@ export const SlashCommandF = class extends SlashCommand {
 
     const colorGrab = this.client.utils.color(interaction.guild.members.cache.find((grabUser) => grabUser.id === user.id).displayHexColor);
 
-    let score = await Level.findOne({ idJoined: `${interaction.guild.id}-${user.id}` });
+    let score = await Level.findOne({ IdJoined: `${interaction.guild.id}-${user.id}` });
 
     if (!score) {
       // Random amount between 15 - 25
       const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
 
       await new Level({
-        idJoined: `${interaction.guild.id}-${user.id}`,
-        userId: user.id,
-        guildId: interaction.guild.id,
-        xp: xpAdd,
-        level: 0,
-        country: null,
-        image: null
+        IdJoined: `${interaction.guild.id}-${user.id}`,
+        UserId: user.id,
+        GuildId: interaction.guild.id,
+        Xp: xpAdd,
+        Level: 0,
+        Country: null,
+        Image: null
       }).save();
 
-      score = await Level.findOne({ idJoined: `${interaction.guild.id}-${user.id}` });
+      score = await Level.findOne({ IdJoined: `${interaction.guild.id}-${user.id}` });
     }
 
     let levelImg;
-    if (score.image) {
-      await fetch(score.image).then((res) => {
+    if (score.Image) {
+      await fetch(score.Image).then((res) => {
         if (res.ok) {
-          levelImg = score.image;
+          levelImg = score.Image;
         } else {
           levelImg = './Storage/Canvas/Images/level.png';
         }
@@ -320,10 +320,10 @@ export const SlashCommandF = class extends SlashCommand {
       xpLevel = '0/100 XP';
       xpPercent = 0;
     } else {
-      level = score.level;
-      xp = score.xp;
-      levelNoMinus = score.level + 1;
-      currentLvl = score.level;
+      level = score.Level;
+      xp = score.Xp;
+      levelNoMinus = score.Level + 1;
+      currentLvl = score.Level;
       nxtLvlXp = (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
       currentxpLvl = (5 / 6) * currentLvl * (2 * currentLvl * currentLvl + 27 * currentLvl + 91);
       toLevel = Math.floor(nxtLvlXp - currentxpLvl);
@@ -332,8 +332,8 @@ export const SlashCommandF = class extends SlashCommand {
       xpPercent = (inLevel / toLevel) * 100;
     }
 
-    const getRank = await Level.find({ guildId: interaction.guild.id }).sort({ xp: -1 });
-    const filterRank = getRank.find((b) => b.idJoined === `${interaction.guild.id}-${interaction.user.id}`);
+    const getRank = await Level.find({ GuildId: interaction.guild.id }).sort({ Xp: -1 });
+    const filterRank = getRank.find((b) => b.IdJoined === `${interaction.guild.id}-${interaction.user.id}`);
     const rankPos = converter.toOrdinal(getRank.indexOf(filterRank) + 1);
 
     const canvas = Canvas.createCanvas(934, 282);
@@ -488,12 +488,12 @@ export const SlashCommandF = class extends SlashCommand {
       ctx.drawImage(img, x, y, 50, 50);
     }
 
-    if (score && score.country) {
+    if (score && score.Country) {
       // it broke:
-      score.country = score.country.replace('twemoji.maxcdn.com/v/latest/', 'cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/');
+      score.Country = score.Country.replace('twemoji.maxcdn.com/v/latest/', 'cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/');
 
       try {
-        const img = await Canvas.loadImage(score.country);
+        const img = await Canvas.loadImage(score.Country);
         // Draw Contry Emoji
         drawEmote(450, 54.3, img);
       } catch {

@@ -4,10 +4,10 @@ import Event from '../../Structures/Event.js';
 
 export const EventF = class extends Event {
   async run(channel) {
-    const channelId = await Logging.findOne({ guildId: channel.guild.id });
+    const channelId = await Logging.findOne({ GuildId: channel.guild.id });
     if (!channelId) return;
 
-    const logs = channelId.channel;
+    const logs = channelId.ChannelId;
     if (!logs) return;
 
     const logEmbed = new EmbedBuilder()

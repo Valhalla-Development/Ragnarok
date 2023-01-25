@@ -8,7 +8,7 @@ import AdsProtection from '../../Mongo/Schemas/AdsProtection.js';
 export const EventF = class extends Event {
   async run(oldMessage, newMessage) {
     if (!newMessage.guild || oldMessage.content === newMessage.content || newMessage.author.bot) return;
-    const adsprot = await AdsProtection.findOne({ guildId: newMessage.guild.id });
+    const adsprot = await AdsProtection.findOne({ GuildId: newMessage.guild.id });
     if (adsprot) {
       if (!newMessage.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
         const npPerms = new EmbedBuilder().setColor(this.client.utils.color(newMessage.guild.members.me.displayHexColor)).addFields({
@@ -16,7 +16,7 @@ export const EventF = class extends Event {
           value: '**◎ Error:** I do not have the `Manage Messages` permissions. Disabling Ads Protection.'
         });
         newMessage.channel.send({ embeds: [npPerms] }).then((m) => newMessage.utils.deletableCheck(m, 0));
-        await AdsProtection.deleteOne({ guildId: newMessage.guild.id }); //!
+        await AdsProtection.deleteOne({ GuildId: newMessage.guild.id }); //!
         return;
       }
       if (!newMessage.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
@@ -32,10 +32,10 @@ export const EventF = class extends Event {
       }
     }
 
-    const id = await Logging.findOne({ guildId: oldMessage.guild.id });
+    const id = await Logging.findOne({ GuildId: oldMessage.guild.id });
     if (!id) return;
 
-    const logs = id.channel;
+    const logs = id.ChannelId;
     if (!logs) return;
 
     if (!oldMessage.content) return;

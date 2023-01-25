@@ -69,11 +69,11 @@ export const SlashCommandF = class extends SlashCommand {
 
       interaction.reply({ embeds: [embed] });
 
-      const dbid = await Logging.findOne({ guildId: interaction.guild.id });
-      if (dbid && dbid.channel && dbid.channel === interaction.channel.id) return;
+      const dbid = await Logging.findOne({ GuildId: interaction.guild.id });
+      if (dbid && dbid.ChannelId && dbid.ChannelId === interaction.channel.id) return;
       if (!dbid) return;
 
-      const dblogs = dbid.channel;
+      const dblogs = dbid.ChannelId;
       const chnCheck = this.client.channels.cache.get(dblogs);
 
       if (dbid && chnCheck) {
@@ -177,11 +177,11 @@ export const SlashCommandF = class extends SlashCommand {
 
     interaction.reply({ embeds: [embed] });
 
-    const dbid = await Logging.findOne({ guildId: interaction.guild.id });
-    if (dbid && dbid.channel && dbid.channel === interaction.channel.id) return;
+    const dbid = await Logging.findOne({ GuildId: interaction.guild.id });
+    if (dbid && dbid.ChannelId && dbid.ChannelId === interaction.channel.id) return;
 
     if (!dbid) return;
-    const dblogs = dbid.channel;
+    const dblogs = dbid.ChannelId;
     const chnCheck = this.client.channels.cache.get(dblogs);
 
     if (dbid && chnCheck) {

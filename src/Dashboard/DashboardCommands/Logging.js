@@ -12,8 +12,8 @@ export default (client) => {
     refreshOnSave: true,
     categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
     getActualSet: async ({ guild }) => {
-      const result = await LoggingSchema.findOne({ guildId: guild.id });
-      const channelStatus = result ? result.channel : null;
+      const result = await LoggingSchema.findOne({ GuildId: guild.id });
+      const channelStatus = result ? result.ChannelId : null;
       const status = !!result;
 
       return [
@@ -28,10 +28,10 @@ export default (client) => {
       ];
     },
     setNew: async ({ guild, user, data }) => {
-      const result = await LoggingSchema.findOne({ guildId: guild.id });
+      const result = await LoggingSchema.findOne({ GuildId: guild.id });
 
       if (data.some((option) => option.optionId === 'loggingToggle' && option.data === false)) {
-        await LoggingSchema.deleteOne({ guildId: guild.id });
+        await LoggingSchema.deleteOne({ GuildId: guild.id });
         return;
       }
 
@@ -40,16 +40,16 @@ export default (client) => {
 
       if (!result) {
         await new LoggingSchema({
-          guildId: guild.id,
-          channel: loggingObject.data
+          GuildId: guild.id,
+          ChannelId: loggingObject.data
         }).save();
       } else {
         await LoggingSchema.findOneAndUpdate(
           {
-            guildId: guild.id
+            GuildId: guild.id
           },
           {
-            channel: loggingObject.data
+            ChannelId: loggingObject.data
           }
         );
       }

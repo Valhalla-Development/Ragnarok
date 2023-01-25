@@ -4,10 +4,10 @@ import Event from '../../Structures/Event.js';
 
 export const EventF = class extends Event {
   async run(ban) {
-    const id = await Logging.findOne({ guildId: ban.guild.id });
+    const id = await Logging.findOne({ GuildId: ban.guild.id });
     if (!id) return;
 
-    const logs = id.channel;
+    const logs = id.ChannelId;
     if (!logs) return;
 
     const entry = await ban.guild.fetchAuditLogs({ type: AuditLogEvent.MemberBanAdd }).then((audit) => audit.entries.first());

@@ -40,12 +40,12 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const args = interaction.options.getSubcommand();
 
-    const birthdayConfigDB = await BirthdayConfig.findOne({ guildId: interaction.guild.id });
+    const birthdayConfigDB = await BirthdayConfig.findOne({ GuildId: interaction.guild.id });
 
     if (args === 'view') {
       const user = interaction.options.getMember('user');
 
-      const birthdayDB = await Birthdays.findOne({ userId: user.id });
+      const birthdayDB = await Birthdays.findOne({ UserId: user.id });
 
       if (!birthdayConfigDB && birthdayDB) {
         let year;
@@ -117,7 +117,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
     }
 
-    const birthdayDB = await Birthdays.findOne({ userId: interaction.user.id });
+    const birthdayDB = await Birthdays.findOne({ UserId: interaction.user.id });
 
     if (args === 'delete') {
       if (!birthdayDB) {
@@ -128,7 +128,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      await birthdayDB.deleteOne({ userId: interaction.user.id }); //!
+      await birthdayDB.deleteOne({ UserId: interaction.user.id }); //!
 
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -172,18 +172,18 @@ export const SlashCommandF = class extends SlashCommand {
       if (birthdayDB) {
         await Birthdays.findOneAndUpdate(
           {
-            userId: interaction.user.id
+            UserId: interaction.user.id
           },
           {
             date: argsDate,
-            lastRun: null
+            LastRun: null
           }
         );
       } else {
         await new Birthdays({
-          userId: interaction.user.id,
+          UserId: interaction.user.id,
           date: argsDate,
-          lastRun: null
+          LastRun: null
         }).save();
       }
     }
@@ -194,7 +194,7 @@ export const SlashCommandF = class extends SlashCommand {
 
       // Filter the rows to only include users who are in the guild
       const filteredRows = rows.filter((row) => {
-        const member = interaction.guild.members.cache.get(row.userId);
+        const member = interaction.guild.members.cache.get(row.UserId);
         return member;
       });
 
@@ -247,7 +247,7 @@ export const SlashCommandF = class extends SlashCommand {
             name: 'User',
             value: pages[i]
               .map((row) => {
-                const member = interaction.guild.members.cache.get(row.userId);
+                const member = interaction.guild.members.cache.get(row.UserId);
                 return member.toString();
               })
               .join('\n'),

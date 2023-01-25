@@ -20,7 +20,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const id = await Logging.findOne({ guildId: interaction.guild.id });
+    const id = await Logging.findOne({ GuildId: interaction.guild.id });
 
     const user = interaction.options.getMember('user');
 
@@ -89,7 +89,7 @@ export const SlashCommandF = class extends SlashCommand {
     interaction.reply({ embeds: [embed] });
 
     if (id) {
-      const logch = id.channel;
+      const logch = id.ChannelId;
       const logsch = this.client.channels.cache.get(logch);
 
       if (!logsch) return;

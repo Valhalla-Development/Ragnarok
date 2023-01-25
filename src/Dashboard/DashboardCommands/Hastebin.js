@@ -9,7 +9,7 @@ export default (client) => {
     categoryDescription: 'Toggle the Hastebin Module. When enabled, it will remove any links posted via the command.',
     categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
     getActualSet: async ({ guild }) => {
-      const result = await HastebinSchema.findOne({ guildId: guild.id });
+      const result = await HastebinSchema.findOne({ GuildId: guild.id });
       const status = !!result;
       return [
         {
@@ -23,11 +23,11 @@ export default (client) => {
 
       if (toggle === true) {
         await new HastebinSchema({
-          guildId: guild.id,
-          status: toggle
+          GuildId: guild.id,
+          Status: toggle
         }).save();
       } else {
-        await HastebinSchema.deleteOne({ guildId: guild.id });
+        await HastebinSchema.deleteOne({ GuildId: guild.id });
       }
     },
     categoryOptionsList: [

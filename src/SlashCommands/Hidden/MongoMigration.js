@@ -109,8 +109,8 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of adsprot) {
             await new AdsProtection({
-              guildId: entry.guildid,
-              status: entry.status === 'on'
+              GuildId: entry.guildid,
+              Status: entry.status === 'on'
             })
               .save()
               .catch(console.error);
@@ -124,10 +124,10 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of afk) {
             await new AFK({
-              idJoined: entry.id,
-              guildId: entry.guildid,
-              userId: entry.user,
-              reason: entry.reason
+              IdJoined: entry.id,
+              GuildId: entry.guildid,
+              UserId: entry.user,
+              Reason: entry.reason
             })
               .save()
               .catch(console.error);
@@ -141,7 +141,7 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of announcement) {
             await new Announcement({
-              message: entry.msg
+              Message: entry.msg
             })
               .save()
               .catch(console.error);
@@ -155,8 +155,8 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of antiscam) {
             await new AntiScam({
-              guildId: entry.guildid,
-              status: entry.status === 'on'
+              GuildId: entry.guildid,
+              Status: entry.status === 'on'
             })
               .save()
               .catch(console.error);
@@ -170,8 +170,8 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of autorole) {
             await new AutoRole({
-              guildId: entry.guildid,
-              role: entry.role
+              GuildId: entry.guildid,
+              Role: entry.role
             })
               .save()
               .catch(console.error);
@@ -185,26 +185,26 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of balance) {
             await new Balance({
-              idJoined: entry.id,
-              user: entry.user,
-              guildId: entry.guild,
-              hourly: entry.hourly,
-              daily: entry.daily,
-              weekly: entry.weekly,
-              monthly: entry.monthly,
-              stealCool: entry.stealcool,
-              fishCool: entry.fishcool,
-              farmCool: entry.farmcool,
-              boosts: entry.boosts,
-              items: entry.items,
-              cash: entry.cash,
-              bank: entry.bank,
-              total: entry.total,
-              claimNewUser: entry.claimNewUser,
-              farmPlot: entry.farmPlot,
-              dmHarvest: entry.dmHarvest,
-              harvestedCrops: entry.harvestedCrops,
-              lottery: entry.lottery
+              IdJoined: entry.id,
+              UserId: entry.user,
+              GuildId: entry.guild,
+              Hourly: entry.hourly,
+              Daily: entry.daily,
+              Weekly: entry.weekly,
+              Monthly: entry.monthly,
+              StealCool: entry.stealcool,
+              FishCool: entry.fishcool,
+              FarmCool: entry.farmcool,
+              Boosts: entry.boosts,
+              Items: entry.items,
+              Cash: entry.cash,
+              Bank: entry.bank,
+              Total: entry.total,
+              ClaimNewUser: entry.claimNewUser,
+              FarmPlot: entry.farmPlot,
+              DmHarvest: entry.dmHarvest,
+              HarvestedCrops: entry.harvestedCrops,
+              Lottery: entry.lottery
             })
               .save()
               .catch(console.error);
@@ -218,12 +218,12 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of ban) {
             await new TempBan({
-              idJoined: entry.id,
-              guildId: entry.guildid,
-              userId: entry.userid,
-              endTime: entry.endtime,
-              channel: entry.channel,
-              username: entry.username
+              IdJoined: entry.id,
+              GuildId: entry.guildid,
+              UserId: entry.userid,
+              EndTime: entry.endtime,
+              ChannelId: entry.channel,
+              Username: entry.username
             })
               .save()
               .catch(console.error);
@@ -237,9 +237,9 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of birthdayConfig) {
             await new BirthdayConfig({
-              guildId: entry.guildid,
-              channel: entry.channel,
-              role: entry.role
+              GuildId: entry.guildid,
+              ChannelId: entry.channel,
+              Role: entry.role
             })
               .save()
               .catch(console.error);
@@ -253,9 +253,9 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of birthdays) {
             await new Birthdays({
-              userId: entry.userid,
-              date: entry.birthday,
-              lastRun: entry.lastRun
+              UserId: entry.userid,
+              Date: entry.birthday,
+              LastRun: entry.lastRun
             })
               .save()
               .catch(console.error);
@@ -269,8 +269,8 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of dadbot) {
             await new Dad({
-              guildId: entry.guildid,
-              status: entry.status === 'on'
+              GuildId: entry.guildid,
+              Status: entry.status === 'on'
             })
               .save()
               .catch(console.error);
@@ -284,8 +284,8 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of hastebin) {
             await new Hastebin({
-              guildId: entry.guildid,
-              status: entry.status === 'on'
+              GuildId: entry.guildid,
+              Status: entry.status === 'on'
             })
               .save()
               .catch(console.error);
@@ -299,8 +299,8 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of level) {
             await new LevelConfig({
-              guildId: entry.guildid,
-              status: entry.status === 'killME'
+              GuildId: entry.guildid,
+              Status: entry.status === 'killME'
             })
               .save()
               .catch(console.error);
@@ -314,8 +314,8 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of logging) {
             await new Logging({
-              guildId: entry.guildid,
-              channel: entry.channel
+              GuildId: entry.guildid,
+              ChannelId: entry.channel
             })
               .save()
               .catch(console.error);
@@ -329,9 +329,9 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of rolemenu) {
             await new RoleMenu({
-              guildId: entry.guildid,
-              roleMenuId: entry.activeRoleMenuID,
-              roleList: entry.roleList
+              GuildId: entry.guildid,
+              RoleMenuId: entry.activeRoleMenuID,
+              RoleList: entry.roleList
             })
               .save()
               .catch(console.error);
@@ -345,13 +345,13 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of scores) {
             await new Level({
-              idJoined: entry.id,
-              userId: entry.user,
-              guildId: entry.guild,
-              xp: entry.points,
-              level: entry.level,
-              country: entry.country,
-              image: entry.image
+              IdJoined: entry.id,
+              UserId: entry.user,
+              GuildId: entry.guild,
+              Xp: entry.points,
+              Level: entry.level,
+              Country: entry.country,
+              Image: entry.image
             })
               .save()
               .catch(console.error);
@@ -365,9 +365,9 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of setwelcome) {
             await new Welcome({
-              guildId: entry.guildid,
-              channel: entry.channel,
-              image: entry.image
+              GuildId: entry.guildid,
+              ChannelId: entry.channel,
+              Image: entry.image
             })
               .save()
               .catch(console.error);
@@ -381,8 +381,8 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of starboard) {
             await new StarBoard({
-              guildId: entry.guildid,
-              channel: entry.channel
+              GuildId: entry.guildid,
+              ChannelId: entry.channel
             })
               .save()
               .catch(console.error);
@@ -396,13 +396,13 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of ticketConfig) {
             await new TicketConfig({
-              guildId: entry.guildid,
-              category: entry.category,
-              logChannel: entry.log,
-              role: entry.role,
-              embed: entry.ticketembed,
-              embedChannel: entry.ticketembedchan,
-              blacklist: entry.blacklist
+              GuildId: entry.guildid,
+              Category: entry.category,
+              LogChannel: entry.log,
+              Role: entry.role,
+              Embed: entry.ticketembed,
+              EmbedChannel: entry.ticketembedchan,
+              Blacklist: entry.blacklist
             })
               .save()
               .catch(console.error);
@@ -416,11 +416,11 @@ export const SlashCommandF = class extends SlashCommand {
           let i = 0;
           for (const entry of tickets) {
             await new Tickets({
-              guildId: entry.guildid,
-              ticketId: entry.ticketid,
-              authorId: entry.authorid,
-              reason: entry.reason,
-              channelId: entry.chanid
+              GuildId: entry.guildid,
+              TicketId: entry.ticketid,
+              AuthorId: entry.authorid,
+              Reason: entry.reason,
+              ChannelId: entry.chanid
             })
               .save()
               .catch(console.error);
@@ -434,9 +434,9 @@ export const SlashCommandF = class extends SlashCommand {
         let i = 0;
         guildsab.forEach(async (a) => {
           await new Guilds({
-            guildId: a.id,
-            name: a.name,
-            iconUrl: a.iconURL()
+            GuildId: a.id,
+            Name: a.name,
+            IconUrl: a.iconURL()
           })
             .save()
             .catch(console.error);

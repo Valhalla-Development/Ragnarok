@@ -12,7 +12,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const top10 = await Balance.find({ guildId: interaction.guild.id }).sort({ total: -1 });
+    const top10 = await Balance.find({ GuildId: interaction.guild.id }).sort({ Total: -1 });
     if (!top10) {
       return;
     }
@@ -23,7 +23,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     for (let i = 0; i < top10.length; i++) {
       const data = top10[i];
-      const fetchUsers = interaction.guild.members.cache.get(data.user);
+      const fetchUsers = interaction.guild.members.cache.get(data.UserId);
 
       if (fetchUsers === undefined) {
         continue;
@@ -32,7 +32,7 @@ export const SlashCommandF = class extends SlashCommand {
       j++;
 
       userNames += `◎ \`${j}\` ${fetchUsers}\n`;
-      total += `<:coin:706659001164628008> \`${data.total.toLocaleString('en')}\`\n`;
+      total += `<:coin:706659001164628008> \`${data.Total.toLocaleString('en')}\`\n`;
       if (j === 10) break;
     }
 

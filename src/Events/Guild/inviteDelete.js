@@ -4,10 +4,10 @@ import Event from '../../Structures/Event.js';
 
 export const EventF = class extends Event {
   async run(invite) {
-    const id = await Logging.findOne({ guildId: invite.guild.id });
+    const id = await Logging.findOne({ GuildId: invite.guild.id });
     if (!id) return;
 
-    const logs = id.channel;
+    const logs = id.ChannelId;
     if (!logs) return;
 
     const logembed = new EmbedBuilder()

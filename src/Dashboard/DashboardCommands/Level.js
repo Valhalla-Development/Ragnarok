@@ -9,7 +9,7 @@ export default (client) => {
     categoryDescription: 'Toggle the Level Module. When disabled, no level up messages will be posted (You can still gain XP).',
     categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
     getActualSet: async ({ guild }) => {
-      const result = await LevelConfigSchema.findOne({ guildId: guild.id });
+      const result = await LevelConfigSchema.findOne({ GuildId: guild.id });
       const status = !result;
       return [
         {
@@ -23,11 +23,11 @@ export default (client) => {
 
       if (toggle === false) {
         await new LevelConfigSchema({
-          guildId: guild.id,
-          status: true
+          GuildId: guild.id,
+          Status: true
         }).save();
       } else {
-        await LevelConfigSchema.deleteOne({ guildId: guild.id });
+        await LevelConfigSchema.deleteOne({ GuildId: guild.id });
       }
     },
     categoryOptionsList: [

@@ -16,15 +16,15 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
+    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
-    let foundBoostList = await JSON.parse(balance.boosts);
+    let foundBoostList = await JSON.parse(balance.Boosts);
 
     if (!foundBoostList) {
       foundBoostList = {};
     }
 
-    if (!foundBoostList.farmPlot) {
+    if (!foundBoostList.FarmPlot) {
       const embed = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -36,7 +36,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    let foundPlotList = await JSON.parse(balance.farmPlot);
+    let foundPlotList = await JSON.parse(balance.FarmPlot);
 
     if (!foundPlotList) {
       foundPlotList = [];
@@ -48,7 +48,7 @@ export const SlashCommandF = class extends SlashCommand {
         key.cropGrowTime = 'na';
         key.decay = 0;
 
-        balance.farmPlot = JSON.stringify(foundPlotList);
+        balance.FarmPlot = JSON.stringify(foundPlotList);
         await balance.save();
       }
     });
@@ -122,7 +122,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    let foundHarvestedList = await JSON.parse(balance.harvestedCrops);
+    let foundHarvestedList = await JSON.parse(balance.HarvestedCrops);
 
     if (!foundHarvestedList) {
       foundHarvestedList = [];
@@ -194,8 +194,8 @@ export const SlashCommandF = class extends SlashCommand {
       }
     });
 
-    balance.farmPlot = foundPlotList.length ? JSON.stringify(foundPlotList) : null;
-    balance.harvestedCrops = JSON.stringify(foundHarvestedList);
+    balance.FarmPlot = foundPlotList.length ? JSON.stringify(foundPlotList) : null;
+    balance.HarvestedCrops = JSON.stringify(foundHarvestedList);
 
     await balance.save();
 

@@ -1,9 +1,9 @@
 import { Schema, model } from 'mongoose';
 
 const Welcome = new Schema({
-  guildId: { type: String, unique: true },
-  channel: String,
-  image: String
+  GuildId: { type: String, unique: true },
+  ChannelId: String,
+  Image: String
 });
 
 export default model('Welcome', Welcome, 'Welcome');

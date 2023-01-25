@@ -16,10 +16,10 @@ export const EventF = class extends Event {
 
     async function checkTicket(client) {
       // Check if the user has a ticket
-      const foundTicket = await Tickets.findOne({ guildId: member.guild.id, authorId: member.user.id });
+      const foundTicket = await Tickets.findOne({ GuildId: member.guild.id, AuthorId: member.user.id });
       if (foundTicket) {
         // Fetch the channel
-        const channel = member.guild.channels.cache.get(foundTicket.channelId);
+        const channel = member.guild.channels.cache.get(foundTicket.ChannelId);
 
         // Check if the channel exists
         if (channel) {
@@ -35,15 +35,15 @@ export const EventF = class extends Event {
     checkTicket(this.client);
 
     async function logging(grabClient) {
-      const id = await Logging.findOne({ guildId: member.guild.id });
+      const id = await Logging.findOne({ GuildId: member.guild.id });
       if (!id) return;
 
-      const logs = id.channel;
+      const logs = id.ChannelId;
       if (!logs) return;
 
       const chnCheck = grabClient.channels.cache.get(logs);
       if (!chnCheck) {
-        await Logging.deleteOne({ guildId: member.guild.id });
+        await Logging.deleteOne({ GuildId: member.guild.id });
       }
 
       const logembed = new EmbedBuilder()

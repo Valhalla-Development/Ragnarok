@@ -20,7 +20,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     let annc;
     if (dbGrab) {
-      annc = dbGrab[0].message;
+      annc = dbGrab[0].Message;
     } else {
       annc = 'N/A';
     }

@@ -19,22 +19,22 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const reason = interaction.options.getString('reason') || 'AFK';
 
-    const afk = await AFK.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
+    const afk = await AFK.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
     if (!afk) {
       await new AFK({
-        idJoined: `${interaction.user.id}-${interaction.guild.id}`,
-        guildId: interaction.guild.id,
-        userId: interaction.user.id,
-        reason
+        IdJoined: `${interaction.user.id}-${interaction.guild.id}`,
+        GuildId: interaction.guild.id,
+        UserId: interaction.user.id,
+        Reason: reason
       }).save();
     } else {
       await AFK.findOneAndUpdate(
         {
-          idJoined: `${interaction.user.id}-${interaction.guild.id}`
+          IdJoined: `${interaction.user.id}-${interaction.guild.id}`
         },
         {
-          reason
+          Reason: reason
         }
       );
     }

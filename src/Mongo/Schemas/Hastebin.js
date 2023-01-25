@@ -1,8 +1,8 @@
 import { Schema, model } from 'mongoose';
 
 const Hastebin = new Schema({
-  guildId: { type: String, unique: true },
-  status: Boolean
+  GuildId: { type: String, unique: true },
+  Status: Boolean
 });
 
 export default model('Hastebin', Hastebin, 'Hastebin');

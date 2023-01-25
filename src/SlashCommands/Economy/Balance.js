@@ -22,7 +22,7 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const member = interaction.options.getMember('user') || interaction.member;
 
-    const balance = await Balance.findOne({ idJoined: `${member.user.id}-${interaction.guild.id}` });
+    const balance = await Balance.findOne({ IdJoined: `${member.user.id}-${interaction.guild.id}` });
 
     if (!balance) {
       const limitE = new EmbedBuilder()
@@ -39,21 +39,21 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    const userRank = await Balance.find({ guildId: interaction.guild.id }).sort({ total: -1 });
-    const user = userRank.find((b) => b.idJoined === `${member.user.id}-${interaction.guild.id}`);
+    const userRank = await Balance.find({ GuildId: interaction.guild.id }).sort({ Total: -1 });
+    const user = userRank.find((b) => b.IdJoined === `${member.user.id}-${interaction.guild.id}`);
     const rankPos = converter.toOrdinal(userRank.indexOf(user) + 1);
 
     const date = new Date().getTime();
 
     if (member.user.id === interaction.user.id) {
-      let foundItemList = JSON.parse(balance.items);
-      let foundBoostList = JSON.parse(balance.boosts);
-      let foundPlotList = JSON.parse(balance.farmPlot);
-      let foundHarvestList = JSON.parse(balance.harvestedCrops);
+      let foundItemList = JSON.parse(balance.Items);
+      let foundBoostList = JSON.parse(balance.Boosts);
+      let foundPlotList = JSON.parse(balance.FarmPlot);
+      let foundHarvestList = JSON.parse(balance.HarvestedCrops);
 
       let claimUserTime;
-      if (balance.claimNewUser) {
-        const endTime = balance.claimNewUser;
+      if (balance.ClaimNewUser) {
+        const endTime = balance.ClaimNewUser;
         claimUserTime = Math.round(endTime / 1000);
       }
 
@@ -138,22 +138,22 @@ export const SlashCommandF = class extends SlashCommand {
         .addFields(
           {
             name: 'Cash',
-            value: `<:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\``,
+            value: `<:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\``,
             inline: true
           },
           {
             name: 'Bank',
-            value: `<:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\``,
+            value: `<:coin:706659001164628008> \`${balance.Bank.toLocaleString('en')}\``,
             inline: true
           },
           {
             name: 'Total',
-            value: `<:coin:706659001164628008> \`${balance.total.toLocaleString('en')}\``,
+            value: `<:coin:706659001164628008> \`${balance.Total.toLocaleString('en')}\``,
             inline: true
           },
           {
             name: 'Steal Cooldown',
-            value: `${Date.now() > balance.stealCool ? '`Available!`' : `\`${ms(balance.stealCool - date, { long: true })}\``}`,
+            value: `${Date.now() > balance.StealCool ? '`Available!`' : `\`${ms(balance.StealCool - date, { long: true })}\``}`,
             inline: true
           },
           {
@@ -161,15 +161,15 @@ export const SlashCommandF = class extends SlashCommand {
             value: `${
               !foundItemList.fishingRod
                 ? '`Rod Not Owned`'
-                : Date.now() > balance.fishCool
+                : Date.now() > balance.FishCool
                 ? '`Available!`'
-                : `\`${ms(balance.fishCool - date, { long: true })}\``
+                : `\`${ms(balance.FishCool - date, { long: true })}\``
             }`,
             inline: true
           },
           {
             name: 'Farm Cooldown',
-            value: `${Date.now() > balance.farmCool ? '`Available!`' : `\`${ms(balance.farmCool - date, { long: true })}\``}`,
+            value: `${Date.now() > balance.FarmCool ? '`Available!`' : `\`${ms(balance.FarmCool - date, { long: true })}\``}`,
             inline: true
           },
           {
@@ -202,8 +202,8 @@ export const SlashCommandF = class extends SlashCommand {
           {
             name: 'Farm Plot',
             value: `${
-              foundBoostList.farmPlot
-                ? `\`${foundPlotList.length.toLocaleString('en')}/${Number(foundBoostList.farmPlot).toLocaleString('en')}\``
+              foundBoostList.FarmPlot
+                ? `\`${foundPlotList.length.toLocaleString('en')}/${Number(foundBoostList.FarmPlot).toLocaleString('en')}\``
                 : '`Not Owned`'
             }`,
             inline: true
@@ -211,40 +211,40 @@ export const SlashCommandF = class extends SlashCommand {
           {
             name: '**◎ Claim Cooldown**',
             value: `\n**Hourly:** ${
-              balance.claimNewUser
-                ? Date.now() > balance.claimNewUser
+              balance.ClaimNewUser
+                ? Date.now() > balance.ClaimNewUser
                   ? '`Available`'
                   : `<t:${claimUserTime}:R>`
-                : Date.now() > balance.hourly
+                : Date.now() > balance.Hourly
                 ? '`Available!`'
-                : `\`${ms(balance.hourly - date, { long: true })}\``
+                : `\`${ms(balance.Hourly - date, { long: true })}\``
             }
 					\n**Daily:** ${
-            balance.claimNewUser
-              ? Date.now() > balance.claimNewUser
+            balance.ClaimNewUser
+              ? Date.now() > balance.ClaimNewUser
                 ? '`Available`'
                 : `<t:${claimUserTime}:R>`
-              : Date.now() > balance.daily
+              : Date.now() > balance.Daily
               ? '`Available!`'
-              : `\`${ms(balance.daily - date, { long: true })}\``
+              : `\`${ms(balance.Daily - date, { long: true })}\``
           }
 					\n**Weekly:** ${
-            balance.claimNewUser
-              ? Date.now() > balance.claimNewUser
+            balance.ClaimNewUser
+              ? Date.now() > balance.ClaimNewUser
                 ? '`Available`'
                 : `<t:${claimUserTime}:R>`
-              : Date.now() > balance.weekly
+              : Date.now() > balance.Weekly
               ? '`Available!`'
-              : `\`${ms(balance.weekly - date, { long: true })}\``
+              : `\`${ms(balance.Weekly - date, { long: true })}\``
           }
 					\n**Monthly:** ${
-            balance.claimNewUser
-              ? Date.now() > balance.claimNewUser
+            balance.ClaimNewUser
+              ? Date.now() > balance.ClaimNewUser
                 ? '`Available`'
                 : `<t:${claimUserTime}:R>`
-              : Date.now() > balance.monthly
+              : Date.now() > balance.Monthly
               ? '`Available!`'
-              : `\`${ms(balance.monthly - date, { long: true })}\``
+              : `\`${ms(balance.Monthly - date, { long: true })}\``
           }`
           }
         );
@@ -262,17 +262,17 @@ export const SlashCommandF = class extends SlashCommand {
       .addFields(
         {
           name: 'Cash',
-          value: `<:coin:706659001164628008> \`${balance.cash.toLocaleString('en')}\``,
+          value: `<:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\``,
           inline: true
         },
         {
           name: 'Bank',
-          value: `<:coin:706659001164628008> \`${balance.bank.toLocaleString('en')}\``,
+          value: `<:coin:706659001164628008> \`${balance.Bank.toLocaleString('en')}\``,
           inline: true
         },
         {
           name: 'Total',
-          value: `<:coin:706659001164628008> \`${balance.total.toLocaleString('en')}\``,
+          value: `<:coin:706659001164628008> \`${balance.Total.toLocaleString('en')}\``,
           inline: true
         }
       )

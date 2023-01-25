@@ -48,19 +48,19 @@ export const RagnarokClient = class RagnarokClient extends Client {
       newUserTime: 604800000, // 7 Days
 
       // Claim amount
-      hourlyClaim: {
+      HourlyClaim: {
         min: 50,
         max: 150
       },
-      dailyClaim: {
+      DailyClaim: {
         min: 150,
         max: 300
       },
-      weeklyClaim: {
+      WeeklyClaim: {
         min: 750,
         max: 1000
       },
-      monthlyClaim: {
+      MonthlyClaim: {
         min: 4000,
         max: 6000
       },

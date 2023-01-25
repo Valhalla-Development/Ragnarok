@@ -1,8 +1,8 @@
 import { Schema, model } from 'mongoose';
 
 const StarBoard = new Schema({
-  guildId: { type: String, unique: true },
-  channel: String
+  GuildId: { type: String, unique: true },
+  ChannelId: String
 });
 
 export default model('StarBoard', StarBoard, 'StarBoard');

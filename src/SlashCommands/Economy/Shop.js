@@ -4,14 +4,14 @@ import Balance from '../../Mongo/Schemas/Balance.js';
 
 const data = new SlashCommandBuilder()
   .setName('shop')
-  .setDescription('Purchase/sell items')
+  .setDescription('Purchase/sell Items')
   .addStringOption((option) => option.setName('option').setDescription('Select a user').setRequired(true).setAutocomplete(true))
   .addStringOption((option) => option.setName('item').setDescription('Item to buy/sell/upgrade'));
 
 export const SlashCommandF = class extends SlashCommand {
   constructor(...args) {
     super(...args, {
-      description: 'Purchase/sell items',
+      description: 'Purchase/sell Items',
       category: 'Economy',
       options: data
     });
@@ -28,12 +28,12 @@ export const SlashCommandF = class extends SlashCommand {
     const argsChoice = interaction.options.getString('option');
     const argsItem = interaction.options.getString('item');
 
-    const balance = await Balance.findOne({ idJoined: `${interaction.user.id}-${interaction.guild.id}` });
+    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
-    let foundItemList = JSON.parse(balance.items);
-    let foundBoostList = JSON.parse(balance.boosts);
-    let foundPlotList = JSON.parse(balance.farmPlot);
-    let foundHarvestList = JSON.parse(balance.harvestedCrops);
+    let foundItemList = JSON.parse(balance.Items);
+    let foundBoostList = JSON.parse(balance.Boosts);
+    let foundPlotList = JSON.parse(balance.FarmPlot);
+    let foundHarvestList = JSON.parse(balance.HarvestedCrops);
 
     const fishingPrice = this.client.ecoPrices.fishingRod;
     const farmingPrice = this.client.ecoPrices.farmingTools;
@@ -166,7 +166,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     let currentTotalPlot = 0;
 
-    if (foundBoostList.farmPlot) {
+    if (foundBoostList.FarmPlot) {
       currentTotalPlot += Number(foundPlotList.length);
     } else {
       currentTotalPlot += Number(0);
@@ -214,14 +214,14 @@ export const SlashCommandF = class extends SlashCommand {
           }
         }
 
-        if (foundBoostList.farmPlot) {
-          if (Number(foundBoostList.farmPlot) < Number(farmPlotMax)) {
-            const upgradeFarmPlot = foundBoostList.farmPlot * farmPlotPrice;
+        if (foundBoostList.FarmPlot) {
+          if (Number(foundBoostList.FarmPlot) < Number(farmPlotMax)) {
+            const upgradeFarmPlot = foundBoostList.FarmPlot * farmPlotPrice;
             arr.push(
               `\u3000 \`/shop upgrade plot\` - <:coin:706659001164628008> \`${upgradeFarmPlot.toLocaleString(
                 'en'
               )}\` Upgrade by 15, current capacity: \`${Number(currentTotalPlot).toLocaleString('en')}\`/\`${Number(
-                foundBoostList.farmPlot
+                foundBoostList.FarmPlot
               ).toLocaleString('en')}\``
             );
           }
@@ -266,15 +266,15 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.bank < foundBoostList.seedBag * seedBagPrice * 3) {
-          const notEnough = foundBoostList.seedBag * seedBagPrice * 3 - Number(balance.bank);
+        if (balance.Bank < foundBoostList.seedBag * seedBagPrice * 3) {
+          const notEnough = foundBoostList.seedBag * seedBagPrice * 3 - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Seed Bag**`,
-              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
+              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your Bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
                 'en'
               )}\``
             });
@@ -282,13 +282,13 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.bank = Number(balance.bank) - foundBoostList.seedBag * seedBagPrice * 3;
-        balance.total = Number(balance.total) - foundBoostList.seedBag * seedBagPrice * 3;
+        balance.Bank = Number(balance.Bank) - foundBoostList.seedBag * seedBagPrice * 3;
+        balance.Total = Number(balance.Total) - foundBoostList.seedBag * seedBagPrice * 3;
 
         const calc = Number(foundBoostList.seedBag) + Number(15);
         foundBoostList.seedBag = calc.toString();
 
-        balance.boosts = JSON.stringify(foundBoostList);
+        balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -330,15 +330,15 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.bank < foundBoostList.fishBag * fishBagPrice * 3) {
-          const notEnough = foundBoostList.fishBag * fishBagPrice * 3 - Number(balance.bank);
+        if (balance.Bank < foundBoostList.fishBag * fishBagPrice * 3) {
+          const notEnough = foundBoostList.fishBag * fishBagPrice * 3 - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Fish Bag**`,
-              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
+              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your Bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
                 'en'
               )}\``
             });
@@ -346,13 +346,13 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.bank = Number(balance.bank) - foundBoostList.fishBag * fishBagPrice * 3;
-        balance.total = Number(balance.total) - foundBoostList.fishBag * fishBagPrice * 3;
+        balance.Bank = Number(balance.Bank) - foundBoostList.fishBag * fishBagPrice * 3;
+        balance.Total = Number(balance.Total) - foundBoostList.fishBag * fishBagPrice * 3;
 
         const calc = Number(foundBoostList.fishBag) + Number(15);
         foundBoostList.fishBag = calc.toString();
 
-        balance.boosts = JSON.stringify(foundBoostList);
+        balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -394,15 +394,15 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.bank < foundBoostList.farmBag * farmBagPrice * 3) {
-          const notEnough = foundBoostList.farmBag * farmBagPrice * 3 - Number(balance.bank);
+        if (balance.Bank < foundBoostList.farmBag * farmBagPrice * 3) {
+          const notEnough = foundBoostList.farmBag * farmBagPrice * 3 - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Farm Bag**`,
-              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
+              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your Bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
                 'en'
               )}\``
             });
@@ -410,13 +410,13 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.bank = Number(balance.bank) - foundBoostList.farmBag * farmBagPrice * 3;
-        balance.total = Number(balance.total) - foundBoostList.farmBag * farmBagPrice * 3;
+        balance.Bank = Number(balance.Bank) - foundBoostList.farmBag * farmBagPrice * 3;
+        balance.Total = Number(balance.Total) - foundBoostList.farmBag * farmBagPrice * 3;
 
         const calc = Number(foundBoostList.farmBag) + Number(15);
         foundBoostList.farmBag = calc.toString();
 
-        balance.boosts = JSON.stringify(foundBoostList);
+        balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -434,7 +434,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (argsItem === 'plot') {
-        if (!foundBoostList.farmPlot) {
+        if (!foundBoostList.FarmPlot) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -446,7 +446,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (Number(foundBoostList.farmPlot) >= Number(farmPlotMax)) {
+        if (Number(foundBoostList.FarmPlot) >= Number(farmPlotMax)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -458,15 +458,15 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.bank < foundBoostList.farmPlot * farmPlotPrice * 3) {
-          const notEnough = foundBoostList.farmPlot * farmPlotPrice * 3 - Number(balance.bank);
+        if (balance.Bank < foundBoostList.FarmPlot * farmPlotPrice * 3) {
+          const notEnough = foundBoostList.FarmPlot * farmPlotPrice * 3 - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Farm Plot**`,
-              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
+              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your Bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
                 'en'
               )}\``
             });
@@ -474,13 +474,13 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.bank = Number(balance.bank) - foundBoostList.farmPlot * farmPlotPrice * 3;
-        balance.total = Number(balance.total) - foundBoostList.farmPlot * farmPlotPrice * 3;
+        balance.Bank = Number(balance.Bank) - foundBoostList.FarmPlot * farmPlotPrice * 3;
+        balance.Total = Number(balance.Total) - foundBoostList.FarmPlot * farmPlotPrice * 3;
 
-        const calc = Number(foundBoostList.farmPlot) + Number(15);
-        foundBoostList.farmPlot = calc.toString();
+        const calc = Number(foundBoostList.FarmPlot) + Number(15);
+        foundBoostList.FarmPlot = calc.toString();
 
-        balance.boosts = JSON.stringify(foundBoostList);
+        balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -490,8 +490,8 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({
             name: `**${this.client.user.username} - Shop - Farm Plot**`,
             value: `**◎ Success:** You have upgraded your farm plot <:coin:706659001164628008> \`${
-              foundBoostList.farmPlot * farmPlotPrice * 3
-            }\`, your new limit is \`${Number(foundBoostList.farmPlot)}\`!`
+              foundBoostList.FarmPlot * farmPlotPrice * 3
+            }\`, your new limit is \`${Number(foundBoostList.FarmPlot)}\`!`
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/FarmPlot.png'] });
         return;
@@ -558,9 +558,9 @@ export const SlashCommandF = class extends SlashCommand {
                 : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.farmBag}\``
             }
 						\u3000 Farm Plot - ${
-              !foundBoostList.farmPlot
+              !foundBoostList.FarmPlot
                 ? '`Not Owned` - Buy farming tools to aquire'
-                : `\`Owned\` - Current capacity: \`${Number(currentTotalPlot)}\`/\`${foundBoostList.farmPlot}\``
+                : `\`Owned\` - Current capacity: \`${Number(currentTotalPlot)}\`/\`${foundBoostList.FarmPlot}\``
             }`
           });
         interaction.reply({ ephemeral: true, embeds: [embed] });
@@ -585,15 +585,15 @@ export const SlashCommandF = class extends SlashCommand {
         let cornTot = 0;
         cornTot += Number(cornSeedPrice) * Number(1);
 
-        if (balance.bank < cornTot) {
-          const notEnough = Number(cornTot) - Number(balance.bank);
+        if (balance.Bank < cornTot) {
+          const notEnough = Number(cornTot) - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Corn Seeds**`,
-              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
+              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your Bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
                 'en'
               )}\``
             });
@@ -601,8 +601,8 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.bank = Number(balance.bank) - Number(cornTot);
-        balance.total = Number(balance.total) - Number(cornTot);
+        balance.Bank = Number(balance.Bank) - Number(cornTot);
+        balance.Total = Number(balance.Total) - Number(cornTot);
         await balance.save();
 
         let calc = 0;
@@ -638,7 +638,7 @@ export const SlashCommandF = class extends SlashCommand {
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/CornSeeds.png'] });
 
-        balance.items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
         return;
       }
@@ -647,15 +647,15 @@ export const SlashCommandF = class extends SlashCommand {
         let wheatTot = 0;
         wheatTot += Number(wheatSeedPrice) * Number(1);
 
-        if (balance.bank < wheatTot) {
-          const notEnough = Number(wheatTot) - Number(balance.bank);
+        if (balance.Bank < wheatTot) {
+          const notEnough = Number(wheatTot) - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Wheat Seeds**`,
-              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
+              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your Bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
                 'en'
               )}\``
             });
@@ -663,8 +663,8 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.bank = Number(balance.bank) - Number(wheatTot);
-        balance.total = Number(balance.total) - Number(wheatTot);
+        balance.Bank = Number(balance.Bank) - Number(wheatTot);
+        balance.Total = Number(balance.Total) - Number(wheatTot);
         await balance.save();
 
         let calc = 0;
@@ -700,7 +700,7 @@ export const SlashCommandF = class extends SlashCommand {
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/WheatSeeds.png'] });
 
-        balance.items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
         return;
       }
@@ -709,15 +709,15 @@ export const SlashCommandF = class extends SlashCommand {
         let potatoeTot = 0;
         potatoeTot += Number(potatoeSeedPrice) * Number(1);
 
-        if (balance.bank < potatoeTot) {
-          const notEnough = Number(potatoeTot) - Number(balance.bank);
+        if (balance.Bank < potatoeTot) {
+          const notEnough = Number(potatoeTot) - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Potato Seeds**`,
-              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
+              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your Bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
                 'en'
               )}\``
             });
@@ -725,8 +725,8 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.bank = Number(balance.bank) - Number(potatoeTot);
-        balance.total = Number(balance.total) - Number(potatoeTot);
+        balance.Bank = Number(balance.Bank) - Number(potatoeTot);
+        balance.Total = Number(balance.Total) - Number(potatoeTot);
         await balance.save();
 
         let calc = 0;
@@ -762,7 +762,7 @@ export const SlashCommandF = class extends SlashCommand {
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/Potatoe.png'] });
 
-        balance.items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
         return;
       }
@@ -771,15 +771,15 @@ export const SlashCommandF = class extends SlashCommand {
         let tomatoeTot = 0;
         tomatoeTot += Number(tomatoeSeedprice) * Number(1);
 
-        if (balance.bank < tomatoeTot) {
-          const notEnough = Number(tomatoeTot) - Number(balance.bank);
+        if (balance.Bank < tomatoeTot) {
+          const notEnough = Number(tomatoeTot) - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Tomato Seeds**`,
-              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
+              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your Bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
                 'en'
               )}\``
             });
@@ -787,8 +787,8 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.bank = Number(balance.bank) - Number(tomatoeTot);
-        balance.total = Number(balance.total) - Number(tomatoeTot);
+        balance.Bank = Number(balance.Bank) - Number(tomatoeTot);
+        balance.Total = Number(balance.Total) - Number(tomatoeTot);
         await balance.save();
 
         let calc = 0;
@@ -824,7 +824,7 @@ export const SlashCommandF = class extends SlashCommand {
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/Tomatoes.png'] });
 
-        balance.items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
         return;
       }
@@ -839,15 +839,15 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.bank < fishingPrice) {
-          const notEnough = Number(fishingPrice) - Number(balance.bank);
+        if (balance.Bank < fishingPrice) {
+          const notEnough = Number(fishingPrice) - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Fishing Rod**`,
-              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
+              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your Bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
                 'en'
               )}\``
             });
@@ -855,15 +855,15 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.bank = Number(balance.bank) - Number(fishingPrice);
-        balance.total = Number(balance.total) - Number(fishingPrice);
+        balance.Bank = Number(balance.Bank) - Number(fishingPrice);
+        balance.Total = Number(balance.Total) - Number(fishingPrice);
         await balance.save();
 
         foundItemList.fishingRod = Number(1).toString();
         foundBoostList.fishBag = Number(initalSeedBag).toString();
 
-        balance.items = JSON.stringify(foundItemList);
-        balance.boosts = JSON.stringify(foundBoostList);
+        balance.Items = JSON.stringify(foundItemList);
+        balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -888,15 +888,15 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.bank < farmingPrice) {
-          const notEnough = Number(farmingPrice) - Number(balance.bank);
+        if (balance.Bank < farmingPrice) {
+          const notEnough = Number(farmingPrice) - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Farming Tools**`,
-              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
+              value: `**◎ Error:** You do not have enough <:coin:706659001164628008> in your Bank!\nYou need another <:coin:706659001164628008> \`${notEnough.toLocaleString(
                 'en'
               )}\``
             });
@@ -904,8 +904,8 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.farmCool) {
-          balance.farmCool = null;
+        if (balance.FarmCool) {
+          balance.FarmCool = null;
           await balance.save();
         }
 
@@ -916,14 +916,14 @@ export const SlashCommandF = class extends SlashCommand {
         if (foundItemList.strawberries) fullPrice += Number(foundItemList.strawberries) * this.client.ecoPrices.strawberries;
         if (foundItemList.lettuce) fullPrice += Number(foundItemList.lettuce) * this.client.ecoPrices.lettuce;
 
-        balance.bank = Number(balance.bank) - Number(farmingPrice) + fullPrice;
-        balance.total = Number(balance.total) - Number(farmingPrice) + fullPrice;
+        balance.Bank = Number(balance.Bank) - Number(farmingPrice) + fullPrice;
+        balance.Total = Number(balance.Total) - Number(farmingPrice) + fullPrice;
         await balance.save();
 
         foundItemList.farmingTools = Number(1).toString();
         foundBoostList.farmBag = Number(initalFarmBag).toString();
         foundBoostList.seedBag = Number(initalSeedBag).toString();
-        foundBoostList.farmPlot = Number(initialFarmPlot).toString();
+        foundBoostList.FarmPlot = Number(initialFarmPlot).toString();
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -946,8 +946,8 @@ export const SlashCommandF = class extends SlashCommand {
         if (foundItemList.strawberries) delete foundItemList.strawberries;
         if (foundItemList.lettuce) delete foundItemList.lettuce;
 
-        balance.items = JSON.stringify(foundItemList);
-        balance.boosts = JSON.stringify(foundBoostList);
+        balance.Items = JSON.stringify(foundItemList);
+        balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
         return;
       }
@@ -1165,10 +1165,10 @@ export const SlashCommandF = class extends SlashCommand {
         if (foundItemList.goldBar) itemCount += Number(foundItemList.goldBar);
         if (foundItemList.goldNugget) itemCount += Number(foundItemList.goldNugget);
 
-        const totalAdd = balance.total + fullPrice;
+        const totalAdd = balance.Total + fullPrice;
 
-        balance.bank += fullPrice;
-        balance.total = totalAdd;
+        balance.Bank += fullPrice;
+        balance.Total = totalAdd;
         await balance.save();
 
         if (foundItemList.treasure) delete foundItemList.treasure;
@@ -1183,8 +1183,8 @@ export const SlashCommandF = class extends SlashCommand {
         if (foundItemList.strawberries) delete foundItemList.strawberries;
         if (foundItemList.lettuce) delete foundItemList.lettuce;
 
-        balance.items = JSON.stringify(foundItemList);
-        balance.harvestedCrops = null;
+        balance.Items = JSON.stringify(foundItemList);
+        balance.HarvestedCrops = null;
         balance.save();
 
         const embed = new EmbedBuilder()
@@ -1192,7 +1192,7 @@ export const SlashCommandF = class extends SlashCommand {
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
           .addFields({
             name: `**${this.client.user.username} - Shop - Sell All**`,
-            value: `**◎ Success:** You have sold \`${itemCount}\` items. You have received <:coin:706659001164628008> \`${fullPrice.toLocaleString(
+            value: `**◎ Success:** You have sold \`${itemCount}\` Items. You have received <:coin:706659001164628008> \`${fullPrice.toLocaleString(
               'en'
             )}\`\nYour new total is: <:coin:706659001164628008> \`${totalAdd.toLocaleString('en')}\``
           });
@@ -1229,10 +1229,10 @@ export const SlashCommandF = class extends SlashCommand {
         if (foundItemList.swordfish) fishCount += Number(foundItemList.swordfish);
         if (foundItemList.pufferfish) fishCount += Number(foundItemList.pufferfish);
 
-        const totalAdd = balance.total + fullPrice;
+        const totalAdd = balance.Total + fullPrice;
 
-        balance.bank += fullPrice;
-        balance.total = totalAdd;
+        balance.Bank += fullPrice;
+        balance.Total = totalAdd;
         await balance.save();
 
         if (foundItemList.trout) delete foundItemList.trout;
@@ -1240,7 +1240,7 @@ export const SlashCommandF = class extends SlashCommand {
         if (foundItemList.swordfish) delete foundItemList.swordfish;
         if (foundItemList.pufferfish) delete foundItemList.pufferfish;
 
-        balance.items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(foundItemList);
         balance.save();
 
         const embed = new EmbedBuilder()
@@ -1277,17 +1277,17 @@ export const SlashCommandF = class extends SlashCommand {
         if (foundItemList.goldBar) treasureCount += Number(foundItemList.goldBar);
         if (foundItemList.goldNugget) treasureCount += Number(foundItemList.goldNugget);
 
-        const totalAdd = balance.total + fullPrice;
+        const totalAdd = balance.Total + fullPrice;
 
-        balance.bank += fullPrice;
-        balance.total = totalAdd;
+        balance.Bank += fullPrice;
+        balance.Total = totalAdd;
         await balance.save();
 
         if (foundItemList.treasure) delete foundItemList.treasure;
         if (foundItemList.goldBar) delete foundItemList.goldBar;
         if (foundItemList.goldNugget) delete foundItemList.goldNugget;
 
-        balance.items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -1349,10 +1349,10 @@ export const SlashCommandF = class extends SlashCommand {
           itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'tomato').length);
         }
 
-        const totalAdd = balance.total + fullPrice;
+        const totalAdd = balance.Total + fullPrice;
 
-        balance.bank += fullPrice;
-        balance.total = totalAdd;
+        balance.Bank += fullPrice;
+        balance.Total = totalAdd;
         await balance.save();
 
         if (foundItemList.barley) delete foundItemList.barley;
@@ -1360,8 +1360,8 @@ export const SlashCommandF = class extends SlashCommand {
         if (foundItemList.strawberries) delete foundItemList.strawberries;
         if (foundItemList.lettuce) delete foundItemList.lettuce;
 
-        balance.items = JSON.stringify(foundItemList);
-        balance.harvestedCrops = null;
+        balance.Items = JSON.stringify(foundItemList);
+        balance.HarvestedCrops = null;
         await balance.save();
 
         const embed = new EmbedBuilder()
