@@ -60,7 +60,7 @@ export const EventF = class extends Event {
     );
 
     // Starboard
-    const grabStarboard = await StarBoard.find(); //! test
+    const grabStarboard = await StarBoard.find();
 
     grabStarboard.forEach((s) => {
       const guild = this.client.guilds.cache.get(s.GuildId);
