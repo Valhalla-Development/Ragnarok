@@ -87,6 +87,10 @@ async function ThemeConfig(client) {
   }
 
   const config = SoftUI({
+    shardspage: {
+      enabled: true,
+      key: 'MXhqpCz5ACLYJ7c5'
+    },
     dbdriver: new Keyv(client.config.DBD_DATABASE),
     customThemeOptions: {
       info: async ({ config }) => ({
@@ -310,6 +314,10 @@ async function ThemeConfig(client) {
         apiKey: 'apiKey',
         panelLink: 'https://panel.ragnarokbot.com',
         serverUUIDs: []
+      },
+      logs: {
+        enabled: true,
+        key: '3s3mg8fXPDrSMyyL'
       }
     },
     commands
