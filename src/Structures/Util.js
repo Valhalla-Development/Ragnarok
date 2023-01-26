@@ -130,26 +130,15 @@ export const Util = class Util {
       if (isSupportGuild) {
         const allCommands = [...ownerOnlyCommands, ...regularCommands];
         await rest.put(Routes.applicationGuildCommands(this.client.config.APPLICATION_ID, this.client.config.SUPPORT_GUILD), { body: allCommands });
-        console.log(
-          `\u001b[37m\u001b[1mLoaded\u001b[22m \u001b[31m\u001b[1m${
-            ownerOnlyCommands.length + regularCommands.length
-          }\u001b[22m \u001b[37m\u001b[1mSlash commands!\u001b[22m`
-        );
       } else {
         if (ownerOnlyCommands) {
           await rest.put(Routes.applicationGuildCommands(this.client.config.APPLICATION_ID, this.client.config.SUPPORT_GUILD), {
             body: ownerOnlyCommands
           });
-          console.log(
-            `\u001b[37m\u001b[1mLoaded\u001b[22m \u001b[31m\u001b[1m${ownerOnlyCommands.length}\u001b[22m \u001b[37m\u001b[1mOwner Only Slash commands!\u001b[22m`
-          );
         }
 
         if (regularCommands) {
           await rest.put(Routes.applicationCommands(this.client.config.APPLICATION_ID), { body: regularCommands });
-          console.log(
-            `\u001b[37m\u001b[1mLoaded\u001b[22m \u001b[31m\u001b[1m${regularCommands.length}\u001b[22m \u001b[37m\u001b[1mSlash commands!\u001b[22m`
-          );
         }
       }
     });
