@@ -6,6 +6,7 @@ import { promisify } from 'util';
 import glob from 'glob';
 import url from 'url';
 import MongoStore from 'connect-mongo';
+import DLU from 'dbd-soft-ui-logs';
 import ThemeConfig from './Config/ThemeConfig.js';
 
 const globPromise = promisify(glob);
@@ -121,7 +122,7 @@ export const RagnarokDashboard = class RagnarokDashboard {
       bot: client,
       useTheme404: true,
       // START OF MAINTENANCE
-      useUnderMaintenance: true,
+      useUnderMaintenance: false,
       useThemeMaintenance: true,
       underMaintenance: {
         title: 'Under Maintenance',
@@ -156,6 +157,12 @@ export const RagnarokDashboard = class RagnarokDashboard {
       settings: await loadCommands(client)
     });
     Dashboard.init();
+
+    // Register dashboard logger
+    DLU.register(client, {
+      key: '3s3mg8fXPDrSMyyL',
+      dashboard_url: client.config.DBD_DOMAIN
+    });
   }
 };
 
