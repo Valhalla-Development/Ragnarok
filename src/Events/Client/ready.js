@@ -81,9 +81,10 @@ export const EventF = class extends Event {
     const realMemUsed = Math.floor(memoryUsed - cachedMem);
 
     console.log(
-      `Memory: ${realMemUsed.toLocaleString('en')} / ${totalMemory.toLocaleString('en')}`
+      `Memory: ${realMemUsed.toLocaleString('en')} / ${totalMemory.toLocaleString('en')} MB`
         .replace(/(Memory: )/, `${white + bold}$1${yellow}${bold}`)
         .replace(/( \/ )/, `${white + bold}$1${yellow}${bold}`)
+        .replace(/(MB)/, `${white + bold}$1`)
         .concat(reset)
     );
     console.log(
