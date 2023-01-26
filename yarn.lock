@@ -760,6 +760,14 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
+"@dbd-soft-ui/shards@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@dbd-soft-ui/shards/-/shards-1.0.0.tgz#23b90a40221c0c5109e2393216a3a16b4a4c4f73"
+  integrity sha512-Uztu/8siP37D3yUKGh8AeD12r7Uj3MFvGfixU14WvTqCzAAEosZl3gj0KoE+KWgzFcJngKKmW2GdBppzRW4MzQ==
+  dependencies:
+    colors "^1.4.0"
+    node-fetch "^3.2.10"
+
 "@derockdev/discord-components-core@^3.5.1":
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/@derockdev/discord-components-core/-/discord-components-core-3.5.1.tgz#ca613cd59542bc8496b94366b1de61a6e5161174"
@@ -2150,10 +2158,18 @@ dbd-dark-dashboard@^1.6.62:
     discord-dashboard "*"
     node-fetch "2.6.7"
 
-dbd-soft-ui@^1.5.63-beta.1:
-  version "1.5.63-beta.1"
-  resolved "https://registry.yarnpkg.com/dbd-soft-ui/-/dbd-soft-ui-1.5.63-beta.1.tgz#2cf3185ca9c886c29c21256d63abc449b78656fd"
-  integrity sha512-lz+DwxjNDAwOah03xiKYWQ5BpFuwFkPPiFMxuYCqsbS+hInyY8K4+OmcElCSuG3Xol/7NDzPU/lBcpWJ9bNXrQ==
+dbd-soft-ui-logs@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/dbd-soft-ui-logs/-/dbd-soft-ui-logs-1.1.1.tgz#57907b47824fab2e3fb74e83a84bef976a3a95c2"
+  integrity sha512-7pjP4ryOk7+AX2kx8RmkvTOklmgvktlFpO+1qtS4s+Vit90znvXmGXX6V+B50AXLsyxsaM7ePLximBDALePR2A==
+  dependencies:
+    colors "^1.4.0"
+    node-fetch "^3.3.0"
+
+dbd-soft-ui@^1.6.1-beta.1:
+  version "1.6.1-beta.1"
+  resolved "https://registry.yarnpkg.com/dbd-soft-ui/-/dbd-soft-ui-1.6.1-beta.1.tgz#9cf04636e8c07be66a5cdfe5e26993c8803acc59"
+  integrity sha512-aIVXJ744jFNzIlu2TCUCLH7ghN9hU5q5kieIMI+IKWNStxPzf1ca2NKl/ujgAZ7DqcGjhlBQxFc14IfWFlwxZQ==
   dependencies:
     "@keyv/sqlite" "^3.6.1"
     colors "1.4.0"
@@ -2385,6 +2401,13 @@ discord-html-transcripts@^3.1.3:
     simple-markdown "^0.7.3"
     twemoji "^14.0.2"
     undici "^5.16.0"
+
+discord-hybrid-sharding@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/discord-hybrid-sharding/-/discord-hybrid-sharding-2.1.0.tgz#e0b6f9aa3bb29c675f982dabe5287e423d60d2f8"
+  integrity sha512-m7vtkwwxq7Fm/0HR0dQWMI7Fs83ZsWsHbWkLDnF2T6q1LcGSWUrYUqfDAKcD16bOJcPFXY1IT5tiFoiB5dFKfA==
+  dependencies:
+    node-fetch "^2.6.7"
 
 discord-image-generation@^1.4.25:
   version "1.4.25"
@@ -4269,7 +4292,7 @@ node-fetch@2.6.7, node-fetch@^2.6.0, node-fetch@^2.6.7:
   dependencies:
     whatwg-url "^5.0.0"
 
-node-fetch@^3.3.0:
+node-fetch@^3.2.10, node-fetch@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-3.3.0.tgz#37e71db4ecc257057af828d523a7243d651d91e4"
   integrity sha512-BKwRP/O0UvoMKp7GNdwPlObhYGB5DQqwhEDQlNKuoqwVYSxkSZCSbHjnFFmUEtwSKRPU4kNK8PbDYYitwaE3QA==
