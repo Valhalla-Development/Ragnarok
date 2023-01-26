@@ -5,6 +5,7 @@ import { CronJob } from 'cron';
 import fetch from 'node-fetch';
 import { load } from 'cheerio';
 import Table from 'cli-table3';
+import si from 'systeminformation';
 import Event from '../../Structures/Event.js';
 import StarBoard from '../../Mongo/Schemas/StarBoard.js';
 import Balance from '../../Mongo/Schemas/Balance.js';
@@ -12,6 +13,9 @@ import Birthdays from '../../Mongo/Schemas/Birthdays.js';
 import BirthdayConfig from '../../Mongo/Schemas/BirthdayConfig.js';
 import TempBan from '../../Mongo/Schemas/TempBan.js';
 import Logging from '../../Mongo/Schemas/Logging.js';
+import * as packageFile from '../../../package.json' assert { type: 'json' };
+
+const pckg = packageFile.default;
 
 export const EventF = class extends Event {
   constructor(...args) {
@@ -21,19 +25,18 @@ export const EventF = class extends Event {
   }
 
   async run() {
-    console.log(
-      `\u001b[37m\u001b[1mLogged in as\u001b[22m \u001b[31m\u001b[1m\u001b[4m${this.client.user.tag}\u001b[24m\u001b[39m\u001b[22m\n`,
-      `\u001b[37m\u001b[1mLoaded\u001b[22m \u001b[31m\u001b[1m${this.client.events.size}\u001b[22m \u001b[37m\u001b[1mevents!\u001b[22m\n`,
-      `\u001b[37m\u001b[1mI am currently in\u001b[22m \u001b[31m\u001b[1m${this.client.guilds.cache.size.toLocaleString(
-        'en'
-      )}\u001b[22m \u001b[37m\u001b[1mguilds!\u001b[22m\n`,
-      `\u001b[37m\u001b[1mI currently serve\u001b[22m \u001b[31m\u001b[1m${this.client.guilds.cache
-        .reduce((a, b) => a + b.memberCount, 0)
-        .toLocaleString('en')}\u001b[22m \u001b[37m\u001b[1musers!\u001b[22m\n`,
-      '\u3000\n',
-      'Scanning for guilds...'
-    );
+    const red = '\x1b[31m';
+    const magenta = '\x1b[35m';
+    const white = '\x1b[37m';
+    const green = '\x1b[32m';
+    const yellow = '\x1b[33m';
+    const blue = '\x1b[34m';
+    const underline = '\x1b[4m';
+    const bold = '\x1b[1m';
+    const reset = '\x1b[0m';
 
+    console.log(`\n——————————[${this.client.user.username} Guilds]——————————`.replace(/(^\n.*$)/g, `${red + bold}$1${reset}`));
+    // Bot Guilds
     const table = new Table({
       head: ['Count', 'Name', 'ID']
     });
@@ -46,8 +49,53 @@ export const EventF = class extends Event {
 
     console.log(table.toString());
 
+    // Bot Info
+    console.log(`\n——————————[${this.client.user.username} Info]——————————`.replace(/(^\n.*$)/g, `${red + bold}$1${reset}`));
     console.log(
-      `Invite Link: \u001b[34m\u001b[1m\u001b[4mhttps://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot&permissions=2050485471\u001b[24m\u001b[39m\u001b[22m\n`
+      `Users: ${this.client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')}`
+        .replace(/(Users: )/, `${white + bold}$1${yellow}`)
+        .concat(reset)
+    );
+    console.log(`Guilds: ${this.client.guilds.cache.size.toLocaleString('en')}`.replace(/(Guilds: )/, `${white + bold}$1${yellow}`).concat(reset));
+    console.log(`Slash Commands: ${this.client.slashCommands.size}`.replace(/(Slash Commands: )/, `${white + bold}$1${yellow}`).concat(reset));
+    console.log(`Events: ${this.client.events.size}`.replace(/(Events: )/, `${white + bold}$1${yellow}`).concat(reset));
+    console.log(
+      `Invite: https://discordapp.com/oauth2/authorize?client_id=${this.client.user.id}&scope=bot%20applications.commands&permissions=415306870006`
+        .replace(/(Invite: )/, `${white + bold}$1${blue}${underline}`)
+        .concat(reset)
+    );
+
+    // Bot Specs
+    console.log(`\n——————————[${this.client.user.username} Specs]——————————`.replace(/(^\n.*$)/g, `${red + bold}$1${reset}`));
+    console.log(
+      `Running Node: ${process.version} on ${process.platform} ${process.arch}`
+        .replace(/(Running Node: )/, `${white + bold}$1${magenta}${bold}`)
+        .replace(/( on )/, `${white + bold}$1${magenta}${bold}`)
+        .concat(reset)
+    );
+
+    const memory = await si.mem();
+    const totalMemory = Math.floor(memory.total / 1024 / 1024);
+    const cachedMem = memory.buffcache / 1024 / 1024;
+    const memoryUsed = memory.used / 1024 / 1024;
+    const realMemUsed = Math.floor(memoryUsed - cachedMem);
+
+    console.log(
+      `Memory: ${realMemUsed.toLocaleString('en')} / ${totalMemory.toLocaleString('en')}`
+        .replace(/(Memory: )/, `${white + bold}$1${yellow}${bold}`)
+        .replace(/( \/ )/, `${white + bold}$1${yellow}${bold}`)
+        .concat(reset)
+    );
+    console.log(
+      `Discord.js Verion: ${pckg.dependencies['discord.js'].substring(1)}`
+        .replace(/(Discord.js Verion: )/, `${white + bold}$1${green}${bold}`)
+        .concat(reset)
+    );
+    console.log(
+      `${this.client.user.username} Version: ${pckg.dependencies['discord.js'].substring(1)}\n`
+        .replace(/(^.*)/, `${white + bold}$1${reset}`)
+        .replace(/(: )/, `${white + bold}$1${magenta}${bold}`)
+        .concat(reset)
     );
 
     this.client.user.setActivity(
