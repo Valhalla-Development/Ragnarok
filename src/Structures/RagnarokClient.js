@@ -2,15 +2,18 @@
 import { Client, Collection, PermissionsBitField, GatewayIntentBits, Partials, codeBlock, EmbedBuilder } from 'discord.js';
 import db from 'quick.db';
 import { GiveawaysManager } from 'discord-giveaways';
+import DLU from 'dbd-soft-ui-logs';
 import Util from './Util.js';
-
 import * as stenLinks from '../../Storage/spenLinks.json' assert { type: 'json' };
+import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
 
 if (!Array.isArray(db.get('giveaways'))) db.set('giveaways', []);
 
 export const RagnarokClient = class RagnarokClient extends Client {
   constructor(options = {}) {
     super({
+      shards: getInfo().SHARD_LIST, // An array of shards that will get spawned
+      shardCount: getInfo().TOTAL_SHARDS, // Total number of shards
       intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
@@ -39,6 +42,8 @@ export const RagnarokClient = class RagnarokClient extends Client {
     this.owners = options.OWNER_ID;
 
     this.config = options;
+
+    this.cluster = new ClusterClient(this);
 
     const balancePrice = {
       // Amount you earn per message & cooldown
@@ -249,7 +254,10 @@ export const RagnarokClient = class RagnarokClient extends Client {
     // .on('shardResume', () => console.log(`Connected!`));
 
     process.on('unhandledRejection', (error) => {
-      console.error(error);
+      DLU.send(this, {
+        description: error.stack
+      });
+      //console.error(error);
       sendError(this, error.stack);
     });
   }

@@ -1,0 +1,23 @@
+import { ClusterManager, ClusterClient } from 'discord-hybrid-sharding';
+import url from 'url';
+import 'dotenv/config';
+import DSU from '@dbd-soft-ui/shards';
+
+const config = process.env;
+
+const directory = url.fileURLToPath(new URL('..', import.meta.url));
+const manager = new ClusterManager(`${directory}src/index.js`, {
+  totalShards: 1,
+  shardsPerClusters: 2,
+  mode: 'process',
+  token: config.TOKEN
+});
+
+manager.on('clusterCreate', (cluster) => console.log(`Launched Cluster ${cluster.id}`));
+manager.spawn({ timeout: -1 });
+
+DSU.register(manager, {
+  dashboard_url: config.DBD_DOMAIN,
+  key: 'MXhqpCz5ACLYJ7c5',
+  interval: 15
+});
