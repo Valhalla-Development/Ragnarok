@@ -81,7 +81,7 @@ export default (client) => {
         optionId: 'channel',
         optionName: 'Embed Channel',
         optionDescription: 'Pick a channel to send the embed to.',
-        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false),
+        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false, true),
         allowedCheck
       }
     ]

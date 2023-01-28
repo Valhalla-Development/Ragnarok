@@ -77,7 +77,7 @@ export default (client) => {
         optionId: 'starChannel',
         optionName: 'Channel',
         optionDescription: 'Select a channel.',
-        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false),
+        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false, true),
         allowedCheck
       },
       {

@@ -122,7 +122,7 @@ export default (client) => {
         optionId: 'welcomeChannel',
         optionName: 'Channel',
         optionDescription: 'Select the channel to set.',
-        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false),
+        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false, true),
         allowedCheck
       },
       {

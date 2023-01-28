@@ -100,14 +100,14 @@ export default (client) => {
         optionId: 'birthdayChannel',
         optionName: 'Channel',
         optionDescription: 'Select the channel to set.',
-        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false),
+        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false, true),
         allowedCheck
       },
       {
         optionId: 'birthdayRole',
         optionName: 'Role',
         optionDescription: 'Select the role to set.',
-        optionType: DBD.formTypes.rolesSelect(),
+        optionType: DBD.formTypes.rolesSelect(false, false, true),
         allowedCheck
       },
       {
