@@ -102,18 +102,18 @@ async function ThemeConfig(client) {
       index: async ({ req, res, config }) => {
         const cards = [
           {
-            title: 'Current Guilds',
+            title: 'Current Users',
             icon: 'single-02',
-            getValue: client.guilds.cache.size.toLocaleString('en'),
+            getValue: client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en'),
             progressBar: {
               enabled: false,
               getProgress: 50 // 0 - 100 (get a percentage of the progress)
             }
           },
           {
-            title: 'Current Users',
+            title: 'Current Guilds',
             icon: 'single-02',
-            getValue: client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en'),
+            getValue: client.guilds.cache.size.toLocaleString('en'),
             progressBar: {
               enabled: false,
               getProgress: 50 // 0 - 100 (get a percentage of the progress)
