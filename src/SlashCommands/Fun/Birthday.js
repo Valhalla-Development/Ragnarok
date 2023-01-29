@@ -3,7 +3,6 @@
 /* eslint-disable no-unused-expressions */
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import moment from 'moment';
-import mongoose from 'mongoose';
 import ms from 'ms';
 import Birthdays from '../../Mongo/Schemas/Birthdays.js';
 import BirthdayConfig from '../../Mongo/Schemas/BirthdayConfig.js';
