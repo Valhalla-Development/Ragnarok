@@ -7,8 +7,9 @@ const config = process.env;
 
 const directory = url.fileURLToPath(new URL('..', import.meta.url));
 const manager = new ClusterManager(`${directory}src/index.js`, {
-  totalShards: 1,
-  shardsPerClusters: 2,
+  totalShards: 1, // 4,
+  shardsPerClusters: 1, // 4,
+  totalClusters: 1,
   mode: 'process',
   token: config.TOKEN
 });
