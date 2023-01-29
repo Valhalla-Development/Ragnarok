@@ -1,6 +1,6 @@
 {
   "name": "ragnarok",
-  "version": "5.0.142",
+  "version": "5.0.472",
   "description": "A multi-purpose Discord bot.",
   "main": "src/index",
   "repository": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git",
@@ -16,6 +16,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@dbd-soft-ui/logs": "^1.1.1",
     "@dbd-soft-ui/shards": "^1.0.0",
     "@extreme_hero/deeptype": "^1.0.1",
     "@keyv/mongo": "^2.1.8",
@@ -30,8 +31,7 @@
     "cryptocurrencies": "^7.0.0",
     "custom-bj": "^4.0.3",
     "dbd-dark-dashboard": "^1.6.62",
-    "dbd-soft-ui": "^1.6.1-beta.1",
-    "dbd-soft-ui-logs": "^1.1.1",
+    "dbd-soft-ui": "^1.6.3-beta.1",
     "discord-dashboard": "^2.3.61",
     "discord-embed-validator": "^1.0.1",
     "discord-giveaways": "^6.0.1",
@@ -67,7 +67,7 @@
     "url-regex-safe": "^3.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.32.0",
+    "eslint": "^8.33.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-import": "^2.27.5",

@@ -760,6 +760,14 @@
   resolved "https://registry.yarnpkg.com/@colors/colors/-/colors-1.5.0.tgz#bb504579c1cae923e6576a4f5da43d25f97bdbd9"
   integrity sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==
 
+"@dbd-soft-ui/logs@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@dbd-soft-ui/logs/-/logs-1.1.1.tgz#800f471c0efbf47965ba5144c77e734bc8f681c8"
+  integrity sha512-8pS1Sqaavqeunb2/PDmnvsYhLixPph8N1yxLyEZdljDAkzGUVklKcNxPc7neDKEFt87wcZHQ80QN3/eoLWgoPA==
+  dependencies:
+    colors "^1.4.0"
+    node-fetch "^3.3.0"
+
 "@dbd-soft-ui/shards@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@dbd-soft-ui/shards/-/shards-1.0.0.tgz#23b90a40221c0c5109e2393216a3a16b4a4c4f73"
@@ -2158,18 +2166,10 @@ dbd-dark-dashboard@^1.6.62:
     discord-dashboard "*"
     node-fetch "2.6.7"
 
-dbd-soft-ui-logs@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/dbd-soft-ui-logs/-/dbd-soft-ui-logs-1.1.1.tgz#57907b47824fab2e3fb74e83a84bef976a3a95c2"
-  integrity sha512-7pjP4ryOk7+AX2kx8RmkvTOklmgvktlFpO+1qtS4s+Vit90znvXmGXX6V+B50AXLsyxsaM7ePLximBDALePR2A==
-  dependencies:
-    colors "^1.4.0"
-    node-fetch "^3.3.0"
-
-dbd-soft-ui@^1.6.1-beta.1:
-  version "1.6.1-beta.1"
-  resolved "https://registry.yarnpkg.com/dbd-soft-ui/-/dbd-soft-ui-1.6.1-beta.1.tgz#9cf04636e8c07be66a5cdfe5e26993c8803acc59"
-  integrity sha512-aIVXJ744jFNzIlu2TCUCLH7ghN9hU5q5kieIMI+IKWNStxPzf1ca2NKl/ujgAZ7DqcGjhlBQxFc14IfWFlwxZQ==
+dbd-soft-ui@^1.6.3-beta.1:
+  version "1.6.3-beta.1"
+  resolved "https://registry.yarnpkg.com/dbd-soft-ui/-/dbd-soft-ui-1.6.3-beta.1.tgz#ab1af7a0462fb0532329d239734b79454aa43818"
+  integrity sha512-TD3Pxr83bOPdgLhN7eD5niZ/FnRWD7o86qRo7HXJwdqfZj+NpSN543KnmRMV48AIxz9trqsCMIo/v3lYb9FLhg==
   dependencies:
     "@keyv/sqlite" "^3.6.1"
     colors "1.4.0"
@@ -2761,10 +2761,10 @@ eslint-visitor-keys@^3.3.0:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-3.3.0.tgz#f6480fa6b1f30efe2d1968aa8ac745b862469826"
   integrity sha512-mQ+suqKJVyeuwGYHAdjMFqjCyfl8+Ldnxuyp3ldiMBFKkvytrXUZWaiPCEav8qDHKty44bD+qV1IP4T+w+xXRA==
 
-eslint@^8.32.0:
-  version "8.32.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.32.0.tgz#d9690056bb6f1a302bd991e7090f5b68fbaea861"
-  integrity sha512-nETVXpnthqKPFyuY2FNjz/bEd6nbosRgKbkgS/y1C7LJop96gYHWpiguLecMHQ2XCPxn77DS0P+68WzG6vkZSQ==
+eslint@^8.33.0:
+  version "8.33.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.33.0.tgz#02f110f32998cb598c6461f24f4d306e41ca33d7"
+  integrity sha512-WjOpFQgKK8VrCnAtl8We0SUOy/oVZ5NHykyMiagV1M9r8IFpIJX7DduK6n1mpfhlG7T1NLWm2SuD8QB7KFySaA==
   dependencies:
     "@eslint/eslintrc" "^1.4.1"
     "@humanwhocodes/config-array" "^0.11.8"
