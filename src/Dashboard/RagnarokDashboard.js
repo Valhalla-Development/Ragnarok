@@ -6,7 +6,7 @@ import { promisify } from 'util';
 import glob from 'glob';
 import url from 'url';
 import MongoStore from 'connect-mongo';
-import DLU from 'dbd-soft-ui-logs';
+import DLU from '@dbd-soft-ui/logs';
 import ThemeConfig from './Config/ThemeConfig.js';
 
 const globPromise = promisify(glob);

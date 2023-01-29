@@ -2,7 +2,7 @@
 import { Client, Collection, PermissionsBitField, GatewayIntentBits, Partials, codeBlock, EmbedBuilder } from 'discord.js';
 import db from 'quick.db';
 import { GiveawaysManager } from 'discord-giveaways';
-import DLU from 'dbd-soft-ui-logs';
+import DLU from '@dbd-soft-ui/logs';
 import Util from './Util.js';
 import * as stenLinks from '../../Storage/spenLinks.json' assert { type: 'json' };
 import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
