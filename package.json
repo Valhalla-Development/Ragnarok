@@ -12,7 +12,8 @@
   "scripts": {
     "audit": "npx eslint ./",
     "upgrade": "yarn yarn-upgrade-all",
-    "run": "node src/cluster.js"
+    "run": "node src/cluster.js",
+    "gitlog": "git log --pretty=format:'%s' 8138519c..HEAD | awk '{print \"◎ \" $0}'"
   },
   "type": "module",
   "dependencies": {
