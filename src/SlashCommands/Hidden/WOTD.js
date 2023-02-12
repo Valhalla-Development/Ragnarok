@@ -36,7 +36,8 @@ export const SlashCommandF = class extends SlashCommand {
 
       // Word
       const wordClass = $('.word-and-pronunciation');
-      const word = wordClass.find('h1').text();
+      const wordHeader = wordClass.find('.word-header-txt');
+      const word = wordHeader.text();
 
       // Word Attributes
       const typeFetch = $('.main-attr');
