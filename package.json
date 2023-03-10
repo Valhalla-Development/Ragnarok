@@ -2,7 +2,7 @@
   "name": "ragnarok",
   "version": "5.0.472",
   "description": "A multi-purpose Discord bot.",
-  "main": "src/index",
+  "main": "src/cluster.js",
   "repository": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git",
   "author": "Ragnar Lothbrok <30740511+RagnarLothbrok-Odin@users.noreply.github.com>",
   "license": "MIT",
