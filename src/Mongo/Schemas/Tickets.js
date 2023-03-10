@@ -1,11 +1,11 @@
 import { Schema, model } from 'mongoose';
 
 const Tickets = new Schema({
-  GuildId: String,
+  GuildId: { type: String, default: null },
   TicketId: { type: String, unique: true },
-  AuthorId: String,
-  Reason: String,
-  ChannelId: String
+  AuthorId: { type: String, default: null },
+  Reason: { type: String, default: null },
+  ChannelId: { type: String, default: null }
 });
 
 export default model('Tickets', Tickets, 'Tickets');

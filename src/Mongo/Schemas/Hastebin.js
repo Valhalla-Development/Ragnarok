@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 const Hastebin = new Schema({
   GuildId: { type: String, unique: true },
-  Status: Boolean
+  Status: { type: Boolean, default: null }
 });
 
 export default model('Hastebin', Hastebin, 'Hastebin');

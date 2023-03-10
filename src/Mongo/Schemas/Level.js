@@ -2,12 +2,12 @@ import { Schema, model } from 'mongoose';
 
 const Level = new Schema({
   IdJoined: { type: String, unique: true },
-  UserId: String,
-  GuildId: String,
-  Xp: Number,
-  Level: Number,
-  Country: String,
-  Image: String
+  UserId: { type: String, default: null },
+  GuildId: { type: String, default: null },
+  Xp: { type: Number, default: null },
+  Level: { type: Number, default: null },
+  Country: { type: String, default: null },
+  Image: { type: String, default: null }
 });
 
 export default model('Level', Level, 'Level');

@@ -2,12 +2,12 @@ import { Schema, model } from 'mongoose';
 
 const TicketConfig = new Schema({
   GuildId: { type: String, unique: true },
-  Category: String,
-  LogChannel: String,
-  Role: String,
-  Embed: String,
-  EmbedChannel: String,
-  Blacklist: String
+  Category: { type: String, default: null },
+  LogChannel: { type: String, default: null },
+  Role: { type: String, default: null },
+  Embed: { type: String, default: null },
+  EmbedChannel: { type: String, default: null },
+  Blacklist: { type: Array, default: null }
 });
 
 export default model('TicketConfig', TicketConfig, 'TicketConfig');
