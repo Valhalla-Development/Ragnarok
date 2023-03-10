@@ -255,9 +255,12 @@ export const RagnarokClient = class RagnarokClient extends Client {
 
     process.on('unhandledRejection', (error) => {
       if (!error?.stack) return;
-      DLU.send(this, {
-        description: error.stack
-      });
+      try {
+        DLU.send(this, {
+          description: error.stack
+        });
+      } catch {}
+
       //console.error(error);
       sendError(this, error.stack);
     });
