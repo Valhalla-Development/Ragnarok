@@ -647,7 +647,7 @@ export const EventF = class extends Event {
       if (!coinCooldown.has(message.author.id)) {
         balance.Cash = curBal + coinAmt;
         balance.Total = curBal + curBan + coinAmt;
-        await balance.save(); //! test
+        await balance.save(); //! ERROR
         coinCooldown.add(message.author.id);
         setTimeout(() => {
           coinCooldown.delete(message.author.id);
