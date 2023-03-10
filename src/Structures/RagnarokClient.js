@@ -254,6 +254,7 @@ export const RagnarokClient = class RagnarokClient extends Client {
     // .on('shardResume', () => console.log(`Connected!`));
 
     process.on('unhandledRejection', (error) => {
+      if (!error?.stack) return;
       DLU.send(this, {
         description: error.stack
       });
