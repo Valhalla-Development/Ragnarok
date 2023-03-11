@@ -37,19 +37,31 @@ export const SlashCommandF = class extends SlashCommand {
      * Steps to migrate, mark when done!
 
      * 1: Create schemas for mongoose ✓
-     * 2: Migrate ANY and ALL code that refers to better-sqlite3 database (hint: I think it's findOneAndUpdate)
+     * 2: Migrate ANY and ALL code that refers to better-sqlite3 database (hint: I think it's findOneAndUpdate) ✓
      * 3: Run the migration script to a database called 'Ragnarok' - DON'T FORGET TO CHANGE .ENV TO 'Ragnarok'
      * 4: Test that every call to mongoose works as expected! IMPORTANT!
-     * 5: Add a test command to VPS, to ensure it can reach mongo, you may need to add the VPS IP to mongo
+     * 5: Add a test command to VPS, to ensure it can reach mongo, you may need to add the VPS IP to mongo ✓
      * 6: Everything is now ready for production, so follow these:
         * 6a: BACKUP EVERYTHING, leave database file as it will be easier to switch back
         * 6b: Use migration script
         * 6c: Make announcement, use ChatGPT to make it sound smart... Don't forget to say how long downtime is, migration script tells you at the bottom
+        * 6cA: 
+        Greetings, Ragnarok users!
+        I wanted to give you all a quick heads up that I will be migrating our database over the next 20 minutes. While I don't anticipate any downtime, please be aware that any data input to the current database from this moment on will be rolled back once the migration is complete.
+        
+        Rest assured, once the migration is finished, everything will be back to normal and your data will be safe and secure in our new database. Thank you for your patience and understanding during this process. If you have any questions or concerns, please don't hesitate to reach out to me.
+        
+        Best, Ragnar
+
+        || @everyone :pepesad: ||
+
         * 6d: Stop Ragnarok
         * 6e: Move new files
         * 6f: Start Ragnarok
         * 6g: Make a sacrifice to the Gods so everything works without issue
         * 6h: Make announcement with ChatGPT again, ask to report any issues!
+        * 6ha:
+        Just a quick update to let you know that the database migration is complete. Thank you for your patience during the process. As always, if you encounter any issues, please let me know.
      */
 
     const db = new SQLite('./Storage/DB/db.sqlite');
@@ -255,7 +267,7 @@ export const SlashCommandF = class extends SlashCommand {
             await new Birthdays({
               UserId: entry.userid,
               Date: entry.birthday,
-              LastRun: entry.lastRun
+              LastRun: JSON.parse(entry.lastRun)
             })
               .save()
               .catch(console.error);
@@ -328,10 +340,14 @@ export const SlashCommandF = class extends SlashCommand {
         if (rolemenu.length) {
           let i = 0;
           for (const entry of rolemenu) {
+            const activeRoleMenuID = JSON.parse(entry.activeRoleMenuID);
             await new RoleMenu({
               GuildId: entry.guildid,
-              RoleMenuId: entry.activeRoleMenuID,
-              RoleList: entry.roleList
+              RoleMenuId: {
+                channel: activeRoleMenuID?.channel,
+                message: activeRoleMenuID?.message
+              },
+              RoleList: JSON.parse(entry.roleList)
             })
               .save()
               .catch(console.error);
@@ -402,7 +418,7 @@ export const SlashCommandF = class extends SlashCommand {
               Role: entry.role,
               Embed: entry.ticketembed,
               EmbedChannel: entry.ticketembedchan,
-              Blacklist: entry.blacklist
+              Blacklist: JSON.parse(entry.blacklist)
             })
               .save()
               .catch(console.error);
