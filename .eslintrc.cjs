@@ -11,6 +11,7 @@ module.exports = {
   plugins: ['prettier'],
   rules: {
     quotes: ['error', 'single'],
+    'object-curly-spacing': ['error', 'always'],
     'max-classes-per-file': 'off',
     'no-console': 'off',
     'import/extensions': 'off',
