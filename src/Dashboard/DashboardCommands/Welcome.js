@@ -52,7 +52,7 @@ export default (client) => {
         }
       ];
     },
-    setNew: async ({ guild, user, data }) => {
+    setNew: async ({ guild, data }) => {
       const result = await WelcomeSchema.findOne({ GuildId: guild.id });
 
       if (data.some((option) => option.optionId === 'welcomeToggle' && option.data === false)) {
