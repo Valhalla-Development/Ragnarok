@@ -152,7 +152,7 @@ export const EventF = class extends Event {
           name: `**${this.client.user.username} - Ticket**`,
           value: 'Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.'
         });
-        interaction.followUp({ embeds: [embed] });
+        await interaction.followUp({ embeds: [embed] });
 
         const staticFileNameGen = Date.now();
         const staticFileName = `${noSpecialCharacters(interaction.channel.name)}-_-${staticFileNameGen}.html`;
@@ -370,7 +370,7 @@ export const EventF = class extends Event {
 
       // If no reason
       if (interaction.customId === 'closeTicket') {
-        interaction.channel.sendTyping();
+        await interaction.channel.sendTyping();
         const embed = new EmbedBuilder().setColor(this.client.utils.color(guild.members.me.displayHexColor)).addFields({
           name: `**${this.client.user.username} - Ticket**`,
           value: 'Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.'

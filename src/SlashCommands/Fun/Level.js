@@ -59,7 +59,7 @@ export const SlashCommandF = class extends SlashCommand {
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
         .addFields({ name: `**${this.client.user.username} - Level**`, value: '**◎ Error:** Level system is disabled for this guild!' });
-      interaction.editReply({ ephemeral: true, embeds: [embed] });
+      await interaction.editReply({ ephemeral: true, embeds: [embed] });
       return;
     }
 
@@ -90,13 +90,13 @@ export const SlashCommandF = class extends SlashCommand {
           const embed = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({ name: `**${this.client.user.username} - Level**`, value: '**◎ Error:** You do not have a country set.' });
-          interaction.editReply({ ephemeral: true, embeds: [embed] });
+          await interaction.editReply({ ephemeral: true, embeds: [embed] });
           return;
         }
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
           .addFields({ name: `**${this.client.user.username} - Level**`, value: '**◎ Success:** I have disabled your country flag!' });
-        interaction.editReply({ ephemeral: true, embeds: [embed] });
+        await interaction.editReply({ ephemeral: true, embeds: [embed] });
 
         score.Country = null;
         await score.save();
@@ -115,14 +115,14 @@ export const SlashCommandF = class extends SlashCommand {
         const embed = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
           .addFields({ name: `**${this.client.user.username} - Level**`, value: `**◎ Success:** You selected \`${fetchCountry.name}\`` });
-        interaction.editReply({ ephemeral: true, embeds: [embed] });
+        await interaction.editReply({ ephemeral: true, embeds: [embed] });
         return;
       } catch {
         const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
           name: `**${this.client.user.username} - Config**`,
           value: `**◎ Error:** Did you input a valid country code? Your input was: \`${option.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`
         });
-        interaction.editReply({ ephemeral: true, embeds: [embed] });
+        await interaction.editReply({ ephemeral: true, embeds: [embed] });
         return;
       }
     }
@@ -156,7 +156,7 @@ export const SlashCommandF = class extends SlashCommand {
             const embed = new EmbedBuilder()
               .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
               .addFields({ name: `**${this.client.user.username} - Level**`, value: '**◎ Error:** You have no custom image enabled!' });
-            interaction.editReply({ ephemeral: true, embeds: [embed] });
+            await interaction.editReply({ ephemeral: true, embeds: [embed] });
             return;
           }
 
@@ -172,7 +172,7 @@ export const SlashCommandF = class extends SlashCommand {
           const embed = new EmbedBuilder()
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({ name: `**${this.client.user.username} - Level**`, value: '**◎ Success:** Custom image has been disabled!' });
-          interaction.editReply({ ephemeral: true, embeds: [embed] });
+          await interaction.editReply({ ephemeral: true, embeds: [embed] });
           return;
         }
 
@@ -182,7 +182,7 @@ export const SlashCommandF = class extends SlashCommand {
             value:
               '**◎ Error:** Incorrect Usage! An example of this command would be: `/level image <url-to-image>` or to disable: `/level image off`'
           });
-          interaction.editReply({ ephemeral: true, embeds: [embed] });
+          await interaction.editReply({ ephemeral: true, embeds: [embed] });
           return;
         }
 
@@ -194,7 +194,7 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Level**`,
             value: `**◎ Error:** \`.${urlExtension}\` is not a valid image type!\n\n**Acceptable files:**\n\`${validExtensions.join(', ')}\``
           });
-          interaction.editReply({ ephemeral: true, embeds: [invalidExt] });
+          await interaction.editReply({ ephemeral: true, embeds: [invalidExt] });
           return;
         }
 
@@ -205,7 +205,7 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Level**`,
             value: '**◎ Error:** Please enter a valid URL, the URL must be absolute! An example of an absolute URL would be: https://www.google.com'
           });
-          interaction.editReply({ ephemeral: true, embeds: [embed] });
+          await interaction.editReply({ ephemeral: true, embeds: [embed] });
           return;
         }
 
@@ -218,7 +218,7 @@ export const SlashCommandF = class extends SlashCommand {
                 name: `**${this.client.user.username} - Level**`,
                 value: `**◎ Error:** I was unable to process \`${option}\`\nIs it a valid image?`
               });
-              interaction.editReply({ ephemeral: true, embeds: [invalidExt] });
+              await interaction.editReply({ ephemeral: true, embeds: [invalidExt] });
               return;
             }
 
@@ -235,14 +235,14 @@ export const SlashCommandF = class extends SlashCommand {
               .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
               .setImage(option)
               .addFields({ name: `**${this.client.user.username} - Level**`, value: '**◎ Success:** Image has been updated to the following.' });
-            interaction.editReply({ ephemeral: true, embeds: [embed] });
+            await interaction.editReply({ ephemeral: true, embeds: [embed] });
           } else {
             const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
               name: `**${this.client.user.username} - Level**`,
               value:
                 '**◎ Error:** Please enter a valid image URL! The end of the URL must end with one of the supported extensions. (`.jpg, .jpeg, .png`)'
             });
-            interaction.editReply({ ephemeral: true, embeds: [embed] });
+            await interaction.editReply({ ephemeral: true, embeds: [embed] });
           }
         });
 
@@ -262,7 +262,7 @@ export const SlashCommandF = class extends SlashCommand {
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
         .addFields({ name: `**${this.client.user.username} - Level**`, value: '**◎ Error:** I could not find the specified user!' });
-      interaction.editReply({ ephemeral: true, embeds: [limitE] });
+      await interaction.editReply({ ephemeral: true, embeds: [limitE] });
       return;
     }
 

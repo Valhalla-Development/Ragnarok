@@ -31,7 +31,7 @@ export const EventF = class extends Event {
         }
       }
     }
-    ticketEmbed(this.client);
+    await ticketEmbed(this.client);
   }
 };
 

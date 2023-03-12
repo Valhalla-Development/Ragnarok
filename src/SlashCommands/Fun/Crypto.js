@@ -74,7 +74,7 @@ export const SlashCommandF = class extends SlashCommand {
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
         .addFields({ name: `**${this.client.user.username} - Crypto**`, value: '**◎ Error:** Please enter a valid cryptocurrency!' });
-      interaction.editReply({ ephemeral: true, embeds: [noinEmbed] });
+      await interaction.editReply({ ephemeral: true, embeds: [noinEmbed] });
       return;
     }
 
@@ -91,7 +91,7 @@ export const SlashCommandF = class extends SlashCommand {
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
         .addFields({ name: `**${this.client.user.username} - Crypto**`, value: '**◎ Error:** Please enter a valid cryptocurrency!' });
-      interaction.editReply({ ephemeral: true, embeds: [noinEmbed] });
+      await interaction.editReply({ ephemeral: true, embeds: [noinEmbed] });
       return;
     }
 
@@ -127,7 +127,7 @@ export const SlashCommandF = class extends SlashCommand {
 			\u3000 Price Change (24hr): \`${pricech24}\`
 			\u3000 Price Change Percentage (24hr): \`${priceper24}\``
     });
-    interaction.editReply({ embeds: [successEmb] });
+    await interaction.editReply({ embeds: [successEmb] });
   }
 };
 

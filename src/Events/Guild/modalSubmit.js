@@ -22,7 +22,7 @@ export const EventF = class extends Event {
         name: `**${this.client.user.username} - Ticket**`,
         value: 'Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.'
       });
-      modal.followUp({ embeds: [embed] });
+      await modal.followUp({ embeds: [embed] });
 
       const staticFileNameGen = Date.now();
       const staticFileName = `${noSpecialCharacters(modal.channel.name)}-_-${staticFileNameGen}.html`;

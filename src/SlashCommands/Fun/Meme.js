@@ -50,7 +50,7 @@ export const SlashCommandF = class extends SlashCommand {
         const wrongUser = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
           .addFields({ name: `**${this.client.user.username} - Meme**`, value: '**◎ Error:** Only the command executor can select an option!' });
-        b.reply({ ephemeral: true, embeds: [wrongUser] });
+        await b.reply({ ephemeral: true, embeds: [wrongUser] });
         return;
       }
 

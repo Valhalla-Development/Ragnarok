@@ -565,7 +565,7 @@ export const EventF = class extends Event {
         }
       }
     };
-    modMail();
+    await modMail();
 
     if (!message.guild || message.author.bot) return;
 
@@ -602,7 +602,7 @@ export const EventF = class extends Event {
         }
       }
     }
-    afkModule(this.client, message);
+    await afkModule(this.client, message);
 
     // Easter Egg/s
     if (message.content.includes('(╯°□°）╯︵ ┻━┻')) {
@@ -692,7 +692,7 @@ export const EventF = class extends Event {
         }, xpCooldownSeconds * 1000);
       }
     }
-    levelSystem(this.client);
+    await levelSystem(this.client);
 
     // Dad Bot
     async function dadBot() {
@@ -734,7 +734,7 @@ export const EventF = class extends Event {
         }, dadCooldownSeconds * 1000);
       }
     }
-    dadBot();
+    await dadBot();
 
     async function antiScam(grabClient) {
       const antiscam = await AntiScam.findOne({ GuildId: message.guild.id });
@@ -771,7 +771,7 @@ export const EventF = class extends Event {
         }
       }
     }
-    antiScam(this.client);
+    await antiScam(this.client);
 
     // Ads protection checks
     async function adsProt(grabClient) {
@@ -800,7 +800,7 @@ export const EventF = class extends Event {
         }
       }
     }
-    adsProt(this.client);
+    await adsProt(this.client);
 
     // Link Mention Function
     async function linkTag(grabClient) {
@@ -887,7 +887,7 @@ export const EventF = class extends Event {
         }
       }
     }
-    linkTag(this.client);
+    await linkTag(this.client);
 
     async function chatBot(grabClient) {
       if (message.guild) {
@@ -897,7 +897,7 @@ export const EventF = class extends Event {
 
           if (!apiArgs.length) return;
 
-          message.channel.sendTyping();
+          await message.channel.sendTyping();
 
           const indexOfSpace = message.content.indexOf(' ');
           const trimmed = message.content.substring(indexOfSpace + 1);
@@ -919,7 +919,7 @@ export const EventF = class extends Event {
         }
       }
     }
-    chatBot(this.client);
+    await chatBot(this.client);
   }
 };
 

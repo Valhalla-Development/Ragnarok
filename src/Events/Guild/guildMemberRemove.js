@@ -32,7 +32,7 @@ export const EventF = class extends Event {
         }
       }
     }
-    checkTicket(this.client);
+    await checkTicket(this.client);
 
     async function logging(grabClient) {
       const id = await Logging.findOne({ GuildId: member.guild.id });
@@ -65,7 +65,7 @@ export const EventF = class extends Event {
         .setTimestamp();
       grabClient.channels.cache.get(logs).send({ embeds: [logembed] });
     }
-    logging(this.client);
+    await logging(this.client);
   }
 };
 

@@ -18,7 +18,7 @@ export const SlashCommandF = class extends SlashCommand {
 
   async run(interaction) {
     await interaction.deferReply();
-    interaction.deleteReply();
+    await interaction.deleteReply();
 
     const input = interaction.options.getString('input');
     const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).setDescription(`${input}`);

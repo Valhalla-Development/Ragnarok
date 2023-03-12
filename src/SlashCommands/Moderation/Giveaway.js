@@ -83,7 +83,7 @@ export const SlashCommandF = class extends SlashCommand {
       const winnerCount = parseInt(gAmount);
       const prize = gPrize;
 
-      this.client.giveawaysManager.start(interaction.channel, {
+      await this.client.giveawaysManager.start(interaction.channel, {
         duration,
         winnerCount,
         prize,

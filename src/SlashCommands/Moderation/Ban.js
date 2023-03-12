@@ -117,7 +117,7 @@ export const SlashCommandF = class extends SlashCommand {
         .setFooter({ text: 'You have been banned' })
         .setTimestamp();
 
-      user.send({ embeds: [authoMes] });
+      await user.send({ embeds: [authoMes] });
     } catch {
       // Do nothing
     }
@@ -150,7 +150,7 @@ export const SlashCommandF = class extends SlashCommand {
             const embed1 = new EmbedBuilder()
               .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
               .addFields({ name: `**${this.client.user.username} - Un-Ban**`, value: '**◎ Error:** An error occured, is the user banned?' });
-            interaction.followUp({ ephemeral: true, embeds: [embed1] });
+            await interaction.followUp({ ephemeral: true, embeds: [embed1] });
             return;
           }
           const bUser = bans.find((ba) => ba.user.id === user.user.id);
@@ -158,7 +158,7 @@ export const SlashCommandF = class extends SlashCommand {
             const embed2 = new EmbedBuilder()
               .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
               .addFields({ name: `**${this.client.user.username} - Un-Ban**`, value: '**◎ Error:** The user specified is not banned!' });
-            interaction.followUp({ ephemeral: true, embeds: [embed2] });
+            await interaction.followUp({ ephemeral: true, embeds: [embed2] });
             return;
           }
 

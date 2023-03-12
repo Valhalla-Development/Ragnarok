@@ -41,7 +41,7 @@ export const SlashCommandF = class extends SlashCommand {
         name: `**${this.client.user.username} - Hastebin**`,
         value: '**◎ Error:** You must select either the `text` or `attachment` option!'
       });
-      interaction.editReply({ ephemeral: true, embeds: [error] });
+      await interaction.editReply({ ephemeral: true, embeds: [error] });
       return;
     }
 
@@ -87,7 +87,7 @@ export const SlashCommandF = class extends SlashCommand {
           name: `**${this.client.user.username} - Hastebin**`,
           value: `**◎ Error:** \`.${fileExtension}\` is not a valid file type!\n\n**Acceptable files:**\n\`${validExtensions.join(', ')}\``
         });
-        interaction.editReply({ ephemeral: true, embeds: [invalidExt] });
+        await interaction.editReply({ ephemeral: true, embeds: [invalidExt] });
         return;
       }
 

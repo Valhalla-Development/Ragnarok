@@ -146,7 +146,7 @@ export const SlashCommandF = class extends SlashCommand {
         foundItemList.cornSeeds = removeSeed.toString();
       }
 
-      cropCreator('corn', 'planting', new Date().getTime() + Number(cornGrow), argsAmount);
+      await cropCreator('corn', 'planting', new Date().getTime() + Number(cornGrow), argsAmount);
 
       balance.Items = JSON.stringify(foundItemList);
       await balance.save();
@@ -210,7 +210,7 @@ export const SlashCommandF = class extends SlashCommand {
         foundItemList.wheatSeeds = removeSeed.toString();
       }
 
-      cropCreator('wheat', 'planting', new Date().getTime() + Number(wheatGrow), argsAmount);
+      await cropCreator('wheat', 'planting', new Date().getTime() + Number(wheatGrow), argsAmount);
 
       balance.Items = JSON.stringify(foundItemList);
       await balance.save();
@@ -274,7 +274,7 @@ export const SlashCommandF = class extends SlashCommand {
         foundItemList.potatoSeeds = removeSeed.toString();
       }
 
-      cropCreator('potato', 'planting', new Date().getTime() + Number(potatoGrow), argsAmount);
+      await cropCreator('potato', 'planting', new Date().getTime() + Number(potatoGrow), argsAmount);
 
       balance.Items = JSON.stringify(foundItemList);
       await balance.save();
@@ -338,7 +338,7 @@ export const SlashCommandF = class extends SlashCommand {
         foundItemList.tomatoSeeds = removeSeed.toString();
       }
 
-      cropCreator('tomato', 'planting', new Date().getTime() + Number(tomatoeGrow), argsAmount);
+      await cropCreator('tomato', 'planting', new Date().getTime() + Number(tomatoeGrow), argsAmount);
 
       balance.Items = JSON.stringify(foundItemList);
       await balance.save();

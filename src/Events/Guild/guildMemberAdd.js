@@ -51,7 +51,7 @@ export const EventF = class extends Event {
         }
       }
     }
-    checkTicket(this.client);
+    await checkTicket(this.client);
 
     // welcome
     async function welcomeMessage(clientGrab) {
@@ -138,7 +138,7 @@ export const EventF = class extends Event {
         .send({ files: [attachment] })
         .catch((err) => console.error(err));
     }
-    welcomeMessage(this.client);
+    await welcomeMessage(this.client);
 
     // autorole
     async function autoRole() {
@@ -159,7 +159,7 @@ export const EventF = class extends Event {
 
       member.roles.add(myRole);
     }
-    autoRole();
+    await autoRole();
 
     // Logs
     async function logging(grabClient) {
@@ -186,7 +186,7 @@ export const EventF = class extends Event {
         .setTimestamp();
       grabClient.channels.cache.get(logs).send({ embeds: [logembed] });
     }
-    logging(this.client);
+    await logging(this.client);
   }
 };
 

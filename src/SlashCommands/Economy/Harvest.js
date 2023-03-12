@@ -42,7 +42,7 @@ export const SlashCommandF = class extends SlashCommand {
       foundPlotList = [];
     }
 
-    foundPlotList.forEach(async (key) => {
+    await Promise.all(foundPlotList).map(async (key) => {
       if (Date.now() > key.cropGrowTime) {
         key.cropStatus = 'harvest';
         key.cropGrowTime = 'na';

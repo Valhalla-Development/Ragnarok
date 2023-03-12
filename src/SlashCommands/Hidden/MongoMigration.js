@@ -116,7 +116,7 @@ export const SlashCommandF = class extends SlashCommand {
     try {
       const startTime = new Date();
 
-      (async () => {
+      await (async () => {
         if (adsprot.length) {
           let i = 0;
           for (const entry of adsprot) {
@@ -127,7 +127,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Ads Protection', adsprot, i, i);
+            await logProgress('Ads Protection', adsprot, i, i);
           }
           console.log(`Ads Protection Finished Migrating ${adsprot.length.toLocaleString('en')} properties!`);
         }
@@ -144,7 +144,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('AFK', afk, i, i);
+            await logProgress('AFK', afk, i, i);
           }
           console.log(`AFK Finished Migrating ${adsprot.length.toLocaleString('en')} properties!`);
         }
@@ -158,7 +158,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Announcement', announcement, i);
+            await logProgress('Announcement', announcement, i);
           }
           console.log(`Announcement Finished Migrating ${announcement.length.toLocaleString('en')} properties!`);
         }
@@ -173,7 +173,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('AntiScam', antiscam, i);
+            await logProgress('AntiScam', antiscam, i);
           }
           console.log(`AntiScam Finished Migrating ${antiscam.length.toLocaleString('en')} properties!`);
         }
@@ -188,7 +188,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Autorole', autorole, i);
+            await logProgress('Autorole', autorole, i);
           }
           console.log(`Autorole Finished Migrating ${autorole.length.toLocaleString('en')} properties!`);
         }
@@ -221,7 +221,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Balance', balance, i);
+            await logProgress('Balance', balance, i);
           }
           console.log(`Balance Finished Migrating ${balance.length.toLocaleString('en')} properties!`);
         }
@@ -240,7 +240,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Ban', ban, i);
+            await logProgress('Ban', ban, i);
           }
           console.log(`Ban Finished Migrating ${ban.length.toLocaleString('en')} properties!`);
         }
@@ -256,7 +256,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Birthday Config', birthdayConfig, i);
+            await logProgress('Birthday Config', birthdayConfig, i);
           }
           console.log(`Birthday Config Finished Migrating ${birthdayConfig.length.toLocaleString('en')} properties!`);
         }
@@ -272,7 +272,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Birthdays', birthdays, i);
+            await logProgress('Birthdays', birthdays, i);
           }
           console.log(`Birthdays Finished Migrating ${birthdays.length.toLocaleString('en')} properties!`);
         }
@@ -287,7 +287,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Dad', dadbot, i);
+            await logProgress('Dad', dadbot, i);
           }
           console.log(`Dad Finished Migrating ${dadbot.length.toLocaleString('en')} properties!`);
         }
@@ -302,7 +302,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Hastebin', hastebin, i);
+            await logProgress('Hastebin', hastebin, i);
           }
           console.log(`Hastebin Finished Migrating ${hastebin.length.toLocaleString('en')} properties!`);
         }
@@ -317,7 +317,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Autorole', autorole, i);
+            await logProgress('Autorole', autorole, i);
           }
           console.log(`Autorole Finished Migrating ${autorole.length.toLocaleString('en')} properties!`);
         }
@@ -332,7 +332,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Logging', logging, i);
+            await logProgress('Logging', logging, i);
           }
           console.log(`Logging Finished Migrating ${logging.length.toLocaleString('en')} properties!`);
         }
@@ -352,7 +352,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Rolemenu', rolemenu, i);
+            await logProgress('Rolemenu', rolemenu, i);
           }
           console.log(`Rolemenu Finished Migrating ${rolemenu.length.toLocaleString('en')} properties!`);
         }
@@ -372,7 +372,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Scores', scores, i);
+            await logProgress('Scores', scores, i);
           }
           console.log(`Scores Finished Migrating ${scores.length.toLocaleString('en')} properties!`);
         }
@@ -388,7 +388,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('SetWelcome', setwelcome, i);
+            await logProgress('SetWelcome', setwelcome, i);
           }
           console.log(`SetWelcome Finished Migrating ${setwelcome.length.toLocaleString('en')} properties!`);
         }
@@ -403,7 +403,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Starboard', starboard, i);
+            await logProgress('Starboard', starboard, i);
           }
           console.log(`Starboard Finished Migrating ${starboard.length.toLocaleString('en')} properties!`);
         }
@@ -423,7 +423,7 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('TicketConfig', ticketConfig, i);
+            await logProgress('TicketConfig', ticketConfig, i);
           }
           console.log(`TicketConfig Finished Migrating ${ticketConfig.length.toLocaleString('en')} properties!`);
         }
@@ -441,14 +441,14 @@ export const SlashCommandF = class extends SlashCommand {
               .save()
               .catch(console.error);
             i++;
-            logProgress('Tickets', tickets, i);
+            await logProgress('Tickets', tickets, i);
           }
           console.log(`Tickets Finished Migrating ${tickets.length.toLocaleString('en')} properties!`);
         }
 
         const guildsab = this.client.guilds.cache;
         let i = 0;
-        guildsab.forEach(async (a) => {
+        await Promise.all(guildsab).map(async (a) => {
           await new Guilds({
             GuildId: a.id,
             Name: a.name,
@@ -457,7 +457,7 @@ export const SlashCommandF = class extends SlashCommand {
             .save()
             .catch(console.error);
           i++;
-          logProgress('Guilds', this.client.guilds.cache.size, i);
+          await logProgress('Guilds', this.client.guilds.cache.size, i);
         });
         console.log(`Guilds Finished Migrating ${this.client.guilds.cache.size.toLocaleString('en')} properties!`);
 
