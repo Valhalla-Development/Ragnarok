@@ -34,7 +34,7 @@ export default (client) => {
   function forLoopThingy(data) {
     let channel;
     let embed;
-    let error;
+    let error = null;
 
     for (const item of data) {
       let result;
@@ -75,7 +75,7 @@ export default (client) => {
       }
     }
 
-    let output = {};
+    let output;
 
     // if no embed and content
     if (!modifiedStr.embed && modifiedStr.content) {
