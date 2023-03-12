@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { EmbedBuilder, ActivityType } from 'discord.js';
+import { ActivityType, EmbedBuilder } from 'discord.js';
 import moment from 'moment';
 import { CronJob } from 'cron';
 import fetch from 'node-fetch';
@@ -218,9 +218,8 @@ export const EventF = class extends Event {
         const grabBdays = await Birthdays.find();
         const grabBdaysConfig = await BirthdayConfig.find();
         const findUserBday = async (id) => {
-          const fetchBday = await Birthdays.findOne({ UserId: id });
-          return fetchBday;
-        }; // TODO TEST
+          return Birthdays.findOne({ UserId: id });// TODO TEST
+        };
 
         grabBdaysConfig.forEach(async (a) => {
           // Check if bot is in the guild
