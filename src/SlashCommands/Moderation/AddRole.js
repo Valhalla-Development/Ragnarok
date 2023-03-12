@@ -47,7 +47,6 @@ export const SlashCommandF = class extends SlashCommand {
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
         .addFields({ name: `**${this.client.user.username} - Add Role**`, value: `**◎ Success:** I have added the ${role} role to ${member}` });
       interaction.reply({ embeds: [embed] });
-      return;
     } catch {
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
