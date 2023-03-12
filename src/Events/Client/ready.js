@@ -303,7 +303,7 @@ export const EventF = class extends Event {
         // Run every 2 minutes
         // Bans
         const grabBans = await TempBan.find();
-        await Promise.all(grabBans).map(async (r) => {
+        grabBans.map(async (r) => {
           const guild = await this.client.guilds.fetch(r.GuildId);
           if (!guild) return;
 
