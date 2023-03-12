@@ -6,8 +6,7 @@ class Event {
     this.emitter = emitter;
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async run(...args) {
+  async run() {
     throw new Error(`The run method has not been implemented in ${this.name}`);
   }
 }

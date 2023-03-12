@@ -93,13 +93,13 @@ async function ThemeConfig(client) {
     },
     dbdriver: new Keyv(client.config.DBD_DATABASE),
     customThemeOptions: {
-      info: async ({ config }) => ({
+      info: async ({ }) => ({
         useUnderMaintenance: true,
         ownerIDs: [],
         blacklistIDs: [],
         premiumCard: false
       }),
-      index: async ({ req, res, config }) => {
+      index: async ({ }) => {
         const cards = [
           {
             title: 'Current Users',

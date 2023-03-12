@@ -37,7 +37,7 @@ export default (client) => {
         }
       ];
     },
-    setNew: async ({ guild, user, data }) => {
+    setNew: async ({ guild, data }) => {
       const toggle = data[0].data;
 
       if (toggle === true) {

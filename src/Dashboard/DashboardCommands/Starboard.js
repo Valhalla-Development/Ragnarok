@@ -45,7 +45,7 @@ export default (client) => {
         }
       ];
     },
-    setNew: async ({ guild, user, data }) => {
+    setNew: async ({ guild, data }) => {
       const result = await StarBoardSchema.findOne({ GuildId: guild.id });
 
       if (data.some((option) => option.optionId === 'starToggle' && option.data === false)) {

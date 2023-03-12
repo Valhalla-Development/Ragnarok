@@ -18,7 +18,7 @@ export const SlashCommand = class SlashCommand {
   }
 
   // eslint-disable-next-line no-unused-vars
-  async run(interaction) {
+  async run() {
     throw new Error(`${this.name} does not provide run method !`);
   }
 };

@@ -36,7 +36,7 @@ export default (client) => {
     categoryName: 'Embed Creator',
     categoryDescription: 'Build your own Embed, and send it to a specified channel!',
     categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
-    getActualSet: async ({ guild }) => [
+    getActualSet: async ({ }) => [
       {
         optionId: 'embed'
       },
@@ -44,7 +44,7 @@ export default (client) => {
         optionId: 'channel'
       }
     ],
-    setNew: async ({ guild, user, data }) => {
+    setNew: async ({ data }) => {
       if (
         data.some((option) => option.optionId === 'embed' && Object.keys(option.data).length > 0) &&
         data.some((option) => option.optionId === 'channel' && option.data)
