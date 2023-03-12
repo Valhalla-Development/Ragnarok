@@ -96,10 +96,10 @@ export const SlashCommandF = class extends SlashCommand {
       }
     }
 
-    let statusMsg;
+    /* let statusMsg;
     if (member.presence) {
       statusMsg = member.presence ? status[member.presence.status] : status.offline;
-    }
+    } */ // null, need presence intent bruh 
 
     let activityMsg;
     if (presence.length) {
