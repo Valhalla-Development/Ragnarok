@@ -312,7 +312,7 @@ async function ThemeConfig(client) {
       pterodactyl: {
         enabled: true,
         apiKey: 'ptlc_X3nPer2q7c6HeGEHk2g4cFlwUd76C06nWYW0wsokdV6',
-        panelLink: 'http://panel.ragnarokbot.com',
+        panelLink: 'https://panel.ragnarokbot.com',
         serverUUIDs: ['998ee141-b83b-4735-8484-d02b78109975']
       },
       logs: {

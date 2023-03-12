@@ -898,7 +898,7 @@ export const EventF = class extends Event {
           const trimmed = message.content.substring(indexOfSpace + 1);
 
           try {
-            await fetch(`http://api.brainshop.ai/get?bid=169096&key=4EniC9NJwnodt29j&uid=${message.author.id}&msg=${encodeURIComponent(trimmed)}`)
+            await fetch(`https://api.brainshop.ai/get?bid=169096&key=4EniC9NJwnodt29j&uid=${message.author.id}&msg=${encodeURIComponent(trimmed)}`)
               .then((res) => res.json())
               .then((json) =>
                 message.reply({
