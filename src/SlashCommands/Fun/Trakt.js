@@ -315,10 +315,10 @@ export const SlashCommandF = class extends SlashCommand {
       });
     }
 
-    async function imdbFetch(id) {
+    /* async function imdbFetch(id) {
       const quote = await fetchI(id);
       imdbRt = quote.Rating;
-    }
+    } */
   }
 };
 
