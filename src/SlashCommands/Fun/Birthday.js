@@ -50,7 +50,7 @@ export const SlashCommandF = class extends SlashCommand {
         let year;
 
         const bdayNow = moment();
-        const nextBirthday = birthdayDB.date.slice(0, birthdayDB.date.length - 4);
+        const nextBirthday = birthdayDB.Date.slice(0, birthdayDB.Date.length - 4);
 
         const birthdayNext = new Date(nextBirthday + bdayNow.year());
         const getNow = new Date();
@@ -95,7 +95,7 @@ export const SlashCommandF = class extends SlashCommand {
         let year;
 
         const bdayNow = moment();
-        const nextBirthday = birthdayDB.date.slice(0, birthdayDB.date.length - 4);
+        const nextBirthday = birthdayDB.Date.slice(0, birthdayDB.Date.length - 4);
 
         const birthdayNext = new Date(nextBirthday + bdayNow.year());
         const getNow = new Date();
@@ -127,7 +127,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      await birthdayDB.deleteOne({ UserId: interaction.user.id }); // TODO
+      await birthdayDB.deleteOne({ UserId: interaction.user.id });
 
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -174,14 +174,14 @@ export const SlashCommandF = class extends SlashCommand {
             UserId: interaction.user.id
           },
           {
-            date: argsDate,
+            Date: argsDate,
             LastRun: null
           }
         );
       } else {
         await new Birthdays({
           UserId: interaction.user.id,
-          date: argsDate,
+          Date: argsDate,
           LastRun: null
         }).save();
       }
@@ -194,12 +194,12 @@ export const SlashCommandF = class extends SlashCommand {
       // Filter the rows to only include users who are in the guild
       const filteredRows = rows.filter((row) => interaction.guild.members.cache.get(row.UserId));
 
-      if (!rows) {
+      if (!filteredRows.length) {
         const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
           name: `**${this.client.user.username} - Birthday**`,
           value: '**◎ Error:** No users have a birthday defined within this guild'
         });
-        interaction.reply({ ephemeral: true, embeds: [embed] }); // TODO TEST
+        interaction.reply({ ephemeral: true, embeds: [embed] });
         return;
       }
 
@@ -208,8 +208,8 @@ export const SlashCommandF = class extends SlashCommand {
         const today = moment();
 
         // parse the birthday strings into moment objects
-        const momentA = moment(a.date.substring(0, a.date.length - 5), 'MM/DD');
-        const momentB = moment(b.date.substring(0, b.date.length - 5), 'MM/DD');
+        const momentA = moment(a.Date.substring(0, a.Date.length - 5), 'MM/DD');
+        const momentB = moment(b.Date.substring(0, b.Date.length - 5), 'MM/DD');
 
         // if either birthday has already passed this year, add one year to the moment object so we compare the correct dates
         if (momentA.isBefore(today)) {
@@ -253,7 +253,7 @@ export const SlashCommandF = class extends SlashCommand {
             name: 'Date',
             value: pages[i]
               .map((row) => {
-                const date = moment(row.date, 'MM/DD/YYYY').format('Do MMMM');
+                const date = moment(row.Date, 'MM/DD/YYYY').format('Do MMMM');
                 return `\`${date}\``;
               })
               .join('\n'),
@@ -266,7 +266,7 @@ export const SlashCommandF = class extends SlashCommand {
                 let year;
 
                 const bdayNow = moment();
-                const nextBirthday = row.date.slice(0, row.date.length - 4);
+                const nextBirthday = row.Date.slice(0, row.Date.length - 4);
 
                 const birthdayNext = new Date(nextBirthday + bdayNow.year());
                 const getNow = new Date();
