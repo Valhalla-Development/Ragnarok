@@ -61,7 +61,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       await interaction.deferReply();
-      interaction.deleteReply();
+      await interaction.deleteReply();
 
       const roleMenuEmbed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))

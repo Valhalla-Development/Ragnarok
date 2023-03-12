@@ -69,7 +69,7 @@ export const EventF = class extends Event {
         }
       }
     }
-    checkRoleMenu(this.client);
+    await checkRoleMenu(this.client);
 
     const id = await Logging.findOne({ GuildId: role.guild.id });
     if (!id) return;

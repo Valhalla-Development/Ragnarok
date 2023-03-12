@@ -20,12 +20,12 @@ export const SlashCommandF = class extends SlashCommand {
 
   async run(interaction) {
     await interaction.deferReply();
-    interaction.deleteReply();
+    await interaction.deleteReply();
 
     const user = interaction.options.getMember('user');
     const input = interaction.options.getString('input');
 
-    this.client.functions.sudo(interaction, input, user);
+    await this.client.functions.sudo(interaction, input, user);
   }
 };
 

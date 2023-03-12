@@ -47,7 +47,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       try {
-        user.timeout(null);
+        await user.timeout(null);
       } catch {
         const valueLow = new EmbedBuilder()
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))

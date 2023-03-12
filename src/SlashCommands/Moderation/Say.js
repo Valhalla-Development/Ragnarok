@@ -59,7 +59,7 @@ export const SlashCommandF = class extends SlashCommand {
       interaction.reply({ ephemeral: true, embeds: [embed] });
     } else {
       await interaction.deferReply();
-      interaction.deleteReply();
+      await interaction.deleteReply();
 
       interaction.channel.send(input);
     }

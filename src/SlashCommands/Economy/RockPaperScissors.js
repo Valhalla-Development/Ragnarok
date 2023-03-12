@@ -175,7 +175,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (reason === 'cancel' || reason === 'time') {
-        interaction.deleteReply();
+        await interaction.deleteReply();
       }
     });
   }

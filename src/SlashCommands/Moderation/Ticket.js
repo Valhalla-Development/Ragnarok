@@ -227,7 +227,7 @@ export const SlashCommandF = class extends SlashCommand {
               name: `**${this.client.user.username} - Ticket**`,
               value: 'Please stand-by while I gather all messages. This may take a while dependant on how many messages are in this channel.'
             });
-            interaction.followUp({ embeds: [embed] });
+            await interaction.followUp({ embeds: [embed] });
 
             const staticFileNameGen = Date.now();
             const staticFileName = `${noSpecialCharacters(interaction.channel.name)}-_-${staticFileNameGen}.html`;
@@ -254,7 +254,7 @@ export const SlashCommandF = class extends SlashCommand {
               headers: { 'X-Auth': authorizationSecret }
             });
 
-            const data = await response.status;
+            const data = response.status;
 
             let transLinkText;
             let openTranscript;
@@ -757,7 +757,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         await interaction.deferReply();
-        interaction.deleteReply();
+        await interaction.deleteReply();
 
         await interaction.channel.send({ components: [row], embeds: [embed] }).then(async (a) => {
           await TicketConfig.findOneAndUpdate(

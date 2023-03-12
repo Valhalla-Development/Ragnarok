@@ -63,7 +63,7 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Suggest**`,
             value: `**◎ Success:** Suggestion/bug has been successfully sent!\n${codeBlock('text', sArgs)}`
           });
-        interaction.editReply({ ephemeral: true, embeds: [loggedEmbed], components: [] });
+        await interaction.editReply({ ephemeral: true, embeds: [loggedEmbed], components: [] });
       }
 
       if (b.customId === 'no') {

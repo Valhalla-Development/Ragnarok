@@ -126,7 +126,7 @@ export const SlashCommandF = class extends SlashCommand {
               getTraktEmbed.setImage(reqImage);
             }
 
-            interaction.editReply({ embeds: [getTraktEmbed] });
+            await interaction.editReply({ embeds: [getTraktEmbed] });
           }
           // If the type of content is a movie
           if (argsType === 'show') {
@@ -177,7 +177,7 @@ export const SlashCommandF = class extends SlashCommand {
                 getTraktEmbed.setImage(reqImage);
               }
 
-              interaction.editReply({ embeds: [getTraktEmbed] });
+              await interaction.editReply({ embeds: [getTraktEmbed] });
             });
           }
         })
@@ -240,7 +240,7 @@ export const SlashCommandF = class extends SlashCommand {
               getTraktEmbed.setImage(reqImage);
             }
 
-            interaction.editReply({ embeds: [getTraktEmbed] });
+            await interaction.editReply({ embeds: [getTraktEmbed] });
           }
         })
         .catch(() => {
@@ -298,7 +298,7 @@ export const SlashCommandF = class extends SlashCommand {
               getTraktEmbed.setImage(reqImage);
             }
 
-            interaction.editReply({ embeds: [getTraktEmbed] });
+            await interaction.editReply({ embeds: [getTraktEmbed] });
           });
         })
         .catch(() => {

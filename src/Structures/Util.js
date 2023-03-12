@@ -164,16 +164,15 @@ export const Util = class Util {
 
   async loadFunctions() {
     this.client.functions = {};
-    return globPromise(`${this.directory}Functions/*.js`).then(async (functions) => {
-      functions.forEach(async (m) => {
-        const { default: File } = await import(m);
-        this.client.functions[File.name] = new File(this)[File.name];
-      });
-    });
+    const functions = await globPromise(`${this.directory}Functions/*.js`);
+    for (const m of functions) {
+      const { default: File } = await import(m);
+      this.client.functions[File.name] = new File(this)[File.name];
+    }
   }
 
   async loadMongoEvents() {
-    (async () => {
+    await (async () => {
       mongoose.set('strictQuery', false);
       await mongoose.connect(this.client.config.DATABASE_TOKEN).catch(console.error);
     })();
@@ -195,7 +194,7 @@ export const Util = class Util {
   // Dashboard
   async loadDashboard() {
     const dashboard = new RagnarokDashboard(this.client);
-    dashboard.dashboard(this.client);
+    await dashboard.dashboard(this.client);
   }
 
   // Economy system

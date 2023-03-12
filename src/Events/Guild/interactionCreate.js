@@ -180,7 +180,7 @@ export const EventF = class extends Event {
           headers: { 'X-Auth': authorizationSecret }
         });
 
-        const data = await response.status;
+        const data = response.status;
 
         let transLinkText;
         let openTranscript;
@@ -402,7 +402,7 @@ export const EventF = class extends Event {
           headers: { 'X-Auth': authorizationSecret }
         });
 
-        const data = await response.status;
+        const data = response.status;
 
         let transLinkText;
         let openTranscript;
