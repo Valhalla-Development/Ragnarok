@@ -720,7 +720,7 @@ export const SlashCommandF = class extends SlashCommand {
                   });
               }
 
-              await RoleMenu.deleteOne({ GuildId: interaction.guild.id }); //!
+              await RoleMenu.deleteOne({ GuildId: interaction.guild.id }); // TODO
               return;
             }
 
@@ -730,7 +730,7 @@ export const SlashCommandF = class extends SlashCommand {
             });
             interaction.reply({ ephemeral: true, embeds: [embedA] });
 
-            await RoleMenu.deleteOne({ GuildId: interaction.guild.id }); //!
+            await RoleMenu.deleteOne({ GuildId: interaction.guild.id }); // TODO
           } else {
             const embedA = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
               name: `**${this.client.user.username} - Config**`,
@@ -959,7 +959,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     // Adsprot Command
     if (subCommand === 'adsprot') {
-      //! TEST THIS ONE BECAUSE THE BETTER-SQLITE3 WAS A COUNT NOT JUST FIND
+      // TODO TEST THIS ONE BECAUSE THE BETTER-SQLITE3 WAS A COUNT NOT JUST FIND
       const antiscam = await AntiScam.findOne({ GuildId: interaction.guild.id });
 
       if (antiscam) {

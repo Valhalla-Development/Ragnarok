@@ -136,7 +136,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (!score) {
-        //! test because the next code may error because !score
+        // TODO test because the next code may error because !score
         const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
 
         await new Level({

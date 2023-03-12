@@ -124,7 +124,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const channelArgs = interaction.channel.name.split('-');
 
-        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); //! TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); // TODO TEST
 
         if (foundTicket) {
           if (user.permissionsIn(interaction.channel).has([PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages])) {
@@ -165,7 +165,7 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (subOptions === 'close') {
         const channelArgs = interaction.channel.name.split('-');
-        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); //! TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); // TODO TEST
 
         // Make sure it's inside the ticket channel.
         if (foundTicket && interaction.channel.id !== foundTicket.ChannelId) {
@@ -218,7 +218,7 @@ export const SlashCommandF = class extends SlashCommand {
             if (!fetchTick) return;
 
             // Filter fetchTick where chanid === interaction.channel.id
-            const ticket = fetchTick.find((t) => t.ChannelId === interaction.channel.id); //! TEST
+            const ticket = fetchTick.find((t) => t.ChannelId === interaction.channel.id); // TODO TEST
             if (!ticket) return;
 
             const closeReason = interaction.options.getString('name') || 'No reason provided.';
@@ -279,7 +279,7 @@ export const SlashCommandF = class extends SlashCommand {
               interaction.channel.delete();
             }
 
-            await Tickets.deleteOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); //!
+            await Tickets.deleteOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); // TODO
 
             const epoch = Math.floor(new Date().getTime() / 1000);
 
@@ -423,7 +423,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         // Make sure this is the user's only ticket.
-        const checkTicketEx = await Tickets.findOne({ GuildId: interaction.guild.id, AuthorId: interaction.user.id }); //! TEST
+        const checkTicketEx = await Tickets.findOne({ GuildId: interaction.guild.id, AuthorId: interaction.user.id }); // TODO TEST
 
         if (checkTicketEx) {
           if (checkTicketEx.ChannelId === null) {
@@ -435,7 +435,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         // Already has a ticket
-        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, AuthorId: interaction.user.id }); //! TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, AuthorId: interaction.user.id }); // TODO TEST
         if (foundTicket) {
           const cha = interaction.guild.channels.cache.get(checkTicketEx.ChannelId);
           if (cha) {
@@ -634,7 +634,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const channelArgs = interaction.channel.name.split('-');
 
-        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); //! TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); // TODO TEST
 
         if (foundTicket) {
           const getChan = interaction.channel;
@@ -649,7 +649,7 @@ export const SlashCommandF = class extends SlashCommand {
 
           getChan.permissionOverwrites
             .create(rUser, {
-              VIEW_CHANNEL: false //! ERROR, OLD PERMS
+              VIEW_CHANNEL: false // TODO ERROR, OLD PERMS
             })
             .catch(console.error);
           const removed = new EmbedBuilder()
@@ -682,7 +682,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const channelArgs = interaction.channel.name.split('-');
 
-        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); //! TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); // TODO TEST
 
         if (foundTicket) {
           const getChan = interaction.channel;

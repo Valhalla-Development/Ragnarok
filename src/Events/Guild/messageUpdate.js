@@ -16,7 +16,7 @@ export const EventF = class extends Event {
           value: '**◎ Error:** I do not have the `Manage Messages` permissions. Disabling Ads Protection.'
         });
         newMessage.channel.send({ embeds: [npPerms] }).then((m) => newMessage.utils.deletableCheck(m, 0));
-        await AdsProtection.deleteOne({ GuildId: newMessage.guild.id }); //!
+        await AdsProtection.deleteOne({ GuildId: newMessage.guild.id }); // TODO
         return;
       }
       if (!newMessage.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {

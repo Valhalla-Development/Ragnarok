@@ -127,7 +127,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      await birthdayDB.deleteOne({ UserId: interaction.user.id }); //!
+      await birthdayDB.deleteOne({ UserId: interaction.user.id }); // TODO
 
       const embed = new EmbedBuilder()
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -202,7 +202,7 @@ export const SlashCommandF = class extends SlashCommand {
           name: `**${this.client.user.username} - Birthday**`,
           value: '**◎ Error:** No users have a birthday defined within this guild'
         });
-        interaction.reply({ ephemeral: true, embeds: [embed] }); //! TEST
+        interaction.reply({ ephemeral: true, embeds: [embed] }); // TODO TEST
         return;
       }
 

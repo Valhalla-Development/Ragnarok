@@ -15,7 +15,7 @@ export const EventF = class extends Event {
 
     const chnCheck = this.client.channels.cache.get(logs);
     if (!chnCheck) {
-      await Logging.deleteOne({ GuildId: channel.guild.id }); //!
+      await Logging.deleteOne({ GuildId: channel.guild.id }); // TODO
       return;
     }
 

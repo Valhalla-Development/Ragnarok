@@ -39,7 +39,7 @@ export const EventF = class extends Event {
           // Send a message that the user joined
           channel.permissionOverwrites
             .create(member, {
-              VIEW_CHANNEL: true, //! ERROR, OLD PERMS
+              VIEW_CHANNEL: true, // TODO ERROR, OLD PERMS
               SEND_MESSAGES: true
             })
             .catch(console.error);

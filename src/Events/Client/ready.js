@@ -200,7 +200,7 @@ export const EventF = class extends Event {
       '0 * * * * *',
       async () => {
         // Fetch all balance records from the database
-        const balances = await Balance.find(); //! test BIG TIME
+        const balances = await Balance.find(); // TODO test BIG TIME
         // Use the map method to transform the balances array into an array of IdJoined, which is user id and guild id
         const IdJoined = [...new Set(balances.map((balance) => balance.IdJoined))];
         const updates = updateFarms(IdJoined, balances, this.client);
@@ -220,7 +220,7 @@ export const EventF = class extends Event {
         const findUserBday = async (id) => {
           const fetchBday = await Birthdays.findOne({ UserId: id });
           return fetchBday;
-        }; //! TEST
+        }; // TODO TEST
 
         grabBdaysConfig.forEach(async (a) => {
           // Check if bot is in the guild
@@ -247,7 +247,7 @@ export const EventF = class extends Event {
             const usr = guild.members.cache.get(b.UserId);
             if (!usr) return;
 
-            const grabUser = findUserBday(usr.id); //! TEST
+            const grabUser = findUserBday(usr.id); // TODO TEST
 
             const now = moment();
 
@@ -286,7 +286,7 @@ export const EventF = class extends Event {
 
               await Birthdays.findOneAndUpdate(
                 {
-                  UserId: usr.id //! TEST idk if usr.id is right
+                  UserId: usr.id // TODO TEST idk if usr.id is right
                 },
                 {
                   LastRun: JSON.stringify(foundLastRun)
@@ -342,7 +342,7 @@ export const EventF = class extends Event {
               return;
             }
 
-            const dbid = await Logging.findOne({ GuildId: guild.id }); //! test BIG TIME BIG BRUH DO IT
+            const dbid = await Logging.findOne({ GuildId: guild.id }); // TODO test BIG TIME BIG BRUH DO IT
             const dblogs = dbid.ChannelId;
             const chnCheck = this.client.channels.cache.get(dblogs);
             if (!chnCheck) {
