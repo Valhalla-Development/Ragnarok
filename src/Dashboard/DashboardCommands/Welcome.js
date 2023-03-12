@@ -74,7 +74,7 @@ export default (client) => {
 
       const welcomeImgObject = data.find((obj) => obj.optionId === 'welcomeImage');
       if (welcomeImgObject?.data) {
-        const urlRegex = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
+        const urlRegex = /(ftp|http|https):\/\/(\w+:?\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#:.?+=&%@/-]))?/;
         if (!urlRegex.test(welcomeImgObject.data)) {
           return { error: 'Please provide an absolute URL.' };
         }
