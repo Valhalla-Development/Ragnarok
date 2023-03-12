@@ -314,9 +314,6 @@ export const SlashCommandF = class extends SlashCommand {
     let xpPercent;
     if (!score) {
       level = '0';
-      xp = '0';
-      toLevel = '100';
-      inLevel = '0';
       xpLevel = '0/100 XP';
       xpPercent = 0;
     } else {
