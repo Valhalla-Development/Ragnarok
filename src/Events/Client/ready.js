@@ -124,14 +124,14 @@ export const EventF = class extends Event {
 
     // Cooldowns
     // Define a function to update the farms for a given user
-    async function updateFarms(userIds, GuildIds, db, client) {
+    async function updateFarms(IdJoined, db) {
       // Fetch the FarmPlot and HarvestedCrops columns for the users
-      const userData = db.filter((balance) => userIds.includes(balance.UserId) && GuildIds.includes(balance.GuildId));
+      const userData = db.filter((balance) => IdJoined.includes(balance.IdJoined));
 
       // Use the moment library to create moment objects for the current time and the cropGrowTime
       const currentTime = moment();
 
-      userData.map((data) => {
+      const updates = userData.map((data) => {
         // Parse the JSON strings into arrays
         const FarmPlot = data.FarmPlot ? JSON.parse(data.FarmPlot) : [];
         const HarvestedCrops = data.HarvestedCrops ? JSON.parse(data.HarvestedCrops) : [];
@@ -182,7 +182,7 @@ export const EventF = class extends Event {
         const cleanedHarvestedCrops = updatedHarvestedCrops.filter(Boolean);
 
         return {
-          filter: { IdJoined: `${data.UserId}-${data.GuildId}` },
+          filter: { IdJoined: data.IdJoined },
           update: {
             $set: {
               FarmPlot: JSON.stringify(cleanedFarmPlot),
@@ -191,6 +191,8 @@ export const EventF = class extends Event {
           }
         };
       });
+
+      return updates;
     }
 
     // Use a CronJob to run the updateAllFarms function every minute
@@ -199,9 +201,9 @@ export const EventF = class extends Event {
       async () => {
         // Fetch all balance records from the database
         const balances = await Balance.find(); //! test BIG TIME
-        // Use the map method to transform the balances array into an array of user IDs and guild IDs
-        const [userIds, GuildIds] = balances.map(({ UserId, GuildId }) => [UserId, GuildId]);
-        const updates = updateFarms(userIds, GuildIds, balances, this.client);
+        // Use the map method to transform the balances array into an array of IdJoined, which is user id and guild id
+        const IdJoined = [...new Set(balances.map((balance) => balance.IdJoined))];
+        const updates = updateFarms(IdJoined, balances, this.client);
         await Balance.updateMany(updates);
       },
       null,
