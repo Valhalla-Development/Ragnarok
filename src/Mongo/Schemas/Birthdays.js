@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 const Birthdays = new Schema({
   UserId: { type: String, unique: true },
-  Date: String,
+  Date: { type: String, default: null },
   LastRun: { type: Array, default: null }
 });
 
