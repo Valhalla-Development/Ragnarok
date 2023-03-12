@@ -25,6 +25,9 @@ const nanoid = customAlphabet('0123456789abcdefghijklmnopqrstuvwxyz', 7);
 
 export const EventF = class extends Event {
   async run(interaction) {
+    // Update economy profile
+    if (interaction.guild) await this.client.utils.updateEconomy(interaction.user.id, interaction.guild.id);
+
     if (interaction.isChatInputCommand()) {
       if (!interaction.guild) return;
       const command = this.client.slashCommands.get(interaction.commandName.toLowerCase());

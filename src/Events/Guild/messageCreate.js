@@ -14,11 +14,8 @@ import LevelConfig from '../../Mongo/Schemas/LevelConfig.js';
 import Dad from '../../Mongo/Schemas/Dad.js';
 import AntiScam from '../../Mongo/Schemas/AntiScam.js';
 import AdsProtection from '../../Mongo/Schemas/AdsProtection.js';
-import Balance from '../../Mongo/Schemas/Balance.js';
 import Level from '../../Mongo/Schemas/Level.js';
 
-const coinCooldown = new Set();
-const coinCooldownSeconds = 60;
 const xpCooldown = new Set();
 const xpCooldownSeconds = 60;
 
@@ -609,51 +606,9 @@ export const EventF = class extends Event {
       });
     }
 
-    // Balance (balance)
+    // Balance
     if (message.author.bot) return;
-    let balance = await Balance.findOne({ IdJoined: `${message.author.id}-${message.guild.id}` }); //! test
-
-    if (!balance) {
-      const claimNewUserTime = new Date().getTime() + this.client.ecoPrices.newUserTime;
-      balance = {
-        IdJoined: `${message.author.id}-${message.guild.id}`,
-        UserId: message.author.id,
-        GuildId: message.guild.id,
-        Hourly: null,
-        Daily: null,
-        Weekly: null,
-        Monthly: null,
-        StealCool: null,
-        FishCool: null,
-        FarmCool: null,
-        Boosts: null,
-        Items: null,
-        Cash: 0,
-        Bank: 500,
-        Total: 500,
-        ClaimNewUser: claimNewUserTime,
-        FarmPlot: null,
-        DmHarvest: null,
-        HarvestedCrops: null,
-        Lottery: null
-      };
-    }
-
-    const curBal = balance.Cash;
-    const curBan = balance.Bank;
-    const coinAmt = Math.floor(Math.random() * this.client.ecoPrices.maxPerM) + this.client.ecoPrices.minPerM;
-
-    if (coinAmt) {
-      if (!coinCooldown.has(message.author.id)) {
-        balance.Cash = curBal + coinAmt;
-        balance.Total = curBal + curBan + coinAmt;
-        await balance.save(); //! ERROR
-        coinCooldown.add(message.author.id);
-        setTimeout(() => {
-          coinCooldown.delete(message.author.id);
-        }, coinCooldownSeconds * 1000);
-      }
-    }
+    await this.client.utils.updateEconomy(message.author.id, message.guild.id);
 
     // Scores (Level)
     async function levelSystem(client) {

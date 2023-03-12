@@ -10,6 +10,10 @@ import mongoose from 'mongoose';
 import Event from './Event.js';
 import SlashCommand from './SlashCommand.js';
 import RagnarokDashboard from '../Dashboard/RagnarokDashboard.js';
+import Balance from '../Mongo/Schemas/Balance.js';
+
+const coinCooldown = new Set();
+const coinCooldownSeconds = 60;
 
 const globPromise = promisify(glob);
 
@@ -192,6 +196,40 @@ export const Util = class Util {
   async loadDashboard() {
     const dashboard = new RagnarokDashboard(this.client);
     dashboard.dashboard(this.client);
+  }
+
+  // Economy system
+  async updateEconomy(userId, guildId) {
+    let balance = await Balance.findOne({ IdJoined: `${userId}-${guildId}` });
+
+    if (!balance) {
+      const claimNewUserTime = new Date().getTime() + this.client.ecoPrices.newUserTime;
+      balance = new Balance({
+        IdJoined: `${userId}-${guildId}`,
+        UserId: userId,
+        GuildId: guildId,
+        Cash: 0,
+        Bank: 500,
+        Total: 500,
+        ClaimNewUser: claimNewUserTime
+      });
+    }
+
+    const curBal = balance.Cash;
+    const curBan = balance.Bank;
+    const coinAmt = Math.floor(Math.random() * this.client.ecoPrices.maxPerM) + this.client.ecoPrices.minPerM;
+
+    if (coinAmt) {
+      if (!coinCooldown.has(userId)) {
+        balance.Cash = curBal + coinAmt;
+        balance.Total = curBal + curBan + coinAmt;
+        await balance.save();
+        coinCooldown.add(userId);
+        setTimeout(() => {
+          coinCooldown.delete(userId);
+        }, coinCooldownSeconds * 1000);
+      }
+    }
   }
 };
 
