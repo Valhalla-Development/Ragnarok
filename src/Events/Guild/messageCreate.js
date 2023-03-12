@@ -2,7 +2,15 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-inline-comments */
 /* eslint-disable no-mixed-operators */
-import { EmbedBuilder, PermissionsBitField, ButtonBuilder, ActionRowBuilder, ButtonStyle, OverwriteType, ChannelType } from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ChannelType,
+  EmbedBuilder,
+  OverwriteType,
+  PermissionsBitField
+} from 'discord.js';
 import urlRegexSafe from 'url-regex-safe';
 import fetch from 'node-fetch';
 import { customAlphabet } from 'nanoid';
@@ -55,11 +63,11 @@ export const EventF = class extends Event {
         }
 
         // Then filter which guilds have tickets enabled in the db
-        const guildsWithTickets = guilds.filter(async (guild) => {
+        const guildsWithTickets = guilds.filter(async (guild) => 
           // Fetch the row from the db where role is not null
-          const row = await TicketConfig.findOne({ GuildId: guild.id, Role: { $exists: true, $ne: null } }); // TODO TEST THIS AF BRUH
-          return row;
-        });
+           // TODO TEST THIS AF BRUH
+           TicketConfig.findOne({ GuildId: guild.id, Role: { $exists: true, $ne: null } })
+        );
 
         if (!guildsWithTickets.size) {
           const embed = new EmbedBuilder().setColor('#A10000').addFields({
@@ -97,13 +105,10 @@ export const EventF = class extends Event {
         }));
 
         // Map embedFields to buttons with numbers
-        const buttons = embedFields.map((obj) => {
-          const buttonMap = new ButtonBuilder()
-            .setStyle(ButtonStyle.Success)
-            .setLabel(`${obj.name.slice(0, obj.name.indexOf('.'))}`)
-            .setCustomId(`modMail-${obj.value.substring(obj.value.indexOf('`') + 1, obj.value.lastIndexOf('`'))}`);
-          return buttonMap;
-        });
+        const buttons = embedFields.map((obj) => new ButtonBuilder()
+              .setStyle(ButtonStyle.Success)
+              .setLabel(`${obj.name.slice(0, obj.name.indexOf('.'))}`)
+              .setCustomId(`modMail-${obj.value.substring(obj.value.indexOf('`') + 1, obj.value.lastIndexOf('`'))}`));
 
         // Trim buttons to 24
         const trimmedButtons = buttons.slice(0, 24);

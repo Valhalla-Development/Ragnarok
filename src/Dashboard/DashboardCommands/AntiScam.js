@@ -22,7 +22,7 @@ export default (client) => {
     };
   };
 
-  const AntiScam = {
+  return {
     categoryId: 'AntiScam',
     categoryName: 'Anti Scam',
     categoryDescription: 'Toggle the Anti Scam Module. When enabled, it will remove all known scam links (retreived from an API).',
@@ -59,6 +59,4 @@ export default (client) => {
       }
     ]
   };
-
-  return AntiScam;
 };

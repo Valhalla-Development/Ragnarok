@@ -192,10 +192,7 @@ export const SlashCommandF = class extends SlashCommand {
       const rows = await Birthdays.find();
 
       // Filter the rows to only include users who are in the guild
-      const filteredRows = rows.filter((row) => {
-        const member = interaction.guild.members.cache.get(row.UserId);
-        return member;
-      });
+      const filteredRows = rows.filter((row) => interaction.guild.members.cache.get(row.UserId));
 
       if (!rows) {
         const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({

@@ -22,7 +22,7 @@ export default (client) => {
     };
   };
 
-  const AdsProtection = {
+  return {
     categoryId: 'AdProtection',
     categoryName: 'Advert Protection',
     categoryDescription: 'Toggle the Advert Protection Module. When enabled, it will remove all links posted.',
@@ -59,6 +59,4 @@ export default (client) => {
       }
     ]
   };
-
-  return AdsProtection;
 };

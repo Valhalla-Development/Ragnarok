@@ -25,7 +25,7 @@ export default (client) => {
     };
   };
 
-  const Welcome = {
+  return {
     categoryId: 'Welcome',
     categoryName: 'Welcome',
     categoryDescription: 'Configure the Welcome module.',
@@ -107,13 +107,13 @@ export default (client) => {
         }).save();
       } else {
         await WelcomeSchema.findOneAndUpdate(
-          {
-            GuildId: guild.id
-          },
-          {
-            ChannelId: welcomeChan,
-            Image: welcomeImg
-          }
+            {
+              GuildId: guild.id
+            },
+            {
+              ChannelId: welcomeChan,
+              Image: welcomeImg
+            }
         );
       }
     },
@@ -129,7 +129,7 @@ export default (client) => {
         optionId: 'welcomeImage',
         optionName: 'Image',
         optionDescription:
-          'Select the (optional) image. An absolute URL must be provided to the image you wish to be displayed. Allowed extensions are: jpg, jpeg, png',
+            'Select the (optional) image. An absolute URL must be provided to the image you wish to be displayed. Allowed extensions are: jpg, jpeg, png',
         optionType: DBD.formTypes.textarea(),
         allowedCheck
       },
@@ -142,6 +142,4 @@ export default (client) => {
       }
     ]
   };
-
-  return Welcome;
 };

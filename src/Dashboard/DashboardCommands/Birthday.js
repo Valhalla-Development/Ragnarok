@@ -23,7 +23,7 @@ export default (client) => {
     };
   };
 
-  const Birthday = {
+  return {
     categoryId: 'Birthday',
     categoryName: 'Birthday Config',
     categoryDescription: 'Configure the Birthday module.',
@@ -85,13 +85,13 @@ export default (client) => {
         }).save();
       } else {
         await BirthdayConfigSchema.findOneAndUpdate(
-          {
-            GuildId: guild.id
-          },
-          {
-            ChannelId: birthdayChan,
-            Role: birthdayRol
-          }
+            {
+              GuildId: guild.id
+            },
+            {
+              ChannelId: birthdayChan,
+              Role: birthdayRol
+            }
         );
       }
     },
@@ -119,6 +119,4 @@ export default (client) => {
       }
     ]
   };
-
-  return Birthday;
 };

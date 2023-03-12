@@ -41,7 +41,7 @@ export default (client) => {
     };
   };
 
-  const Rolemenu = {
+  return {
     categoryId: 'Rolemenu',
     categoryName: 'Rolemenu',
     categoryDescription: 'Set the rolemenu.',
@@ -72,8 +72,8 @@ export default (client) => {
       }
 
       if (
-        data.some((option) => option.optionId === 'rolemenuToggle' && option.data === true) &&
-        !data.some((option) => option.optionId === 'rolemenu')
+          data.some((option) => option.optionId === 'rolemenuToggle' && option.data === true) &&
+          !data.some((option) => option.optionId === 'rolemenu')
       ) {
         return { error: 'Please set a role!' };
       }
@@ -87,12 +87,12 @@ export default (client) => {
           }).save();
         } else {
           await RoleMenuSchema.findOneAndUpdate(
-            {
-              GuildId: guild.id
-            },
-            {
-              RoleList: JSON.stringify(rolemenObject.data)
-            }
+              {
+                GuildId: guild.id
+              },
+              {
+                RoleList: JSON.stringify(rolemenObject.data)
+              }
           );
         }
       }
@@ -114,6 +114,4 @@ export default (client) => {
       }
     ]
   };
-
-  return Rolemenu;
 };

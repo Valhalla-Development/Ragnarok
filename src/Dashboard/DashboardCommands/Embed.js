@@ -31,62 +31,6 @@ export default (client) => {
     };
   };
 
-  const Embed = {
-    categoryId: 'EmbedCreator',
-    categoryName: 'Embed Creator',
-    categoryDescription: 'Build your own Embed, and send it to a specified channel!',
-    categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
-    getActualSet: async ({ }) => [
-      {
-        optionId: 'embed'
-      },
-      {
-        optionId: 'channel'
-      }
-    ],
-    setNew: async ({ data }) => {
-      if (
-        data.some((option) => option.optionId === 'embed' && Object.keys(option.data).length > 0) &&
-        data.some((option) => option.optionId === 'channel' && option.data)
-      ) {
-        const [returnedChannel, returnedEmbed, error] = forLoopThingy(data);
-        if (error) return error;
-        sendEmbed(returnedChannel, returnedEmbed);
-      }
-      const [returnedChannel, returnedEmbed, error] = forLoopThingy(data);
-      if (error) return error;
-      if (!returnedChannel && Object.keys(returnedEmbed).length <= 0) {
-        return { error: 'Please save a valid Embed, and Channel.' };
-      }
-      if (!returnedChannel) {
-        return { error: 'Please save a valid Channel.' };
-      }
-      if (Object.keys(returnedEmbed).length <= 0) {
-        return { error: 'Please save a valid Embed.' };
-      }
-    },
-    categoryOptionsList: [
-      {
-        optionId: 'embed',
-        optionName: 'Embed Creator',
-        optionDescription: 'Build your own Embed, and send it to a specified channel!',
-        optionType: DBD.formTypes.embedBuilder({
-          username: 'Ragnarok',
-          avatarURL: 'https://cdn.discordapp.com/avatars/508756879564865539/cf3b93aaee0351708a4f65593e6fe6b4.webp',
-          defaultJson: {}
-        }),
-        allowedCheck
-      },
-      {
-        optionId: 'channel',
-        optionName: 'Embed Channel',
-        optionDescription: 'Pick a channel to send the embed to.',
-        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false, true),
-        allowedCheck
-      }
-    ]
-  };
-
   function forLoopThingy(data) {
     let channel;
     let embed;
@@ -175,5 +119,59 @@ export default (client) => {
     return newObj;
   }
 
-  return Embed;
+  return {
+    categoryId: 'EmbedCreator',
+    categoryName: 'Embed Creator',
+    categoryDescription: 'Build your own Embed, and send it to a specified channel!',
+    categoryImageURL: 'https://ragnarokbot.com/assets/img/functions/moderation.png',
+    getActualSet: async ({}) => [
+      {
+        optionId: 'embed'
+      },
+      {
+        optionId: 'channel'
+      }
+    ],
+    setNew: async ({ data }) => {
+      if (
+          data.some((option) => option.optionId === 'embed' && Object.keys(option.data).length > 0) &&
+          data.some((option) => option.optionId === 'channel' && option.data)
+      ) {
+        const [returnedChannel, returnedEmbed, error] = forLoopThingy(data);
+        if (error) return error;
+        sendEmbed(returnedChannel, returnedEmbed);
+      }
+      const [returnedChannel, returnedEmbed, error] = forLoopThingy(data);
+      if (error) return error;
+      if (!returnedChannel && Object.keys(returnedEmbed).length <= 0) {
+        return { error: 'Please save a valid Embed, and Channel.' };
+      }
+      if (!returnedChannel) {
+        return { error: 'Please save a valid Channel.' };
+      }
+      if (Object.keys(returnedEmbed).length <= 0) {
+        return { error: 'Please save a valid Embed.' };
+      }
+    },
+    categoryOptionsList: [
+      {
+        optionId: 'embed',
+        optionName: 'Embed Creator',
+        optionDescription: 'Build your own Embed, and send it to a specified channel!',
+        optionType: DBD.formTypes.embedBuilder({
+          username: 'Ragnarok',
+          avatarURL: 'https://cdn.discordapp.com/avatars/508756879564865539/cf3b93aaee0351708a4f65593e6fe6b4.webp',
+          defaultJson: {}
+        }),
+        allowedCheck
+      },
+      {
+        optionId: 'channel',
+        optionName: 'Embed Channel',
+        optionDescription: 'Pick a channel to send the embed to.',
+        optionType: DBD.formTypes.channelsSelect(false, [ChannelType.GuildText], false, false, true),
+        allowedCheck
+      }
+    ]
+  };
 };

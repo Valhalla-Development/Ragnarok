@@ -41,7 +41,7 @@ export default (client) => {
     };
   };
 
-  const AutoRole = {
+  return {
     categoryId: 'AutoRole',
     categoryName: 'Auto Role',
     categoryDescription: 'Set the role members will be given once they join your server.',
@@ -72,8 +72,8 @@ export default (client) => {
       }
 
       if (
-        data.some((option) => option.optionId === 'autoRoleToggle' && option.data === true) &&
-        !data.some((option) => option.optionId === 'autoRole')
+          data.some((option) => option.optionId === 'autoRoleToggle' && option.data === true) &&
+          !data.some((option) => option.optionId === 'autoRole')
       ) {
         return { error: 'Please set a role!' };
       }
@@ -87,12 +87,12 @@ export default (client) => {
           }).save();
         } else {
           await AutoRoleSchema.findOneAndUpdate(
-            {
-              GuildId: guild.id
-            },
-            {
-              Role: autoRoleObject.data
-            }
+              {
+                GuildId: guild.id
+              },
+              {
+                Role: autoRoleObject.data
+              }
           );
         }
       }
@@ -114,6 +114,4 @@ export default (client) => {
       }
     ]
   };
-
-  return AutoRole;
 };

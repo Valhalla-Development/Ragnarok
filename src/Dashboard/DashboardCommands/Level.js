@@ -22,7 +22,7 @@ export default (client) => {
     };
   };
 
-  const AdsProtection = {
+  return {
     categoryId: 'Level',
     categoryName: 'Level',
     categoryDescription: 'Toggle the Level Module. When disabled, no level up messages will be posted (You can still gain XP).',
@@ -59,6 +59,4 @@ export default (client) => {
       }
     ]
   };
-
-  return AdsProtection;
 };

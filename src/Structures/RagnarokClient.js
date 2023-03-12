@@ -1,11 +1,19 @@
 /* eslint-disable import/no-named-as-default-member */
-import { Client, Collection, PermissionsBitField, GatewayIntentBits, Partials, codeBlock, EmbedBuilder } from 'discord.js';
+import {
+  Client,
+  codeBlock,
+  Collection,
+  EmbedBuilder,
+  GatewayIntentBits,
+  Partials,
+  PermissionsBitField
+} from 'discord.js';
 import db from 'quick.db';
-import { GiveawaysManager } from 'discord-giveaways';
+import {GiveawaysManager} from 'discord-giveaways';
 import DLU from '@dbd-soft-ui/logs';
 import Util from './Util.js';
-import * as stenLinks from '../../Storage/spenLinks.json' assert { type: 'json' };
-import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
+import * as stenLinks from '../../Storage/spenLinks.json' assert {type: 'json'};
+import {ClusterClient, getInfo} from 'discord-hybrid-sharding';
 
 if (!Array.isArray(db.get('giveaways'))) db.set('giveaways', []);
 
@@ -45,7 +53,7 @@ export const RagnarokClient = class RagnarokClient extends Client {
 
     this.cluster = new ClusterClient(this);
 
-    const balancePrice = {
+    this.ecoPrices = {
       // Amount you earn per message & cooldown
       maxPerM: 40,
       minPerM: 10,
@@ -133,8 +141,6 @@ export const RagnarokClient = class RagnarokClient extends Client {
       begTimer: 120000
     };
 
-    this.ecoPrices = balancePrice;
-
     this.stenLinks = stenLinks.default;
 
     const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
@@ -180,7 +186,8 @@ export const RagnarokClient = class RagnarokClient extends Client {
     };
 
     // Create a new instance of your new class
-    const manager = new GiveawayManagerWithOwnDatabase(this, {
+    // We now have a giveawaysManager property to access the manager everywhere!
+    this.giveawaysManager = new GiveawayManagerWithOwnDatabase(this, {
       default: {
         botsCanWin: false,
         embedColor: '#FF0000',
@@ -188,9 +195,6 @@ export const RagnarokClient = class RagnarokClient extends Client {
         reaction: '🎉'
       }
     });
-
-    // We now have a giveawaysManager property to access the manager everywhere!
-    this.giveawaysManager = manager;
 
     // Error function for notifiers
     function sendError(client, message) {

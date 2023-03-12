@@ -22,7 +22,7 @@ export default (client) => {
     };
   };
 
-  const AdsProtection = {
+  return {
     categoryId: 'Hastebin',
     categoryName: 'Hastebin',
     categoryDescription: 'Toggle the Hastebin Module. When enabled, it will remove any links posted via the command.',
@@ -59,6 +59,4 @@ export default (client) => {
       }
     ]
   };
-
-  return AdsProtection;
 };

@@ -22,7 +22,7 @@ export default (client) => {
     };
   };
 
-  const AdsProtection = {
+  return {
     categoryId: 'Dad',
     categoryName: 'Dad',
     categoryDescription: 'Toggle the Dad Module. When enabled, it will respond to messages starting with \'im\'.',
@@ -59,6 +59,4 @@ export default (client) => {
       }
     ]
   };
-
-  return AdsProtection;
 };

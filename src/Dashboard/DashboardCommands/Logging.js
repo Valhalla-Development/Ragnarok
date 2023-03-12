@@ -23,7 +23,7 @@ export default (client) => {
     };
   };
 
-  const Logging = {
+  return {
     categoryId: 'Logging',
     categoryName: 'Logging',
     categoryDescription: 'Set the Logging channel.',
@@ -63,12 +63,12 @@ export default (client) => {
         }).save();
       } else {
         await LoggingSchema.findOneAndUpdate(
-          {
-            GuildId: guild.id
-          },
-          {
-            ChannelId: loggingObject.data
-          }
+            {
+              GuildId: guild.id
+            },
+            {
+              ChannelId: loggingObject.data
+            }
         );
       }
     },
@@ -89,6 +89,4 @@ export default (client) => {
       }
     ]
   };
-
-  return Logging;
 };

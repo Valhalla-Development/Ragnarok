@@ -86,9 +86,7 @@ export const SlashCommandF = class extends SlashCommand {
         otherB.Total = totalCalc;
         await otherB.save();
 
-        const endTime = new Date().getTime() + 120000;
-
-        balance.StealCool = endTime;
+        balance.StealCool = new Date().getTime() + 120000;
         balance.Cash = calc2;
         balance.Total = totalCalc2;
         await balance.save();
@@ -168,9 +166,7 @@ export const SlashCommandF = class extends SlashCommand {
         otherB.Total = totalCalc;
         await otherB.save();
 
-        const endTime = new Date().getTime() + 240000;
-
-        balance.StealCool = endTime;
+        balance.StealCool = new Date().getTime() + 240000;
         balance.Bank = calc2;
         balance.Total = totalCalc2;
         await balance.save();

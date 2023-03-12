@@ -23,7 +23,7 @@ export default (client) => {
     };
   };
 
-  const Starboard = {
+  return {
     categoryId: 'Starboard',
     categoryName: 'Starboard',
     categoryDescription: 'Set the Starboard channel.',
@@ -63,12 +63,12 @@ export default (client) => {
         }).save();
       } else {
         await StarBoardSchema.findOneAndUpdate(
-          {
-            GuildId: guild.id
-          },
-          {
-            ChannelId: starObject.data
-          }
+            {
+              GuildId: guild.id
+            },
+            {
+              ChannelId: starObject.data
+            }
         );
       }
     },
@@ -89,6 +89,4 @@ export default (client) => {
       }
     ]
   };
-
-  return Starboard;
 };

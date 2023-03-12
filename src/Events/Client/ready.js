@@ -1,9 +1,9 @@
 /* eslint-disable no-param-reassign */
-import { ActivityType, EmbedBuilder } from 'discord.js';
+import {ActivityType, EmbedBuilder} from 'discord.js';
 import moment from 'moment';
-import { CronJob } from 'cron';
+import {CronJob} from 'cron';
 import fetch from 'node-fetch';
-import { load } from 'cheerio';
+import {load} from 'cheerio';
 import Table from 'cli-table3';
 import si from 'systeminformation';
 import Event from '../../Structures/Event.js';
@@ -13,7 +13,7 @@ import Birthdays from '../../Mongo/Schemas/Birthdays.js';
 import BirthdayConfig from '../../Mongo/Schemas/BirthdayConfig.js';
 import TempBan from '../../Mongo/Schemas/TempBan.js';
 import Logging from '../../Mongo/Schemas/Logging.js';
-import * as packageFile from '../../../package.json' assert { type: 'json' };
+import * as packageFile from '../../../package.json' assert {type: 'json'};
 
 const pckg = packageFile.default;
 
@@ -131,7 +131,7 @@ export const EventF = class extends Event {
       // Use the moment library to create moment objects for the current time and the cropGrowTime
       const currentTime = moment();
 
-      const updates = userData.map((data) => {
+      return userData.map((data) => {
         // Parse the JSON strings into arrays
         const FarmPlot = data.FarmPlot ? JSON.parse(data.FarmPlot) : [];
         const HarvestedCrops = data.HarvestedCrops ? JSON.parse(data.HarvestedCrops) : [];
@@ -182,7 +182,7 @@ export const EventF = class extends Event {
         const cleanedHarvestedCrops = updatedHarvestedCrops.filter(Boolean);
 
         return {
-          filter: { IdJoined: data.IdJoined },
+          filter: {IdJoined: data.IdJoined},
           update: {
             $set: {
               FarmPlot: JSON.stringify(cleanedFarmPlot),
@@ -191,8 +191,6 @@ export const EventF = class extends Event {
           }
         };
       });
-
-      return updates;
     }
 
     // Use a CronJob to run the updateAllFarms function every minute
