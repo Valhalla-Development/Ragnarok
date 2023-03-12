@@ -41,7 +41,7 @@
     "discord-image-generation": "^1.4.25",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.3",
-    "glob": "^9.2.1",
+    "glob": "8.1.0",
     "hastebin.js": "^1.3.2",
     "imdb-light": "^1.1.5",
     "mathjs": "^11.6.0",
