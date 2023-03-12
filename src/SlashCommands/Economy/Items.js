@@ -27,7 +27,6 @@ export const SlashCommandF = class extends SlashCommand {
 
     let foundItemList = JSON.parse(balance.Items);
     let foundBoostList = JSON.parse(balance.Boosts);
-    const foundPlotList = JSON.parse(balance.FarmPlot);
     let foundHarvestList = JSON.parse(balance.HarvestedCrops);
 
     if (!foundBoostList) {
