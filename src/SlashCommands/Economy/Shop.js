@@ -605,7 +605,7 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = Number(balance.Total) - Number(cornTot);
         await balance.save();
 
-        let calc = 0;
+        let calc;
         if (foundItemList.cornSeeds) {
           calc = Number(foundItemList.cornSeeds) + Number(1) * 10;
         } else {
@@ -667,7 +667,7 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = Number(balance.Total) - Number(wheatTot);
         await balance.save();
 
-        let calc = 0;
+        let calc;
         if (foundItemList.wheatSeeds) {
           calc = Number(foundItemList.wheatSeeds) + Number(1) * 10;
         } else {
@@ -729,7 +729,7 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = Number(balance.Total) - Number(potatoeTot);
         await balance.save();
 
-        let calc = 0;
+        let calc;
         if (foundItemList.potatoSeeds) {
           calc = Number(foundItemList.potatoSeeds) + Number(1) * 10;
         } else {
@@ -791,7 +791,7 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = Number(balance.Total) - Number(tomatoeTot);
         await balance.save();
 
-        let calc = 0;
+        let calc;
         if (foundItemList.tomatoSeeds) {
           calc = Number(foundItemList.tomatoSeeds) + Number(1) * 10;
         } else {
