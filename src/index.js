@@ -6,4 +6,4 @@ const config = process.env;
 
 const client = new RagnarokClient(config);
 client.cluster = new ClusterClient(client);
-client.start();
+await client.start();
