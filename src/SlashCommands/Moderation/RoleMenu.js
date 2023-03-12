@@ -34,12 +34,7 @@ export const SlashCommandF = class extends SlashCommand {
       const roleArray = JSON.parse(foundRoleMenu.RoleList);
 
       // Check if roles in the array exist in the server, if it does not, remove it from the array
-      const roleArrayCleaned = roleArray.filter((role) => {
-        if (interaction.guild.roles.cache.has(role)) {
-          return true;
-        }
-        return false;
-      });
+      const roleArrayCleaned = roleArray.filter((role) => !!interaction.guild.roles.cache.has(role));
 
       // If there is no length to roleArrayCleaned, delete from database and send a message
       if (roleArrayCleaned.length <= 0) {

@@ -840,12 +840,7 @@ export const EventF = class extends Event {
       const roleArray = JSON.parse(foundRoleMenu.RoleList);
 
       // Check if roles in the array exist in the server, if it does not, remove it from the array
-      const roleArrayCleaned = roleArray.filter((roleCheck) => {
-        if (interaction.guild.roles.cache.has(roleCheck)) {
-          return true;
-        }
-        return false;
-      });
+      const roleArrayCleaned = roleArray.filter((roleCheck) => !!interaction.guild.roles.cache.has(roleCheck));
 
       if (!roleArrayCleaned.includes(role.id)) {
         const alreadyRole = new EmbedBuilder().setColor(this.client.utils.color(guild.members.me.displayHexColor)).addFields({
