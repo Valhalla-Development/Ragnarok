@@ -128,7 +128,7 @@ export const SlashCommandF = class extends SlashCommand {
 
       .addFields(
         { name: `**Roles: [${roles.length}]**`, value: `${roleMsg}`, inline: true },
-        { name: '**Status:**', value: `${statusMsg}`, inline: true },
+        // null, need presence intent bruh { name: '**Status:**', value: `${statusMsg}`, inline: true },
         { name: '**Activity:**', value: `${activityMsg}`, inline: true }
       );
     interaction.reply({ embeds: [embed] });
