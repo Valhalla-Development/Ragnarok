@@ -51,7 +51,7 @@ export const SlashCommandF = class extends SlashCommand {
     const convert = ms(time);
     const toSecond = Math.floor(convert / 1000);
 
-    if (!toSecond || toSecond === undefined) {
+    if (!toSecond) {
       const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
         name: `**${this.client.user.username} - Slow**`,
         value: '**◎ Error:** You did not include a valid time! Correct usage is:\n`/slow <time>` an example would be: `/slow 10s`'
