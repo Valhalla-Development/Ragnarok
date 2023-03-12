@@ -15,7 +15,7 @@ const manager = new ClusterManager(`${directory}src/index.js`, {
 });
 
 manager.on('clusterCreate', (cluster) => console.log(`Launched Cluster ${cluster.id}`));
-manager.spawn({ timeout: -1 });
+await manager.spawn({ timeout: -1 });
 
 DSU.register(manager, {
   dashboard_url: config.DBD_DOMAIN,
