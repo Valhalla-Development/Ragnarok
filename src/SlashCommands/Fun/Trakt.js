@@ -1,7 +1,7 @@
 import { EmbedBuilder, codeBlock, SlashCommandBuilder } from 'discord.js';
 import Trakt from 'trakt.tv';
 import decode from 'unescape';
-import IMDb from 'imdb-light';
+// import IMDb from 'imdb-light';
 import fetch from 'node-fetch';
 import SlashCommand from '../../Structures/SlashCommand.js';
 
