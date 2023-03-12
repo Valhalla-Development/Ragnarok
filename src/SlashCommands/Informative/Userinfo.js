@@ -22,12 +22,12 @@ const flags = {
   Bot: '<:Bot:854724408458870814>'
 };
 
-const status = {
+/* const status = {
   online: '<:Online:748655722740580403> Online',
   idle: '<:Idle:748655722639917117> Idle',
   dnd: '<:DND:748655722979393657> DnD',
   offline: '<:Offline:748655722677403850> Offline'
-};
+}; */
 
 const types = {
   5: 'Competing',
