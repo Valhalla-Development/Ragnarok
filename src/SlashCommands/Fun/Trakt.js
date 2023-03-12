@@ -307,13 +307,13 @@ export const SlashCommandF = class extends SlashCommand {
         });
 
     // IMDB Function
-    function fetchI(id) {
+    /* function fetchI(id) {
       return new Promise((resolve) => {
         IMDb.fetch(id, (details) => {
           resolve(details);
         });
       });
-    }
+    } */
 
     /* async function imdbFetch(id) {
       const quote = await fetchI(id);
