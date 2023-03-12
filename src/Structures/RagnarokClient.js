@@ -307,7 +307,7 @@ export const RagnarokClient = class RagnarokClient extends Client {
       await this.utils.loadDashboard();
     };
 
-    loadSequentially();
+    await loadSequentially();
   }
 };
 
