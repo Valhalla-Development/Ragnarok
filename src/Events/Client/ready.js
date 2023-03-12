@@ -219,7 +219,7 @@ export const EventF = class extends Event {
           return Birthdays.findOne({ UserId: id });// TODO TEST
         };
 
-        grabBdaysConfig.forEach(async (a) => {
+        await Promise.all(grabBdaysConfig.map(async (a) => {
           // Check if bot is in the guild
           const guild = this.client.guilds.cache.get(a.GuildId);
           if (!guild) {
@@ -239,7 +239,7 @@ export const EventF = class extends Event {
           checkDate.setSeconds('0');
           checkDate.setMinutes('0');
 
-          grabBdays.forEach(async (b) => {
+          await Promise.all(grabBdays.map(async (b) => {
             // Check if user is in the guild
             const usr = guild.members.cache.get(b.UserId);
             if (!usr) return;
@@ -282,16 +282,16 @@ export const EventF = class extends Event {
               foundLastRun[guild.id] = now.unix();
 
               await Birthdays.findOneAndUpdate(
-                {
-                  UserId: usr.id // TODO TEST idk if usr.id is right
-                },
-                {
-                  LastRun: JSON.stringify(foundLastRun)
-                }
+                  {
+                    UserId: usr.id // TODO TEST idk if usr.id is right
+                  },
+                  {
+                    LastRun: JSON.stringify(foundLastRun)
+                  }
               );
             }
-          });
-        });
+          }));
+        }));
       },
       null,
       true
@@ -303,7 +303,7 @@ export const EventF = class extends Event {
         // Run every 2 minutes
         // Bans
         const grabBans = await TempBan.find();
-        grabBans.forEach(async (r) => {
+        await Promise.all(grabBans).map(async (r) => {
           const guild = await this.client.guilds.fetch(r.GuildId);
           if (!guild) return;
 
