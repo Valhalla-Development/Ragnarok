@@ -1,4 +1,4 @@
-import { ClusterManager, ClusterClient } from 'discord-hybrid-sharding';
+import { ClusterManager } from 'discord-hybrid-sharding';
 import url from 'url';
 import 'dotenv/config';
 import DSU from '@dbd-soft-ui/shards';
