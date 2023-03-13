@@ -1,9 +1,9 @@
 /* eslint-disable no-param-reassign */
-import {ActivityType, EmbedBuilder} from 'discord.js';
+import { ActivityType, EmbedBuilder } from 'discord.js';
 import moment from 'moment';
-import {CronJob} from 'cron';
+import { CronJob } from 'cron';
 import fetch from 'node-fetch';
-import {load} from 'cheerio';
+import { load } from 'cheerio';
 import Table from 'cli-table3';
 import si from 'systeminformation';
 import Event from '../../Structures/Event.js';
@@ -13,7 +13,7 @@ import Birthdays from '../../Mongo/Schemas/Birthdays.js';
 import BirthdayConfig from '../../Mongo/Schemas/BirthdayConfig.js';
 import TempBan from '../../Mongo/Schemas/TempBan.js';
 import Logging from '../../Mongo/Schemas/Logging.js';
-import * as packageFile from '../../../package.json' assert {type: 'json'};
+import * as packageFile from '../../../package.json' assert { type: 'json' };
 
 const pckg = packageFile.default;
 
@@ -182,7 +182,7 @@ export const EventF = class extends Event {
         const cleanedHarvestedCrops = updatedHarvestedCrops.filter(Boolean);
 
         return {
-          filter: {IdJoined: data.IdJoined},
+          filter: { IdJoined: data.IdJoined },
           update: {
             $set: {
               FarmPlot: JSON.stringify(cleanedFarmPlot),
@@ -216,82 +216,86 @@ export const EventF = class extends Event {
         const grabBdays = await Birthdays.find();
         const grabBdaysConfig = await BirthdayConfig.find();
         const findUserBday = async (id) => {
-          return Birthdays.findOne({ UserId: id });// TODO TEST
+          return Birthdays.findOne({ UserId: id }); // TODO TEST
         };
 
-        await Promise.all(grabBdaysConfig.map(async (a) => {
-          // Check if bot is in the guild
-          const guild = this.client.guilds.cache.get(a.GuildId);
-          if (!guild) {
-            await BirthdayConfig.deleteMany({ GuildId: a.GuildId });
-            return;
-          }
-
-          const channel = guild.channels.cache.get(a.ChannelId);
-          if (!channel) {
-            await BirthdayConfig.deleteMany({ GuildId: a.GuildId });
-            return;
-          }
-
-          const checkDate = new Date();
-          checkDate.setHours('0');
-          checkDate.setMilliseconds('0');
-          checkDate.setSeconds('0');
-          checkDate.setMinutes('0');
-
-          await Promise.all(grabBdays.map(async (b) => {
-            // Check if user is in the guild
-            const usr = guild.members.cache.get(b.UserId);
-            if (!usr) return;
-
-            const grabUser = findUserBday(usr.id); // TODO TEST
-
-            const now = moment();
-
-            let foundLastRun = JSON.parse(grabUser.LastRun);
-
-            if (!foundLastRun) {
-              foundLastRun = {};
+        await Promise.all(
+          grabBdaysConfig.map(async (a) => {
+            // Check if bot is in the guild
+            const guild = this.client.guilds.cache.get(a.GuildId);
+            if (!guild) {
+              await BirthdayConfig.deleteMany({ GuildId: a.GuildId });
+              return;
             }
 
-            const savedDate = new Date(Date.parse(grabUser.Role));
-            savedDate.setFullYear(checkDate.getFullYear());
-            savedDate.setHours('0');
-            savedDate.setMilliseconds('0');
-            savedDate.setSeconds('0');
-            savedDate.setMinutes('0');
+            const channel = guild.channels.cache.get(a.ChannelId);
+            if (!channel) {
+              await BirthdayConfig.deleteMany({ GuildId: a.GuildId });
+              return;
+            }
 
-            if (checkDate.getTime() === savedDate.getTime()) {
-              // Check if the message has already been sent in this guild within the last 24 hours
-              if (foundLastRun[guild.id] && now.unix() < foundLastRun[guild.id] + 86400) {
-                return;
-              }
+            const checkDate = new Date();
+            checkDate.setHours('0');
+            checkDate.setMilliseconds('0');
+            checkDate.setSeconds('0');
+            checkDate.setMinutes('0');
 
-              let msg;
+            await Promise.all(
+              grabBdays.map(async (b) => {
+                // Check if user is in the guild
+                const usr = guild.members.cache.get(b.UserId);
+                if (!usr) return;
 
-              const role = guild.roles.cache.get(a.Role);
+                const grabUser = findUserBday(usr.id); // TODO TEST
 
-              if (role) {
-                msg = `It's ${usr}'s birthday! ${role} Say Happy Birthday! 🍰`;
-              } else {
-                msg = `It's ${usr}'s birthday! Say Happy Birthday! 🍰`;
-              }
-              channel.send(msg);
+                const now = moment();
 
-              // Update the LastRun property with the current timestamp
-              foundLastRun[guild.id] = now.unix();
+                let foundLastRun = JSON.parse(grabUser.LastRun);
 
-              await Birthdays.findOneAndUpdate(
-                  {
-                    UserId: usr.id // TODO TEST idk if usr.id is right
-                  },
-                  {
-                    LastRun: JSON.stringify(foundLastRun)
+                if (!foundLastRun) {
+                  foundLastRun = {};
+                }
+
+                const savedDate = new Date(Date.parse(grabUser.Role));
+                savedDate.setFullYear(checkDate.getFullYear());
+                savedDate.setHours('0');
+                savedDate.setMilliseconds('0');
+                savedDate.setSeconds('0');
+                savedDate.setMinutes('0');
+
+                if (checkDate.getTime() === savedDate.getTime()) {
+                  // Check if the message has already been sent in this guild within the last 24 hours
+                  if (foundLastRun[guild.id] && now.unix() < foundLastRun[guild.id] + 86400) {
+                    return;
                   }
-              );
-            }
-          }));
-        }));
+
+                  let msg;
+
+                  const role = guild.roles.cache.get(a.Role);
+
+                  if (role) {
+                    msg = `It's ${usr}'s birthday! ${role} Say Happy Birthday! 🍰`;
+                  } else {
+                    msg = `It's ${usr}'s birthday! Say Happy Birthday! 🍰`;
+                  }
+                  channel.send(msg);
+
+                  // Update the LastRun property with the current timestamp
+                  foundLastRun[guild.id] = now.unix();
+
+                  await Birthdays.findOneAndUpdate(
+                    {
+                      UserId: usr.id // TODO TEST idk if usr.id is right
+                    },
+                    {
+                      LastRun: JSON.stringify(foundLastRun)
+                    }
+                  );
+                }
+              })
+            );
+          })
+        );
       },
       null,
       true
