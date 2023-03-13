@@ -161,7 +161,7 @@ export const SlashCommandF = class extends SlashCommand {
     const endTime = new Date().getTime() + ms(duration);
 
     await new TempBan({
-      IdJoined: `${interaction.guild.id}-${user.user.id}`,
+      IdJoined: `${user.user.id}-${interaction.guild.id}`,
       GuildId: interaction.guild.id,
       UserId: user.user.id,
       EndTime: endTime,
@@ -210,7 +210,7 @@ export const SlashCommandF = class extends SlashCommand {
             return;
           }
 
-          await TempBan.deleteOne({ IdJoined: `${interaction.guild.id}-${user.user.userid}` }); // TODO log user.user.userid just to be sure
+          await TempBan.deleteOne({ IdJoined: `${user.user.userid}-${interaction.guild.id}` }); // TODO log user.user.userid just to be sure
 
           const unbanEmbed = new EmbedBuilder()
             .setThumbnail(this.client.user.displayAvatarURL())
