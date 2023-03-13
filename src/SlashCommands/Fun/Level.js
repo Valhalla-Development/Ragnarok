@@ -68,7 +68,7 @@ export const SlashCommandF = class extends SlashCommand {
 
       let score;
       if (interaction.guild) {
-        score = await Level.findOne({ IdJoined: `${interaction.guild.id}-${interaction.user.id}` });
+        score = await Level.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
       }
 
       if (option === 'off') {
@@ -118,7 +118,7 @@ export const SlashCommandF = class extends SlashCommand {
 
       let score;
       if (interaction.guild) {
-        score = await Level.findOne({ IdJoined: `${interaction.guild.id}-${interaction.user.id}` });
+        score = await Level.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
       }
 
       if (interaction.guild.id) {
@@ -133,7 +133,7 @@ export const SlashCommandF = class extends SlashCommand {
 
           await Level.findOneAndUpdate(
             {
-              IdJoined: `${interaction.guild.id}-${interaction.user.id}`
+              IdJoined: `${interaction.user.id}-${interaction.guild.id}`
             },
             {
               Image: null
@@ -195,7 +195,7 @@ export const SlashCommandF = class extends SlashCommand {
 
             await Level.findOneAndUpdate(
               {
-                IdJoined: `${interaction.guild.id}-${interaction.user.id}`
+                IdJoined: `${interaction.user.id}-${interaction.guild.id}`
               },
               {
                 Image: option
@@ -241,7 +241,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     const colorGrab = this.client.utils.color(interaction.guild.members.cache.find((grabUser) => grabUser.id === user.id).displayHexColor);
 
-    const score = await Level.findOne({ IdJoined: `${interaction.guild.id}-${user.id}` });
+    const score = await Level.findOne({ IdJoined: `${user.id}-${interaction.guild.id}` });
     
     let levelImg;
     if (score.Image) {
@@ -269,7 +269,7 @@ export const SlashCommandF = class extends SlashCommand {
 
 
     const getRank = await Level.find({ GuildId: interaction.guild.id }).sort({ Xp: -1 });
-    const filterRank = getRank.find((b) => b.IdJoined === `${interaction.guild.id}-${interaction.user.id}`);
+    const filterRank = getRank.find((b) => b.IdJoined === `${interaction.user.id}-${interaction.guild.id}`);
     const rankPos = converter.toOrdinal(getRank.indexOf(filterRank) + 1);
 
     const canvas = Canvas.createCanvas(934, 282);
