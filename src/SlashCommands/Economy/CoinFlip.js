@@ -27,15 +27,6 @@ export const SlashCommandF = class extends SlashCommand {
 
     const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
-    if (!balance) {
-      const limitE = new EmbedBuilder()
-        .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
-        .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-        .addFields({ name: `**${this.client.user.username} - Coin Flip**`, value: '**◎ Error:** You do not have any balance!' });
-      interaction.reply({ ephemeral: true, embeds: [limitE] });
-      return;
-    }
-
     let betAmt;
 
     if (subOptions === 'all') {
