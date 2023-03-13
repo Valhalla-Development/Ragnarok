@@ -18,14 +18,9 @@ import Event from '../../Structures/Event.js';
 import TicketConfig from '../../Mongo/Schemas/TicketConfig.js';
 import Tickets from '../../Mongo/Schemas/Tickets.js';
 import AFK from '../../Mongo/Schemas/AFK.js';
-import LevelConfig from '../../Mongo/Schemas/LevelConfig.js';
 import Dad from '../../Mongo/Schemas/Dad.js';
 import AntiScam from '../../Mongo/Schemas/AntiScam.js';
 import AdsProtection from '../../Mongo/Schemas/AdsProtection.js';
-import Level from '../../Mongo/Schemas/Level.js';
-
-const xpCooldown = new Set();
-const xpCooldownSeconds = 60;
 
 const dadCooldown = new Set();
 const dadCooldownSeconds = 60;
@@ -613,86 +608,8 @@ export const EventF = class extends Event {
 
     // Balance
     if (message.author.bot) return;
-    await this.client.utils.updateEconomy(message.author.id, message.guild.id);
-
-    // Scores (Level)
-    async function levelSystem(client) {
-      // Level disabled check
-      const levelDb = await LevelConfig.findOne({ GuildId: message.guild.id });
-
-      // Initialize score object
-      let score;
-
-      // Fetch existing score data, if any
-      const existingScore = await Level.findOne({ IdJoined: `${message.guild.id}-${message.author.id}` });
-      if (existingScore) {
-        score = existingScore;
-      } else {
-        score = {
-          IdJoined: `${message.guild.id}-${message.author.id}`,
-          UserId: message.author.id,
-          GuildId: message.guild.id,
-          Xp: 0,
-          Level: 0,
-          Country: null,
-          Image: null
-        };
-      }
-
-      // Calculate XP and Level-up
-      const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15); // Random amount between 15 - 25
-      const curxp = score.Xp; // Current Xp
-      const curlvl = score.Level; // Current Level
-      const levelNoMinus = score.Level + 1;
-      const nxtLvl = (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
-      score.Xp = curxp + xpAdd;
-      if (nxtLvl <= score.Xp) {
-        score.Level = curlvl + 1;
-        if (score.Level === 0) return;
-        if (xpCooldown.has(message.author.id)) return;
-        const lvlup = new EmbedBuilder()
-          .setAuthor({ name: `Congratulations ${message.author.username}` })
-          .setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
-          .setColor(client.utils.color(message.guild.members.me.displayHexColor))
-          .setDescription(`**You have leveled up!**\nNew Level: \`${curlvl + 1}\``);
-
-        if (!levelDb) {
-          if (message.channel.permissionsFor(message.guild.members.me).has(PermissionsBitField.Flags.EmbedLinks)) {
-            message.channel.send({ embeds: [lvlup] }).then((m) => client.utils.deletableCheck(m, 10000));
-          }
-        }
-      }
-
-      // Update score in database, if not on cooldown
-      if (!xpCooldown.has(message.author.id)) {
-        xpCooldown.add(message.author.id);
-        if (!existingScore) {
-          await new Level({
-            IdJoined: score.IdJoined,
-            UserId: score.UserId,
-            GuildId: score.GuildId,
-            Xp: score.Xp,
-            Level: score.Level,
-            Country: score.Country,
-            Image: score.Image
-          }).save();
-        } else {
-          await Level.findOneAndUpdate(
-            {
-              IdJoined: `${message.guild.id}-${message.author.id}`
-            },
-            {
-              Xp: score.Xp,
-              Level: score.Level
-            }
-          );
-        }
-        setTimeout(() => {
-          xpCooldown.delete(message.author.id);
-        }, xpCooldownSeconds * 1000);
-      }
-    }
-    await levelSystem(this.client);
+    await this.client.utils.updateEconomy(message);
+    await this.client.utils.updateLevel(message, this.client)
 
     // Dad Bot
     async function dadBot() {
