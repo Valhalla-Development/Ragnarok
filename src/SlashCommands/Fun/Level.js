@@ -71,20 +71,6 @@ export const SlashCommandF = class extends SlashCommand {
         score = await Level.findOne({ IdJoined: `${interaction.guild.id}-${interaction.user.id}` });
       }
 
-      if (!score) {
-        const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
-
-        await new Level({
-          IdJoined: `${interaction.guild.id}-${interaction.user.id}`,
-          UserId: interaction.user.id,
-          GuildId: interaction.guild.id,
-          Xp: xpAdd,
-          Level: 0,
-          Country: null,
-          Image: null
-        }).save();
-      }
-
       if (option === 'off') {
         if (score && !score.Country) {
           const embed = new EmbedBuilder()
@@ -133,21 +119,6 @@ export const SlashCommandF = class extends SlashCommand {
       let score;
       if (interaction.guild) {
         score = await Level.findOne({ IdJoined: `${interaction.guild.id}-${interaction.user.id}` });
-      }
-
-      if (!score) {
-        // TODO test because the next code may error because !score
-        const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
-
-        await new Level({
-          IdJoined: `${interaction.guild.id}-${interaction.user.id}`,
-          UserId: interaction.user.id,
-          GuildId: interaction.guild.id,
-          Xp: xpAdd,
-          Level: 0,
-          Country: null,
-          Image: null
-        }).save();
       }
 
       if (interaction.guild.id) {
@@ -270,25 +241,8 @@ export const SlashCommandF = class extends SlashCommand {
 
     const colorGrab = this.client.utils.color(interaction.guild.members.cache.find((grabUser) => grabUser.id === user.id).displayHexColor);
 
-    let score = await Level.findOne({ IdJoined: `${interaction.guild.id}-${user.id}` });
-
-    if (!score) {
-      // Random amount between 15 - 25
-      const xpAdd = Math.floor(Math.random() * (25 - 15 + 1) + 15);
-
-      await new Level({
-        IdJoined: `${interaction.guild.id}-${user.id}`,
-        UserId: user.id,
-        GuildId: interaction.guild.id,
-        Xp: xpAdd,
-        Level: 0,
-        Country: null,
-        Image: null
-      }).save();
-
-      score = await Level.findOne({ IdJoined: `${interaction.guild.id}-${user.id}` });
-    }
-
+    const score = await Level.findOne({ IdJoined: `${interaction.guild.id}-${user.id}` });
+    
     let levelImg;
     if (score.Image) {
       await fetch(score.Image).then((res) => {
@@ -302,32 +256,17 @@ export const SlashCommandF = class extends SlashCommand {
       levelImg = './Storage/Canvas/Images/level.png';
     }
 
-    let level;
-    let xp;
-    let levelNoMinus;
-    let nxtLvlXp;
-    let currentxpLvl;
-    let currentLvl;
-    let toLevel;
-    let inLevel;
-    let xpLevel;
-    let xpPercent;
-    if (!score) {
-      level = '0';
-      xpLevel = '0/100 XP';
-      xpPercent = 0;
-    } else {
-      level = score.Level;
-      xp = score.Xp;
-      levelNoMinus = score.Level + 1;
-      currentLvl = score.Level;
-      nxtLvlXp = (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
-      currentxpLvl = (5 / 6) * currentLvl * (2 * currentLvl * currentLvl + 27 * currentLvl + 91);
-      toLevel = Math.floor(nxtLvlXp - currentxpLvl);
-      inLevel = Math.floor(xp - currentxpLvl);
-      xpLevel = `${abbreviate(inLevel, 2)}/${abbreviate(toLevel, 2)} XP`;
-      xpPercent = (inLevel / toLevel) * 100;
-    }
+    const level = score.Level;
+    const xp = score.Xp;
+    const levelNoMinus = score.Level + 1;
+    const currentLvl = score.Level;
+    const nxtLvlXp = (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
+    const currentxpLvl = (5 / 6) * currentLvl * (2 * currentLvl * currentLvl + 27 * currentLvl + 91);
+    const toLevel = Math.floor(nxtLvlXp - currentxpLvl);
+    const inLevel = Math.floor(xp - currentxpLvl);
+    const xpLevel = `${abbreviate(inLevel, 2)}/${abbreviate(toLevel, 2)} XP`;
+    const xpPercent = (inLevel / toLevel) * 100;
+
 
     const getRank = await Level.find({ GuildId: interaction.guild.id }).sort({ Xp: -1 });
     const filterRank = getRank.find((b) => b.IdJoined === `${interaction.guild.id}-${interaction.user.id}`);
