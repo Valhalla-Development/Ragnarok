@@ -3,7 +3,7 @@
 /* eslint-disable no-param-reassign */
 import path from 'path';
 import { promisify } from 'util';
-import { PermissionsBitField, REST, Routes } from 'discord.js';
+import { EmbedBuilder, PermissionsBitField, REST, Routes } from 'discord.js';
 import glob from 'glob';
 import url from 'url';
 import mongoose from 'mongoose';
@@ -11,9 +11,13 @@ import Event from './Event.js';
 import SlashCommand from './SlashCommand.js';
 import RagnarokDashboard from '../Dashboard/RagnarokDashboard.js';
 import Balance from '../Mongo/Schemas/Balance.js';
+import Level from '../Mongo/Schemas/Level.js';
+import LevelConfig from '../Mongo/Schemas/LevelConfig.js';
 
 const coinCooldown = new Set();
 const coinCooldownSeconds = 60;
+const xpCooldown = new Set();
+const xpCooldownSeconds = 60;
 
 const globPromise = promisify(glob);
 
@@ -79,11 +83,11 @@ export const Util = class Util {
 
   formatPerms(perms) {
     return perms
-      .toLowerCase()
-      .replace(/_(?=\S)/g, (match) => match.toUpperCase())
-      .replace(/_/g, ' ')
-      .replace(/Guild/g, 'Server')
-      .replace(/Use Vad/g, 'Use Voice Activity');
+        .toLowerCase()
+        .replace(/_(?=\S)/g, (match) => match.toUpperCase())
+        .replace(/_/g, ' ')
+        .replace(/Guild/g, 'Server')
+        .replace(/Use Vad/g, 'Use Voice Activity');
   }
 
   checkOwner(target) {
@@ -198,28 +202,31 @@ export const Util = class Util {
   }
 
   // Economy system
-  async updateEconomy(userId, guildId) {
-    let balance = await Balance.findOne({ IdJoined: `${userId}-${guildId}` });
+  async updateEconomy(target) {
+    try {
+      if (coinCooldown.has(target.member?.id || target.author?.id)) return;
 
-    if (!balance) {
-      const claimNewUserTime = new Date().getTime() + this.client.ecoPrices.newUserTime;
-      balance = new Balance({
-        IdJoined: `${userId}-${guildId}`,
-        UserId: userId,
-        GuildId: guildId,
-        Cash: 0,
-        Bank: 500,
-        Total: 500,
-        ClaimNewUser: claimNewUserTime
-      });
-    }
+      const userId = target.member?.id || target.author?.id;
+      const guildId = target.guild?.id;
+      if (!userId || !guildId) return;
 
-    const curBal = balance.Cash;
-    const curBan = balance.Bank;
-    const coinAmt = Math.floor(Math.random() * this.client.ecoPrices.maxPerM) + this.client.ecoPrices.minPerM;
+      let balance = await Balance.findOne({ IdJoined: `${userId}-${guildId}` });
+      if (!balance)
+        balance = await new Balance({
+          IdJoined: `${userId}-${guildId}`,
+          UserId: userId,
+          GuildId: guildId,
+          Cash: 0,
+          Bank: 500,
+          Total: 500,
+          ClaimNewUser: Date.now() + this.client.ecoPrices.newUserTime
+        }).save();
 
-    if (coinAmt) {
-      if (!coinCooldown.has(userId)) {
+      const curBal = balance.Cash || 0;
+      const curBan = balance.Bank;
+      const coinAmt = Math.floor(Math.random() * this.client.ecoPrices.maxPerM) + this.client.ecoPrices.minPerM;
+
+      if (coinAmt) {
         balance.Cash = curBal + coinAmt;
         balance.Total = curBal + curBan + coinAmt;
         await balance.save();
@@ -228,6 +235,62 @@ export const Util = class Util {
           coinCooldown.delete(userId);
         }, coinCooldownSeconds * 1000);
       }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Scores (Level)
+  async updateLevel(target, client) {
+    try {
+      // Check if user is on cool down
+      if (xpCooldown.has(target.member?.id || target.author?.id)) return;
+
+      const user = target.member || target.author;
+      const guildId = target.guild?.id;
+      if (!user || !guildId) return;
+
+      // Check if level is disabled
+      const levelDb = await LevelConfig.findOne({ GuildId: guildId });
+      if (levelDb) return;
+
+      // Generate random XP and update score in database
+      const xpAdd = Math.floor(Math.random() * 11 + 15);
+      const score = await Level.findOneAndUpdate(
+          { IdJoined: `${user.id}-${guildId}` },
+          {
+            UserId: user.id,
+            GuildId: guildId,
+            Xp: xpAdd,
+            Level: 0
+          },
+          { upsert: true, new: true }
+      ).exec();
+
+      // Check if user leveled up
+      const currentLvl = score.Level;
+      const levelNoMinus = currentLvl + 1;
+      const nxtLvl = (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
+      if (nxtLvl <= score.Xp) {
+        score.Level = currentLvl + 1;
+       const lvlUp = new EmbedBuilder()
+            .setAuthor({ name: `Congratulations ${user.user.username}` })
+            .setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
+            .setColor(client.utils.color(target.guild.members.me.displayHexColor))
+            .setDescription(`**You have leveled up!**\nNew Level: \`${score.Level}\``);
+
+        if (target.channel.permissionsFor(target.guild.members.me).has(PermissionsBitField.Flags.EmbedLinks)) {
+          target.channel.send({ embeds: [lvlUp] }).then((m) => client.utils.deletableCheck(m, 10000));
+        }
+      }
+
+      // Add user to cool down and update score in database
+      xpCooldown.add(user.id);
+      setTimeout(() => {
+        xpCooldown.delete(user.id);
+      }, xpCooldownSeconds * 1000);
+    } catch (error) {
+      console.error(error);
     }
   }
 };
