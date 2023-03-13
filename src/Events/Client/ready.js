@@ -314,13 +314,13 @@ export const EventF = class extends Event {
           const bans = await guild.bans.fetch();
           const userCheck = bans.filter((ban) => ban.user.id === r.UserId);
           if (!userCheck.first()) {
-            await TempBan.deleteOne({ IdJoined: `${guild.id}-${r.UserId}` });
+            await TempBan.deleteOne({ IdJoined: `${r.UserId}-${guild.id}` });
           }
 
           const botHasPermission = guild.members.me.permissions.has('BanMembers');
 
           if (!botHasPermission) {
-            await TempBan.deleteOne({ IdJoined: `${guild.id}-${r.UserId}` });
+            await TempBan.deleteOne({ IdJoined: `${r.UserId}-${guild.id}` });
             return;
           }
 
@@ -337,9 +337,9 @@ export const EventF = class extends Event {
 
             try {
               await guild.members.unban(r.UserId, 'tempban');
-              await TempBan.deleteOne({ IdJoined: `${guild.id}-${r.UserId}` });
+              await TempBan.deleteOne({ IdJoined: `${r.UserId}-${guild.id}` });
             } catch {
-              await TempBan.deleteOne({ IdJoined: `${guild.id}-${r.UserId}` });
+              await TempBan.deleteOne({ IdJoined: `${r.UserId}-${guild.id}` });
               return;
             }
 
