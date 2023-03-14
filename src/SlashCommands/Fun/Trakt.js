@@ -88,10 +88,12 @@ export const SlashCommandF = class extends SlashCommand {
               if (!fanartData.hdmovielogo) {
                 reqImage = '';
               } else {
-                reqImage = fanartData.hdmovielogo[0].url;
+                const filteredHdMovieLogo = fanartData.hdmovielogo.filter((logo) => logo.lang === 'en');
+                reqImage = filteredHdMovieLogo.length > 0 ? filteredHdMovieLogo[0].url : fanartData.hdmovielogo[0].url;
               }
             } else {
-              reqImage = fanartData.movieposter[0].url;
+              const filteredMoviePoster = fanartData.movieposter.filter((logo) => logo.lang === 'en');
+              reqImage = filteredMoviePoster.length > 0 ? filteredMoviePoster[0].url : fanartData.movieposter[0].url;
             }
 
             // Set all other variables
@@ -139,10 +141,12 @@ export const SlashCommandF = class extends SlashCommand {
                 if (!fanartData.hdtvlogo) {
                   reqImage = '';
                 } else {
-                  reqImage = fanartData.hdtvlogo[0].url;
+                  const filteredHdtvLogos = fanartData.hdtvlogo.filter((logo) => logo.lang === 'en');
+                  reqImage = filteredHdtvLogos.length > 0 ? filteredHdtvLogos[0].url : fanartData.hdtvlogo[0].url;
                 }
               } else {
-                reqImage = fanartData.tvposter[0].url;
+                const filteredPosterLogos = fanartData.tvposter.filter((logo) => logo.lang === 'en');
+                reqImage = filteredPosterLogos.length > 0 ? filteredPosterLogos[0].url : fanartData.tvposter[0].url;
               }
 
               // Set all other variables
@@ -202,10 +206,12 @@ export const SlashCommandF = class extends SlashCommand {
               if (!fanartData.hdmovielogo) {
                 reqImage = '';
               } else {
-                reqImage = fanartData.hdmovielogo[0].url;
+                const filteredHdMovieLogo = fanartData.hdmovielogo.filter((logo) => logo.lang === 'en');
+                reqImage = filteredHdMovieLogo.length > 0 ? filteredHdMovieLogo[0].url : fanartData.hdmovielogo[0].url;
               }
             } else {
-              reqImage = fanartData.movieposter[0].url;
+              const filteredMoviePoster = fanartData.movieposter.filter((logo) => logo.lang === 'en');
+              reqImage = filteredMoviePoster.length > 0 ? filteredMoviePoster[0].url : fanartData.movieposter[0].url;
             }
 
             // Set all other variables
@@ -260,10 +266,12 @@ export const SlashCommandF = class extends SlashCommand {
               if (!fanartData.hdtvlogo) {
                 reqImage = '';
               } else {
-                reqImage = fanartData.hdtvlogo[0].url;
+                const filteredHdtvLogos = fanartData.hdtvlogo.filter((logo) => logo.lang === 'en');
+                reqImage = filteredHdtvLogos.length > 0 ? filteredHdtvLogos[0].url : fanartData.hdtvlogo[0].url;
               }
             } else {
-              reqImage = fanartData.tvposter[0].url;
+              const filteredPosterLogos = fanartData.tvposter.filter((logo) => logo.lang === 'en');
+              reqImage = filteredPosterLogos.length > 0 ? filteredPosterLogos[0].url : fanartData.tvposter[0].url;
             }
 
             // Set all other variables
