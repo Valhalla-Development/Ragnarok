@@ -42,10 +42,12 @@ export const SlashCommandF = class extends SlashCommand {
      * 4: Test that every call to mongoose works as expected! IMPORTANT!
      * 5: Add a test command to VPS, to ensure it can reach mongo, you may need to add the VPS IP to mongo ✓
      * 6: Everything is now ready for production, so follow these:
-        * 6a: BACKUP EVERYTHING, leave database file as it will be easier to switch back
-        * 6b: Use migration script
-        * 6c: Make announcement, use ChatGPT to make it sound smart... Don't forget to say how long downtime is, migration script tells you at the bottom
-        * 6cA: 
+        * 6a: BACKUP EVERYTHING, leave database file as it will be easier to switch back.
+        * 6b: Disable the economy and level creation functions on messageCreate and interactionCreate
+        * 6c: Return on messageCreate and interactionCreate, except for this script to prevent issues
+        * 6d: Use migration script
+        * 6e: Make announcement, use ChatGPT to make it sound smart... Don't forget to say how long downtime is, migration script tells you at the bottom
+        * 6eA:
         Greetings, Ragnarok users!
         I wanted to give you all a quick heads up that I will be migrating our database over the next 20 minutes. While I don't anticipate any downtime, please be aware that any data input to the current database from this moment on will be rolled back once the migration is complete.
         
@@ -55,12 +57,12 @@ export const SlashCommandF = class extends SlashCommand {
 
         || @everyone :pepesad: ||
 
-        * 6d: Stop Ragnarok
-        * 6e: Move new files
-        * 6f: Start Ragnarok
-        * 6g: Make a sacrifice to the Gods so everything works without issue
-        * 6h: Make announcement with ChatGPT again, ask to report any issues!
-        * 6ha:
+        * 6f: Stop Ragnarok
+        * 6g: Move new files
+        * 6h: Start Ragnarok
+        * 6i: Make a sacrifice to the Gods so everything works without issue
+        * 6j: Make announcement with ChatGPT again, ask to report any issues!
+        * 6kA:
         Just a quick update to let you know that the database migration is complete. Thank you for your patience during the process. As always, if you encounter any issues, please let me know.
      */
 
@@ -132,7 +134,7 @@ export const SlashCommandF = class extends SlashCommand {
           console.log(`Ads Protection Finished Migrating ${adsprot.length.toLocaleString('en')} properties!`);
         }
 
-        if (afk.length) {
+         if (afk.length) {
           let i = 0;
           for (const entry of afk) {
             await new AFK({
@@ -229,8 +231,14 @@ export const SlashCommandF = class extends SlashCommand {
         if (ban.length) {
           let i = 0;
           for (const entry of ban) {
+            let newId = null;
+            if (entry.id) {
+              const parts = entry.id.split('-'); // split the string by '-'
+              newId = `${parts[1]}-${parts[0]}`; // swap the parts
+            }
+
             await new TempBan({
-              IdJoined: entry.id,
+              IdJoined: newId,
               GuildId: entry.guildid,
               UserId: entry.userid,
               EndTime: entry.endtime,
@@ -245,7 +253,7 @@ export const SlashCommandF = class extends SlashCommand {
           console.log(`Ban Finished Migrating ${ban.length.toLocaleString('en')} properties!`);
         }
 
-        if (birthdayConfig.length) {
+         if (birthdayConfig.length) {
           let i = 0;
           for (const entry of birthdayConfig) {
             await new BirthdayConfig({
@@ -360,8 +368,14 @@ export const SlashCommandF = class extends SlashCommand {
         if (scores.length) {
           let i = 0;
           for (const entry of scores) {
+            let newId = null;
+            if (entry.id) {
+              const parts = entry.id.split('-'); // split the string by '-'
+              newId = `${parts[1]}-${parts[0]}`; // swap the parts
+            }
+
             await new Level({
-              IdJoined: entry.id,
+              IdJoined: newId,
               UserId: entry.user,
               GuildId: entry.guild,
               Xp: entry.points,
@@ -377,7 +391,7 @@ export const SlashCommandF = class extends SlashCommand {
           console.log(`Scores Finished Migrating ${scores.length.toLocaleString('en')} properties!`);
         }
 
-        if (setwelcome.length) {
+         if (setwelcome.length) {
           let i = 0;
           for (const entry of setwelcome) {
             await new Welcome({
@@ -446,19 +460,19 @@ export const SlashCommandF = class extends SlashCommand {
           console.log(`Tickets Finished Migrating ${tickets.length.toLocaleString('en')} properties!`);
         }
 
-        const guildsab = this.client.guilds.cache;
+        const guildsArray = Array.from(this.client.guilds.cache.values());
         let i = 0;
-        await Promise.all(guildsab).map(async (a) => {
+        for (const guild of guildsArray) {// todo test
           await new Guilds({
-            GuildId: a.id,
-            Name: a.name,
-            IconUrl: a.iconURL()
+            GuildId: guild.id,
+            Name: guild.name,
+            IconUrl: guild.iconURL()
           })
-            .save()
-            .catch(console.error);
+              .save()
+              .catch(console.error);
           i++;
           await logProgress('Guilds', this.client.guilds.cache.size, i);
-        });
+        }
         console.log(`Guilds Finished Migrating ${this.client.guilds.cache.size.toLocaleString('en')} properties!`);
 
         const endTime = new Date();
