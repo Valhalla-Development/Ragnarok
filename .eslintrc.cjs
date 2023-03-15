@@ -29,6 +29,7 @@ module.exports = {
     ],
     'no-use-before-define': ['error', { functions: false }],
     radix: 'off',
-    'no-plusplus': 'off'
+    'no-plusplus': 'off',
+    'no-restricted-syntax': 'off'
   }
 };
