@@ -39,24 +39,13 @@ export const SlashCommandF = class extends SlashCommand {
     } else {
       foundPlotList = [];
     }
-
-    let foundBoostList = JSON.parse(balance.Boosts);
-    let foundItemList = JSON.parse(balance.Items);
-
+    
     const cornGrow = this.client.ecoPrices.cornPlant;
     const wheatGrow = this.client.ecoPrices.wheatPlant;
     const potatoGrow = this.client.ecoPrices.potatoPlant;
     const tomatoeGrow = this.client.ecoPrices.tomatoPlant;
-
-    if (!foundBoostList) {
-      foundBoostList = {};
-    }
-
-    if (!foundItemList) {
-      foundItemList = {};
-    }
-
-    if (!foundBoostList.FarmPlot) {
+    
+    if (!balance.Boosts.FarmPlot) {
       const embed = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -68,7 +57,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    if (!foundItemList.CornSeeds && !foundItemList.WheatSeeds && !foundItemList.PotatoSeeds && !foundItemList.TomatoSeeds) {
+    if (!balance.Items.CornSeeds && !balance.Items.WheatSeeds && !balance.Items.PotatoSeeds && !balance.Items.TomatoSeeds) {
       const embed = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -80,7 +69,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    if (foundPlotList.length >= Number(foundBoostList.FarmPlot)) {
+    if (foundPlotList.length >= Number(balance.Boosts.FarmPlot)) {
       const embed = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -112,7 +101,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      if (!foundItemList.CornSeeds || Number(foundItemList.CornSeeds - Number(argsAmount)) < 0) {
+      if (!balance.Items.CornSeeds || Number(balance.Items.CornSeeds - Number(argsAmount)) < 0) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -124,7 +113,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      if (foundPlotList.length + Number(argsAmount) > Number(foundBoostList.FarmPlot)) {
+      if (foundPlotList.length + Number(argsAmount) > Number(balance.Boosts.FarmPlot)) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -132,23 +121,23 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Plant**`,
             value: `**◎ Error:** You do not have enough room to plant \`${argsAmount}\` ${
               argsAmount > 1 ? 'seeds.' : 'seed.'
-            }\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.FarmPlot)}\``
+            }\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(balance.Boosts.FarmPlot)}\``
           });
         interaction.reply({ ephemeral: true, embeds: [embed] });
         return;
       }
 
-      const removeSeed = Number(foundItemList.CornSeeds) - Number(argsAmount);
+      const removeSeed = Number(balance.Items.CornSeeds) - Number(argsAmount);
 
       if (removeSeed === 0) {
-        delete foundItemList.CornSeeds;
+        delete balance.Items.CornSeeds;
       } else {
-        foundItemList.CornSeeds = removeSeed.toString();
+        balance.Items.CornSeeds = removeSeed.toString();
       }
 
       await cropCreator('corn', 'planting', new Date().getTime() + Number(cornGrow), argsAmount);
 
-      balance.Items = JSON.stringify(foundItemList);
+      balance.Items = JSON.stringify(balance.Items);
       await balance.save();
 
       const embed = new EmbedBuilder()
@@ -160,7 +149,7 @@ export const SlashCommandF = class extends SlashCommand {
             argsAmount > 1 ? 'seeds.' : 'seed.'
           }\nCorn takes \`${prettyMilliseconds(cornGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${
             foundPlotList.length
-          }\`/\`${Number(foundBoostList.FarmPlot)}\``
+          }\`/\`${Number(balance.Boosts.FarmPlot)}\``
         });
       interaction.reply({ ephemeral: true, embeds: [embed] });
       return;
@@ -176,7 +165,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      if (!foundItemList.WheatSeeds || Number(foundItemList.WheatSeeds - Number(argsAmount)) < 0) {
+      if (!balance.Items.WheatSeeds || Number(balance.Items.WheatSeeds - Number(argsAmount)) < 0) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -188,7 +177,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      if (foundPlotList.length + Number(argsAmount) > Number(foundBoostList.FarmPlot)) {
+      if (foundPlotList.length + Number(argsAmount) > Number(balance.Boosts.FarmPlot)) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -196,23 +185,23 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Plant**`,
             value: `**◎ Error:** You do not have enough room to plant \`${argsAmount}\` ${
               argsAmount > 1 ? 'seeds.' : 'seed.'
-            }\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.FarmPlot)}\``
+            }\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(balance.Boosts.FarmPlot)}\``
           });
         interaction.reply({ ephemeral: true, embeds: [embed] });
         return;
       }
 
-      const removeSeed = Number(foundItemList.WheatSeeds) - Number(argsAmount);
+      const removeSeed = Number(balance.Items.WheatSeeds) - Number(argsAmount);
 
       if (removeSeed === 0) {
-        delete foundItemList.WheatSeeds;
+        delete balance.Items.WheatSeeds;
       } else {
-        foundItemList.WheatSeeds = removeSeed.toString();
+        balance.Items.WheatSeeds = removeSeed.toString();
       }
 
       await cropCreator('wheat', 'planting', new Date().getTime() + Number(wheatGrow), argsAmount);
 
-      balance.Items = JSON.stringify(foundItemList);
+      balance.Items = JSON.stringify(balance.Items);
       await balance.save();
 
       const embed = new EmbedBuilder()
@@ -224,7 +213,7 @@ export const SlashCommandF = class extends SlashCommand {
             argsAmount > 1 ? 'seeds.' : 'seed.'
           }\nWheat takes \`${prettyMilliseconds(wheatGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${
             foundPlotList.length
-          }\`/\`${Number(foundBoostList.FarmPlot)}\``
+          }\`/\`${Number(balance.Boosts.FarmPlot)}\``
         });
       interaction.reply({ embeds: [embed] });
       return;
@@ -240,7 +229,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      if (!foundItemList.PotatoSeeds || Number(foundItemList.PotatoSeeds - Number(argsAmount)) < 0) {
+      if (!balance.Items.PotatoSeeds || Number(balance.Items.PotatoSeeds - Number(argsAmount)) < 0) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -252,7 +241,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      if (foundPlotList.length + Number(argsAmount) > Number(foundBoostList.FarmPlot)) {
+      if (foundPlotList.length + Number(argsAmount) > Number(balance.Boosts.FarmPlot)) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -260,23 +249,23 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Plant**`,
             value: `**◎ Error:** You do not have enough room to plant \`${argsAmount}\` ${
               argsAmount > 1 ? 'seeds.' : 'seed.'
-            }\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.FarmPlot)}\``
+            }\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(balance.Boosts.FarmPlot)}\``
           });
         interaction.reply({ ephemeral: true, embeds: [embed] });
         return;
       }
 
-      const removeSeed = Number(foundItemList.PotatoSeeds) - Number(argsAmount);
+      const removeSeed = Number(balance.Items.PotatoSeeds) - Number(argsAmount);
 
       if (removeSeed === 0) {
-        delete foundItemList.PotatoSeeds;
+        delete balance.Items.PotatoSeeds;
       } else {
-        foundItemList.PotatoSeeds = removeSeed.toString();
+        balance.Items.PotatoSeeds = removeSeed.toString();
       }
 
       await cropCreator('potato', 'planting', new Date().getTime() + Number(potatoGrow), argsAmount);
 
-      balance.Items = JSON.stringify(foundItemList);
+      balance.Items = JSON.stringify(balance.Items);
       await balance.save();
 
       const embed = new EmbedBuilder()
@@ -288,7 +277,7 @@ export const SlashCommandF = class extends SlashCommand {
             argsAmount > 1 ? 'seeds.' : 'seed.'
           }\nPotatoe's take \`${prettyMilliseconds(potatoGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${
             foundPlotList.length
-          }\`/\`${Number(foundBoostList.FarmPlot)}\``
+          }\`/\`${Number(balance.Boosts.FarmPlot)}\``
         });
       interaction.reply({ embeds: [embed] });
       return;
@@ -304,7 +293,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      if (!foundItemList.TomatoSeeds || Number(foundItemList.TomatoSeeds - Number(argsAmount)) < 0) {
+      if (!balance.Items.TomatoSeeds || Number(balance.Items.TomatoSeeds - Number(argsAmount)) < 0) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -316,7 +305,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      if (foundPlotList.length + Number(argsAmount) > Number(foundBoostList.FarmPlot)) {
+      if (foundPlotList.length + Number(argsAmount) > Number(balance.Boosts.FarmPlot)) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -324,23 +313,23 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Plant**`,
             value: `**◎ Error:** You do not have enough room to plant \`${argsAmount}\` ${
               argsAmount > 1 ? 'seeds.' : 'seed.'
-            }\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(foundBoostList.FarmPlot)}\``
+            }\nYour current plot capacity is: \`${foundPlotList.length}\`/\`${Number(balance.Boosts.FarmPlot)}\``
           });
         interaction.reply({ ephemeral: true, embeds: [embed] });
         return;
       }
 
-      const removeSeed = Number(foundItemList.TomatoSeeds) - Number(argsAmount);
+      const removeSeed = Number(balance.Items.TomatoSeeds) - Number(argsAmount);
 
       if (removeSeed === 0) {
-        delete foundItemList.TomatoSeeds;
+        delete balance.Items.TomatoSeeds;
       } else {
-        foundItemList.TomatoSeeds = removeSeed.toString();
+        balance.Items.TomatoSeeds = removeSeed.toString();
       }
 
       await cropCreator('tomato', 'planting', new Date().getTime() + Number(tomatoeGrow), argsAmount);
 
-      balance.Items = JSON.stringify(foundItemList);
+      balance.Items = JSON.stringify(balance.Items);
       await balance.save();
 
       const embed = new EmbedBuilder()
@@ -352,7 +341,7 @@ export const SlashCommandF = class extends SlashCommand {
             argsAmount > 1 ? 'seeds.' : 'seed.'
           }\nTomatoe's take \`${prettyMilliseconds(tomatoeGrow, { verbose: true })}\` to grow.\nYour current plot capacity is: \`${
             foundPlotList.length
-          }\`/\`${Number(foundBoostList.FarmPlot)}\``
+          }\`/\`${Number(balance.Boosts.FarmPlot)}\``
         });
       interaction.reply({ embeds: [embed] });
     }
