@@ -124,87 +124,88 @@ export const EventF = class extends Event {
 
     // Cooldowns
     // Define a function to update the farms for a given user
-    // Define helper functions
-    function parseJsonString(jsonString) {
-      try {
-        return JSON.parse(jsonString);
-      } catch (error) {
-        console.error(`Error parsing JSON string: ${error.message}`);
-        return null;
-      }
-    }
-
-    function serializeToJsonString(jsonObject) {
-      try {
-        return JSON.stringify(jsonObject);
-      } catch (error) {
-        console.error(`Error serializing JSON object: ${error.message}`);
-        return null;
-      }
-    }
-
-    // Define the cron job
     const oneMinTimer = new CronJob(
       '0 * * * * *',
-      async function updateFarms() {
+      async () => {
         const currentTime = moment();
         const bulkOps = [];
 
         try {
-          const groups = await Balance.aggregate([{ $group: { _id: '$IdJoined', balances: { $push: '$$ROOT' } } }]);
+          const pipeline = [
+            {
+              $group: {
+                _id: '$IdJoined',
+                FarmPlot: { $push: '$FarmPlot' },
+                HarvestedCrops: { $push: '$HarvestedCrops' }
+              }
+            },
+            {
+              $project: {
+                _id: 0,
+                IdJoined: '$_id',
+                FarmPlot: { $reduce: { input: '$FarmPlot', initialValue: [], in: { $concatArrays: ['$$value', '$$this'] } } },
+                HarvestedCrops: { $reduce: { input: '$HarvestedCrops', initialValue: [], in: { $concatArrays: ['$$value', '$$this'] } } }
+              }
+            }
+          ];
+
+          const groups = await Balance.aggregate(pipeline);
+
+          if (groups.length === 0) {
+            return;
+          }
 
           for (const group of groups) {
-            const { balances } = group;
-            const { IdJoined } = balances[0];
-            const updatedFarmPlot = [];
-            const updatedHarvestedCrops = [];
+            const balances = group;
 
-            for (const balance of balances) {
-              const FarmPlot = parseJsonString(balance.FarmPlot) || [];
-              const HarvestedCrops = parseJsonString(balance.HarvestedCrops) || [];
+            const updatedPlots = balances.FarmPlot.map((plot) => {
+              const plotGrowTime = moment.unix(plot.CropGrowTime / 1000);
+              if (currentTime.diff(plotGrowTime) >= 0) {
+                plot.CropStatus = 'harvest';
+                plot.CropGrowTime = 'na';
+                plot.Decay = 0;
+              }
 
-              const updatedPlots = FarmPlot.map((plot) => {
-                const plotGrowTime = moment.unix(plot.cropGrowTime / 1000);
-                if (currentTime.diff(plotGrowTime) >= 0) {
-                  plot.cropStatus = 'harvest';
-                  plot.cropGrowTime = 'na';
-                  plot.decay = 0;
-                }
-
-                if (plot.cropStatus === 'harvest') {
-                  if (plot.decay >= 100) {
-                    return null;
-                  }
-
-                  plot.decay += this.client.ecoPrices.decayRate;
-                }
-
-                return plot;
-              });
-
-              updatedFarmPlot.push(...updatedPlots.filter(Boolean));
-
-              const updatedCrops = HarvestedCrops.map((crop) => {
-                if (crop.decay >= 100) {
+              if (plot.CropStatus === 'harvest') {
+                if (plot.Decay >= 100) {
                   return null;
                 }
 
-                crop.decay += this.client.ecoPrices.decayRate * 6;
+                plot.Decay += this.client.ecoPrices.DecayRate;
+              }
 
-                return crop;
-              });
+              return plot;
+            });
 
-              updatedHarvestedCrops.push(...updatedCrops.filter(Boolean));
-            }
+            const updatedCrops = balances.HarvestedCrops.map((crop) => {
+              if (crop.Decay >= 100) {
+                return null;
+              }
 
-            const cleanedFarmPlot = updatedFarmPlot.filter(Boolean);
-            const cleanedHarvestedCrops = updatedHarvestedCrops.filter(Boolean);
+              crop.Decay += this.client.ecoPrices.DecayRate * 6;
 
-            const filter = { IdJoined };
+              return crop;
+            });
+
+            const filteredPlots = updatedPlots.filter((plot) => plot !== null);
+              if (filteredPlots.length === 0) {
+                  balances.FarmPlot = [];
+              } else {
+                  balances.FarmPlot = filteredPlots;
+              }
+
+              const filteredHarvest = updatedCrops.filter((plot) => plot !== null);
+              if (filteredHarvest.length === 0) {
+                  balances.HarvestedCrops = [];
+              } else {
+                  balances.HarvestedCrops = filteredHarvest;
+              }
+
+              const filter = { IdJoined: balances.IdJoined };
             const update = {
               $set: {
-                FarmPlot: serializeToJsonString(cleanedFarmPlot),
-                HarvestedCrops: serializeToJsonString(cleanedHarvestedCrops)
+                FarmPlot: balances.FarmPlot,
+                HarvestedCrops: balances.HarvestedCrops
               }
             };
 
@@ -215,7 +216,7 @@ export const EventF = class extends Event {
           await Balance.bulkWrite(bulkOps);
           console.log('hi done');
         } catch (error) {
-          console.error(`Error updating farms: ${error.message}`);
+          console.error(`Error updating farms: ${error}`);
         }
       },
       null,
