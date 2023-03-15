@@ -1147,7 +1147,7 @@ export const SlashCommandF = class extends SlashCommand {
         if (balance.Items.SwordFish) delete balance.Items.SwordFish;
         if (balance.Items.PufferFish) delete balance.Items.PufferFish;
         if (balance.Items.GoldBar) delete balance.Items.GoldBar;
-        if (balance.Items.GoldNugget) delete balance.Items.GoldNugget;
+        if (balance.Items.GoldNugget) delete balance.Items.GoldNugget;// TODO LITERALLY ALL WRONG, just minus the total bub
         if (balance.Items.Barley) delete balance.Items.Barley;
         if (balance.Items.Spinach) delete balance.Items.Spinach;
         if (balance.Items.Strawberries) delete balance.Items.Strawberries;
