@@ -23,7 +23,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     for (let i = 0; i < top10.length; i++) {
       const data = top10[i];
-      const fetchUsers = interaction.guild.members.cache.get(data.UserId);
+      const fetchUsers = await interaction.guild.members.fetch(data.UserId);
 
       if (fetchUsers === undefined) {
         continue;
