@@ -46,9 +46,6 @@ export const SlashCommandF = class extends SlashCommand {
     const date = new Date().getTime();
 
     if (member.user.id === interaction.user.id) {
-      const foundPlotList = balance.FarmPlot;
-      const foundHarvestList = balance.HarvestedCrops;
-
       let claimUserTime;
       if (balance.ClaimNewUser) {
         const endTime = balance.ClaimNewUser;
@@ -103,13 +100,13 @@ export const SlashCommandF = class extends SlashCommand {
 
       let currentTotalFarm = 0;
 
-      if (foundHarvestList) {
-        currentTotalFarm += Number(foundHarvestList.filter((key) => key.cropType === 'corn').length);
-        currentTotalFarm += Number(foundHarvestList.filter((key) => key.cropType === 'wheat').length);
-        currentTotalFarm += Number(foundHarvestList.filter((key) => key.cropType === 'potato').length);
-        currentTotalFarm += Number(foundHarvestList.filter((key) => key.cropType === 'tomato').length);
+      if (balance.HarvestedCrops) {
+        currentTotalFarm += Number(balance.HarvestedCrops.filter((key) => key.cropType === 'corn').length);
+        currentTotalFarm += Number(balance.HarvestedCrops.filter((key) => key.cropType === 'wheat').length);
+        currentTotalFarm += Number(balance.HarvestedCrops.filter((key) => key.cropType === 'potato').length);
+        currentTotalFarm += Number(balance.HarvestedCrops.filter((key) => key.cropType === 'tomato').length);
       }
-
+      
       const embed1 = new EmbedBuilder()
         .setAuthor({
           name: `${member.user.username}'s Balance`,
@@ -185,7 +182,7 @@ export const SlashCommandF = class extends SlashCommand {
             name: 'Farm Plot',
             value: `${
               balance.Boosts.FarmPlot
-                ? `\`${foundPlotList.length.toLocaleString('en')}/${Number(balance.Boosts.FarmPlot).toLocaleString('en')}\``
+                ? `\`${balance.FarmPlot.length.toLocaleString('en')}/${Number(balance.Boosts.FarmPlot).toLocaleString('en')}\``
                 : '`Not Owned`'
             }`,
             inline: true
