@@ -87,7 +87,7 @@ export const SlashCommandF = class extends SlashCommand {
         foundPlotList.push({ cropType: type, cropStatus: status, cropGrowTime: time, decay: 0 });
       }
 
-      balance.crops = JSON.stringify(foundPlotList);
+      balance.crops = foundPlotList;
       await balance.save();
     }
 
@@ -132,12 +132,11 @@ export const SlashCommandF = class extends SlashCommand {
       if (removeSeed === 0) {
         delete balance.Items.CornSeeds;
       } else {
-        balance.Items.CornSeeds = removeSeed.toString();
+        balance.Items.CornSeeds = removeSeed;
       }
 
       await cropCreator('corn', 'planting', new Date().getTime() + Number(cornGrow), argsAmount);
 
-      balance.Items = JSON.stringify(balance.Items);
       await balance.save();
 
       const embed = new EmbedBuilder()
@@ -196,12 +195,11 @@ export const SlashCommandF = class extends SlashCommand {
       if (removeSeed === 0) {
         delete balance.Items.WheatSeeds;
       } else {
-        balance.Items.WheatSeeds = removeSeed.toString();
+        balance.Items.WheatSeeds = removeSeed;
       }
 
       await cropCreator('wheat', 'planting', new Date().getTime() + Number(wheatGrow), argsAmount);
 
-      balance.Items = JSON.stringify(balance.Items);
       await balance.save();
 
       const embed = new EmbedBuilder()
@@ -260,12 +258,11 @@ export const SlashCommandF = class extends SlashCommand {
       if (removeSeed === 0) {
         delete balance.Items.PotatoSeeds;
       } else {
-        balance.Items.PotatoSeeds = removeSeed.toString();
+        balance.Items.PotatoSeeds = removeSeed;
       }
 
       await cropCreator('potato', 'planting', new Date().getTime() + Number(potatoGrow), argsAmount);
 
-      balance.Items = JSON.stringify(balance.Items);
       await balance.save();
 
       const embed = new EmbedBuilder()
@@ -324,12 +321,11 @@ export const SlashCommandF = class extends SlashCommand {
       if (removeSeed === 0) {
         delete balance.Items.TomatoSeeds;
       } else {
-        balance.Items.TomatoSeeds = removeSeed.toString();
+        balance.Items.TomatoSeeds = removeSeed;
       }
 
       await cropCreator('tomato', 'planting', new Date().getTime() + Number(tomatoeGrow), argsAmount);
 
-      balance.Items = JSON.stringify(balance.Items);
       await balance.save();
 
       const embed = new EmbedBuilder()
