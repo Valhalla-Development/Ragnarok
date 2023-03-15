@@ -226,7 +226,7 @@ export const SlashCommandF = class extends SlashCommand {
           const bulkOps = ban.map(entry => {
             let newId = entry.IdJoined;
             if (entry.id) {
-              const parts = entry.id.split('-');// todo test
+              const parts = entry.id.split('-');
               newId = `${parts[1]}-${parts[0]}`;
             }
             return {
@@ -366,7 +366,7 @@ export const SlashCommandF = class extends SlashCommand {
           const bulkOps = scores.map(entry => {
             let newId = entry.IdJoined;
             if (entry.id) {
-              const parts = entry.id.split('-');// todo test
+              const parts = entry.id.split('-');
               newId = `${parts[1]}-${parts[0]}`;
             }
             return {
