@@ -17,14 +17,8 @@ export const SlashCommandF = class extends SlashCommand {
 
   async run(interaction) {
     const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
-
-    let foundBoostList = await JSON.parse(balance.Boosts);
-
-    if (!foundBoostList) {
-      foundBoostList = {};
-    }
-
-    if (!foundBoostList.FarmPlot) {
+    
+    if (!balance.Boosts.FarmPlot) {
       const embed = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -35,33 +29,26 @@ export const SlashCommandF = class extends SlashCommand {
       interaction.reply({ ephemeral: true, embeds: [embed] });
       return;
     }
-
-    let foundPlotList = await JSON.parse(balance.FarmPlot);
-
-    if (!foundPlotList) {
-      foundPlotList = [];
-    }
-
-    await Promise.all(foundPlotList).map(async (key) => {
+    
+    await Promise.all(balance.FarmPlot).map(async (key) => {
       if (Date.now() > key.cropGrowTime) {
         key.cropStatus = 'harvest';
         key.cropGrowTime = 'na';
         key.decay = 0;
 
-        balance.FarmPlot = JSON.stringify(foundPlotList);
         await balance.save();
       }
     });
 
     let harvestable;
 
-    if (foundPlotList.length) {
-      harvestable = foundPlotList.filter((key) => key.cropStatus === 'harvest');
+    if (balance.FarmPlot.length) {
+      harvestable = balance.FarmPlot.filter((key) => key.cropStatus === 'harvest');
     } else {
       harvestable = [];
     }
 
-    if (!foundPlotList.length && !harvestable.length) {
+    if (!balance.FarmPlot.length && !harvestable.length) {
       const embed = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -70,15 +57,15 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    if (foundPlotList.length && !harvestable.length) {
+    if (balance.FarmPlot.length && !harvestable.length) {
       const arr = [];
 
       const Embeds = [];
       // Luke gets credit for this magic
       let PageNo = 1;
 
-      const filter = foundPlotList.filter((e) => e.cropGrowTime !== 'na');
-      const filterHarvest = foundPlotList.filter((e) => e.cropStatus === 'harvest');
+      const filter = balance.FarmPlot.filter((e) => e.cropGrowTime !== 'na');
+      const filterHarvest = balance.FarmPlot.filter((e) => e.cropStatus === 'harvest');
 
       filterHarvest.forEach((key) => {
         arr.push(`\u3000Crop Type: \`${this.client.utils.capitalise(key.cropType)}\` - Crop Decay: \`${key.decay.toFixed(4)}%\``);
@@ -121,14 +108,8 @@ export const SlashCommandF = class extends SlashCommand {
       TotalPage > 1 ? this.client.functions.pagination(interaction, Embeds) : interaction.reply({ embeds: [Embeds[0]] });
       return;
     }
-
-    let foundHarvestedList = await JSON.parse(balance.HarvestedCrops);
-
-    if (!foundHarvestedList) {
-      foundHarvestedList = [];
-    }
-
-    const availableSpots = foundBoostList.FarmBag - foundHarvestedList.length;
+    
+    const availableSpots = balance.Boosts.FarmBag - balance.HarvestedCrops.length;
 
     const cornPrice = this.client.ecoPrices.corn;
     const wheatPrice = this.client.ecoPrices.wheat;
@@ -194,9 +175,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
     });
 
-    balance.FarmPlot = foundPlotList.length ? JSON.stringify(foundPlotList) : null;
-    balance.HarvestedCrops = JSON.stringify(foundHarvestedList);
-
+    balance.FarmPlot = balance.FarmPlot.length ? balance.FarmPlot : null;
     await balance.save();
 
     const Embeds = [];
@@ -222,16 +201,16 @@ export const SlashCommandF = class extends SlashCommand {
     TotalPage > 1 ? this.client.functions.pagination(interaction, Embeds) : interaction.reply({ embeds: [Embeds[0]] });
 
     function harvestCrops() {
-      for (let removeCounter = 0, harvestCounter = 0; removeCounter < foundPlotList.length && harvestCounter < availableSpots; removeCounter++) {
-        if (foundPlotList[removeCounter].cropStatus === 'harvest') {
-          const removedArray = foundPlotList.splice(removeCounter, 1);
-          foundHarvestedList.push(removedArray[0]);
+      for (let removeCounter = 0, harvestCounter = 0; removeCounter < balance.FarmPlot.length && harvestCounter < availableSpots; removeCounter++) {
+        if (balance.FarmPlot[removeCounter].cropStatus === 'harvest') {
+          const removedArray = balance.FarmPlot.splice(removeCounter, 1);
+          balance.HarvestedCrops.push(removedArray[0]);
           harvestedFunc.push(removedArray[0]);
           harvestCounter++;
           removeCounter--;
         }
       }
-      return foundHarvestedList;
+      return balance.HarvestedCrops;
     }
   }
 };
