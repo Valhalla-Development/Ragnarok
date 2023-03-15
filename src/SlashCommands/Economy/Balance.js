@@ -46,8 +46,6 @@ export const SlashCommandF = class extends SlashCommand {
     const date = new Date().getTime();
 
     if (member.user.id === interaction.user.id) {
-      const foundItemList = balance.Items;
-      const foundBoostList = balance.Boosts;
       const foundPlotList = balance.FarmPlot;
       const foundHarvestList = balance.HarvestedCrops;
 
@@ -59,46 +57,46 @@ export const SlashCommandF = class extends SlashCommand {
       
       let currentTotalSeeds = 0;
 
-      if (foundItemList.CornSeeds) {
-        currentTotalSeeds += Number(foundItemList.CornSeeds);
+      if (balance.Items.CornSeeds) {
+        currentTotalSeeds += Number(balance.Items.CornSeeds);
       } else {
         currentTotalSeeds += Number(0);
       }
-      if (foundItemList.WheatSeeds) {
-        currentTotalSeeds += Number(foundItemList.WheatSeeds);
+      if (balance.Items.WheatSeeds) {
+        currentTotalSeeds += Number(balance.Items.WheatSeeds);
       } else {
         currentTotalSeeds += Number(0);
       }
-      if (foundItemList.PotatoSeeds) {
-        currentTotalSeeds += Number(foundItemList.PotatoSeeds);
+      if (balance.Items.PotatoSeeds) {
+        currentTotalSeeds += Number(balance.Items.PotatoSeeds);
       } else {
         currentTotalSeeds += Number(0);
       }
-      if (foundItemList.TomatoSeeds) {
-        currentTotalSeeds += Number(foundItemList.TomatoSeeds);
+      if (balance.Items.TomatoSeeds) {
+        currentTotalSeeds += Number(balance.Items.TomatoSeeds);
       } else {
         currentTotalSeeds += Number(0);
       }
 
       let currentTotalFish = 0;
 
-      if (foundItemList.Trout) {
-        currentTotalFish += Number(foundItemList.Trout);
+      if (balance.Items.Trout) {
+        currentTotalFish += Number(balance.Items.Trout);
       } else {
         currentTotalFish += Number(0);
       }
-      if (foundItemList.KingSalmon) {
-        currentTotalFish += Number(foundItemList.KingSalmon);
+      if (balance.Items.KingSalmon) {
+        currentTotalFish += Number(balance.Items.KingSalmon);
       } else {
         currentTotalFish += Number(0);
       }
-      if (foundItemList.Swordfish) {
-        currentTotalFish += Number(foundItemList.Swordfish);
+      if (balance.Items.Swordfish) {
+        currentTotalFish += Number(balance.Items.Swordfish);
       } else {
         currentTotalFish += Number(0);
       }
-      if (foundItemList.Pufferfish) {
-        currentTotalFish += Number(foundItemList.Pufferfish);
+      if (balance.Items.Pufferfish) {
+        currentTotalFish += Number(balance.Items.Pufferfish);
       } else {
         currentTotalFish += Number(0);
       }
@@ -143,7 +141,7 @@ export const SlashCommandF = class extends SlashCommand {
           {
             name: 'Fish Cooldown',
             value: `${
-              !foundItemList.FishingRod
+              !balance.Items.FishingRod
                 ? '`Rod Not Owned`'
                 : Date.now() > balance.FishCool
                 ? '`Available!`'
@@ -159,8 +157,8 @@ export const SlashCommandF = class extends SlashCommand {
           {
             name: 'Seed Bag',
             value: `${
-              foundBoostList.SeedBag
-                ? `\`${Number(currentTotalSeeds).toLocaleString('en')}/${Number(foundBoostList.SeedBag).toLocaleString('en')}\``
+              balance.Boosts.SeedBag
+                ? `\`${Number(currentTotalSeeds).toLocaleString('en')}/${Number(balance.Boosts.SeedBag).toLocaleString('en')}\``
                 : '`Not Owned`'
             }`,
             inline: true
@@ -168,8 +166,8 @@ export const SlashCommandF = class extends SlashCommand {
           {
             name: 'Fish Bag',
             value: `${
-              foundBoostList.FishBag
-                ? `\`${Number(currentTotalFish).toLocaleString('en')}/${Number(foundBoostList.FishBag).toLocaleString('en')}\``
+              balance.Boosts.FishBag
+                ? `\`${Number(currentTotalFish).toLocaleString('en')}/${Number(balance.Boosts.FishBag).toLocaleString('en')}\``
                 : '`Not Owned`'
             }`,
             inline: true
@@ -177,8 +175,8 @@ export const SlashCommandF = class extends SlashCommand {
           {
             name: 'Farm Bag',
             value: `${
-              foundBoostList.FarmBag
-                ? `\`${Number(currentTotalFarm).toLocaleString('en')}/${Number(foundBoostList.FarmBag).toLocaleString('en')}\``
+              balance.Boosts.FarmBag
+                ? `\`${Number(currentTotalFarm).toLocaleString('en')}/${Number(balance.Boosts.FarmBag).toLocaleString('en')}\``
                 : '`Not Owned`'
             }`,
             inline: true
@@ -186,8 +184,8 @@ export const SlashCommandF = class extends SlashCommand {
           {
             name: 'Farm Plot',
             value: `${
-              foundBoostList.FarmPlot
-                ? `\`${foundPlotList.length.toLocaleString('en')}/${Number(foundBoostList.FarmPlot).toLocaleString('en')}\``
+              balance.Boosts.FarmPlot
+                ? `\`${foundPlotList.length.toLocaleString('en')}/${Number(balance.Boosts.FarmPlot).toLocaleString('en')}\``
                 : '`Not Owned`'
             }`,
             inline: true
