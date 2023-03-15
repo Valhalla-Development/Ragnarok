@@ -35,7 +35,7 @@ export const SlashCommandF = class extends SlashCommand {
     let foundPlotList;
 
     if (balance.FarmPlot.length) {
-      foundPlotList = JSON.parse(balance.FarmPlot);
+      foundPlotList = balance.FarmPlot;
     } else {
       foundPlotList = [];
     }
@@ -82,12 +82,10 @@ export const SlashCommandF = class extends SlashCommand {
     }
 
     async function cropCreator(type, status, time, count) {
-      let cropCounter;
-      for (cropCounter = 0; cropCounter < count; cropCounter++) {
+      for (let i = 0; i < count; i++) {
         foundPlotList.push({ cropType: type, cropStatus: status, cropGrowTime: time, decay: 0 });
       }
-
-      balance.crops = foundPlotList;
+      balance.FarmPlot = foundPlotList;
       await balance.save();
     }
 
@@ -127,13 +125,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      const removeSeed = Number(balance.Items.CornSeeds) - Number(argsAmount);
-
-      if (removeSeed === 0) {
-        delete balance.Items.CornSeeds;
-      } else {
-        balance.Items.CornSeeds = removeSeed;
-      }
+      balance.Items.CornSeeds = Number(balance.Items.CornSeeds) - Number(argsAmount);
 
       await cropCreator('corn', 'planting', new Date().getTime() + Number(cornGrow), argsAmount);
 
@@ -190,13 +182,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      const removeSeed = Number(balance.Items.WheatSeeds) - Number(argsAmount);
-
-      if (removeSeed === 0) {
-        delete balance.Items.WheatSeeds;
-      } else {
-        balance.Items.WheatSeeds = removeSeed;
-      }
+      balance.Items.WheatSeeds = Number(balance.Items.WheatSeeds) - Number(argsAmount);
 
       await cropCreator('wheat', 'planting', new Date().getTime() + Number(wheatGrow), argsAmount);
 
@@ -253,13 +239,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      const removeSeed = Number(balance.Items.PotatoSeeds) - Number(argsAmount);
-
-      if (removeSeed === 0) {
-        delete balance.Items.PotatoSeeds;
-      } else {
-        balance.Items.PotatoSeeds = removeSeed;
-      }
+      balance.Items.PotatoSeeds = Number(balance.Items.PotatoSeeds) - Number(argsAmount);
 
       await cropCreator('potato', 'planting', new Date().getTime() + Number(potatoGrow), argsAmount);
 
@@ -316,13 +296,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      const removeSeed = Number(balance.Items.TomatoSeeds) - Number(argsAmount);
-
-      if (removeSeed === 0) {
-        delete balance.Items.TomatoSeeds;
-      } else {
-        balance.Items.TomatoSeeds = removeSeed;
-      }
+      balance.Items.TomatoSeeds = Number(balance.Items.TomatoSeeds) - Number(argsAmount);
 
       await cropCreator('tomato', 'planting', new Date().getTime() + Number(tomatoeGrow), argsAmount);
 
