@@ -106,7 +106,7 @@ export const SlashCommandF = class extends SlashCommand {
     if (foundItemList.GoldNugget !== undefined) goldNuggetPrice = this.client.ecoPrices.goldNugget * Number(foundItemList.GoldNugget);
     if (foundItemList.Barley !== undefined) barleyPrice = this.client.ecoPrices.barley * Number(foundItemList.Barley);
     if (foundItemList.Spinach !== undefined) spinachPrice = this.client.ecoPrices.spinach * Number(foundItemList.Spinach);
-    if (foundItemList.Sstrawberries !== undefined) strawberriesPrice = this.client.ecoPrices.strawberries * Number(foundItemList.Sstrawberries);
+    if (foundItemList.Strawberries !== undefined) strawberriesPrice = this.client.ecoPrices.strawberries * Number(foundItemList.Strawberries);
     if (foundItemList.Lettuce !== undefined) lettucePrice = this.client.ecoPrices.lettuce * Number(foundItemList.Lettuce);
 
     let currentTotalSeeds = 0;
@@ -913,7 +913,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         if (foundItemList.Barley) fullPrice += Number(foundItemList.Barley) * this.client.ecoPrices.barley;
         if (foundItemList.Spinach) fullPrice += Number(foundItemList.Spinach) * this.client.ecoPrices.spinach;
-        if (foundItemList.Sstrawberries) fullPrice += Number(foundItemList.Sstrawberries) * this.client.ecoPrices.strawberries;
+        if (foundItemList.Strawberries) fullPrice += Number(foundItemList.Strawberries) * this.client.ecoPrices.strawberries;
         if (foundItemList.Lettuce) fullPrice += Number(foundItemList.Lettuce) * this.client.ecoPrices.lettuce;
 
         balance.Bank = Number(balance.Bank) - Number(farmingPrice) + fullPrice;
@@ -932,7 +932,7 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({
             name: `**${this.client.user.username} - Shop - Farming Tools**`,
             value: `**◎ Success:** You have bought Farming Tools${
-              foundItemList.Barley || foundItemList.Spinach || foundItemList.Sstrawberries || foundItemList.Lettuce
+              foundItemList.Barley || foundItemList.Spinach || foundItemList.Strawberries || foundItemList.Lettuce
                 ? `.\nYou had some old crops, I have sold them for you and credited <:coin:706659001164628008> \`${fullPrice.toLocaleString(
                     'en'
                   )}\` to your account.`
@@ -943,7 +943,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         if (foundItemList.Barley) delete foundItemList.Barley;
         if (foundItemList.Spinach) delete foundItemList.Spinach;
-        if (foundItemList.Sstrawberries) delete foundItemList.Sstrawberries;
+        if (foundItemList.Strawberries) delete foundItemList.Strawberries;
         if (foundItemList.Lettuce) delete foundItemList.Lettuce;
 
         balance.Items = JSON.stringify(foundItemList);
@@ -970,9 +970,9 @@ export const SlashCommandF = class extends SlashCommand {
                 : `\`${foundItemList.Spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``
             }`,
             `\u3000 Strawberries: Own ${
-              foundItemList.Sstrawberries === undefined
+              foundItemList.Strawberries === undefined
                 ? '`0`'
-                : `\`${foundItemList.Sstrawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
+                : `\`${foundItemList.Strawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
             }`,
             `\u3000 Lettuce: Own ${
               foundItemList.Lettuce === undefined
@@ -1012,7 +1012,7 @@ export const SlashCommandF = class extends SlashCommand {
             }`
           ];
 
-          if (foundItemList.Barley || foundItemList.Spinach || foundItemList.Sstrawberries || foundItemList.Lettuce) {
+          if (foundItemList.Barley || foundItemList.Spinach || foundItemList.Strawberries || foundItemList.Lettuce) {
             const lowCrops = [
               `\u3000 Barley: Own ${
                 foundItemList.Barley === undefined
@@ -1025,9 +1025,9 @@ export const SlashCommandF = class extends SlashCommand {
                   : `\`${foundItemList.Spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``
               }`,
               `\u3000 Strawberries: Own ${
-                foundItemList.Sstrawberries === undefined
+                foundItemList.Strawberries === undefined
                   ? '`0`'
-                  : `\`${foundItemList.Sstrawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
+                  : `\`${foundItemList.Strawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
               }`,
               `\u3000 Lettuce: Own ${
                 foundItemList.Lettuce === undefined
@@ -1099,7 +1099,7 @@ export const SlashCommandF = class extends SlashCommand {
       if (argsItem === 'all') {
         if (
           !foundItemList.Lettuce &&
-          !foundItemList.Sstrawberries &&
+          !foundItemList.Strawberries &&
           !foundItemList.Spinach &&
           !foundItemList.Barley &&
           !foundHarvestList.filter((key) => key.cropType === 'tomato').length &&
@@ -1126,7 +1126,7 @@ export const SlashCommandF = class extends SlashCommand {
         let itemCount = 0;
 
         if (foundItemList.Lettuce) fullPrice += Number(foundItemList.Lettuce) * this.client.ecoPrices.lettuce;
-        if (foundItemList.Sstrawberries) fullPrice += Number(foundItemList.Sstrawberries) * this.client.ecoPrices.strawberries;
+        if (foundItemList.Strawberries) fullPrice += Number(foundItemList.Strawberries) * this.client.ecoPrices.strawberries;
         if (foundItemList.Spinach) fullPrice += Number(foundItemList.Spinach) * this.client.ecoPrices.spinach;
         if (foundItemList.Barley) fullPrice += Number(foundItemList.Barley) * this.client.ecoPrices.barley;
 
@@ -1151,7 +1151,7 @@ export const SlashCommandF = class extends SlashCommand {
         if (foundItemList.SwordFish) itemCount += Number(foundItemList.SwordFish);
         if (foundItemList.PufferFish) itemCount += Number(foundItemList.PufferFish);
         if (foundItemList.Lettuce) itemCount += Number(foundItemList.Lettuce);
-        if (foundItemList.Sstrawberries) itemCount += Number(foundItemList.Sstrawberries);
+        if (foundItemList.Strawberries) itemCount += Number(foundItemList.Strawberries);
         if (foundItemList.Spinach) itemCount += Number(foundItemList.Spinach);
         if (foundItemList.Barley) itemCount += Number(foundItemList.Barley);
 
@@ -1180,7 +1180,7 @@ export const SlashCommandF = class extends SlashCommand {
         if (foundItemList.GoldNugget) delete foundItemList.GoldNugget;
         if (foundItemList.Barley) delete foundItemList.Barley;
         if (foundItemList.Spinach) delete foundItemList.Spinach;
-        if (foundItemList.Sstrawberries) delete foundItemList.Sstrawberries;
+        if (foundItemList.Strawberries) delete foundItemList.Strawberries;
         if (foundItemList.Lettuce) delete foundItemList.Lettuce;
 
         balance.Items = JSON.stringify(foundItemList);
@@ -1306,7 +1306,7 @@ export const SlashCommandF = class extends SlashCommand {
       if (argsItem === 'farm' || argsItem === 'crops') {
         if (
           !foundItemList.Lettuce &&
-          !foundItemList.Sstrawberries &&
+          !foundItemList.Strawberries &&
           !foundItemList.Spinach &&
           !foundItemList.Barley &&
           !foundHarvestList.filter((key) => key.cropType === 'tomato').length &&
@@ -1326,7 +1326,7 @@ export const SlashCommandF = class extends SlashCommand {
         let itemCount = 0;
 
         if (foundItemList.Lettuce) fullPrice += Number(foundItemList.Lettuce) * this.client.ecoPrices.lettuce;
-        if (foundItemList.Sstrawberries) fullPrice += Number(foundItemList.Sstrawberries) * this.client.ecoPrices.strawberries;
+        if (foundItemList.Strawberries) fullPrice += Number(foundItemList.Strawberries) * this.client.ecoPrices.strawberries;
         if (foundItemList.Spinach) fullPrice += Number(foundItemList.Spinach) * this.client.ecoPrices.spinach;
         if (foundItemList.Barley) fullPrice += Number(foundItemList.Barley) * this.client.ecoPrices.barley;
 
@@ -1338,7 +1338,7 @@ export const SlashCommandF = class extends SlashCommand {
         });
 
         if (foundItemList.Lettuce) itemCount += Number(foundItemList.Lettuce);
-        if (foundItemList.Sstrawberries) itemCount += Number(foundItemList.Sstrawberries);
+        if (foundItemList.Strawberries) itemCount += Number(foundItemList.Strawberries);
         if (foundItemList.Spinach) itemCount += Number(foundItemList.Spinach);
         if (foundItemList.Barley) itemCount += Number(foundItemList.Barley);
 
@@ -1357,7 +1357,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         if (foundItemList.Barley) delete foundItemList.Barley;
         if (foundItemList.Spinach) delete foundItemList.Spinach;
-        if (foundItemList.Sstrawberries) delete foundItemList.Sstrawberries;
+        if (foundItemList.Strawberries) delete foundItemList.Strawberries;
         if (foundItemList.Lettuce) delete foundItemList.Lettuce;
 
         balance.Items = JSON.stringify(foundItemList);
