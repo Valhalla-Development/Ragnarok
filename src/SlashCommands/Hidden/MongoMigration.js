@@ -202,7 +202,7 @@ export const SlashCommandF = class extends SlashCommand {
                 Monthly: entry.monthly,
                 StealCool: entry.stealcool,
                 FishCool: entry.fishcool,
-                FarmCool: entry.farmcool,
+                FarmCool: entry.farmcool,// todo need to update all these to the new object based
                 Boosts: entry.boosts,
                 Items: entry.items,
                 Cash: entry.cash,
