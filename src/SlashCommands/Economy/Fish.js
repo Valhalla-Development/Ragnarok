@@ -45,9 +45,7 @@ export const SlashCommandF = class extends SlashCommand {
         } else {
           amt = Number(1);
         }
-        balance.Items.Treasure = amt.toString();
-
-        balance.Items = JSON.stringify(balance.Items);
+        balance.Items.Treasure = amt;
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -74,9 +72,7 @@ export const SlashCommandF = class extends SlashCommand {
         } else {
           amt = Number(1);
         }
-        balance.Items.PufferFish = amt.toString();
-
-        balance.Items = JSON.stringify(balance.Items);
+        balance.Items.PufferFish = amt;
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -103,9 +99,7 @@ export const SlashCommandF = class extends SlashCommand {
         } else {
           amt = Number(1);
         }
-        balance.Items.SwordFish = amt.toString();
-
-        balance.Items = JSON.stringify(balance.Items);
+        balance.Items.SwordFish = amt;
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -132,9 +126,7 @@ export const SlashCommandF = class extends SlashCommand {
         } else {
           amt = Number(1);
         }
-        balance.Items.KingSalmon = amt.toString();
-
-        balance.Items = JSON.stringify(balance.Items);
+        balance.Items.KingSalmon = amt;
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -161,9 +153,7 @@ export const SlashCommandF = class extends SlashCommand {
         } else {
           amt = Number(1);
         }
-        balance.Items.Trout = amt.toString();
-
-        balance.Items = JSON.stringify(balance.Items);
+        balance.Items.Trout = amt;
         await balance.save();
 
         const embed = new EmbedBuilder()
