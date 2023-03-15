@@ -83,7 +83,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     async function cropCreator(type, status, time, count) {
       for (let i = 0; i < count; i++) {
-        foundPlotList.push({ cropType: type, cropStatus: status, cropGrowTime: time, decay: 0 });
+        foundPlotList.push({ CropType: type, CropStatus: status, CropGrowTime: time, Decay: 0 });
       }
       balance.FarmPlot = foundPlotList;
       await balance.save();

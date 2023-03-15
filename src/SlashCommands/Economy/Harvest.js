@@ -31,10 +31,10 @@ export const SlashCommandF = class extends SlashCommand {
     }
     
     await Promise.all(balance.FarmPlot).map(async (key) => {
-      if (Date.now() > key.cropGrowTime) {
-        key.cropStatus = 'harvest';
-        key.cropGrowTime = 'na';
-        key.decay = 0;
+      if (Date.now() > key.CropGrowTime) {
+        key.CropStatus = 'harvest';
+        key.CropGrowTime = 'na';
+        key.Decay = 0;
 
         await balance.save();
       }
@@ -43,7 +43,7 @@ export const SlashCommandF = class extends SlashCommand {
     let harvestable;
 
     if (balance.FarmPlot.length) {
-      harvestable = balance.FarmPlot.filter((key) => key.cropStatus === 'harvest');
+      harvestable = balance.FarmPlot.filter((key) => key.CropStatus === 'harvest');
     } else {
       harvestable = [];
     }
@@ -64,28 +64,28 @@ export const SlashCommandF = class extends SlashCommand {
       // Luke gets credit for this magic
       let PageNo = 1;
 
-      const filter = balance.FarmPlot.filter((e) => e.cropGrowTime !== 'na');
-      const filterHarvest = balance.FarmPlot.filter((e) => e.cropStatus === 'harvest');
+      const filter = balance.FarmPlot.filter((e) => e.CropGrowTime !== 'na');
+      const filterHarvest = balance.FarmPlot.filter((e) => e.CropStatus === 'harvest');
 
       filterHarvest.forEach((key) => {
-        arr.push(`\u3000Crop Type: \`${this.client.utils.capitalise(key.cropType)}\` - Crop Decay: \`${key.decay.toFixed(4)}%\``);
+        arr.push(`\u3000Crop Type: \`${this.client.utils.capitalise(key.CropType)}\` - Crop Decay: \`${key.Decay.toFixed(4)}%\``);
       });
 
       filter.forEach((key) => {
-        const then = prettyMilliseconds(new Date().getTime() - key.cropGrowTime.toFixed(0), { millisecondsDecimalDigits: true });
+        const then = prettyMilliseconds(new Date().getTime() - key.CropGrowTime.toFixed(0), { millisecondsDecimalDigits: true });
         const test = then.replace(/-/g, '');
         const thenTime = test.substring(0, test.indexOf('s') + 1);
 
-        if (key.cropType === 'corn') {
+        if (key.CropType === 'corn') {
           arr.push(`\u3000Crop Type: \`Corn\` - Time until grown: \`${thenTime}\``);
         }
-        if (key.cropType === 'wheat') {
+        if (key.CropType === 'wheat') {
           arr.push(`\u3000Crop Type: \`Wheat\` - Time until grown: \`${thenTime}\``);
         }
-        if (key.cropType === 'potato') {
+        if (key.CropType === 'potato') {
           arr.push(`\u3000Crop Type: \`Potato\` - Time until grown: \`${thenTime}\``);
         }
-        if (key.cropType === 'tomato') {
+        if (key.CropType === 'tomato') {
           arr.push(`\u3000Crop Type: \`Tomato\` - Time until grown: \`${thenTime}\``);
         }
       });
@@ -137,40 +137,40 @@ export const SlashCommandF = class extends SlashCommand {
     harvestCrops();
 
     harvestedFunc.forEach((key) => {
-      if (key.cropType === 'corn') {
-        totalToAdd += Math.floor(cornPrice * (1 - key.decay.toFixed(4) / 100));
-        sellPrice = Math.floor(cornPrice * (1 - key.decay.toFixed(4) / 100));
+      if (key.CropType === 'corn') {
+        totalToAdd += Math.floor(cornPrice * (1 - key.Decay.toFixed(4) / 100));
+        sellPrice = Math.floor(cornPrice * (1 - key.Decay.toFixed(4) / 100));
         arr.push(
           `\u3000Crop Type: \`Corn\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString(
             'en'
-          )}\` - Decayed: \`${key.decay.toFixed(4)}\`%`
+          )}\` - Decayed: \`${key.Decay.toFixed(4)}\`%`
         );
       }
-      if (key.cropType === 'wheat') {
-        totalToAdd += Math.floor(wheatPrice * (1 - key.decay.toFixed(4) / 100));
-        sellPrice = Math.floor(wheatPrice * (1 - key.decay.toFixed(4) / 100));
+      if (key.CropType === 'wheat') {
+        totalToAdd += Math.floor(wheatPrice * (1 - key.Decay.toFixed(4) / 100));
+        sellPrice = Math.floor(wheatPrice * (1 - key.Decay.toFixed(4) / 100));
         arr.push(
           `\u3000Crop Type: \`Wheat\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString(
             'en'
-          )}\` - Decayed: \`${key.decay.toFixed(4)}\`%`
+          )}\` - Decayed: \`${key.Decay.toFixed(4)}\`%`
         );
       }
-      if (key.cropType === 'potato') {
-        totalToAdd += Math.floor(potatoesPrice * (1 - key.decay.toFixed(4) / 100));
-        sellPrice = Math.floor(potatoesPrice * (1 - key.decay.toFixed(4) / 100));
+      if (key.CropType === 'potato') {
+        totalToAdd += Math.floor(potatoesPrice * (1 - key.Decay.toFixed(4) / 100));
+        sellPrice = Math.floor(potatoesPrice * (1 - key.Decay.toFixed(4) / 100));
         arr.push(
           `\u3000Crop Type: \`Potato\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString(
             'en'
-          )}\` - Decayed: \`${key.decay.toFixed(4)}\`%`
+          )}\` - Decayed: \`${key.Decay.toFixed(4)}\`%`
         );
       }
-      if (key.cropType === 'tomato') {
-        totalToAdd += Math.floor(tomatoesPrice * (1 - key.decay.toFixed(4) / 100));
-        sellPrice = Math.floor(tomatoesPrice * (1 - key.decay.toFixed(4) / 100));
+      if (key.CropType === 'tomato') {
+        totalToAdd += Math.floor(tomatoesPrice * (1 - key.Decay.toFixed(4) / 100));
+        sellPrice = Math.floor(tomatoesPrice * (1 - key.Decay.toFixed(4) / 100));
         arr.push(
           `\u3000Crop Type: \`Tomato\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString(
             'en'
-          )}\` - Decayed: \`${key.decay.toFixed(4)}\`%`
+          )}\` - Decayed: \`${key.Decay.toFixed(4)}\`%`
         );
       }
     });
@@ -202,7 +202,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     function harvestCrops() {
       for (let removeCounter = 0, harvestCounter = 0; removeCounter < balance.FarmPlot.length && harvestCounter < availableSpots; removeCounter++) {
-        if (balance.FarmPlot[removeCounter].cropStatus === 'harvest') {
+        if (balance.FarmPlot[removeCounter].CropStatus === 'harvest') {
           const removedArray = balance.FarmPlot.splice(removeCounter, 1);
           balance.HarvestedCrops.push(removedArray[0]);
           harvestedFunc.push(removedArray[0]);

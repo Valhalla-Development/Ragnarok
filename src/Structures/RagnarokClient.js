@@ -115,7 +115,7 @@ export const RagnarokClient = class RagnarokClient extends Client {
       tomatoPlant: 90000, // 1 min 30
 
       // Decay rate
-      decayRate: 0.02,
+      DecayRate: 0.02,
 
       // Farming without tools prices
       goldNugget: 15000,

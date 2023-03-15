@@ -84,10 +84,10 @@ export const SlashCommandF = class extends SlashCommand {
     
     if (foundHarvestList) {
       foundHarvestList.forEach((obj) => {
-        if (obj.cropType === 'corn') cornPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.decay.toFixed(4) / 100));
-        if (obj.cropType === 'wheat') wheatPrice += Math.floor(this.client.ecoPrices.wheat * (1 - obj.decay.toFixed(4) / 100));
-        if (obj.cropType === 'potato') potatoesPrice += Math.floor(this.client.ecoPrices.potatoes * (1 - obj.decay.toFixed(4) / 100));
-        if (obj.cropType === 'tomato') tomatoesPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.decay.toFixed(4) / 100));
+        if (obj.CropType === 'corn') cornPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.Decay.toFixed(4) / 100));
+        if (obj.CropType === 'wheat') wheatPrice += Math.floor(this.client.ecoPrices.wheat * (1 - obj.Decay.toFixed(4) / 100));
+        if (obj.CropType === 'potato') potatoesPrice += Math.floor(this.client.ecoPrices.potatoes * (1 - obj.Decay.toFixed(4) / 100));
+        if (obj.CropType === 'tomato') tomatoesPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.Decay.toFixed(4) / 100));
       });
     }
 
@@ -140,10 +140,10 @@ export const SlashCommandF = class extends SlashCommand {
     let currentTotalFarm = 0;
 
     if (foundHarvestList) {
-      currentTotalFarm += Number(foundHarvestList.filter((key) => key.cropType === 'corn').length);
-      currentTotalFarm += Number(foundHarvestList.filter((key) => key.cropType === 'wheat').length);
-      currentTotalFarm += Number(foundHarvestList.filter((key) => key.cropType === 'potato').length);
-      currentTotalFarm += Number(foundHarvestList.filter((key) => key.cropType === 'tomato').length);
+      currentTotalFarm += Number(foundHarvestList.filter((key) => key.CropType === 'corn').length);
+      currentTotalFarm += Number(foundHarvestList.filter((key) => key.CropType === 'wheat').length);
+      currentTotalFarm += Number(foundHarvestList.filter((key) => key.CropType === 'potato').length);
+      currentTotalFarm += Number(foundHarvestList.filter((key) => key.CropType === 'tomato').length);
     }
 
     let currentTotalPlot = 0;
@@ -953,31 +953,31 @@ export const SlashCommandF = class extends SlashCommand {
         } else {
           fields = [
             `\u3000 Corn: Own ${
-              !foundHarvestList.filter((key) => key.cropType === 'corn').length
+              !foundHarvestList.filter((key) => key.CropType === 'corn').length
                 ? '`0`'
-                : `\`${foundHarvestList.filter((key) => key.cropType === 'corn').length}\` - <:coin:706659001164628008> \`${cornPrice.toLocaleString(
+                : `\`${foundHarvestList.filter((key) => key.CropType === 'corn').length}\` - <:coin:706659001164628008> \`${cornPrice.toLocaleString(
                     'en'
                   )}\``
             }`,
             `\u3000 Wheat: Own ${
-              !foundHarvestList.filter((key) => key.cropType === 'wheat').length
+              !foundHarvestList.filter((key) => key.CropType === 'wheat').length
                 ? '`0`'
                 : `\`${
-                    foundHarvestList.filter((key) => key.cropType === 'wheat').length
+                    foundHarvestList.filter((key) => key.CropType === 'wheat').length
                   }\` - <:coin:706659001164628008> \`${wheatPrice.toLocaleString('en')}\``
             }`,
             `\u3000 Potatoes: Own ${
-              !foundHarvestList.filter((key) => key.cropType === 'potato').length
+              !foundHarvestList.filter((key) => key.CropType === 'potato').length
                 ? '`0`'
                 : `\`${
-                    foundHarvestList.filter((key) => key.cropType === 'potato').length
+                    foundHarvestList.filter((key) => key.CropType === 'potato').length
                   }\` - <:coin:706659001164628008> \`${potatoesPrice.toLocaleString('en')}\``
             }`,
             `\u3000 Tomatoes: Own ${
-              !foundHarvestList.filter((key) => key.cropType === 'tomato').length
+              !foundHarvestList.filter((key) => key.CropType === 'tomato').length
                 ? '`0`'
                 : `\`${
-                    foundHarvestList.filter((key) => key.cropType === 'tomato').length
+                    foundHarvestList.filter((key) => key.CropType === 'tomato').length
                   }\` - <:coin:706659001164628008> \`${tomatoesPrice.toLocaleString('en')}\``
             }`
           ];
@@ -1072,10 +1072,10 @@ export const SlashCommandF = class extends SlashCommand {
           !balance.Items.Strawberries &&
           !balance.Items.Spinach &&
           !balance.Items.Barley &&
-          !foundHarvestList.filter((key) => key.cropType === 'tomato').length &&
-          !foundHarvestList.filter((key) => key.cropType === 'potato').length &&
-          !foundHarvestList.filter((key) => key.cropType === 'wheat').length &&
-          !foundHarvestList.filter((key) => key.cropType === 'corn').length &&
+          !foundHarvestList.filter((key) => key.CropType === 'tomato').length &&
+          !foundHarvestList.filter((key) => key.CropType === 'potato').length &&
+          !foundHarvestList.filter((key) => key.CropType === 'wheat').length &&
+          !foundHarvestList.filter((key) => key.CropType === 'corn').length &&
           !balance.Items.Trout &&
           !balance.Items.KingSalmon &&
           !balance.Items.SwordFish &&
@@ -1101,10 +1101,10 @@ export const SlashCommandF = class extends SlashCommand {
         if (balance.Items.Barley) fullPrice += Number(balance.Items.Barley) * this.client.ecoPrices.barley;
 
         foundHarvestList.forEach((obj) => {
-          if (obj.cropType === 'corn') fullPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.decay.toFixed(4) / 100));
-          if (obj.cropType === 'wheat') fullPrice += Math.floor(this.client.ecoPrices.wheat * (1 - obj.decay.toFixed(4) / 100));
-          if (obj.cropType === 'potato') fullPrice += Math.floor(this.client.ecoPrices.potatoes * (1 - obj.decay.toFixed(4) / 100));
-          if (obj.cropType === 'tomato') fullPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.decay.toFixed(4) / 100));
+          if (obj.CropType === 'corn') fullPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.Decay.toFixed(4) / 100));
+          if (obj.CropType === 'wheat') fullPrice += Math.floor(this.client.ecoPrices.wheat * (1 - obj.Decay.toFixed(4) / 100));
+          if (obj.CropType === 'potato') fullPrice += Math.floor(this.client.ecoPrices.potatoes * (1 - obj.Decay.toFixed(4) / 100));
+          if (obj.CropType === 'tomato') fullPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.Decay.toFixed(4) / 100));
         });
 
         if (balance.Items.Trout) fullPrice += Number(balance.Items.Trout) * this.client.ecoPrices.trout;
@@ -1126,10 +1126,10 @@ export const SlashCommandF = class extends SlashCommand {
         if (balance.Items.Barley) itemCount += Number(balance.Items.Barley);
 
         if (foundHarvestList) {
-          itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'corn').length);
-          itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'wheat').length);
-          itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'potato').length);
-          itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'tomato').length);
+          itemCount += Number(foundHarvestList.filter((key) => key.CropType === 'corn').length);
+          itemCount += Number(foundHarvestList.filter((key) => key.CropType === 'wheat').length);
+          itemCount += Number(foundHarvestList.filter((key) => key.CropType === 'potato').length);
+          itemCount += Number(foundHarvestList.filter((key) => key.CropType === 'tomato').length);
         }
 
         if (balance.Items.GoldBar) itemCount += Number(balance.Items.GoldBar);
@@ -1276,10 +1276,10 @@ export const SlashCommandF = class extends SlashCommand {
           !balance.Items.Strawberries &&
           !balance.Items.Spinach &&
           !balance.Items.Barley &&
-          !foundHarvestList.filter((key) => key.cropType === 'tomato').length &&
-          !foundHarvestList.filter((key) => key.cropType === 'potato').length &&
-          !foundHarvestList.filter((key) => key.cropType === 'wheat').length &&
-          !foundHarvestList.filter((key) => key.cropType === 'corn').length
+          !foundHarvestList.filter((key) => key.CropType === 'tomato').length &&
+          !foundHarvestList.filter((key) => key.CropType === 'potato').length &&
+          !foundHarvestList.filter((key) => key.CropType === 'wheat').length &&
+          !foundHarvestList.filter((key) => key.CropType === 'corn').length
         ) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -1298,10 +1298,10 @@ export const SlashCommandF = class extends SlashCommand {
         if (balance.Items.Barley) fullPrice += Number(balance.Items.Barley) * this.client.ecoPrices.barley;
 
         foundHarvestList.forEach((obj) => {
-          if (obj.cropType === 'corn') fullPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.decay.toFixed(4) / 100));
-          if (obj.cropType === 'wheat') fullPrice += Math.floor(this.client.ecoPrices.wheat * (1 - obj.decay.toFixed(4) / 100));
-          if (obj.cropType === 'potato') fullPrice += Math.floor(this.client.ecoPrices.potatoes * (1 - obj.decay.toFixed(4) / 100));
-          if (obj.cropType === 'tomato') fullPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.decay.toFixed(4) / 100));
+          if (obj.CropType === 'corn') fullPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.Decay.toFixed(4) / 100));
+          if (obj.CropType === 'wheat') fullPrice += Math.floor(this.client.ecoPrices.wheat * (1 - obj.Decay.toFixed(4) / 100));
+          if (obj.CropType === 'potato') fullPrice += Math.floor(this.client.ecoPrices.potatoes * (1 - obj.Decay.toFixed(4) / 100));
+          if (obj.CropType === 'tomato') fullPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.Decay.toFixed(4) / 100));
         });
 
         if (balance.Items.Lettuce) itemCount += Number(balance.Items.Lettuce);
@@ -1310,10 +1310,10 @@ export const SlashCommandF = class extends SlashCommand {
         if (balance.Items.Barley) itemCount += Number(balance.Items.Barley);
 
         if (foundHarvestList) {
-          itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'corn').length);
-          itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'wheat').length);
-          itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'potato').length);
-          itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'tomato').length);
+          itemCount += Number(foundHarvestList.filter((key) => key.CropType === 'corn').length);
+          itemCount += Number(foundHarvestList.filter((key) => key.CropType === 'wheat').length);
+          itemCount += Number(foundHarvestList.filter((key) => key.CropType === 'potato').length);
+          itemCount += Number(foundHarvestList.filter((key) => key.CropType === 'tomato').length);
         }
 
         const totalAdd = balance.Total + fullPrice;

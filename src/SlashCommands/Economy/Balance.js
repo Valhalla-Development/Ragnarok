@@ -101,10 +101,10 @@ export const SlashCommandF = class extends SlashCommand {
       let currentTotalFarm = 0;
 
       if (balance.HarvestedCrops) {
-        currentTotalFarm += Number(balance.HarvestedCrops.filter((key) => key.cropType === 'corn').length);
-        currentTotalFarm += Number(balance.HarvestedCrops.filter((key) => key.cropType === 'wheat').length);
-        currentTotalFarm += Number(balance.HarvestedCrops.filter((key) => key.cropType === 'potato').length);
-        currentTotalFarm += Number(balance.HarvestedCrops.filter((key) => key.cropType === 'tomato').length);
+        currentTotalFarm += Number(balance.HarvestedCrops.filter((key) => key.CropType === 'corn').length);
+        currentTotalFarm += Number(balance.HarvestedCrops.filter((key) => key.CropType === 'wheat').length);
+        currentTotalFarm += Number(balance.HarvestedCrops.filter((key) => key.CropType === 'potato').length);
+        currentTotalFarm += Number(balance.HarvestedCrops.filter((key) => key.CropType === 'tomato').length);
       }
 
       const embed1 = new EmbedBuilder()
