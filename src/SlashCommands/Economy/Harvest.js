@@ -30,7 +30,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
     
-    await Promise.all(balance.FarmPlot).map(async (key) => {
+    await balance.FarmPlot.map(async (key) => {
       if (Date.now() > key.CropGrowTime) {
         key.CropStatus = 'harvest';
         key.CropGrowTime = 'na';
@@ -175,7 +175,13 @@ export const SlashCommandF = class extends SlashCommand {
       }
     });
 
-    balance.FarmPlot = balance.FarmPlot.length ? balance.FarmPlot : null;
+    const filteredPlots = balance.FarmPlot.filter((plot) => plot !== null);
+    if (filteredPlots.length === 0) {
+      balance.FarmPlot = [];
+    } else {
+      balance.FarmPlot = filteredPlots;
+    }
+
     await balance.save();
 
     const Embeds = [];
