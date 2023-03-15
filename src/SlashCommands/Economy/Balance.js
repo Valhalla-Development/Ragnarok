@@ -106,7 +106,7 @@ export const SlashCommandF = class extends SlashCommand {
         currentTotalFarm += Number(balance.HarvestedCrops.filter((key) => key.cropType === 'potato').length);
         currentTotalFarm += Number(balance.HarvestedCrops.filter((key) => key.cropType === 'tomato').length);
       }
-      
+
       const embed1 = new EmbedBuilder()
         .setAuthor({
           name: `${member.user.username}'s Balance`,
