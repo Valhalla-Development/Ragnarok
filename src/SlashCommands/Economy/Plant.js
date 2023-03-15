@@ -34,10 +34,10 @@ export const SlashCommandF = class extends SlashCommand {
 
     let foundPlotList;
 
-    if (!balance || !balance.FarmPlot) {
-      foundPlotList = [];
-    } else {
+    if (balance.FarmPlot.length) {
       foundPlotList = JSON.parse(balance.FarmPlot);
+    } else {
+      foundPlotList = [];
     }
 
     let foundBoostList = JSON.parse(balance.Boosts);
