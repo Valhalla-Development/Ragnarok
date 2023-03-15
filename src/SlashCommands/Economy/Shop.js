@@ -30,8 +30,6 @@ export const SlashCommandF = class extends SlashCommand {
 
     const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
-    let foundItemList = JSON.parse(balance.Items);
-    let foundBoostList = JSON.parse(balance.Boosts);
     let foundPlotList = JSON.parse(balance.FarmPlot);
     let foundHarvestList = JSON.parse(balance.HarvestedCrops);
 
@@ -54,15 +52,7 @@ export const SlashCommandF = class extends SlashCommand {
     const { farmBagPrice } = this.client.ecoPrices;
     const { fishBagPrice } = this.client.ecoPrices;
     const { farmPlotPrice } = this.client.ecoPrices;
-
-    if (!foundItemList) {
-      foundItemList = {};
-    }
-
-    if (!foundBoostList) {
-      foundBoostList = {};
-    }
-
+    
     if (!foundPlotList) {
       foundPlotList = [];
     }
@@ -71,30 +61,23 @@ export const SlashCommandF = class extends SlashCommand {
       foundHarvestList = [];
     }
 
-    let troutPrice;
-    let salmonPrice;
-    let swordFishPrice;
-    let pufferFishPrice;
-    let treasurePrice;
+    const troutPrice = this.client.ecoPrices.trout * Number(balance.Items.Trout);
+    const salmonPrice = this.client.ecoPrices.kingSalmon * Number(balance.Items.KingSalmon);
+    const swordFishPrice = this.client.ecoPrices.swordfish * Number(balance.Items.SwordFish);
+    const pufferFishPrice = this.client.ecoPrices.pufferfish * Number(balance.Items.PufferFish);
+    const treasurePrice = this.client.ecoPrices.treasure * Number(balance.Items.Treasure);
 
-    let goldBarPrice;
+    const goldBarPrice = this.client.ecoPrices.goldBar * Number(balance.Items.GoldBar);
     let cornPrice = 0;
     let wheatPrice = 0;
     let potatoesPrice = 0;
     let tomatoesPrice = 0;
-    let goldNuggetPrice;
-    let barleyPrice;
-    let spinachPrice;
-    let strawberriesPrice;
-    let lettucePrice;
-
-    if (foundItemList.Trout !== undefined) troutPrice = this.client.ecoPrices.trout * Number(foundItemList.Trout);
-    if (foundItemList.KingSalmon !== undefined) salmonPrice = this.client.ecoPrices.kingSalmon * Number(foundItemList.KingSalmon);
-    if (foundItemList.SwordFish !== undefined) swordFishPrice = this.client.ecoPrices.swordfish * Number(foundItemList.SwordFish);
-    if (foundItemList.PufferFish !== undefined) pufferFishPrice = this.client.ecoPrices.pufferfish * Number(foundItemList.PufferFish);
-    if (foundItemList.Treasure !== undefined) treasurePrice = this.client.ecoPrices.treasure * Number(foundItemList.Treasure);
-
-    if (foundItemList.GoldBar !== undefined) goldBarPrice = this.client.ecoPrices.goldBar * Number(foundItemList.GoldBar);
+    const goldNuggetPrice = this.client.ecoPrices.goldNugget * Number(balance.Items.GoldNugget);
+    const barleyPrice = this.client.ecoPrices.barley * Number(balance.Items.Barley);
+    const spinachPrice = this.client.ecoPrices.spinach * Number(balance.Items.Spinach);
+    const strawberriesPrice = this.client.ecoPrices.strawberries * Number(balance.Items.Strawberries);
+    const lettucePrice = this.client.ecoPrices.lettuce * Number(balance.Items.Lettuce);
+    
     if (foundHarvestList) {
       foundHarvestList.forEach((obj) => {
         if (obj.cropType === 'corn') cornPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.decay.toFixed(4) / 100));
@@ -103,54 +86,49 @@ export const SlashCommandF = class extends SlashCommand {
         if (obj.cropType === 'tomato') tomatoesPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.decay.toFixed(4) / 100));
       });
     }
-    if (foundItemList.GoldNugget !== undefined) goldNuggetPrice = this.client.ecoPrices.goldNugget * Number(foundItemList.GoldNugget);
-    if (foundItemList.Barley !== undefined) barleyPrice = this.client.ecoPrices.barley * Number(foundItemList.Barley);
-    if (foundItemList.Spinach !== undefined) spinachPrice = this.client.ecoPrices.spinach * Number(foundItemList.Spinach);
-    if (foundItemList.Strawberries !== undefined) strawberriesPrice = this.client.ecoPrices.strawberries * Number(foundItemList.Strawberries);
-    if (foundItemList.Lettuce !== undefined) lettucePrice = this.client.ecoPrices.lettuce * Number(foundItemList.Lettuce);
 
     let currentTotalSeeds = 0;
 
-    if (foundItemList.CornSeeds) {
-      currentTotalSeeds += Number(foundItemList.CornSeeds);
+    if (balance.Items.CornSeeds) {
+      currentTotalSeeds += Number(balance.Items.CornSeeds);
     } else {
       currentTotalSeeds += Number(0);
     }
-    if (foundItemList.WheatSeeds) {
-      currentTotalSeeds += Number(foundItemList.WheatSeeds);
+    if (balance.Items.WheatSeeds) {
+      currentTotalSeeds += Number(balance.Items.WheatSeeds);
     } else {
       currentTotalSeeds += Number(0);
     }
-    if (foundItemList.PotatoSeeds) {
-      currentTotalSeeds += Number(foundItemList.PotatoSeeds);
+    if (balance.Items.PotatoSeeds) {
+      currentTotalSeeds += Number(balance.Items.PotatoSeeds);
     } else {
       currentTotalSeeds += Number(0);
     }
-    if (foundItemList.TomatoSeeds) {
-      currentTotalSeeds += Number(foundItemList.TomatoSeeds);
+    if (balance.Items.TomatoSeeds) {
+      currentTotalSeeds += Number(balance.Items.TomatoSeeds);
     } else {
       currentTotalSeeds += Number(0);
     }
 
     let currentTotalFish = 0;
 
-    if (foundItemList.Trout) {
-      currentTotalFish += Number(foundItemList.Trout);
+    if (balance.Items.Trout) {
+      currentTotalFish += Number(balance.Items.Trout);
     } else {
       currentTotalFish += Number(0);
     }
-    if (foundItemList.KingSalmon) {
-      currentTotalFish += Number(foundItemList.KingSalmon);
+    if (balance.Items.KingSalmon) {
+      currentTotalFish += Number(balance.Items.KingSalmon);
     } else {
       currentTotalFish += Number(0);
     }
-    if (foundItemList.SwordFish) {
-      currentTotalFish += Number(foundItemList.SwordFish);
+    if (balance.Items.SwordFish) {
+      currentTotalFish += Number(balance.Items.SwordFish);
     } else {
       currentTotalFish += Number(0);
     }
-    if (foundItemList.PufferFish) {
-      currentTotalFish += Number(foundItemList.PufferFish);
+    if (balance.Items.PufferFish) {
+      currentTotalFish += Number(balance.Items.PufferFish);
     } else {
       currentTotalFish += Number(0);
     }
@@ -166,7 +144,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     let currentTotalPlot = 0;
 
-    if (foundBoostList.FarmPlot) {
+    if (balance.Boosts.FarmPlot) {
       currentTotalPlot += Number(foundPlotList.length);
     } else {
       currentTotalPlot += Number(0);
@@ -175,53 +153,53 @@ export const SlashCommandF = class extends SlashCommand {
     if (argsChoice === 'upgrade') {
       if (!argsItem) {
         const arr = [];
-        if (foundBoostList.SeedBag) {
-          if (Number(foundBoostList.SeedBag) < Number(seedBagMax)) {
-            const upgradeSeedBag = foundBoostList.SeedBag * seedBagPrice;
+        if (balance.Boosts.SeedBag) {
+          if (Number(balance.Boosts.SeedBag) < Number(seedBagMax)) {
+            const upgradeSeedBag = balance.Boosts.SeedBag * seedBagPrice;
             arr.push(
               `\u3000 \`/shop upgrade seedbag\` - <:coin:706659001164628008> \`${upgradeSeedBag.toLocaleString(
                 'en'
               )}\` Upgrade by 15, current capacity: \`${Number(currentTotalSeeds).toLocaleString('en')}\`/\`${Number(
-                foundBoostList.SeedBag
+                balance.Boosts.SeedBag
               ).toLocaleString('en')}\``
             );
           }
         }
 
-        if (foundBoostList.FishBag) {
-          if (Number(foundBoostList.FishBag) < Number(fishBagMax)) {
-            const upgradeFishBag = foundBoostList.FishBag * fishBagPrice;
+        if (balance.Boosts.FishBag) {
+          if (Number(balance.Boosts.FishBag) < Number(fishBagMax)) {
+            const upgradeFishBag = balance.Boosts.FishBag * fishBagPrice;
             arr.push(
               `\u3000 \`/shop upgrade fishbag\` - <:coin:706659001164628008> \`${upgradeFishBag.toLocaleString(
                 'en'
               )}\` Upgrade by 15, current capacity: \`${Number(currentTotalFish).toLocaleString('en')}\`/\`${Number(
-                foundBoostList.FishBag
+                balance.Boosts.FishBag
               ).toLocaleString('en')}\``
             );
           }
         }
 
-        if (foundBoostList.FarmBag) {
-          if (Number(foundBoostList.FarmBag) < Number(farmBagMax)) {
-            const upgradeFarmBag = foundBoostList.FarmBag * farmBagPrice;
+        if (balance.Boosts.FarmBag) {
+          if (Number(balance.Boosts.FarmBag) < Number(farmBagMax)) {
+            const upgradeFarmBag = balance.Boosts.FarmBag * farmBagPrice;
             arr.push(
               `\u3000 \`/shop upgrade farmbag\` - <:coin:706659001164628008> \`${upgradeFarmBag.toLocaleString(
                 'en'
               )}\` Upgrade by 15, current capacity: \`${Number(currentTotalFarm).toLocaleString('en')}\`/\`${Number(
-                foundBoostList.FarmBag
+                balance.Boosts.FarmBag
               ).toLocaleString('en')}\``
             );
           }
         }
 
-        if (foundBoostList.FarmPlot) {
-          if (Number(foundBoostList.FarmPlot) < Number(farmPlotMax)) {
-            const upgradeFarmPlot = foundBoostList.FarmPlot * farmPlotPrice;
+        if (balance.Boosts.FarmPlot) {
+          if (Number(balance.Boosts.FarmPlot) < Number(farmPlotMax)) {
+            const upgradeFarmPlot = balance.Boosts.FarmPlot * farmPlotPrice;
             arr.push(
               `\u3000 \`/shop upgrade plot\` - <:coin:706659001164628008> \`${upgradeFarmPlot.toLocaleString(
                 'en'
               )}\` Upgrade by 15, current capacity: \`${Number(currentTotalPlot).toLocaleString('en')}\`/\`${Number(
-                foundBoostList.FarmPlot
+                balance.Boosts.FarmPlot
               ).toLocaleString('en')}\``
             );
           }
@@ -242,7 +220,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (argsItem === 'seedbag') {
-        if (!foundBoostList.SeedBag) {
+        if (!balance.Boosts.SeedBag) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -254,7 +232,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (Number(foundBoostList.SeedBag) >= Number(seedBagMax)) {
+        if (Number(balance.Boosts.SeedBag) >= Number(seedBagMax)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -266,8 +244,8 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.Bank < foundBoostList.SeedBag * seedBagPrice * 3) {
-          const notEnough = foundBoostList.SeedBag * seedBagPrice * 3 - Number(balance.Bank);
+        if (balance.Bank < balance.Boosts.SeedBag * seedBagPrice * 3) {
+          const notEnough = balance.Boosts.SeedBag * seedBagPrice * 3 - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -282,13 +260,12 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.Bank = Number(balance.Bank) - foundBoostList.SeedBag * seedBagPrice * 3;
-        balance.Total = Number(balance.Total) - foundBoostList.SeedBag * seedBagPrice * 3;
+        balance.Bank = Number(balance.Bank) - balance.Boosts.SeedBag * seedBagPrice * 3;
+        balance.Total = Number(balance.Total) - balance.Boosts.SeedBag * seedBagPrice * 3;
 
-        const calc = Number(foundBoostList.SeedBag) + Number(15);
-        foundBoostList.SeedBag = calc.toString();
+        const calc = Number(balance.Boosts.SeedBag) + Number(15);
+        balance.Boosts.SeedBag = calc
 
-        balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -298,15 +275,15 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({
             name: `**${this.client.user.username} - Shop - Seed Bag**`,
             value: `**◎ Success:** You have upgraded your seed bag for <:coin:706659001164628008> \`${
-              foundBoostList.SeedBag * seedBagPrice * 3
-            }\`, your new limit is \`${Number(foundBoostList.SeedBag)}\`!`
+              balance.Boosts.SeedBag * seedBagPrice * 3
+            }\`, your new limit is \`${Number(balance.Boosts.SeedBag)}\`!`
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/SeedBag.png'] });
         return;
       }
 
       if (argsItem === 'fishbag') {
-        if (!foundBoostList.FishBag) {
+        if (!balance.Boosts.FishBag) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -318,7 +295,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (Number(foundBoostList.FishBag) >= Number(fishBagMax)) {
+        if (Number(balance.Boosts.FishBag) >= Number(fishBagMax)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -330,8 +307,8 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.Bank < foundBoostList.FishBag * fishBagPrice * 3) {
-          const notEnough = foundBoostList.FishBag * fishBagPrice * 3 - Number(balance.Bank);
+        if (balance.Bank < balance.Boosts.FishBag * fishBagPrice * 3) {
+          const notEnough = balance.Boosts.FishBag * fishBagPrice * 3 - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -346,13 +323,12 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.Bank = Number(balance.Bank) - foundBoostList.FishBag * fishBagPrice * 3;
-        balance.Total = Number(balance.Total) - foundBoostList.FishBag * fishBagPrice * 3;
+        balance.Bank = Number(balance.Bank) - balance.Boosts.FishBag * fishBagPrice * 3;
+        balance.Total = Number(balance.Total) - balance.Boosts.FishBag * fishBagPrice * 3;
 
-        const calc = Number(foundBoostList.FishBag) + Number(15);
-        foundBoostList.FishBag = calc.toString();
+        const calc = Number(balance.Boosts.FishBag) + Number(15);
+        balance.Boosts.FishBag = calc
 
-        balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -362,15 +338,15 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({
             name: `**${this.client.user.username} - Shop - Fish Bag**`,
             value: `**◎ Success:** You have upgraded your fish bag <:coin:706659001164628008> \`${
-              foundBoostList.FishBag * fishBagPrice * 3
-            }\`, your new limit is \`${Number(foundBoostList.FishBag)}\`!`
+              balance.Boosts.FishBag * fishBagPrice * 3
+            }\`, your new limit is \`${Number(balance.Boosts.FishBag)}\`!`
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/FishBag.png'] });
         return;
       }
 
       if (argsItem === 'farmbag') {
-        if (!foundBoostList.FarmBag) {
+        if (!balance.Boosts.FarmBag) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -382,7 +358,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (Number(foundBoostList.FarmBag) >= Number(farmBagMax)) {
+        if (Number(balance.Boosts.FarmBag) >= Number(farmBagMax)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -394,8 +370,8 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.Bank < foundBoostList.FarmBag * farmBagPrice * 3) {
-          const notEnough = foundBoostList.FarmBag * farmBagPrice * 3 - Number(balance.Bank);
+        if (balance.Bank < balance.Boosts.FarmBag * farmBagPrice * 3) {
+          const notEnough = balance.Boosts.FarmBag * farmBagPrice * 3 - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -410,13 +386,12 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.Bank = Number(balance.Bank) - foundBoostList.FarmBag * farmBagPrice * 3;
-        balance.Total = Number(balance.Total) - foundBoostList.FarmBag * farmBagPrice * 3;
+        balance.Bank = Number(balance.Bank) - balance.Boosts.FarmBag * farmBagPrice * 3;
+        balance.Total = Number(balance.Total) - balance.Boosts.FarmBag * farmBagPrice * 3;
 
-        const calc = Number(foundBoostList.FarmBag) + Number(15);
-        foundBoostList.FarmBag = calc.toString();
+        const calc = Number(balance.Boosts.FarmBag) + Number(15);
+        balance.Boosts.FarmBag = calc
 
-        balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -426,15 +401,15 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({
             name: `**${this.client.user.username} - Shop - Farm Bag**`,
             value: `**◎ Success:** You have upgraded your farm bag <:coin:706659001164628008> \`${
-              foundBoostList.FarmBag * farmBagPrice * 3
-            }\`, your new limit is \`${Number(foundBoostList.FarmBag)}\`!`
+              balance.Boosts.FarmBag * farmBagPrice * 3
+            }\`, your new limit is \`${Number(balance.Boosts.FarmBag)}\`!`
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/FarmBag.png'] });
         return;
       }
 
       if (argsItem === 'plot') {
-        if (!foundBoostList.FarmPlot) {
+        if (!balance.Boosts.FarmPlot) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -446,7 +421,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (Number(foundBoostList.FarmPlot) >= Number(farmPlotMax)) {
+        if (Number(balance.Boosts.FarmPlot) >= Number(farmPlotMax)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -458,8 +433,8 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.Bank < foundBoostList.FarmPlot * farmPlotPrice * 3) {
-          const notEnough = foundBoostList.FarmPlot * farmPlotPrice * 3 - Number(balance.Bank);
+        if (balance.Bank < balance.Boosts.FarmPlot * farmPlotPrice * 3) {
+          const notEnough = balance.Boosts.FarmPlot * farmPlotPrice * 3 - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -474,13 +449,12 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.Bank = Number(balance.Bank) - foundBoostList.FarmPlot * farmPlotPrice * 3;
-        balance.Total = Number(balance.Total) - foundBoostList.FarmPlot * farmPlotPrice * 3;
+        balance.Bank = Number(balance.Bank) - balance.Boosts.FarmPlot * farmPlotPrice * 3;
+        balance.Total = Number(balance.Total) - balance.Boosts.FarmPlot * farmPlotPrice * 3;
 
-        const calc = Number(foundBoostList.FarmPlot) + Number(15);
-        foundBoostList.FarmPlot = calc.toString();
+        const calc = Number(balance.Boosts.FarmPlot) + Number(15);
+        balance.Boosts.FarmPlot = calc
 
-        balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -490,8 +464,8 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({
             name: `**${this.client.user.username} - Shop - Farm Plot**`,
             value: `**◎ Success:** You have upgraded your farm plot <:coin:706659001164628008> \`${
-              foundBoostList.FarmPlot * farmPlotPrice * 3
-            }\`, your new limit is \`${Number(foundBoostList.FarmPlot)}\`!`
+              balance.Boosts.FarmPlot * farmPlotPrice * 3
+            }\`, your new limit is \`${Number(balance.Boosts.FarmPlot)}\`!`
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/FarmPlot.png'] });
         return;
@@ -507,60 +481,60 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Shop - Buy**`,
             value: `**◎ Farming Seeds: (Amount optional)**
 						\u3000 \`/shop buy corn\` - 10 Seeds per pack - ${
-              !foundItemList.CornSeeds
+              !balance.Items.CornSeeds
                 ? `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\``
-                : `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\` - \`Owned ${foundItemList.CornSeeds.toLocaleString('en')}\``
+                : `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\` - \`Owned ${balance.Items.CornSeeds.toLocaleString('en')}\``
             }
 						\u3000 \`/shop buy wheat\` - 10 Seeds per pack - ${
-              !foundItemList.WheatSeeds
+              !balance.Items.WheatSeeds
                 ? `<:coin:706659001164628008> \`${wheatSeedPrice.toLocaleString('en')}\``
-                : `<:coin:706659001164628008> \`${wheatSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.WheatSeeds.toLocaleString('en')}\``
+                : `<:coin:706659001164628008> \`${wheatSeedPrice.toLocaleString('en')}\`- \`Owned ${balance.Items.WheatSeeds.toLocaleString('en')}\``
             }
 						\u3000 \`/shop buy potato\` - 10 Seeds per pack - ${
-              !foundItemList.PotatoSeeds
+              !balance.Items.PotatoSeeds
                 ? `<:coin:706659001164628008> \`${potatoeSeedPrice.toLocaleString('en')}\``
-                : `<:coin:706659001164628008> \`${potatoeSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.PotatoSeeds.toLocaleString(
+                : `<:coin:706659001164628008> \`${potatoeSeedPrice.toLocaleString('en')}\`- \`Owned ${balance.Items.PotatoSeeds.toLocaleString(
                     'en'
                   )}\``
             }
 						\u3000 \`/shop buy tomato\` - 10 Seeds per pack - ${
-              !foundItemList.TomatoSeeds
+              !balance.Items.TomatoSeeds
                 ? `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\``
-                : `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`- \`Owned ${foundItemList.TomatoSeeds.toLocaleString(
+                : `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`- \`Owned ${balance.Items.TomatoSeeds.toLocaleString(
                     'en'
                   )}\``
             }
 						\u200b
 						**◎ Permanent Items:**
 						\u3000 ${
-              !foundItemList.FishingRod
+              !balance.Items.FishingRod
                 ? `\`/shop buy rod\` - <:coin:706659001164628008> \`${fishingPrice.toLocaleString('en')}\``
                 : 'Fishing Rod - `Owned`'
             }
 						\u3000 Fish Bag - ${
-              !foundBoostList.FishBag
+              !balance.Boosts.FishBag
                 ? '`Not Owned` - Buy fishing rod to aquire'
-                : `\`Owned\` - Current capacity: \`${Number(currentTotalFish)}\`/\`${foundBoostList.FishBag}\``
+                : `\`Owned\` - Current capacity: \`${Number(currentTotalFish)}\`/\`${balance.Boosts.FishBag}\``
             }
 						\u3000 ${
-              !foundItemList.FarmingTools
+              !balance.Items.FarmingTools
                 ? `\`/shop buy tools\` - <:coin:706659001164628008> \`${farmingPrice.toLocaleString('en')}\``
                 : 'Farming Tools - `Owned`'
             }
 						\u3000 Seed Bag - ${
-              !foundBoostList.SeedBag
+              !balance.Boosts.SeedBag
                 ? '`Not Owned` - Buy farming tools to aquire'
-                : `\`Owned\` - Current capacity: \`${Number(currentTotalSeeds)}\`/\`${foundBoostList.SeedBag}\``
+                : `\`Owned\` - Current capacity: \`${Number(currentTotalSeeds)}\`/\`${balance.Boosts.SeedBag}\``
             }
 						\u3000 Farm Bag - ${
-              !foundBoostList.FarmBag
+              !balance.Boosts.FarmBag
                 ? '`Not Owned` - Buy farming tools to aquire'
-                : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.FarmBag}\``
+                : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${balance.Boosts.FarmBag}\``
             }
 						\u3000 Farm Plot - ${
-              !foundBoostList.FarmPlot
+              !balance.Boosts.FarmPlot
                 ? '`Not Owned` - Buy farming tools to aquire'
-                : `\`Owned\` - Current capacity: \`${Number(currentTotalPlot)}\`/\`${foundBoostList.FarmPlot}\``
+                : `\`Owned\` - Current capacity: \`${Number(currentTotalPlot)}\`/\`${balance.Boosts.FarmPlot}\``
             }`
           });
         interaction.reply({ ephemeral: true, embeds: [embed] });
@@ -568,7 +542,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (argsItem === 'corn' || argsItem === 'wheat' || argsItem === 'potato' || argsItem === 'tomato') {
-        if (!foundItemList.FarmingTools) {
+        if (!balance.Items.FarmingTools) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -606,25 +580,25 @@ export const SlashCommandF = class extends SlashCommand {
         await balance.save();
 
         let calc;
-        if (foundItemList.CornSeeds) {
-          calc = Number(foundItemList.CornSeeds) + Number(1) * 10;
+        if (balance.Items.CornSeeds) {
+          calc = Number(balance.Items.CornSeeds) + Number(1) * 10;
         } else {
           calc = Number(1) * 10;
         }
 
-        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(foundBoostList.SeedBag)) {
+        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(balance.Boosts.SeedBag)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Backpack Limit**`,
-              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.SeedBag}\``
+              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${balance.Boosts.SeedBag}\``
             });
           interaction.reply({ ephemeral: true, embeds: [embed] });
           return;
         }
 
-        foundItemList.CornSeeds = Number(calc).toString();
+        balance.Items.CornSeeds = Number(calc)
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -634,11 +608,10 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Shop - Corn Seeds**`,
             value: `**◎ Success:** You have bought a pack of Corn Seeds.\nYou now have \`${calc}\` total Corn seeds.\n\nYour current backpack capacity is at \`${
               Number(currentTotalSeeds) + Number(1) * 10
-            }\`/\`${foundBoostList.SeedBag}\``
+            }\`/\`${balance.Boosts.SeedBag}\``
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/CornSeeds.png'] });
 
-        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
         return;
       }
@@ -668,25 +641,25 @@ export const SlashCommandF = class extends SlashCommand {
         await balance.save();
 
         let calc;
-        if (foundItemList.WheatSeeds) {
-          calc = Number(foundItemList.WheatSeeds) + Number(1) * 10;
+        if (balance.Items.WheatSeeds) {
+          calc = Number(balance.Items.WheatSeeds) + Number(1) * 10;
         } else {
           calc = Number(1) * 10;
         }
 
-        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(foundBoostList.SeedBag)) {
+        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(balance.Boosts.SeedBag)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Backpack Limit**`,
-              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.SeedBag}\``
+              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${balance.Boosts.SeedBag}\``
             });
           interaction.reply({ ephemeral: true, embeds: [embed] });
           return;
         }
 
-        foundItemList.WheatSeeds = Number(calc).toString();
+        balance.Items.WheatSeeds = Number(calc)
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -696,11 +669,10 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Shop - Wheat Seeds**`,
             value: `**◎ Success:** You have bought a pack of Wheat Seeds.\nYou now have \`${calc}\` total Wheat seeds.\n\nYour current backpack capacity is at \`${
               Number(currentTotalSeeds) + Number(1) * 10
-            }\`/\`${foundBoostList.SeedBag}\``
+            }\`/\`${balance.Boosts.SeedBag}\``
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/WheatSeeds.png'] });
 
-        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
         return;
       }
@@ -730,25 +702,25 @@ export const SlashCommandF = class extends SlashCommand {
         await balance.save();
 
         let calc;
-        if (foundItemList.PotatoSeeds) {
-          calc = Number(foundItemList.PotatoSeeds) + Number(1) * 10;
+        if (balance.Items.PotatoSeeds) {
+          calc = Number(balance.Items.PotatoSeeds) + Number(1) * 10;
         } else {
           calc = Number(1) * 10;
         }
 
-        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(foundBoostList.SeedBag)) {
+        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(balance.Boosts.SeedBag)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Backpack Limit**`,
-              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.SeedBag}\``
+              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${balance.Boosts.SeedBag}\``
             });
           interaction.reply({ ephemeral: true, embeds: [embed] });
           return;
         }
 
-        foundItemList.PotatoSeeds = Number(calc).toString();
+        balance.Items.PotatoSeeds = Number(calc)
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -758,11 +730,10 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Shop - Potato Seeds**`,
             value: `**◎ Success:** You have bought a pack of Potato Seeds.\nYou now have \`${calc}\` total Potato seeds.\n\nYour current backpack capacity is at \`${
               Number(currentTotalSeeds) + Number(1) * 10
-            }\`/\`${foundBoostList.SeedBag}\``
+            }\`/\`${balance.Boosts.SeedBag}\``
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/Potatoe.png'] });
 
-        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
         return;
       }
@@ -792,25 +763,25 @@ export const SlashCommandF = class extends SlashCommand {
         await balance.save();
 
         let calc;
-        if (foundItemList.TomatoSeeds) {
-          calc = Number(foundItemList.TomatoSeeds) + Number(1) * 10;
+        if (balance.Items.TomatoSeeds) {
+          calc = Number(balance.Items.TomatoSeeds) + Number(1) * 10;
         } else {
           calc = Number(1) * 10;
         }
 
-        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(foundBoostList.SeedBag)) {
+        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(balance.Boosts.SeedBag)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Backpack Limit**`,
-              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.SeedBag}\``
+              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${balance.Boosts.SeedBag}\``
             });
           interaction.reply({ ephemeral: true, embeds: [embed] });
           return;
         }
 
-        foundItemList.TomatoSeeds = Number(calc).toString();
+        balance.Items.TomatoSeeds = Number(calc)
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -820,17 +791,16 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Shop - Tomato Seeds**`,
             value: `**◎ Success:** You have bought a pack of Tomato Seeds.\nYou now have \`${calc}\` total Tomato seeds.\n\nYour current backpack capacity is at \`${
               Number(currentTotalSeeds) + Number(1) * 10
-            }\`/\`${foundBoostList.SeedBag}\``
+            }\`/\`${balance.Boosts.SeedBag}\``
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/Tomatoes.png'] });
 
-        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
         return;
       }
 
       if (argsItem === 'rod') {
-        if (foundItemList.FishingRod) {
+        if (balance.Items.FishingRod) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -859,11 +829,9 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = Number(balance.Total) - Number(fishingPrice);
         await balance.save();
 
-        foundItemList.FishingRod = Number(1).toString();
-        foundBoostList.FishBag = Number(initalSeedBag).toString();
+        balance.Items.FishingRod = Number(1)
+        balance.Boosts.FishBag = Number(initalSeedBag)
 
-        balance.Items = JSON.stringify(foundItemList);
-        balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -879,7 +847,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (argsItem === 'tools') {
-        if (foundItemList.FarmingTools) {
+        if (balance.Items.FarmingTools) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -911,19 +879,19 @@ export const SlashCommandF = class extends SlashCommand {
 
         let fullPrice = 0;
 
-        if (foundItemList.Barley) fullPrice += Number(foundItemList.Barley) * this.client.ecoPrices.barley;
-        if (foundItemList.Spinach) fullPrice += Number(foundItemList.Spinach) * this.client.ecoPrices.spinach;
-        if (foundItemList.Strawberries) fullPrice += Number(foundItemList.Strawberries) * this.client.ecoPrices.strawberries;
-        if (foundItemList.Lettuce) fullPrice += Number(foundItemList.Lettuce) * this.client.ecoPrices.lettuce;
+        if (balance.Items.Barley) fullPrice += Number(balance.Items.Barley) * this.client.ecoPrices.barley;
+        if (balance.Items.Spinach) fullPrice += Number(balance.Items.Spinach) * this.client.ecoPrices.spinach;
+        if (balance.Items.Strawberries) fullPrice += Number(balance.Items.Strawberries) * this.client.ecoPrices.strawberries;
+        if (balance.Items.Lettuce) fullPrice += Number(balance.Items.Lettuce) * this.client.ecoPrices.lettuce;
 
         balance.Bank = Number(balance.Bank) - Number(farmingPrice) + fullPrice;
         balance.Total = Number(balance.Total) - Number(farmingPrice) + fullPrice;
         await balance.save();
 
-        foundItemList.FarmingTools = Number(1).toString();
-        foundBoostList.FarmBag = Number(initalFarmBag).toString();
-        foundBoostList.SeedBag = Number(initalSeedBag).toString();
-        foundBoostList.FarmPlot = Number(initialFarmPlot).toString();
+        balance.Items.FarmingTools = Number(1)
+        balance.Boosts.FarmBag = Number(initalFarmBag)
+        balance.Boosts.SeedBag = Number(initalSeedBag)
+        balance.Boosts.FarmPlot = Number(initialFarmPlot)
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -932,7 +900,7 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({
             name: `**${this.client.user.username} - Shop - Farming Tools**`,
             value: `**◎ Success:** You have bought Farming Tools${
-              foundItemList.Barley || foundItemList.Spinach || foundItemList.Strawberries || foundItemList.Lettuce
+              balance.Items.Barley || balance.Items.Spinach || balance.Items.Strawberries || balance.Items.Lettuce
                 ? `.\nYou had some old crops, I have sold them for you and credited <:coin:706659001164628008> \`${fullPrice.toLocaleString(
                     'en'
                   )}\` to your account.`
@@ -941,13 +909,11 @@ export const SlashCommandF = class extends SlashCommand {
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/FarmingTool.png'] });
 
-        if (foundItemList.Barley) delete foundItemList.Barley;
-        if (foundItemList.Spinach) delete foundItemList.Spinach;
-        if (foundItemList.Strawberries) delete foundItemList.Strawberries;
-        if (foundItemList.Lettuce) delete foundItemList.Lettuce;
+        if (balance.Items.Barley) delete balance.Items.Barley;
+        if (balance.Items.Spinach) delete balance.Items.Spinach;
+        if (balance.Items.Strawberries) delete balance.Items.Strawberries;
+        if (balance.Items.Lettuce) delete balance.Items.Lettuce;
 
-        balance.Items = JSON.stringify(foundItemList);
-        balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
         return;
       }
@@ -957,27 +923,27 @@ export const SlashCommandF = class extends SlashCommand {
       if (!argsItem) {
         let fields;
 
-        if (!foundItemList.FarmingTools) {
+        if (!balance.Items.FarmingTools) {
           fields = [
             `\u3000 Barley: Own ${
-              foundItemList.Barley === undefined
+              balance.Items.Barley === undefined
                 ? '`0`'
-                : `\`${foundItemList.Barley}\` - <:coin:706659001164628008> \`${barleyPrice.toLocaleString('en')}\``
+                : `\`${balance.Items.Barley}\` - <:coin:706659001164628008> \`${barleyPrice.toLocaleString('en')}\``
             }`,
             `\u3000 Spinach: Own ${
-              foundItemList.Spinach === undefined
+              balance.Items.Spinach === undefined
                 ? '`0`'
-                : `\`${foundItemList.Spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``
+                : `\`${balance.Items.Spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``
             }`,
             `\u3000 Strawberries: Own ${
-              foundItemList.Strawberries === undefined
+              balance.Items.Strawberries === undefined
                 ? '`0`'
-                : `\`${foundItemList.Strawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
+                : `\`${balance.Items.Strawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
             }`,
             `\u3000 Lettuce: Own ${
-              foundItemList.Lettuce === undefined
+              balance.Items.Lettuce === undefined
                 ? '`0`'
-                : `\`${foundItemList.Lettuce}\` - <:coin:706659001164628008> \`${lettucePrice.toLocaleString('en')}\``
+                : `\`${balance.Items.Lettuce}\` - <:coin:706659001164628008> \`${lettucePrice.toLocaleString('en')}\``
             }`
           ];
         } else {
@@ -1012,27 +978,27 @@ export const SlashCommandF = class extends SlashCommand {
             }`
           ];
 
-          if (foundItemList.Barley || foundItemList.Spinach || foundItemList.Strawberries || foundItemList.Lettuce) {
+          if (balance.Items.Barley || balance.Items.Spinach || balance.Items.Strawberries || balance.Items.Lettuce) {
             const lowCrops = [
               `\u3000 Barley: Own ${
-                foundItemList.Barley === undefined
+                balance.Items.Barley === undefined
                   ? '`0`'
-                  : `\`${foundItemList.Barley}\` - <:coin:706659001164628008> \`${barleyPrice.toLocaleString('en')}\``
+                  : `\`${balance.Items.Barley}\` - <:coin:706659001164628008> \`${barleyPrice.toLocaleString('en')}\``
               }`,
               `\u3000 Spinach: Own ${
-                foundItemList.Spinach === undefined
+                balance.Items.Spinach === undefined
                   ? '`0`'
-                  : `\`${foundItemList.Spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``
+                  : `\`${balance.Items.Spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``
               }`,
               `\u3000 Strawberries: Own ${
-                foundItemList.Strawberries === undefined
+                balance.Items.Strawberries === undefined
                   ? '`0`'
-                  : `\`${foundItemList.Strawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
+                  : `\`${balance.Items.Strawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
               }`,
               `\u3000 Lettuce: Own ${
-                foundItemList.Lettuce === undefined
+                balance.Items.Lettuce === undefined
                   ? '`0`'
-                  : `\`${foundItemList.Lettuce}\` - <:coin:706659001164628008> \`${lettucePrice.toLocaleString('en')}\``
+                  : `\`${balance.Items.Lettuce}\` - <:coin:706659001164628008> \`${lettucePrice.toLocaleString('en')}\``
               }`
             ];
             fields.push(lowCrops.join('\n'));
@@ -1046,24 +1012,24 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Items**`,
             value: `**◎ Fish:**
 						\u3000 Trout: Own ${
-              foundItemList.Trout === undefined
+              balance.Items.Trout === undefined
                 ? '`0`'
-                : `\`${foundItemList.Trout}\` - <:coin:706659001164628008> \`${troutPrice.toLocaleString('en')}\``
+                : `\`${balance.Items.Trout}\` - <:coin:706659001164628008> \`${troutPrice.toLocaleString('en')}\``
             }
 						\u3000 King Salmon: Own ${
-              foundItemList.KingSalmon === undefined
+              balance.Items.KingSalmon === undefined
                 ? '`0`'
-                : `\`${foundItemList.KingSalmon}\` - <:coin:706659001164628008> \`${salmonPrice.toLocaleString('en')}\``
+                : `\`${balance.Items.KingSalmon}\` - <:coin:706659001164628008> \`${salmonPrice.toLocaleString('en')}\``
             }
 						\u3000 Swordfish: Own ${
-              foundItemList.SwordFish === undefined
+              balance.Items.SwordFish === undefined
                 ? '`0`'
-                : `\`${foundItemList.SwordFish} \`- <:coin:706659001164628008> \`${swordFishPrice.toLocaleString('en')}\``
+                : `\`${balance.Items.SwordFish} \`- <:coin:706659001164628008> \`${swordFishPrice.toLocaleString('en')}\``
             }
 						\u3000 Pufferfish: Own ${
-              foundItemList.PufferFish === undefined
+              balance.Items.PufferFish === undefined
                 ? '`0`'
-                : `\`${foundItemList.PufferFish}\` - <:coin:706659001164628008> \`${pufferFishPrice.toLocaleString('en')}\``
+                : `\`${balance.Items.PufferFish}\` - <:coin:706659001164628008> \`${pufferFishPrice.toLocaleString('en')}\``
             }
 						\u200b
 						**◎ Crops:**
@@ -1071,19 +1037,19 @@ export const SlashCommandF = class extends SlashCommand {
 						\u200b
 						**◎ Treasure:**
 						\u3000 Treasure Chest: Own ${
-              foundItemList.Treasure === undefined
+              balance.Items.Treasure === undefined
                 ? '`0`'
-                : `${foundItemList.Treasure} - <:coin:706659001164628008> \`${treasurePrice.toLocaleString('en')}\``
+                : `${balance.Items.Treasure} - <:coin:706659001164628008> \`${treasurePrice.toLocaleString('en')}\``
             }
 						\u3000 Gold Bar: Own ${
-              foundItemList.GoldBar === undefined
+              balance.Items.GoldBar === undefined
                 ? '`0`'
-                : `\`${foundItemList.GoldBar}\` - <:coin:706659001164628008> \`${goldBarPrice.toLocaleString('en')}\``
+                : `\`${balance.Items.GoldBar}\` - <:coin:706659001164628008> \`${goldBarPrice.toLocaleString('en')}\``
             }
 						\u3000 Gold Nugget: Own ${
-              foundItemList.GoldNugget === undefined
+              balance.Items.GoldNugget === undefined
                 ? '`0`'
-                : `\`${foundItemList.GoldNugget}\` - <:coin:706659001164628008> \`${goldNuggetPrice.toLocaleString('en')}\``
+                : `\`${balance.Items.GoldNugget}\` - <:coin:706659001164628008> \`${goldNuggetPrice.toLocaleString('en')}\``
             }
 						\u200b
 						**◎ Available Commands:**
@@ -1098,21 +1064,21 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (argsItem === 'all') {
         if (
-          !foundItemList.Lettuce &&
-          !foundItemList.Strawberries &&
-          !foundItemList.Spinach &&
-          !foundItemList.Barley &&
+          !balance.Items.Lettuce &&
+          !balance.Items.Strawberries &&
+          !balance.Items.Spinach &&
+          !balance.Items.Barley &&
           !foundHarvestList.filter((key) => key.cropType === 'tomato').length &&
           !foundHarvestList.filter((key) => key.cropType === 'potato').length &&
           !foundHarvestList.filter((key) => key.cropType === 'wheat').length &&
           !foundHarvestList.filter((key) => key.cropType === 'corn').length &&
-          !foundItemList.Trout &&
-          !foundItemList.KingSalmon &&
-          !foundItemList.SwordFish &&
-          !foundItemList.PufferFish &&
-          !foundItemList.Treasure &&
-          !foundItemList.GoldBar &&
-          !foundItemList.GoldNugget
+          !balance.Items.Trout &&
+          !balance.Items.KingSalmon &&
+          !balance.Items.SwordFish &&
+          !balance.Items.PufferFish &&
+          !balance.Items.Treasure &&
+          !balance.Items.GoldBar &&
+          !balance.Items.GoldNugget
         ) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -1125,10 +1091,10 @@ export const SlashCommandF = class extends SlashCommand {
         let fullPrice = 0;
         let itemCount = 0;
 
-        if (foundItemList.Lettuce) fullPrice += Number(foundItemList.Lettuce) * this.client.ecoPrices.lettuce;
-        if (foundItemList.Strawberries) fullPrice += Number(foundItemList.Strawberries) * this.client.ecoPrices.strawberries;
-        if (foundItemList.Spinach) fullPrice += Number(foundItemList.Spinach) * this.client.ecoPrices.spinach;
-        if (foundItemList.Barley) fullPrice += Number(foundItemList.Barley) * this.client.ecoPrices.barley;
+        if (balance.Items.Lettuce) fullPrice += Number(balance.Items.Lettuce) * this.client.ecoPrices.lettuce;
+        if (balance.Items.Strawberries) fullPrice += Number(balance.Items.Strawberries) * this.client.ecoPrices.strawberries;
+        if (balance.Items.Spinach) fullPrice += Number(balance.Items.Spinach) * this.client.ecoPrices.spinach;
+        if (balance.Items.Barley) fullPrice += Number(balance.Items.Barley) * this.client.ecoPrices.barley;
 
         foundHarvestList.forEach((obj) => {
           if (obj.cropType === 'corn') fullPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.decay.toFixed(4) / 100));
@@ -1137,23 +1103,23 @@ export const SlashCommandF = class extends SlashCommand {
           if (obj.cropType === 'tomato') fullPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.decay.toFixed(4) / 100));
         });
 
-        if (foundItemList.Trout) fullPrice += Number(foundItemList.Trout) * this.client.ecoPrices.trout;
-        if (foundItemList.KingSalmon) fullPrice += Number(foundItemList.KingSalmon) * this.client.ecoPrices.kingSalmon;
-        if (foundItemList.SwordFish) fullPrice += Number(foundItemList.SwordFish) * this.client.ecoPrices.swordfish;
-        if (foundItemList.PufferFish) fullPrice += Number(foundItemList.PufferFish) * this.client.ecoPrices.pufferfish;
-        if (foundItemList.Treasure) fullPrice += Number(foundItemList.Treasure) * this.client.ecoPrices.treasure;
-        if (foundItemList.GoldBar) fullPrice += Number(foundItemList.GoldBar) * this.client.ecoPrices.goldBar;
-        if (foundItemList.GoldNugget) fullPrice += Number(foundItemList.GoldNugget) * this.client.ecoPrices.goldNugget;
+        if (balance.Items.Trout) fullPrice += Number(balance.Items.Trout) * this.client.ecoPrices.trout;
+        if (balance.Items.KingSalmon) fullPrice += Number(balance.Items.KingSalmon) * this.client.ecoPrices.kingSalmon;
+        if (balance.Items.SwordFish) fullPrice += Number(balance.Items.SwordFish) * this.client.ecoPrices.swordfish;
+        if (balance.Items.PufferFish) fullPrice += Number(balance.Items.PufferFish) * this.client.ecoPrices.pufferfish;
+        if (balance.Items.Treasure) fullPrice += Number(balance.Items.Treasure) * this.client.ecoPrices.treasure;
+        if (balance.Items.GoldBar) fullPrice += Number(balance.Items.GoldBar) * this.client.ecoPrices.goldBar;
+        if (balance.Items.GoldNugget) fullPrice += Number(balance.Items.GoldNugget) * this.client.ecoPrices.goldNugget;
 
-        if (foundItemList.Treasure) itemCount += Number(foundItemList.Treasure);
-        if (foundItemList.Trout) itemCount += Number(foundItemList.Trout);
-        if (foundItemList.KingSalmon) itemCount += Number(foundItemList.KingSalmon);
-        if (foundItemList.SwordFish) itemCount += Number(foundItemList.SwordFish);
-        if (foundItemList.PufferFish) itemCount += Number(foundItemList.PufferFish);
-        if (foundItemList.Lettuce) itemCount += Number(foundItemList.Lettuce);
-        if (foundItemList.Strawberries) itemCount += Number(foundItemList.Strawberries);
-        if (foundItemList.Spinach) itemCount += Number(foundItemList.Spinach);
-        if (foundItemList.Barley) itemCount += Number(foundItemList.Barley);
+        if (balance.Items.Treasure) itemCount += Number(balance.Items.Treasure);
+        if (balance.Items.Trout) itemCount += Number(balance.Items.Trout);
+        if (balance.Items.KingSalmon) itemCount += Number(balance.Items.KingSalmon);
+        if (balance.Items.SwordFish) itemCount += Number(balance.Items.SwordFish);
+        if (balance.Items.PufferFish) itemCount += Number(balance.Items.PufferFish);
+        if (balance.Items.Lettuce) itemCount += Number(balance.Items.Lettuce);
+        if (balance.Items.Strawberries) itemCount += Number(balance.Items.Strawberries);
+        if (balance.Items.Spinach) itemCount += Number(balance.Items.Spinach);
+        if (balance.Items.Barley) itemCount += Number(balance.Items.Barley);
 
         if (foundHarvestList) {
           itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'corn').length);
@@ -1162,8 +1128,8 @@ export const SlashCommandF = class extends SlashCommand {
           itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'tomato').length);
         }
 
-        if (foundItemList.GoldBar) itemCount += Number(foundItemList.GoldBar);
-        if (foundItemList.GoldNugget) itemCount += Number(foundItemList.GoldNugget);
+        if (balance.Items.GoldBar) itemCount += Number(balance.Items.GoldBar);
+        if (balance.Items.GoldNugget) itemCount += Number(balance.Items.GoldNugget);
 
         const totalAdd = balance.Total + fullPrice;
 
@@ -1171,19 +1137,18 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = totalAdd;
         await balance.save();
 
-        if (foundItemList.Treasure) delete foundItemList.Treasure;
-        if (foundItemList.Trout) delete foundItemList.Trout;
-        if (foundItemList.KingSalmon) delete foundItemList.KingSalmon;
-        if (foundItemList.SwordFish) delete foundItemList.SwordFish;
-        if (foundItemList.PufferFish) delete foundItemList.PufferFish;
-        if (foundItemList.GoldBar) delete foundItemList.GoldBar;
-        if (foundItemList.GoldNugget) delete foundItemList.GoldNugget;
-        if (foundItemList.Barley) delete foundItemList.Barley;
-        if (foundItemList.Spinach) delete foundItemList.Spinach;
-        if (foundItemList.Strawberries) delete foundItemList.Strawberries;
-        if (foundItemList.Lettuce) delete foundItemList.Lettuce;
+        if (balance.Items.Treasure) delete balance.Items.Treasure;
+        if (balance.Items.Trout) delete balance.Items.Trout;
+        if (balance.Items.KingSalmon) delete balance.Items.KingSalmon;
+        if (balance.Items.SwordFish) delete balance.Items.SwordFish;
+        if (balance.Items.PufferFish) delete balance.Items.PufferFish;
+        if (balance.Items.GoldBar) delete balance.Items.GoldBar;
+        if (balance.Items.GoldNugget) delete balance.Items.GoldNugget;
+        if (balance.Items.Barley) delete balance.Items.Barley;
+        if (balance.Items.Spinach) delete balance.Items.Spinach;
+        if (balance.Items.Strawberries) delete balance.Items.Strawberries;
+        if (balance.Items.Lettuce) delete balance.Items.Lettuce;
 
-        balance.Items = JSON.stringify(foundItemList);
         balance.HarvestedCrops = null;
         balance.save();
 
@@ -1202,11 +1167,11 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (argsItem === 'fish') {
         if (
-          foundItemList.Trout === undefined &&
-          foundItemList.KingSalmon === undefined &&
-          foundItemList.SwordFish === undefined &&
-          foundItemList.PufferFish === undefined &&
-          foundItemList.Treasure === undefined
+          balance.Items.Trout === undefined &&
+          balance.Items.KingSalmon === undefined &&
+          balance.Items.SwordFish === undefined &&
+          balance.Items.PufferFish === undefined &&
+          balance.Items.Treasure === undefined
         ) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -1219,15 +1184,15 @@ export const SlashCommandF = class extends SlashCommand {
         let fullPrice = 0;
         let fishCount = 0;
 
-        if (foundItemList.Trout) fullPrice += Number(foundItemList.Trout) * this.client.ecoPrices.trout;
-        if (foundItemList.KingSalmon) fullPrice += Number(foundItemList.KingSalmon) * this.client.ecoPrices.kingSalmon;
-        if (foundItemList.SwordFish) fullPrice += Number(foundItemList.SwordFish) * this.client.ecoPrices.swordfish;
-        if (foundItemList.PufferFish) fullPrice += Number(foundItemList.PufferFish) * this.client.ecoPrices.pufferfish;
+        if (balance.Items.Trout) fullPrice += Number(balance.Items.Trout) * this.client.ecoPrices.trout;
+        if (balance.Items.KingSalmon) fullPrice += Number(balance.Items.KingSalmon) * this.client.ecoPrices.kingSalmon;
+        if (balance.Items.SwordFish) fullPrice += Number(balance.Items.SwordFish) * this.client.ecoPrices.swordfish;
+        if (balance.Items.PufferFish) fullPrice += Number(balance.Items.PufferFish) * this.client.ecoPrices.pufferfish;
 
-        if (foundItemList.Trout) fishCount += Number(foundItemList.Trout);
-        if (foundItemList.KingSalmon) fishCount += Number(foundItemList.KingSalmon);
-        if (foundItemList.SwordFish) fishCount += Number(foundItemList.SwordFish);
-        if (foundItemList.PufferFish) fishCount += Number(foundItemList.PufferFish);
+        if (balance.Items.Trout) fishCount += Number(balance.Items.Trout);
+        if (balance.Items.KingSalmon) fishCount += Number(balance.Items.KingSalmon);
+        if (balance.Items.SwordFish) fishCount += Number(balance.Items.SwordFish);
+        if (balance.Items.PufferFish) fishCount += Number(balance.Items.PufferFish);
 
         const totalAdd = balance.Total + fullPrice;
 
@@ -1235,12 +1200,11 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = totalAdd;
         await balance.save();
 
-        if (foundItemList.Trout) delete foundItemList.Trout;
-        if (foundItemList.KingSalmon) delete foundItemList.KingSalmon;
-        if (foundItemList.SwordFish) delete foundItemList.SwordFish;
-        if (foundItemList.PufferFish) delete foundItemList.PufferFish;
+        if (balance.Items.Trout) delete balance.Items.Trout;
+        if (balance.Items.KingSalmon) delete balance.Items.KingSalmon;
+        if (balance.Items.SwordFish) delete balance.Items.SwordFish;
+        if (balance.Items.PufferFish) delete balance.Items.PufferFish;
 
-        balance.Items = JSON.stringify(foundItemList);
         balance.save();
 
         const embed = new EmbedBuilder()
@@ -1257,7 +1221,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (argsItem === 'treasure') {
-        if (foundItemList.Treasure === undefined) {
+        if (balance.Items.Treasure === undefined) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1269,13 +1233,13 @@ export const SlashCommandF = class extends SlashCommand {
         let fullPrice = 0;
         let treasureCount = 0;
 
-        if (foundItemList.Treasure) fullPrice += Number(foundItemList.Treasure) * this.client.ecoPrices.treasure;
-        if (foundItemList.GoldBar) fullPrice += Number(foundItemList.Treasure) * this.client.ecoPrices.goldBar;
-        if (foundItemList.GoldNugget) fullPrice += Number(foundItemList.GoldNugget) * this.client.ecoPrices.goldNugget;
+        if (balance.Items.Treasure) fullPrice += Number(balance.Items.Treasure) * this.client.ecoPrices.treasure;
+        if (balance.Items.GoldBar) fullPrice += Number(balance.Items.Treasure) * this.client.ecoPrices.goldBar;
+        if (balance.Items.GoldNugget) fullPrice += Number(balance.Items.GoldNugget) * this.client.ecoPrices.goldNugget;
 
-        if (foundItemList.Treasure) treasureCount += Number(foundItemList.Treasure);
-        if (foundItemList.GoldBar) treasureCount += Number(foundItemList.GoldBar);
-        if (foundItemList.GoldNugget) treasureCount += Number(foundItemList.GoldNugget);
+        if (balance.Items.Treasure) treasureCount += Number(balance.Items.Treasure);
+        if (balance.Items.GoldBar) treasureCount += Number(balance.Items.GoldBar);
+        if (balance.Items.GoldNugget) treasureCount += Number(balance.Items.GoldNugget);
 
         const totalAdd = balance.Total + fullPrice;
 
@@ -1283,11 +1247,10 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = totalAdd;
         await balance.save();
 
-        if (foundItemList.Treasure) delete foundItemList.Treasure;
-        if (foundItemList.GoldBar) delete foundItemList.GoldBar;
-        if (foundItemList.GoldNugget) delete foundItemList.GoldNugget;
+        if (balance.Items.Treasure) delete balance.Items.Treasure;
+        if (balance.Items.GoldBar) delete balance.Items.GoldBar;
+        if (balance.Items.GoldNugget) delete balance.Items.GoldNugget;
 
-        balance.Items = JSON.stringify(foundItemList);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -1305,10 +1268,10 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (argsItem === 'farm' || argsItem === 'crops') {
         if (
-          !foundItemList.Lettuce &&
-          !foundItemList.Strawberries &&
-          !foundItemList.Spinach &&
-          !foundItemList.Barley &&
+          !balance.Items.Lettuce &&
+          !balance.Items.Strawberries &&
+          !balance.Items.Spinach &&
+          !balance.Items.Barley &&
           !foundHarvestList.filter((key) => key.cropType === 'tomato').length &&
           !foundHarvestList.filter((key) => key.cropType === 'potato').length &&
           !foundHarvestList.filter((key) => key.cropType === 'wheat').length &&
@@ -1325,10 +1288,10 @@ export const SlashCommandF = class extends SlashCommand {
         let fullPrice = 0;
         let itemCount = 0;
 
-        if (foundItemList.Lettuce) fullPrice += Number(foundItemList.Lettuce) * this.client.ecoPrices.lettuce;
-        if (foundItemList.Strawberries) fullPrice += Number(foundItemList.Strawberries) * this.client.ecoPrices.strawberries;
-        if (foundItemList.Spinach) fullPrice += Number(foundItemList.Spinach) * this.client.ecoPrices.spinach;
-        if (foundItemList.Barley) fullPrice += Number(foundItemList.Barley) * this.client.ecoPrices.barley;
+        if (balance.Items.Lettuce) fullPrice += Number(balance.Items.Lettuce) * this.client.ecoPrices.lettuce;
+        if (balance.Items.Strawberries) fullPrice += Number(balance.Items.Strawberries) * this.client.ecoPrices.strawberries;
+        if (balance.Items.Spinach) fullPrice += Number(balance.Items.Spinach) * this.client.ecoPrices.spinach;
+        if (balance.Items.Barley) fullPrice += Number(balance.Items.Barley) * this.client.ecoPrices.barley;
 
         foundHarvestList.forEach((obj) => {
           if (obj.cropType === 'corn') fullPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.decay.toFixed(4) / 100));
@@ -1337,10 +1300,10 @@ export const SlashCommandF = class extends SlashCommand {
           if (obj.cropType === 'tomato') fullPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.decay.toFixed(4) / 100));
         });
 
-        if (foundItemList.Lettuce) itemCount += Number(foundItemList.Lettuce);
-        if (foundItemList.Strawberries) itemCount += Number(foundItemList.Strawberries);
-        if (foundItemList.Spinach) itemCount += Number(foundItemList.Spinach);
-        if (foundItemList.Barley) itemCount += Number(foundItemList.Barley);
+        if (balance.Items.Lettuce) itemCount += Number(balance.Items.Lettuce);
+        if (balance.Items.Strawberries) itemCount += Number(balance.Items.Strawberries);
+        if (balance.Items.Spinach) itemCount += Number(balance.Items.Spinach);
+        if (balance.Items.Barley) itemCount += Number(balance.Items.Barley);
 
         if (foundHarvestList) {
           itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'corn').length);
@@ -1355,12 +1318,11 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = totalAdd;
         await balance.save();
 
-        if (foundItemList.Barley) delete foundItemList.Barley;
-        if (foundItemList.Spinach) delete foundItemList.Spinach;
-        if (foundItemList.Strawberries) delete foundItemList.Strawberries;
-        if (foundItemList.Lettuce) delete foundItemList.Lettuce;
+        if (balance.Items.Barley) delete balance.Items.Barley;
+        if (balance.Items.Spinach) delete balance.Items.Spinach;
+        if (balance.Items.Strawberries) delete balance.Items.Strawberries;
+        if (balance.Items.Lettuce) delete balance.Items.Lettuce;
 
-        balance.Items = JSON.stringify(foundItemList);
         balance.HarvestedCrops = null;
         await balance.save();
 
