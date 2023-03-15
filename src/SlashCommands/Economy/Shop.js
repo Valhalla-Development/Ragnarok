@@ -30,9 +30,6 @@ export const SlashCommandF = class extends SlashCommand {
 
     const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
-    let foundPlotList = JSON.parse(balance.FarmPlot);
-    let foundHarvestList = JSON.parse(balance.HarvestedCrops);
-
     const fishingPrice = this.client.ecoPrices.fishingRod;
     const farmingPrice = this.client.ecoPrices.farmingTools;
     const cornSeedPrice = this.client.ecoPrices.cornSeed;
@@ -52,12 +49,19 @@ export const SlashCommandF = class extends SlashCommand {
     const { farmBagPrice } = this.client.ecoPrices;
     const { fishBagPrice } = this.client.ecoPrices;
     const { farmPlotPrice } = this.client.ecoPrices;
-    
-    if (!foundPlotList) {
+
+    let foundPlotList;
+    let foundHarvestList;
+
+    if (balance.FarmPlot.length) {
+      foundPlotList = JSON.parse(balance.FarmPlot);
+    } else {
       foundPlotList = [];
     }
 
-    if (!foundHarvestList) {
+    if (balance.HarvestedCrops.length) {
+      foundHarvestList = JSON.parse(balance.HarvestedCrops);
+    } else {
       foundHarvestList = [];
     }
 
