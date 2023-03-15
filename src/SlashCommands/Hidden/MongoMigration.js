@@ -49,7 +49,7 @@ export const SlashCommandF = class extends SlashCommand {
         * 6e: Make announcement, use ChatGPT to make it sound smart... Don't forget to say how long downtime is, migration script tells you at the bottom
         * 6eA:
         Greetings, Ragnarok users!
-        I wanted to give you all a quick heads up that I will be migrating our database over the next 20 minutes. While I don't anticipate any downtime, please be aware that any data input to the current database from this moment on will be rolled back once the migration is complete.
+        I wanted to give you all a quick heads up that I will be migrating our database over the next couple of minutes. While I don't anticipate any downtime, please be aware that any data input to the current database from this moment on will be rolled back once the migration is complete.
         
         Rest assured, once the migration is finished, everything will be back to normal and your data will be safe and secure in our new database. Thank you for your patience and understanding during this process. If you have any questions or concerns, please don't hesitate to reach out to me.
         
@@ -109,370 +109,368 @@ export const SlashCommandF = class extends SlashCommand {
       ticketConfig.length +
       tickets.length;
 
-    const logProgress = async (name, item, i) => {
-      if (item.length > 1) {
-        console.log(`${name} ${i.toLocaleString('en')}/${item.length.toLocaleString('en')}`);
-      }
-    };
-
     try {
       const startTime = new Date();
 
       await (async () => {
         if (adsprot.length) {
-          let i = 0;
-          for (const entry of adsprot) {
-            await new AdsProtection({
-              GuildId: entry.guildid,
-              Status: entry.status === 'on'
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Ads Protection', adsprot, i, i);
-          }
+          const bulkOps = adsprot.map(entry => ({
+            insertOne: {
+              document: {
+                GuildId: entry.guildid,
+                Status: entry.status === 'on'
+              }
+            }
+          }));
+
+          await AdsProtection.bulkWrite(bulkOps);
+
           console.log(`Ads Protection Finished Migrating ${adsprot.length.toLocaleString('en')} properties!`);
         }
 
-         if (afk.length) {
-          let i = 0;
-          for (const entry of afk) {
-            await new AFK({
-              IdJoined: entry.id,
-              GuildId: entry.guildid,
-              UserId: entry.user,
-              Reason: entry.reason
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('AFK', afk, i, i);
-          }
-          console.log(`AFK Finished Migrating ${adsprot.length.toLocaleString('en')} properties!`);
+        if (afk.length) {
+          const bulkOps = afk.map(entry => ({
+            insertOne: {
+              document: {
+                IdJoined: entry.id,
+                GuildId: entry.guildid,
+                UserId: entry.user,
+                Reason: entry.reason
+              }
+            }
+          }));
+
+          await AFK.bulkWrite(bulkOps);
+
+          console.log(`AFK Finished Migrating ${afk.length.toLocaleString('en')} properties!`);
         }
 
         if (announcement.length) {
-          let i = 0;
-          for (const entry of announcement) {
-            await new Announcement({
-              Message: entry.msg
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Announcement', announcement, i);
-          }
+          const bulkOps = announcement.map(entry => ({
+            insertOne: {
+              document: {
+                Message: entry.msg
+              }
+            }
+          }));
+
+          await Announcement.bulkWrite(bulkOps);
+
           console.log(`Announcement Finished Migrating ${announcement.length.toLocaleString('en')} properties!`);
         }
 
         if (antiscam.length) {
-          let i = 0;
-          for (const entry of antiscam) {
-            await new AntiScam({
-              GuildId: entry.guildid,
-              Status: entry.status === 'on'
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('AntiScam', antiscam, i);
-          }
+          const bulkOps = antiscam.map(entry => ({
+            insertOne: {
+              document: {
+                GuildId: entry.guildid,
+                Status: entry.status === 'on'
+              }
+            }
+          }));
+
+          await AntiScam.bulkWrite(bulkOps);
+
           console.log(`AntiScam Finished Migrating ${antiscam.length.toLocaleString('en')} properties!`);
         }
 
         if (autorole.length) {
-          let i = 0;
-          for (const entry of autorole) {
-            await new AutoRole({
-              GuildId: entry.guildid,
-              Role: entry.role
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Autorole', autorole, i);
-          }
-          console.log(`Autorole Finished Migrating ${autorole.length.toLocaleString('en')} properties!`);
+          const bulkOps = autorole.map(entry => ({
+            insertOne: {
+              document: {
+                GuildId: entry.guildid,
+                Role: entry.role
+              }
+            }
+          }));
+
+          await AutoRole.bulkWrite(bulkOps);
+
+          console.log(`AutoRole Finished Migrating ${autorole.length.toLocaleString('en')} properties!`);
         }
 
         if (balance.length) {
-          let i = 0;
-          for (const entry of balance) {
-            await new Balance({
-              IdJoined: entry.id,
-              UserId: entry.user,
-              GuildId: entry.guild,
-              Hourly: entry.hourly,
-              Daily: entry.daily,
-              Weekly: entry.weekly,
-              Monthly: entry.monthly,
-              StealCool: entry.stealcool,
-              FishCool: entry.fishcool,
-              FarmCool: entry.farmcool,
-              Boosts: entry.boosts,
-              Items: entry.items,
-              Cash: entry.cash,
-              Bank: entry.bank,
-              Total: entry.total,
-              ClaimNewUser: entry.claimNewUser,
-              FarmPlot: entry.farmPlot,
-              DmHarvest: entry.dmHarvest,
-              HarvestedCrops: entry.harvestedCrops,
-              Lottery: entry.lottery
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Balance', balance, i);
-          }
+          const bulkOps = balance.map(entry => ({
+            insertOne: {
+              document: {
+                IdJoined: entry.id,
+                UserId: entry.user,
+                GuildId: entry.guild,
+                Hourly: entry.hourly,
+                Daily: entry.daily,
+                Weekly: entry.weekly,
+                Monthly: entry.monthly,
+                StealCool: entry.stealcool,
+                FishCool: entry.fishcool,
+                FarmCool: entry.farmcool,
+                Boosts: entry.boosts,
+                Items: entry.items,
+                Cash: entry.cash,
+                Bank: entry.bank,
+                Total: entry.total,
+                ClaimNewUser: entry.claimNewUser,
+                FarmPlot: entry.farmPlot,
+                DmHarvest: entry.dmHarvest,
+                HarvestedCrops: entry.harvestedCrops,
+                Lottery: entry.lottery
+              }
+            }
+          }));
+
+          await Balance.bulkWrite(bulkOps);
+
           console.log(`Balance Finished Migrating ${balance.length.toLocaleString('en')} properties!`);
         }
 
         if (ban.length) {
-          let i = 0;
-          for (const entry of ban) {
-            let newId = null;
+          const bulkOps = ban.map(entry => {
+            let newId = entry.IdJoined;
             if (entry.id) {
-              const parts = entry.id.split('-'); // split the string by '-'
-              newId = `${parts[1]}-${parts[0]}`; // swap the parts
+              const parts = entry.id.split('-');// todo test
+              newId = `${parts[1]}-${parts[0]}`;
             }
+            return {
+              insertOne: {
+                document: {
+                  IdJoined: newId,
+                  GuildId: entry.guildid,
+                  UserId: entry.userid,
+                  EndTime: entry.endtime,
+                  ChannelId: entry.channel,
+                  Username: entry.username
+                }
+              }
+            };
+          });
 
-            await new TempBan({
-              IdJoined: newId,
-              GuildId: entry.guildid,
-              UserId: entry.userid,
-              EndTime: entry.endtime,
-              ChannelId: entry.channel,
-              Username: entry.username
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Ban', ban, i);
-          }
+          await TempBan.bulkWrite(bulkOps);
+
           console.log(`Ban Finished Migrating ${ban.length.toLocaleString('en')} properties!`);
         }
 
-         if (birthdayConfig.length) {
-          let i = 0;
-          for (const entry of birthdayConfig) {
-            await new BirthdayConfig({
-              GuildId: entry.guildid,
-              ChannelId: entry.channel,
-              Role: entry.role
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Birthday Config', birthdayConfig, i);
-          }
-          console.log(`Birthday Config Finished Migrating ${birthdayConfig.length.toLocaleString('en')} properties!`);
+        if (birthdayConfig.length) {
+          const bulkOps = birthdayConfig.map(entry => ({
+            insertOne: {
+              document: {
+                GuildId: entry.guildid,
+                ChannelId: entry.channel,
+                Role: entry.role
+              }
+            }
+          }));
+
+          await BirthdayConfig.bulkWrite(bulkOps);
+
+          console.log(`BirthdayConfig Finished Migrating ${birthdayConfig.length.toLocaleString('en')} properties!`);
         }
 
         if (birthdays.length) {
-          let i = 0;
-          for (const entry of birthdays) {
-            await new Birthdays({
-              UserId: entry.userid,
-              Date: entry.birthday,
-              LastRun: JSON.parse(entry.lastRun)
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Birthdays', birthdays, i);
-          }
+          const bulkOps = birthdays.map(entry => ({
+            insertOne: {
+              document: {
+                UserId: entry.userid,
+                Date: entry.birthday,
+                LastRun: JSON.parse(entry.lastRun)
+              }
+            }
+          }));
+
+          await Birthdays.bulkWrite(bulkOps);
+
           console.log(`Birthdays Finished Migrating ${birthdays.length.toLocaleString('en')} properties!`);
         }
 
         if (dadbot.length) {
-          let i = 0;
-          for (const entry of dadbot) {
-            await new Dad({
-              GuildId: entry.guildid,
-              Status: entry.status === 'on'
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Dad', dadbot, i);
-          }
+          const bulkOps = dadbot.map(entry => ({
+            insertOne: {
+              document: {
+                GuildId: entry.guildid,
+                Status: entry.status === 'on'
+              }
+            }
+          }));
+
+          await Dad.bulkWrite(bulkOps);
+
           console.log(`Dad Finished Migrating ${dadbot.length.toLocaleString('en')} properties!`);
         }
 
         if (hastebin.length) {
-          let i = 0;
-          for (const entry of hastebin) {
-            await new Hastebin({
-              GuildId: entry.guildid,
-              Status: entry.status === 'on'
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Hastebin', hastebin, i);
-          }
-          console.log(`Hastebin Finished Migrating ${hastebin.length.toLocaleString('en')} properties!`);
+          const bulkOps = hastebin.map(entry => ({
+            insertOne: {
+              document: {
+                GuildId: entry.guildid,
+                Status: entry.status === 'on'
+              }
+            }
+          }));
+
+          await Hastebin.bulkWrite(bulkOps);
+
+          console.log(`Haste Finished Migrating ${hastebin.length.toLocaleString('en')} properties!`);
         }
 
         if (level.length) {
-          let i = 0;
-          for (const entry of level) {
-            await new LevelConfig({
-              GuildId: entry.guildid,
-              Status: entry.status === 'killME'
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Autorole', autorole, i);
-          }
-          console.log(`Autorole Finished Migrating ${autorole.length.toLocaleString('en')} properties!`);
+          const bulkOps = level.map(entry => ({
+            insertOne: {
+              document: {
+                GuildId: entry.guildid,
+                Status: entry.status === 'killME'
+              }
+            }
+          }));
+
+          await LevelConfig.bulkWrite(bulkOps);
+
+          console.log(`Level Finished Migrating ${level.length.toLocaleString('en')} properties!`);
         }
 
         if (logging.length) {
-          let i = 0;
-          for (const entry of logging) {
-            await new Logging({
-              GuildId: entry.guildid,
-              ChannelId: entry.channel
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Logging', logging, i);
-          }
+          const bulkOps = logging.map(entry => ({
+            insertOne: {
+              document: {
+                GuildId: entry.guildid,
+                ChannelId: entry.channel
+              }
+            }
+          }));
+
+          await Logging.bulkWrite(bulkOps);
+
           console.log(`Logging Finished Migrating ${logging.length.toLocaleString('en')} properties!`);
         }
 
         if (rolemenu.length) {
-          let i = 0;
-          for (const entry of rolemenu) {
+          const bulkOps = rolemenu.map(entry => {
             const activeRoleMenuID = JSON.parse(entry.activeRoleMenuID);
-            await new RoleMenu({
-              GuildId: entry.guildid,
-              RoleMenuId: {
-                channel: activeRoleMenuID?.channel,
-                message: activeRoleMenuID?.message
-              },
-              RoleList: JSON.parse(entry.roleList)
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Rolemenu', rolemenu, i);
-          }
-          console.log(`Rolemenu Finished Migrating ${rolemenu.length.toLocaleString('en')} properties!`);
+            return {
+              insertOne: {
+                document: {
+                  GuildId: entry.guildid,
+                  RoleMenuId: {
+                    channel: activeRoleMenuID?.channel,
+                    message: activeRoleMenuID?.message
+                  },
+                  RoleList: JSON.parse(entry.roleList)
+                }
+              }
+            };
+          });
+
+          await RoleMenu.bulkWrite(bulkOps);
+
+          console.log(`RoleMenu Finished Migrating ${rolemenu.length.toLocaleString('en')} properties!`);
         }
 
         if (scores.length) {
-          let i = 0;
-          for (const entry of scores) {
-            let newId = null;
+          const bulkOps = scores.map(entry => {
+            let newId = entry.IdJoined;
             if (entry.id) {
-              const parts = entry.id.split('-'); // split the string by '-'
-              newId = `${parts[1]}-${parts[0]}`; // swap the parts
+              const parts = entry.id.split('-');// todo test
+              newId = `${parts[1]}-${parts[0]}`;
             }
+            return {
+              insertOne: {
+                document: {
+                  IdJoined: newId,
+                  UserId: entry.user,
+                  GuildId: entry.guild,
+                  Xp: entry.points,
+                  Level: entry.level,
+                  Country: entry.country,
+                  Image: entry.image
+                }
+              }
+            };
+          });
 
-            await new Level({
-              IdJoined: newId,
-              UserId: entry.user,
-              GuildId: entry.guild,
-              Xp: entry.points,
-              Level: entry.level,
-              Country: entry.country,
-              Image: entry.image
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Scores', scores, i);
-          }
+          await Level.bulkWrite(bulkOps);
+
           console.log(`Scores Finished Migrating ${scores.length.toLocaleString('en')} properties!`);
         }
 
-         if (setwelcome.length) {
-          let i = 0;
-          for (const entry of setwelcome) {
-            await new Welcome({
-              GuildId: entry.guildid,
-              ChannelId: entry.channel,
-              Image: entry.image
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('SetWelcome', setwelcome, i);
-          }
+        if (setwelcome.length) {
+          const bulkOps = setwelcome.map(entry => ({
+            insertOne: {
+              document: {
+                GuildId: entry.guildid,
+                ChannelId: entry.channel,
+                Image: entry.image
+              }
+            }
+          }));
+
+          await Welcome.bulkWrite(bulkOps);
+
           console.log(`SetWelcome Finished Migrating ${setwelcome.length.toLocaleString('en')} properties!`);
         }
 
         if (starboard.length) {
-          let i = 0;
-          for (const entry of starboard) {
-            await new StarBoard({
-              GuildId: entry.guildid,
-              ChannelId: entry.channel
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Starboard', starboard, i);
-          }
-          console.log(`Starboard Finished Migrating ${starboard.length.toLocaleString('en')} properties!`);
+          const bulkOps = starboard.map(entry => ({
+            insertOne: {
+              document: {
+                GuildId: entry.guildid,
+                ChannelId: entry.channel
+              }
+            }
+          }));
+
+          await StarBoard.bulkWrite(bulkOps);
+
+          console.log(`StarBoard Finished Migrating ${starboard.length.toLocaleString('en')} properties!`);
         }
 
         if (ticketConfig.length) {
-          let i = 0;
-          for (const entry of ticketConfig) {
-            await new TicketConfig({
-              GuildId: entry.guildid,
-              Category: entry.category,
-              LogChannel: entry.log,
-              Role: entry.role,
-              Embed: entry.ticketembed,
-              EmbedChannel: entry.ticketembedchan,
-              Blacklist: JSON.parse(entry.blacklist)
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('TicketConfig', ticketConfig, i);
-          }
+          const bulkOps = ticketConfig.map(entry => ({
+            insertOne: {
+              document: {
+                GuildId: entry.guildid,
+                Category: entry.category,
+                LogChannel: entry.log,
+                Role: entry.role,
+                Embed: entry.ticketembed,
+                EmbedChannel: entry.ticketembedchan,
+                Blacklist: JSON.parse(entry.blacklist)
+              }
+            }
+          }));
+
+          await TicketConfig.bulkWrite(bulkOps);
+
           console.log(`TicketConfig Finished Migrating ${ticketConfig.length.toLocaleString('en')} properties!`);
         }
 
         if (tickets.length) {
-          let i = 0;
-          for (const entry of tickets) {
-            await new Tickets({
-              GuildId: entry.guildid,
-              TicketId: entry.ticketid,
-              AuthorId: entry.authorid,
-              Reason: entry.reason,
-              ChannelId: entry.chanid
-            })
-              .save()
-              .catch(console.error);
-            i++;
-            await logProgress('Tickets', tickets, i);
-          }
+          const bulkOps = tickets.map(entry => ({
+            insertOne: {
+              document: {
+                GuildId: entry.guildid,
+                TicketId: entry.ticketid,
+                AuthorId: entry.authorid,
+                Reason: entry.reason,
+                ChannelId: entry.chanid
+              }
+            }
+          }));
+
+          await Tickets.bulkWrite(bulkOps);
+
           console.log(`Tickets Finished Migrating ${tickets.length.toLocaleString('en')} properties!`);
         }
 
         const guildsArray = Array.from(this.client.guilds.cache.values());
-        let i = 0;
-        for (const guild of guildsArray) {// todo test
-          await new Guilds({
-            GuildId: guild.id,
-            Name: guild.name,
-            IconUrl: guild.iconURL()
-          })
-              .save()
-              .catch(console.error);
-          i++;
-          await logProgress('Guilds', this.client.guilds.cache.size, i);
-        }
+        const bulkOps = guildsArray.map(guild => ({
+          insertOne: {
+            document: {
+              GuildId: guild.id,
+              Name: guild.name,
+              IconUrl: guild.iconURL()
+            }
+          }
+        }));
+
+        await Guilds.bulkWrite(bulkOps);
+
         console.log(`Guilds Finished Migrating ${this.client.guilds.cache.size.toLocaleString('en')} properties!`);
 
         const endTime = new Date();
