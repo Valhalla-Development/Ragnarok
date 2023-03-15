@@ -14,21 +14,7 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
 
-    if (!balance.Items) {
-      const embed = new EmbedBuilder()
-        .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
-        .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-        .addFields({
-          name: `**${this.client.user.username} - Fish**`,
-          value: '**◎ Error:** You do not have a fishing rod! You must buy one from the shop.'
-        });
-      interaction.reply({ ephemeral: true, embeds: [embed] });
-      return;
-    }
-
-    const foundItemList = JSON.parse(balance.Items);
-
-    if (!foundItemList.fishingRod) {
+    if (!balance.Items.FishingRod) {
       const embed = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -54,14 +40,14 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.FishCool = Math.round(endTime);
 
-        if (foundItemList.treasure) {
-          amt = Number(foundItemList.treasure) + Number(1);
+        if (balance.Items.Treasure) {
+          amt = Number(balance.Items.Treasure) + Number(1);
         } else {
           amt = Number(1);
         }
-        foundItemList.treasure = amt.toString();
+        balance.Items.Treasure = amt.toString();
 
-        balance.Items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(balance.Items);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -83,14 +69,14 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.FishCool = Math.round(endTime);
 
-        if (foundItemList.pufferfish) {
-          amt = Number(foundItemList.pufferfish) + Number(1);
+        if (balance.Items.PufferFish) {
+          amt = Number(balance.Items.PufferFish) + Number(1);
         } else {
           amt = Number(1);
         }
-        foundItemList.pufferfish = amt.toString();
+        balance.Items.PufferFish = amt.toString();
 
-        balance.Items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(balance.Items);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -112,14 +98,14 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.FishCool = Math.round(endTime);
 
-        if (foundItemList.swordfish) {
-          amt = Number(foundItemList.swordfish) + Number(1);
+        if (balance.Items.SwordFish) {
+          amt = Number(balance.Items.SwordFish) + Number(1);
         } else {
           amt = Number(1);
         }
-        foundItemList.swordfish = amt.toString();
+        balance.Items.SwordFish = amt.toString();
 
-        balance.Items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(balance.Items);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -141,14 +127,14 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.FishCool = Math.round(endTime);
 
-        if (foundItemList.kingSalmon) {
-          amt = Number(foundItemList.kingSalmon) + Number(1);
+        if (balance.Items.KingSalmon) {
+          amt = Number(balance.Items.KingSalmon) + Number(1);
         } else {
           amt = Number(1);
         }
-        foundItemList.kingSalmon = amt.toString();
+        balance.Items.KingSalmon = amt.toString();
 
-        balance.Items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(balance.Items);
         await balance.save();
 
         const embed = new EmbedBuilder()
@@ -170,14 +156,14 @@ export const SlashCommandF = class extends SlashCommand {
 
         balance.FishCool = Math.round(endTime);
 
-        if (foundItemList.trout) {
-          amt = Number(foundItemList.trout) + Number(1);
+        if (balance.Items.Trout) {
+          amt = Number(balance.Items.Trout) + Number(1);
         } else {
           amt = Number(1);
         }
-        foundItemList.trout = amt.toString();
+        balance.Items.Trout = amt.toString();
 
-        balance.Items = JSON.stringify(foundItemList);
+        balance.Items = JSON.stringify(balance.Items);
         await balance.save();
 
         const embed = new EmbedBuilder()

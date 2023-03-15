@@ -68,7 +68,7 @@ export const SlashCommandF = class extends SlashCommand {
       return;
     }
 
-    if (!foundItemList.cornSeeds && !foundItemList.wheatSeeds && !foundItemList.potatoSeeds && !foundItemList.tomatoSeeds) {
+    if (!foundItemList.CornSeeds && !foundItemList.WheatSeeds && !foundItemList.PotatoSeeds && !foundItemList.TomatoSeeds) {
       const embed = new EmbedBuilder()
         .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
         .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -112,7 +112,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      if (!foundItemList.cornSeeds || Number(foundItemList.cornSeeds - Number(argsAmount)) < 0) {
+      if (!foundItemList.CornSeeds || Number(foundItemList.CornSeeds - Number(argsAmount)) < 0) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -138,12 +138,12 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      const removeSeed = Number(foundItemList.cornSeeds) - Number(argsAmount);
+      const removeSeed = Number(foundItemList.CornSeeds) - Number(argsAmount);
 
       if (removeSeed === 0) {
-        delete foundItemList.cornSeeds;
+        delete foundItemList.CornSeeds;
       } else {
-        foundItemList.cornSeeds = removeSeed.toString();
+        foundItemList.CornSeeds = removeSeed.toString();
       }
 
       await cropCreator('corn', 'planting', new Date().getTime() + Number(cornGrow), argsAmount);
@@ -176,7 +176,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      if (!foundItemList.wheatSeeds || Number(foundItemList.wheatSeeds - Number(argsAmount)) < 0) {
+      if (!foundItemList.WheatSeeds || Number(foundItemList.WheatSeeds - Number(argsAmount)) < 0) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -202,12 +202,12 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      const removeSeed = Number(foundItemList.wheatSeeds) - Number(argsAmount);
+      const removeSeed = Number(foundItemList.WheatSeeds) - Number(argsAmount);
 
       if (removeSeed === 0) {
-        delete foundItemList.wheatSeeds;
+        delete foundItemList.WheatSeeds;
       } else {
-        foundItemList.wheatSeeds = removeSeed.toString();
+        foundItemList.WheatSeeds = removeSeed.toString();
       }
 
       await cropCreator('wheat', 'planting', new Date().getTime() + Number(wheatGrow), argsAmount);
@@ -240,7 +240,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      if (!foundItemList.potatoSeeds || Number(foundItemList.potatoSeeds - Number(argsAmount)) < 0) {
+      if (!foundItemList.PotatoSeeds || Number(foundItemList.PotatoSeeds - Number(argsAmount)) < 0) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -266,12 +266,12 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      const removeSeed = Number(foundItemList.potatoSeeds) - Number(argsAmount);
+      const removeSeed = Number(foundItemList.PotatoSeeds) - Number(argsAmount);
 
       if (removeSeed === 0) {
-        delete foundItemList.potatoSeeds;
+        delete foundItemList.PotatoSeeds;
       } else {
-        foundItemList.potatoSeeds = removeSeed.toString();
+        foundItemList.PotatoSeeds = removeSeed.toString();
       }
 
       await cropCreator('potato', 'planting', new Date().getTime() + Number(potatoGrow), argsAmount);
@@ -304,7 +304,7 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      if (!foundItemList.tomatoSeeds || Number(foundItemList.tomatoSeeds - Number(argsAmount)) < 0) {
+      if (!foundItemList.TomatoSeeds || Number(foundItemList.TomatoSeeds - Number(argsAmount)) < 0) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
           .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -330,12 +330,12 @@ export const SlashCommandF = class extends SlashCommand {
         return;
       }
 
-      const removeSeed = Number(foundItemList.tomatoSeeds) - Number(argsAmount);
+      const removeSeed = Number(foundItemList.TomatoSeeds) - Number(argsAmount);
 
       if (removeSeed === 0) {
-        delete foundItemList.tomatoSeeds;
+        delete foundItemList.TomatoSeeds;
       } else {
-        foundItemList.tomatoSeeds = removeSeed.toString();
+        foundItemList.TomatoSeeds = removeSeed.toString();
       }
 
       await cropCreator('tomato', 'planting', new Date().getTime() + Number(tomatoeGrow), argsAmount);

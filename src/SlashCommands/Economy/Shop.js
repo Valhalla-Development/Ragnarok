@@ -88,13 +88,13 @@ export const SlashCommandF = class extends SlashCommand {
     let strawberriesPrice;
     let lettucePrice;
 
-    if (foundItemList.trout !== undefined) troutPrice = this.client.ecoPrices.trout * Number(foundItemList.trout);
-    if (foundItemList.kingSalmon !== undefined) salmonPrice = this.client.ecoPrices.kingSalmon * Number(foundItemList.kingSalmon);
-    if (foundItemList.swordfish !== undefined) swordFishPrice = this.client.ecoPrices.swordfish * Number(foundItemList.swordfish);
-    if (foundItemList.pufferfish !== undefined) pufferFishPrice = this.client.ecoPrices.pufferfish * Number(foundItemList.pufferfish);
-    if (foundItemList.treasure !== undefined) treasurePrice = this.client.ecoPrices.treasure * Number(foundItemList.treasure);
+    if (foundItemList.Trout !== undefined) troutPrice = this.client.ecoPrices.trout * Number(foundItemList.Trout);
+    if (foundItemList.KingSalmon !== undefined) salmonPrice = this.client.ecoPrices.kingSalmon * Number(foundItemList.KingSalmon);
+    if (foundItemList.SwordFish !== undefined) swordFishPrice = this.client.ecoPrices.swordfish * Number(foundItemList.SwordFish);
+    if (foundItemList.PufferFish !== undefined) pufferFishPrice = this.client.ecoPrices.pufferfish * Number(foundItemList.PufferFish);
+    if (foundItemList.Treasure !== undefined) treasurePrice = this.client.ecoPrices.treasure * Number(foundItemList.Treasure);
 
-    if (foundItemList.goldBar !== undefined) goldBarPrice = this.client.ecoPrices.goldBar * Number(foundItemList.goldBar);
+    if (foundItemList.GoldBar !== undefined) goldBarPrice = this.client.ecoPrices.goldBar * Number(foundItemList.GoldBar);
     if (foundHarvestList) {
       foundHarvestList.forEach((obj) => {
         if (obj.cropType === 'corn') cornPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.decay.toFixed(4) / 100));
@@ -103,54 +103,54 @@ export const SlashCommandF = class extends SlashCommand {
         if (obj.cropType === 'tomato') tomatoesPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.decay.toFixed(4) / 100));
       });
     }
-    if (foundItemList.goldNugget !== undefined) goldNuggetPrice = this.client.ecoPrices.goldNugget * Number(foundItemList.goldNugget);
-    if (foundItemList.barley !== undefined) barleyPrice = this.client.ecoPrices.barley * Number(foundItemList.barley);
-    if (foundItemList.spinach !== undefined) spinachPrice = this.client.ecoPrices.spinach * Number(foundItemList.spinach);
-    if (foundItemList.strawberries !== undefined) strawberriesPrice = this.client.ecoPrices.strawberries * Number(foundItemList.strawberries);
-    if (foundItemList.lettuce !== undefined) lettucePrice = this.client.ecoPrices.lettuce * Number(foundItemList.lettuce);
+    if (foundItemList.GoldNugget !== undefined) goldNuggetPrice = this.client.ecoPrices.goldNugget * Number(foundItemList.GoldNugget);
+    if (foundItemList.Barley !== undefined) barleyPrice = this.client.ecoPrices.barley * Number(foundItemList.Barley);
+    if (foundItemList.Spinach !== undefined) spinachPrice = this.client.ecoPrices.spinach * Number(foundItemList.Spinach);
+    if (foundItemList.Sstrawberries !== undefined) strawberriesPrice = this.client.ecoPrices.strawberries * Number(foundItemList.Sstrawberries);
+    if (foundItemList.Lettuce !== undefined) lettucePrice = this.client.ecoPrices.lettuce * Number(foundItemList.Lettuce);
 
     let currentTotalSeeds = 0;
 
-    if (foundItemList.cornSeeds) {
-      currentTotalSeeds += Number(foundItemList.cornSeeds);
+    if (foundItemList.CornSeeds) {
+      currentTotalSeeds += Number(foundItemList.CornSeeds);
     } else {
       currentTotalSeeds += Number(0);
     }
-    if (foundItemList.wheatSeeds) {
-      currentTotalSeeds += Number(foundItemList.wheatSeeds);
+    if (foundItemList.WheatSeeds) {
+      currentTotalSeeds += Number(foundItemList.WheatSeeds);
     } else {
       currentTotalSeeds += Number(0);
     }
-    if (foundItemList.potatoSeeds) {
-      currentTotalSeeds += Number(foundItemList.potatoSeeds);
+    if (foundItemList.PotatoSeeds) {
+      currentTotalSeeds += Number(foundItemList.PotatoSeeds);
     } else {
       currentTotalSeeds += Number(0);
     }
-    if (foundItemList.tomatoSeeds) {
-      currentTotalSeeds += Number(foundItemList.tomatoSeeds);
+    if (foundItemList.TomatoSeeds) {
+      currentTotalSeeds += Number(foundItemList.TomatoSeeds);
     } else {
       currentTotalSeeds += Number(0);
     }
 
     let currentTotalFish = 0;
 
-    if (foundItemList.trout) {
-      currentTotalFish += Number(foundItemList.trout);
+    if (foundItemList.Trout) {
+      currentTotalFish += Number(foundItemList.Trout);
     } else {
       currentTotalFish += Number(0);
     }
-    if (foundItemList.kingSalmon) {
-      currentTotalFish += Number(foundItemList.kingSalmon);
+    if (foundItemList.KingSalmon) {
+      currentTotalFish += Number(foundItemList.KingSalmon);
     } else {
       currentTotalFish += Number(0);
     }
-    if (foundItemList.swordfish) {
-      currentTotalFish += Number(foundItemList.swordfish);
+    if (foundItemList.SwordFish) {
+      currentTotalFish += Number(foundItemList.SwordFish);
     } else {
       currentTotalFish += Number(0);
     }
-    if (foundItemList.pufferfish) {
-      currentTotalFish += Number(foundItemList.pufferfish);
+    if (foundItemList.PufferFish) {
+      currentTotalFish += Number(foundItemList.PufferFish);
     } else {
       currentTotalFish += Number(0);
     }
@@ -507,33 +507,33 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Shop - Buy**`,
             value: `**◎ Farming Seeds: (Amount optional)**
 						\u3000 \`/shop buy corn\` - 10 Seeds per pack - ${
-              !foundItemList.cornSeeds
+              !foundItemList.CornSeeds
                 ? `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\``
-                : `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\` - \`Owned ${foundItemList.cornSeeds.toLocaleString('en')}\``
+                : `<:coin:706659001164628008> \`${cornSeedPrice.toLocaleString('en')}\` - \`Owned ${foundItemList.CornSeeds.toLocaleString('en')}\``
             }
 						\u3000 \`/shop buy wheat\` - 10 Seeds per pack - ${
-              !foundItemList.wheatSeeds
+              !foundItemList.WheatSeeds
                 ? `<:coin:706659001164628008> \`${wheatSeedPrice.toLocaleString('en')}\``
-                : `<:coin:706659001164628008> \`${wheatSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.wheatSeeds.toLocaleString('en')}\``
+                : `<:coin:706659001164628008> \`${wheatSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.WheatSeeds.toLocaleString('en')}\``
             }
 						\u3000 \`/shop buy potato\` - 10 Seeds per pack - ${
-              !foundItemList.potatoSeeds
+              !foundItemList.PotatoSeeds
                 ? `<:coin:706659001164628008> \`${potatoeSeedPrice.toLocaleString('en')}\``
-                : `<:coin:706659001164628008> \`${potatoeSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.potatoSeeds.toLocaleString(
+                : `<:coin:706659001164628008> \`${potatoeSeedPrice.toLocaleString('en')}\`- \`Owned ${foundItemList.PotatoSeeds.toLocaleString(
                     'en'
                   )}\``
             }
 						\u3000 \`/shop buy tomato\` - 10 Seeds per pack - ${
-              !foundItemList.tomatoSeeds
+              !foundItemList.TomatoSeeds
                 ? `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\``
-                : `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`- \`Owned ${foundItemList.tomatoSeeds.toLocaleString(
+                : `<:coin:706659001164628008> \`${tomatoeSeedprice.toLocaleString('en')}\`- \`Owned ${foundItemList.TomatoSeeds.toLocaleString(
                     'en'
                   )}\``
             }
 						\u200b
 						**◎ Permanent Items:**
 						\u3000 ${
-              !foundItemList.fishingRod
+              !foundItemList.FishingRod
                 ? `\`/shop buy rod\` - <:coin:706659001164628008> \`${fishingPrice.toLocaleString('en')}\``
                 : 'Fishing Rod - `Owned`'
             }
@@ -543,7 +543,7 @@ export const SlashCommandF = class extends SlashCommand {
                 : `\`Owned\` - Current capacity: \`${Number(currentTotalFish)}\`/\`${foundBoostList.fishBag}\``
             }
 						\u3000 ${
-              !foundItemList.farmingTools
+              !foundItemList.FarmingTools
                 ? `\`/shop buy tools\` - <:coin:706659001164628008> \`${farmingPrice.toLocaleString('en')}\``
                 : 'Farming Tools - `Owned`'
             }
@@ -568,7 +568,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (argsItem === 'corn' || argsItem === 'wheat' || argsItem === 'potato' || argsItem === 'tomato') {
-        if (!foundItemList.farmingTools) {
+        if (!foundItemList.FarmingTools) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -606,8 +606,8 @@ export const SlashCommandF = class extends SlashCommand {
         await balance.save();
 
         let calc;
-        if (foundItemList.cornSeeds) {
-          calc = Number(foundItemList.cornSeeds) + Number(1) * 10;
+        if (foundItemList.CornSeeds) {
+          calc = Number(foundItemList.CornSeeds) + Number(1) * 10;
         } else {
           calc = Number(1) * 10;
         }
@@ -624,7 +624,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        foundItemList.cornSeeds = Number(calc).toString();
+        foundItemList.CornSeeds = Number(calc).toString();
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -668,8 +668,8 @@ export const SlashCommandF = class extends SlashCommand {
         await balance.save();
 
         let calc;
-        if (foundItemList.wheatSeeds) {
-          calc = Number(foundItemList.wheatSeeds) + Number(1) * 10;
+        if (foundItemList.WheatSeeds) {
+          calc = Number(foundItemList.WheatSeeds) + Number(1) * 10;
         } else {
           calc = Number(1) * 10;
         }
@@ -686,7 +686,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        foundItemList.wheatSeeds = Number(calc).toString();
+        foundItemList.WheatSeeds = Number(calc).toString();
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -730,8 +730,8 @@ export const SlashCommandF = class extends SlashCommand {
         await balance.save();
 
         let calc;
-        if (foundItemList.potatoSeeds) {
-          calc = Number(foundItemList.potatoSeeds) + Number(1) * 10;
+        if (foundItemList.PotatoSeeds) {
+          calc = Number(foundItemList.PotatoSeeds) + Number(1) * 10;
         } else {
           calc = Number(1) * 10;
         }
@@ -748,7 +748,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        foundItemList.potatoSeeds = Number(calc).toString();
+        foundItemList.PotatoSeeds = Number(calc).toString();
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -792,8 +792,8 @@ export const SlashCommandF = class extends SlashCommand {
         await balance.save();
 
         let calc;
-        if (foundItemList.tomatoSeeds) {
-          calc = Number(foundItemList.tomatoSeeds) + Number(1) * 10;
+        if (foundItemList.TomatoSeeds) {
+          calc = Number(foundItemList.TomatoSeeds) + Number(1) * 10;
         } else {
           calc = Number(1) * 10;
         }
@@ -810,7 +810,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        foundItemList.tomatoSeeds = Number(calc).toString();
+        foundItemList.TomatoSeeds = Number(calc).toString();
 
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -830,7 +830,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (argsItem === 'rod') {
-        if (foundItemList.fishingRod) {
+        if (foundItemList.FishingRod) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -859,7 +859,7 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = Number(balance.Total) - Number(fishingPrice);
         await balance.save();
 
-        foundItemList.fishingRod = Number(1).toString();
+        foundItemList.FishingRod = Number(1).toString();
         foundBoostList.fishBag = Number(initalSeedBag).toString();
 
         balance.Items = JSON.stringify(foundItemList);
@@ -879,7 +879,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (argsItem === 'tools') {
-        if (foundItemList.farmingTools) {
+        if (foundItemList.FarmingTools) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -911,16 +911,16 @@ export const SlashCommandF = class extends SlashCommand {
 
         let fullPrice = 0;
 
-        if (foundItemList.barley) fullPrice += Number(foundItemList.barley) * this.client.ecoPrices.barley;
-        if (foundItemList.spinach) fullPrice += Number(foundItemList.spinach) * this.client.ecoPrices.spinach;
-        if (foundItemList.strawberries) fullPrice += Number(foundItemList.strawberries) * this.client.ecoPrices.strawberries;
-        if (foundItemList.lettuce) fullPrice += Number(foundItemList.lettuce) * this.client.ecoPrices.lettuce;
+        if (foundItemList.Barley) fullPrice += Number(foundItemList.Barley) * this.client.ecoPrices.barley;
+        if (foundItemList.Spinach) fullPrice += Number(foundItemList.Spinach) * this.client.ecoPrices.spinach;
+        if (foundItemList.Sstrawberries) fullPrice += Number(foundItemList.Sstrawberries) * this.client.ecoPrices.strawberries;
+        if (foundItemList.Lettuce) fullPrice += Number(foundItemList.Lettuce) * this.client.ecoPrices.lettuce;
 
         balance.Bank = Number(balance.Bank) - Number(farmingPrice) + fullPrice;
         balance.Total = Number(balance.Total) - Number(farmingPrice) + fullPrice;
         await balance.save();
 
-        foundItemList.farmingTools = Number(1).toString();
+        foundItemList.FarmingTools = Number(1).toString();
         foundBoostList.farmBag = Number(initalFarmBag).toString();
         foundBoostList.seedBag = Number(initalSeedBag).toString();
         foundBoostList.FarmPlot = Number(initialFarmPlot).toString();
@@ -932,7 +932,7 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({
             name: `**${this.client.user.username} - Shop - Farming Tools**`,
             value: `**◎ Success:** You have bought Farming Tools${
-              foundItemList.barley || foundItemList.spinach || foundItemList.strawberries || foundItemList.lettuce
+              foundItemList.Barley || foundItemList.Spinach || foundItemList.Sstrawberries || foundItemList.Lettuce
                 ? `.\nYou had some old crops, I have sold them for you and credited <:coin:706659001164628008> \`${fullPrice.toLocaleString(
                     'en'
                   )}\` to your account.`
@@ -941,10 +941,10 @@ export const SlashCommandF = class extends SlashCommand {
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/FarmingTool.png'] });
 
-        if (foundItemList.barley) delete foundItemList.barley;
-        if (foundItemList.spinach) delete foundItemList.spinach;
-        if (foundItemList.strawberries) delete foundItemList.strawberries;
-        if (foundItemList.lettuce) delete foundItemList.lettuce;
+        if (foundItemList.Barley) delete foundItemList.Barley;
+        if (foundItemList.Spinach) delete foundItemList.Spinach;
+        if (foundItemList.Sstrawberries) delete foundItemList.Sstrawberries;
+        if (foundItemList.Lettuce) delete foundItemList.Lettuce;
 
         balance.Items = JSON.stringify(foundItemList);
         balance.Boosts = JSON.stringify(foundBoostList);
@@ -957,27 +957,27 @@ export const SlashCommandF = class extends SlashCommand {
       if (!argsItem) {
         let fields;
 
-        if (!foundItemList.farmingTools) {
+        if (!foundItemList.FarmingTools) {
           fields = [
             `\u3000 Barley: Own ${
-              foundItemList.barley === undefined
+              foundItemList.Barley === undefined
                 ? '`0`'
-                : `\`${foundItemList.barley}\` - <:coin:706659001164628008> \`${barleyPrice.toLocaleString('en')}\``
+                : `\`${foundItemList.Barley}\` - <:coin:706659001164628008> \`${barleyPrice.toLocaleString('en')}\``
             }`,
             `\u3000 Spinach: Own ${
-              foundItemList.spinach === undefined
+              foundItemList.Spinach === undefined
                 ? '`0`'
-                : `\`${foundItemList.spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``
+                : `\`${foundItemList.Spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``
             }`,
             `\u3000 Strawberries: Own ${
-              foundItemList.strawberries === undefined
+              foundItemList.Sstrawberries === undefined
                 ? '`0`'
-                : `\`${foundItemList.strawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
+                : `\`${foundItemList.Sstrawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
             }`,
             `\u3000 Lettuce: Own ${
-              foundItemList.lettuce === undefined
+              foundItemList.Lettuce === undefined
                 ? '`0`'
-                : `\`${foundItemList.lettuce}\` - <:coin:706659001164628008> \`${lettucePrice.toLocaleString('en')}\``
+                : `\`${foundItemList.Lettuce}\` - <:coin:706659001164628008> \`${lettucePrice.toLocaleString('en')}\``
             }`
           ];
         } else {
@@ -1012,27 +1012,27 @@ export const SlashCommandF = class extends SlashCommand {
             }`
           ];
 
-          if (foundItemList.barley || foundItemList.spinach || foundItemList.strawberries || foundItemList.lettuce) {
+          if (foundItemList.Barley || foundItemList.Spinach || foundItemList.Sstrawberries || foundItemList.Lettuce) {
             const lowCrops = [
               `\u3000 Barley: Own ${
-                foundItemList.barley === undefined
+                foundItemList.Barley === undefined
                   ? '`0`'
-                  : `\`${foundItemList.barley}\` - <:coin:706659001164628008> \`${barleyPrice.toLocaleString('en')}\``
+                  : `\`${foundItemList.Barley}\` - <:coin:706659001164628008> \`${barleyPrice.toLocaleString('en')}\``
               }`,
               `\u3000 Spinach: Own ${
-                foundItemList.spinach === undefined
+                foundItemList.Spinach === undefined
                   ? '`0`'
-                  : `\`${foundItemList.spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``
+                  : `\`${foundItemList.Spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``
               }`,
               `\u3000 Strawberries: Own ${
-                foundItemList.strawberries === undefined
+                foundItemList.Sstrawberries === undefined
                   ? '`0`'
-                  : `\`${foundItemList.strawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
+                  : `\`${foundItemList.Sstrawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
               }`,
               `\u3000 Lettuce: Own ${
-                foundItemList.lettuce === undefined
+                foundItemList.Lettuce === undefined
                   ? '`0`'
-                  : `\`${foundItemList.lettuce}\` - <:coin:706659001164628008> \`${lettucePrice.toLocaleString('en')}\``
+                  : `\`${foundItemList.Lettuce}\` - <:coin:706659001164628008> \`${lettucePrice.toLocaleString('en')}\``
               }`
             ];
             fields.push(lowCrops.join('\n'));
@@ -1046,24 +1046,24 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Items**`,
             value: `**◎ Fish:**
 						\u3000 Trout: Own ${
-              foundItemList.trout === undefined
+              foundItemList.Trout === undefined
                 ? '`0`'
-                : `\`${foundItemList.trout}\` - <:coin:706659001164628008> \`${troutPrice.toLocaleString('en')}\``
+                : `\`${foundItemList.Trout}\` - <:coin:706659001164628008> \`${troutPrice.toLocaleString('en')}\``
             }
 						\u3000 King Salmon: Own ${
-              foundItemList.kingSalmon === undefined
+              foundItemList.KingSalmon === undefined
                 ? '`0`'
-                : `\`${foundItemList.kingSalmon}\` - <:coin:706659001164628008> \`${salmonPrice.toLocaleString('en')}\``
+                : `\`${foundItemList.KingSalmon}\` - <:coin:706659001164628008> \`${salmonPrice.toLocaleString('en')}\``
             }
 						\u3000 Swordfish: Own ${
-              foundItemList.swordfish === undefined
+              foundItemList.SwordFish === undefined
                 ? '`0`'
-                : `\`${foundItemList.swordfish} \`- <:coin:706659001164628008> \`${swordFishPrice.toLocaleString('en')}\``
+                : `\`${foundItemList.SwordFish} \`- <:coin:706659001164628008> \`${swordFishPrice.toLocaleString('en')}\``
             }
 						\u3000 Pufferfish: Own ${
-              foundItemList.pufferfish === undefined
+              foundItemList.PufferFish === undefined
                 ? '`0`'
-                : `\`${foundItemList.pufferfish}\` - <:coin:706659001164628008> \`${pufferFishPrice.toLocaleString('en')}\``
+                : `\`${foundItemList.PufferFish}\` - <:coin:706659001164628008> \`${pufferFishPrice.toLocaleString('en')}\``
             }
 						\u200b
 						**◎ Crops:**
@@ -1071,19 +1071,19 @@ export const SlashCommandF = class extends SlashCommand {
 						\u200b
 						**◎ Treasure:**
 						\u3000 Treasure Chest: Own ${
-              foundItemList.treasure === undefined
+              foundItemList.Treasure === undefined
                 ? '`0`'
-                : `${foundItemList.treasure} - <:coin:706659001164628008> \`${treasurePrice.toLocaleString('en')}\``
+                : `${foundItemList.Treasure} - <:coin:706659001164628008> \`${treasurePrice.toLocaleString('en')}\``
             }
 						\u3000 Gold Bar: Own ${
-              foundItemList.goldBar === undefined
+              foundItemList.GoldBar === undefined
                 ? '`0`'
-                : `\`${foundItemList.goldBar}\` - <:coin:706659001164628008> \`${goldBarPrice.toLocaleString('en')}\``
+                : `\`${foundItemList.GoldBar}\` - <:coin:706659001164628008> \`${goldBarPrice.toLocaleString('en')}\``
             }
 						\u3000 Gold Nugget: Own ${
-              foundItemList.goldNugget === undefined
+              foundItemList.GoldNugget === undefined
                 ? '`0`'
-                : `\`${foundItemList.goldNugget}\` - <:coin:706659001164628008> \`${goldNuggetPrice.toLocaleString('en')}\``
+                : `\`${foundItemList.GoldNugget}\` - <:coin:706659001164628008> \`${goldNuggetPrice.toLocaleString('en')}\``
             }
 						\u200b
 						**◎ Available Commands:**
@@ -1098,21 +1098,21 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (argsItem === 'all') {
         if (
-          !foundItemList.lettuce &&
-          !foundItemList.strawberries &&
-          !foundItemList.spinach &&
-          !foundItemList.barley &&
+          !foundItemList.Lettuce &&
+          !foundItemList.Sstrawberries &&
+          !foundItemList.Spinach &&
+          !foundItemList.Barley &&
           !foundHarvestList.filter((key) => key.cropType === 'tomato').length &&
           !foundHarvestList.filter((key) => key.cropType === 'potato').length &&
           !foundHarvestList.filter((key) => key.cropType === 'wheat').length &&
           !foundHarvestList.filter((key) => key.cropType === 'corn').length &&
-          !foundItemList.trout &&
-          !foundItemList.kingSalmon &&
-          !foundItemList.swordfish &&
-          !foundItemList.pufferfish &&
-          !foundItemList.treasure &&
-          !foundItemList.goldBar &&
-          !foundItemList.goldNugget
+          !foundItemList.Trout &&
+          !foundItemList.KingSalmon &&
+          !foundItemList.SwordFish &&
+          !foundItemList.PufferFish &&
+          !foundItemList.Treasure &&
+          !foundItemList.GoldBar &&
+          !foundItemList.GoldNugget
         ) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -1125,10 +1125,10 @@ export const SlashCommandF = class extends SlashCommand {
         let fullPrice = 0;
         let itemCount = 0;
 
-        if (foundItemList.lettuce) fullPrice += Number(foundItemList.lettuce) * this.client.ecoPrices.lettuce;
-        if (foundItemList.strawberries) fullPrice += Number(foundItemList.strawberries) * this.client.ecoPrices.strawberries;
-        if (foundItemList.spinach) fullPrice += Number(foundItemList.spinach) * this.client.ecoPrices.spinach;
-        if (foundItemList.barley) fullPrice += Number(foundItemList.barley) * this.client.ecoPrices.barley;
+        if (foundItemList.Lettuce) fullPrice += Number(foundItemList.Lettuce) * this.client.ecoPrices.lettuce;
+        if (foundItemList.Sstrawberries) fullPrice += Number(foundItemList.Sstrawberries) * this.client.ecoPrices.strawberries;
+        if (foundItemList.Spinach) fullPrice += Number(foundItemList.Spinach) * this.client.ecoPrices.spinach;
+        if (foundItemList.Barley) fullPrice += Number(foundItemList.Barley) * this.client.ecoPrices.barley;
 
         foundHarvestList.forEach((obj) => {
           if (obj.cropType === 'corn') fullPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.decay.toFixed(4) / 100));
@@ -1137,23 +1137,23 @@ export const SlashCommandF = class extends SlashCommand {
           if (obj.cropType === 'tomato') fullPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.decay.toFixed(4) / 100));
         });
 
-        if (foundItemList.trout) fullPrice += Number(foundItemList.trout) * this.client.ecoPrices.trout;
-        if (foundItemList.kingSalmon) fullPrice += Number(foundItemList.kingSalmon) * this.client.ecoPrices.kingSalmon;
-        if (foundItemList.swordfish) fullPrice += Number(foundItemList.swordfish) * this.client.ecoPrices.swordfish;
-        if (foundItemList.pufferfish) fullPrice += Number(foundItemList.pufferfish) * this.client.ecoPrices.pufferfish;
-        if (foundItemList.treasure) fullPrice += Number(foundItemList.treasure) * this.client.ecoPrices.treasure;
-        if (foundItemList.goldBar) fullPrice += Number(foundItemList.goldBar) * this.client.ecoPrices.goldBar;
-        if (foundItemList.goldNugget) fullPrice += Number(foundItemList.goldNugget) * this.client.ecoPrices.goldNugget;
+        if (foundItemList.Trout) fullPrice += Number(foundItemList.Trout) * this.client.ecoPrices.trout;
+        if (foundItemList.KingSalmon) fullPrice += Number(foundItemList.KingSalmon) * this.client.ecoPrices.kingSalmon;
+        if (foundItemList.SwordFish) fullPrice += Number(foundItemList.SwordFish) * this.client.ecoPrices.swordfish;
+        if (foundItemList.PufferFish) fullPrice += Number(foundItemList.PufferFish) * this.client.ecoPrices.pufferfish;
+        if (foundItemList.Treasure) fullPrice += Number(foundItemList.Treasure) * this.client.ecoPrices.treasure;
+        if (foundItemList.GoldBar) fullPrice += Number(foundItemList.GoldBar) * this.client.ecoPrices.goldBar;
+        if (foundItemList.GoldNugget) fullPrice += Number(foundItemList.GoldNugget) * this.client.ecoPrices.goldNugget;
 
-        if (foundItemList.treasure) itemCount += Number(foundItemList.treasure);
-        if (foundItemList.trout) itemCount += Number(foundItemList.trout);
-        if (foundItemList.kingSalmon) itemCount += Number(foundItemList.kingSalmon);
-        if (foundItemList.swordfish) itemCount += Number(foundItemList.swordfish);
-        if (foundItemList.pufferfish) itemCount += Number(foundItemList.pufferfish);
-        if (foundItemList.lettuce) itemCount += Number(foundItemList.lettuce);
-        if (foundItemList.strawberries) itemCount += Number(foundItemList.strawberries);
-        if (foundItemList.spinach) itemCount += Number(foundItemList.spinach);
-        if (foundItemList.barley) itemCount += Number(foundItemList.barley);
+        if (foundItemList.Treasure) itemCount += Number(foundItemList.Treasure);
+        if (foundItemList.Trout) itemCount += Number(foundItemList.Trout);
+        if (foundItemList.KingSalmon) itemCount += Number(foundItemList.KingSalmon);
+        if (foundItemList.SwordFish) itemCount += Number(foundItemList.SwordFish);
+        if (foundItemList.PufferFish) itemCount += Number(foundItemList.PufferFish);
+        if (foundItemList.Lettuce) itemCount += Number(foundItemList.Lettuce);
+        if (foundItemList.Sstrawberries) itemCount += Number(foundItemList.Sstrawberries);
+        if (foundItemList.Spinach) itemCount += Number(foundItemList.Spinach);
+        if (foundItemList.Barley) itemCount += Number(foundItemList.Barley);
 
         if (foundHarvestList) {
           itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'corn').length);
@@ -1162,8 +1162,8 @@ export const SlashCommandF = class extends SlashCommand {
           itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'tomato').length);
         }
 
-        if (foundItemList.goldBar) itemCount += Number(foundItemList.goldBar);
-        if (foundItemList.goldNugget) itemCount += Number(foundItemList.goldNugget);
+        if (foundItemList.GoldBar) itemCount += Number(foundItemList.GoldBar);
+        if (foundItemList.GoldNugget) itemCount += Number(foundItemList.GoldNugget);
 
         const totalAdd = balance.Total + fullPrice;
 
@@ -1171,17 +1171,17 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = totalAdd;
         await balance.save();
 
-        if (foundItemList.treasure) delete foundItemList.treasure;
-        if (foundItemList.trout) delete foundItemList.trout;
-        if (foundItemList.kingSalmon) delete foundItemList.kingSalmon;
-        if (foundItemList.swordfish) delete foundItemList.swordfish;
-        if (foundItemList.pufferfish) delete foundItemList.pufferfish;
-        if (foundItemList.goldBar) delete foundItemList.goldBar;
-        if (foundItemList.goldNugget) delete foundItemList.goldNugget;
-        if (foundItemList.barley) delete foundItemList.barley;
-        if (foundItemList.spinach) delete foundItemList.spinach;
-        if (foundItemList.strawberries) delete foundItemList.strawberries;
-        if (foundItemList.lettuce) delete foundItemList.lettuce;
+        if (foundItemList.Treasure) delete foundItemList.Treasure;
+        if (foundItemList.Trout) delete foundItemList.Trout;
+        if (foundItemList.KingSalmon) delete foundItemList.KingSalmon;
+        if (foundItemList.SwordFish) delete foundItemList.SwordFish;
+        if (foundItemList.PufferFish) delete foundItemList.PufferFish;
+        if (foundItemList.GoldBar) delete foundItemList.GoldBar;
+        if (foundItemList.GoldNugget) delete foundItemList.GoldNugget;
+        if (foundItemList.Barley) delete foundItemList.Barley;
+        if (foundItemList.Spinach) delete foundItemList.Spinach;
+        if (foundItemList.Sstrawberries) delete foundItemList.Sstrawberries;
+        if (foundItemList.Lettuce) delete foundItemList.Lettuce;
 
         balance.Items = JSON.stringify(foundItemList);
         balance.HarvestedCrops = null;
@@ -1202,11 +1202,11 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (argsItem === 'fish') {
         if (
-          foundItemList.trout === undefined &&
-          foundItemList.kingSalmon === undefined &&
-          foundItemList.swordfish === undefined &&
-          foundItemList.pufferfish === undefined &&
-          foundItemList.treasure === undefined
+          foundItemList.Trout === undefined &&
+          foundItemList.KingSalmon === undefined &&
+          foundItemList.SwordFish === undefined &&
+          foundItemList.PufferFish === undefined &&
+          foundItemList.Treasure === undefined
         ) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -1219,15 +1219,15 @@ export const SlashCommandF = class extends SlashCommand {
         let fullPrice = 0;
         let fishCount = 0;
 
-        if (foundItemList.trout) fullPrice += Number(foundItemList.trout) * this.client.ecoPrices.trout;
-        if (foundItemList.kingSalmon) fullPrice += Number(foundItemList.kingSalmon) * this.client.ecoPrices.kingSalmon;
-        if (foundItemList.swordfish) fullPrice += Number(foundItemList.swordfish) * this.client.ecoPrices.swordfish;
-        if (foundItemList.pufferfish) fullPrice += Number(foundItemList.pufferfish) * this.client.ecoPrices.pufferfish;
+        if (foundItemList.Trout) fullPrice += Number(foundItemList.Trout) * this.client.ecoPrices.trout;
+        if (foundItemList.KingSalmon) fullPrice += Number(foundItemList.KingSalmon) * this.client.ecoPrices.kingSalmon;
+        if (foundItemList.SwordFish) fullPrice += Number(foundItemList.SwordFish) * this.client.ecoPrices.swordfish;
+        if (foundItemList.PufferFish) fullPrice += Number(foundItemList.PufferFish) * this.client.ecoPrices.pufferfish;
 
-        if (foundItemList.trout) fishCount += Number(foundItemList.trout);
-        if (foundItemList.kingSalmon) fishCount += Number(foundItemList.kingSalmon);
-        if (foundItemList.swordfish) fishCount += Number(foundItemList.swordfish);
-        if (foundItemList.pufferfish) fishCount += Number(foundItemList.pufferfish);
+        if (foundItemList.Trout) fishCount += Number(foundItemList.Trout);
+        if (foundItemList.KingSalmon) fishCount += Number(foundItemList.KingSalmon);
+        if (foundItemList.SwordFish) fishCount += Number(foundItemList.SwordFish);
+        if (foundItemList.PufferFish) fishCount += Number(foundItemList.PufferFish);
 
         const totalAdd = balance.Total + fullPrice;
 
@@ -1235,10 +1235,10 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = totalAdd;
         await balance.save();
 
-        if (foundItemList.trout) delete foundItemList.trout;
-        if (foundItemList.kingSalmon) delete foundItemList.kingSalmon;
-        if (foundItemList.swordfish) delete foundItemList.swordfish;
-        if (foundItemList.pufferfish) delete foundItemList.pufferfish;
+        if (foundItemList.Trout) delete foundItemList.Trout;
+        if (foundItemList.KingSalmon) delete foundItemList.KingSalmon;
+        if (foundItemList.SwordFish) delete foundItemList.SwordFish;
+        if (foundItemList.PufferFish) delete foundItemList.PufferFish;
 
         balance.Items = JSON.stringify(foundItemList);
         balance.save();
@@ -1257,7 +1257,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (argsItem === 'treasure') {
-        if (foundItemList.treasure === undefined) {
+        if (foundItemList.Treasure === undefined) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -1269,13 +1269,13 @@ export const SlashCommandF = class extends SlashCommand {
         let fullPrice = 0;
         let treasureCount = 0;
 
-        if (foundItemList.treasure) fullPrice += Number(foundItemList.treasure) * this.client.ecoPrices.treasure;
-        if (foundItemList.goldBar) fullPrice += Number(foundItemList.treasure) * this.client.ecoPrices.goldBar;
-        if (foundItemList.goldNugget) fullPrice += Number(foundItemList.goldNugget) * this.client.ecoPrices.goldNugget;
+        if (foundItemList.Treasure) fullPrice += Number(foundItemList.Treasure) * this.client.ecoPrices.treasure;
+        if (foundItemList.GoldBar) fullPrice += Number(foundItemList.Treasure) * this.client.ecoPrices.goldBar;
+        if (foundItemList.GoldNugget) fullPrice += Number(foundItemList.GoldNugget) * this.client.ecoPrices.goldNugget;
 
-        if (foundItemList.treasure) treasureCount += Number(foundItemList.treasure);
-        if (foundItemList.goldBar) treasureCount += Number(foundItemList.goldBar);
-        if (foundItemList.goldNugget) treasureCount += Number(foundItemList.goldNugget);
+        if (foundItemList.Treasure) treasureCount += Number(foundItemList.Treasure);
+        if (foundItemList.GoldBar) treasureCount += Number(foundItemList.GoldBar);
+        if (foundItemList.GoldNugget) treasureCount += Number(foundItemList.GoldNugget);
 
         const totalAdd = balance.Total + fullPrice;
 
@@ -1283,9 +1283,9 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = totalAdd;
         await balance.save();
 
-        if (foundItemList.treasure) delete foundItemList.treasure;
-        if (foundItemList.goldBar) delete foundItemList.goldBar;
-        if (foundItemList.goldNugget) delete foundItemList.goldNugget;
+        if (foundItemList.Treasure) delete foundItemList.Treasure;
+        if (foundItemList.GoldBar) delete foundItemList.GoldBar;
+        if (foundItemList.GoldNugget) delete foundItemList.GoldNugget;
 
         balance.Items = JSON.stringify(foundItemList);
         await balance.save();
@@ -1305,10 +1305,10 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (argsItem === 'farm' || argsItem === 'crops') {
         if (
-          !foundItemList.lettuce &&
-          !foundItemList.strawberries &&
-          !foundItemList.spinach &&
-          !foundItemList.barley &&
+          !foundItemList.Lettuce &&
+          !foundItemList.Sstrawberries &&
+          !foundItemList.Spinach &&
+          !foundItemList.Barley &&
           !foundHarvestList.filter((key) => key.cropType === 'tomato').length &&
           !foundHarvestList.filter((key) => key.cropType === 'potato').length &&
           !foundHarvestList.filter((key) => key.cropType === 'wheat').length &&
@@ -1325,10 +1325,10 @@ export const SlashCommandF = class extends SlashCommand {
         let fullPrice = 0;
         let itemCount = 0;
 
-        if (foundItemList.lettuce) fullPrice += Number(foundItemList.lettuce) * this.client.ecoPrices.lettuce;
-        if (foundItemList.strawberries) fullPrice += Number(foundItemList.strawberries) * this.client.ecoPrices.strawberries;
-        if (foundItemList.spinach) fullPrice += Number(foundItemList.spinach) * this.client.ecoPrices.spinach;
-        if (foundItemList.barley) fullPrice += Number(foundItemList.barley) * this.client.ecoPrices.barley;
+        if (foundItemList.Lettuce) fullPrice += Number(foundItemList.Lettuce) * this.client.ecoPrices.lettuce;
+        if (foundItemList.Sstrawberries) fullPrice += Number(foundItemList.Sstrawberries) * this.client.ecoPrices.strawberries;
+        if (foundItemList.Spinach) fullPrice += Number(foundItemList.Spinach) * this.client.ecoPrices.spinach;
+        if (foundItemList.Barley) fullPrice += Number(foundItemList.Barley) * this.client.ecoPrices.barley;
 
         foundHarvestList.forEach((obj) => {
           if (obj.cropType === 'corn') fullPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.decay.toFixed(4) / 100));
@@ -1337,10 +1337,10 @@ export const SlashCommandF = class extends SlashCommand {
           if (obj.cropType === 'tomato') fullPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.decay.toFixed(4) / 100));
         });
 
-        if (foundItemList.lettuce) itemCount += Number(foundItemList.lettuce);
-        if (foundItemList.strawberries) itemCount += Number(foundItemList.strawberries);
-        if (foundItemList.spinach) itemCount += Number(foundItemList.spinach);
-        if (foundItemList.barley) itemCount += Number(foundItemList.barley);
+        if (foundItemList.Lettuce) itemCount += Number(foundItemList.Lettuce);
+        if (foundItemList.Sstrawberries) itemCount += Number(foundItemList.Sstrawberries);
+        if (foundItemList.Spinach) itemCount += Number(foundItemList.Spinach);
+        if (foundItemList.Barley) itemCount += Number(foundItemList.Barley);
 
         if (foundHarvestList) {
           itemCount += Number(foundHarvestList.filter((key) => key.cropType === 'corn').length);
@@ -1355,10 +1355,10 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = totalAdd;
         await balance.save();
 
-        if (foundItemList.barley) delete foundItemList.barley;
-        if (foundItemList.spinach) delete foundItemList.spinach;
-        if (foundItemList.strawberries) delete foundItemList.strawberries;
-        if (foundItemList.lettuce) delete foundItemList.lettuce;
+        if (foundItemList.Barley) delete foundItemList.Barley;
+        if (foundItemList.Spinach) delete foundItemList.Spinach;
+        if (foundItemList.Sstrawberries) delete foundItemList.Sstrawberries;
+        if (foundItemList.Lettuce) delete foundItemList.Lettuce;
 
         balance.Items = JSON.stringify(foundItemList);
         balance.HarvestedCrops = null;

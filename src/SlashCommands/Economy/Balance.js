@@ -46,75 +46,59 @@ export const SlashCommandF = class extends SlashCommand {
     const date = new Date().getTime();
 
     if (member.user.id === interaction.user.id) {
-      let foundItemList = JSON.parse(balance.Items);
-      let foundBoostList = JSON.parse(balance.Boosts);
-      let foundPlotList = JSON.parse(balance.FarmPlot);
-      let foundHarvestList = JSON.parse(balance.HarvestedCrops);
+      const foundItemList = balance.Items;
+      const foundBoostList = balance.Boosts;
+      const foundPlotList = balance.FarmPlot;
+      const foundHarvestList = balance.HarvestedCrops;
 
       let claimUserTime;
       if (balance.ClaimNewUser) {
         const endTime = balance.ClaimNewUser;
         claimUserTime = Math.round(endTime / 1000);
       }
-
-      if (!foundItemList) {
-        foundItemList = {};
-      }
-
-      if (!foundBoostList) {
-        foundBoostList = {};
-      }
-
-      if (!foundPlotList) {
-        foundPlotList = [];
-      }
-
-      if (!foundHarvestList) {
-        foundHarvestList = [];
-      }
-
+      
       let currentTotalSeeds = 0;
 
-      if (foundItemList.cornSeeds) {
-        currentTotalSeeds += Number(foundItemList.cornSeeds);
+      if (foundItemList.CornSeeds) {
+        currentTotalSeeds += Number(foundItemList.CornSeeds);
       } else {
         currentTotalSeeds += Number(0);
       }
-      if (foundItemList.wheatSeeds) {
-        currentTotalSeeds += Number(foundItemList.wheatSeeds);
+      if (foundItemList.WheatSeeds) {
+        currentTotalSeeds += Number(foundItemList.WheatSeeds);
       } else {
         currentTotalSeeds += Number(0);
       }
-      if (foundItemList.potatoSeeds) {
-        currentTotalSeeds += Number(foundItemList.potatoSeeds);
+      if (foundItemList.PotatoSeeds) {
+        currentTotalSeeds += Number(foundItemList.PotatoSeeds);
       } else {
         currentTotalSeeds += Number(0);
       }
-      if (foundItemList.tomatoSeeds) {
-        currentTotalSeeds += Number(foundItemList.tomatoSeeds);
+      if (foundItemList.TomatoSeeds) {
+        currentTotalSeeds += Number(foundItemList.TomatoSeeds);
       } else {
         currentTotalSeeds += Number(0);
       }
 
       let currentTotalFish = 0;
 
-      if (foundItemList.trout) {
-        currentTotalFish += Number(foundItemList.trout);
+      if (foundItemList.Trout) {
+        currentTotalFish += Number(foundItemList.Trout);
       } else {
         currentTotalFish += Number(0);
       }
-      if (foundItemList.kingSalmon) {
-        currentTotalFish += Number(foundItemList.kingSalmon);
+      if (foundItemList.KingSalmon) {
+        currentTotalFish += Number(foundItemList.KingSalmon);
       } else {
         currentTotalFish += Number(0);
       }
-      if (foundItemList.swordfish) {
-        currentTotalFish += Number(foundItemList.swordfish);
+      if (foundItemList.Swordfish) {
+        currentTotalFish += Number(foundItemList.Swordfish);
       } else {
         currentTotalFish += Number(0);
       }
-      if (foundItemList.pufferfish) {
-        currentTotalFish += Number(foundItemList.pufferfish);
+      if (foundItemList.Pufferfish) {
+        currentTotalFish += Number(foundItemList.Pufferfish);
       } else {
         currentTotalFish += Number(0);
       }
@@ -159,7 +143,7 @@ export const SlashCommandF = class extends SlashCommand {
           {
             name: 'Fish Cooldown',
             value: `${
-              !foundItemList.fishingRod
+              !foundItemList.FishingRod
                 ? '`Rod Not Owned`'
                 : Date.now() > balance.FishCool
                 ? '`Available!`'

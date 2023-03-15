@@ -58,13 +58,13 @@ export const SlashCommandF = class extends SlashCommand {
     let strawberriesPrice;
     let lettucePrice;
 
-    if (foundItemList.trout) troutPrice = this.client.ecoPrices.trout * Number(foundItemList.trout);
-    if (foundItemList.kingSalmon) salmonPrice = this.client.ecoPrices.kingSalmon * Number(foundItemList.kingSalmon);
-    if (foundItemList.swordfish) swordFishPrice = this.client.ecoPrices.swordfish * Number(foundItemList.swordfish);
-    if (foundItemList.pufferfish) pufferFishPrice = this.client.ecoPrices.pufferfish * Number(foundItemList.pufferfish);
-    if (foundItemList.treasure) treasurePrice = this.client.ecoPrices.treasure * Number(foundItemList.treasure);
+    if (foundItemList.Trout) troutPrice = this.client.ecoPrices.trout * Number(foundItemList.Trout);
+    if (foundItemList.KingSalmon) salmonPrice = this.client.ecoPrices.kingSalmon * Number(foundItemList.KingSalmon);
+    if (foundItemList.SwordFish) swordFishPrice = this.client.ecoPrices.swordfish * Number(foundItemList.SwordFish);
+    if (foundItemList.PufferFish) pufferFishPrice = this.client.ecoPrices.pufferfish * Number(foundItemList.PufferFish);
+    if (foundItemList.Treasure) treasurePrice = this.client.ecoPrices.treasure * Number(foundItemList.Treasure);
 
-    if (foundItemList.goldBar) goldBarPrice = this.client.ecoPrices.goldBar * Number(foundItemList.goldBar);
+    if (foundItemList.GoldBar) goldBarPrice = this.client.ecoPrices.goldBar * Number(foundItemList.GoldBar);
 
     foundHarvestList.forEach((obj) => {
       if (obj.cropType === 'corn') cornPrice += Math.floor(this.client.ecoPrices.corn * (1 - obj.decay.toFixed(4) / 100));
@@ -73,74 +73,74 @@ export const SlashCommandF = class extends SlashCommand {
       if (obj.cropType === 'tomato') tomatoesPrice += Math.floor(this.client.ecoPrices.tomatoes * (1 - obj.decay.toFixed(4) / 100));
     });
 
-    if (foundItemList.goldNugget) goldNuggetPrice = this.client.ecoPrices.goldNugget * Number(foundItemList.goldNugget);
-    if (foundItemList.barley) barleyPrice = this.client.ecoPrices.barley * Number(foundItemList.barley);
-    if (foundItemList.spinach) spinachPrice = this.client.ecoPrices.spinach * Number(foundItemList.spinach);
-    if (foundItemList.strawberries) strawberriesPrice = this.client.ecoPrices.strawberries * Number(foundItemList.strawberries);
-    if (foundItemList.lettuce) lettucePrice = this.client.ecoPrices.lettuce * Number(foundItemList.lettuce);
+    if (foundItemList.GoldNugget) goldNuggetPrice = this.client.ecoPrices.goldNugget * Number(foundItemList.GoldNugget);
+    if (foundItemList.Barley) barleyPrice = this.client.ecoPrices.barley * Number(foundItemList.Barley);
+    if (foundItemList.Spinach) spinachPrice = this.client.ecoPrices.spinach * Number(foundItemList.Spinach);
+    if (foundItemList.Sstrawberries) strawberriesPrice = this.client.ecoPrices.strawberries * Number(foundItemList.Sstrawberries);
+    if (foundItemList.Lettuce) lettucePrice = this.client.ecoPrices.lettuce * Number(foundItemList.Lettuce);
 
     let fullPrice = 0;
-    if (foundItemList.trout) fullPrice += Number(foundItemList.trout) * this.client.ecoPrices.trout;
-    if (foundItemList.kingSalmon) fullPrice += Number(foundItemList.kingSalmon) * this.client.ecoPrices.kingSalmon;
-    if (foundItemList.swordfish) fullPrice += Number(foundItemList.swordfish) * this.client.ecoPrices.swordfish;
-    if (foundItemList.pufferfish) fullPrice += Number(foundItemList.pufferfish) * this.client.ecoPrices.pufferfish;
-    if (foundItemList.treasure) fullPrice += Number(foundItemList.treasure) * this.client.ecoPrices.treasure;
+    if (foundItemList.Trout) fullPrice += Number(foundItemList.Trout) * this.client.ecoPrices.trout;
+    if (foundItemList.KingSalmon) fullPrice += Number(foundItemList.KingSalmon) * this.client.ecoPrices.kingSalmon;
+    if (foundItemList.SwordFish) fullPrice += Number(foundItemList.SwordFish) * this.client.ecoPrices.swordfish;
+    if (foundItemList.PufferFish) fullPrice += Number(foundItemList.PufferFish) * this.client.ecoPrices.pufferfish;
+    if (foundItemList.Treasure) fullPrice += Number(foundItemList.Treasure) * this.client.ecoPrices.treasure;
 
-    if (foundItemList.goldBar) fullPrice += Number(foundItemList.goldBar) * this.client.ecoPrices.goldBar;
+    if (foundItemList.GoldBar) fullPrice += Number(foundItemList.GoldBar) * this.client.ecoPrices.goldBar;
     if (foundHarvestList) {
       fullPrice += Number(foundHarvestList.filter((key) => key.cropType === 'corn').length) * this.client.ecoPrices.corn;
       fullPrice += Number(foundHarvestList.filter((key) => key.cropType === 'wheat').length) * this.client.ecoPrices.wheat;
       fullPrice += Number(foundHarvestList.filter((key) => key.cropType === 'potato').length) * this.client.ecoPrices.potatoes;
       fullPrice += Number(foundHarvestList.filter((key) => key.cropType === 'tomato').length) * this.client.ecoPrices.tomatoes;
     }
-    if (foundItemList.goldNugget) fullPrice += Number(foundItemList.goldNugget) * this.client.ecoPrices.goldNugget;
-    if (foundItemList.barley) fullPrice += Number(foundItemList.barley) * this.client.ecoPrices.barley;
-    if (foundItemList.spinach) fullPrice += Number(foundItemList.spinach) * this.client.ecoPrices.spinach;
-    if (foundItemList.strawberries) fullPrice += Number(foundItemList.strawberries) * this.client.ecoPrices.strawberries;
-    if (foundItemList.lettuce) fullPrice += Number(foundItemList.lettuce) * this.client.ecoPrices.lettuce;
+    if (foundItemList.GoldNugget) fullPrice += Number(foundItemList.GoldNugget) * this.client.ecoPrices.goldNugget;
+    if (foundItemList.Barley) fullPrice += Number(foundItemList.Barley) * this.client.ecoPrices.barley;
+    if (foundItemList.Spinach) fullPrice += Number(foundItemList.Spinach) * this.client.ecoPrices.spinach;
+    if (foundItemList.Sstrawberries) fullPrice += Number(foundItemList.Sstrawberries) * this.client.ecoPrices.strawberries;
+    if (foundItemList.Lettuce) fullPrice += Number(foundItemList.Lettuce) * this.client.ecoPrices.lettuce;
 
     let currentTotalSeeds = 0;
 
-    if (foundItemList.cornSeeds) {
-      currentTotalSeeds += Number(foundItemList.cornSeeds);
+    if (foundItemList.CornSeeds) {
+      currentTotalSeeds += Number(foundItemList.CornSeeds);
     } else {
       currentTotalSeeds += Number(0);
     }
-    if (foundItemList.wheatSeeds) {
-      currentTotalSeeds += Number(foundItemList.wheatSeeds);
+    if (foundItemList.WheatSeeds) {
+      currentTotalSeeds += Number(foundItemList.WheatSeeds);
     } else {
       currentTotalSeeds += Number(0);
     }
-    if (foundItemList.potatoSeeds) {
-      currentTotalSeeds += Number(foundItemList.potatoSeeds);
+    if (foundItemList.PotatoSeeds) {
+      currentTotalSeeds += Number(foundItemList.PotatoSeeds);
     } else {
       currentTotalSeeds += Number(0);
     }
-    if (foundItemList.tomatoSeeds) {
-      currentTotalSeeds += Number(foundItemList.tomatoSeeds);
+    if (foundItemList.TomatoSeeds) {
+      currentTotalSeeds += Number(foundItemList.TomatoSeeds);
     } else {
       currentTotalSeeds += Number(0);
     }
 
     let currentTotalFish = 0;
 
-    if (foundItemList.trout) {
-      currentTotalFish += Number(foundItemList.trout);
+    if (foundItemList.Trout) {
+      currentTotalFish += Number(foundItemList.Trout);
     } else {
       currentTotalFish += Number(0);
     }
-    if (foundItemList.kingSalmon) {
-      currentTotalFish += Number(foundItemList.kingSalmon);
+    if (foundItemList.KingSalmon) {
+      currentTotalFish += Number(foundItemList.KingSalmon);
     } else {
       currentTotalFish += Number(0);
     }
-    if (foundItemList.swordfish) {
-      currentTotalFish += Number(foundItemList.swordfish);
+    if (foundItemList.SwordFish) {
+      currentTotalFish += Number(foundItemList.SwordFish);
     } else {
       currentTotalFish += Number(0);
     }
-    if (foundItemList.pufferfish) {
-      currentTotalFish += Number(foundItemList.pufferfish);
+    if (foundItemList.PufferFish) {
+      currentTotalFish += Number(foundItemList.PufferFish);
     } else {
       currentTotalFish += Number(0);
     }
@@ -156,28 +156,28 @@ export const SlashCommandF = class extends SlashCommand {
 
     let fields;
 
-    if (!foundItemList.farmingTools) {
+    if (!foundItemList.FarmingTools) {
       fields = [
         '**◎ Crops:**',
         `\u3000 Barley: Own ${
-          foundItemList.barley === undefined
+          foundItemList.Barley === undefined
             ? '`0`'
-            : `\`${foundItemList.barley}\` - <:coin:706659001164628008> \`${barleyPrice.toLocaleString('en')}\``
+            : `\`${foundItemList.Barley}\` - <:coin:706659001164628008> \`${barleyPrice.toLocaleString('en')}\``
         }`,
         `\u3000 Spinach: Own ${
-          foundItemList.spinach === undefined
+          foundItemList.Spinach === undefined
             ? '`0`'
-            : `\`${foundItemList.spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``
+            : `\`${foundItemList.Spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``
         }`,
         `\u3000 Strawberries: Own ${
-          foundItemList.strawberries === undefined
+          foundItemList.Sstrawberries === undefined
             ? '`0`'
-            : `\`${foundItemList.strawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
+            : `\`${foundItemList.Sstrawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
         }`,
         `\u3000 Lettuce: Own ${
-          foundItemList.lettuce === undefined
+          foundItemList.Lettuce === undefined
             ? '`0`'
-            : `\`${foundItemList.lettuce}\` - <:coin:706659001164628008> \`${lettucePrice.toLocaleString('en')}\``
+            : `\`${foundItemList.Lettuce}\` - <:coin:706659001164628008> \`${lettucePrice.toLocaleString('en')}\``
         }`
       ];
     } else {
@@ -213,10 +213,10 @@ export const SlashCommandF = class extends SlashCommand {
         }`,
         '\u200b',
         '**◎ Seeds:**',
-        `\u3000 Corn: Own ${foundItemList.cornSeeds === undefined ? '`0`' : `\`${foundItemList.cornSeeds}\``}`,
-        `\u3000 Wheat: Own ${foundItemList.wheatSeeds === undefined ? '`0`' : `\`${foundItemList.wheatSeeds}\``}`,
-        `\u3000 Potatoes: Own ${foundItemList.potatoSeeds === undefined ? '`0`' : `\`${foundItemList.potatoSeeds}\``}`,
-        `\u3000 Tomatoes: Own ${foundItemList.tomatoSeeds === undefined ? '`0`' : `\`${foundItemList.tomatoSeeds}\``}`
+        `\u3000 Corn: Own ${foundItemList.CornSeeds === undefined ? '`0`' : `\`${foundItemList.CornSeeds}\``}`,
+        `\u3000 Wheat: Own ${foundItemList.WheatSeeds === undefined ? '`0`' : `\`${foundItemList.WheatSeeds}\``}`,
+        `\u3000 Potatoes: Own ${foundItemList.PotatoSeeds === undefined ? '`0`' : `\`${foundItemList.PotatoSeeds}\``}`,
+        `\u3000 Tomatoes: Own ${foundItemList.TomatoSeeds === undefined ? '`0`' : `\`${foundItemList.TomatoSeeds}\``}`
       ];
     }
 
@@ -227,46 +227,46 @@ export const SlashCommandF = class extends SlashCommand {
         name: `**${this.client.user.username} - Items**`,
         value: `**◎ Fish:**
 				\u3000 Trout: Own ${
-          foundItemList.trout === undefined ? '`0`' : `\`${foundItemList.trout}\` - <:coin:706659001164628008> \`${troutPrice.toLocaleString('en')}\``
+          foundItemList.Trout === undefined ? '`0`' : `\`${foundItemList.Trout}\` - <:coin:706659001164628008> \`${troutPrice.toLocaleString('en')}\``
         }
 				\u3000 King Salmon: Own ${
-          foundItemList.kingSalmon === undefined
+          foundItemList.KingSalmon === undefined
             ? '`0`'
-            : `\`${foundItemList.kingSalmon}\` - <:coin:706659001164628008> \`${salmonPrice.toLocaleString('en')}\``
+            : `\`${foundItemList.KingSalmon}\` - <:coin:706659001164628008> \`${salmonPrice.toLocaleString('en')}\``
         }
 				\u3000 Swordfish: Own ${
-          foundItemList.swordfish === undefined
+          foundItemList.SwordFish === undefined
             ? '`0`'
-            : `\`${foundItemList.swordfish} \`- <:coin:706659001164628008> \`${swordFishPrice.toLocaleString('en')}\``
+            : `\`${foundItemList.SwordFish} \`- <:coin:706659001164628008> \`${swordFishPrice.toLocaleString('en')}\``
         }
 				\u3000 Pufferfish: Own ${
-          foundItemList.pufferfish === undefined
+          foundItemList.PufferFish === undefined
             ? '`0`'
-            : `\`${foundItemList.pufferfish}\` - <:coin:706659001164628008> \`${pufferFishPrice.toLocaleString('en')}\``
+            : `\`${foundItemList.PufferFish}\` - <:coin:706659001164628008> \`${pufferFishPrice.toLocaleString('en')}\``
         }
 				\u200b
 				${fields.join('\n')}
 				\u200b
 				**◎ Treasure:**
 				\u3000 Treasure Chest: Own ${
-          foundItemList.treasure === undefined
+          foundItemList.Treasure === undefined
             ? '`0`'
-            : `\`${foundItemList.treasure}\` - <:coin:706659001164628008> \`${treasurePrice.toLocaleString('en')}\``
+            : `\`${foundItemList.Treasure}\` - <:coin:706659001164628008> \`${treasurePrice.toLocaleString('en')}\``
         }
 				\u3000 Gold Bar: Own ${
-          foundItemList.goldBar === undefined
+          foundItemList.GoldBar === undefined
             ? '`0`'
-            : `\`${foundItemList.goldBar}\` - <:coin:706659001164628008> \`${goldBarPrice.toLocaleString('en')}\``
+            : `\`${foundItemList.GoldBar}\` - <:coin:706659001164628008> \`${goldBarPrice.toLocaleString('en')}\``
         }
 				\u3000 Gold Nugget: Own ${
-          foundItemList.goldNugget === undefined
+          foundItemList.GoldNugget === undefined
             ? '`0`'
-            : `\`${foundItemList.goldNugget}\` - <:coin:706659001164628008> \`${goldNuggetPrice.toLocaleString('en')}\``
+            : `\`${foundItemList.GoldNugget}\` - <:coin:706659001164628008> \`${goldNuggetPrice.toLocaleString('en')}\``
         }
 				\u200b
 				**◎ Permanent Items:**
 				\u3000 ${
-          !foundItemList.fishingRod
+          !foundItemList.FishingRod
             ? `\`/shop buy rod\` - <:coin:706659001164628008> \`${fishingPrice.toLocaleString('en')}\``
             : 'Fishing Rod - `Owned`'
         }
@@ -276,7 +276,7 @@ export const SlashCommandF = class extends SlashCommand {
             : `\`Owned\` - Current capacity: \`${Number(currentTotalFish)}\`/\`${foundBoostList.fishBag}\``
         }
 				\u3000 ${
-          !foundItemList.farmingTools
+          !foundItemList.FarmingTools
             ? `\`/shop buy tools\` - <:coin:706659001164628008> \`${farmingPrice.toLocaleString('en')}\``
             : 'Farming Tools - `Owned`'
         }
