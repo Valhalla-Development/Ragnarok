@@ -46,8 +46,8 @@ export const SlashCommandF = class extends SlashCommand {
     } else {
       currentTotalFarm += Number(0);
     }
-    if (balance.Items.Sstrawberries) {
-      currentTotalFarm += Number(balance.Items.Sstrawberries);
+    if (balance.Items.Strawberries) {
+      currentTotalFarm += Number(balance.Items.Strawberries);
     } else {
       currentTotalFarm += Number(0);
     }
@@ -190,12 +190,12 @@ export const SlashCommandF = class extends SlashCommand {
       name = 'Strawberries';
 
       price = this.client.ecoPrices.strawberries;
-      if (balance.Items.Sstrawberries) {
-        amt = Number(balance.Items.Sstrawberries) + Number(1);
+      if (balance.Items.Strawberries) {
+        amt = Number(balance.Items.Strawberries) + Number(1);
       } else {
         amt = Number(1);
       }
-      balance.Items.Sstrawberries = amt;
+      balance.Items.Strawberries = amt;
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
