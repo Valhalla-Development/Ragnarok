@@ -159,8 +159,8 @@ export const SlashCommandF = class extends SlashCommand {
           {
             name: 'Seed Bag',
             value: `${
-              foundBoostList.seedBag
-                ? `\`${Number(currentTotalSeeds).toLocaleString('en')}/${Number(foundBoostList.seedBag).toLocaleString('en')}\``
+              foundBoostList.SeedBag
+                ? `\`${Number(currentTotalSeeds).toLocaleString('en')}/${Number(foundBoostList.SeedBag).toLocaleString('en')}\``
                 : '`Not Owned`'
             }`,
             inline: true
@@ -168,8 +168,8 @@ export const SlashCommandF = class extends SlashCommand {
           {
             name: 'Fish Bag',
             value: `${
-              foundBoostList.fishBag
-                ? `\`${Number(currentTotalFish).toLocaleString('en')}/${Number(foundBoostList.fishBag).toLocaleString('en')}\``
+              foundBoostList.FishBag
+                ? `\`${Number(currentTotalFish).toLocaleString('en')}/${Number(foundBoostList.FishBag).toLocaleString('en')}\``
                 : '`Not Owned`'
             }`,
             inline: true
@@ -177,8 +177,8 @@ export const SlashCommandF = class extends SlashCommand {
           {
             name: 'Farm Bag',
             value: `${
-              foundBoostList.farmBag
-                ? `\`${Number(currentTotalFarm).toLocaleString('en')}/${Number(foundBoostList.farmBag).toLocaleString('en')}\``
+              foundBoostList.FarmBag
+                ? `\`${Number(currentTotalFarm).toLocaleString('en')}/${Number(foundBoostList.FarmBag).toLocaleString('en')}\``
                 : '`Not Owned`'
             }`,
             inline: true

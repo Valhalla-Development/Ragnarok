@@ -175,40 +175,40 @@ export const SlashCommandF = class extends SlashCommand {
     if (argsChoice === 'upgrade') {
       if (!argsItem) {
         const arr = [];
-        if (foundBoostList.seedBag) {
-          if (Number(foundBoostList.seedBag) < Number(seedBagMax)) {
-            const upgradeSeedBag = foundBoostList.seedBag * seedBagPrice;
+        if (foundBoostList.SeedBag) {
+          if (Number(foundBoostList.SeedBag) < Number(seedBagMax)) {
+            const upgradeSeedBag = foundBoostList.SeedBag * seedBagPrice;
             arr.push(
               `\u3000 \`/shop upgrade seedbag\` - <:coin:706659001164628008> \`${upgradeSeedBag.toLocaleString(
                 'en'
               )}\` Upgrade by 15, current capacity: \`${Number(currentTotalSeeds).toLocaleString('en')}\`/\`${Number(
-                foundBoostList.seedBag
+                foundBoostList.SeedBag
               ).toLocaleString('en')}\``
             );
           }
         }
 
-        if (foundBoostList.fishBag) {
-          if (Number(foundBoostList.fishBag) < Number(fishBagMax)) {
-            const upgradeFishBag = foundBoostList.fishBag * fishBagPrice;
+        if (foundBoostList.FishBag) {
+          if (Number(foundBoostList.FishBag) < Number(fishBagMax)) {
+            const upgradeFishBag = foundBoostList.FishBag * fishBagPrice;
             arr.push(
               `\u3000 \`/shop upgrade fishbag\` - <:coin:706659001164628008> \`${upgradeFishBag.toLocaleString(
                 'en'
               )}\` Upgrade by 15, current capacity: \`${Number(currentTotalFish).toLocaleString('en')}\`/\`${Number(
-                foundBoostList.fishBag
+                foundBoostList.FishBag
               ).toLocaleString('en')}\``
             );
           }
         }
 
-        if (foundBoostList.farmBag) {
-          if (Number(foundBoostList.farmBag) < Number(farmBagMax)) {
-            const upgradeFarmBag = foundBoostList.farmBag * farmBagPrice;
+        if (foundBoostList.FarmBag) {
+          if (Number(foundBoostList.FarmBag) < Number(farmBagMax)) {
+            const upgradeFarmBag = foundBoostList.FarmBag * farmBagPrice;
             arr.push(
               `\u3000 \`/shop upgrade farmbag\` - <:coin:706659001164628008> \`${upgradeFarmBag.toLocaleString(
                 'en'
               )}\` Upgrade by 15, current capacity: \`${Number(currentTotalFarm).toLocaleString('en')}\`/\`${Number(
-                foundBoostList.farmBag
+                foundBoostList.FarmBag
               ).toLocaleString('en')}\``
             );
           }
@@ -242,7 +242,7 @@ export const SlashCommandF = class extends SlashCommand {
       }
 
       if (argsItem === 'seedbag') {
-        if (!foundBoostList.seedBag) {
+        if (!foundBoostList.SeedBag) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -254,7 +254,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (Number(foundBoostList.seedBag) >= Number(seedBagMax)) {
+        if (Number(foundBoostList.SeedBag) >= Number(seedBagMax)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -266,8 +266,8 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.Bank < foundBoostList.seedBag * seedBagPrice * 3) {
-          const notEnough = foundBoostList.seedBag * seedBagPrice * 3 - Number(balance.Bank);
+        if (balance.Bank < foundBoostList.SeedBag * seedBagPrice * 3) {
+          const notEnough = foundBoostList.SeedBag * seedBagPrice * 3 - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -282,11 +282,11 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.Bank = Number(balance.Bank) - foundBoostList.seedBag * seedBagPrice * 3;
-        balance.Total = Number(balance.Total) - foundBoostList.seedBag * seedBagPrice * 3;
+        balance.Bank = Number(balance.Bank) - foundBoostList.SeedBag * seedBagPrice * 3;
+        balance.Total = Number(balance.Total) - foundBoostList.SeedBag * seedBagPrice * 3;
 
-        const calc = Number(foundBoostList.seedBag) + Number(15);
-        foundBoostList.seedBag = calc.toString();
+        const calc = Number(foundBoostList.SeedBag) + Number(15);
+        foundBoostList.SeedBag = calc.toString();
 
         balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
@@ -298,15 +298,15 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({
             name: `**${this.client.user.username} - Shop - Seed Bag**`,
             value: `**◎ Success:** You have upgraded your seed bag for <:coin:706659001164628008> \`${
-              foundBoostList.seedBag * seedBagPrice * 3
-            }\`, your new limit is \`${Number(foundBoostList.seedBag)}\`!`
+              foundBoostList.SeedBag * seedBagPrice * 3
+            }\`, your new limit is \`${Number(foundBoostList.SeedBag)}\`!`
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/SeedBag.png'] });
         return;
       }
 
       if (argsItem === 'fishbag') {
-        if (!foundBoostList.fishBag) {
+        if (!foundBoostList.FishBag) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -318,7 +318,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (Number(foundBoostList.fishBag) >= Number(fishBagMax)) {
+        if (Number(foundBoostList.FishBag) >= Number(fishBagMax)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -330,8 +330,8 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.Bank < foundBoostList.fishBag * fishBagPrice * 3) {
-          const notEnough = foundBoostList.fishBag * fishBagPrice * 3 - Number(balance.Bank);
+        if (balance.Bank < foundBoostList.FishBag * fishBagPrice * 3) {
+          const notEnough = foundBoostList.FishBag * fishBagPrice * 3 - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -346,11 +346,11 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.Bank = Number(balance.Bank) - foundBoostList.fishBag * fishBagPrice * 3;
-        balance.Total = Number(balance.Total) - foundBoostList.fishBag * fishBagPrice * 3;
+        balance.Bank = Number(balance.Bank) - foundBoostList.FishBag * fishBagPrice * 3;
+        balance.Total = Number(balance.Total) - foundBoostList.FishBag * fishBagPrice * 3;
 
-        const calc = Number(foundBoostList.fishBag) + Number(15);
-        foundBoostList.fishBag = calc.toString();
+        const calc = Number(foundBoostList.FishBag) + Number(15);
+        foundBoostList.FishBag = calc.toString();
 
         balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
@@ -362,15 +362,15 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({
             name: `**${this.client.user.username} - Shop - Fish Bag**`,
             value: `**◎ Success:** You have upgraded your fish bag <:coin:706659001164628008> \`${
-              foundBoostList.fishBag * fishBagPrice * 3
-            }\`, your new limit is \`${Number(foundBoostList.fishBag)}\`!`
+              foundBoostList.FishBag * fishBagPrice * 3
+            }\`, your new limit is \`${Number(foundBoostList.FishBag)}\`!`
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/FishBag.png'] });
         return;
       }
 
       if (argsItem === 'farmbag') {
-        if (!foundBoostList.farmBag) {
+        if (!foundBoostList.FarmBag) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -382,7 +382,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (Number(foundBoostList.farmBag) >= Number(farmBagMax)) {
+        if (Number(foundBoostList.FarmBag) >= Number(farmBagMax)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -394,8 +394,8 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        if (balance.Bank < foundBoostList.farmBag * farmBagPrice * 3) {
-          const notEnough = foundBoostList.farmBag * farmBagPrice * 3 - Number(balance.Bank);
+        if (balance.Bank < foundBoostList.FarmBag * farmBagPrice * 3) {
+          const notEnough = foundBoostList.FarmBag * farmBagPrice * 3 - Number(balance.Bank);
 
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -410,11 +410,11 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        balance.Bank = Number(balance.Bank) - foundBoostList.farmBag * farmBagPrice * 3;
-        balance.Total = Number(balance.Total) - foundBoostList.farmBag * farmBagPrice * 3;
+        balance.Bank = Number(balance.Bank) - foundBoostList.FarmBag * farmBagPrice * 3;
+        balance.Total = Number(balance.Total) - foundBoostList.FarmBag * farmBagPrice * 3;
 
-        const calc = Number(foundBoostList.farmBag) + Number(15);
-        foundBoostList.farmBag = calc.toString();
+        const calc = Number(foundBoostList.FarmBag) + Number(15);
+        foundBoostList.FarmBag = calc.toString();
 
         balance.Boosts = JSON.stringify(foundBoostList);
         await balance.save();
@@ -426,8 +426,8 @@ export const SlashCommandF = class extends SlashCommand {
           .addFields({
             name: `**${this.client.user.username} - Shop - Farm Bag**`,
             value: `**◎ Success:** You have upgraded your farm bag <:coin:706659001164628008> \`${
-              foundBoostList.farmBag * farmBagPrice * 3
-            }\`, your new limit is \`${Number(foundBoostList.farmBag)}\`!`
+              foundBoostList.FarmBag * farmBagPrice * 3
+            }\`, your new limit is \`${Number(foundBoostList.FarmBag)}\`!`
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/FarmBag.png'] });
         return;
@@ -538,9 +538,9 @@ export const SlashCommandF = class extends SlashCommand {
                 : 'Fishing Rod - `Owned`'
             }
 						\u3000 Fish Bag - ${
-              !foundBoostList.fishBag
+              !foundBoostList.FishBag
                 ? '`Not Owned` - Buy fishing rod to aquire'
-                : `\`Owned\` - Current capacity: \`${Number(currentTotalFish)}\`/\`${foundBoostList.fishBag}\``
+                : `\`Owned\` - Current capacity: \`${Number(currentTotalFish)}\`/\`${foundBoostList.FishBag}\``
             }
 						\u3000 ${
               !foundItemList.FarmingTools
@@ -548,14 +548,14 @@ export const SlashCommandF = class extends SlashCommand {
                 : 'Farming Tools - `Owned`'
             }
 						\u3000 Seed Bag - ${
-              !foundBoostList.seedBag
+              !foundBoostList.SeedBag
                 ? '`Not Owned` - Buy farming tools to aquire'
-                : `\`Owned\` - Current capacity: \`${Number(currentTotalSeeds)}\`/\`${foundBoostList.seedBag}\``
+                : `\`Owned\` - Current capacity: \`${Number(currentTotalSeeds)}\`/\`${foundBoostList.SeedBag}\``
             }
 						\u3000 Farm Bag - ${
-              !foundBoostList.farmBag
+              !foundBoostList.FarmBag
                 ? '`Not Owned` - Buy farming tools to aquire'
-                : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.farmBag}\``
+                : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.FarmBag}\``
             }
 						\u3000 Farm Plot - ${
               !foundBoostList.FarmPlot
@@ -612,13 +612,13 @@ export const SlashCommandF = class extends SlashCommand {
           calc = Number(1) * 10;
         }
 
-        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(foundBoostList.seedBag)) {
+        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(foundBoostList.SeedBag)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Backpack Limit**`,
-              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.seedBag}\``
+              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.SeedBag}\``
             });
           interaction.reply({ ephemeral: true, embeds: [embed] });
           return;
@@ -634,7 +634,7 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Shop - Corn Seeds**`,
             value: `**◎ Success:** You have bought a pack of Corn Seeds.\nYou now have \`${calc}\` total Corn seeds.\n\nYour current backpack capacity is at \`${
               Number(currentTotalSeeds) + Number(1) * 10
-            }\`/\`${foundBoostList.seedBag}\``
+            }\`/\`${foundBoostList.SeedBag}\``
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/CornSeeds.png'] });
 
@@ -674,13 +674,13 @@ export const SlashCommandF = class extends SlashCommand {
           calc = Number(1) * 10;
         }
 
-        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(foundBoostList.seedBag)) {
+        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(foundBoostList.SeedBag)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Backpack Limit**`,
-              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.seedBag}\``
+              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.SeedBag}\``
             });
           interaction.reply({ ephemeral: true, embeds: [embed] });
           return;
@@ -696,7 +696,7 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Shop - Wheat Seeds**`,
             value: `**◎ Success:** You have bought a pack of Wheat Seeds.\nYou now have \`${calc}\` total Wheat seeds.\n\nYour current backpack capacity is at \`${
               Number(currentTotalSeeds) + Number(1) * 10
-            }\`/\`${foundBoostList.seedBag}\``
+            }\`/\`${foundBoostList.SeedBag}\``
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/WheatSeeds.png'] });
 
@@ -736,13 +736,13 @@ export const SlashCommandF = class extends SlashCommand {
           calc = Number(1) * 10;
         }
 
-        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(foundBoostList.seedBag)) {
+        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(foundBoostList.SeedBag)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Backpack Limit**`,
-              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.seedBag}\``
+              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.SeedBag}\``
             });
           interaction.reply({ ephemeral: true, embeds: [embed] });
           return;
@@ -758,7 +758,7 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Shop - Potato Seeds**`,
             value: `**◎ Success:** You have bought a pack of Potato Seeds.\nYou now have \`${calc}\` total Potato seeds.\n\nYour current backpack capacity is at \`${
               Number(currentTotalSeeds) + Number(1) * 10
-            }\`/\`${foundBoostList.seedBag}\``
+            }\`/\`${foundBoostList.SeedBag}\``
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/Potatoe.png'] });
 
@@ -798,13 +798,13 @@ export const SlashCommandF = class extends SlashCommand {
           calc = Number(1) * 10;
         }
 
-        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(foundBoostList.seedBag)) {
+        if (Number(currentTotalSeeds) + Number(1) * 10 > Number(foundBoostList.SeedBag)) {
           const embed = new EmbedBuilder()
             .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
             .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
             .addFields({
               name: `**${this.client.user.username} - Shop - Backpack Limit**`,
-              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.seedBag}\``
+              value: `**◎ Error:** You do not have enough space in your seed backpack! You backpack is currently at \`${currentTotalSeeds}\`/\`${foundBoostList.SeedBag}\``
             });
           interaction.reply({ ephemeral: true, embeds: [embed] });
           return;
@@ -820,7 +820,7 @@ export const SlashCommandF = class extends SlashCommand {
             name: `**${this.client.user.username} - Shop - Tomato Seeds**`,
             value: `**◎ Success:** You have bought a pack of Tomato Seeds.\nYou now have \`${calc}\` total Tomato seeds.\n\nYour current backpack capacity is at \`${
               Number(currentTotalSeeds) + Number(1) * 10
-            }\`/\`${foundBoostList.seedBag}\``
+            }\`/\`${foundBoostList.SeedBag}\``
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/Tomatoes.png'] });
 
@@ -860,7 +860,7 @@ export const SlashCommandF = class extends SlashCommand {
         await balance.save();
 
         foundItemList.FishingRod = Number(1).toString();
-        foundBoostList.fishBag = Number(initalSeedBag).toString();
+        foundBoostList.FishBag = Number(initalSeedBag).toString();
 
         balance.Items = JSON.stringify(foundItemList);
         balance.Boosts = JSON.stringify(foundBoostList);
@@ -921,8 +921,8 @@ export const SlashCommandF = class extends SlashCommand {
         await balance.save();
 
         foundItemList.FarmingTools = Number(1).toString();
-        foundBoostList.farmBag = Number(initalFarmBag).toString();
-        foundBoostList.seedBag = Number(initalSeedBag).toString();
+        foundBoostList.FarmBag = Number(initalFarmBag).toString();
+        foundBoostList.SeedBag = Number(initalSeedBag).toString();
         foundBoostList.FarmPlot = Number(initialFarmPlot).toString();
 
         const embed = new EmbedBuilder()

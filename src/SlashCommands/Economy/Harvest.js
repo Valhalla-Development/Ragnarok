@@ -128,7 +128,7 @@ export const SlashCommandF = class extends SlashCommand {
       foundHarvestedList = [];
     }
 
-    const availableSpots = foundBoostList.farmBag - foundHarvestedList.length;
+    const availableSpots = foundBoostList.FarmBag - foundHarvestedList.length;
 
     const cornPrice = this.client.ecoPrices.corn;
     const wheatPrice = this.client.ecoPrices.wheat;

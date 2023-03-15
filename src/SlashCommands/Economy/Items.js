@@ -271,9 +271,9 @@ export const SlashCommandF = class extends SlashCommand {
             : 'Fishing Rod - `Owned`'
         }
 				\u3000 Fish Bag - ${
-          !foundBoostList.fishBag
+          !foundBoostList.FishBag
             ? '`Not Owned` - Buy fishing rod to aquire'
-            : `\`Owned\` - Current capacity: \`${Number(currentTotalFish)}\`/\`${foundBoostList.fishBag}\``
+            : `\`Owned\` - Current capacity: \`${Number(currentTotalFish)}\`/\`${foundBoostList.FishBag}\``
         }
 				\u3000 ${
           !foundItemList.FarmingTools
@@ -281,14 +281,14 @@ export const SlashCommandF = class extends SlashCommand {
             : 'Farming Tools - `Owned`'
         }
 				\u3000 Seed Bag - ${
-          !foundBoostList.seedBag
+          !foundBoostList.SeedBag
             ? '`Not Owned` - Buy farming tools to aquire'
-            : `\`Owned\` - Current capacity: \`${Number(currentTotalSeeds)}\`/\`${foundBoostList.seedBag}\``
+            : `\`Owned\` - Current capacity: \`${Number(currentTotalSeeds)}\`/\`${foundBoostList.SeedBag}\``
         }
 				\u3000 Farm Bag - ${
-          !foundBoostList.farmBag
+          !foundBoostList.FarmBag
             ? '`Not Owned` - Buy farming tools to aquire'
-            : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.farmBag}\``
+            : `\`Owned\` - Current capacity: \`${Number(currentTotalFarm)}\`/\`${foundBoostList.FarmBag}\``
         }`
       });
     if (fullPrice > 0) {
