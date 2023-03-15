@@ -24,7 +24,7 @@ export const SlashCommandF = class extends SlashCommand {
 
     let foundHarvestList;
 
-    if (balance.HarvestedCrops?.length) {
+    if (balance.HarvestedCrops.length) {
       foundHarvestList = JSON.parse(balance.HarvestedCrops);
     } else {
       foundHarvestList = [];
