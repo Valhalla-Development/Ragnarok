@@ -13,9 +13,7 @@ export const SlashCommandF = class extends SlashCommand {
 
   async run(interaction) {
     const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild.id}` });
-
-    const foundItemList = balance.Items
-
+    
     let name;
     let price;
 
@@ -38,28 +36,28 @@ export const SlashCommandF = class extends SlashCommand {
     const freeLimit = this.client.ecoPrices.freeFarmLimit;
     let currentTotalFarm = 0;
 
-    if (foundItemList.Barley) {
-      currentTotalFarm += Number(foundItemList.Barley);
+    if (balance.Items.Barley) {
+      currentTotalFarm += Number(balance.Items.Barley);
     } else {
       currentTotalFarm += Number(0);
     }
-    if (foundItemList.Spinach) {
-      currentTotalFarm += Number(foundItemList.Spinach);
+    if (balance.Items.Spinach) {
+      currentTotalFarm += Number(balance.Items.Spinach);
     } else {
       currentTotalFarm += Number(0);
     }
-    if (foundItemList.Sstrawberries) {
-      currentTotalFarm += Number(foundItemList.Sstrawberries);
+    if (balance.Items.Sstrawberries) {
+      currentTotalFarm += Number(balance.Items.Sstrawberries);
     } else {
       currentTotalFarm += Number(0);
     }
-    if (foundItemList.Lettuce) {
-      currentTotalFarm += Number(foundItemList.Lettuce);
+    if (balance.Items.Lettuce) {
+      currentTotalFarm += Number(balance.Items.Lettuce);
     } else {
       currentTotalFarm += Number(0);
     }
 
-    if (!foundItemList.FarmingTools) {
+    if (!balance.Items.FarmingTools) {
       if (currentTotalFarm >= Number(freeLimit)) {
         const embed = new EmbedBuilder()
           .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
@@ -92,19 +90,18 @@ export const SlashCommandF = class extends SlashCommand {
         name = 'Gold Nugget';
 
         price = this.client.ecoPrices.goldNugget;
-        if (foundItemList.GoldNugget) {
-          amt = Number(foundItemList.GoldNugget) + Number(1);
+        if (balance.Items.GoldNugget) {
+          amt = Number(balance.Items.GoldNugget) + Number(1);
         } else {
           amt = Number(1);
         }
-        foundItemList.GoldNugget = amt.toString();
+        balance.Items.GoldNugget = amt;
 
         const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
         balance.FarmCool = Math.round(endTime);
       }
 
-      balance.Items = JSON.stringify(foundItemList);
       await balance.save();
 
       embed.addFields({
@@ -127,18 +124,17 @@ export const SlashCommandF = class extends SlashCommand {
       name = 'Barley';
 
       price = this.client.ecoPrices.barley;
-      if (foundItemList.Barley) {
-        amt = Number(foundItemList.Barley) + Number(1);
+      if (balance.Items.Barley) {
+        amt = Number(balance.Items.Barley) + Number(1);
       } else {
         amt = Number(1);
       }
-      foundItemList.Barley = amt.toString();
+      balance.Items.Barley = amt;
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
       balance.FarmCool = Math.round(endTime);
 
-      balance.Items = JSON.stringify(foundItemList);
       await balance.save();
 
       embed.addFields({
@@ -161,18 +157,17 @@ export const SlashCommandF = class extends SlashCommand {
       name = 'Spinach';
 
       price = this.client.ecoPrices.spinach;
-      if (foundItemList.Spinach) {
-        amt = Number(foundItemList.Spinach) + Number(1);
+      if (balance.Items.Spinach) {
+        amt = Number(balance.Items.Spinach) + Number(1);
       } else {
         amt = Number(1);
       }
-      foundItemList.Spinach = amt.toString();
+      balance.Items.Spinach = amt;
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
       balance.FarmCool = Math.round(endTime);
 
-      balance.Items = JSON.stringify(foundItemList);
       await balance.save();
 
       embed.addFields({
@@ -195,18 +190,17 @@ export const SlashCommandF = class extends SlashCommand {
       name = 'Strawberries';
 
       price = this.client.ecoPrices.strawberries;
-      if (foundItemList.Sstrawberries) {
-        amt = Number(foundItemList.Sstrawberries) + Number(1);
+      if (balance.Items.Sstrawberries) {
+        amt = Number(balance.Items.Sstrawberries) + Number(1);
       } else {
         amt = Number(1);
       }
-      foundItemList.Sstrawberries = amt.toString();
+      balance.Items.Sstrawberries = amt;
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
       balance.FarmCool = Math.round(endTime);
 
-      balance.Items = JSON.stringify(foundItemList);
       await balance.save();
 
       embed.addFields({
@@ -228,18 +222,17 @@ export const SlashCommandF = class extends SlashCommand {
       name = 'Lettuce';
 
       price = this.client.ecoPrices.lettuce;
-      if (foundItemList.Lettuce) {
-        amt = Number(foundItemList.Lettuce) + Number(1);
+      if (balance.Items.Lettuce) {
+        amt = Number(balance.Items.Lettuce) + Number(1);
       } else {
         amt = Number(1);
       }
-      foundItemList.Lettuce = amt.toString();
+      balance.Items.Lettuce = amt;
 
       const endTime = new Date().getTime() + this.client.ecoPrices.farmWinTime;
 
       balance.FarmCool = Math.round(endTime);
 
-      balance.Items = JSON.stringify(foundItemList);
       await balance.save();
 
       embed.addFields({
