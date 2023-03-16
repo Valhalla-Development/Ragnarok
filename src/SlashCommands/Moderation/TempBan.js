@@ -210,7 +210,7 @@ export const SlashCommandF = class extends SlashCommand {
             return;
           }
 
-          await TempBan.deleteOne({ IdJoined: `${user.user.userid}-${interaction.guild.id}` }); // TODO log user.user.userid just to be sure
+          await TempBan.deleteOne({ IdJoined: `${user.user.id}-${interaction.guild.id}` });
 
           const unbanEmbed = new EmbedBuilder()
             .setThumbnail(this.client.user.displayAvatarURL())
