@@ -92,7 +92,6 @@ export default (client) => {
         });
       }
 
-      console.log('6');
       let welcomeImg = result?.Image || null;
       let welcomeChan = result?.ChannelId || null;
       const welcomeChannelObject = data.find((obj) => obj.optionId === 'welcomeChannel');
