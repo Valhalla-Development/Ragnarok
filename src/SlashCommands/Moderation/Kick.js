@@ -1,6 +1,6 @@
 import { EmbedBuilder, SlashCommandBuilder, PermissionsBitField } from 'discord.js';
 import SlashCommand from '../../Structures/SlashCommand.js';
-import Logging from '../../Mongo/Schemas/Logging.js'; // TODO TEST ANY OF THESE
+import Logging from '../../Mongo/Schemas/Logging.js';
 
 const data = new SlashCommandBuilder()
   .setName('kick')
