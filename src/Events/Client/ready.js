@@ -126,7 +126,7 @@ export const EventF = class extends Event {
 
     // Cooldowns
     // Define a function to update the farms for a given user
-    const oneMinTimer = new CronJob(
+    const oneMinTimer = new CronJob( //todo THIS IS WORKING AND REWROTE
       '0 * * * * *',
       async () => {
         const currentTime = moment();
