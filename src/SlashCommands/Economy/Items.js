@@ -132,7 +132,32 @@ export const SlashCommandF = class extends SlashCommand {
       currentTotalFarm += Number(foundHarvestList.filter((key) => key.CropType === 'tomato').length);
     }
 
-    const fields = [// TODO this works but is too long of an embed bub
+    /*
+      * The following should go in the embed but it makes it too long, when you read this during the rewrite
+      * Possibly pagination or only show items you own:
+
+             `\u3000 Barley: Own ${
+           balance.Items.Barley === undefined
+               ? '`0`'
+               : `\`${balance.Items.Barley}\` - <:coin:706659001164628008> \`${barleyPrice.toLocaleString('en')}\``
+       }`,
+       `\u3000 Spinach: Own ${
+           balance.Items.Spinach === undefined
+               ? '`0`'
+               : `\`${balance.Items.Spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``
+       }`,
+       `\u3000 Strawberries: Own ${
+           balance.Items.Strawberries === undefined
+               ? '`0`'
+               : `\`${balance.Items.Strawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
+       }`,
+       `\u3000 Lettuce: Own ${
+           balance.Items.Lettuce === undefined
+               ? '`0`'
+               : `\`${balance.Items.Lettuce}\` - <:coin:706659001164628008> \`${lettucePrice.toLocaleString('en')}\``
+       }`,
+    */
+    const fields = [
         '**◎ Crops:** (The value of your crops will go down over time, sell them!)',
          `\u3000 Corn: Own ${
           !foundHarvestList.filter((key) => key.CropType === 'corn').length
@@ -162,26 +187,6 @@ export const SlashCommandF = class extends SlashCommand {
                 foundHarvestList.filter((key) => key.CropType === 'tomato').length
               }\` - <:coin:706659001164628008> \`${tomatoesPrice.toLocaleString('en')}\``
         }`,
-       `\u3000 Barley: Own ${
-           balance.Items.Barley === undefined
-               ? '`0`'
-               : `\`${balance.Items.Barley}\` - <:coin:706659001164628008> \`${barleyPrice.toLocaleString('en')}\``
-       }`,
-       `\u3000 Spinach: Own ${
-           balance.Items.Spinach === undefined
-               ? '`0`'
-               : `\`${balance.Items.Spinach}\` - <:coin:706659001164628008> \`${spinachPrice.toLocaleString('en')}\``
-       }`,
-       `\u3000 Strawberries: Own ${
-           balance.Items.Strawberries === undefined
-               ? '`0`'
-               : `\`${balance.Items.Strawberries} \`- <:coin:706659001164628008> \`${strawberriesPrice.toLocaleString('en')}\``
-       }`,
-       `\u3000 Lettuce: Own ${
-           balance.Items.Lettuce === undefined
-               ? '`0`'
-               : `\`${balance.Items.Lettuce}\` - <:coin:706659001164628008> \`${lettucePrice.toLocaleString('en')}\``
-       }`,
        '\u200b',
         '**◎ Seeds:**',
         `\u3000 Corn: Own ${balance.Items.CornSeeds === undefined ? '`0`' : `\`${balance.Items.CornSeeds}\``}`,
