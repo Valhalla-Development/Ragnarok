@@ -212,9 +212,7 @@ export const EventF = class extends Event {
             bulkOps.push({ updateMany: { filter, update } });
           }
 
-          console.log('hi started');
           await Balance.bulkWrite(bulkOps);
-          console.log('hi done');
         } catch (error) {
           console.error(`Error updating farms: ${error}`);
         }
