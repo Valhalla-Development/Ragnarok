@@ -54,13 +54,13 @@ export const SlashCommandF = class extends SlashCommand {
     let foundHarvestList;
 
     if (balance.FarmPlot.length) {
-      foundPlotList = JSON.parse(balance.FarmPlot);
+      foundPlotList = balance.FarmPlot;
     } else {
       foundPlotList = [];
     }
 
     if (balance.HarvestedCrops.length) {
-      foundHarvestList = JSON.parse(balance.HarvestedCrops);
+      foundHarvestList = balance.HarvestedCrops;
     } else {
       foundHarvestList = [];
     }
@@ -913,10 +913,10 @@ export const SlashCommandF = class extends SlashCommand {
           });
         interaction.reply({ ephemeral: true, embeds: [embed], files: ['./Storage/Images/Economy/FarmingTool.png'] });
 
-        if (balance.Items.Barley) delete balance.Items.Barley;
-        if (balance.Items.Spinach) delete balance.Items.Spinach;
-        if (balance.Items.Strawberries) delete balance.Items.Strawberries;
-        if (balance.Items.Lettuce) delete balance.Items.Lettuce;
+        if (balance.Items.Barley) balance.Items.Barley = 0;
+        if (balance.Items.Spinach) balance.Items.Spinach = 0;
+        if (balance.Items.Strawberries) balance.Items.Strawberries = 0;
+        if (balance.Items.Lettuce) balance.Items.Lettuce = 0;
 
         await balance.save();
         return;
@@ -1141,19 +1141,19 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = totalAdd;
         await balance.save();
 
-        if (balance.Items.Treasure) delete balance.Items.Treasure;
-        if (balance.Items.Trout) delete balance.Items.Trout;
-        if (balance.Items.KingSalmon) delete balance.Items.KingSalmon;
-        if (balance.Items.SwordFish) delete balance.Items.SwordFish;
-        if (balance.Items.PufferFish) delete balance.Items.PufferFish;
-        if (balance.Items.GoldBar) delete balance.Items.GoldBar;
-        if (balance.Items.GoldNugget) delete balance.Items.GoldNugget;// TODO LITERALLY ALL WRONG, just minus the total bub
-        if (balance.Items.Barley) delete balance.Items.Barley;
-        if (balance.Items.Spinach) delete balance.Items.Spinach;
-        if (balance.Items.Strawberries) delete balance.Items.Strawberries;
-        if (balance.Items.Lettuce) delete balance.Items.Lettuce;
+        if (balance.Items.Treasure) balance.Items.Treasure = 0;
+        if (balance.Items.Trout) balance.Items.Trout = 0;
+        if (balance.Items.KingSalmon) balance.Items.KingSalmon = 0;
+        if (balance.Items.SwordFish) balance.Items.SwordFish = 0;
+        if (balance.Items.PufferFish) balance.Items.PufferFish = 0;
+        if (balance.Items.GoldBar) balance.Items.GoldBar = 0;
+        if (balance.Items.GoldNugget) balance.Items.GoldNugget = 0;
+        if (balance.Items.Barley) balance.Items.Barley = 0
+        if (balance.Items.Spinach) balance.Items.Spinach = 0;
+        if (balance.Items.Strawberries) balance.Items.Strawberries = 0;
+        if (balance.Items.Lettuce) balance.Items.Lettuce = 0;
 
-        balance.HarvestedCrops = null;
+        balance.HarvestedCrops = [];
         balance.save();
 
         const embed = new EmbedBuilder()
@@ -1204,10 +1204,10 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = totalAdd;
         await balance.save();
 
-        if (balance.Items.Trout) delete balance.Items.Trout;
-        if (balance.Items.KingSalmon) delete balance.Items.KingSalmon;
-        if (balance.Items.SwordFish) delete balance.Items.SwordFish;
-        if (balance.Items.PufferFish) delete balance.Items.PufferFish;
+        if (balance.Items.Trout) balance.Items.Trout = 0;
+        if (balance.Items.KingSalmon) balance.Items.KingSalmon = 0;
+        if (balance.Items.SwordFish) balance.Items.SwordFish = 0;
+        if (balance.Items.PufferFish) balance.Items.PufferFish = 0;
 
         balance.save();
 
@@ -1251,9 +1251,9 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = totalAdd;
         await balance.save();
 
-        if (balance.Items.Treasure) delete balance.Items.Treasure;
-        if (balance.Items.GoldBar) delete balance.Items.GoldBar;
-        if (balance.Items.GoldNugget) delete balance.Items.GoldNugget;
+        if (balance.Items.Treasure) balance.Items.Treasure = 0;
+        if (balance.Items.GoldBar) balance.Items.GoldBar = 0;
+        if (balance.Items.GoldNugget) balance.Items.GoldNugget = 0;
 
         await balance.save();
 
@@ -1322,12 +1322,12 @@ export const SlashCommandF = class extends SlashCommand {
         balance.Total = totalAdd;
         await balance.save();
 
-        if (balance.Items.Barley) delete balance.Items.Barley;
-        if (balance.Items.Spinach) delete balance.Items.Spinach;
-        if (balance.Items.Strawberries) delete balance.Items.Strawberries;
-        if (balance.Items.Lettuce) delete balance.Items.Lettuce;
+        if (balance.Items.Barley) balance.Items.Barley = 0
+        if (balance.Items.Spinach) balance.Items.Spinach = 0;
+        if (balance.Items.Strawberries) balance.Items.Strawberries = 0;
+        if (balance.Items.Lettuce) balance.Items.Lettuce = 0;
 
-        balance.HarvestedCrops = null;
+        balance.HarvestedCrops = [];
         await balance.save();
 
         const embed = new EmbedBuilder()
