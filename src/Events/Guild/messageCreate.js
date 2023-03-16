@@ -60,7 +60,6 @@ export const EventF = class extends Event {
         // Then filter which guilds have tickets enabled in the db
         const guildsWithTickets = guilds.filter(async (guild) => 
           // Fetch the row from the db where role is not null
-           // TODO TEST THIS AF BRUH
            TicketConfig.findOne({ GuildId: guild.id, Role: { $exists: true, $ne: null } })
         );
 
@@ -76,7 +75,7 @@ export const EventF = class extends Event {
         // Map guilds by: name, id
         const guildsMap = guildsWithTickets.map((guild) => ({
           name: guild.name,
-          id: guild.id // TODO HERE TOO TEST BRUH
+          id: guild.id
         }));
 
         // Sort guilds by: name in alphabetical order
@@ -576,7 +575,7 @@ export const EventF = class extends Event {
 
       if (afkGrab) {
         // if (command && command.name === 'afk') return; // this wont work for /afk so figure it out hehe
-        await AFK.deleteOne({ GuildId: message.guild.id, UserId: message.author.id }); // TODO
+        await AFK.deleteOne({ GuildId: message.guild.id, UserId: message.author.id });
 
         const embed = new EmbedBuilder().setColor(message.member.displayHexColor).addFields({
           name: `**${client.user.username} - AFK**`,
@@ -587,7 +586,7 @@ export const EventF = class extends Event {
       }
 
       if (mentions.users.size > 0 && pingCheck) {
-        const afkCheck = await AFK.findOne({ GuildId: message.guild.id, UserId: mentions.users.first().id }); // TODO test
+        const afkCheck = await AFK.findOne({ GuildId: message.guild.id, UserId: mentions.users.first().id });
         if (afkCheck) {
           const error = new EmbedBuilder().setColor(message.member.displayHexColor).addFields({
             name: `**${client.user.username} - AFK**`,
@@ -662,7 +661,7 @@ export const EventF = class extends Event {
             value: '**◎ Error:** I do not have the `MANAGE_MESSAGES` permissions. Disabling Anti Scam.'
           });
           message.channel.send({ embeds: [npPerms] }).then((m) => grabClient.utils.deletableCheck(m, 0));
-          await AntiScam.deleteOne({ GuildId: message.guild.id }); // TODO
+          await AntiScam.deleteOne({ GuildId: message.guild.id });
           return;
         }
 
@@ -700,7 +699,7 @@ export const EventF = class extends Event {
             value: '**◎ Error:** I do not have the `MANAGE_MESSAGES` permissions. Disabling Ads Protection.'
           });
           message.channel.send({ embeds: [npPerms] }).then((m) => grabClient.utils.deletableCheck(m, 0));
-          await AdsProtection.deleteOne({ GuildId: message.guild.id }); // TODO
+          await AdsProtection.deleteOne({ GuildId: message.guild.id });
           return;
         }
 

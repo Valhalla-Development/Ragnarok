@@ -124,7 +124,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const channelArgs = interaction.channel.name.split('-');
 
-        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); // TODO TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] });
 
         if (foundTicket) {
           if (user.permissionsIn(interaction.channel).has([PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages])) {
@@ -165,7 +165,7 @@ export const SlashCommandF = class extends SlashCommand {
 
       if (subOptions === 'close') {
         const channelArgs = interaction.channel.name.split('-');
-        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); // TODO TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] });
 
         // Make sure it's inside the ticket channel.
         if (foundTicket && interaction.channel.id !== foundTicket.ChannelId) {
@@ -218,7 +218,7 @@ export const SlashCommandF = class extends SlashCommand {
             if (!fetchTick) return;
 
             // Filter fetchTick where chanid === interaction.channel.id
-            const ticket = fetchTick.find((t) => t.ChannelId === interaction.channel.id); // TODO TEST
+            const ticket = fetchTick.find((t) => t.ChannelId === interaction.channel.id);
             if (!ticket) return;
 
             const closeReason = interaction.options.getString('name') || 'No reason provided.';
@@ -279,7 +279,7 @@ export const SlashCommandF = class extends SlashCommand {
               interaction.channel.delete();
             }
 
-            await Tickets.deleteOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); // TODO
+            await Tickets.deleteOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] });
 
             const epoch = Math.floor(new Date().getTime() / 1000);
 
@@ -410,7 +410,7 @@ export const SlashCommandF = class extends SlashCommand {
         if (!fetchBlacklist.Blacklist) {
           foundBlacklist = [];
         } else {
-          foundBlacklist = await JSON.parse(fetchBlacklist.Blacklist);
+          foundBlacklist = await fetchBlacklist.Blacklist;
         }
 
         if (foundBlacklist.includes(interaction.user.id)) {
@@ -423,7 +423,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         // Make sure this is the user's only ticket.
-        const checkTicketEx = await Tickets.findOne({ GuildId: interaction.guild.id, AuthorId: interaction.user.id }); // TODO TEST
+        const checkTicketEx = await Tickets.findOne({ GuildId: interaction.guild.id, AuthorId: interaction.user.id });
 
         if (checkTicketEx) {
           if (checkTicketEx.ChannelId === null) {
@@ -435,7 +435,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         // Already has a ticket
-        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, AuthorId: interaction.user.id }); // TODO TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, AuthorId: interaction.user.id });
         if (foundTicket) {
           const cha = interaction.guild.channels.cache.get(checkTicketEx.ChannelId);
           if (cha) {
@@ -634,7 +634,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const channelArgs = interaction.channel.name.split('-');
 
-        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); // TODO TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] });
 
         if (foundTicket) {
           const getChan = interaction.channel;
@@ -802,7 +802,7 @@ export const SlashCommandF = class extends SlashCommand {
       if (!fetchBlacklist.Blacklist) {
         foundBlacklist = [];
       } else {
-        foundBlacklist = await JSON.parse(fetchBlacklist.Blacklist);
+        foundBlacklist = fetchBlacklist.Blacklist;
       }
 
       if (subOptions === 'add') {
@@ -814,7 +814,7 @@ export const SlashCommandF = class extends SlashCommand {
               GuildId: interaction.guild.id
             },
             {
-              Blacklist: JSON.stringify(foundBlacklist)
+              Blacklist: foundBlacklist
             }
           );
 
@@ -845,7 +845,7 @@ export const SlashCommandF = class extends SlashCommand {
               GuildId: interaction.guild.id
             },
             {
-              Blacklist: !filtered.length ? null : JSON.stringify(filtered)
+              Blacklist: !filtered.length ? [] : filtered
             }
           );
 

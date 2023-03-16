@@ -26,12 +26,12 @@ export const EventF = class extends Event {
     if (!chn) return;
 
     if (id.ChannelId === null) {
-      await StarBoard.deleteOne({ GuildId: message.guild.id }); // TODO
+      await StarBoard.deleteOne({ GuildId: message.guild.id });
       return;
     }
 
     if (!message.guild.channels.cache.find((channel) => channel.id === id.ChannelId)) {
-      await StarBoard.deleteOne({ GuildId: message.guild.id }); // TODO
+      await StarBoard.deleteOne({ GuildId: message.guild.id });
       return;
     }
 

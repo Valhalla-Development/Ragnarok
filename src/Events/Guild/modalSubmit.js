@@ -76,7 +76,7 @@ export const EventF = class extends Event {
 
       const channelArgs = modal.channel.name.split('-');
 
-      await Tickets.deleteOne({ GuildId: modal.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); // TODO
+      await Tickets.deleteOne({ GuildId: modal.guild.id, TicketId: channelArgs[channelArgs.length - 1] });
 
       const epoch = Math.floor(new Date().getTime() / 1000);
 

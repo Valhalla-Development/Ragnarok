@@ -210,7 +210,7 @@ export const EventF = class extends Event {
 
         const channelArgs = interaction.channel.name.split('-');
 
-        await Tickets.deleteOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); // TODO
+        await Tickets.deleteOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] });
 
         const epoch = Math.floor(new Date().getTime() / 1000);
 
@@ -432,7 +432,7 @@ export const EventF = class extends Event {
 
         const channelArgs = interaction.channel.name.split('-');
 
-        await Tickets.deleteOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); // TODO
+        await Tickets.deleteOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] });
 
         const epoch = Math.floor(new Date().getTime() / 1000);
 
@@ -615,10 +615,10 @@ export const EventF = class extends Event {
 
       if (checkTicketEx) {
         if (checkTicketEx.ChannelId === null) {
-          await Tickets.deleteOne({ GuildId: guild.id, AuthorId: interaction.user.id }); // TODO
+          await Tickets.deleteOne({ GuildId: guild.id, AuthorId: interaction.user.id });
         }
         if (!guild.channels.cache.find((ch) => ch.id === checkTicketEx.ChannelId)) {
-          await Tickets.deleteOne({ GuildId: guild.id, AuthorId: interaction.user.id }); // TODO
+          await Tickets.deleteOne({ GuildId: guild.id, AuthorId: interaction.user.id });
         }
       }
 
