@@ -108,19 +108,21 @@ export const EventF = class extends Event {
       }
     );
 
-// Starboard
-      const grabStarboard = await StarBoard.find();
+    // Starboard
+    const grabStarboard = await StarBoard.find();
 
-      await Promise.all(grabStarboard.map(async (s) => {
-          const guild = this.client.guilds.cache.get(s.GuildId);
-          if (!guild) return;
+    await Promise.all(
+      grabStarboard.map(async (s) => {
+        const guild = this.client.guilds.cache.get(s.GuildId);
+        if (!guild) return;
 
-          const channel = guild.channels.cache.get(s.ChannelId);
-          if (!channel) return;
+        const channel = guild.channels.cache.get(s.ChannelId);
+        if (!channel) return;
 
-          // Cache messages
-          const messages = await channel.messages.fetch({ limit: 10 });
-      }));
+        // Cache messages
+        await channel.messages.fetch({ limit: 10 });
+      })
+    );
 
     // Cooldowns
     // Define a function to update the farms for a given user
@@ -128,7 +130,6 @@ export const EventF = class extends Event {
       '0 * * * * *',
       async () => {
         const currentTime = moment();
-        const bulkOps = [];
 
         try {
           const pipeline = [
@@ -149,16 +150,14 @@ export const EventF = class extends Event {
             }
           ];
 
-          const groups = await Balance.aggregate(pipeline);
+          const groupBalances = await Balance.aggregate(pipeline);
 
-          if (groups.length === 0) {
-            return;
-          }
+          const bulkOps = [];
 
-          for (const group of groups) {
-            const balances = group;
+          for (const groupBalance of groupBalances) {
+            const { IdJoined, FarmPlot, HarvestedCrops } = groupBalance;
 
-            const updatedPlots = balances.FarmPlot.map((plot) => {
+            const updatedPlots = FarmPlot.map((plot) => {
               const plotGrowTime = moment.unix(plot.CropGrowTime / 1000);
               if (currentTime.diff(plotGrowTime) >= 0) {
                 plot.CropStatus = 'harvest';
@@ -175,9 +174,9 @@ export const EventF = class extends Event {
               }
 
               return plot;
-            });
+            }).filter((plot) => plot !== null);
 
-            const updatedCrops = balances.HarvestedCrops.map((crop) => {
+            const updatedCrops = HarvestedCrops.map((crop) => {
               if (crop.Decay >= 100) {
                 return null;
               }
@@ -185,30 +184,27 @@ export const EventF = class extends Event {
               crop.Decay += this.client.ecoPrices.DecayRate * 6;
 
               return crop;
-            });
+            }).filter((crop) => crop !== null);
 
-            const filteredPlots = updatedPlots.filter((plot) => plot !== null);
-              if (filteredPlots.length === 0) {
-                  balances.FarmPlot = [];
-              } else {
-                  balances.FarmPlot = filteredPlots;
-              }
+            if (updatedPlots.length === 0) {
+              groupBalance.FarmPlot = [];
+            } else {
+              groupBalance.FarmPlot = updatedPlots;
+            }
 
-              const filteredHarvest = updatedCrops.filter((plot) => plot !== null);
-              if (filteredHarvest.length === 0) {
-                  balances.HarvestedCrops = [];
-              } else {
-                  balances.HarvestedCrops = filteredHarvest;
-              }
+            if (updatedCrops.length === 0) {
+              groupBalance.HarvestedCrops = [];
+            } else {
+              groupBalance.HarvestedCrops = updatedCrops;
+            }
 
-              const filter = { IdJoined: balances.IdJoined };
+            const filter = { IdJoined };
             const update = {
               $set: {
-                FarmPlot: balances.FarmPlot,
-                HarvestedCrops: balances.HarvestedCrops
+                FarmPlot: groupBalance.FarmPlot,
+                HarvestedCrops: groupBalance.HarvestedCrops
               }
             };
-
             bulkOps.push({ updateMany: { filter, update } });
           }
 
