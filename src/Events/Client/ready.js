@@ -349,7 +349,7 @@ export const EventF = class extends Event {
               return;
             }
 
-            const dbid = await Logging.findOne({ GuildId: guild.id }); // TODO test BIG TIME BIG BRUH DO IT
+            const dbid = await Logging.findOne({ GuildId: guild.id });
             const dblogs = dbid.ChannelId;
             const chnCheck = this.client.channels.cache.get(dblogs);
             if (!chnCheck) {
@@ -366,7 +366,7 @@ export const EventF = class extends Event {
       true
     );
 
-    const replEm = (str) => {
+    const replEm = (str) => {//todo rewrote, not tested, also update the wotd command like this
       const boldStart = /<em>/g;
       const boldEnd = /<\/em>/g;
       const nonLinkBold = /em>/g;
