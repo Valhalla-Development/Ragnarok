@@ -108,19 +108,19 @@ export const EventF = class extends Event {
       }
     );
 
-    // Starboard
-    const grabStarboard = await StarBoard.find();
+// Starboard
+      const grabStarboard = await StarBoard.find();
 
-    grabStarboard.forEach((s) => {
-      const guild = this.client.guilds.cache.get(s.GuildId);
-      if (!guild) return;
+      await Promise.all(grabStarboard.map(async (s) => {
+          const guild = this.client.guilds.cache.get(s.GuildId);
+          if (!guild) return;
 
-      const channel = guild.channels.cache.get(s.ChannelId);
-      if (!channel) return;
+          const channel = guild.channels.cache.get(s.ChannelId);
+          if (!channel) return;
 
-      // Cache messages
-      channel.messages.fetch({ limit: 10 });
-    });
+          // Cache messages
+          const messages = await channel.messages.fetch({ limit: 10 });
+      }));
 
     // Cooldowns
     // Define a function to update the farms for a given user
