@@ -36,15 +36,9 @@ export const SlashCommandF = class extends SlashCommand {
         guildBanRemove: 'guildBanRemove'
       };
 
-      // Check if the args variable has a corresponding property in the object.
-      if (Object.prototype.hasOwnProperty.call(events, args)) {
-        // Call the emit() method with the event name associated with the property.
         this.client.emit(events[args], interaction.member);
-      } else {
-        // Handle the error...
-      }
     } catch (error) {
-      // Log or handle the error...
+      console.error(error)
     }
   }
 };
