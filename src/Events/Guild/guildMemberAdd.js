@@ -39,8 +39,8 @@ export const EventF = class extends Event {
           // Send a message that the user joined
           channel.permissionOverwrites
             .create(member, {
-              VIEW_CHANNEL: true, // TODO ERROR, OLD PERMS
-              SEND_MESSAGES: true
+              ViewChannel: true,
+              SendMessages: true
             })
             .catch(console.error);
           const embed = new EmbedBuilder().setColor(client.utils.color(member.guild.members.me.displayHexColor)).addFields({

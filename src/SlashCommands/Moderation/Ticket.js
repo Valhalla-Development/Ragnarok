@@ -649,7 +649,7 @@ export const SlashCommandF = class extends SlashCommand {
 
           getChan.permissionOverwrites
             .create(rUser, {
-              VIEW_CHANNEL: false // TODO ERROR, OLD PERMS
+              ViewChannel: false
             })
             .catch(console.error);
           const removed = new EmbedBuilder()
@@ -682,7 +682,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         const channelArgs = interaction.channel.name.split('-');
 
-        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] }); // TODO TEST
+        const foundTicket = await Tickets.findOne({ GuildId: interaction.guild.id, TicketId: channelArgs[channelArgs.length - 1] });
 
         if (foundTicket) {
           const getChan = interaction.channel;
