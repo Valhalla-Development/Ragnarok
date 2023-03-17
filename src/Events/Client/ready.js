@@ -366,7 +366,7 @@ export const EventF = class extends Event {
       true
     );
 
-    const replEm = (str) => {//todo rewrote, not tested, also update the wotd command like this
+    const replEm = (str) => {
       const boldStart = /<em>/g;
       const boldEnd = /<\/em>/g;
       const nonLinkBold = /em>/g;
@@ -392,7 +392,8 @@ export const EventF = class extends Event {
           const $ = load(body);
 
           const wordClass = $('.word-and-pronunciation');
-          const word = wordClass.find('h1').text();
+          const wordHeader = wordClass.find('.word-header-txt');
+          const word = wordHeader.text();
           const typeFetch = $('.main-attr');
           const type = typeFetch.text();
           const syllablesFetch = $('.word-syllables');
