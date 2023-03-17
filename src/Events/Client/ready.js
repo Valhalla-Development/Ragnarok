@@ -126,7 +126,7 @@ export const EventF = class extends Event {
 
     // Cooldowns
     // Define a function to update the farms for a given user
-    const oneMinTimer = new CronJob( //todo THIS IS WORKING AND REWROTE
+    const oneMinTimer = new CronJob(
       '0 * * * * *',
       async () => {
         const currentTime = moment();
@@ -218,93 +218,84 @@ export const EventF = class extends Event {
     );
 
     const oneDayTimer = new CronJob(
-      '0 0 0 * * *',
-      async () => {
-        // Run every day
-        // Birthdays
-        const grabBdays = await Birthdays.find();
-        const grabBdaysConfig = await BirthdayConfig.find();
-        const findUserBday = async (id) => Birthdays.findOne({ UserId: id }); // TODO TEST
-        await Promise.all(
-          grabBdaysConfig.map(async (a) => {
-            // Check if bot is in the guild
-            const guild = this.client.guilds.cache.get(a.GuildId);
-            if (!guild) {
-              await BirthdayConfig.deleteMany({ GuildId: a.GuildId });
-              return;
-            }
+        '0 0 0 * * *',
+        async () => {
+          try {
+            const grabBdays = await Birthdays.find();
+            const grabBdaysConfig = await BirthdayConfig.find();
 
-            const channel = guild.channels.cache.get(a.ChannelId);
-            if (!channel) {
-              await BirthdayConfig.deleteMany({ GuildId: a.GuildId });
-              return;
-            }
-
-            const checkDate = new Date();
-            checkDate.setHours('0');
-            checkDate.setMilliseconds('0');
-            checkDate.setSeconds('0');
-            checkDate.setMinutes('0');
+            const findUserBday = async (id) => Birthdays.findOne({ UserId: id });
 
             await Promise.all(
-              grabBdays.map(async (b) => {
-                // Check if user is in the guild
-                const usr = guild.members.cache.get(b.UserId);
-                if (!usr) return;
-
-                const grabUser = findUserBday(usr.id); // TODO TEST
-
-                const now = moment();
-
-                let foundLastRun = JSON.parse(grabUser.LastRun);
-
-                if (!foundLastRun) {
-                  foundLastRun = {};
-                }
-
-                const savedDate = new Date(Date.parse(grabUser.Role));
-                savedDate.setFullYear(checkDate.getFullYear());
-                savedDate.setHours('0');
-                savedDate.setMilliseconds('0');
-                savedDate.setSeconds('0');
-                savedDate.setMinutes('0');
-
-                if (checkDate.getTime() === savedDate.getTime()) {
-                  // Check if the message has already been sent in this guild within the last 24 hours
-                  if (foundLastRun[guild.id] && now.unix() < foundLastRun[guild.id] + 86400) {
+                grabBdaysConfig.map(async (a) => {
+                  const guild = this.client.guilds.cache.get(a.GuildId);
+                  if (!guild) {
+                    await BirthdayConfig.deleteMany({ GuildId: a.GuildId });
                     return;
                   }
 
-                  let msg;
-
-                  const role = guild.roles.cache.get(a.Role);
-
-                  if (role) {
-                    msg = `It's ${usr}'s birthday! ${role} Say Happy Birthday! 🍰`;
-                  } else {
-                    msg = `It's ${usr}'s birthday! Say Happy Birthday! 🍰`;
+                  const channel = guild.channels.cache.get(a.ChannelId);
+                  if (!channel) {
+                    await BirthdayConfig.deleteMany({ GuildId: a.GuildId });
+                    return;
                   }
-                  channel.send(msg);
 
-                  // Update the LastRun property with the current timestamp
-                  foundLastRun[guild.id] = now.unix();
+                  const checkDate = new Date();
+                  checkDate.setHours(0, 0, 0, 0);
 
-                  await Birthdays.findOneAndUpdate(
-                    {
-                      UserId: usr.id // TODO TEST idk if usr.id is right
-                    },
-                    {
-                      LastRun: JSON.stringify(foundLastRun)
-                    }
+                  await Promise.all(
+                      grabBdays.map(async (b) => {
+                        const usr = await guild.members.fetch(b.UserId);
+                        if (!usr) return
+
+                        const grabUser = await findUserBday(usr.id);
+
+                        const now = moment();
+
+                        let foundLastRun = grabUser?.LastRun || []
+
+                        const savedDate = new Date(Date.parse(grabUser?.Date));
+                        savedDate.setFullYear(checkDate.getFullYear());
+                        savedDate.setHours(0, 0, 0, 0);
+
+                        if (checkDate.getTime() === savedDate.getTime()) {
+                          const lastRunForGuild = foundLastRun.find((entry) => entry[guild.id]);
+                          if (lastRunForGuild && now.unix() < lastRunForGuild[guild.id] + 86400) {
+                            return;
+                          }
+
+                          const role = a.Role ? await guild.roles.fetch(a.Role) : null;
+                          const msg = `It's ${usr}'s birthday! ${role ? `${role} Say Happy Birthday! 🍰` : 'Say Happy Birthday! 🍰'}`;
+
+                          try {
+                            await channel.send(msg);
+
+                            const guildIndex = foundLastRun.findIndex(obj => obj[guild.id]);
+
+                            if (guildIndex === -1) {
+                              foundLastRun.push({ [guild.id]: now.unix() });
+                            } else {
+                              foundLastRun[guildIndex][guild.id] = now.unix();
+                            }
+
+                            await Birthdays.findOneAndUpdate(
+                                { UserId: usr.id },
+                                { LastRun: foundLastRun }
+                            );
+                          } catch (error) {
+                            console.error(`Error sending birthday message for ${usr}:`, error);
+                          }
+                        }
+                      })
                   );
-                }
-              })
+                })
             );
-          })
-        );
-      },
-      null,
-      true
+          } catch (error) {
+            console.error('Error in Birthday Cron Job:', error);
+          }
+        },
+        null,
+        true
     );
 
     const twoMinuteTimer = new CronJob(
