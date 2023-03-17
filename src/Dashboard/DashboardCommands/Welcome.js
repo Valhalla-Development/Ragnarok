@@ -82,7 +82,7 @@ export default (client) => {
         await fetch(welcomeImgObject.data).then(async (res) => {
           if (res.ok) {
             try {
-              await Canvas.loadImage(welcomeImgObject.data); // TODO same code as welcome system, found bug for my site where it redirects, it will still load the image for some reason, but then says unsupported image when it try to send, so find a fix!
+              await Canvas.loadImage(welcomeImgObject.data);
             } catch {
               return { error: 'Please provide a valid image.' };
             }
