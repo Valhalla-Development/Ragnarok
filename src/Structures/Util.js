@@ -83,11 +83,11 @@ export const Util = class Util {
 
   formatPerms(perms) {
     return perms
-        .toLowerCase()
-        .replace(/_(?=\S)/g, (match) => match.toUpperCase())
-        .replace(/_/g, ' ')
-        .replace(/Guild/g, 'Server')
-        .replace(/Use Vad/g, 'Use Voice Activity');
+      .toLowerCase()
+      .replace(/_(?=\S)/g, (match) => match.toUpperCase())
+      .replace(/_/g, ' ')
+      .replace(/Guild/g, 'Server')
+      .replace(/Use Vad/g, 'Use Voice Activity');
   }
 
   checkOwner(target) {
@@ -257,14 +257,14 @@ export const Util = class Util {
       // Generate random XP and update score in database
       const xpAdd = Math.floor(Math.random() * 11 + 15);
       const score = await Level.findOneAndUpdate(
-          { IdJoined: `${user.id}-${guildId}` },
-          {
-            UserId: user.id,
-            GuildId: guildId,
-            Xp: xpAdd,
-            Level: 0
-          },
-          { upsert: true, new: true }
+        { IdJoined: `${user.id}-${guildId}` },
+        {
+          UserId: user.id,
+          GuildId: guildId,
+          Xp: xpAdd,
+          Level: 0
+        },
+        { upsert: true, new: true }
       ).exec();
 
       // Check if user leveled up
@@ -273,11 +273,11 @@ export const Util = class Util {
       const nxtLvl = (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
       if (nxtLvl <= score.Xp) {
         score.Level = currentLvl + 1;
-       const lvlUp = new EmbedBuilder()
-            .setAuthor({ name: `Congratulations ${user.user.username}` })
-            .setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
-            .setColor(client.utils.color(target.guild.members.me.displayHexColor))
-            .setDescription(`**You have leveled up!**\nNew Level: \`${score.Level}\``);
+        const lvlUp = new EmbedBuilder()
+          .setAuthor({ name: `Congratulations ${user.user.username}` })
+          .setThumbnail('https://ya-webdesign.com/images250_/surprised-patrick-png-7.png')
+          .setColor(client.utils.color(target.guild.members.me.displayHexColor))
+          .setDescription(`**You have leveled up!**\nNew Level: \`${score.Level}\``);
 
         if (target.channel.permissionsFor(target.guild.members.me).has(PermissionsBitField.Flags.EmbedLinks)) {
           target.channel.send({ embeds: [lvlUp] }).then((m) => client.utils.deletableCheck(m, 10000));
