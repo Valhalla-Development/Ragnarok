@@ -27,7 +27,7 @@ const flags = {
   idle: '<:Idle:748655722639917117> Idle',
   dnd: '<:DND:748655722979393657> DnD',
   offline: '<:Offline:748655722677403850> Offline'
-}; */
+};
 
 const types = {
   5: 'Competing',
@@ -36,7 +36,7 @@ const types = {
   0: 'Playing',
   1: 'Streaming',
   3: 'Watching'
-};
+}; */
 
 const data = new SlashCommandBuilder()
   .setName('userinfo')
@@ -53,7 +53,7 @@ export const SlashCommandF = class extends SlashCommand {
   }
 
   async run(interaction) {
-    const member = interaction.options.getMember('user') || interaction.member;
+    const member = interaction.options.getMember('user');
 
     const roles = member.roles.cache
       .sort((a, b) => b.position - a.position)
@@ -63,29 +63,22 @@ export const SlashCommandF = class extends SlashCommand {
 
     if (member.user.bot && !userFlags.includes('VerifiedBot')) userFlags.push('Bot');
 
-    const presence = [];
+    /* const presence = [];
     let time;
 
-    if (member.presence) {
-      if (member.presence.activities[0]) {
-        if (member.presence.activities[0].timestamps && member.presence.activities[0].timestamps.start) {
-          time = member.presence.activities[0].timestamps.start;
-        }
+    if (member.presence?.activities?.[0]) {
+      const { type, name, timestamps, details, state } = member.presence.activities[0];
 
-        presence.push(
-          `**${types[member.presence.activities[0].type]}:** ${member.presence.activities[0].name}${
-            time ? ` (<t:${Math.round(member.presence.activities[0].timestamps.start / 1000)}:R>)` : ''
-          }`
-        );
-
-        if (member.presence.activities[0].details) {
-          presence.push(`**Details:** ${member.presence.activities[0].details}`);
-        }
-        if (member.presence.activities[0].state) {
-          presence.push(`**State:** ${member.presence.activities[0].state}`);
-        }
+      if (timestamps?.start) {
+        time = timestamps.start;
       }
-    }
+
+      const presenceText = `**${types[type]}:** ${name}${time ? ` (<t:${Math.round(timestamps.start / 1000)}:R>)` : ''}`;
+      presence.push(presenceText);
+
+      if (details) presence.push(`**Details:** ${details}`);
+      if (state) presence.push(`**State:** ${state}`);
+    } */
 
     let roleMsg;
     if (roles) {
@@ -99,14 +92,14 @@ export const SlashCommandF = class extends SlashCommand {
     /* let statusMsg;
     if (member.presence) {
       statusMsg = member.presence ? status[member.presence.status] : status.offline;
-    } */ // null, need presence intent bruh 
+    }
 
     let activityMsg;
     if (presence.length) {
       activityMsg = presence.length ? presence.join('\n') : 'None';
     } else {
       activityMsg = 'None';
-    }
+    } */
 
     const embed = new EmbedBuilder()
       .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -127,9 +120,9 @@ export const SlashCommandF = class extends SlashCommand {
       })
 
       .addFields(
-        { name: `**Roles: [${roles.length}]**`, value: `${roleMsg}`, inline: true },
-        // null, need presence intent bruh { name: '**Status:**', value: `${statusMsg}`, inline: true },
-        { name: '**Activity:**', value: `${activityMsg}`, inline: true }
+        { name: `**Roles: [${roles.length}]**`, value: `${roleMsg}`, inline: true }
+        // { name: '**Status:**', value: `${statusMsg}`, inline: true },
+        // { name: '**Activity:**', value: `${activityMsg}`, inline: true }
       );
     interaction.reply({ embeds: [embed] });
   }
