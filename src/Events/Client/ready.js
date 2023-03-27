@@ -218,84 +218,81 @@ export const EventF = class extends Event {
     );
 
     const oneDayTimer = new CronJob(
-        '0 0 0 * * *',
-        async () => {
-          try {
-            const grabBdays = await Birthdays.find();
-            const grabBdaysConfig = await BirthdayConfig.find();
+      '0 0 0 * * *',
+      async () => {
+        try {
+          const grabBdays = await Birthdays.find();
+          const grabBdaysConfig = await BirthdayConfig.find();
 
-            const findUserBday = async (id) => Birthdays.findOne({ UserId: id });
+          const findUserBday = async (id) => Birthdays.findOne({ UserId: id });
 
-            await Promise.all(
-                grabBdaysConfig.map(async (a) => {
-                  const guild = this.client.guilds.cache.get(a.GuildId);
-                  if (!guild) {
-                    await BirthdayConfig.deleteMany({ GuildId: a.GuildId });
-                    return;
+          await Promise.all(
+            grabBdaysConfig.map(async (a) => {
+              const guild = this.client.guilds.cache.get(a.GuildId);
+              if (!guild) {
+                await BirthdayConfig.deleteMany({ GuildId: a.GuildId });
+                return;
+              }
+
+              const channel = guild.channels.cache.get(a.ChannelId);
+              if (!channel) {
+                await BirthdayConfig.deleteMany({ GuildId: a.GuildId });
+                return;
+              }
+
+              const checkDate = new Date();
+              checkDate.setHours(0, 0, 0, 0);
+
+              await Promise.all(
+                grabBdays.map(async (b) => {
+                  const usr = await guild.members.fetch(b.UserId);
+                  if (!usr) return;
+
+                  const grabUser = await findUserBday(usr.id);
+
+                  const now = moment();
+
+                  let foundLastRun = grabUser?.LastRun || [];
+
+                  const savedDate = new Date(Date.parse(grabUser?.Date));
+                  savedDate.setFullYear(checkDate.getFullYear());
+                  savedDate.setHours(0, 0, 0, 0);
+
+                  if (checkDate.getTime() === savedDate.getTime()) {
+                    const lastRunForGuild = foundLastRun.find((entry) => entry[guild.id]);
+                    if (lastRunForGuild && now.unix() < lastRunForGuild[guild.id] + 86400) {
+                      return;
+                    }
+
+                    const role = a.Role ? await guild.roles.fetch(a.Role) : null;
+                    const msg = `It's ${usr}'s birthday! ${role ? `${role} Say Happy Birthday! 🍰` : 'Say Happy Birthday! 🍰'}`;
+
+                    try {
+                      await channel.send(msg);
+
+                      const guildIndex = foundLastRun.findIndex((obj) => obj[guild.id]);
+
+                      if (guildIndex === -1) {
+                        foundLastRun.push({ [guild.id]: now.unix() });
+                      } else {
+                        foundLastRun[guildIndex][guild.id] = now.unix();
+                      }
+
+                      await Birthdays.findOneAndUpdate({ UserId: usr.id }, { LastRun: foundLastRun });
+                    } catch (error) {
+                      console.error(`Error sending birthday message for ${usr}:`, error);
+                    }
                   }
-
-                  const channel = guild.channels.cache.get(a.ChannelId);
-                  if (!channel) {
-                    await BirthdayConfig.deleteMany({ GuildId: a.GuildId });
-                    return;
-                  }
-
-                  const checkDate = new Date();
-                  checkDate.setHours(0, 0, 0, 0);
-
-                  await Promise.all(
-                      grabBdays.map(async (b) => {
-                        const usr = await guild.members.fetch(b.UserId);
-                        if (!usr) return
-
-                        const grabUser = await findUserBday(usr.id);
-
-                        const now = moment();
-
-                        let foundLastRun = grabUser?.LastRun || []
-
-                        const savedDate = new Date(Date.parse(grabUser?.Date));
-                        savedDate.setFullYear(checkDate.getFullYear());
-                        savedDate.setHours(0, 0, 0, 0);
-
-                        if (checkDate.getTime() === savedDate.getTime()) {
-                          const lastRunForGuild = foundLastRun.find((entry) => entry[guild.id]);
-                          if (lastRunForGuild && now.unix() < lastRunForGuild[guild.id] + 86400) {
-                            return;
-                          }
-
-                          const role = a.Role ? await guild.roles.fetch(a.Role) : null;
-                          const msg = `It's ${usr}'s birthday! ${role ? `${role} Say Happy Birthday! 🍰` : 'Say Happy Birthday! 🍰'}`;
-
-                          try {
-                            await channel.send(msg);
-
-                            const guildIndex = foundLastRun.findIndex(obj => obj[guild.id]);
-
-                            if (guildIndex === -1) {
-                              foundLastRun.push({ [guild.id]: now.unix() });
-                            } else {
-                              foundLastRun[guildIndex][guild.id] = now.unix();
-                            }
-
-                            await Birthdays.findOneAndUpdate(
-                                { UserId: usr.id },
-                                { LastRun: foundLastRun }
-                            );
-                          } catch (error) {
-                            console.error(`Error sending birthday message for ${usr}:`, error);
-                          }
-                        }
-                      })
-                  );
                 })
-            );
-          } catch (error) {
-            console.error('Error in Birthday Cron Job:', error);
-          }
-        },
-        null,
-        true
+              );
+            })
+          );
+        } catch (error) {
+          console.error('Error in Birthday Cron Job:', error);
+        }
+      },
+      null,
+      true
     );
 
     const twoMinuteTimer = new CronJob(
