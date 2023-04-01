@@ -732,6 +732,7 @@ export const EventF = class extends Event {
         const res = resolvedPromise.status === 'fulfilled' ? resolvedPromise.value : rejectedPromise.reason;
 
         if (res) {
+          const unixEpochTimestamp = Math.floor(res.createdTimestamp / 1000);
           // Fetch the message author
           const user = grabClient.users.cache.find((a) => a.id === res.author.id);
 
@@ -742,21 +743,30 @@ export const EventF = class extends Event {
                 user && user.displayAvatarURL ? user.displayAvatarURL({ extension: 'png' }) : message.author.displayAvatarURL({ extension: 'png' })
             })
             .setColor(grabClient.utils.color(message.guild.members.me.displayHexColor))
-            .setFooter({ text: `Requested by ${message.author.username}` })
+            .setFooter({ text: `Quoted by ${message.author.username}` })
             .setTimestamp();
 
           const attachmentCheck = res.attachments.first();
-          if (attachmentCheck && res.content !== '') {
+          if (res.content && attachmentCheck) {
             const attachmentUrl = attachmentCheck.url;
             const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
             if (!validExtensions.includes(fileExtension)) {
-              embed.setDescription(`**◎ [Message Link](${exec[0]}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
+              embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`);
             } else {
-              embed.setDescription(`**◎ [Message Link](${exec[0]}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
+              embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`);
               embed.setImage(attachmentUrl);
             }
-          } else {
-            embed.setDescription(`**◎ [Message Link](${exec[0]}) to** ${res.channel}\n${res.content.substring(0, 2048)}`);
+          } else if (res.content) {
+            embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`);
+          } else if (attachmentCheck) {
+            const attachmentUrl = attachmentCheck.url;
+            const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
+            if (!validExtensions.includes(fileExtension)) {
+              embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>`);
+            } else {
+              embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>`);
+              embed.setImage(attachmentUrl);
+            }
           }
           message.channel.send({ embeds: [embed] });
         }
