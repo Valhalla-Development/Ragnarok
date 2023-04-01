@@ -2,15 +2,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-inline-comments */
 /* eslint-disable no-mixed-operators */
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  ChannelType,
-  EmbedBuilder,
-  OverwriteType,
-  PermissionsBitField
-} from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, OverwriteType, PermissionsBitField } from 'discord.js';
 import urlRegexSafe from 'url-regex-safe';
 import fetch from 'node-fetch';
 import { customAlphabet } from 'nanoid';
@@ -58,9 +50,9 @@ export const EventF = class extends Event {
         }
 
         // Then filter which guilds have tickets enabled in the db
-        const guildsWithTickets = guilds.filter(async (guild) => 
+        const guildsWithTickets = guilds.filter(async (guild) =>
           // Fetch the row from the db where role is not null
-           TicketConfig.findOne({ GuildId: guild.id, Role: { $exists: true, $ne: null } })
+          TicketConfig.findOne({ GuildId: guild.id, Role: { $exists: true, $ne: null } })
         );
 
         if (!guildsWithTickets.size) {
@@ -99,10 +91,12 @@ export const EventF = class extends Event {
         }));
 
         // Map embedFields to buttons with numbers
-        const buttons = embedFields.map((obj) => new ButtonBuilder()
-              .setStyle(ButtonStyle.Success)
-              .setLabel(`${obj.name.slice(0, obj.name.indexOf('.'))}`)
-              .setCustomId(`modMail-${obj.value.substring(obj.value.indexOf('`') + 1, obj.value.lastIndexOf('`'))}`));
+        const buttons = embedFields.map((obj) =>
+          new ButtonBuilder()
+            .setStyle(ButtonStyle.Success)
+            .setLabel(`${obj.name.slice(0, obj.name.indexOf('.'))}`)
+            .setCustomId(`modMail-${obj.value.substring(obj.value.indexOf('`') + 1, obj.value.lastIndexOf('`'))}`)
+        );
 
         // Trim buttons to 24
         const trimmedButtons = buttons.slice(0, 24);
@@ -608,7 +602,7 @@ export const EventF = class extends Event {
     // Balance
     if (message.author.bot) return;
     await this.client.utils.updateEconomy(message);
-    await this.client.utils.updateLevel(message, this.client)
+    await this.client.utils.updateLevel(message, this.client);
 
     // Dad Bot
     async function dadBot() {
@@ -718,88 +712,53 @@ export const EventF = class extends Event {
     }
     await adsProt(this.client);
 
-    // Link Mention Function
     async function linkTag(grabClient) {
-      const discordRegex = /https?:\/\/(?:ptb\.)?(?:canary\.)?(discordapp|discord)\.com\/channels\/(\d{1,18})\/(\d{1,18})\/(\d{1,19})/g;
+      const discordRegex = /https?:\/\/(?:ptb\.)?(?:canary\.)?(discordapp|discord)\.com\/channels\/(\d{1,18})\/(\d{1,18})\/(\d{1,19})/;
 
-      const exec = discordRegex.exec(message.content.toLowerCase());
+      const exec = discordRegex.exec(message.content);
 
-      if (exec) {
-        const URL = exec[0];
+      if (exec && message.guild.id === exec[2]) {
         const [, , guildID, channelID, messageID] = exec;
 
-        const embed = new EmbedBuilder()
-          .setAuthor({
-            name: `${message.author.username}`,
-            iconURL: message.author.displayAvatarURL({ extension: 'png' })
-          })
-          .setColor(grabClient.utils.color(message.guild.members.me.displayHexColor))
-          .setFooter({ text: `Requested by ${message.author.username}` })
-          .setTimestamp();
+        const findGuild = grabClient.guilds.cache.get(guildID);
+        const findChannel = findGuild.channels.cache.get(channelID);
+        const validExtensions = ['gif', 'png', 'jpeg', 'jpg'];
 
-        if (message.guild.id === guildID) {
-          const findGuild = grabClient.guilds.cache.get(guildID);
-          const findChannel = findGuild.channels.cache.get(channelID);
-          const validExtensions = ['gif', 'png', 'jpeg', 'jpg'];
+        const messagePromises = [
+          findChannel.messages.fetch({ message: messageID }),
+          findChannel.messages.fetch({ message: messageID, cache: false })
+        ];
+        const [resolvedPromise, rejectedPromise] = await Promise.allSettled(messagePromises);
+        const res = resolvedPromise.status === 'fulfilled' ? resolvedPromise.value : rejectedPromise.reason;
 
-          await findChannel.messages
-            .fetch({ message: messageID })
-            .then((res) => {
-              if (res) {
-                // Fetch the message author
-                const user = grabClient.users.cache.find((a) => a.id === res.author.id);
+        if (res) {
+          // Fetch the message author
+          const user = grabClient.users.cache.find((a) => a.id === res.author.id);
 
-                embed.setAuthor({
-                  name: `${user && user.username ? user.username : message.author.username}`,
-                  iconURL:
-                    user && user.displayAvatarURL
-                      ? user.displayAvatarURL({ extension: 'png' })
-                      : message.author.displayAvatarURL({ extension: 'png' })
-                });
-
-                const imageUrl = res.embeds[0]?.data?.image?.url;
-                if (imageUrl) {
-                  const fileExtension = res.embeds[0].data.image.url.substring(res.embeds[0].data.image.url.lastIndexOf('.') + 1);
-                  if (validExtensions.includes(fileExtension)) {
-                    embed.setDescription(
-                      `**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.length > 1048 ? res.content.substring(0, 1048) : res.content}`
-                    );
-                    embed.setImage(res.embeds[0].data.image.url);
-                    message.channel.send({ embeds: [embed] });
-                  }
-                  return;
-                }
-
-                const attachmentCheck = res.attachments.first();
-                if (attachmentCheck && res.content !== '') {
-                  const attachmentUrl = res.attachments.first().url;
-                  const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
-                  if (!validExtensions.includes(fileExtension)) {
-                    embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
-                    return;
-                  }
-                  embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
-                  embed.setImage(attachmentUrl);
-                  message.channel.send({ embeds: [embed] });
-                  return;
-                }
-                if (attachmentCheck) {
-                  const attachmentUrl = res.attachments.first().url;
-                  const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
-                  if (validExtensions.includes(fileExtension)) {
-                    embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}`);
-                    embed.setImage(attachmentUrl);
-                    message.channel.send({ embeds: [embed] });
-                  }
-                } else {
-                  embed.setDescription(`**◎ [Message Link](${URL}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
-                  message.channel.send({ embeds: [embed] });
-                }
-              }
+          const embed = new EmbedBuilder()
+            .setAuthor({
+              name: `${user && user.username ? user.username : message.author.username}`,
+              iconURL:
+                user && user.displayAvatarURL ? user.displayAvatarURL({ extension: 'png' }) : message.author.displayAvatarURL({ extension: 'png' })
             })
-            .catch((e) => {
-              console.error(e);
-            });
+            .setColor(grabClient.utils.color(message.guild.members.me.displayHexColor))
+            .setFooter({ text: `Requested by ${message.author.username}` })
+            .setTimestamp();
+
+          const attachmentCheck = res.attachments.first();
+          if (attachmentCheck && res.content !== '') {
+            const attachmentUrl = attachmentCheck.url;
+            const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
+            if (!validExtensions.includes(fileExtension)) {
+              embed.setDescription(`**◎ [Message Link](${exec[0]}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
+            } else {
+              embed.setDescription(`**◎ [Message Link](${exec[0]}) to** ${res.channel}\n${res.content.substring(0, 1048)}`);
+              embed.setImage(attachmentUrl);
+            }
+          } else {
+            embed.setDescription(`**◎ [Message Link](${exec[0]}) to** ${res.channel}\n${res.content.substring(0, 2048)}`);
+          }
+          message.channel.send({ embeds: [embed] });
         }
       }
     }
