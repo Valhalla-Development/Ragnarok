@@ -19,7 +19,8 @@ const flags = {
   Partner: '<:DiscordPartner:748985364022165694>',
   VerifiedBot: '<:VerifiedBot:854725852101476382>',
   Spammer: '<:Spammer:1021857158280794172>',
-  Bot: '<:Bot:854724408458870814>'
+  Bot: '<:Bot:854724408458870814>',
+  ActiveDeveloper: '<:ActiveDeveloper:1094985831112003604>'
 };
 
 /* const status = {
@@ -60,46 +61,18 @@ export const SlashCommandF = class extends SlashCommand {
       .map((role) => role.toString())
       .slice(0, -1);
     const userFlags = member.user.flags.toArray();
+    const flagNames = userFlags.filter((flag) => flags[flag]).map((flag) => flags[flag]);
 
     if (member.user.bot && !userFlags.includes('VerifiedBot')) userFlags.push('Bot');
-
-    /* const presence = [];
-    let time;
-
-    if (member.presence?.activities?.[0]) {
-      const { type, name, timestamps, details, state } = member.presence.activities[0];
-
-      if (timestamps?.start) {
-        time = timestamps.start;
-      }
-
-      const presenceText = `**${types[type]}:** ${name}${time ? ` (<t:${Math.round(timestamps.start / 1000)}:R>)` : ''}`;
-      presence.push(presenceText);
-
-      if (details) presence.push(`**Details:** ${details}`);
-      if (state) presence.push(`**State:** ${state}`);
-    } */
 
     let roleMsg;
     if (roles) {
       if (!roles.length) {
         roleMsg = 'None';
       } else {
-        roleMsg = roles.length < 10 ? roles.join('\n') : roles.length >= 10 ? this.client.utils.trimArray(roles, 10).join('\n') : 'None';
+        roleMsg = roles.length ? roles.join(', ') : 'None';
       }
     }
-
-    /* let statusMsg;
-    if (member.presence) {
-      statusMsg = member.presence ? status[member.presence.status] : status.offline;
-    }
-
-    let activityMsg;
-    if (presence.length) {
-      activityMsg = presence.length ? presence.join('\n') : 'None';
-    } else {
-      activityMsg = 'None';
-    } */
 
     const embed = new EmbedBuilder()
       .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
@@ -111,19 +84,16 @@ export const SlashCommandF = class extends SlashCommand {
 				**◎ 🆔 ID:** ${member.user.id}
 				**◎ 📆 Created At** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)
 				**◎ 📆 Joined At** <t:${Math.round(member.joinedTimestamp / 1000)}> - (<t:${Math.round(member.joinedTimestamp / 1000)}:R>)
-				**◎ 🗺️ Flags:** ${userFlags.length ? userFlags.map((flag) => flags[flag]).join(', ') : 'None'}
+				**◎ 🗺️ Flags:** ${flagNames.length ? flagNames.join(', ') : 'None'}
 				**◎ <a:Booster:855593231294267412> Server Booster:** ${
           member.premiumSinceTimestamp
             ? `<t:${Math.round(member.premiumSinceTimestamp / 1000)}> - (<t:${Math.round(member.premiumSinceTimestamp / 1000)}:R>)`
             : 'No'
-        }`
-      })
+        }
 
-      .addFields(
-        { name: `**Roles: [${roles.length}]**`, value: `${roleMsg}`, inline: true }
-        // { name: '**Status:**', value: `${statusMsg}`, inline: true },
-        // { name: '**Activity:**', value: `${activityMsg}`, inline: true }
-      );
+        **Roles: [${roles.length}]**\n${roleMsg}`
+      });
+
     interaction.reply({ embeds: [embed] });
   }
 };
