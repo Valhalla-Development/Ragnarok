@@ -1,6 +1,6 @@
 {
   "name": "ragnarok",
-  "version": "5.0.472",
+  "version": "5.0.714",
   "description": "A multi-purpose Discord bot.",
   "main": "src/cluster.js",
   "repository": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git",
