@@ -15,8 +15,11 @@ export const SlashCommandF = class extends SlashCommand {
     fetch('https://raw.githubusercontent.com/PyAres/scam-links/master/src/links.txt')
       .then((res) => res.text())
       .then((list) => {
-        const array = list.split('\n').map((str) => str.trim());
-        fs.writeFile('Storage/spenLinks.json', JSON.stringify(array, null, 2), { flag: 'w' }, (err) => {
+        const array = list
+          .split('\n')
+          .map((str) => str.trim())
+          .filter(Boolean);
+        fs.writeFile('storage/spenLinks.json', JSON.stringify(array, null, 2), { flag: 'w' }, (err) => {
           if (err) throw err;
           console.log('The file has been saved!');
         });
