@@ -906,10 +906,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@eslint/js@8.37.0":
-  version "8.37.0"
-  resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.37.0.tgz#cf1b5fa24217fe007f6487a26d765274925efa7d"
-  integrity sha512-x5vzdtOOGgFVDCUs81QRB2+liax8rFg3+7hqM+QhBG0/G3F1ZsoYl97UrqgHgQ9KKT7G6c4V+aTUCgu/n22v1A==
+"@eslint/js@8.39.0":
+  version "8.39.0"
+  resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.39.0.tgz#58b536bcc843f4cd1e02a7e6171da5c040f4d44b"
+  integrity sha512-kf9RB0Fg7NZfap83B3QOqOGg9QmD9yBudqQXzzOtn3i4y7ZUXe5ONeW34Gwi+TxhH4mvj72R1Zc300KUMa9Bng==
 
 "@extreme_hero/deeptype@^1.0.1":
   version "1.0.1"
@@ -1747,10 +1747,10 @@ better-sqlite3@^7.1.1:
     bindings "^1.5.0"
     prebuild-install "^7.1.0"
 
-better-sqlite3@^8.2.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-8.2.0.tgz#4ef6185b88992723de7e00cfa67585ac59f320bd"
-  integrity sha512-8eTzxGk9535SB3oSNu0tQ6I4ZffjVCBUjKHN9QeeIFtphBX0sEd0NxAuglBNR9TO5ThnxBB7GqzfcYo9kjadJQ==
+better-sqlite3@^8.3.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/better-sqlite3/-/better-sqlite3-8.3.0.tgz#3873ddfd9f2af90b628657e8ff221786c93d1984"
+  integrity sha512-JTmvBZL/JLTc+3Msbvq6gK6elbU9/wVMqiudplHrVJpr7sVMR9KJrNhZAbW+RhXKlpMcuEhYkdcHa3TXKNXQ1w==
   dependencies:
     bindings "^1.5.0"
     prebuild-install "^7.1.0"
@@ -1934,10 +1934,19 @@ callsites@^3.0.0:
   resolved "https://registry.yarnpkg.com/callsites/-/callsites-3.1.0.tgz#b3630abd8943432f54b3f0519238e33cd7df2f73"
   integrity sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==
 
-canvas@^2.10.1, canvas@^2.11.0, canvas@^2.2.0:
+canvas@^2.10.1, canvas@^2.2.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/canvas/-/canvas-2.11.0.tgz#7f0c3e9ae94cf469269b5d3a7963a7f3a9936434"
   integrity sha512-bdTjFexjKJEwtIo0oRx8eD4G2yWoUOXP9lj279jmQ2zMnTQhT8C3512OKz3s+ZOaQlLbE7TuVvRDYDB3Llyy5g==
+  dependencies:
+    "@mapbox/node-pre-gyp" "^1.0.0"
+    nan "^2.17.0"
+    simple-get "^3.0.3"
+
+canvas@^2.11.2:
+  version "2.11.2"
+  resolved "https://registry.yarnpkg.com/canvas/-/canvas-2.11.2.tgz#553d87b1e0228c7ac0fc72887c3adbac4abbd860"
+  integrity sha512-ItanGBMrmRV7Py2Z+Xhs7cT+FNt5K0vPL4p9EZ/UX/Mu7hFbkxSjKF2KVtPwX7UYWp7dRKnrTvReflgrItJbdw==
   dependencies:
     "@mapbox/node-pre-gyp" "^1.0.0"
     nan "^2.17.0"
@@ -2212,10 +2221,10 @@ dbd-dark-dashboard@^1.6.62:
     discord-dashboard "*"
     node-fetch "2.6.7"
 
-dbd-soft-ui@^1.6.42-beta.1:
-  version "1.6.42-beta.1"
-  resolved "https://registry.yarnpkg.com/dbd-soft-ui/-/dbd-soft-ui-1.6.42-beta.1.tgz#6c59c153dad11b1f86f96b3eaf0db101846f123e"
-  integrity sha512-GzF9kmmkZ8OxSKC3JrxbpbohHyojtjvZC5vOqFj/YqugtZkdi5EFruOkTIzuPZU3x/NXBKXr2z32Eg3KDddIDw==
+dbd-soft-ui@^1.6.44-beta.1:
+  version "1.6.44-beta.1"
+  resolved "https://registry.yarnpkg.com/dbd-soft-ui/-/dbd-soft-ui-1.6.44-beta.1.tgz#9c1659f3a1130a33ca439c97bbfca5b1823f267d"
+  integrity sha512-itlQf8QELHNj2XVf23RvrDi7GtUqbzdiOxldqoUxsXumeEL2Ielg9t++6E/QDBq+rw2acUvEIaTD6vd6t0uxug==
   dependencies:
     "@keyv/sqlite" "^3.6.1"
     colors "1.4.0"
@@ -2398,10 +2407,10 @@ discord-html-transcripts@^3.1.4:
     twemoji "^14.0.2"
     undici "^5.20.0"
 
-discord-hybrid-sharding@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/discord-hybrid-sharding/-/discord-hybrid-sharding-2.1.1.tgz#539f2bf11be4e1c44c3df0cbca54f42e58dab582"
-  integrity sha512-QJOm79aI5Qqe+0GY2hFO3SRacu+S5TWfJdLc//1Lldb73h4iXLFQ37UIOHPzitk8rFAfS5uyKm6q089rkrcQnQ==
+discord-hybrid-sharding@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/discord-hybrid-sharding/-/discord-hybrid-sharding-2.1.2.tgz#33320f6dc12cbc021839b5c361bb04570947a838"
+  integrity sha512-FdCfASHMWIzXxE6/box+jKLUS3D0hdU8SeXy/KTmvh9qsEcGXsiRIlVjyhMvNA2H0ipYdK30iQfGKATF/zQm2A==
   dependencies:
     node-fetch "^2.6.7"
 
@@ -2751,10 +2760,10 @@ eslint-plugin-prettier@^4.2.1:
   dependencies:
     prettier-linter-helpers "^1.0.0"
 
-eslint-scope@^7.1.1:
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-7.1.1.tgz#fff34894c2f65e5226d3041ac480b4513a163642"
-  integrity sha512-QKQM/UXpIiHcLqJ5AOyIW7XZmzjkzQXYE54n1++wb0u9V/abW3l9uQnxX8Z5Xd18xyKIMTUAyQ0k1e8pz6LUrw==
+eslint-scope@^7.2.0:
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-7.2.0.tgz#f21ebdafda02352f103634b96dd47d9f81ca117b"
+  integrity sha512-DYj5deGlHBfMt15J7rdtyKNq/Nqlv5KfU4iodrQ019XESsRnwXH9KAE0y3cwtUHDo2ob7CypAnCqefh6vioWRw==
   dependencies:
     esrecurse "^4.3.0"
     estraverse "^5.2.0"
@@ -2769,15 +2778,15 @@ eslint-visitor-keys@^3.4.0:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-3.4.0.tgz#c7f0f956124ce677047ddbc192a68f999454dedc"
   integrity sha512-HPpKPUBQcAsZOsHAFwTtIKcYlCje62XB7SEAcxjtmW6TD1WVpkS6i6/hOVtTZIl4zGj/mBqpFVGvaDneik+VoQ==
 
-eslint@^8.37.0:
-  version "8.37.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.37.0.tgz#1f660ef2ce49a0bfdec0b0d698e0b8b627287412"
-  integrity sha512-NU3Ps9nI05GUoVMxcZx1J8CNR6xOvUT4jAUMH5+z8lpp3aEdPVCImKw6PWG4PY+Vfkpr+jvMpxs/qoE7wq0sPw==
+eslint@^8.39.0:
+  version "8.39.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.39.0.tgz#7fd20a295ef92d43809e914b70c39fd5a23cf3f1"
+  integrity sha512-mwiok6cy7KTW7rBpo05k6+p4YVZByLNjAZ/ACB9DRCu4YDRwjXI01tWHp6KAUWelsBetTxKK/2sHB0vdS8Z2Og==
   dependencies:
     "@eslint-community/eslint-utils" "^4.2.0"
     "@eslint-community/regexpp" "^4.4.0"
     "@eslint/eslintrc" "^2.0.2"
-    "@eslint/js" "8.37.0"
+    "@eslint/js" "8.39.0"
     "@humanwhocodes/config-array" "^0.11.8"
     "@humanwhocodes/module-importer" "^1.0.1"
     "@nodelib/fs.walk" "^1.2.8"
@@ -2787,7 +2796,7 @@ eslint@^8.37.0:
     debug "^4.3.2"
     doctrine "^3.0.0"
     escape-string-regexp "^4.0.0"
-    eslint-scope "^7.1.1"
+    eslint-scope "^7.2.0"
     eslint-visitor-keys "^3.4.0"
     espree "^9.5.1"
     esquery "^1.4.2"
@@ -3985,10 +3994,10 @@ mathjs@^10.1.0:
     tiny-emitter "^2.1.0"
     typed-function "^2.1.0"
 
-mathjs@^11.7.0:
-  version "11.7.0"
-  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-11.7.0.tgz#a197e82c760c57744b20324a8c4eed677bddf179"
-  integrity sha512-RCXtrP5xGIbl9PUc5+7QL81rBCUjzoIZ0ugNqKsarOUxg+x7deY0BzfNai+bGfUL/T+1uYq1xs5w2xVdL3lp0g==
+mathjs@^11.8.0:
+  version "11.8.0"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-11.8.0.tgz#b02e66461ec068fadf1e90c221121704dc14d8f5"
+  integrity sha512-I7r8HCoqUGyEiHQdeOCF2m2k9N+tcOHO3cZQ3tyJkMMBQMFqMR7dMQEboBMJAiFW2Um3PEItGPwcOc4P6KRqwg==
   dependencies:
     "@babel/runtime" "^7.21.0"
     complex.js "^2.1.1"
@@ -4195,10 +4204,10 @@ mongodb@^4.5.0:
     "@aws-sdk/credential-providers" "^3.186.0"
     saslprep "^1.0.3"
 
-mongoose@^7.0.3:
-  version "7.0.3"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-7.0.3.tgz#576375acb436f96cd3350fb63fddbac7ae51ff9c"
-  integrity sha512-3n8vc1/mssuxKa6vfghSocp3MeiCFYzhX36Ok+PsDNNYzHC9tw3rNkAMLemIwZ2jgXqkZ7CfKOxkzjp/d/SWfg==
+mongoose@^7.0.4:
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-7.0.4.tgz#7f6c31e12d86eed516ab5d1f5e6f8196d3682ed2"
+  integrity sha512-MEmQOOqQUvW1PJcji64NtA2EFGHrEvk9o4g//isVYSJW2+8Y8u49C2qFBKzn1t6/l9onQn012o/PcFqR6ixQpQ==
   dependencies:
     bson "^5.0.1"
     kareem "2.5.1"
@@ -4639,10 +4648,10 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@^2.8.7:
-  version "2.8.7"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.7.tgz#bb79fc8729308549d28fe3a98fce73d2c0656450"
-  integrity sha512-yPngTo3aXUUmyuTjeTUT75txrf+aMh9FiD7q9ZE/i6r0bPb22g4FsE6Y338PQX1bmfy08i9QQCB7/rcUAVntfw==
+prettier@^2.8.8:
+  version "2.8.8"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.8.tgz#e8c5d7e98a4305ffe3de2e1fc4aca1a71c28b1da"
+  integrity sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==
 
 pretty-ms@^8.0.0:
   version "8.0.0"
