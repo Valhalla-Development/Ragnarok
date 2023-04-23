@@ -34,7 +34,7 @@ const Balance = new Schema({
     PotatoSeeds: { type: Number, default: 0 },
     TomatoSeeds: { type: Number, default: 0 },
     FarmingTools: { type: Boolean, default: false },
-    FishingRod: { type: Boolean, default: false },
+    FishingRod: { type: Boolean, default: false }
   },
   Cash: { type: Number, default: null },
   Bank: { type: Number, default: null },
@@ -42,8 +42,7 @@ const Balance = new Schema({
   ClaimNewUser: { type: Number, default: null },
   FarmPlot: { type: Array, default: null },
   DmHarvest: { type: String, default: null },
-  HarvestedCrops: { type: Array, default: null },
-  Lottery: { type: String, default: null }
+  HarvestedCrops: { type: Array, default: null }
 });
 
 export default model('Balance', Balance, 'Balance');
