@@ -9,9 +9,11 @@ export const EventF = class extends Event {
     async function checkRoleMenu(clientGrab) {
       const foundRoleMenu = await RoleMenu.findOne({ GuildId: role.guild.id });
 
-      if (!foundRoleMenu?.RoleList?.length) return;
+      if (!foundRoleMenu || !foundRoleMenu.RoleList) return;
 
-      const roleArray = JSON.parse(foundRoleMenu.RoleList);
+      const roleArray = foundRoleMenu.RoleList;
+
+      if (!roleArray.length) return;
 
       if (roleArray.includes(role.id)) {
         roleArray.splice(roleArray.indexOf(role.id), 1);
@@ -21,19 +23,19 @@ export const EventF = class extends Event {
             GuildId: role.guild.id
           },
           {
-            RoleList: JSON.stringify(roleArray)
+            RoleList: roleArray.length ? roleArray : []
           }
         );
 
         // Update rolemenu if exists
         if (foundRoleMenu.RoleMenuId) {
-          const activeMenu = JSON.parse(foundRoleMenu.RoleMenuId);
+          const activeMenu = foundRoleMenu.RoleMenuId;
 
           if (activeMenu) {
-            const ch = role.guild.channels.cache.get(activeMenu.ChannelId);
+            const ch = role.guild.channels.cache.get(activeMenu.channel);
 
             try {
-              ch.messages.fetch({ message: activeMenu.message }).then((ms) => {
+              ch.messages.fetch({ message: activeMenu.message }).then(async (ms) => {
                 const buttonsArr = [];
                 const rows = [];
 
@@ -46,6 +48,13 @@ export const EventF = class extends Event {
 
                 for (const rowObject of chunkArrayInGroups(buttonsArr, 5)) {
                   rows.push(new ActionRowBuilder().addComponents(...rowObject));
+                }
+
+                if (!rows.length) {
+                  clientGrab.utils.deletableCheck(ms, 0);
+
+                  await RoleMenu.deleteOne({ GuildId: role.guild.id });
+                  return;
                 }
 
                 setTimeout(() => {
