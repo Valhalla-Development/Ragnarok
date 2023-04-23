@@ -6,7 +6,7 @@ const RoleMenu = new Schema({
     channel: { type: String, default: null },
     message: { type: String, default: null }
   },
-  RoleList: { type: Array, default: null }
+  RoleList: { type: Array, default: [] }
 });
 
 export default model('RoleMenu', RoleMenu, 'RoleMenu');

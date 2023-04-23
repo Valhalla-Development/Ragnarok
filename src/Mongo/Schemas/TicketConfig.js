@@ -7,7 +7,7 @@ const TicketConfig = new Schema({
   Role: { type: String, default: null },
   Embed: { type: String, default: null },
   EmbedChannel: { type: String, default: null },
-  Blacklist: { type: Array, default: null }
+  Blacklist: { type: Array, default: [] }
 });
 
 export default model('TicketConfig', TicketConfig, 'TicketConfig');

@@ -40,9 +40,9 @@ const Balance = new Schema({
   Bank: { type: Number, default: null },
   Total: { type: Number, default: null },
   ClaimNewUser: { type: Number, default: null },
-  FarmPlot: { type: Array, default: null },
+  FarmPlot: { type: Array, default: [] },
   DmHarvest: { type: String, default: null },
-  HarvestedCrops: { type: Array, default: null }
+  HarvestedCrops: { type: Array, default: [] }
 });
 
 export default model('Balance', Balance, 'Balance');
