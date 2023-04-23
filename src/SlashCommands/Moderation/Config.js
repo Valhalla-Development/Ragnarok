@@ -562,7 +562,7 @@ export const SlashCommandF = class extends SlashCommand {
 
           await new RoleMenu({
             GuildId: interaction.guild.id,
-            RoleList: JSON.stringify(roleList)
+            RoleList: roleList
           }).save();
 
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -571,7 +571,7 @@ export const SlashCommandF = class extends SlashCommand {
           });
           interaction.reply({ ephemeral: true, embeds: [embed] });
         } else {
-          const foundRoleList = JSON.parse(foundRoleMenu.RoleList);
+          const foundRoleList = foundRoleMenu.RoleList;
 
           if (foundRoleList.length >= 25) {
             const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
@@ -604,15 +604,15 @@ export const SlashCommandF = class extends SlashCommand {
           }
 
           if (foundRoleMenu.RoleMenuId) {
-            const activeMenu = JSON.parse(foundRoleMenu.RoleMenuId);
+            const activeMenu = foundRoleMenu.RoleMenuId;
 
             if (activeMenu) {
-              const ch = interaction.guild.channels.cache.get(activeMenu.ChannelId);
+              const ch = interaction.guild.channels.cache.get(activeMenu.channel);
 
               ch.messages
                 .fetch({ message: activeMenu.message })
                 .then((ms) => {
-                  const roleArray = JSON.parse(foundRoleMenu.RoleList);
+                  const roleArray = foundRoleMenu.RoleList;
 
                   const buttonsArr = [];
                   const rows = [];
@@ -623,8 +623,6 @@ export const SlashCommandF = class extends SlashCommand {
                       new ButtonBuilder().setCustomId(`rm-${currentRoles.id}`).setLabel(`${currentRoles.name}`).setStyle(ButtonStyle.Success)
                     );
                   }
-
-                  buttonsArr.push(new ButtonBuilder().setCustomId(`rm-${rRole.id}`).setLabel(`${rRole.name}`).setStyle(ButtonStyle.Success));
 
                   for (const rowObject of chunkArrayInGroups(buttonsArr, 5)) {
                     rows.push(new ActionRowBuilder().addComponents(...rowObject));
@@ -645,13 +643,14 @@ export const SlashCommandF = class extends SlashCommand {
                     ms.edit({ embeds: [roleMenuEmbed], components: [...rows] });
                   });
                 }, 1000)
-                .catch(() => {
+                .catch((e) => {
                   const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
                     name: `**${this.client.user.username} - Config**`,
                     value:
                       '**◎ Success:** Roles successfully set in the assignable role menu!\n**However** I was unable to update the current rolemenu, you will have to run `/rolemenu` to create a menu again.'
                   });
                   interaction.reply({ ephemeral: true, embeds: [embed] });
+                  console.error('Rolemenu Config, unable to update existing rolemenu, error:', e);
                 });
             }
           } else {
@@ -667,7 +666,7 @@ export const SlashCommandF = class extends SlashCommand {
               GuildId: interaction.guild.id
             },
             {
-              RoleList: JSON.stringify(foundRoleList)
+              RoleList: foundRoleList
             }
           );
         }
@@ -686,7 +685,7 @@ export const SlashCommandF = class extends SlashCommand {
           return;
         }
 
-        const roleList = JSON.parse(foundRoleMenu.RoleList);
+        const roleList = foundRoleMenu.RoleList;
 
         if (roleList.includes(rRole.id)) {
           const index = roleList.indexOf(rRole.id);
@@ -694,10 +693,10 @@ export const SlashCommandF = class extends SlashCommand {
 
           if (!roleList.length) {
             if (foundRoleMenu.RoleMenuId) {
-              const activeMenu = JSON.parse(foundRoleMenu.RoleMenuId);
+              const activeMenu = foundRoleMenu.RoleMenuId;
 
               if (activeMenu) {
-                const ch = interaction.guild.channels.cache.get(activeMenu.ChannelId);
+                const ch = interaction.guild.channels.cache.get(activeMenu.channel);
 
                 ch.messages
                   .fetch({ message: activeMenu.message })
@@ -743,7 +742,7 @@ export const SlashCommandF = class extends SlashCommand {
                 GuildId: interaction.guild.id
               },
               {
-                RoleList: JSON.stringify(roleList)
+                RoleList: roleList
               }
             );
           }
@@ -757,10 +756,10 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (foundRoleMenu.RoleMenuId) {
-          const activeMenu = JSON.parse(foundRoleMenu.RoleMenuId);
+          const activeMenu = foundRoleMenu.RoleMenuId;
 
           if (activeMenu) {
-            const ch = interaction.guild.channels.cache.get(activeMenu.ChannelId);
+            const ch = interaction.guild.channels.cache.get(activeMenu.channel);
 
             ch.messages
               .fetch({ message: activeMenu.message })
@@ -771,22 +770,15 @@ export const SlashCommandF = class extends SlashCommand {
 
                 for (const buttonObject of roleList) {
                   const currentRoles = interaction.guild.roles.cache.get(buttonObject);
+
                   buttonsArr.push(
                     new ButtonBuilder().setCustomId(`rm-${currentRoles.id}`).setLabel(`${currentRoles.name}`).setStyle(ButtonStyle.Success)
                   );
                 }
 
-                buttonsArr.push(new ButtonBuilder().setCustomId(`rm-${rRole.id}`).setLabel(`${rRole.name}`).setStyle(ButtonStyle.Success));
-
                 for (const rowObject of chunkArrayInGroups(buttonsArr, 5)) {
                   rows.push(new ActionRowBuilder().addComponents(...rowObject));
                 }
-
-                const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
-                  name: `**${this.client.user.username} - Config**`,
-                  value: '**◎ Success:** Specified roles have successfully been removed from the Role Menu!'
-                });
-                interaction.reply({ ephemeral: true, embeds: [embed] });
 
                 setTimeout(() => {
                   // I added this timeout because I couldn’t be bothered fixing, please don’t remove or I cry
@@ -798,6 +790,7 @@ export const SlashCommandF = class extends SlashCommand {
                 });
               }, 1000)
               .catch(() => {
+                console.log(6);
                 const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
                   name: `**${this.client.user.username} - Config**`,
                   value:
@@ -823,10 +816,10 @@ export const SlashCommandF = class extends SlashCommand {
 
         // delete the rolemenu message if it exists
         if (foundRoleMenu.RoleMenuId) {
-          const activeMenu = JSON.parse(foundRoleMenu.RoleMenuId);
+          const activeMenu = foundRoleMenu.RoleMenuId;
 
           if (activeMenu) {
-            const ch = interaction.guild.channels.cache.get(activeMenu.ChannelId);
+            const ch = interaction.guild.channels.cache.get(activeMenu.channel);
 
             try {
               ch.messages.fetch({ message: activeMenu.message }).then((ms) => {
@@ -849,7 +842,7 @@ export const SlashCommandF = class extends SlashCommand {
 
         await RoleMenu.deleteOne({ GuildId: interaction.guild.id });
 
-        if (!foundRoleMenu.RoleMenuId) {
+        if (!foundRoleMenu.RoleMenuId.channel || !foundRoleMenu.RoleMenuId.message) {
           const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
             name: `**${this.client.user.username} - Config**`,
             value: '**◎ Success:** All roles have successfully been cleared from the rolemenu!'

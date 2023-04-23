@@ -15,23 +15,21 @@ export const SlashCommandF = class extends SlashCommand {
   async run(interaction) {
     const foundRoleMenu = await RoleMenu.findOne({ GuildId: interaction.guild.id });
 
-    if (!foundRoleMenu || !foundRoleMenu.RoleList || JSON.parse(foundRoleMenu.RoleList).length <= 0) {
+    if (!foundRoleMenu || foundRoleMenu.RoleList <= 0) {
       const embed = new EmbedBuilder().setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor)).addFields({
         name: `**${this.client.user.username} - RoleMenu**`,
         value: '**◎ Error:** The roles for the menu have not been set yet. Please try again later.'
       });
       interaction.reply({ ephemeral: true, embeds: [embed] });
-
-      await RoleMenu.deleteOne({ GuildId: interaction.guild.id });
     } else {
       let activeMenu;
-      if (!foundRoleMenu.RoleMenuId) {
+      if (!foundRoleMenu.RoleMenuId.message || !foundRoleMenu.RoleMenuId.channel) {
         activeMenu = {};
       } else {
-        activeMenu = JSON.parse(foundRoleMenu.RoleMenuId);
+        activeMenu = foundRoleMenu.RoleMenuId;
       }
 
-      const roleArray = JSON.parse(foundRoleMenu.RoleList);
+      const roleArray = foundRoleMenu.RoleList;
 
       // Check if roles in the array exist in the server, if it does not, remove it from the array
       const roleArrayCleaned = roleArray.filter((role) => !!interaction.guild.roles.cache.has(role));
@@ -76,8 +74,8 @@ export const SlashCommandF = class extends SlashCommand {
             GuildId: interaction.guild.id
           },
           {
-            RoleMenuId: JSON.stringify(activeMenu),
-            RoleList: JSON.stringify(roleArrayCleaned)
+            RoleMenuId: activeMenu,
+            RoleList: roleArrayCleaned
           }
         );
       });

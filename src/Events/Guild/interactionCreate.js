@@ -840,7 +840,7 @@ export const EventF = class extends Event {
       const foundRoleMenu = await RoleMenu.findOne({ GuildId: interaction.guild.id });
 
       // Parse the data
-      const roleArray = JSON.parse(foundRoleMenu.RoleList);
+      const roleArray = foundRoleMenu.RoleList;
 
       // Check if roles in the array exist in the server, if it does not, remove it from the array
       const roleArrayCleaned = roleArray.filter((roleCheck) => !!interaction.guild.roles.cache.has(roleCheck));
@@ -857,7 +857,7 @@ export const EventF = class extends Event {
             GuildId: interaction.guild.id
           },
           {
-            RoleList: JSON.stringify(roleArrayCleaned)
+            RoleList: roleArrayCleaned
           }
         );
         return;
