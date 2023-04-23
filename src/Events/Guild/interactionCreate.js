@@ -28,7 +28,7 @@ export const EventF = class extends Event {
     // Update economy profile
     if (interaction.guild) {
       await this.client.utils.updateEconomy(interaction);
-      await this.client.utils.updateLevel(interaction, this.client)
+      await this.client.utils.updateLevel(interaction, this.client);
     }
 
     if (interaction.isChatInputCommand()) {
