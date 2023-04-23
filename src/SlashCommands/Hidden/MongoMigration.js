@@ -235,9 +235,9 @@ export const SlashCommandF = class extends SlashCommand {
                   Bank: entry.bank,
                   Total: entry.total,
                   ClaimNewUser: entry.claimNewUser,
-                  FarmPlot: entry.farmPlot.length ? entry.farmPlot : null,
+                  FarmPlot: JSON.parse(entry.farmPlot).length ? JSON.parse(entry.farmPlot) : [],
                   DmHarvest: entry.dmHarvest,
-                  HarvestedCrops: entry.harvestedCrops.length ? entry.harvestedCrops : null
+                  HarvestedCrops: JSON.parse(entry.harvestedCrops).length ? JSON.parse(entry.harvestedCrops) : []
                 }
               }
             };
