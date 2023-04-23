@@ -19,7 +19,7 @@ export const SlashCommandF = class extends SlashCommand {
           .split('\n')
           .map((str) => str.trim())
           .filter(Boolean);
-        fs.writeFile('storage/spenLinks.json', JSON.stringify(array, null, 2), { flag: 'w' }, (err) => {
+        fs.writeFile('Storage/spenLinks.json', JSON.stringify(array, null, 2), { flag: 'w' }, (err) => {
           if (err) throw err;
           console.log('The file has been saved!');
         });
