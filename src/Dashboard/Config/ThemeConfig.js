@@ -4,7 +4,7 @@
 import SoftUI from 'dbd-soft-ui';
 import si from 'systeminformation';
 import Keyv from '@keyv/mongo';
-import * as packageFile from '../../../package.json' assert {type: 'json'};
+import * as packageFile from '../../../package.json' assert { type: 'json' };
 
 const { version } = packageFile.default;
 
@@ -124,6 +124,10 @@ async function ThemeConfig(client) {
   }
 
   return SoftUI({
+    footer: {
+      replaceDefault: true,
+      text: 'Bot developed by Ragnar Lothbrok#1948'
+    },
     shardspage: {
       enabled: true,
       key: 'MXhqpCz5ACLYJ7c5'
@@ -299,7 +303,7 @@ async function ThemeConfig(client) {
         category: 'Soft UI',
         title: 'Assistants - The center of everything',
         description:
-            "Assistants Discord Bot management panel. Assistants Bot was created to give others the ability to do what they want. Just.<br>That's an example text.<br><br><b><i>Feel free to use HTML</i></b>",
+          "Assistants Discord Bot management panel. Assistants Bot was created to give others the ability to do what they want. Just.<br>That's an example text.<br><br><b><i>Feel free to use HTML</i></b>",
         image: '/img/soft-ui.webp',
         link: {
           enabled: true,
