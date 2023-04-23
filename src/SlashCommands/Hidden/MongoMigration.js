@@ -114,7 +114,7 @@ export const SlashCommandF = class extends SlashCommand {
 
       await (async () => {
         if (adsprot.length) {
-          const bulkOps = adsprot.map(entry => ({
+          const bulkOps = adsprot.map((entry) => ({
             insertOne: {
               document: {
                 GuildId: entry.guildid,
@@ -129,7 +129,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (afk.length) {
-          const bulkOps = afk.map(entry => ({
+          const bulkOps = afk.map((entry) => ({
             insertOne: {
               document: {
                 IdJoined: entry.id,
@@ -146,7 +146,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (announcement.length) {
-          const bulkOps = announcement.map(entry => ({
+          const bulkOps = announcement.map((entry) => ({
             insertOne: {
               document: {
                 Message: entry.msg
@@ -160,7 +160,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (antiscam.length) {
-          const bulkOps = antiscam.map(entry => ({
+          const bulkOps = antiscam.map((entry) => ({
             insertOne: {
               document: {
                 GuildId: entry.guildid,
@@ -175,7 +175,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (autorole.length) {
-          const bulkOps = autorole.map(entry => ({
+          const bulkOps = autorole.map((entry) => ({
             insertOne: {
               document: {
                 GuildId: entry.guildid,
@@ -190,32 +190,58 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (balance.length) {
-          const bulkOps = balance.map(entry => ({
-            insertOne: {
-              document: {
-                IdJoined: entry.id,
-                UserId: entry.user,
-                GuildId: entry.guild,
-                Hourly: entry.hourly,
-                Daily: entry.daily,
-                Weekly: entry.weekly,
-                Monthly: entry.monthly,
-                StealCool: entry.stealcool,
-                FishCool: entry.fishcool,
-                FarmCool: entry.farmcool,// todo need to update all these to the new object based
-                Boosts: entry.boosts,
-                Items: entry.items,
-                Cash: entry.cash,
-                Bank: entry.bank,
-                Total: entry.total,
-                ClaimNewUser: entry.claimNewUser,
-                FarmPlot: entry.farmPlot,
-                DmHarvest: entry.dmHarvest,
-                HarvestedCrops: entry.harvestedCrops,
-                Lottery: entry.lottery
+          const bulkOps = balance.map((entry) => {
+            const boosts = JSON.parse(entry.boosts);
+            const items = JSON.parse(entry.items);
+            return {
+              insertOne: {
+                document: {
+                  IdJoined: entry.id,
+                  UserId: entry.user,
+                  GuildId: entry.guild,
+                  Hourly: entry.hourly,
+                  Daily: entry.daily,
+                  Weekly: entry.weekly,
+                  Monthly: entry.monthly,
+                  StealCool: entry.stealcool,
+                  FishCool: entry.fishcool,
+                  FarmCool: entry.farmcool,
+                  Boosts: {
+                    FishBag: boosts?.fishBag,
+                    SeedBag: boosts?.seedBag,
+                    FarmBag: boosts?.farmBag,
+                    FarmPlot: boosts?.farmPlot
+                  },
+                  Items: {
+                    Trout: items?.trout,
+                    KingSalmon: items?.kingSalmon,
+                    SwordFish: items?.swordfish,
+                    PufferFish: items?.pufferfish,
+                    Treasure: items?.treasure,
+                    GoldBar: items?.goldBar,
+                    GoldNugget: items?.goldNugget,
+                    Barley: items?.barley,
+                    Spinach: items?.spinach,
+                    Strawberries: items?.strawberries,
+                    Lettuce: items?.lettuce,
+                    CornSeeds: items?.cornSeeds,
+                    WheatSeeds: items?.wheatSeeds,
+                    PotatoSeeds: items?.potatoSeeds,
+                    TomatoSeeds: items?.tomatoSeeds,
+                    FarmingTools: items?.farmingTools,
+                    FishingRod: items?.fishingRod
+                  },
+                  Cash: entry.cash,
+                  Bank: entry.bank,
+                  Total: entry.total,
+                  ClaimNewUser: entry.claimNewUser,
+                  FarmPlot: entry.farmPlot.length ? entry.farmPlot : null,
+                  DmHarvest: entry.dmHarvest,
+                  HarvestedCrops: entry.harvestedCrops.length ? entry.harvestedCrops : null
+                }
               }
-            }
-          }));
+            };
+          });
 
           await Balance.bulkWrite(bulkOps);
 
@@ -223,7 +249,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (ban.length) {
-          const bulkOps = ban.map(entry => {
+          const bulkOps = ban.map((entry) => {
             let newId = entry.IdJoined;
             if (entry.id) {
               const parts = entry.id.split('-');
@@ -249,7 +275,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (birthdayConfig.length) {
-          const bulkOps = birthdayConfig.map(entry => ({
+          const bulkOps = birthdayConfig.map((entry) => ({
             insertOne: {
               document: {
                 GuildId: entry.guildid,
@@ -265,7 +291,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (birthdays.length) {
-          const bulkOps = birthdays.map(entry => ({
+          const bulkOps = birthdays.map((entry) => ({
             insertOne: {
               document: {
                 UserId: entry.userid,
@@ -281,7 +307,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (dadbot.length) {
-          const bulkOps = dadbot.map(entry => ({
+          const bulkOps = dadbot.map((entry) => ({
             insertOne: {
               document: {
                 GuildId: entry.guildid,
@@ -296,7 +322,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (hastebin.length) {
-          const bulkOps = hastebin.map(entry => ({
+          const bulkOps = hastebin.map((entry) => ({
             insertOne: {
               document: {
                 GuildId: entry.guildid,
@@ -311,7 +337,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (level.length) {
-          const bulkOps = level.map(entry => ({
+          const bulkOps = level.map((entry) => ({
             insertOne: {
               document: {
                 GuildId: entry.guildid,
@@ -326,7 +352,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (logging.length) {
-          const bulkOps = logging.map(entry => ({
+          const bulkOps = logging.map((entry) => ({
             insertOne: {
               document: {
                 GuildId: entry.guildid,
@@ -341,7 +367,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (rolemenu.length) {
-          const bulkOps = rolemenu.map(entry => {
+          const bulkOps = rolemenu.map((entry) => {
             const activeRoleMenuID = JSON.parse(entry.activeRoleMenuID);
             return {
               insertOne: {
@@ -363,7 +389,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (scores.length) {
-          const bulkOps = scores.map(entry => {
+          const bulkOps = scores.map((entry) => {
             let newId = entry.IdJoined;
             if (entry.id) {
               const parts = entry.id.split('-');
@@ -390,7 +416,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (setwelcome.length) {
-          const bulkOps = setwelcome.map(entry => ({
+          const bulkOps = setwelcome.map((entry) => ({
             insertOne: {
               document: {
                 GuildId: entry.guildid,
@@ -406,7 +432,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (starboard.length) {
-          const bulkOps = starboard.map(entry => ({
+          const bulkOps = starboard.map((entry) => ({
             insertOne: {
               document: {
                 GuildId: entry.guildid,
@@ -421,7 +447,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (ticketConfig.length) {
-          const bulkOps = ticketConfig.map(entry => ({
+          const bulkOps = ticketConfig.map((entry) => ({
             insertOne: {
               document: {
                 GuildId: entry.guildid,
@@ -441,7 +467,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         if (tickets.length) {
-          const bulkOps = tickets.map(entry => ({
+          const bulkOps = tickets.map((entry) => ({
             insertOne: {
               document: {
                 GuildId: entry.guildid,
@@ -459,7 +485,7 @@ export const SlashCommandF = class extends SlashCommand {
         }
 
         const guildsArray = Array.from(this.client.guilds.cache.values());
-        const bulkOps = guildsArray.map(guild => ({
+        const bulkOps = guildsArray.map((guild) => ({
           insertOne: {
             document: {
               GuildId: guild.id,
