@@ -245,6 +245,10 @@ export const EventF = class extends Event {
 
               await Promise.all(
                 grabBdays.map(async (b) => {
+                  if (!guild.members.cache.has(b.UserId)) {
+                    return;
+                  }
+
                   const usr = await guild.members.fetch(b.UserId);
                   if (!usr) return;
 
