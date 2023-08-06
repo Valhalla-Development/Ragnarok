@@ -41,12 +41,12 @@ export const EventF = class extends Event {
       });
       const buffered = Buffer.from(attachment).toString();
 
-      const authorizationSecret = 'pmzg!SD#9H8E#PzGMhe5dr&Qo5EQReLy@cqf87QB';
+      const authorizationSecret = '59x6YsXETNoc8HDA-MG5qtXrAFKYQxD8h';
 
-      const response = await fetch('https://www.ragnarokbot.com/index.php', {
+      const response = await fetch('https://valhalladev.org/api/ragnarok-transcript', {
         method: 'POST',
         body: buffered,
-        headers: { 'X-Auth': authorizationSecret }
+        headers: { 'x-secret-key': authorizationSecret }
       });
 
       const data = response.status;
@@ -58,13 +58,13 @@ export const EventF = class extends Event {
       if (data !== 200) {
         transLinkText = '`Unavailable`';
       } else {
-        transLinkText = `[**Click Here**](https://www.ragnarokbot.com/transcripts/${staticFileName})`;
+        transLinkText = `[**Click Here**](https://www.valhalladev.org/transcripts/${staticFileName})`;
         // Transcript button
         openTranscript = new ButtonBuilder()
           .setStyle(ButtonStyle.Link)
           .setEmoji('<:ticketTranscript:998229979609440266>')
           .setLabel('View Transcript')
-          .setURL(`https://www.ragnarokbot.com/transcripts/${staticFileName}`);
+          .setURL(`https://www.valhalladev.org/transcripts/${staticFileName}`);
 
         transcriptRow = new ActionRowBuilder().addComponents(openTranscript);
       }
