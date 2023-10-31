@@ -2,10 +2,11 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-inline-comments */
 /* eslint-disable no-mixed-operators */
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder, OverwriteType, PermissionsBitField } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, codeBlock, EmbedBuilder, OverwriteType, PermissionsBitField } from 'discord.js';
 import urlRegexSafe from 'url-regex-safe';
 import fetch from 'node-fetch';
 import { customAlphabet } from 'nanoid';
+import movier from 'movier';
 import Event from '../../Structures/Event.js';
 import TicketConfig from '../../Mongo/Schemas/TicketConfig.js';
 import Tickets from '../../Mongo/Schemas/Tickets.js';
@@ -805,6 +806,39 @@ export const EventF = class extends Event {
       }
     }
     await chatBot(this.client);
+
+    // Function to monitor the messageCreate event for IMDb links, and then fetch the content via API calls.
+    async function imdbMonitor(client) {
+      const regexPattern = /https?:\/\/(?:www\.)?imdb\.com\/title\/tt(\d+)(\/)?/;
+      const match = message.content.toLowerCase().match(regexPattern);
+
+      if (match) {
+        const imdbId = `tt${match[1]}`;
+
+        try {
+          await movier.getTitleDetailsByIMDBId(imdbId).then((res) => {
+            const embed = new EmbedBuilder()
+                .setColor('#e0b10e')
+                .setAuthor({
+                  name: `${res.name} (${res.dates.titleYear}${res.mainType === 'series' ? ` - ${res.dates.endYear === null ? 'Still Airing' : res.dates.endYear}` : ''}) - ${client.utils.capitalise(res.mainType)}`,
+                  url: match[0],
+                  iconURL: 'https://cdn4.iconfinder.com/data/icons/logos-and-brands/512/171_Imdb_logo_logos-1024.png'
+                })
+                .addFields({ name: 'Votes', value: `**<:imdb:977228158615027803> ${res.mainRate.rate}/10** *(${res.mainRate.votesCount.toLocaleString('en')} votes)*`, inline: true },
+                    { name: 'Genres', value: client.utils.capitalise(res.genres.join(', ')), inline: true },
+                           { name: 'Stars', value: res.casts.slice(0, 3).map(cast => cast.name).join(', ') })
+                .setDescription(
+                    `${codeBlock('text', `${res.plot}`)} `
+                )
+                .setImage(res.posterImage.url)
+            message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
+          })
+        } catch (error) {
+          console.error('Error during IMDb fetch:', error);
+        }
+        }
+    }
+    await imdbMonitor(this.client)
   }
 };
 
