@@ -809,11 +809,11 @@ export const EventF = class extends Event {
 
     // Function to monitor the messageCreate event for IMDb links, and then fetch the content via API calls.
     async function imdbMonitor(client) {
-      const regexPattern = /https?:\/\/(?:www\.)?imdb\.com\/title\/tt(\d+)(\/)?/;
+      const regexPattern = /https?:\/\/(www\.|m\.)?imdb\.com\/title\/tt(\d+)(\/)?/;
       const match = message.content.toLowerCase().match(regexPattern);
 
       if (match) {
-        const imdbId = `tt${match[1]}`;
+        const imdbId = `tt${match[2]}`;
 
         try {
           await movier.getTitleDetailsByIMDBId(imdbId).then((res) => {
@@ -831,10 +831,10 @@ export const EventF = class extends Event {
                     `${codeBlock('text', `${res.plot}`)} `
                 )
                 .setImage(res.posterImage.url)
-            message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
+            message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } })
           })
         } catch (error) {
-          console.error('Error during IMDb fetch:', error);
+          console.error('Error during IMDb fetch:', error)
         }
         }
     }
