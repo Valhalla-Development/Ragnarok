@@ -815,12 +815,18 @@ export const EventF = class extends Event {
       if (match) {
         const imdbId = `tt${match[2]}`;
 
+        const type = {
+          series: 'Series',
+          movie: 'Movie',
+          tvMovie: 'TV Movie'
+        }
+
         try {
           await movier.getTitleDetailsByIMDBId(imdbId).then((res) => {
             const embed = new EmbedBuilder()
                 .setColor('#e0b10e')
                 .setAuthor({
-                  name: `${res.name} (${res.dates.titleYear}${res.mainType === 'series' ? ` - ${res.dates.endYear === null ? 'Still Airing' : res.dates.endYear}` : ''}) - ${client.utils.capitalise(res.mainType)}`,
+                  name: `${res.name} (${res.dates.titleYear}${res.mainType === 'series' ? ` - ${res.dates.endYear === null ? 'Still Airing' : res.dates.endYear}` : ''}) - ${type[res.mainType]}`,
                   url: match[0],
                   iconURL: 'https://cdn4.iconfinder.com/data/icons/logos-and-brands/512/171_Imdb_logo_logos-1024.png'
                 })
