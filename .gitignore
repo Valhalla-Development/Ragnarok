@@ -17,3 +17,6 @@ Storage/lavalink/logs
 
 # Giveaway database
 json.sqlite
+
+# Yarn
+yarn-error.log
