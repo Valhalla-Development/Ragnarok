@@ -1,11 +1,15 @@
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import {
-    ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, codeBlock,
+    ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, codeBlock, PermissionsBitField, GuildTextBasedChannel,
 } from 'discord.js';
 import type { Message, TextBasedChannel } from 'discord.js';
 import { getTitleDetailsByIMDBId } from 'movier';
-import { capitalise, color } from '../utils/Util.js';
+import urlRegexSafe from 'url-regex-safe';
+import {
+    capitalise, color, deletableCheck, messageDelete,
+} from '../utils/Util.js';
+import AdsProtection from '../mongo/schemas/AdsProtection.js';
 
 @Discord()
 export class MessageCreate {
@@ -16,6 +20,51 @@ export class MessageCreate {
      */
     @On({ event: 'messageCreate' })
     async onMessage([message]: ArgsOf<'messageCreate'>, client: Client) {
+        if (!message.guild) return;
+
+        /**
+         * Function for protecting against ads and unwanted links in a text-based channel.
+         * @remarks This function checks if the AdsProtection feature is enabled in the guild and takes actions accordingly.
+         */
+        async function adsProtection() { // TODO needs testing ofc
+            const channel = message.channel as GuildTextBasedChannel;
+            const adsProt = await AdsProtection.findOne({ GuildId: message.guild?.id });
+
+            // Check if AdsProtection is enabled in the guild
+            if (adsProt) {
+                // Check if the bot has the MANAGE_MESSAGES permission
+                if (!message.member?.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+                    // Bot doesn't have MANAGE_MESSAGES permission, disable Ads Protection
+                    const errorEmbed = new EmbedBuilder()
+                        .setColor(color(`${message.guild?.members.me?.displayHexColor}`))
+                        .addFields({
+                            name: `**${client.user?.username} - Ads Protection**`,
+                            value: '**◎ Error:** I do not have the `MANAGE_MESSAGES` permissions. Disabling Ads Protection.',
+                        });
+
+                    message.channel.send({ embeds: [errorEmbed] }).then((m) => deletableCheck(m, 0));
+                    await AdsProtection.deleteOne({ GuildId: message.guild?.id });
+                    return;
+                }
+
+                // Check if the user has MANAGE_MESSAGES permission and the channel is not a ticket
+                if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages) && !channel.name.startsWith('ticket-')) {
+                    // Use a regular expression to check for links in the message content
+                    const matches = urlRegexSafe({ strict: false }).test(message.content.toLowerCase());
+                    if (matches) {
+                        // Delete the message and notify the user
+                        if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+                            await messageDelete(message, 0);
+                            message.channel.send(`**◎ Your message contained a link and it was deleted, ${message.author}**`).then((msg) => {
+                                deletableCheck(msg, 5000);
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        await adsProtection();
+
         /**
          * Asynchronously extracts and handles links to Discord messages in a text message.
          */
@@ -24,8 +73,7 @@ export class MessageCreate {
 
             const exec = discordRegex.exec(message.content);
 
-            if (!message.guild) return;
-            if (exec && message.guild.id === exec[2]) {
+            if (exec && message.guild?.id === exec[2]) {
                 const [, , guildID, channelID, messageID] = exec;
 
                 const findGuild = client.guilds.cache.get(guildID);
