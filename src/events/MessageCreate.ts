@@ -10,6 +10,8 @@ import {
     capitalise, color, deletableCheck, messageDelete,
 } from '../utils/Util.js';
 import AdsProtection from '../mongo/schemas/AdsProtection.js';
+import AntiScam from '../mongo/schemas/AntiScam.js';
+import linksContent from '../storage/SpenLinks.json' assert { type: 'json'};
 
 @Discord()
 export class MessageCreate {
@@ -21,6 +23,48 @@ export class MessageCreate {
     @On({ event: 'messageCreate' })
     async onMessage([message]: ArgsOf<'messageCreate'>, client: Client) {
         if (!message.guild) return;
+
+        /**
+         * Checks for and handles potential scams in a message.
+         */
+        async function antiScam() {
+            const antiscam = await AntiScam.findOne({ GuildId: message.guild?.id });
+
+            if (!antiscam) return;
+
+            if (!message.member?.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+                const npPerms = new EmbedBuilder()
+                    .setColor(color(`${message.guild?.members.me?.displayHexColor}`))
+                    .addFields({
+                        name: `**${client.user?.username} - Anti Scam**`,
+                        value: '**◎ Error:** I do not have the `Manage Messages` permissions. Disabling Anti Scam.',
+                    });
+
+                const deletionMessage = await message.channel.send({ embeds: [npPerms] });
+                deletableCheck(deletionMessage, 0);
+                await AntiScam.deleteOne({ GuildId: message.guild?.id });
+                return;
+            }
+
+            const reasons = [];
+
+            const linksRegex = new RegExp(`\\b${linksContent.join('\\b|\\b')}\\b`, 'ig');
+            const match = linksRegex.exec(message.content.toLowerCase());
+
+            if (match) {
+                const matchedLink = match[0];
+                console.log(`Matched link: ${matchedLink}`);
+                reasons.push('Malicious Link');
+
+                if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)
+                    && message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+                    await messageDelete(message, 0);
+                    const deletionMessage = await message.channel.send(`**◎ Your message contains: \`${reasons.join(', ')}\` and it was deleted, ${message.author}**`);
+                    deletableCheck(deletionMessage, 5000);
+                }
+            }
+        }
+        await antiScam();
 
         /**
          * Function for protecting against ads and unwanted links in a text-based channel.
