@@ -33,7 +33,7 @@ export function color(me: string): ColorResolvable {
  * @returns A Promise that resolves when the message is deleted, or rejects if the message could not be deleted.
  * @throws TypeError if the `message` parameter is not a valid Message object.
  */
-export async function messageDelete(message: Message, time: number): Promise<void> { // todo test
+export async function messageDelete(message: Message, time: number): Promise<void> {
     try {
         // Check if the bot has the Manage Messages permission
         const botMember = message.guild?.members.cache.get(message.client.user.id);
