@@ -3,8 +3,9 @@ import { Discord, On } from 'discordx';
 import {
     ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, codeBlock,
 } from 'discord.js';
+import type { Message, TextBasedChannel } from 'discord.js';
 import { getTitleDetailsByIMDBId } from 'movier';
-import { capitalise } from '../utils/Util.js';
+import { capitalise, color } from '../utils/Util.js';
 
 @Discord()
 export class MessageCreate {
@@ -14,8 +15,80 @@ export class MessageCreate {
      * @param client - The Discord client.
      */
     @On({ event: 'messageCreate' })
-    async onMessage([message]: ArgsOf<'messageCreate'>) {
-        // Function to monitor the messageCreate event for IMDb links and fetch content via API calls.
+    async onMessage([message]: ArgsOf<'messageCreate'>, client: Client) {
+        /**
+         * Asynchronously extracts and handles links to Discord messages in a text message.
+         */
+        async function linkTag() {
+            const discordRegex = /https?:\/\/(?:ptb\.)?(?:canary\.)?(discordapp|discord)\.com\/channels\/(\d{1,19})\/(\d{1,19})\/(\d{1,19})/;
+
+            const exec = discordRegex.exec(message.content);
+
+            if (!message.guild) return;
+            if (exec && message.guild.id === exec[2]) {
+                const [, , guildID, channelID, messageID] = exec;
+
+                const findGuild = client.guilds.cache.get(guildID);
+                if (!findGuild) return;
+                const findChannel = findGuild.channels.cache.get(channelID) as TextBasedChannel;
+                if (!findChannel) return;
+                const validExtensions = ['gif', 'png', 'jpeg', 'jpg'];
+
+                const messagePromises = [
+                    findChannel.messages.fetch({ message: messageID }),
+                    findChannel.messages.fetch({ message: messageID, cache: false }),
+                ];
+                const settledPromises = await Promise.allSettled(messagePromises);
+                const resolvedPromise = settledPromises.find((result) => result.status === 'fulfilled') as PromiseFulfilledResult<Message | undefined>;
+
+                if (resolvedPromise) {
+                    const res = resolvedPromise.value;
+
+                    if (res) {
+                        const unixEpochTimestamp = Math.floor(res.createdTimestamp / 1000);
+                        const user = client.users.cache.get(res.author.id);
+
+                        const embed = new EmbedBuilder()
+                            .setAuthor({
+                                name: user?.username || message.author.username,
+                                iconURL: user?.displayAvatarURL({ extension: 'png' }) || message.author.displayAvatarURL({ extension: 'png' }),
+                            })
+                            .setColor(color(`${message.guild.members.me?.displayHexColor}`))
+                            .setFooter({ text: `Quoted by ${message.author.username}` })
+                            .setTimestamp();
+
+                        const attachmentCheck = res.attachments.first();
+                        if (res.content && attachmentCheck) {
+                            const attachmentUrl = attachmentCheck.url;
+                            const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
+                            if (!validExtensions.includes(fileExtension)) {
+                                embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`);
+                            } else {
+                                embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`);
+                                embed.setImage(attachmentUrl);
+                            }
+                        } else if (res.content) {
+                            embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`);
+                        } else if (attachmentCheck) {
+                            const attachmentUrl = attachmentCheck.url;
+                            const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
+                            if (!validExtensions.includes(fileExtension)) {
+                                embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>`);
+                            } else {
+                                embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>`);
+                                embed.setImage(attachmentUrl);
+                            }
+                        }
+                        message.channel.send({ embeds: [embed] });
+                    }
+                }
+            }
+        }
+        await linkTag();
+
+        /**
+         * Monitors messages for IMDb links and fetches IMDb content details via API calls.
+         */
         async function imdbMonitor() {
             // Define a regular expression pattern to match IMDb links.
             const regexPattern = /https?:\/\/(www\.|m\.)?imdb\.com\/title\/tt(\d+)(\/)?/;
@@ -84,8 +157,6 @@ export class MessageCreate {
                 }
             }
         }
-
-        // Call the IMDb monitor function.
         await imdbMonitor();
     }
 }
