@@ -27,7 +27,7 @@ export class MessageCreate {
         /**
          * Checks for and handles potential scams in a message.
          */
-        async function antiScam() {
+        async function antiScam() { // TODO needs testing ofc
             const antiscam = await AntiScam.findOne({ GuildId: message.guild?.id });
 
             if (!antiscam) return;
