@@ -823,6 +823,26 @@ export const EventF = class extends Event {
 
         try {
           await movier.getTitleDetailsByIMDBId(imdbId).then((res) => {
+            const buttonA = new ButtonBuilder()
+              .setStyle(ButtonStyle.Link)
+              .setLabel(`Open ${type[res.mainType] ? type[res.mainType] : res.mainType}`)
+              .setURL(match[0]);
+            const buttonB = new ButtonBuilder()
+              .setStyle(ButtonStyle.Link)
+              .setLabel('View Reviews')
+              .setURL(`https://imdb.com/title/tt${match[2]}/ratings`);
+            const buttonC = new ButtonBuilder()
+              .setStyle(ButtonStyle.Link)
+              .setLabel('View Cast')
+              .setURL(`https://imdb.com/title/tt${match[2]}/fullcredits`);
+            const buttonD = new ButtonBuilder()
+              .setStyle(ButtonStyle.Link)
+              .setLabel('Trivia')
+              .setURL(`https://imdb.com/title/tt${match[2]}/trivia`);
+
+            const row = new ActionRowBuilder()
+              .addComponents(buttonA, buttonB, buttonC, buttonD);
+
             const embed = new EmbedBuilder()
                 .setColor('#e0b10e')
                 .setAuthor({
@@ -837,7 +857,7 @@ export const EventF = class extends Event {
                     `${codeBlock('text', `${res.plot}`)} `
                 )
                 .setImage(res.posterImage.url)
-            message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } })
+            message.reply({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } })
           })
         } catch (error) {
           console.error('Error during IMDb fetch:', error)
