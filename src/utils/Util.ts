@@ -1,4 +1,4 @@
-import type { Message } from 'discord.js';
+import type { ColorResolvable, Message } from 'discord.js';
 import { Client } from 'discordx';
 import 'colors';
 
@@ -9,6 +9,20 @@ import 'colors';
  */
 export function capitalise(string: string): string {
     return string.replace(/\S+/g, (word) => word.slice(0, 1).toUpperCase() + word.slice(1));
+}
+
+/**
+ * Returns a modified color value based on the input.
+ * If the input color value is black (#000000), it is replaced with a red shade (#A10000).
+ * Otherwise, the input value is returned unchanged.
+ * @param me - The color value to modify, should be of type string
+ * @returns The modified color value as a `ColorResolvable`
+ */
+export function color(me: string): ColorResolvable {
+    if (me === '#000000') {
+        return '#A10000' as ColorResolvable;
+    }
+    return me as ColorResolvable;
 }
 
 /**
