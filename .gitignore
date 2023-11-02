@@ -1,22 +1,38 @@
-# Node FIles
-node_modules/
+# ========================
+# System generated files
+# ========================
 
-# Database files
-Storage/DB/db.sqlite
-Storage/DB/db.sqlite-shm
-Storage/DB/db.sqlite-wal
-
-# Lavalink Logs
-Storage/lavalink/logs
-
-# Config File
-.env
-
-# Irritating file create by Mac
+# macOS generated files
 .DS_Store
 
-# Giveaway database
-json.sqlite
+# ========================
+# Node.js related files
+# ========================
 
-# Yarn
+# Dependency directories
+node_modules/
+
+# Environment variables
+.env
+
+# ========================
+# Build output
+# ========================
+
+# Build directory
+build/
+
+# ========================
+# IDEs and editors
+# ========================
+
+# JetBrains IDEs (e.g., WebStorm, IntelliJ)
+.idea/
+
+# ========================
+# Dependency management
+# ========================
+
+# Yarn: lock file and error log
+yarn.lock
 yarn-error.log
