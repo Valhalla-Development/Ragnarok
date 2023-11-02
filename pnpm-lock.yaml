@@ -14,6 +14,9 @@ importers:
       '@discordx/utilities':
         specifier: ^5.2.1
         version: 5.2.1(discord.js@14.13.0)(discordx@11.7.6)
+      '@types/url-regex-safe':
+        specifier: ^1.0.1
+        version: 1.0.1
       colors:
         specifier: ^1.4.0
         version: 1.4.0
@@ -394,6 +397,10 @@ packages:
   /@types/semver@7.5.4:
     resolution: {integrity: sha512-MMzuxN3GdFwskAnb6fz0orFvhfqi752yjaXylr0Rp4oDg5H0Zn1IuyRhDVvYOwAXoJirx2xuS16I3WjxnAIHiQ==}
     dev: true
+
+  /@types/url-regex-safe@1.0.1:
+    resolution: {integrity: sha512-ojo6av3Yz2uG5tZTCY5tNyYRhyNWCjziS0oLbp7GO8cF1+BihpS34HY9ViBRyRfEvV9S5QV0BQV/jXajkJy7nw==}
+    dev: false
 
   /@types/webidl-conversions@7.0.2:
     resolution: {integrity: sha512-uNv6b/uGRLlCVmelat2rA8bcVd3k/42mV2EmjhPh6JLkd35T5bgwR/t6xy7a9MWhd9sixIeBUzhBenvk3NO+DQ==}
