@@ -1,0 +1,127 @@
+Arguments: 
+  /Users/ragnarlothbrok/.nvm/versions/node/v20.9.0/bin/node /Users/ragnarlothbrok/.yarn/bin/yarn.js install
+
+PATH: 
+  /Users/ragnarlothbrok/Documents/GitHub/Ragnarok-Discord/node_modules/.bin:/Users/ragnarlothbrok/.nvm/versions/node/v20.9.0/bin:/Users/ragnarlothbrok/.yarn/bin:/Users/ragnarlothbrok/.config/yarn/global/node_modules/.bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/Users/ragnarlothbrok/.nvm/versions/node/v20.9.0/bin:/Users/ragnarlothbrok/.yarn/bin:/Users/ragnarlothbrok/.config/yarn/global/node_modules/.bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/Users/ragnarlothbrok/.cargo/bin:/Users/ragnarlothbrok/Library/Application Support/JetBrains/Toolbox/scripts:/Users/ragnarlothbrok/.spicetify:/Users/ragnarlothbrok/Library/Application Support/JetBrains/Toolbox/scripts:/Users/ragnarlothbrok/.spicetify
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  20.9.0
+
+Platform: 
+  darwin arm64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/@dbd-soft-ui%2fshards: Not found
+      at params.callback [as _callback] (/Users/ragnarlothbrok/.yarn/lib/cli.js:66145:18)
+      at self.callback (/Users/ragnarlothbrok/.yarn/lib/cli.js:140890:22)
+      at Request.emit (node:events:514:28)
+      at Request.<anonymous> (/Users/ragnarlothbrok/.yarn/lib/cli.js:141862:10)
+      at Request.emit (node:events:514:28)
+      at IncomingMessage.<anonymous> (/Users/ragnarlothbrok/.yarn/lib/cli.js:141784:12)
+      at Object.onceWrapper (node:events:628:28)
+      at IncomingMessage.emit (node:events:526:35)
+      at endReadableNT (node:internal/streams/readable:1408:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+
+npm manifest: 
+  {
+    "name": "ragnarok",
+    "version": "5.0.719",
+    "description": "A multi-purpose Discord bot.",
+    "main": "build/Main.js",
+    "repository": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git",
+    "author": "Ragnar Lothbrok <ragnarlothbrokjr@proton.me>",
+    "license": "GPL-3.0-or-later",
+    "engines": {
+      "node": ">=18"
+    },
+    "scripts": {
+      "build": "tsc",
+      "start": "node build/Main.js",
+      "dev": "ts-node-esm src/Main.ts",
+      "audit": "npx eslint . --format codeframe",
+      "upgrade": "yarn yarn-upgrade-all",
+      "gitlog": "git log --pretty=format:'%s' 8138519c..HEAD | awk '{print \"◎ \" $0}'"
+    },
+    "type": "module",
+    "dependencies": {
+      "@discordx/importer": "^1.2.3",
+      "@discordx/utilities": "^5.2.1",
+      "colors": "^1.4.0",
+      "discordx": "^11.7.6",
+      "@dbd-soft-ui/logs": "^1.1.1",
+      "@dbd-soft-ui/shards": "^1.0.0",
+      "@extreme_hero/deeptype": "^1.0.1",
+      "@keyv/mongo": "^2.1.8",
+      "better-sqlite3": "^8.3.0",
+      "canvas": "^2.11.2",
+      "cheerio": "^1.0.0-rc.12",
+      "cli-table3": "^0.6.3",
+      "common-tags": "^1.8.2",
+      "connect-mongo": "^5.0.0",
+      "countries-list": "^2.6.1",
+      "cron": "^2.3.0",
+      "cryptocurrencies": "^7.0.0",
+      "custom-bj": "^4.0.3",
+      "dbd-dark-dashboard": "^1.6.62",
+      "dbd-soft-ui": "^1.6.44-beta.1",
+      "discord-dashboard": "^2.3.61",
+      "discord-embed-validator": "^1.0.1",
+      "discord-giveaways": "^6.0.1",
+      "discord-html-transcripts": "^3.1.4",
+      "discord-hybrid-sharding": "^2.1.2",
+      "discord-image-generation": "^1.4.25",
+      "discord.js": "^14.9.0",
+      "dotenv": "^16.0.3",
+      "glob": "8.1.0",
+      "hastebin.js": "^1.3.2",
+      "imdb-light": "^1.1.5",
+      "mathjs": "^11.8.0",
+      "moment": "^2.29.4",
+      "mongoose": "^7.0.4",
+      "movier": "^3.0.4",
+      "ms": "^2.1.3",
+      "nanoid": "^4.0.2",
+      "node-fetch": "^3.3.1",
+      "number-abbreviate": "^2.0.0",
+      "number-to-words-en": "^1.2.5",
+      "ordinal": "^1.0.3",
+      "prettier": "^2.8.8",
+      "pretty-ms": "^8.0.0",
+      "quick.db": "7.1.3",
+      "reddit-image-fetcher": "^2.0.11",
+      "request": "^2.88.2",
+      "string-progressbar": "^1.0.4",
+      "sudo-minigames": "^1.0.1",
+      "systeminformation": "^5.17.12",
+      "trakt.tv": "^8.1.1",
+      "twemoji-parser": "^14.0.0",
+      "unescape": "^1.0.1",
+      "url": "^0.11.0",
+      "url-regex-safe": "^3.0.0"
+    },
+    "devDependencies": {
+      "eslint": "^8.39.0",
+      "eslint-config-airbnb-base": "^15.0.0",
+      "eslint-config-prettier": "^8.8.0",
+      "eslint-plugin-import": "^2.27.5",
+      "eslint-plugin-prettier": "^4.2.1",
+      "@types/node": "^20.8.8",
+      "@typescript-eslint/eslint-plugin": "^6.9.0",
+      "@typescript-eslint/parser": "^6.9.0",
+      "eslint-config-airbnb": "^19.0.4",
+      "eslint-formatter-codeframe": "^7.32.1",
+      "ts-node": "^10.9.1",
+      "typescript": "^5.2.2",
+      "yarn-upgrade-all": "^0.7.2"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
