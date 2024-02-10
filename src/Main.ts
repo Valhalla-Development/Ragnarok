@@ -4,6 +4,7 @@ import {
 } from 'discord.js';
 import { Client } from 'discordx';
 import 'dotenv/config';
+import { loadMongoEvents } from './utils/Util.js';
 
 /**
  * The Discord.js client instance.
@@ -83,6 +84,8 @@ async function run() {
      */
     const loadSequentially = async () => {
         try {
+            await loadMongoEvents();
+            await sleep(time);
             await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
             await sleep(time);
             await client.login(process.env.Token as string);

@@ -2,6 +2,7 @@ import type { ColorResolvable, Message } from 'discord.js';
 import { PermissionsBitField } from 'discord.js';
 import { Client } from 'discordx';
 import 'colors';
+import mongoose from 'mongoose';
 
 /**
  * Capitalises the first letter of each word in a string.
@@ -106,4 +107,37 @@ export async function getCommandIds(client: Client): Promise<{ [name: string]: s
         console.error('Error fetching global commands:', error);
         return {};
     }
+}
+
+/**
+ * Connects to the MongoDB database and sets up event listeners for the connection.
+ * @returns A promise that resolves with void when the connection is established.
+ */
+export async function loadMongoEvents(): Promise<void> {
+    try {
+        await mongoose.connect(`${process.env.MongoUri}`);
+        console.log('[Database Status]: Connected.'.green.bold);
+    } catch (err) {
+        console.error('[Database Status]: An error occurred with the Mongo connection:'.red.bold, `\n${err}`);
+        throw err;
+    }
+
+    mongoose.connection.on('connecting', () => {
+        console.log('[Database Status]: Connecting.'.cyan.bold);
+    });
+
+    mongoose.connection.on('connected', () => {
+        console.log('[Database Status]: Connected.'.green.bold);
+    });
+
+    mongoose.connection.on('error', (err) => {
+        console.error(
+            '[Database Status]: An error occurred with the Mongo connection:'.red.bold,
+            `\n${err}`,
+        );
+    });
+
+    mongoose.connection.on('disconnected', () => {
+        console.log('[Database Status]: Disconnected'.red.bold);
+    });
 }
