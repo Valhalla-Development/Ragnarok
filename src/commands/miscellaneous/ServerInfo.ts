@@ -59,5 +59,37 @@ export class Ping {
 
             await interaction.reply({ embeds: [embed] });
         }
+
+        if (option === 'emojis') {
+            const emojis = interaction.guild?.emojis.cache;
+
+            const emojiMap = emojis?.map((emoji) => emoji.toString());
+
+            if (!emojiMap) {
+                await interaction.reply({ content: 'I was unable to locate any emojis.' });
+                return;
+            }
+
+            emojiMap.sort((a, b) => a.localeCompare(b));
+
+            let emojiList = emojiMap?.join(', ');
+
+            if (emojiList && emojiList.length > 4000) {
+                emojiList = emojiList.substring(0, 4000);
+                emojiList = emojiList.substring(0, emojiList.lastIndexOf('<'));
+            }
+
+            const embed = new EmbedBuilder()
+                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .setAuthor({ name: `Viewing information for ${interaction.guild?.name}`, iconURL: `${interaction.guild?.iconURL()}` })
+                .setDescription(
+                    `**Server Emojis [${emojiMap?.length ?? 0}]**\n${
+                        emojiMap && emojiMap.length <= 25 ? emojiList : `${emojiList}... and ${emojiMap.length - 25} more`
+                    }`,
+                )
+                .setFooter({ text: `${client.user?.username}`, iconURL: client.user?.displayAvatarURL() });
+
+            await interaction.reply({ embeds: [embed] });
+        }
     }
 }
