@@ -16,8 +16,6 @@ export class Invite {
      */
     @Slash({ description: 'Displays an invitation link for the bot.' })
     async invite(interaction: CommandInteraction, client: Client): Promise<void> {
-        if (!interaction.channel) return;
-
         const embed = new EmbedBuilder()
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
             .addFields({ name: `**${client.user?.username} - Invite**`, value: `Want to invite ${client.user}?` });
