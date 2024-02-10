@@ -5,13 +5,6 @@
 # macOS generated files
 .DS_Store
 
-# ========================
-# Node.js related files
-# ========================
-
-# Dependency directories
-node_modules/
-
 # Environment variables
 .env
 
@@ -23,9 +16,25 @@ node_modules/
 build/
 
 # ========================
+# IDEs and editors
+# ========================
+
+# JetBrains IDEs (e.g., WebStorm, IntelliJ)
+.idea/
+
+# ========================
 # Dependency management
 # ========================
 
 # Yarn: lock file and error log
-yarn.lock
+.yarn/
 yarn-error.log
+.pnp.cjs
+.pnp.loader.mjs
+
+# ========================
+# Database
+# ========================
+
+# db
+src/db/db.sqlite
