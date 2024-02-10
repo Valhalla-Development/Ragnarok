@@ -2,7 +2,9 @@ import {
     Client, Discord, Slash, SlashChoice, SlashOption,
 } from 'discordx';
 import { Category } from '@discordx/utilities';
-import { ApplicationCommandOptionType, CommandInteraction, EmbedBuilder } from 'discord.js';
+import {
+    ApplicationCommandOptionType, ChannelType, CommandInteraction, EmbedBuilder,
+} from 'discord.js';
 import { color } from '../../utils/Util.js';
 
 @Discord()
@@ -22,19 +24,85 @@ export class Ping {
         @SlashOption({
             description: 'Type of request',
             name: 'option',
-            required: true,
             type: ApplicationCommandOptionType.String,
         })
             option: string,
             interaction: CommandInteraction,
             client: Client,
     ): Promise<void> {
-        if (option === 'roles') {
-            const roles = interaction.guild?.roles.cache
-                .sort((a, b) => b.position - a.position)
-                .map((role) => role.toString())
-                .slice(0, -1);
+        const roles = interaction.guild?.roles.cache
+            .sort((a, b) => b.position - a.position)
+            .map((role) => role.toString())
+            .slice(0, -1);
 
+        const emojis = interaction.guild?.emojis.cache;
+
+        const emojiMap = emojis?.map((emoji) => emoji.toString());
+
+        const verificationLevels = {
+            0: 'None',
+            1: 'Low',
+            2: 'Medium',
+            3: 'High',
+            4: 'Very High',
+        };
+
+        const mfa = {
+            0: 'None',
+            1: 'Elevated',
+        };
+
+        if (!option || option === 'server') {
+            const guildOwner = await interaction.guild?.fetchOwner();
+            const channels = interaction.guild?.channels.cache;
+
+            const textChannels = channels?.filter((channel) => channel.type === ChannelType.GuildText);
+            const voiceChannels = channels?.filter((channel) => channel.type === ChannelType.GuildVoice);
+
+            const embed = new EmbedBuilder()
+                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .setThumbnail(interaction.guild?.iconURL() || '')
+                .setAuthor({
+                    name: `Viewing information for ${interaction.guild?.name}`,
+                    iconURL: interaction.guild?.iconURL() || '',
+                })
+                .addFields(
+                    {
+                        name: 'Guild information',
+                        value: `**◎ 👑 Owner:** ${guildOwner?.user}
+                        **◎ 🆔 ID:** \`${interaction.guild?.id}\`
+                        **◎ 📅 Created At:** <t:${Math.round(interaction.guild!.createdTimestamp! / 1000)}> - (<t:${Math.round(interaction.guild!.createdTimestamp! / 1000)}:R>)
+                        **◎ 🔐 Verification Level:** \`${verificationLevels[interaction.guild?.verificationLevel ?? 0]}\`
+                        **◎ 🔏 MFA Level:** \`${mfa[interaction.guild?.mfaLevel ?? 0]}\`
+                        **◎ 🧑‍🤝‍🧑 Guild Members:** \`${(interaction.guild?.memberCount || 0) - (interaction.guild?.members.cache.filter((m) => m.user.bot).size || 0)}\`
+                        **◎ 🤖 Guild Bots:** \`${(interaction.guild?.members.cache.filter((m) => m.user.bot).size || 0)}\`
+                        \u200b`,
+                    },
+                    {
+                        name: `**Guild Channels** [${(textChannels?.size || 0) + (voiceChannels?.size || 0)}]`,
+                        value: `<:TextChannel:855591004236546058> | Text: \`${textChannels?.size}\`\n<:VoiceChannel:855591004300115998> | Voice: \`${voiceChannels?.size}\``,
+                        inline: true,
+                    },
+                    {
+                        name: '**Guild Perks**',
+                        value: `<a:Booster:855593231294267412> | Boost Tier: \`${interaction.guild?.premiumTier ?? 0}\`\n<a:Booster:855593231294267412> | Boosts: \`${interaction.guild?.premiumSubscriptionCount ?? 0}\``,
+                        inline: true,
+                    },
+                    {
+                        name: '**Assets**',
+                        value: `**Server Roles [${interaction.guild?.roles.cache.size ?? 0}]**: To view all roles, run\n\`/serverinfo roles\`\n**Server Emojis [${interaction.guild?.emojis.cache.size ?? 0}]**: To view all emojis, run\n\`/serverinfo emojis\``,
+                        inline: false,
+                    },
+                )
+                .setFooter({
+                    text: `${client.user?.username}`,
+                    iconURL: client.user?.displayAvatarURL(),
+                });
+
+            await interaction.reply({ embeds: [embed] });
+        }
+
+        if (option === 'roles') {
             if (!roles) {
                 await interaction.reply({ content: 'I was unable to locate any roles.' });
                 return;
@@ -49,22 +117,24 @@ export class Ping {
 
             const embed = new EmbedBuilder()
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .setAuthor({ name: `Viewing information for ${interaction.guild?.name}`, iconURL: `${interaction.guild?.iconURL()}` })
+                .setAuthor({
+                    name: `Viewing information for ${interaction.guild?.name}`,
+                    iconURL: `${interaction.guild?.iconURL()}`,
+                })
                 .setDescription(
                     `**Server Roles [${roles.length}]**\n${
                         roles.length <= 25 ? roleList : `${roleList}... and ${roles.length - 25} more`
                     }`,
                 )
-                .setFooter({ text: `${client.user?.username}`, iconURL: client.user?.displayAvatarURL() });
+                .setFooter({
+                    text: `${client.user?.username}`,
+                    iconURL: client.user?.displayAvatarURL(),
+                });
 
             await interaction.reply({ embeds: [embed] });
         }
 
         if (option === 'emojis') {
-            const emojis = interaction.guild?.emojis.cache;
-
-            const emojiMap = emojis?.map((emoji) => emoji.toString());
-
             if (!emojiMap) {
                 await interaction.reply({ content: 'I was unable to locate any emojis.' });
                 return;
@@ -81,13 +151,19 @@ export class Ping {
 
             const embed = new EmbedBuilder()
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .setAuthor({ name: `Viewing information for ${interaction.guild?.name}`, iconURL: `${interaction.guild?.iconURL()}` })
+                .setAuthor({
+                    name: `Viewing information for ${interaction.guild?.name}`,
+                    iconURL: `${interaction.guild?.iconURL()}`,
+                })
                 .setDescription(
                     `**Server Emojis [${emojiMap?.length ?? 0}]**\n${
                         emojiMap && emojiMap.length <= 25 ? emojiList : `${emojiList}... and ${emojiMap.length - 25} more`
                     }`,
                 )
-                .setFooter({ text: `${client.user?.username}`, iconURL: client.user?.displayAvatarURL() });
+                .setFooter({
+                    text: `${client.user?.username}`,
+                    iconURL: client.user?.displayAvatarURL(),
+                });
 
             await interaction.reply({ embeds: [embed] });
         }
