@@ -1,6 +1,6 @@
 import { dirname, importx } from '@discordx/importer';
 import {
-    ChannelType, codeBlock, EmbedBuilder, IntentsBitField,
+    ChannelType, codeBlock, EmbedBuilder, IntentsBitField, Partials,
 } from 'discord.js';
 import { Client } from 'discordx';
 import 'dotenv/config';
@@ -10,7 +10,22 @@ import { loadMongoEvents } from './utils/Util.js';
  * The Discord.js client instance.
  */
 const client = new Client({
-    intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.MessageContent],
+    intents: [
+        IntentsBitField.Flags.Guilds,
+        IntentsBitField.Flags.GuildMessages,
+        IntentsBitField.Flags.MessageContent,
+        IntentsBitField.Flags.GuildMembers,
+        IntentsBitField.Flags.GuildBans,
+        IntentsBitField.Flags.GuildEmojisAndStickers,
+        IntentsBitField.Flags.GuildIntegrations,
+        IntentsBitField.Flags.GuildWebhooks,
+        IntentsBitField.Flags.GuildMessageReactions,
+        IntentsBitField.Flags.GuildMessageTyping,
+        IntentsBitField.Flags.DirectMessages,
+        IntentsBitField.Flags.DirectMessageReactions,
+        IntentsBitField.Flags.GuildInvites,
+    ],
+    partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message, Partials.Reaction],
     silent: true,
 });
 
