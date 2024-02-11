@@ -88,16 +88,25 @@ export class Ping {
                         value: `<a:Booster:855593231294267412> | Boost Tier: \`${interaction.guild?.premiumTier ?? 0}\`\n<a:Booster:855593231294267412> | Boosts: \`${interaction.guild?.premiumSubscriptionCount ?? 0}\``,
                         inline: true,
                     },
-                    {
-                        name: '**Assets**',
-                        value: `**Server Roles [${interaction.guild?.roles.cache.size ?? 0}]**: To view all roles, run\n\`/serverinfo roles\`\n**Server Emojis [${interaction.guild?.emojis.cache.size ?? 0}]**: To view all emojis, run\n\`/serverinfo emojis\``,
-                        inline: false,
-                    },
                 )
                 .setFooter({
                     text: `${client.user?.username}`,
                     iconURL: client.user?.displayAvatarURL(),
                 });
+
+            if ((roles && roles.length > 0) || (emojiMap && emojiMap.length > 0)) {
+                const value: string[] = [];
+
+                roles && roles.length && value.push(`**Server Roles [${roles.length}]**: To view all roles, run\n\`/serverinfo roles\``);
+
+                emojiMap && emojiMap.length && value.push(`**Server Emojis [${emojiMap.length}]**: To view all emojis, run\n\`/serverinfo emojis\``);
+
+                embed.addFields({
+                    name: '**Assets**',
+                    value: value.join('\n'),
+                    inline: false,
+                });
+            }
 
             await interaction.reply({ embeds: [embed] });
         }
