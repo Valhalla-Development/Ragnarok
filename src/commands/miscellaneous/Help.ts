@@ -28,10 +28,10 @@ export class Help {
                 iconURL: `${client.user?.avatarURL()}`,
             });
 
-        // Fetch unique command categories
+        // Fetch unique command categories excluding "Hidden"
         const uniqueCategories = Array.from(new Set(
             MetadataStorage.instance.applicationCommands
-                .filter((cmd: DApplicationCommand & ICategory) => cmd.category)
+                .filter((cmd: DApplicationCommand & ICategory) => cmd.category && cmd.category !== 'Hidden')
                 .map((cmd: DApplicationCommand & ICategory) => cmd.category as string),
         ));
 
