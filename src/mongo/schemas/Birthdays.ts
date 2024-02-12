@@ -1,0 +1,12 @@
+import { model, Schema } from 'mongoose';
+
+/**
+ * Represents a schema for storing the users birthdays
+ */
+const Birthdays = new Schema({
+    UserId: { type: String, unique: true },
+    Date: { type: String, default: null },
+    LastRun: { type: Array, default: [] },
+});
+
+export default model('Birthdays', Birthdays, 'Birthdays');
