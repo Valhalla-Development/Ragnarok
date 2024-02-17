@@ -10,7 +10,6 @@ const Level = new Schema({
     Xp: { type: Number, default: null },
     Level: { type: Number, default: null },
     Country: { type: String, default: null },
-    Image: { type: String, default: null },
 });
 
 export default model('Level', Level, 'Level');
