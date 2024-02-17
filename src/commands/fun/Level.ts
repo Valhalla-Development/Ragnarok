@@ -88,7 +88,7 @@ export class LevelCommand {
         const background = await loadImage(image);
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
         ctx.fillRect(0, 0, 934, 282);
 
         function roundRect(x: number, y: number, w: number, h: number, radius: number) {
