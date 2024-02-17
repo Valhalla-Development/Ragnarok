@@ -13,11 +13,8 @@ import { color } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
-@SlashGroup({ description: 'Set your birthday', name: 'birthday' })
-@SlashGroup({ description: 'View birthday of a user', name: 'view', root: 'birthday' })
-@SlashGroup({ description: 'Set birthday of a user', name: 'set', root: 'birthday' })
-@SlashGroup({ description: 'Delete your birthday', name: 'delete', root: 'birthday' })
-@SlashGroup({ description: 'List all birthdays', name: 'list', root: 'birthday' })
+@SlashGroup({ description: 'Set or view birthdays', name: 'birthday' })
+@SlashGroup('birthday')
 export class Birthday {
     /**
      * The ability to set or view birthdays
@@ -25,8 +22,7 @@ export class Birthday {
      * @param client - The Discord client.
      * @param user - Optional user to fetch
      */
-    @Slash({ description: 'View birthday of a user', name: 'user' })
-    @SlashGroup('view', 'birthday')
+    @Slash({ description: 'View birthday of a user', name: 'view' })
     async birthday(
         @SlashOption({
             description: 'View birthday of a user',
@@ -89,8 +85,7 @@ export class Birthday {
      * @param client - The Discord client.
      * @param date - Date of users birthday
      */
-    @Slash({ description: 'Set your birthday', name: 'date' })
-    @SlashGroup('set', 'birthday')
+    @Slash({ description: 'Set your birthday', name: 'set' })
     async set(
         @SlashOption({
             description: 'Set your birthday',
@@ -149,8 +144,7 @@ export class Birthday {
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      */
-    @Slash({ description: 'Delete your birthday', name: 'data' })
-    @SlashGroup('delete', 'birthday')
+    @Slash({ description: 'Delete your birthday', name: 'delete' })
     async deleteBirthday(interaction: CommandInteraction, client: Client): Promise<void> {
         const birthdayDB = await Birthdays.findOneAndDelete({ UserId: interaction.user.id });
 
