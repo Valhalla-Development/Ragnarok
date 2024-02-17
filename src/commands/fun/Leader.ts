@@ -1,5 +1,5 @@
 import { Client, Discord, Slash } from 'discordx';
-import { APIEmbedField, CommandInteraction, EmbedBuilder } from 'discord.js';
+import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Category } from '@discordx/utilities';
 import Level from '../../mongo/schemas/Level.js';
 import LevelConfig from '../../mongo/schemas/LevelConfig.js';
