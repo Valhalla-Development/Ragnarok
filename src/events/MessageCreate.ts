@@ -1,9 +1,9 @@
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
-import {
-    ButtonBuilder, ButtonStyle, ActionRowBuilder, EmbedBuilder, codeBlock, PermissionsBitField, GuildTextBasedChannel,
-} from 'discord.js';
 import type { Message, TextBasedChannel } from 'discord.js';
+import {
+    ActionRowBuilder, ButtonBuilder, ButtonStyle, codeBlock, EmbedBuilder, GuildTextBasedChannel, PermissionsBitField,
+} from 'discord.js';
 import { getTitleDetailsByIMDBId } from 'movier';
 import urlRegexSafe from 'url-regex-safe';
 import {
@@ -11,7 +11,7 @@ import {
 } from '../utils/Util.js';
 import AdsProtection from '../mongo/schemas/AdsProtection.js';
 import AntiScam from '../mongo/schemas/AntiScam.js';
-import linksContent from '../storage/SpenLinks.json' assert { type: 'json'};
+import linksContent from '../../assets/SpenLinks.json' assert { type: 'json' };
 
 @Discord()
 export class MessageCreate {
