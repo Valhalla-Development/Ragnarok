@@ -23,7 +23,7 @@ export class Birthday {
      * @param user - Optional user to fetch
      */
     @Slash({ description: 'View birthday of a user', name: 'view' })
-    async birthday(
+    async view(
         @SlashOption({
             description: 'View birthday of a user',
             name: 'user',
