@@ -24,25 +24,30 @@ export class InteractionCreate {
 
         if (process.env.Logging && process.env.Logging.toLowerCase() === 'true') {
             if (interaction.isChatInputCommand()) {
-                const nowInMs = Date.now();
-                const nowInSecond = Math.round(nowInMs / 1000);
+                try {
+                    const nowInMs = Date.now();
+                    const nowInSecond = Math.round(nowInMs / 1000);
 
-                const logEmbed = new EmbedBuilder().setColor('#e91e63');
-                const executedCommand = interaction.toString();
+                    const logEmbed = new EmbedBuilder().setColor('#e91e63');
+                    const executedCommand = interaction.toString().substring(0, 200);
 
-                logEmbed.addFields({
-                    name: `Guild: ${interaction.guild.name} | Date: <t:${nowInSecond}>`,
-                    value: codeBlock('kotlin', `${interaction.user.username} executed the '${executedCommand}' command`),
-                });
+                    logEmbed.addFields({
+                        name: `Guild: ${interaction.guild.name} | Date: <t:${nowInSecond}>`,
+                        value: codeBlock('kotlin', `${interaction.user.username} executed the '${executedCommand}' command`),
+                    });
 
-                const LoggingNoArgs = `[\x1b[31m${moment().format('LLLL')}\x1b[0m] '\x1b[92m${executedCommand}\x1b[0m' Command was executed by \x1b[31m${interaction.user.username}\x1b[0m (Guild: \x1b[31m${interaction.guild.name}\x1b[0m)`;
-                console.log(LoggingNoArgs);
+                    const LoggingNoArgs = `[\x1b[31m${moment()
+                        .format('LLLL')}\x1b[0m] '\x1b[92m${executedCommand}\x1b[0m' Command was executed by \x1b[31m${interaction.user.username}\x1b[0m (Guild: \x1b[31m${interaction.guild.name}\x1b[0m)`;
+                    console.log(LoggingNoArgs);
 
-                if (process.env.CommandLogging) {
-                    const channel = client.channels.cache.get(process.env.CommandLogging);
-                    if (channel && channel.type === ChannelType.GuildText) {
-                        channel.send({ embeds: [logEmbed] });
+                    if (process.env.CommandLogging) {
+                        const channel = client.channels.cache.get(process.env.CommandLogging);
+                        if (channel && channel.type === ChannelType.GuildText) {
+                            channel.send({ embeds: [logEmbed] });
+                        }
                     }
+                } catch (sendError) {
+                    console.error('An error occurred while sending the command logging embed:', sendError);
                 }
             }
         }
