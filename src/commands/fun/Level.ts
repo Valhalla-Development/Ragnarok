@@ -64,7 +64,7 @@ export class LevelCommand {
         const canvas = createCanvas(934, 282);
         const ctx = canvas.getContext('2d');
 
-        let userStatusColor = '#737F8D';
+        let userStatusColor: string | null = '#737F8D';
 
         const fetchUser = await interaction.guild!.members.fetch(member.id);
         if (fetchUser.presence) {
@@ -77,6 +77,9 @@ export class LevelCommand {
                 break;
             case 'dnd':
                 userStatusColor = '#F04747';
+                break;
+            default:
+                userStatusColor = null;
                 break;
             }
         }
