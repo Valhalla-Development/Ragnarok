@@ -289,19 +289,20 @@ export class LevelCommand {
 
         // Draw Username
         function drawUsername(x: number, y: number, max: number, use: string, dis: string | null) {
+            let modifiedUse = use;
             ctx.font = '34px Shapirit';
             ctx.fillStyle = '#FFFFFF';
             ctx.textAlign = 'left';
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 0.5;
-            while (ctx.measureText(use).width > max) {
-                use = use.substring(0, use.length - 1);
+            while (ctx.measureText(modifiedUse).width > max) {
+                modifiedUse = modifiedUse.substring(0, modifiedUse.length - 1);
             }
-            ctx.fillText(use, x, y);
-            ctx.strokeText(use, x, y);
+            ctx.fillText(modifiedUse, x, y);
+            ctx.strokeText(modifiedUse, x, y);
 
             if (dis) {
-                const w = ctx.measureText(use).width;
+                const w = ctx.measureText(modifiedUse).width;
 
                 ctx.font = '22px Shapirit';
                 ctx.fillStyle = '#7F8384';
