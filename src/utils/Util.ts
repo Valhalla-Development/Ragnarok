@@ -3,6 +3,7 @@ import { PermissionsBitField } from 'discord.js';
 import { Client } from 'discordx';
 import 'colors';
 import mongoose from 'mongoose';
+import { getTitleDetailsByName, getTitleDetailsByUrl, TitleMainType } from 'movier';
 
 /**
  * Capitalises the first letter of each word in a string.
@@ -140,4 +141,57 @@ export async function loadMongoEvents(): Promise<void> {
     mongoose.connection.on('disconnected', () => {
         console.log('[Database Status]: Disconnected'.red.bold);
     });
+}
+
+/**
+ * Fetches and returns details of content based on the provided URL.
+ * @param url - The URL of the content.
+ * @param type - Type of request, either search by name, or by url
+ * @returns A promise that resolves to content details or undefined if the data is not available.
+ */
+export async function getContentDetails(url: string, type: 'name' | 'url') {
+    try {
+        let data;
+
+        // Attempt to fetch the content data
+        if (type === 'url') {
+            data = await getTitleDetailsByUrl(url);
+        }
+
+        if (type === 'name') {
+            data = await getTitleDetailsByName(url);
+        }
+
+        if (!data) {
+            console.error('Content is not available.');
+            return undefined; // Return early if data is not available
+        }
+
+        const contentType = {
+            [TitleMainType.Movie]: 'Movie',
+            [TitleMainType.Series]: 'Series',
+            [TitleMainType.SeriesEpisode]: 'Series Episode',
+            [TitleMainType.TVSpecial]: 'TV Special',
+            [TitleMainType.TVShort]: 'TV Short',
+            [TitleMainType.TVMovie]: 'TV Movie',
+            [TitleMainType.Video]: 'Video',
+        };
+
+        // Extract relevant details from the data
+        return {
+            title: data.name,
+            year: data.titleYear,
+            plot: data.plot,
+            type: contentType[data.mainType],
+            rating: data.mainRate.rate,
+            totalVotes: data.mainRate.votesCount,
+            cast: data.casts.slice(0, 3).map((cast) => cast.name).join(', '),
+            genres: capitalise(data.genres.join(', ')),
+            image: data.posterImage.url,
+            url: data.mainSource.sourceUrl,
+            id: data.mainSource.sourceId,
+        };
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
 }
