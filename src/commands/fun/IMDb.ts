@@ -5,6 +5,7 @@ import {
     ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, codeBlock, CommandInteraction, EmbedBuilder,
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
+import { Duration } from 'luxon';
 import { color, getContentDetails } from '../../utils/Util.js';
 
 @Discord()
@@ -46,6 +47,9 @@ export class TraktCommand {
             return;
         }
 
+        // Convert runtime and end time to readable format
+        const runTime = Duration.fromObject({ seconds: details!.runtime.seconds }).toFormat('h\'h\' m\'m\'');
+
         const embed = new EmbedBuilder()
             .setColor('#e0b10e')
             .setAuthor({
@@ -56,7 +60,11 @@ export class TraktCommand {
             .addFields(
                 { name: 'Votes', value: `<:imdb:1202979511755612173>** ${details.rating}/10** *(${details.totalVotes.toLocaleString('en')} votes)*`, inline: true },
                 { name: 'Genres', value: details.genres, inline: true },
-                { name: 'Stars', value: details.cast },
+                { name: 'Stars', value: details.cast, inline: true },
+                { name: 'Director', value: details.director, inline: true },
+                { name: 'Production Company', value: details.productionCompany, inline: true },
+                { name: 'Runtime', value: `\`${runTime}\``, inline: true },
+
             )
             .setDescription(
                 `${codeBlock('text', `${details.plot}`)}`,
