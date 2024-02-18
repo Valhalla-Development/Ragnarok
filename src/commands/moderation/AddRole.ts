@@ -2,7 +2,13 @@ import {
     Client, Discord, Slash, SlashOption,
 } from 'discordx';
 import {
-    ApplicationCommandOptionType, CommandInteraction, EmbedBuilder, GuildMember, GuildMemberRoleManager, Role,
+    ApplicationCommandOptionType,
+    CommandInteraction,
+    EmbedBuilder,
+    GuildMember,
+    GuildMemberRoleManager,
+    PermissionsBitField,
+    Role,
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
 import { color } from '../../utils/Util.js';
@@ -17,7 +23,10 @@ export class AddRole {
      * @param user - The user to add the role to
      * @param role - The role to add to the user
      */
-    @Slash({ description: 'Add a role to a specified user.' })
+    @Slash({
+        description: 'Add a role to a specified user.',
+        defaultMemberPermissions: [PermissionsBitField.Flags.ManageRoles],
+    })
     async addrole(
         @SlashOption({
             description: 'User to add the role to',
