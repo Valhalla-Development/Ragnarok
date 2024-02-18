@@ -145,7 +145,7 @@ export class Birthday {
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      */
-    @Slash({ description: 'Delete your birthday \from the database', name: 'delete' })
+    @Slash({ description: 'Delete your birthday data', name: 'delete' })
     async deleteBirthday(interaction: CommandInteraction, client: Client): Promise<void> {
         const birthdayDB = await Birthdays.findOneAndDelete({ UserId: interaction.user.id });
 
