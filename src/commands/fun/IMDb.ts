@@ -1,0 +1,89 @@
+import {
+    Client, Discord, Slash, SlashOption,
+} from 'discordx';
+import {
+    ActionRowBuilder, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, codeBlock, CommandInteraction, EmbedBuilder,
+} from 'discord.js';
+import { Category } from '@discordx/utilities';
+import { color, getContentDetails } from '../../utils/Util.js';
+
+@Discord()
+@Category('Fun')
+export class TraktCommand {
+    /**
+     * Fetches IMDb information for specified content.
+     * @param interaction - The command interaction.
+     * @param client - The Discord client.
+     * @param content - Optional type of content
+     */
+    @Slash({ description: 'Fetches IMDb information for specified content.' })
+    async imdb(
+        @SlashOption({
+            description: 'Content to fetch',
+            name: 'content',
+            required: true,
+            type: ApplicationCommandOptionType.String,
+        })
+            content: string,
+            interaction: CommandInteraction,
+            client: Client,
+    ): Promise<void> {
+        const imdbRegexPattern = /https?:\/\/(www\.|m\.)?imdb\.com\/title\/tt(\d+)(\/)?/;
+
+        const isIMDbURLValid = content.match(imdbRegexPattern);
+
+        const typeOfRequest = isIMDbURLValid ? 'url' : 'name';
+
+        // Data is valid, fetch details
+        const details = await getContentDetails(content, typeOfRequest);
+
+        if (!details) {
+            const embed = new EmbedBuilder()
+                .setAuthor({ name: `${interaction.user.tag}`, iconURL: `${interaction.user.avatarURL()}` })
+                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .addFields({ name: `**${client.user?.username} - IMDb**`, value: '**◎ Error:** I was unable to find the content you were looking for. Please try again.' });
+            await interaction.editReply({ embeds: [embed] });
+            return;
+        }
+
+        const embed = new EmbedBuilder()
+            .setColor('#e0b10e')
+            .setAuthor({
+                name: `${details.title} (${details.year}) - ${details.type}`,
+                url: details.url,
+                iconURL: 'https://cdn4.iconfinder.com/data/icons/logos-and-brands/512/171_Imdb_logo_logos-1024.png',
+            })
+            .addFields(
+                { name: 'Votes', value: `<:imdb:1202979511755612173>** ${details.rating}/10** *(${details.totalVotes.toLocaleString('en')} votes)*`, inline: true },
+                { name: 'Genres', value: details.genres, inline: true },
+                { name: 'Stars', value: details.cast },
+            )
+            .setDescription(
+                `${codeBlock('text', `${details.plot}`)}`,
+            )
+            .setImage(details.image);
+
+        // Buttons to be applied to the embed
+        const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            new ButtonBuilder()
+                .setLabel(`Open ${details.type}`)
+                .setStyle(ButtonStyle.Link)
+                .setURL(details.url),
+            new ButtonBuilder()
+                .setStyle(ButtonStyle.Link)
+                .setLabel('View Reviews')
+                .setURL(`https://imdb.com/title/${details.id}/ratings`),
+            new ButtonBuilder()
+                .setStyle(ButtonStyle.Link)
+                .setLabel('View Cast')
+                .setURL(`https://imdb.com/title/${details.id}/fullcredits`),
+            new ButtonBuilder()
+                .setStyle(ButtonStyle.Link)
+                .setLabel('Trivia')
+                .setURL(`https://imdb.com/title/${details.id}/trivia`),
+        );
+
+        // Send the embed
+        await interaction.reply({ embeds: [embed], components: [row] });
+    }
+}
