@@ -177,6 +177,8 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
             [TitleMainType.Video]: 'Video',
         };
 
+        // https://paste.valhalladev.org/eyeromubih.yaml | https://www.imdb.com/title/tt8772262/
+
         // Extract relevant details from the data
         return {
             title: data.name,
@@ -190,6 +192,9 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
             image: data.posterImage.url,
             url: data.mainSource.sourceUrl,
             id: data.mainSource.sourceId,
+            productionCompany: data.productionCompanies[0].name,
+            runtime: data.runtime,
+            director: data.directors[0].name,
         };
     } catch (error) {
         console.error('Error fetching data:', error);
