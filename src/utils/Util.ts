@@ -56,7 +56,7 @@ export async function messageDelete(message: Message, time: number): Promise<voi
         }
     } catch (error) {
         // Handle any errors that occur during message deletion
-        console.error(`Uh-oh, there's been an error trying to delete the message, mate. Here's the message: ${error}`);
+        console.error('Error: Failed to delete the message:', error);
         throw error;
     }
 }
@@ -104,7 +104,7 @@ export async function getCommandIds(client: Client): Promise<{ [name: string]: s
 
         return commandIds;
     } catch (error) {
-        console.error('Error fetching global commands:', error);
+        console.error('Failed to fetch global commands:', error);
         return {};
     }
 }

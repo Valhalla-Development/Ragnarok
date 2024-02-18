@@ -36,34 +36,34 @@ const client = new Client({
  */
 process.on('unhandledRejection', async (error) => {
     if (!error || !(error instanceof Error) || !error.stack) return;
-    console.error(error.stack);
+    console.error(error);
 
     if (process.env.Logging && process.env.Logging.toLowerCase() === 'true') {
         if (!process.env.LoggingChannel) return;
 
-        const channel = client.channels.cache.get(process.env.LoggingChannel);
-        if (!channel || channel.type !== ChannelType.GuildText) return;
-
-        const typeOfError = error.stack.split(':')[0];
-        const fullError = error.stack.replace(/^[^:]+:/, '').trimStart();
-        const timeOfError = `<t:${Math.floor(new Date().getTime() / 1000)}>`;
-        const fullString = `From: \`${typeOfError}\`\nTime: ${timeOfError}\n\nError:\n${codeBlock('js', fullError)}`;
-
-        function truncateDescription(description: string) {
-            const maxLength = 2048;
-            if (description.length > maxLength) {
-                const numTruncatedChars = description.length - maxLength;
-                return `${description.slice(0, maxLength)}... ${numTruncatedChars} more`;
-            }
-            return description;
-        }
-
-        const embed = new EmbedBuilder().setTitle('Error').setDescription(truncateDescription(fullString));
-
         try {
+            const channel = client.channels.cache.get(process.env.LoggingChannel);
+            if (!channel || channel.type !== ChannelType.GuildText) return;
+
+            const typeOfError = error.stack.split(':')[0];
+            const fullError = error.stack.replace(/^[^:]+:/, '').trimStart();
+            const timeOfError = `<t:${Math.floor(new Date().getTime() / 1000)}>`;
+            const fullString = `From: \`${typeOfError}\`\nTime: ${timeOfError}\n\nError:\n${codeBlock('js', fullError)}`;
+
+            function truncateDescription(description: string) {
+                const maxLength = 2048;
+                if (description.length > maxLength) {
+                    const numTruncatedChars = description.length - maxLength;
+                    return `${description.slice(0, maxLength)}... ${numTruncatedChars} more`;
+                }
+                return description;
+            }
+
+            const embed = new EmbedBuilder().setTitle('Error').setDescription(truncateDescription(fullString));
+
             await channel.send({ embeds: [embed] });
         } catch (sendError) {
-            console.error('An error occurred while sending the error embed:', sendError);
+            console.error('Failed to send the error embed:', sendError);
         }
     }
 });
@@ -75,9 +75,9 @@ process.on('unhandledRejection', async (error) => {
  * @throws An Error if any required environment variables are missing or invalid.
  */
 async function run() {
-    const missingTokenError = 'The Token environment variable is missing.';
-    const invalidLoggingValueError = 'The Logging environment variable must be "true" or "false".';
-    const invalidLoggingChannel = 'The LoggingChannel environment variable is required when logging is enabled.';
+    const missingTokenError = 'Error: The Token environment variable is missing.';
+    const invalidLoggingValueError = 'Error: The Logging environment variable must be set to either "true" or "false".';
+    const invalidLoggingChannel = 'Error: Please specify the LoggingChannel environment variable when logging is enabled.';
 
     if (!process.env.Token) throw new Error(missingTokenError);
     if (process.env.Logging === 'true' && !process.env.LoggingChannel) throw new Error(invalidLoggingChannel);
@@ -105,7 +105,7 @@ async function run() {
             await sleep(time);
             await client.login(process.env.Token as string);
         } catch (error) {
-            console.error('An error occurred while initializing the bot:', error);
+            console.error('Initialization error:', error);
         }
     };
     await loadSequentially();

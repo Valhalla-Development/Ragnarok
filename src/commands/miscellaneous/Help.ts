@@ -11,16 +11,16 @@ import { capitalise, deletableCheck, getCommandIds } from '../../utils/Util.js';
 @Category('Miscellaneous')
 export class Help {
     /**
-     * Slash command to display list of commands.
+     * Displays a list of available commands.
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      */
-    @Slash({ description: 'Display list of commands.' })
+    @Slash({ description: 'Displays a list of available commands.' })
     async help(interaction: CommandInteraction, client: Client) {
         // Create the initial embed for the message
         const embed = new EmbedBuilder()
             .setColor('#e91e63')
-            .setDescription(`Hey, I'm **__${client.user?.username}__**`)
+            .setDescription(`Hey there, I'm **${client.user?.username}**!`)
             .setAuthor({ name: `${client.user?.username} Help`, iconURL: `${interaction.guild?.iconURL()}` })
             .setThumbnail(`${client.user?.displayAvatarURL()}`)
             .setFooter({
@@ -85,7 +85,7 @@ export class Help {
                 .setColor('#e91e63')
                 .addFields({
                     name: `**${client.user?.username} - ${capitalise(interaction.message.interaction?.commandName ?? '')}**`,
-                    value: '**◎ Error:** Only the command executor can select an option!',
+                    value: '**Error:** Only the command executor can select an option.',
                 });
 
             // Reply with an ephemeral message indicating the error

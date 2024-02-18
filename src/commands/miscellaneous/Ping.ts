@@ -9,11 +9,11 @@ import { deletableCheck } from '../../utils/Util.js';
 @Category('Miscellaneous')
 export class Ping {
     /**
-     * Displays ping information for the bot.
+     * Displays bot and API ping information.
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      */
-    @Slash({ description: 'Displays bot and API ping.' })
+    @Slash({ description: 'Displays bot and API ping information.' })
     async ping(interaction: CommandInteraction, client: Client): Promise<void> {
         const msg = await interaction.channel!.send({ content: 'Pinging...' });
         const latency = msg.createdTimestamp - interaction.createdTimestamp;

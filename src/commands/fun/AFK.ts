@@ -18,7 +18,7 @@ export class AFK {
     @Slash({ description: 'Set your AFK status' })
     async afk(
         @SlashOption({
-            description: 'Optional reason for being AFK',
+            description: 'Reason for being AFK (optional)',
             name: 'reason',
             type: ApplicationCommandOptionType.String,
         })
@@ -34,7 +34,7 @@ export class AFK {
 
         const embed = new EmbedBuilder().setColor(color(interaction.guild!.members.me!.displayHexColor)).addFields({
             name: `**${client.user?.username} - AFK**`,
-            value: `**◎ Success:** ${interaction.user} is now AFK for the following reason:\n\n${reason ?? 'AFK'}`,
+            value: `**Success:** ${interaction.user} is now AFK. Reason:\n\n${reason ?? 'AFK'}`,
         });
         await interaction.reply({ embeds: [embed] });
     }

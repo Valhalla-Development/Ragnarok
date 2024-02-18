@@ -9,15 +9,14 @@ import { color } from '../../utils/Util.js';
 @Category('Miscellaneous')
 export class Userinfo {
     /**
-     * Displays information for the interaction author or specified user.
+     * Displays information for the author of the interaction or a specified user.
      * @param interaction - The command interaction.
-     * @param client - The Discord client.
      * @param user - Optional user to lookup.
      */
-    @Slash({ description: 'Displays information for the interaction author or specified user.' })
+    @Slash({ description: 'Displays information for the author of the interaction or a specified user.' })
     async userinfo(
         @SlashOption({
-            description: 'Optional user to lookup',
+            description: 'User to look up (optional)',
             name: 'user',
             type: ApplicationCommandOptionType.User,
         })
@@ -61,9 +60,9 @@ export class Userinfo {
         const embed = new EmbedBuilder()
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
             .setThumbnail(member.user.displayAvatarURL() || '')
-            .setAuthor({ name: `Viewing information for ${member.user.username}`, iconURL: member.user.displayAvatarURL() || '' })
+            .setAuthor({ name: `Information for ${member.user.username}`, iconURL: member.user.displayAvatarURL() || '' })
             .addFields({
-                name: 'Member information',
+                name: 'User Information',
                 value: `**◎ 👑 User:** ${member.user}
                 **◎ 🆔 ID:** \`${member.user.id}\`
                 **◎ 📆 Created At** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)

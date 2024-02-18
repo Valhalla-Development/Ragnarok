@@ -10,15 +10,15 @@ import { color } from '../../utils/Util.js';
 @Category('Miscellaneous')
 export class Invite {
     /**
-     * Displays an invitation link for the bot.
+     * Displays an invitation link for adding the bot.
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      */
-    @Slash({ description: 'Displays an invitation link for the bot.' })
+    @Slash({ description: 'Displays an invitation link for adding the bot.' })
     async invite(interaction: CommandInteraction, client: Client): Promise<void> {
         const embed = new EmbedBuilder()
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .addFields({ name: `**${client.user?.username} - Invite**`, value: `Want to invite ${client.user}?` });
+            .addFields({ name: `**${client.user?.username} - Invite**`, value: `Would you like to invite ${client.user}?` });
 
         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
             new ButtonBuilder()

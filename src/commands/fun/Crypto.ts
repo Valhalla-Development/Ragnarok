@@ -12,23 +12,23 @@ import { capitalise, color } from '../../utils/Util.js';
 @Category('Fun')
 export class Crypto {
     /**
-     * Fetches specified crypto price
+     * Fetches specified cryptocurrency price
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      * @param crypto - Crypto price to fetch
      * @param currency - Optional currency to use (defaults to USD)
      */
-    @Slash({ description: 'Fetches specified crypto price' })
+    @Slash({ description: 'Fetches specified cryptocurrency price' })
     async crypto(
         @SlashOption({
-            description: 'Crypto price to fetch',
+            description: 'Specify the cryptocurrency to fetch price for',
             name: 'crypto',
             required: true,
             type: ApplicationCommandOptionType.String,
         })
             crypto: string,
         @SlashOption({
-            description: 'Currency to use',
+            description: 'Specify the currency to use (optional)',
             name: 'currency',
             type: ApplicationCommandOptionType.String,
         })
@@ -161,8 +161,7 @@ export class Crypto {
             const embed = new EmbedBuilder()
                 .setAuthor({ name: `${interaction.user.tag}`, iconURL: `${interaction.user.avatarURL()}` })
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Crypto**`, value: '**◎ Error:** An error occurred while processing your request!' });
-
+                .addFields({ name: `**${client.user?.username} - Crypto**`, value: '**◎ Error:** An error occurred while processing your request.' });
             await interaction.editReply({ embeds: [embed] });
         }
     }

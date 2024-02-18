@@ -17,12 +17,12 @@ import { color } from '../../utils/Util.js';
 @SlashGroup('birthday')
 export class Birthday {
     /**
-     * The ability to set or view birthdays
+     * View the birthday of the author of the interaction or a specified user.
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      * @param user - Optional user to fetch
      */
-    @Slash({ description: 'View birthday of a user', name: 'view' })
+    @Slash({ description: 'View the birthday of the author of the interaction or a specified user.', name: 'view' })
     async view(
         @SlashOption({
             description: 'View birthday of a user',
@@ -40,7 +40,7 @@ export class Birthday {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .addFields({
                     name: `**${client.user?.username} - Birthday**`,
-                    value: '**◎ Error:** Birthdays are currently disabled on this server. An admin may need to enable this function by running `/config birthday`.',
+                    value: '**◎ Error:** Birthdays are currently disabled on this server. An admin may need to enable this feature by running `/config birthday`.',
                 });
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
@@ -55,7 +55,7 @@ export class Birthday {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .addFields({
                     name: `**${client.user?.username} - Birthday**`,
-                    value: `**◎** ${member} does not have a birthday set!`,
+                    value: `**◎ Error:**  ${member} does not have a birthday set!`,
                 });
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
@@ -73,19 +73,20 @@ export class Birthday {
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
             .addFields({
                 name: `**${client.user?.username} - Birthday**`,
-                value: `**◎** ${member}'s **next** birthday is in **${timeUntilNextBirthday}**, on **${nextBirthdayFormatted}**.`,
+                value: `**🎉** ${member}'s **next** birthday is in **${timeUntilNextBirthday}**, on **${nextBirthdayFormatted}**.`,
+
             });
 
         await interaction.reply({ embeds: [embed] });
     }
 
     /**
-     * The ability to set or view birthdays
+     * The ability to set your birthdays
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      * @param date - Date of users birthday
      */
-    @Slash({ description: 'Set your birthday', name: 'set' })
+    @Slash({ description: 'The ability to set your birthdays', name: 'set' })
     async set(
         @SlashOption({
             description: 'Set your birthday',
@@ -104,7 +105,7 @@ export class Birthday {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .addFields({
                     name: `**${client.user?.username} - Birthday**`,
-                    value: '**◎ Error:** Please input a valid date! Input should be `MM/DD/YYYY`\nAn example would be:\n`12/31/2002`',
+                    value: '**◎ Error:** Please input a valid date! Input should be in the format `MM/DD/YYYY`. For example:\n`12/31/2024`',
                 });
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
@@ -118,7 +119,7 @@ export class Birthday {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .addFields({
                     name: `**${client.user?.username} - Birthday**`,
-                    value: `**◎ Error:** You tried to set your birthday to: \`${date}\` ... that date is in the future <:wut:745408596233289839>`,
+                    value: `**◎ Error:** You tried to set your birthday to: \`${date}\`. However, that date is in the future <:wut:745408596233289839>`,
                 });
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
@@ -134,31 +135,32 @@ export class Birthday {
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
             .addFields({
                 name: `**${client.user?.username} - Birthday**`,
-                value: `**◎ Success:** You have successfully set your birthday to \`${date}\``,
+                value: `**◎ Success:** Your birthday has been successfully set to \`${date}\`.`,
             });
         await interaction.reply({ ephemeral: true, embeds: [embed] });
     }
 
     /**
-     * The ability to set or view birthdays
+     * Delete your birthday from the database
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      */
-    @Slash({ description: 'Delete your birthday', name: 'delete' })
+    @Slash({ description: 'Delete your birthday \from the database', name: 'delete' })
     async deleteBirthday(interaction: CommandInteraction, client: Client): Promise<void> {
         const birthdayDB = await Birthdays.findOneAndDelete({ UserId: interaction.user.id });
 
         if (!birthdayDB) {
             const embed = new EmbedBuilder()
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Birthday**`, value: '**◎ Error:** I could not find your birthday in the database!' });
+                .addFields({ name: `**${client.user?.username} - Birthday**`, value: '**◎ Error:** Unable to locate your birthday in the database.' });
+
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
         }
 
         const embed = new EmbedBuilder()
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .addFields({ name: `**${client.user?.username} - Birthday**`, value: '**◎ Success:** I have removed your birthday from the database!' });
+            .addFields({ name: `**${client.user?.username} - Birthday**`, value: '**◎ Success:** Your birthday has been successfully removed from the database!' });
         await interaction.reply({ ephemeral: true, embeds: [embed] });
     }
 
@@ -187,7 +189,7 @@ export class Birthday {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .addFields({
                     name: `**${client.user?.username} - Birthday**`,
-                    value: '**◎ Error:** No users have a birthday defined within this guild',
+                    value: '**◎ Error:** There are no users with a defined birthday within this guild.',
                 });
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;

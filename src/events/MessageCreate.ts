@@ -37,7 +37,7 @@ export class MessageCreate {
                     .setColor(color(`${message.guild?.members.me?.displayHexColor}`))
                     .addFields({
                         name: `**${client.user?.username} - Anti Scam**`,
-                        value: '**◎ Error:** I do not have the `Manage Messages` permissions. Disabling Anti Scam.',
+                        value: '**Error:** I lack the `Manage Messages` permission required for this action. Anti-Scam feature has been disabled.\n',
                     });
 
                 const deletionMessage = await message.channel.send({ embeds: [npPerms] });
@@ -59,7 +59,7 @@ export class MessageCreate {
                 if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)
                     && message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
                     await messageDelete(message, 0);
-                    const deletionMessage = await message.channel.send(`**◎ Your message contains: \`${reasons.join(', ')}\` and it was deleted, ${message.author}**`);
+                    const deletionMessage = await message.channel.send(`**◎ Message deleted:** Your message contains: \`${reasons.join(', ')}\`, ${message.author}.`);
                     deletableCheck(deletionMessage, 5000);
                 }
             }
@@ -70,7 +70,7 @@ export class MessageCreate {
          * Function for protecting against ads and unwanted links in a text-based channel.
          * @remarks This function checks if the AdsProtection feature is enabled in the guild and takes actions accordingly.
          */
-        async function adsProtection() { // TODO needs testing ofc
+        async function adsProtection() {
             const channel = message.channel as GuildTextBasedChannel;
             const adsProt = await AdsProtection.findOne({ GuildId: message.guild?.id });
 
@@ -83,7 +83,7 @@ export class MessageCreate {
                         .setColor(color(`${message.guild?.members.me?.displayHexColor}`))
                         .addFields({
                             name: `**${client.user?.username} - Ads Protection**`,
-                            value: '**◎ Error:** I do not have the `MANAGE_MESSAGES` permissions. Disabling Ads Protection.',
+                            value: '**Error:** I lack the `Manage Messages` permission required for Ads Protection. This feature has been disabled.',
                         });
 
                     message.channel.send({ embeds: [errorEmbed] }).then((m) => deletableCheck(m, 0));
@@ -99,7 +99,7 @@ export class MessageCreate {
                         // Delete the message and notify the user
                         if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
                             await messageDelete(message, 0);
-                            message.channel.send(`**◎ Your message contained a link and it was deleted, ${message.author}**`).then((msg) => {
+                            message.channel.send(`**◎ Link detected:** Your message has been deleted, ${message.author}.`).then((msg) => {
                                 deletableCheck(msg, 5000);
                             });
                         }
@@ -245,7 +245,7 @@ export class MessageCreate {
                     // Reply with the embed and action row.
                     await message.reply({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
                 } catch (error) {
-                    console.error('Error during IMDb fetch:', error);
+                    console.error('IMDb fetch error:', error);
                 }
             }
         }

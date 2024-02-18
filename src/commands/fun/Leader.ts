@@ -21,7 +21,7 @@ export class Leader {
         if (levelDb) {
             const embed = new EmbedBuilder()
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Leader**`, value: '**◎ Error:** Level system is disabled for this guild!' });
+                .addFields({ name: `**${client.user?.username} - Leader**`, value: '**◎ Error:** The level system is disabled for this guild.' });
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
         }

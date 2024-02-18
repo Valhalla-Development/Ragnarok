@@ -8,13 +8,13 @@ import { Category } from '@discordx/utilities';
 @Category('Hidden')
 export class Emit {
     /**
-     * Developer command to emit some events
+     * Developer command to trigger specific events.
      * @param event - Event to trigger
      * @param interaction - The command interaction.
      * @param client
      */
     @Slash({
-        description: 'Set the role users will be given upon joining',
+        description: 'Developer command to trigger specific events.\n',
         defaultMemberPermissions: [PermissionsBitField.Flags.Administrator],
     })
     async emit(
@@ -24,7 +24,7 @@ export class Emit {
         @SlashChoice({ name: 'guildBanRemove', value: 'guildBanRemove' })
         @SlashChoice({ name: 'channelUpdate', value: 'channelUpdate' })
         @SlashOption({
-            description: 'Which event should be triggered?',
+            description: 'Specify which event to trigger.',
             name: 'event',
             required: true,
             type: ApplicationCommandOptionType.String,

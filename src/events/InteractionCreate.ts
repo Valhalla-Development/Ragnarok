@@ -19,7 +19,7 @@ export class InteractionCreate {
         try {
             await client.executeInteraction(interaction);
         } catch (err) {
-            console.error('Error executing interaction\n', err);
+            console.error('Interaction execution error:', err);
         }
 
         if (process.env.Logging && process.env.Logging.toLowerCase() === 'true') {
@@ -47,7 +47,7 @@ export class InteractionCreate {
                         }
                     }
                 } catch (sendError) {
-                    console.error('An error occurred while sending the command logging embed:', sendError);
+                    console.error('Failed to send the command logging embed:', sendError);
                 }
             }
         }

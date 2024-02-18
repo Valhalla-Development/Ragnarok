@@ -13,11 +13,11 @@ import packageJson from '../../../package.json' assert { type: 'json' };
 @Category('Miscellaneous')
 export class Stats {
     /**
-     * Displays statistics for the bot.
+     * Displays bot statistics.
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      */
-    @Slash({ description: 'Displays statistics for the bot.' })
+    @Slash({ description: 'Displays bot statistics.' })
     async stats(interaction: CommandInteraction, client: Client): Promise<void> {
         // Fetch announcement from database
         const dbAnnouncements = await Announcement.find();
@@ -42,9 +42,9 @@ export class Stats {
         const embed = new EmbedBuilder()
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
             .setThumbnail(client.user?.displayAvatarURL() || '')
-            .setAuthor({ name: `Viewing statistics for ${client.user?.username}`, iconURL: client.user?.displayAvatarURL() || '' })
+            .setAuthor({ name: 'Bot Statistics', iconURL: client.user?.displayAvatarURL() || '' })
             .addFields({
-                name: 'General Information',
+                name: 'Overview',
                 value: `**◎ 🤖 Name:** \`${client.user?.tag}\`
                 **◎ 📈 Uptime:** <t:${Math.round((Date.now() - client.uptime!) / 1000)}:R>
                 **◎ 🧾 Commands:** \`${MetadataStorage.instance.applicationCommands.filter((cmd: DApplicationCommand & ICategory) => cmd.category?.toLowerCase() !== 'Hidden').length}\`
@@ -56,7 +56,7 @@ export class Stats {
                 \u200b`,
             })
             .addFields({
-                name: 'System',
+                name: 'System Information',
                 value: `**◎ 💻 OS:** \`${systemInfo.osInfo.distro}\`
                 **◎ 📊 Uptime:** <t:${Math.round((Date.now() - os.uptime() * 1000) / 1000)}:R>
                 **◎ 💾 Memory Usage:** \`${realMemUsed.toLocaleString('en')} / ${totalMemory.toLocaleString('en')}MB - ${memPercent.toFixed(1)}%\`

@@ -11,18 +11,18 @@ import { color } from '../../utils/Util.js';
 @Category('Miscellaneous')
 export class Ping {
     /**
-     * Displays stats for the interaction guild.
+     * Displays guild statistics.
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      * @param option - The option selected from the command
      */
-    @Slash({ description: 'Displays stats for the guild.' })
+    @Slash({ description: 'Displays guild statistics.' })
     async serverinfo(
         @SlashChoice({ name: 'Server', value: 'server' })
         @SlashChoice({ name: 'Roles', value: 'roles' })
         @SlashChoice({ name: 'Emojis', value: 'emojis' })
         @SlashOption({
-            description: 'Type of request',
+            description: 'Type of request (optional)',
             name: 'option',
             type: ApplicationCommandOptionType.String,
         })
@@ -63,7 +63,7 @@ export class Ping {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .setThumbnail(interaction.guild?.iconURL() || '')
                 .setAuthor({
-                    name: `Viewing information for ${interaction.guild?.name}`,
+                    name: `Guild Information: ${interaction.guild?.name}`,
                     iconURL: interaction.guild?.iconURL() || '',
                 })
                 .addFields(
@@ -113,7 +113,10 @@ export class Ping {
 
         if (option === 'roles') {
             if (!roles) {
-                await interaction.reply({ content: 'I was unable to locate any roles.' });
+                const embed = new EmbedBuilder()
+                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                    .addFields({ name: `**${client.user?.username} - ServerInfo**`, value: '**Error:** Unable to locate any roles.' });
+                await interaction.reply({ embeds: [embed] });
                 return;
             }
 
@@ -127,7 +130,7 @@ export class Ping {
             const embed = new EmbedBuilder()
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .setAuthor({
-                    name: `Viewing information for ${interaction.guild?.name}`,
+                    name: `Guild Information: ${interaction.guild?.name}`,
                     iconURL: `${interaction.guild?.iconURL()}`,
                 })
                 .setDescription(
@@ -145,7 +148,10 @@ export class Ping {
 
         if (option === 'emojis') {
             if (!emojiMap) {
-                await interaction.reply({ content: 'I was unable to locate any emojis.' });
+                const embed = new EmbedBuilder()
+                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                    .addFields({ name: `**${client.user?.username} - ServerInfo**`, value: '**Error:** Unable to locate any emojis.' });
+                await interaction.reply({ embeds: [embed] });
                 return;
             }
 
@@ -161,7 +167,7 @@ export class Ping {
             const embed = new EmbedBuilder()
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .setAuthor({
-                    name: `Viewing information for ${interaction.guild?.name}`,
+                    name: `Guild Information: ${interaction.guild?.name}`,
                     iconURL: `${interaction.guild?.iconURL()}`,
                 })
                 .setDescription(

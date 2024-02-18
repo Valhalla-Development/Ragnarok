@@ -11,15 +11,15 @@ import { color } from '../../utils/Util.js';
 @Category('Fun')
 export class Banner {
     /**
-     * Display guild members banner
+     * Display guild member's banner
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      * @param user - Optional user to fetch
      */
-    @Slash({ description: 'Display guild members banner' })
+    @Slash({ description: 'Display guild member\'s banner' })
     async banner(
         @SlashOption({
-            description: 'Optional user to fetch',
+            description: 'User to fetch (optional)',
             name: 'user',
             type: ApplicationCommandOptionType.User,
         })
@@ -50,7 +50,7 @@ export class Banner {
         } catch (error) {
             const embed = new EmbedBuilder()
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Banner**`, value: `**◎ Error:** An error occurred fetching ${member}` });
+                .addFields({ name: `**${client.user?.username} - Banner**`, value: `**◎ Error:** An error occurred fetching ${member}'s banner` });
             await interaction.reply({ ephemeral: true, embeds: [embed] });
         }
     }
