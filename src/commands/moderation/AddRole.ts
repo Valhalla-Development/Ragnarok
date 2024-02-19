@@ -1,5 +1,5 @@
 import {
-    Client, Discord, Slash, SlashOption,
+    Client, Discord, Guard, Slash, SlashOption,
 } from 'discordx';
 import {
     ApplicationCommandOptionType,
@@ -12,6 +12,7 @@ import {
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
 import { color } from '../../utils/Util.js';
+import { BotHasPerm } from '../../guards/BotHasPerm.js';
 
 @Discord()
 @Category('Moderation')
@@ -27,6 +28,7 @@ export class AddRole {
         description: 'Add a role to a specified user.',
         defaultMemberPermissions: [PermissionsBitField.Flags.ManageRoles],
     })
+    @Guard(BotHasPerm([PermissionsBitField.Flags.ManageRoles]))
     async addrole(
         @SlashOption({
             description: 'User to add the role to',
