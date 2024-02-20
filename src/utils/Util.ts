@@ -1,5 +1,6 @@
-import type { ColorResolvable, Message } from 'discord.js';
-import { PermissionsBitField } from 'discord.js';
+import {
+    ButtonInteraction, ColorResolvable, CommandInteraction, EmbedBuilder, Message, PermissionsBitField,
+} from 'discord.js';
 import { Client } from 'discordx';
 import 'colors';
 import mongoose from 'mongoose';
@@ -198,5 +199,27 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
         };
     } catch (error) {
         console.error('Error fetching data:', error);
+    }
+}
+
+export async function RagnarokEmbed(
+    client: Client,
+    interaction: CommandInteraction | ButtonInteraction,
+    type: string,
+    content: string,
+    ephemeral: boolean = false,
+) {
+    const commandName = interaction.isButton() ? interaction.customId.split('_')[1] : interaction.command!.name;
+
+    const embed = new EmbedBuilder()
+        .setColor(color(interaction.guild!.members.me!.displayHexColor))
+        .addFields({ name: `**${client.user!.username} - ${capitalise(commandName)}**`, value: `**◎ ${type}:** ${content}` });
+
+    try {
+        interaction.deferred
+            ? await interaction.editReply({ embeds: [embed] })
+            : await interaction.reply({ ephemeral, embeds: [embed] });
+    } catch (error) {
+        console.error('Error sending embed:', error);
     }
 }
