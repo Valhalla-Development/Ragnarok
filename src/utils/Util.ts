@@ -202,6 +202,15 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
     }
 }
 
+/**
+ * Creates and sends an embed in response to an interaction.
+ * @param client - The Discord client.
+ * @param interaction - The interaction that triggered the function.
+ * @param type - The type of the interaction.
+ * @param content - The content of the embed.
+ * @param ephemeral - Whether the interaction response should be ephemeral.
+ * @returns - A promise that resolves when the interaction is replied to.
+ */
 export async function RagnarokEmbed(
     client: Client,
     interaction: CommandInteraction | ButtonInteraction,
