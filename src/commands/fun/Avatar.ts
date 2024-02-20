@@ -5,7 +5,7 @@ import {
     ApplicationCommandOptionType, CommandInteraction, EmbedBuilder, GuildMember,
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
-import { color } from '../../utils/Util.js';
+import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -35,10 +35,7 @@ export class Avatar {
             const avatar = member.user.displayAvatarURL({ size: 2048 });
 
             if (!avatar) {
-                const embed = new EmbedBuilder()
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                    .addFields({ name: `**${client.user?.username} - Avatar**`, value: `**◎ Error:** ${member} does not have an avatar set.` });
-                await interaction.reply({ ephemeral: true, embeds: [embed] });
+                await RagnarokEmbed(client, interaction, 'Error', `${member} does not have an avatar set.`, true);
                 return;
             }
 
@@ -48,10 +45,7 @@ export class Avatar {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor));
             await interaction.reply({ embeds: [embed] });
         } catch (error) {
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Avatar**`, value: `**◎ Error:** An error occurred fetching ${member}'s avatar` });
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', `An error occurred fetching ${member}'s avatar`, true);
         }
     }
 }

@@ -3,7 +3,7 @@ import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Category } from '@discordx/utilities';
 import Level from '../../mongo/schemas/Level.js';
 import LevelConfig from '../../mongo/schemas/LevelConfig.js';
-import { color } from '../../utils/Util.js';
+import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -19,10 +19,7 @@ export class Leader {
         const levelDb = await LevelConfig.findOne({ GuildId: interaction.guild!.id });
 
         if (levelDb) {
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Leader**`, value: '**◎ Error:** The level system is disabled for this guild.' });
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', 'The level system is disabled for this guild.', true);
             return;
         }
 

@@ -5,7 +5,7 @@ import { Category } from '@discordx/utilities';
 import {
     ApplicationCommandOptionType, ChannelType, CommandInteraction, EmbedBuilder,
 } from 'discord.js';
-import { color } from '../../utils/Util.js';
+import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Miscellaneous')
@@ -113,10 +113,7 @@ export class Ping {
 
         if (option === 'roles') {
             if (!roles) {
-                const embed = new EmbedBuilder()
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                    .addFields({ name: `**${client.user?.username} - ServerInfo**`, value: '**Error:** Unable to locate any roles.' });
-                await interaction.reply({ embeds: [embed] });
+                await RagnarokEmbed(client, interaction, 'Error', 'Unable to locate any roles.', true);
                 return;
             }
 
@@ -148,10 +145,7 @@ export class Ping {
 
         if (option === 'emojis') {
             if (!emojiMap) {
-                const embed = new EmbedBuilder()
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                    .addFields({ name: `**${client.user?.username} - ServerInfo**`, value: '**Error:** Unable to locate any emojis.' });
-                await interaction.reply({ embeds: [embed] });
+                await RagnarokEmbed(client, interaction, 'Error', 'Unable to locate any emojis.', true);
                 return;
             }
 

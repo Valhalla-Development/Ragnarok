@@ -5,7 +5,7 @@ import {
     ApplicationCommandOptionType, CommandInteraction, EmbedBuilder, GuildMember,
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
-import { color } from '../../utils/Util.js';
+import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -35,10 +35,7 @@ export class Banner {
             const banner = member.user.bannerURL({ size: 2048 });
 
             if (!banner) {
-                const embed = new EmbedBuilder()
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                    .addFields({ name: `**${client.user?.username} - Banner**`, value: `**◎ Error:** ${member} does not have a banner set.` });
-                await interaction.reply({ ephemeral: true, embeds: [embed] });
+                await RagnarokEmbed(client, interaction, 'Error', `${member} does not have a banner set.`, true);
                 return;
             }
 
@@ -48,10 +45,7 @@ export class Banner {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor));
             await interaction.reply({ embeds: [embed] });
         } catch (error) {
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Banner**`, value: `**◎ Error:** An error occurred fetching ${member}'s banner` });
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', `An error occurred fetching ${member}'s banner`, true);
         }
     }
 }

@@ -6,7 +6,7 @@ import { Category } from '@discordx/utilities';
 // @ts-expect-error no type file available for this package
 import cryptocurrencies from 'cryptocurrencies';
 import axios from 'axios';
-import { capitalise, color } from '../../utils/Util.js';
+import { capitalise, color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -36,8 +36,6 @@ export class Crypto {
             interaction: CommandInteraction,
             client: Client,
     ): Promise<void> {
-        await interaction.deferReply();
-
         const symbolDict: { [key: string]: string } = {
             USD: '$',
             BTC: '₿',
@@ -82,25 +80,17 @@ export class Crypto {
         const cryptoUpperCase = crypto.toUpperCase();
 
         if (currency && !symbolDict[currency.toUpperCase()]) {
-            const embed = new EmbedBuilder()
-                .setAuthor({ name: `${interaction.user.tag}`, iconURL: `${interaction.user.avatarURL()}` })
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Crypto**`, value: '**◎ Error:** Please enter a valid currency!' });
-
-            await interaction.editReply({ embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', 'Please enter a valid currency!', true);
             return;
         }
 
         const cryptoType = cryptocurrencies[cryptoUpperCase];
         if (!cryptoType) {
-            const embed = new EmbedBuilder()
-                .setAuthor({ name: `${interaction.user.tag}`, iconURL: `${interaction.user.avatarURL()}` })
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Crypto**`, value: '**◎ Error:** Please enter a valid cryptocurrency!' });
-
-            await interaction.editReply({ embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', 'Please enter a valid cryptocurrency!', true);
             return;
         }
+
+        await interaction.deferReply();
 
         // Fetch cryptocurrency data from the API
         try {
@@ -115,12 +105,7 @@ export class Crypto {
 
             // Check if the response contains valid data
             if (!Array.isArray(content) || content.length === 0 || !content[0].id) {
-                const embed = new EmbedBuilder()
-                    .setAuthor({ name: `${interaction.user.tag}`, iconURL: `${interaction.user.avatarURL()}` })
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                    .addFields({ name: `**${client.user?.username} - Crypto**`, value: '**◎ Error:** Please enter a valid cryptocurrency!' });
-
-                await interaction.editReply({ embeds: [embed] });
+                await RagnarokEmbed(client, interaction, 'Error', 'Please enter a valid cryptocurrency!');
                 return;
             }
 
@@ -158,11 +143,7 @@ export class Crypto {
 
             await interaction.editReply({ embeds: [successEmb] });
         } catch (error) {
-            const embed = new EmbedBuilder()
-                .setAuthor({ name: `${interaction.user.tag}`, iconURL: `${interaction.user.avatarURL()}` })
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Crypto**`, value: '**◎ Error:** An error occurred while processing your request.' });
-            await interaction.editReply({ embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred while processing your request.');
         }
     }
 }

@@ -9,7 +9,7 @@ import moment from 'moment';
 import ms from 'ms';
 import BirthdayConfig from '../../mongo/schemas/BirthdayConfig.js';
 import Birthdays from '../../mongo/schemas/Birthdays.js';
-import { color } from '../../utils/Util.js';
+import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -36,13 +36,7 @@ export class Birthday {
         const birthdayConfigDB = await BirthdayConfig.findOne({ GuildId: interaction.guild!.id });
 
         if (!birthdayConfigDB) {
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({
-                    name: `**${client.user?.username} - Birthday**`,
-                    value: '**◎ Error:** Birthdays are currently disabled on this server. An admin may need to enable this feature by running `/config birthday`.',
-                });
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', 'Birthdays are currently disabled on this server. An admin may need to enable this feature by running `/config birthday`.', true);
             return;
         }
 
@@ -51,13 +45,7 @@ export class Birthday {
         const birthdayDB = await Birthdays.findOne({ UserId: member.id });
 
         if (!birthdayDB) {
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({
-                    name: `**${client.user?.username} - Birthday**`,
-                    value: `**◎ Error:**  ${member} does not have a birthday set!`,
-                });
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', `${member} does not have a birthday set!`, true);
             return;
         }
 
@@ -69,15 +57,7 @@ export class Birthday {
         const timeUntilNextBirthday = moment.duration(nextBirthdayDate.diff(moment())).humanize();
         const nextBirthdayFormatted = nextBirthdayDate.format('MMMM Do');
 
-        const embed = new EmbedBuilder()
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .addFields({
-                name: `**${client.user?.username} - Birthday**`,
-                value: `**🎉** ${member}'s **next** birthday is in **${timeUntilNextBirthday}**, on **${nextBirthdayFormatted}**.`,
-
-            });
-
-        await interaction.reply({ embeds: [embed] });
+        await RagnarokEmbed(client, interaction, '🎉', `${member}'s **next** birthday is in **${timeUntilNextBirthday}**, on **${nextBirthdayFormatted}**.`);
     }
 
     /**
@@ -101,13 +81,7 @@ export class Birthday {
         const validateDate = moment(date, 'MM/DD/YYYY', true).isValid();
 
         if (!validateDate) {
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({
-                    name: `**${client.user?.username} - Birthday**`,
-                    value: '**◎ Error:** Please input a valid date! Input should be in the format `MM/DD/YYYY`. For example:\n`12/31/2024`',
-                });
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', 'Please input a valid date! Input should be in the format `MM/DD/YYYY`. For example: `12/31/2024`', true);
             return;
         }
 
@@ -115,13 +89,7 @@ export class Birthday {
         const now = moment();
 
         if (birthdayUpd.isAfter(now)) {
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({
-                    name: `**${client.user?.username} - Birthday**`,
-                    value: `**◎ Error:** You tried to set your birthday to: \`${date}\`. However, that date is in the future <:wut:745408596233289839>`,
-                });
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', `You tried to set your birthday to: \`${date}\`. However, that date is in the future <:wut:745408596233289839>`, true);
             return;
         }
 
@@ -131,13 +99,7 @@ export class Birthday {
             { upsert: true, new: true },
         );
 
-        const embed = new EmbedBuilder()
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .addFields({
-                name: `**${client.user?.username} - Birthday**`,
-                value: `**◎ Success:** Your birthday has been successfully set to \`${date}\`.`,
-            });
-        await interaction.reply({ ephemeral: true, embeds: [embed] });
+        await RagnarokEmbed(client, interaction, 'Success', `Your birthday has been successfully set to \`${date}\`.`);
     }
 
     /**
@@ -150,18 +112,11 @@ export class Birthday {
         const birthdayDB = await Birthdays.findOneAndDelete({ UserId: interaction.user.id });
 
         if (!birthdayDB) {
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Birthday**`, value: '**◎ Error:** Unable to locate your birthday in the database.' });
-
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', 'Unable to locate your birthday in the database.', true);
             return;
         }
 
-        const embed = new EmbedBuilder()
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .addFields({ name: `**${client.user?.username} - Birthday**`, value: '**◎ Success:** Your birthday has been successfully removed from the database!' });
-        await interaction.reply({ ephemeral: true, embeds: [embed] });
+        await RagnarokEmbed(client, interaction, 'Success', 'Your birthday has been successfully removed from the database.');
     }
 
     /**
@@ -185,13 +140,7 @@ export class Birthday {
         });
 
         if (!filteredRows.length) {
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({
-                    name: `**${client.user?.username} - Birthday**`,
-                    value: '**◎ Error:** There are no users with a defined birthday within this guild.',
-                });
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', 'There are no users with a defined birthday within this guild.', true);
             return;
         }
 

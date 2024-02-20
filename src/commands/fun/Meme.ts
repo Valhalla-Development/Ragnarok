@@ -6,7 +6,7 @@ import {
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
 import RedditImageFetcher from 'reddit-image-fetcher';
-import { color } from '../../utils/Util.js';
+import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 const subreddits = ['memes', 'bonehurtingjuice', 'surrealmemes', 'dankmemes', 'meirl', 'me_irl', 'funny'];
 
@@ -68,10 +68,7 @@ export class Meme {
         const button = interaction.customId.split('_');
 
         if (interaction.user.id !== button[1]) {
-            const wrongUser = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Meme**`, value: '**◎ Error:** Only the command executor can load the next meme.' });
-            await interaction.reply({ ephemeral: true, embeds: [wrongUser] });
+            await RagnarokEmbed(client, interaction, 'Error', 'Only the command executor can load the next meme.', true);
             return;
         }
 

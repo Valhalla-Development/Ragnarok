@@ -1,6 +1,6 @@
 import { GuardFunction } from 'discordx';
-import { CommandInteraction, EmbedBuilder, PermissionsBitField } from 'discord.js';
-import { capitalise, color } from '../utils/Util.js';
+import { CommandInteraction, PermissionsBitField } from 'discord.js';
+import { RagnarokEmbed } from '../utils/Util.js';
 
 /**
  * Checks if the bot has the required permissions before executing a command.
@@ -14,13 +14,8 @@ export function BotHasPerm(requiredPermissions: bigint[]): GuardFunction<Command
         if (missingPermissions.length > 0) {
             const permissionNames = new PermissionsBitField(missingPermissions).toArray();
 
-            const embed = new EmbedBuilder()
-                .setColor(color(`${interaction.guild?.members.me?.displayHexColor}`))
-                .addFields({
-                    name: `**${client.user?.username} - ${capitalise(interaction.command!.name)}**`,
-                    value: `**Error:** I lack the following permissions required for this action: \`${permissionNames.join(', ')}\``,
-                });
-            return interaction.reply({ embeds: [embed], ephemeral: true });
+            await RagnarokEmbed(client, interaction, 'Error', `I lack the following permissions required for this action: \`${permissionNames.join(', ')}\``);
+            return;
         }
 
         await next();

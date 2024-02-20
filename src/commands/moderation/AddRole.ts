@@ -2,16 +2,10 @@ import {
     Client, Discord, Guard, Slash, SlashOption,
 } from 'discordx';
 import {
-    ApplicationCommandOptionType,
-    CommandInteraction,
-    EmbedBuilder,
-    GuildMember,
-    GuildMemberRoleManager,
-    PermissionsBitField,
-    Role,
+    ApplicationCommandOptionType, CommandInteraction, GuildMember, GuildMemberRoleManager, PermissionsBitField, Role,
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
-import { color } from '../../utils/Util.js';
+import { RagnarokEmbed } from '../../utils/Util.js';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
 
 @Discord()
@@ -50,13 +44,7 @@ export class AddRole {
         const targetMember = user || interaction.member;
 
         if (targetMember.id === interaction.member!.user.id) {
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({
-                    name: `**${client.user?.username} - Add Role**`,
-                    value: '**◎ Error:** You cannot give yourself a role!',
-                });
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', 'You cannot give yourself a role!');
             return;
         }
 
@@ -64,43 +52,23 @@ export class AddRole {
             const memberRoles = interaction.member!.roles as GuildMemberRoleManager;
 
             if (role.position >= memberRoles.highest.position) {
-                const embed = new EmbedBuilder()
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                    .addFields({
-                        name: `**${client.user?.username} - Add Role**`,
-                        value: '**◎ Error:** You cannot give a user a role that is equal or greater than your own!',
-                    });
-                await interaction.reply({ ephemeral: true, embeds: [embed] });
+                await RagnarokEmbed(client, interaction, 'Error', 'You cannot give a user a role that is equal or greater than your own!', true);
                 return;
             }
 
             // Check if the user already has the role
             if (targetMember.roles.cache.has(role.id)) {
-                const embed = new EmbedBuilder()
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                    .addFields({
-                        name: `**${client.user?.username} - Add Role**`,
-                        value: `**◎ Error:** ${targetMember} already has the role: ${role}`,
-                    });
-                await interaction.reply({ ephemeral: true, embeds: [embed] });
+                await RagnarokEmbed(client, interaction, 'Error', `${targetMember} already has the role: ${role}`, true);
                 return;
             }
 
             await targetMember.roles.add(role);
 
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({
-                    name: `**${client.user?.username} - Add Role**`,
-                    value: `**◎ Success:** I have added the ${role} role to ${targetMember}`,
-                });
-            await interaction.reply({ embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Success', `I have added the ${role} role to ${targetMember}`);
         } catch (error) {
             console.error('Error adding role:', error);
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Add Role**`, value: '**◎ Error:** An error occurred.' });
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+
+            await RagnarokEmbed(client, interaction, 'Error', `An error occurred, ${error}`, true);
         }
     }
 }

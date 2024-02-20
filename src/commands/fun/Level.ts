@@ -2,7 +2,7 @@ import {
     Client, Discord, Slash, SlashGroup, SlashOption,
 } from 'discordx';
 import {
-    ApplicationCommandOptionType, AttachmentBuilder, CommandInteraction, EmbedBuilder, GuildMember,
+    ApplicationCommandOptionType, AttachmentBuilder, CommandInteraction, GuildMember,
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
 // @ts-expect-error no type file available for this package
@@ -15,7 +15,7 @@ import converter from 'number-to-words-en';
 import { createCanvas, Image, loadImage } from 'canvas';
 import LevelConfig from '../../mongo/schemas/LevelConfig.js';
 import Level from '../../mongo/schemas/Level.js';
-import { color } from '../../utils/Util.js';
+import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -370,10 +370,7 @@ export class LevelCommand {
         const levelConfig = await LevelConfig.findOne({ GuildId: interaction.guild!.id });
 
         if (levelConfig) {
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Level**`, value: '**◎ Error:** Level system is disabled for this guild!' });
-            await interaction.editReply({ embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', 'Level system is disabled for this guild!');
             return;
         }
 
@@ -385,17 +382,11 @@ export class LevelCommand {
 
         if (country === 'off') {
             if (!score || !score.Country) {
-                const embed = new EmbedBuilder()
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                    .addFields({ name: `**${client.user?.username} - Level**`, value: '**◎ Error:** You do not have a country set.' });
-                await interaction.editReply({ embeds: [embed] });
+                await RagnarokEmbed(client, interaction, 'Error', 'You do not have a country set.');
                 return;
             }
 
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - Level**`, value: '**◎ Success:** I have disabled your country flag!' });
-            await interaction.editReply({ embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Success', 'I have disabled your country flag.');
 
             score.Country = '';
             await score.save();
@@ -404,21 +395,13 @@ export class LevelCommand {
 
         const countryData = getCountryData(<TCountryCode>country.toUpperCase());
         if (!countryData) {
-            const embed = new EmbedBuilder().setColor(color(interaction.guild!.members.me!.displayHexColor)).addFields({
-                name: `**${client.user?.username} - Config**`,
-                value: `**◎ Error:** Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`,
-            });
-            await interaction.editReply({ embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`);
             return;
         }
 
         const countryEmoji = getEmojiFlag(countryData.iso2);
         if (!countryEmoji) {
-            const embed = new EmbedBuilder().setColor(color(interaction.guild!.members.me!.displayHexColor)).addFields({
-                name: `**${client.user?.username} - Config**`,
-                value: `**◎ Error:** Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`,
-            });
-            await interaction.editReply({ embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`);
             return;
         }
 
@@ -426,9 +409,6 @@ export class LevelCommand {
         score.Country = url[0].url;
         await score.save();
 
-        const embed = new EmbedBuilder()
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .addFields({ name: `**${client.user?.username} - Level**`, value: `**◎ Success:** You selected \`${countryData.name}\`` });
-        await interaction.editReply({ embeds: [embed] });
+        await RagnarokEmbed(client, interaction, 'Success', `You selected \`${countryData.name}\``);
     }
 }

@@ -6,7 +6,7 @@ import {
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
 import { Duration } from 'luxon';
-import { color, getContentDetails } from '../../utils/Util.js';
+import { getContentDetails, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -39,11 +39,7 @@ export class TraktCommand {
         const details = await getContentDetails(content, typeOfRequest);
 
         if (!details) {
-            const embed = new EmbedBuilder()
-                .setAuthor({ name: `${interaction.user.tag}`, iconURL: `${interaction.user.avatarURL()}` })
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({ name: `**${client.user?.username} - IMDb**`, value: '**◎ Error:** I was unable to find the content you were looking for. Please try again.' });
-            await interaction.editReply({ embeds: [embed] });
+            await RagnarokEmbed(client, interaction, 'Error', 'I was unable to find the content you were looking for. Please try again.');
             return;
         }
 
