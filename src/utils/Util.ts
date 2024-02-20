@@ -1,5 +1,11 @@
 import {
-    ButtonInteraction, ColorResolvable, CommandInteraction, EmbedBuilder, Message, PermissionsBitField,
+    ButtonInteraction,
+    ColorResolvable,
+    CommandInteraction,
+    EmbedBuilder,
+    Message,
+    PermissionsBitField,
+    StringSelectMenuInteraction,
 } from 'discord.js';
 import { Client } from 'discordx';
 import 'colors';
@@ -213,16 +219,22 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
  */
 export async function RagnarokEmbed(
     client: Client,
-    interaction: CommandInteraction | ButtonInteraction,
+    interaction: CommandInteraction | ButtonInteraction | StringSelectMenuInteraction,
     type: string,
     content: string,
     ephemeral: boolean = false,
 ) {
-    const commandName = interaction.isButton() ? interaction.customId.split('_')[1] : interaction.command!.name;
+    let commandName: string = '';
+
+    if (interaction.isStringSelectMenu() || interaction.isButton()) {
+        commandName = interaction.message.interaction?.commandName || '';
+    } else if (interaction.isCommand()) {
+        commandName = interaction.command?.name || '';
+    }
 
     const embed = new EmbedBuilder()
         .setColor(color(interaction.guild!.members.me!.displayHexColor))
-        .addFields({ name: `**${client.user!.username} - ${capitalise(commandName)}**`, value: `**◎ ${type}:** ${content}` });
+        .addFields({ name: `**${client.user!.username}${commandName ? ` - ${capitalise(commandName)}` : ''}**`, value: `**◎ ${type}:** ${content}` });
 
     try {
         interaction.deferred
