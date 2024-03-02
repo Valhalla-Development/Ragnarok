@@ -2,7 +2,7 @@ import {
     Client, Discord, Guard, Slash,
 } from 'discordx';
 import {
-    ApplicationCommandOptionType, ChannelType, codeBlock, CommandInteraction, PermissionsBitField,
+    ChannelType, codeBlock, CommandInteraction, PermissionsBitField,
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
@@ -39,8 +39,6 @@ export class Nuke {
 
             await newChannel.send({ content: 'Channel has been nuked!\nhttps://tenor.com/view/explosion-mushroom-cloud-atomic-bomb-bomb-boom-gif-4464831' });
         } catch (error) {
-            await interaction.followUp('Something went wrong while nuking the channel. Please try again.');
-
             await RagnarokEmbed(client, interaction, 'Error', `An error occurred\n${codeBlock('text', `${error}`)}`, true);
         }
     }
