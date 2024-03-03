@@ -1,8 +1,8 @@
 import { Client, Discord, Slash } from 'discordx';
 import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Category } from '@discordx/utilities';
-import Balance from '../../mongo/Balance';
-import { color } from '../../utils/Util';
+import Balance from '../../mongo/Balance.js';
+import { color } from '../../utils/Util.js';
 
 @Discord()
 @Category('Economy')
