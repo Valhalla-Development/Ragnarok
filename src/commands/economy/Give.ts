@@ -60,11 +60,9 @@ export class Give {
         }
 
         if (user.id === interaction.user.id) {
-            await RagnarokEmbed(client, interaction, 'Error', 'You can not give yourself money. <:wut:745408596233289839>', true);
+            await RagnarokEmbed(client, interaction, 'Error', 'You can\'t give yourself money. <:wut:745408596233289839>', true);
             return;
         }
-
-        if (user.user.bot) return;
 
         if (!otherB) {
             await RagnarokEmbed(client, interaction, 'Error', `${user} does not have an economy account. They will instantly open one when they send a message within this guild.`, true);
