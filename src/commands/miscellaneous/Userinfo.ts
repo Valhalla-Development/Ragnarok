@@ -60,7 +60,7 @@ export class Userinfo {
         const embed = new EmbedBuilder()
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
             .setThumbnail(member.user.displayAvatarURL() || '')
-            .setAuthor({ name: `Information for ${member.user.username}`, iconURL: member.user.displayAvatarURL() || '' })
+            .setAuthor({ name: `Information for ${member.user.displayName}`, iconURL: member.user.displayAvatarURL() || '' })
             .addFields({
                 name: 'User Information',
                 value: `**◎ 👑 User:** ${member.user}

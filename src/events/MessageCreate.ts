@@ -142,11 +142,11 @@ export class MessageCreate {
 
                         const embed = new EmbedBuilder()
                             .setAuthor({
-                                name: user?.username || message.author.username,
+                                name: user?.displayName || message.author.displayName,
                                 iconURL: user?.displayAvatarURL({ extension: 'png' }) || message.author.displayAvatarURL({ extension: 'png' }),
                             })
                             .setColor(color(`${message.guild.members.me?.displayHexColor}`))
-                            .setFooter({ text: `Quoted by ${message.author.username}` })
+                            .setFooter({ text: `Quoted by ${message.author.displayName}` })
                             .setTimestamp();
 
                         const attachmentCheck = res.attachments.first();
