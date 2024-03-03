@@ -47,7 +47,7 @@ export class Leader {
             }
 
             if (fetchUser) {
-                userNames += `◎ \`${top10.length - index}\` ${fetchUser}\n`;
+                userNames += `\`${index + 1}\` ${fetchUser}\n`;
 
                 levels += `\`${data.Level}\`\n`;
 
@@ -56,12 +56,27 @@ export class Leader {
         }));
 
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `Leaderboard for ${interaction.guild!.name}`, iconURL: `${interaction.guild!.iconURL({ extension: 'png' })}` })
+            .setAuthor({
+                name: `Leaderboard for ${interaction.guild!.name}`,
+                iconURL: `${interaction.guild!.iconURL({ extension: 'png' })}`,
+            })
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
             .addFields(
-                { name: 'Top 10', value: userNames, inline: true },
-                { name: 'Level', value: levels, inline: true },
-                { name: 'XP', value: xp, inline: true },
+                {
+                    name: 'Top 10',
+                    value: userNames,
+                    inline: true,
+                },
+                {
+                    name: 'Level',
+                    value: levels,
+                    inline: true,
+                },
+                {
+                    name: 'XP',
+                    value: xp,
+                    inline: true,
+                },
             );
         await interaction.reply({ embeds: [embed] });
     }
