@@ -13,7 +13,7 @@ import abbreviate from 'number-abbreviate';
 // @ts-expect-error no type file available for this package
 import converter from 'number-to-words-en';
 import { createCanvas, Image, loadImage } from 'canvas';
-import LevelConfig from '../../mongo/LevelConfig';
+import LevelConfig from '../../mongo/LevelConfig.js';
 import Level from '../../mongo/Level.js';
 import { color, RagnarokEmbed } from '../../utils/Util.js';
 
