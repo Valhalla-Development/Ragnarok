@@ -6,7 +6,7 @@ import {
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
-import { RagnarokEmbed } from '../../utils/Util';
+import { RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Moderation')
