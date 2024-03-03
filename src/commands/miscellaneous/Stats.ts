@@ -5,7 +5,7 @@ import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Category, ICategory } from '@discordx/utilities';
 import os from 'os';
 import si from 'systeminformation';
-import Announcement from '../../mongo/schemas/Announcement.js';
+import Announcement from '../../mongo/Announcement';
 import { color } from '../../utils/Util.js';
 import packageJson from '../../../package.json' assert { type: 'json' };
 

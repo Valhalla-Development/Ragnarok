@@ -1,8 +1,8 @@
 import { Client, Discord, Slash } from 'discordx';
 import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Category } from '@discordx/utilities';
-import Level from '../../mongo/schemas/Level.js';
-import LevelConfig from '../../mongo/schemas/LevelConfig.js';
+import Level from '../../mongo/Level';
+import LevelConfig from '../../mongo/LevelConfig';
 import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()

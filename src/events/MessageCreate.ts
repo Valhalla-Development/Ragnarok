@@ -9,8 +9,8 @@ import urlRegexSafe from 'url-regex-safe';
 import {
     capitalise, color, deletableCheck, messageDelete,
 } from '../utils/Util.js';
-import AdsProtection from '../mongo/schemas/AdsProtection.js';
-import AntiScam from '../mongo/schemas/AntiScam.js';
+import AdsProtection from '../mongo/AdsProtection';
+import AntiScam from '../mongo/AntiScam';
 import linksContent from '../../assets/SpenLinks.json' assert { type: 'json' };
 
 @Discord()

@@ -13,7 +13,7 @@ import {
 import { Category } from '@discordx/utilities';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
 import { color, RagnarokEmbed } from '../../utils/Util.js';
-import Logging from '../../mongo/schemas/Logging.js';
+import Logging from '../../mongo/Logging';
 
 @Discord()
 @Category('Moderation')
