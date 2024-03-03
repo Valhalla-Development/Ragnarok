@@ -14,7 +14,7 @@ import abbreviate from 'number-abbreviate';
 import converter from 'number-to-words-en';
 import { createCanvas, Image, loadImage } from 'canvas';
 import LevelConfig from '../../mongo/LevelConfig';
-import Level from '../../mongo/Level';
+import Level from '../../mongo/Level.js';
 import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()

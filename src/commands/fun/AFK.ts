@@ -3,7 +3,7 @@ import {
 } from 'discordx';
 import { ApplicationCommandOptionType, CommandInteraction } from 'discord.js';
 import { Category } from '@discordx/utilities';
-import AFKSchema from '../../mongo/AFK';
+import AFKSchema from '../../mongo/AFK.js';
 import { RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()

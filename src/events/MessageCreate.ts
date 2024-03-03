@@ -10,7 +10,7 @@ import {
     capitalise, color, deletableCheck, messageDelete,
 } from '../utils/Util.js';
 import AdsProtection from '../mongo/AdsProtection';
-import AntiScam from '../mongo/AntiScam';
+import AntiScam from '../mongo/AntiScam.js';
 import linksContent from '../../assets/SpenLinks.json' assert { type: 'json' };
 
 @Discord()

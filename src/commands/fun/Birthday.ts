@@ -8,7 +8,7 @@ import { Category } from '@discordx/utilities';
 import moment from 'moment';
 import ms from 'ms';
 import BirthdayConfig from '../../mongo/BirthdayConfig';
-import Birthdays from '../../mongo/Birthdays';
+import Birthdays from '../../mongo/Birthdays.js';
 import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
