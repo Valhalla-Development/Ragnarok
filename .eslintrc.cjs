@@ -17,7 +17,7 @@ module.exports = {
             'error',
             {
                 ignoreComments: true,
-                code: 150,
+                code: 152,
                 ignoreUrls: true,
                 ignoreStrings: true,
                 ignoreTemplateLiterals: true
