@@ -1,5 +1,7 @@
 import { ContextMenu, Discord } from 'discordx';
-import { ApplicationCommandType, EmbedBuilder, UserContextMenuCommandInteraction } from 'discord.js';
+import {
+    ApplicationCommandType, EmbedBuilder, GuildMember, UserContextMenuCommandInteraction,
+} from 'discord.js';
 import { color } from '../utils/Util.js';
 
 @Discord()
@@ -13,7 +15,8 @@ export class UserinfoContext {
         type: ApplicationCommandType.User,
     })
     async userinfoContext(interaction: UserContextMenuCommandInteraction): Promise<void> {
-        const member = await interaction.guild!.members.fetch(interaction.targetUser.id);
+        const member = interaction.targetMember as GuildMember;
+        await member.fetch();
 
         const flags: { [key: string]: string } = {
             ActiveDeveloper: '<:ActiveDeveloper:1094985831112003604>',
