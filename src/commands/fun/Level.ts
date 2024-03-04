@@ -26,6 +26,7 @@ export class LevelCommand {
      * View users level
      * @param interaction - The command interaction.
      * @param user - Optional user to lookuo
+     * @param client - The Discord client.
      */
     @Slash({ description: 'View users level' })
     async user(
@@ -36,15 +37,22 @@ export class LevelCommand {
         })
             user: GuildMember,
             interaction: CommandInteraction,
+            client: Client,
     ): Promise<void> {
         await interaction.deferReply();
 
         const member = user || interaction.member;
 
-        if (member.user.bot) return;
+        if (member.user.bot) {
+            await RagnarokEmbed(client, interaction, 'Error', 'Member does not have a level.', true);
+            return;
+        }
 
         const score = await Level.findOne({ IdJoined: `${member.id}-${interaction.guild!.id}` });
-        if (!score) return;
+        if (!score) {
+            await RagnarokEmbed(client, interaction, 'Error', 'Member does not have a level.', true);
+            return;
+        }
 
         const { Level: level, Xp: xp, Country } = score;
 
