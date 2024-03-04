@@ -22,6 +22,7 @@
     "@twemoji/parser": "^15.0.0",
     "axios": "^1.6.7",
     "canvas": "^2.11.2",
+    "cheerio": "^1.0.0-rc.12",
     "colors": "^1.4.0",
     "countries-list": "^3.0.6",
     "cryptocurrencies": "^7.0.0",
