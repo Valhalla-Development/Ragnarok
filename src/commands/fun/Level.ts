@@ -31,7 +31,7 @@ export class LevelCommand {
     async user(
         @SlashOption({
             description: 'Users level to check',
-            name: 'image',
+            name: 'user',
             type: ApplicationCommandOptionType.User,
         })
             user: GuildMember,
