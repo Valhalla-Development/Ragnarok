@@ -14,7 +14,7 @@ export function BotHasPerm(requiredPermissions: bigint[]): GuardFunction<Command
         if (missingPermissions.length > 0) {
             const permissionNames = new PermissionsBitField(missingPermissions).toArray();
 
-            await RagnarokEmbed(client, interaction, 'Error', `I lack the following permissions required for this action: \`${permissionNames.join(', ')}\``);
+            await RagnarokEmbed(client, interaction, 'Error', `I lack the following permissions required for this action: \`${permissionNames.join(', ')}\``, true);
             return;
         }
 

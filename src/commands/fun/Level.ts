@@ -373,12 +373,10 @@ export class LevelCommand {
             interaction: CommandInteraction,
             client: Client,
     ): Promise<void> {
-        await interaction.deferReply();
-
         const levelConfig = await LevelConfig.findOne({ GuildId: interaction.guild!.id });
 
         if (levelConfig) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Level system is disabled for this guild!');
+            await RagnarokEmbed(client, interaction, 'Error', 'Level system is disabled for this guild!', true);
             return;
         }
 
@@ -390,7 +388,7 @@ export class LevelCommand {
 
         if (country === 'off') {
             if (!score || !score.Country) {
-                await RagnarokEmbed(client, interaction, 'Error', 'You do not have a country set.');
+                await RagnarokEmbed(client, interaction, 'Error', 'You do not have a country set.', true);
                 return;
             }
 
@@ -403,13 +401,13 @@ export class LevelCommand {
 
         const countryData = getCountryData(<TCountryCode>country.toUpperCase());
         if (!countryData) {
-            await RagnarokEmbed(client, interaction, 'Error', `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`);
+            await RagnarokEmbed(client, interaction, 'Error', `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`, true);
             return;
         }
 
         const countryEmoji = getEmojiFlag(countryData.iso2);
         if (!countryEmoji) {
-            await RagnarokEmbed(client, interaction, 'Error', `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`);
+            await RagnarokEmbed(client, interaction, 'Error', `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`, true);
             return;
         }
 

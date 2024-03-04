@@ -35,7 +35,7 @@ export class IMDbContext {
         const details = await getContentDetails(isIMDbURLValid ? isIMDbURLValid[0] : content, typeOfRequest);
 
         if (!details) {
-            await RagnarokEmbed(client, interaction, 'Error', 'I was unable to find the content you were looking for. Please try again.');
+            await RagnarokEmbed(client, interaction, 'Error', 'I was unable to find the content you were looking for. Please try again.', true);
             return;
         }
 

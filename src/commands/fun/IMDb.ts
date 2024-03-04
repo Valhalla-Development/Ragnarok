@@ -39,7 +39,7 @@ export class TraktCommand {
         const details = await getContentDetails(content, typeOfRequest);
 
         if (!details) {
-            await RagnarokEmbed(client, interaction, 'Error', 'I was unable to find the content you were looking for. Please try again.');
+            await RagnarokEmbed(client, interaction, 'Error', 'I was unable to find the content you were looking for. Please try again.', true);
             return;
         }
 

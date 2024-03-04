@@ -50,7 +50,7 @@ export class AddRole {
         const targetMember = user || interaction.member;
 
         if (targetMember.id === interaction.member!.user.id) {
-            await RagnarokEmbed(client, interaction, 'Error', 'You cannot give yourself a role!');
+            await RagnarokEmbed(client, interaction, 'Error', 'You cannot give yourself a role!', true);
             return;
         }
 
