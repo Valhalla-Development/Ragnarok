@@ -6,6 +6,7 @@ import {
     ApplicationCommandOptionType,
     ButtonBuilder,
     ButtonStyle,
+    codeBlock,
     CommandInteraction,
     EmbedBuilder,
     GuildMember,
@@ -176,7 +177,7 @@ export class Ban {
                         collector.stop();
                     });
             } catch (error) {
-                await RagnarokEmbed(client, interaction, 'Error', `An error occurred, ${error}`, true);
+                await RagnarokEmbed(client, interaction, 'Error', `An error occurred\n${codeBlock('text', `${error}`)}`, true);
             }
         });
 

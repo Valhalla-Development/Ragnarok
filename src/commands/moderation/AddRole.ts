@@ -2,7 +2,13 @@ import {
     Client, Discord, Guard, Slash, SlashOption,
 } from 'discordx';
 import {
-    ApplicationCommandOptionType, CommandInteraction, GuildMember, GuildMemberRoleManager, PermissionsBitField, Role,
+    ApplicationCommandOptionType,
+    codeBlock,
+    CommandInteraction,
+    GuildMember,
+    GuildMemberRoleManager,
+    PermissionsBitField,
+    Role,
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
 import { RagnarokEmbed } from '../../utils/Util.js';
@@ -68,7 +74,7 @@ export class AddRole {
         } catch (error) {
             console.error('Error adding role:', error);
 
-            await RagnarokEmbed(client, interaction, 'Error', `An error occurred, ${error}`, true);
+            await RagnarokEmbed(client, interaction, 'Error', `An error occurred\n${codeBlock('text', `${error}`)}`, true);
         }
     }
 }
