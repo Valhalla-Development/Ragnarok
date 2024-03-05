@@ -13,6 +13,8 @@ import abbreviate from 'number-abbreviate';
 // @ts-expect-error no type file available for this package
 import converter from 'number-to-words-en';
 import { createCanvas, Image, loadImage } from 'canvas';
+import path from 'path';
+import { readFileSync } from 'fs';
 import LevelConfig from '../../mongo/LevelConfig.js';
 import Level from '../../mongo/Level.js';
 import { color, RagnarokEmbed } from '../../utils/Util.js';
@@ -92,7 +94,8 @@ export class LevelCommand {
             }
         }
 
-        const image = `${new URL(import.meta.url).pathname.split('/').slice(0, -4).join('/')}/assets/canvas/images/Level.png`;
+        const image = readFileSync(path.join(process.cwd(), 'assets/canvas/images/Level.png'));
+
         const background = await loadImage(image);
         ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
