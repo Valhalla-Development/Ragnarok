@@ -27,6 +27,18 @@ const depositButton = new ButtonBuilder()
 
 const row = new ActionRowBuilder<ButtonBuilder>().addComponents(homeButton, baltopButton, depositButton);
 
+function setButtonState(button: ButtonBuilder) {
+    [homeButton, baltopButton].forEach((otherButton) => {
+        if (otherButton !== button) {
+            otherButton.setStyle(ButtonStyle.Primary);
+            otherButton.setDisabled(false);
+        }
+    });
+
+    button.setDisabled(true);
+    button.setStyle(ButtonStyle.Success);
+}
+
 /**
  * Access to the home page.
  * @param interaction - The command interaction.
@@ -137,12 +149,7 @@ export async function home(interaction: CommandInteraction | ButtonInteraction, 
             },
         );
 
-    homeButton.setDisabled(true);
-    homeButton.setStyle(ButtonStyle.Success);
-    baltopButton.setDisabled(false);
-    baltopButton.setStyle(ButtonStyle.Primary);
-    depositButton.setDisabled(false);
-    depositButton.setStyle(ButtonStyle.Primary);
+    setButtonState(homeButton);
 
     if (interaction instanceof ButtonInteraction) {
         await interaction.deferReply();
@@ -212,12 +219,7 @@ export async function baltop(interaction: ButtonInteraction, client: Client) {
             },
         );
 
-    homeButton.setDisabled(false);
-    homeButton.setStyle(ButtonStyle.Primary);
-    baltopButton.setDisabled(true);
-    baltopButton.setStyle(ButtonStyle.Success);
-    depositButton.setDisabled(false);
-    depositButton.setStyle(ButtonStyle.Primary);
+    setButtonState(baltopButton);
 
     await interaction.message.edit({ embeds: [embed], components: [row] });
 }
