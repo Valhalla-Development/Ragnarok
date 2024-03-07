@@ -15,7 +15,12 @@ const homeButton = new ButtonBuilder()
     .setStyle(ButtonStyle.Success)
     .setCustomId('economy_home');
 
-const row = new ActionRowBuilder<ButtonBuilder>().addComponents(homeButton);
+const baltopButton = new ButtonBuilder()
+    .setLabel('Baltop')
+    .setStyle(ButtonStyle.Primary)
+    .setCustomId('economy_baltop');
+
+const row = new ActionRowBuilder<ButtonBuilder>().addComponents(homeButton, baltopButton);
 
 /**
  * Access to the home page.
@@ -129,6 +134,8 @@ export async function home(interaction: CommandInteraction | ButtonInteraction, 
 
     homeButton.setDisabled(true);
     homeButton.setStyle(ButtonStyle.Success);
+    baltopButton.setDisabled(false);
+    baltopButton.setStyle(ButtonStyle.Primary);
 
     if (interaction instanceof ButtonInteraction) {
         await interaction.deferReply();
@@ -138,4 +145,70 @@ export async function home(interaction: CommandInteraction | ButtonInteraction, 
     } else {
         await interaction.reply({ embeds: [embed], components: [row] });
     }
+}
+
+/**
+ * View the economy leaderboard for the guild.
+ * @param interaction - The command interaction.
+ * @param client - The Discord client.
+ */
+export async function baltop(interaction: ButtonInteraction, client: Client) {
+    const top10 = await Balance.find({ GuildId: interaction.guild!.id })
+        .sort({ Total: -1 })
+        .limit(10);
+
+    if (!top10 || top10.length === 0) {
+        await RagnarokEmbed(client, interaction, 'Error', 'No data found.', true);
+        return;
+    }
+
+    await interaction.deferReply();
+    await interaction.deleteReply();
+
+    let userNames: string = '';
+    let balance: string = '';
+
+    await Promise.all(top10.map(async (data, index) => {
+        let fetchUser = interaction.guild!.members.cache.get(data.UserId);
+
+        if (!fetchUser) {
+            try {
+                fetchUser = await interaction.guild!.members.fetch(data.UserId);
+            } catch {
+            // Do nothing because I am a monster
+            }
+        }
+
+        if (fetchUser) {
+            userNames += `\`${index + 1}\` ${fetchUser}\n`;
+
+            balance += `<:coin:706659001164628008> \`${data.Total}\`\n`;
+        }
+    }));
+
+    const embed = new EmbedBuilder()
+        .setAuthor({
+            name: `Leaderboard for ${interaction.guild!.name}`,
+            iconURL: `${interaction.guild!.iconURL({ extension: 'png' })}`,
+        })
+        .setColor(color(interaction.guild!.members.me!.displayHexColor))
+        .addFields(
+            {
+                name: 'Top 10',
+                value: userNames,
+                inline: true,
+            },
+            {
+                name: 'Balance',
+                value: balance,
+                inline: true,
+            },
+        );
+
+    homeButton.setDisabled(false);
+    homeButton.setStyle(ButtonStyle.Primary);
+    baltopButton.setDisabled(true);
+    baltopButton.setStyle(ButtonStyle.Success);
+
+    await interaction.message.edit({ embeds: [embed], components: [row] });
 }
