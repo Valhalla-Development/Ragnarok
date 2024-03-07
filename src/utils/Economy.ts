@@ -20,7 +20,12 @@ const baltopButton = new ButtonBuilder()
     .setStyle(ButtonStyle.Primary)
     .setCustomId('economy_baltop');
 
-const row = new ActionRowBuilder<ButtonBuilder>().addComponents(homeButton, baltopButton);
+const depositButton = new ButtonBuilder()
+    .setLabel('Deposit')
+    .setStyle(ButtonStyle.Primary)
+    .setCustomId('economy_deposit');
+
+const row = new ActionRowBuilder<ButtonBuilder>().addComponents(homeButton, baltopButton, depositButton);
 
 /**
  * Access to the home page.
@@ -136,6 +141,8 @@ export async function home(interaction: CommandInteraction | ButtonInteraction, 
     homeButton.setStyle(ButtonStyle.Success);
     baltopButton.setDisabled(false);
     baltopButton.setStyle(ButtonStyle.Primary);
+    depositButton.setDisabled(false);
+    depositButton.setStyle(ButtonStyle.Primary);
 
     if (interaction instanceof ButtonInteraction) {
         await interaction.deferReply();
@@ -209,6 +216,32 @@ export async function baltop(interaction: ButtonInteraction, client: Client) {
     homeButton.setStyle(ButtonStyle.Primary);
     baltopButton.setDisabled(true);
     baltopButton.setStyle(ButtonStyle.Success);
+    depositButton.setDisabled(false);
+    depositButton.setStyle(ButtonStyle.Primary);
 
     await interaction.message.edit({ embeds: [embed], components: [row] });
+}
+
+/**
+ * Deposit your balance into the bank
+ * @param interaction - The command interaction.
+ * @param client - The Discord client.
+ */
+export async function deposit(interaction: ButtonInteraction, client: Client) {
+    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
+
+    if (!balance || balance.Cash === 0) {
+        await RagnarokEmbed(client, interaction, 'Error', 'You do not have any cash to deposit.', true);
+        return;
+    }
+
+    const bankCalc = balance.Cash + balance.Bank;
+
+    await RagnarokEmbed(client, interaction, 'Success', `You have deposited <:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\` to your bank.`, true);
+
+    balance.Cash = 0;
+    balance.Bank = bankCalc;
+    balance.Total = bankCalc;
+
+    await balance.save();
 }
