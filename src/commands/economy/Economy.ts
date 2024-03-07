@@ -27,15 +27,15 @@ export class Economy {
     async buttonInteraction(interaction: ButtonInteraction, client: Client) {
         const button = interaction.customId.split('_');
 
-        const actionHandler = {
-            home: async () => home(interaction, client),
-            baltop: async () => baltop(interaction, client),
-            deposit: async () => deposit(interaction, client),
-        };
+        const actionMap = new Map([
+            ['home', async () => home(interaction, client)],
+            ['baltop', async () => baltop(interaction, client)],
+            ['deposit', async () => deposit(interaction, client)],
+        ]);
 
-        const action = actionHandler[button[1] as keyof typeof actionHandler];
-        if (action) {
-            await action();
+        const selectedAction = actionMap.get(button[1]);
+        if (selectedAction) {
+            await selectedAction();
         }
     }
 }
