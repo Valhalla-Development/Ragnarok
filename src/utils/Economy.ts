@@ -231,15 +231,15 @@ export async function home(interaction: CommandInteraction | ButtonInteraction, 
                 name: 'Boosts',
                 value: `
                 Seed: ${balance.Boosts?.SeedBag ? `\`${Number(currentTotalSeeds)
-        .toLocaleString('en')}/${Number(balance.Boosts.SeedBag)
+        .toLocaleString('en')}\`/\`${Number(balance.Boosts.SeedBag)
         .toLocaleString('en')}\`` : '`Seed Not Owned`'}
                 Fish: ${balance.Boosts?.FishBag ? `\`${Number(currentTotalFish)
-        .toLocaleString('en')}/${Number(balance.Boosts.FishBag)
+        .toLocaleString('en')}\`/\`${Number(balance.Boosts.FishBag)
         .toLocaleString('en')}\`` : '`Fish Not Owned`'}
                 Farm: ${balance.Boosts?.FarmBag ? `\`${Number(currentTotalFarm)
-        .toLocaleString('en')}/${Number(balance.Boosts.FarmBag)
+        .toLocaleString('en')}\`/\`${Number(balance.Boosts.FarmBag)
         .toLocaleString('en')}\`` : '`Farm Not Owned`'}
-                Farm Plot: ${balance.Boosts?.FarmPlot ? `\`${balance.FarmPlot.length.toLocaleString('en')}/${Number(balance.Boosts.FarmPlot)
+                Farm Plot: ${balance.Boosts?.FarmPlot ? `\`${balance.FarmPlot.length.toLocaleString('en')}\`/\`${Number(balance.Boosts.FarmPlot)
         .toLocaleString('en')}\`` : '`Not Owned`'}
             `,
                 inline: false,
