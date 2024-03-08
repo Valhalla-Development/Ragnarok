@@ -9,6 +9,20 @@ import { Client } from 'discordx';
 import Balance, { BalanceInterface } from '../mongo/Balance.js';
 import { color, RagnarokEmbed } from '../utils/Util.js';
 
+interface EcoPrices {
+    Hourly: { min: number; max: number };
+    Daily: { min: number; max: number };
+    Weekly: { min: number; max: number };
+    Monthly: { min: number; max: number };
+}
+
+interface Claim {
+    Hourly?: number;
+    Daily?: number;
+    Weekly?: number;
+    Monthly?: number;
+}
+
 // Buttons to be applied to the embed
 const homeButton = new ButtonBuilder()
     .setLabel('Home')
@@ -20,12 +34,17 @@ const baltopButton = new ButtonBuilder()
     .setStyle(ButtonStyle.Primary)
     .setCustomId('economy_baltop');
 
+const claimButton = new ButtonBuilder()
+    .setLabel('Claim')
+    .setStyle(ButtonStyle.Primary)
+    .setCustomId('economy_claim');
+
 const depositButton = new ButtonBuilder()
     .setLabel('Deposit')
     .setStyle(ButtonStyle.Primary)
     .setCustomId('economy_deposit');
 
-const row = new ActionRowBuilder<ButtonBuilder>().addComponents(homeButton, baltopButton, depositButton);
+const row = new ActionRowBuilder<ButtonBuilder>().addComponents(homeButton, baltopButton, claimButton, depositButton);
 
 function setButtonState(button: ButtonBuilder) {
     [homeButton, baltopButton].forEach((otherButton) => {
@@ -38,6 +57,94 @@ function setButtonState(button: ButtonBuilder) {
     button.setDisabled(true);
     button.setStyle(ButtonStyle.Success);
 }
+
+const ecoPrices = {
+    // Amount you earn per message & cooldown
+    maxPerM: 40,
+    minPerM: 10,
+    // Time new users have to wait until using the claim command
+    newUserTime: 604800000, // 7 Days
+
+    // Claim amount
+    HourlyClaim: {
+        min: 50,
+        max: 150,
+    },
+    DailyClaim: {
+        min: 150,
+        max: 300,
+    },
+    WeeklyClaim: {
+        min: 750,
+        max: 1000,
+    },
+    MonthlyClaim: {
+        min: 4000,
+        max: 6000,
+    },
+
+    // Fishing related prices
+    fishBagFirst: 50,
+    fishBagLimit: 1000,
+    fishBagPrice: 450, // Price is current capacity * price (Upgrade adds 25 to capacity)
+    fishingRod: 15000,
+    treasure: 50000,
+    pufferfish: 3000,
+    swordfish: 1500,
+    kingSalmon: 500,
+    trout: 150,
+
+    // Fishing related timeouts
+    fishWinTime: 600000, // 10 Minutes
+    fishFailtime: 900000, // 15 Minutes
+
+    // Farming with tools prices
+    farmPlotFirst: 10,
+    farmPlotLimit: 1000,
+    farmPlotPrice: 750, // Price is current capacity * price (Upgrade adds 25 to capacity)
+    freeFarmLimit: 10,
+    farmingTools: 15000,
+    farmBagFirst: 50, // Inital bag purchase
+    farmBagLimit: 10000, // Max upgrade possible
+    farmBagPrice: 300, // Price is current capacity * price (Upgrade adds 25 to capacity)
+    goldBar: 25000,
+    corn: 650,
+    wheat: 500,
+    potatoes: 400,
+    tomatoes: 350,
+
+    // Planting Times
+    cornPlant: 600000, // 10 minutes
+    wheatPlant: 450000, // 7 min 30
+    potatoPlant: 210000, // 3 min 30
+    tomatoPlant: 90000, // 1 min 30
+
+    // Decay rate
+    DecayRate: 0.02,
+
+    // Farming without tools prices
+    goldNugget: 15000,
+    barley: 1200,
+    spinach: 600,
+    strawberries: 200,
+    lettuce: 60,
+
+    // Farming without tools timeouts
+    farmWinTime: 600000, // 10 Minutes
+    farmFailTime: 900000, // 15 Minutes,
+
+    // Seed prices
+    seedBagFirst: 50, // Inital bag purchase
+    seedBagLimit: 1000, // Max upgrade possible
+    seedBagPrice: 150, // Price is current capacity * price (Upgrade adds 25 to capacity)
+    cornSeed: 4000, // You get 10 per pack
+    wheatSeed: 3300,
+    potatoSeed: 2900,
+    tomatoSeed: 2800,
+
+    // Beg timeout
+    begTimer: 120000,
+};
 
 /**
  * Access to the home page.
@@ -246,4 +353,95 @@ export async function deposit(interaction: ButtonInteraction, client: Client) {
     balance.Total = bankCalc;
 
     await balance.save();
+}
+
+/**
+ * Claim rewards
+ * @param interaction - The command interaction.
+ * @param client - The Discord client.
+ */
+export async function claim(interaction: ButtonInteraction, client: Client) {
+    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
+
+    if (!balance) {
+        await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+        return;
+    }
+
+    if (balance.ClaimNewUser) {
+        if (Date.now() > balance.ClaimNewUser) {
+            balance.ClaimNewUser = 0;
+        } else {
+            const nowInSecond = Math.round(balance.ClaimNewUser / 1000);
+
+            await RagnarokEmbed(client, interaction, 'Error', `Your Economy proifle is too new! Please wait another <t:${nowInSecond}:R> before using this command.`, true);
+            return;
+        }
+    }
+
+    const keys:(keyof Claim)[] = ['Hourly', 'Daily', 'Weekly', 'Monthly'];
+
+    keys.forEach((key) => {
+        if (balance[key] && Date.now() > balance[key]) {
+            balance[key] = 0;
+        }
+    });
+
+    if (Date.now() < Math.min(balance.Hourly, balance.Daily, balance.Weekly, balance.Monthly)) {
+        await RagnarokEmbed(client, interaction, 'Error', ' You have nothing to claim!', true);
+        return;
+    }
+
+    let fullPrice = 0;
+
+    const periods = ['Hourly', 'Daily', 'Weekly', 'Monthly'];
+    const prices: EcoPrices = {
+        Hourly: ecoPrices.HourlyClaim,
+        Daily: ecoPrices.DailyClaim,
+        Weekly: ecoPrices.WeeklyClaim,
+        Monthly: ecoPrices.MonthlyClaim,
+    };
+
+    periods.forEach((period) => {
+        if (!balance[period as keyof typeof balance]) {
+            const priceRange = prices[period as keyof EcoPrices];
+            fullPrice += Math.floor(Math.random() * (priceRange.max - priceRange.min + 1)) + priceRange.min;
+        }
+    });
+
+    if (!balance.Hourly) {
+        fullPrice
+                += Math.floor(Math.random() * ecoPrices.HourlyClaim.max - ecoPrices.HourlyClaim.min + 1)
+                + ecoPrices.HourlyClaim.min;
+    }
+    if (!balance.Daily) {
+        fullPrice
+                += Math.floor(Math.random() * ecoPrices.DailyClaim.max - ecoPrices.DailyClaim.min + 1)
+                + ecoPrices.DailyClaim.min;
+    }
+    if (!balance.Weekly) {
+        fullPrice
+                += Math.floor(Math.random() * ecoPrices.WeeklyClaim.max - ecoPrices.WeeklyClaim.min + 1)
+                + ecoPrices.WeeklyClaim.min;
+    }
+    if (!balance.Monthly) {
+        fullPrice
+                += Math.floor(Math.random() * ecoPrices.MonthlyClaim.max - ecoPrices.MonthlyClaim.min + 1)
+                + ecoPrices.MonthlyClaim.min;
+    }
+
+    const endTime = new Date().getTime();
+
+    balance.Hourly = !balance.Hourly ? endTime + 3600000 : balance.Hourly;
+    balance.Daily = !balance.Daily ? endTime + 86400000 : balance.Daily;
+    balance.Weekly = !balance.Weekly ? endTime + 604800000 : balance.Weekly;
+    balance.Monthly = !balance.Monthly ? endTime + 2629800000 : balance.Monthly;
+    balance.Bank += fullPrice;
+    balance.Total += fullPrice;
+
+    await balance.save();
+
+    const newTot = balance.Total + fullPrice;
+
+    await RagnarokEmbed(client, interaction, 'Success', `You have claimed all available claims! <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` has been credited to your Bank.\n Your new total is <:coin:706659001164628008> \`${newTot.toLocaleString('en')}\``, true);
 }
