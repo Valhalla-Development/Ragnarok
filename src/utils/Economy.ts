@@ -4,7 +4,6 @@ import {
 import 'colors';
 // @ts-expect-error no type file available for this package
 import converter from 'number-to-words-en';
-import ms from 'ms';
 import { Client } from 'discordx';
 import Balance, { BalanceInterface } from '../mongo/Balance.js';
 import { color, RagnarokEmbed } from '../utils/Util.js';
@@ -222,9 +221,9 @@ export async function home(interaction: CommandInteraction | ButtonInteraction, 
             {
                 name: 'Cooldowns',
                 value: `
-                Steal: ${Date.now() > balance.StealCool ? '`Available!`' : `\`${ms(balance.StealCool - date, { long: true })}\``}
-                Fish: ${!balance.Items?.FishingRod ? '`Rod Not Owned`' : `${Date.now() > balance.FishCool ? '`Available!`' : `\`${ms(balance.FishCool - date, { long: true })}\``}`}
-                Farm: ${Date.now() > balance.FarmCool ? '`Available!`' : `\`${ms(balance.FarmCool - date, { long: true })}\``}
+                Steal: ${Date.now() > balance.StealCool ? '`Available!`' : `<t:${Math.round(balance.StealCool / 1000)}:R>`}
+                Fish: ${!balance.Items?.FishingRod ? '`Rod Not Owned`' : `${Date.now() > balance.FishCool ? '`Available!`' : `<t:${Math.round(balance.FishCool / 1000)}:R>`}`}
+                Farm: ${Date.now() > balance.FarmCool ? '`Available!`' : `<t:${Math.round(balance.FarmCool / 1000)}:R>`}
             `,
                 inline: false,
             },
@@ -248,10 +247,10 @@ export async function home(interaction: CommandInteraction | ButtonInteraction, 
             {
                 name: '**Claim Cooldowns**',
                 value: `
-                Hourly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Hourly ? '`Available!`' : `\`${ms(balance.Hourly - date, { long: true })}\``)}
-                Daily: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Daily ? '`Available!`' : `\`${ms(balance.Daily - date, { long: true })}\``)}
-                Weekly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Weekly ? '`Available!`' : `\`${ms(balance.Weekly - date, { long: true })}\``)}
-                Monthly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Monthly ? '`Available!`' : `\`${ms(balance.Monthly - date, { long: true })}\``)}
+                Hourly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Hourly ? '`Available!`' : `<t:${Math.round(balance.Hourly / 1000)}:R>`)}
+                Daily: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Daily ? '`Available!`' : `<t:${Math.round(balance.Daily / 1000)}:R>`)}
+                Weekly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Weekly ? '`Available!`' : `<t:${Math.round(balance.Weekly / 1000)}:R>`)}
+                Monthly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Monthly ? '`Available!`' : `<t:${Math.round(balance.Monthly / 1000)}:R>`)}
             `,
             },
         );
