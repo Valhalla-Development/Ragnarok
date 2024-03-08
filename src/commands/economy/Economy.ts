@@ -3,7 +3,9 @@ import {
 } from 'discordx';
 import { ButtonInteraction, CommandInteraction } from 'discord.js';
 import { Category } from '@discordx/utilities';
-import { baltop, deposit, home } from '../../utils/Economy.js';
+import {
+    baltop, claim, deposit, home,
+} from '../../utils/Economy.js';
 
 @Discord()
 @Category('Economy')
@@ -31,9 +33,11 @@ export class Economy {
             ['home', async () => home(interaction, client)],
             ['baltop', async () => baltop(interaction, client)],
             ['deposit', async () => deposit(interaction, client)],
+            ['claim', async () => claim(interaction, client)],
         ]);
 
         const selectedAction = actionMap.get(button[1]);
+
         if (selectedAction) {
             await selectedAction();
         }
