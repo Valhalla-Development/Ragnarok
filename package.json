@@ -1,6 +1,6 @@
 {
   "name": "ragnarok",
-  "version": "6.1.58",
+  "version": "6.1.64",
   "description": "A multi-purpose Discord bot.",
   "license": "GPL-3.0-or-later",
   "author": "Ragnar Lothbrok <ragnarlothbrokjr@proton.me>",
@@ -37,16 +37,16 @@
     "number-abbreviate": "^2.0.0",
     "number-to-words-en": "^1.2.5",
     "reddit-image-fetcher": "^2.0.12",
-    "systeminformation": "^5.22.0",
+    "systeminformation": "^5.22.1",
     "url-regex-safe": "^4.0.0"
   },
   "devDependencies": {
     "@types/luxon": "^3.4.2",
     "@types/ms": "^0.7.34",
-    "@types/node": "^20.11.25",
+    "@types/node": "^20.11.26",
     "@types/url-regex-safe": "^1.0.2",
-    "@typescript-eslint/eslint-plugin": "^7.1.1",
-    "@typescript-eslint/parser": "^7.1.1",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "@typescript-eslint/parser": "^7.2.0",
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -61,5 +61,5 @@
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "yarn@4.1.0"
+  "packageManager": "yarn@4.1.1"
 }
