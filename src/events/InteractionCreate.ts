@@ -15,7 +15,7 @@ export class InteractionCreate {
         // Check if the interaction is in a guild and in a guild text channel, and is either a string select menu or a chat input command.
         if (!interaction || !interaction.guild || !interaction.channel || interaction.channel.type !== ChannelType.GuildText
             || (!interaction.isButton() && !interaction.isStringSelectMenu() && !interaction.isChatInputCommand()
-                && !interaction.isContextMenuCommand() && !interaction.isContextMenuCommand())) return;
+                && !interaction.isContextMenuCommand() && !interaction.isContextMenuCommand() && !interaction.isModalSubmit())) return;
 
         try {
             await client.executeInteraction(interaction);
