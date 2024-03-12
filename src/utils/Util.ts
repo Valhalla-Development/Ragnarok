@@ -4,6 +4,7 @@ import {
     CommandInteraction,
     EmbedBuilder,
     Message,
+    ModalSubmitInteraction,
     PermissionsBitField,
     StringSelectMenuInteraction,
 } from 'discord.js';
@@ -219,7 +220,7 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
  */
 export async function RagnarokEmbed(
     client: Client,
-    interaction: CommandInteraction | ButtonInteraction | StringSelectMenuInteraction,
+    interaction: CommandInteraction | ButtonInteraction | StringSelectMenuInteraction | ModalSubmitInteraction,
     type: string,
     content: string,
     ephemeral: boolean = false,
