@@ -1,5 +1,14 @@
 import {
-    ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CommandInteraction, EmbedBuilder,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonInteraction,
+    ButtonStyle,
+    CommandInteraction,
+    EmbedBuilder,
+    ModalBuilder,
+    ModalSubmitInteraction,
+    TextInputBuilder,
+    TextInputStyle,
 } from 'discord.js';
 import 'colors';
 // @ts-expect-error no type file available for this package
@@ -43,7 +52,12 @@ const depositButton = new ButtonBuilder()
     .setStyle(ButtonStyle.Primary)
     .setCustomId('economy_deposit');
 
-const row = new ActionRowBuilder<ButtonBuilder>().addComponents(homeButton, baltopButton, claimButton, depositButton);
+const coinflipButton = new ButtonBuilder()
+    .setLabel('Coin Flip')
+    .setStyle(ButtonStyle.Primary)
+    .setCustomId('economy_coinflip');
+
+const row = new ActionRowBuilder<ButtonBuilder>().addComponents(homeButton, baltopButton, claimButton, depositButton, coinflipButton);
 
 function setButtonState(button: ButtonBuilder) {
     [homeButton, baltopButton].forEach((otherButton) => {
@@ -426,4 +440,142 @@ export async function claim(interaction: ButtonInteraction, client: Client) {
     const newTot = balance.Total + fullPrice;
 
     await RagnarokEmbed(client, interaction, 'Success', `You have claimed all available claims! <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` has been credited to your Bank.\n Your new total is <:coin:706659001164628008> \`${newTot.toLocaleString('en')}\``, true);
+}
+
+/**
+ * Coin flip game
+ * @param interaction - The command interaction.
+ * @param client - The Discord client.
+ * @param amount - The amount to gamble
+ * @param option - The selected option
+ */
+export async function coinflip(
+    interaction: ModalSubmitInteraction | ButtonInteraction,
+    client: Client,
+    amount: string | null = null,
+    option: string | null = null,
+) {
+    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
+
+    if (!balance) {
+        await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+        return;
+    }
+
+    if (!amount && !option && interaction instanceof ButtonInteraction) {
+        // Creating a modal for specifying an amount
+        const coinflipModal = new ModalBuilder()
+            .setTitle('Coin Flip Amount')
+            .setCustomId('coinflipAmount');
+
+        // Creating number input field for amount
+        const amountField = new TextInputBuilder()
+            .setCustomId('amountField')
+            .setLabel('Amount to bet')
+            .setPlaceholder('2850')
+            .setStyle(TextInputStyle.Short)
+            .setMinLength(2)
+            .setRequired(true);
+
+        // Creating action rows with the respective input field
+        const coinRow = new ActionRowBuilder<TextInputBuilder>().addComponents(
+            amountField,
+        );
+
+        // Adding the action rows to the modal
+        coinflipModal.addComponents(coinRow);
+
+        // Displaying the modal in response to the interaction
+        await interaction.showModal(coinflipModal);
+        return;
+    }
+
+    const headsButton = new ButtonBuilder()
+        .setLabel('Heads!')
+        .setStyle(ButtonStyle.Primary)
+        .setCustomId('economy_coinflip_heads');
+
+    const tailsButton = new ButtonBuilder()
+        .setLabel('Tails!')
+        .setStyle(ButtonStyle.Primary)
+        .setCustomId('economy_coinflip_tails');
+
+    const cancelButton = new ButtonBuilder()
+        .setLabel('Cancel')
+        .setStyle(ButtonStyle.Danger)
+        .setCustomId('economy_home');
+
+    const coinRow = new ActionRowBuilder<ButtonBuilder>().addComponents(headsButton, tailsButton, cancelButton);
+
+    if (!option) {
+        if (Number.isNaN(Number(amount))) {
+            await RagnarokEmbed(client, interaction, 'Error', 'The specified amount was not a valid number.', true);
+            return;
+        }
+
+        if (Number(amount) > balance.Bank) {
+            await RagnarokEmbed(client, interaction, 'Error', `You do not have enough to bet <:coin:706659001164628008> \`${Number(amount)
+                .toLocaleString('en')}\`, you have <:coin:706659001164628008> \`${Number(balance.Bank)
+                .toLocaleString('en')}\` available in your Bank.`, true);
+            return;
+        }
+
+        const initial = new EmbedBuilder()
+            .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: `${interaction.user.avatarURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .addFields({
+                name: `**${client.user?.username} - Coin Flip**`,
+                value: `**◎** ${interaction.user} bet <:coin:706659001164628008> \`${Number(amount)
+                    .toLocaleString('en')}\``,
+            });
+
+        await interaction.message?.edit({ embeds: [initial], components: [coinRow] });
+    } else {
+        const flip = ['heads', 'tails'];
+        const answer = flip[Math.floor(Math.random() * flip.length)];
+
+        const win = new EmbedBuilder()
+            .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: `${interaction.user.avatarURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .addFields({
+                name: `**${client.user?.username} - Coin Flip**`,
+                value: `**◎** ${interaction.user} won! <:coin:706659001164628008> \`${Number(amount)
+                    .toLocaleString('en')}\` has been credited to your Bank!`,
+            });
+
+        const lose = new EmbedBuilder()
+            .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: `${interaction.user.avatarURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .addFields({
+                name: `**${client.user?.username} - Coin Flip**`,
+                value: `**◎** ${interaction.user} lost <:coin:706659001164628008> \`${Number(amount)
+                    .toLocaleString('en')}\``,
+            });
+
+        headsButton.setDisabled(true);
+        tailsButton.setDisabled(true);
+
+        if (option === answer) {
+            balance.Bank += Number(amount);
+            balance.Total += Number(amount);
+        } else {
+            balance.Bank -= Number(amount);
+            balance.Total -= Number(amount);
+        }
+
+        await interaction.deferReply();
+        await interaction.deleteReply();
+
+        await interaction.message?.edit({ components: [coinRow], embeds: [option === answer ? win : lose] });
+        await balance.save();
+    }
 }
