@@ -158,13 +158,11 @@ export async function home(interaction: CommandInteraction | ButtonInteraction, 
         return;
     }
 
-    const userRank = await Balance.find({ GuildId: interaction.guild!.id })
+    const userRank: BalanceInterface[] = await Balance.find({ GuildId: interaction.guild!.id })
         .sort({ Total: -1 });
     const userPos = userRank.find((b) => b.IdJoined === `${interaction.user.id}-${interaction.guild!.id}`);
 
     const rankPos = converter.toOrdinal(userRank.indexOf(userPos!) + 1);
-
-    const date = new Date().getTime();
 
     const itemTypes = new Map<string, string[]>([
         ['seeds', ['CornSeeds', 'WheatSeeds', 'PotatoSeeds', 'TomatoSeeds']],
@@ -192,7 +190,7 @@ export async function home(interaction: CommandInteraction | ButtonInteraction, 
 
     // Count harvested crops
     const currentTotalFarm = balance.HarvestedCrops?.length
-        ? balance.HarvestedCrops.filter((crop) => itemTypes.get('crops')
+        ? balance.HarvestedCrops.filter((crop: { CropType: string; }) => itemTypes.get('crops')
             ?.includes(crop.CropType)).length : 0;
 
     const embed = new EmbedBuilder()
@@ -261,9 +259,15 @@ export async function home(interaction: CommandInteraction | ButtonInteraction, 
         await interaction.deferReply();
         await interaction.deleteReply();
 
-        await interaction.message.edit({ embeds: [embed], components: [row] });
+        await interaction.message.edit({
+            embeds: [embed],
+            components: [row],
+        });
     } else {
-        await interaction.reply({ embeds: [embed], components: [row] });
+        await interaction.reply({
+            embeds: [embed],
+            components: [row],
+        });
     }
 }
 
@@ -273,7 +277,7 @@ export async function home(interaction: CommandInteraction | ButtonInteraction, 
  * @param client - The Discord client.
  */
 export async function baltop(interaction: ButtonInteraction, client: Client) {
-    const top10 = await Balance.find({ GuildId: interaction.guild!.id })
+    const top10: BalanceInterface[] = await Balance.find({ GuildId: interaction.guild!.id })
         .sort({ Total: -1 })
         .limit(10);
 
@@ -288,7 +292,7 @@ export async function baltop(interaction: ButtonInteraction, client: Client) {
     let userNames: string = '';
     let balance: string = '';
 
-    await Promise.all(top10.map(async (data, index) => {
+    await Promise.all(top10.map(async (data, index: number) => {
         let fetchUser = interaction.guild!.members.cache.get(data.UserId);
 
         if (!fetchUser) {
@@ -407,27 +411,6 @@ export async function claim(interaction: ButtonInteraction, client: Client) {
             fullPrice += Math.floor(Math.random() * (priceRange.max - priceRange.min + 1)) + priceRange.min;
         }
     });
-
-    if (!balance.Hourly) {
-        fullPrice
-                += Math.floor(Math.random() * ecoPrices.HourlyClaim.max - ecoPrices.HourlyClaim.min + 1)
-                + ecoPrices.HourlyClaim.min;
-    }
-    if (!balance.Daily) {
-        fullPrice
-                += Math.floor(Math.random() * ecoPrices.DailyClaim.max - ecoPrices.DailyClaim.min + 1)
-                + ecoPrices.DailyClaim.min;
-    }
-    if (!balance.Weekly) {
-        fullPrice
-                += Math.floor(Math.random() * ecoPrices.WeeklyClaim.max - ecoPrices.WeeklyClaim.min + 1)
-                + ecoPrices.WeeklyClaim.min;
-    }
-    if (!balance.Monthly) {
-        fullPrice
-                += Math.floor(Math.random() * ecoPrices.MonthlyClaim.max - ecoPrices.MonthlyClaim.min + 1)
-                + ecoPrices.MonthlyClaim.min;
-    }
 
     const endTime = new Date().getTime();
 
