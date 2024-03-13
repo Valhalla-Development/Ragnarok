@@ -179,40 +179,58 @@ export class Economy {
         };
     }
 
+    /**
+     * This method sets the state of a button.
+     * @param button - The button to set the state for.
+     */
     setButtonState(button: ButtonBuilder) {
+        // Loop through each button in the array, except the provided 'button'.
         [this.homeButton, this.baltopButton].forEach((otherButton) => {
+            // If the button is not the provided 'button', set its style to primary and enable it.
             if (otherButton !== button) {
                 otherButton.setStyle(ButtonStyle.Primary);
                 otherButton.setDisabled(false);
             }
         });
 
+        // Disable the provided 'button' and set its style to success.
         button.setDisabled(true);
         button.setStyle(ButtonStyle.Success);
     }
 
+    /**
+     * Asynchronously updates the home embed based on user interaction.
+     * @param interaction - The interaction (Command, Button, or Modal) triggering the update.
+     * @param client - The Discord client.
+     */
     async updateHomeEmbed(interaction: CommandInteraction | ButtonInteraction | ModalSubmitInteraction, client: Client) {
+        // Fetch user balance based on their ID and guild ID
         const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
 
+        // If balance is not found, show an error message and return
         if (!balance) {
             await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
             return;
         }
 
+        // Fetch user leaderboard rank
         const userRank: BalanceInterface[] = await Balance.find({ GuildId: interaction.guild!.id })
             .sort({ Total: -1 });
         const userPos = userRank.find((b) => b.IdJoined === `${interaction.user.id}-${interaction.guild!.id}`);
 
         const rankPos = converter.toOrdinal(userRank.indexOf(userPos!) + 1);
 
+        // Map item types to their respective names
         const itemTypes = new Map<string, string[]>([
             ['seeds', ['CornSeeds', 'WheatSeeds', 'PotatoSeeds', 'TomatoSeeds']],
             ['fish', ['Trout', 'KingSalmon', 'Swordfish', 'Pufferfish']],
             ['crops', ['corn', 'wheat', 'potato', 'tomato']],
         ]);
 
+        // Calculate claim cooldown time in seconds
         const claimUserTime = balance.ClaimNewUser ? Math.round(balance.ClaimNewUser / 1000) : 0;
 
+        // Function to calculate total count of items of a specific type
         function calculateTotal(itemType: string, bal: BalanceInterface): number {
             const types = itemTypes.get(itemType);
             if (!types) return 0; // Handle unknown itemType
@@ -234,6 +252,7 @@ export class Economy {
             ? balance.HarvestedCrops.filter((crop: { CropType: string; }) => itemTypes.get('crops')
                 ?.includes(crop.CropType)).length : 0;
 
+        // Construct the home embed
         this.homeEmbed = new EmbedBuilder()
             .setAuthor({
                 name: `${interaction.user.displayName}'s Balance`,
@@ -295,20 +314,29 @@ export class Economy {
             );
     }
 
+    /**
+     * Asynchronously handles the home interaction (Command or Button).
+     * @param interaction - The interaction (Command or Button) triggering the home function.
+     * @param client - The Discord client.
+     */
     async home(interaction: CommandInteraction | ButtonInteraction, client: Client) {
+        // Update the home embed based on the interaction
         await this.updateHomeEmbed(interaction, client);
 
+        // Set the state of the home button
         this.setButtonState(this.homeButton);
 
+        // If the interaction is a ButtonInteraction, update the original message
         if (interaction instanceof ButtonInteraction) {
-            await interaction.deferReply();
+            await interaction.deferReply(); // Defer the original reply to prevent timeout
             await interaction.deleteReply();
 
+            // Edit the original message with the updated embed and components
             await interaction.message.edit({
                 embeds: [this.homeEmbed!],
                 components: [this.row],
             });
-        } else {
+        } else { // If the interaction is a CommandInteraction, reply with the updated embed and components
             await interaction.reply({
                 embeds: [this.homeEmbed!],
                 components: [this.row],
@@ -316,22 +344,31 @@ export class Economy {
         }
     }
 
+    /**
+     * Asynchronously handles the baltop button interaction.
+     * @param interaction - The ButtonInteraction triggering the baltop function.
+     * @param client - The Discord client.
+     */
     async baltop(interaction: ButtonInteraction, client: Client) {
+        // Fetch top 10 balances from the database sorted by total balance
         const top10: BalanceInterface[] = await Balance.find({ GuildId: interaction.guild!.id })
             .sort({ Total: -1 })
             .limit(10);
 
+        // If no data found, show an error message and return
         if (!top10 || top10.length === 0) {
             await RagnarokEmbed(client, interaction, 'Error', 'No data found.', true);
             return;
         }
 
+        // Defer the original reply to prevent timeout and delete the original reply
         await interaction.deferReply();
         await interaction.deleteReply();
 
         let userNames: string = '';
         let balance: string = '';
 
+        // Iterate over the top 10 balances and fetch corresponding member data
         await Promise.all(top10.map(async (data, index: number) => {
             let fetchUser = interaction.guild!.members.cache.get(data.UserId);
 
@@ -343,13 +380,14 @@ export class Economy {
                 }
             }
 
+            // If user data is found, append user name and balance to respective strings
             if (fetchUser) {
                 userNames += `\`${index + 1}\` ${fetchUser}\n`;
-
                 balance += `<:coin:706659001164628008> \`${data.Total}\`\n`;
             }
         }));
 
+        // Construct the embed with leaderboard information
         const embed = new EmbedBuilder()
             .setAuthor({
                 name: `Leaderboard for ${interaction.guild!.name}`,
@@ -369,50 +407,71 @@ export class Economy {
                 },
             );
 
+        // Set the state of the baltop button
         this.setButtonState(this.baltopButton);
 
+        // Update the original message with the updated embed and components
         await interaction.message.edit({ embeds: [embed], components: [this.row] });
     }
 
+    /**
+     * Asynchronously handles the deposit button interaction.
+     * @param interaction - The ButtonInteraction triggering the deposit function.
+     * @param client - The Discord client.
+     */
     async deposit(interaction: ButtonInteraction, client: Client) {
+        // Fetch user's balance based on their ID and guild ID
         const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
 
+        // If balance is not found or user has no cash, show an error message and return
         if (!balance || balance.Cash === 0) {
             await RagnarokEmbed(client, interaction, 'Error', 'You do not have any cash to deposit.', true);
             return;
         }
 
+        // Calculate total amount in the bank after deposit
         const bankCalc = balance.Cash + balance.Bank;
 
+        // Show success message for the deposit
         await RagnarokEmbed(client, interaction, 'Success', `You have deposited <:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\` to your bank.`, true);
 
+        // Update balance: Set cash to 0, update bank balance and total balance
         balance.Cash = 0;
         balance.Bank = bankCalc;
         balance.Total = bankCalc;
 
+        // Save the updated balance to the database
         await balance.save();
     }
 
+    /**
+     * Asynchronously handles the claim button interaction.
+     * @param interaction - The ButtonInteraction triggering the claim function.
+     * @param client - The Discord client.
+     */
     async claim(interaction: ButtonInteraction, client: Client) {
+        // Fetch user's balance based on their ID and guild ID
         const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
 
+        // If balance is not found, show an error message and return
         if (!balance) {
             await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
             return;
         }
 
+        // Check if user has new user claim cooldown
         if (balance.ClaimNewUser) {
             if (Date.now() > balance.ClaimNewUser) {
                 balance.ClaimNewUser = 0;
             } else {
                 const nowInSecond = Math.round(balance.ClaimNewUser / 1000);
-
-                await RagnarokEmbed(client, interaction, 'Error', `Your Economy proifle is too new! Please wait another <t:${nowInSecond}:R> before using this command.`, true);
+                await RagnarokEmbed(client, interaction, 'Error', `Your Economy profile is too new! Please wait another <t:${nowInSecond}:R> before using this command.`, true);
                 return;
             }
         }
 
-        const keys:(keyof Claim)[] = ['Hourly', 'Daily', 'Weekly', 'Monthly'];
+        // Check and reset other claim cooldowns if necessary
+        const keys: (keyof Claim)[] = ['Hourly', 'Daily', 'Weekly', 'Monthly'];
 
         keys.forEach((key) => {
             if (balance[key] && Date.now() > balance[key]) {
@@ -420,11 +479,13 @@ export class Economy {
             }
         });
 
+        // Check if there is anything to claim
         if (Date.now() < Math.min(balance.Hourly, balance.Daily, balance.Weekly, balance.Monthly)) {
             await RagnarokEmbed(client, interaction, 'Error', ' You have nothing to claim!', true);
             return;
         }
 
+        // Calculate the total claim price and update balance
         let fullPrice = 0;
 
         const periods = ['Hourly', 'Daily', 'Weekly', 'Monthly'];
@@ -453,31 +514,40 @@ export class Economy {
 
         await balance.save();
 
+        // Show success message with claimed amount and new total
         const newTot = balance.Total + fullPrice;
 
         await RagnarokEmbed(client, interaction, 'Success', `You have claimed all available claims! <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` has been credited to your Bank.\n Your new total is <:coin:706659001164628008> \`${newTot.toLocaleString('en')}\``, true);
     }
 
+    /**
+     * Asynchronously handles the coinflip interaction.
+     * @param interaction - The ModalSubmitInteraction or ButtonInteraction triggering the coinflip function.
+     * @param client - The Discord client.
+     * @param amount - The amount to bet, default is null.
+     * @param option - The chosen option (heads or tails), default is null.
+     */
     async coinflip(
         interaction: ModalSubmitInteraction | ButtonInteraction,
         client: Client,
         amount: string | null = null,
         option: string | null = null,
     ) {
+        // Fetch user's balance based on their ID and guild ID
         const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
 
+        // If balance is not found, show an error message and return
         if (!balance) {
             await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
             return;
         }
 
+        // If no amount and option are provided and the interaction is a ButtonInteraction, show a modal for specifying an amount
         if (!amount && !option && interaction instanceof ButtonInteraction) {
-            // Creating a modal for specifying an amount
             const coinflipModal = new ModalBuilder()
                 .setTitle('Coin Flip Amount')
                 .setCustomId('coinflipAmount');
 
-            // Creating number input field for amount
             const amountField = new TextInputBuilder()
                 .setCustomId('amountField')
                 .setLabel('Amount to bet')
@@ -486,19 +556,17 @@ export class Economy {
                 .setMinLength(2)
                 .setRequired(true);
 
-            // Creating action rows with the respective input field
             const coinRow = new ActionRowBuilder<TextInputBuilder>().addComponents(
                 amountField,
             );
 
-            // Adding the action rows to the modal
             coinflipModal.addComponents(coinRow);
 
-            // Displaying the modal in response to the interaction
             await interaction.showModal(coinflipModal);
             return;
         }
 
+        // Define buttons for heads, tails, and cancel
         const headsButton = new ButtonBuilder()
             .setLabel('Heads!')
             .setStyle(ButtonStyle.Primary)
@@ -516,6 +584,7 @@ export class Economy {
 
         const coinRow = new ActionRowBuilder<ButtonBuilder>().addComponents(headsButton, tailsButton, cancelButton);
 
+        // If no option provided, check for valid amount and sufficient balance, then start the coin flip
         if (!option) {
             if (Number.isNaN(Number(amount))) {
                 await RagnarokEmbed(client, interaction, 'Error', 'The specified amount was not a valid number.', true);
@@ -523,9 +592,7 @@ export class Economy {
             }
 
             if (Number(amount) > balance.Bank) {
-                await RagnarokEmbed(client, interaction, 'Error', `You do not have enough to bet <:coin:706659001164628008> \`${Number(amount)
-                    .toLocaleString('en')}\`, you have <:coin:706659001164628008> \`${Number(balance.Bank)
-                    .toLocaleString('en')}\` available in your Bank.`, true);
+                await RagnarokEmbed(client, interaction, 'Error', `You do not have enough to bet <:coin:706659001164628008> \`${Number(amount).toLocaleString('en')}\`, you have <:coin:706659001164628008> \`${Number(balance.Bank).toLocaleString('en')}\` available in your Bank.`, true);
                 return;
             }
 
@@ -537,12 +604,11 @@ export class Economy {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .addFields({
                     name: `**${client.user?.username} - Coin Flip**`,
-                    value: `**◎** ${interaction.user} bet <:coin:706659001164628008> \`${Number(amount)
-                        .toLocaleString('en')}\``,
+                    value: `**◎** ${interaction.user} bet <:coin:706659001164628008> \`${Number(amount).toLocaleString('en')}\``,
                 });
 
             await interaction.message?.edit({ embeds: [initial], components: [coinRow] });
-        } else {
+        } else { // If option is provided, determine win or loss, update balance, and display result
             const flip = ['heads', 'tails'];
             const answer = flip[Math.floor(Math.random() * flip.length)];
 
@@ -554,8 +620,7 @@ export class Economy {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .addFields({
                     name: `**${client.user?.username} - Coin Flip**`,
-                    value: `**◎** ${interaction.user} won! <:coin:706659001164628008> \`${Number(amount)
-                        .toLocaleString('en')}\` has been credited to your Bank!`,
+                    value: `**◎** ${interaction.user} won! <:coin:706659001164628008> \`${Number(amount).toLocaleString('en')}\` has been credited to your Bank!`,
                 });
 
             const lose = new EmbedBuilder()
@@ -566,13 +631,13 @@ export class Economy {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .addFields({
                     name: `**${client.user?.username} - Coin Flip**`,
-                    value: `**◎** ${interaction.user} lost <:coin:706659001164628008> \`${Number(amount)
-                        .toLocaleString('en')}\``,
+                    value: `**◎** ${interaction.user} lost <:coin:706659001164628008> \`${Number(amount).toLocaleString('en')}\``,
                 });
 
             headsButton.setDisabled(true);
             tailsButton.setDisabled(true);
 
+            // Update balance based on win or loss
             if (option === answer) {
                 balance.Bank += Number(amount);
                 balance.Total += Number(amount);
@@ -584,11 +649,14 @@ export class Economy {
             await interaction.deferReply();
             await interaction.deleteReply();
 
+            // Display result message with the appropriate embed
             await interaction.message?.edit({ components: [coinRow], embeds: [option === answer ? win : lose] });
             await balance.save();
 
+            // Update home embed after the coin flip
             await this.updateHomeEmbed(interaction, client);
 
+            // If interaction is a ButtonInteraction and home embed exists, update the message with home embed after a delay
             if (interaction instanceof ButtonInteraction && this.homeEmbed) {
                 setTimeout(async () => {
                     await interaction.message?.edit({ components: [this.row], embeds: [this.homeEmbed as APIEmbed] });
