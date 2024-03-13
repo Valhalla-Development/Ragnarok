@@ -1,6 +1,7 @@
 import {
     ActionRowBuilder,
     APIEmbed,
+    AttachmentBuilder,
     ButtonBuilder,
     ButtonInteraction,
     ButtonStyle,
@@ -32,6 +33,26 @@ interface Claim {
     Monthly?: number;
 }
 
+interface Items {
+    Trout: number;
+    KingSalmon: number;
+    SwordFish: number;
+    PufferFish: number;
+    Treasure: number;
+    GoldBar: number;
+    GoldNugget: number;
+    Barley: number;
+    Spinach: number;
+    Strawberries: number;
+    Lettuce: number;
+    CornSeeds: number;
+    WheatSeeds: number;
+    PotatoSeeds: number;
+    TomatoSeeds: number;
+    FarmingTools: boolean;
+    FishingRod: boolean;
+}
+
 export class Economy {
     homeButton;
 
@@ -43,7 +64,9 @@ export class Economy {
 
     coinflipButton;
 
-    row;
+    farmButton;
+
+    rows: ActionRowBuilder<ButtonBuilder>[] = [];
 
     ecoPrices;
 
@@ -75,13 +98,24 @@ export class Economy {
             .setStyle(ButtonStyle.Primary)
             .setCustomId('economy_coinflip');
 
-        this.row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        this.farmButton = new ButtonBuilder()
+            .setLabel('Farm')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('economy_farm');
+
+        const row1 = new ActionRowBuilder<ButtonBuilder>().addComponents(
             this.homeButton,
             this.baltopButton,
             this.claimButton,
             this.depositButton,
             this.coinflipButton,
         );
+
+        const row2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            this.farmButton,
+        );
+
+        this.rows.push(row1, row2);
 
         // Bind methods to class instance
         this.home = this.home.bind(this);
@@ -334,12 +368,12 @@ export class Economy {
             // Edit the original message with the updated embed and components
             await interaction.message.edit({
                 embeds: [this.homeEmbed!],
-                components: [this.row],
+                components: [...this.rows],
             });
         } else { // If the interaction is a CommandInteraction, reply with the updated embed and components
             await interaction.reply({
                 embeds: [this.homeEmbed!],
-                components: [this.row],
+                components: [...this.rows],
             });
         }
     }
@@ -411,7 +445,10 @@ export class Economy {
         this.setButtonState(this.baltopButton);
 
         // Update the original message with the updated embed and components
-        await interaction.message.edit({ embeds: [embed], components: [this.row] });
+        await interaction.message.edit({
+            embeds: [embed],
+            components: [...this.rows],
+        });
     }
 
     /**
@@ -592,7 +629,9 @@ export class Economy {
             }
 
             if (Number(amount) > balance.Bank) {
-                await RagnarokEmbed(client, interaction, 'Error', `You do not have enough to bet <:coin:706659001164628008> \`${Number(amount).toLocaleString('en')}\`, you have <:coin:706659001164628008> \`${Number(balance.Bank).toLocaleString('en')}\` available in your Bank.`, true);
+                await RagnarokEmbed(client, interaction, 'Error', `You do not have enough to bet <:coin:706659001164628008> \`${Number(amount)
+                    .toLocaleString('en')}\`, you have <:coin:706659001164628008> \`${Number(balance.Bank)
+                    .toLocaleString('en')}\` available in your Bank.`, true);
                 return;
             }
 
@@ -604,10 +643,14 @@ export class Economy {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .addFields({
                     name: `**${client.user?.username} - Coin Flip**`,
-                    value: `**◎** ${interaction.user} bet <:coin:706659001164628008> \`${Number(amount).toLocaleString('en')}\``,
+                    value: `**◎** ${interaction.user} bet <:coin:706659001164628008> \`${Number(amount)
+                        .toLocaleString('en')}\``,
                 });
 
-            await interaction.message?.edit({ embeds: [initial], components: [coinRow] });
+            await interaction.message?.edit({
+                embeds: [initial],
+                components: [coinRow],
+            });
         } else { // If option is provided, determine win or loss, update balance, and display result
             const flip = ['heads', 'tails'];
             const answer = flip[Math.floor(Math.random() * flip.length)];
@@ -620,7 +663,8 @@ export class Economy {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .addFields({
                     name: `**${client.user?.username} - Coin Flip**`,
-                    value: `**◎** ${interaction.user} won! <:coin:706659001164628008> \`${Number(amount).toLocaleString('en')}\` has been credited to your Bank!`,
+                    value: `**◎** ${interaction.user} won! <:coin:706659001164628008> \`${Number(amount)
+                        .toLocaleString('en')}\` has been credited to your Bank!`,
                 });
 
             const lose = new EmbedBuilder()
@@ -631,7 +675,8 @@ export class Economy {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .addFields({
                     name: `**${client.user?.username} - Coin Flip**`,
-                    value: `**◎** ${interaction.user} lost <:coin:706659001164628008> \`${Number(amount).toLocaleString('en')}\``,
+                    value: `**◎** ${interaction.user} lost <:coin:706659001164628008> \`${Number(amount)
+                        .toLocaleString('en')}\``,
                 });
 
             headsButton.setDisabled(true);
@@ -650,7 +695,10 @@ export class Economy {
             await interaction.deleteReply();
 
             // Display result message with the appropriate embed
-            await interaction.message?.edit({ components: [coinRow], embeds: [option === answer ? win : lose] });
+            await interaction.message?.edit({
+                components: [coinRow],
+                embeds: [option === answer ? win : lose],
+            });
             await balance.save();
 
             // Update home embed after the coin flip
@@ -659,9 +707,101 @@ export class Economy {
             // If interaction is a ButtonInteraction and home embed exists, update the message with home embed after a delay
             if (interaction instanceof ButtonInteraction && this.homeEmbed) {
                 setTimeout(async () => {
-                    await interaction.message?.edit({ components: [this.row], embeds: [this.homeEmbed as APIEmbed] });
+                    await interaction.message?.edit({
+                        components: [...this.rows],
+                        embeds: [this.homeEmbed as APIEmbed],
+                    });
                 }, 5000);
             }
         }
+    }
+
+    async farm(interaction: ButtonInteraction, client: Client) {
+        const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
+
+        if (!balance) {
+            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            return;
+        }
+
+        if (balance.FarmCool !== null) {
+            if (Date.now() <= balance.FarmCool) {
+                await RagnarokEmbed(client, interaction, 'Error', `You are on a cooldown! You will be able to perform this action again <t:${Math.floor((balance.FarmCool) / 1000)}:R>.`, true);
+                return;
+            }
+            balance.FarmCool = 0;
+        }
+
+        const freeLimit = this.ecoPrices.freeFarmLimit;
+        let currentTotalFarm = 0;
+
+        currentTotalFarm += (Number(balance.Items?.Barley) || 0);
+        currentTotalFarm += (Number(balance.Items?.Spinach) || 0);
+        currentTotalFarm += (Number(balance.Items?.Strawberries) || 0);
+        currentTotalFarm += (Number(balance.Items?.Lettuce) || 0);
+
+        if (!balance.Items?.FarmingTools && currentTotalFarm >= Number(freeLimit)) {
+            await RagnarokEmbed(client, interaction, 'Error', 'Your farm bag is full! You can sell your produce via the `sell` button.', true);
+            return;
+        }
+
+        const farmResult = this.generateFarmResult();
+
+        if (!farmResult) {
+            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            return;
+        }
+
+        if (!balance.Items) {
+            balance.Items = {} as Items;
+        }
+
+        const amt = (Number(balance.Items[farmResult.name as keyof typeof balance.Items]) || 0) + 1;
+
+        balance.Items[farmResult.name as keyof typeof balance.Items] = amt as never;
+
+        const attachment = new AttachmentBuilder(`assets/economy/${farmResult.name}.png`);
+
+        const embed = this.buildFarmEmbed(interaction, client, farmResult, amt);
+        embed.setThumbnail(`attachment://${farmResult.name}.png`);
+
+        const endTime = new Date().getTime() + this.ecoPrices.farmWinTime;
+        balance.FarmCool = Math.round(endTime);
+
+        await balance.save();
+
+        await interaction.deferReply();
+        await interaction.deleteReply();
+        await interaction.message?.edit({ components: [...this.rows], embeds: [embed], files: [attachment] });
+        await this.updateHomeEmbed(interaction, client);
+
+        if (this.homeEmbed) {
+            setTimeout(async () => {
+                await interaction.message?.edit({ components: [...this.rows], embeds: [this.homeEmbed as APIEmbed], files: [] });
+            }, 5000);
+        }
+    }
+
+    generateFarmResult() {
+        const farmChance = Math.random();
+        if (farmChance < 0.0018) return { name: 'Gold Nugget', price: this.ecoPrices.goldNugget };
+        if (farmChance < 0.0318) return { name: 'Barley', price: this.ecoPrices.barley };
+        if (farmChance < 0.0918) return { name: 'Spinach', price: this.ecoPrices.spinach };
+        if (farmChance < 0.3718) return { name: 'Strawberries', price: this.ecoPrices.strawberries };
+        return { name: 'Lettuce', price: this.ecoPrices.lettuce };
+    }
+
+    buildFarmEmbed(interaction: ButtonInteraction, client: Client, farmResult: { name: string; price: number; }, amt: number) {
+        const { name, price } = farmResult;
+
+        const embed = new EmbedBuilder()
+            .setAuthor({ name: `${interaction.user.tag}`, iconURL: `${interaction.user.avatarURL()}` })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setFooter({ text: 'Planting crops yields a larger return! check it out with: /plant' });
+
+        return embed.addFields({
+            name: `**${client.user?.username} - Farm**`,
+            value: `**◎ Success:** You found a ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt.toLocaleString('en')}\`.`,
+        });
     }
 }
