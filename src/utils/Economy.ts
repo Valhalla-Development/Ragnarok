@@ -1,5 +1,6 @@
 import {
     ActionRowBuilder,
+    APIEmbed,
     ButtonBuilder,
     ButtonInteraction,
     ButtonStyle,
@@ -45,6 +46,8 @@ export class Economy {
     row;
 
     ecoPrices;
+
+    homeEmbed: EmbedBuilder | null = null;
 
     constructor() {
         this.homeButton = new ButtonBuilder()
@@ -188,7 +191,7 @@ export class Economy {
         button.setStyle(ButtonStyle.Success);
     }
 
-    async home(interaction: CommandInteraction | ButtonInteraction, client: Client) {
+    async updateHomeEmbed(interaction: CommandInteraction | ButtonInteraction | ModalSubmitInteraction, client: Client) {
         const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
 
         if (!balance) {
@@ -231,7 +234,7 @@ export class Economy {
             ? balance.HarvestedCrops.filter((crop: { CropType: string; }) => itemTypes.get('crops')
                 ?.includes(crop.CropType)).length : 0;
 
-        const embed = new EmbedBuilder()
+        this.homeEmbed = new EmbedBuilder()
             .setAuthor({
                 name: `${interaction.user.displayName}'s Balance`,
                 iconURL: `${interaction.user.displayAvatarURL()}`,
@@ -290,6 +293,10 @@ export class Economy {
             `,
                 },
             );
+    }
+
+    async home(interaction: CommandInteraction | ButtonInteraction, client: Client) {
+        await this.updateHomeEmbed(interaction, client);
 
         this.setButtonState(this.homeButton);
 
@@ -298,12 +305,12 @@ export class Economy {
             await interaction.deleteReply();
 
             await interaction.message.edit({
-                embeds: [embed],
+                embeds: [this.homeEmbed!],
                 components: [this.row],
             });
         } else {
             await interaction.reply({
-                embeds: [embed],
+                embeds: [this.homeEmbed!],
                 components: [this.row],
             });
         }
@@ -579,6 +586,14 @@ export class Economy {
 
             await interaction.message?.edit({ components: [coinRow], embeds: [option === answer ? win : lose] });
             await balance.save();
+
+            await this.updateHomeEmbed(interaction, client);
+
+            if (interaction instanceof ButtonInteraction && this.homeEmbed) {
+                setTimeout(async () => {
+                    await interaction.message?.edit({ components: [this.row], embeds: [this.homeEmbed as APIEmbed] });
+                }, 5000);
+            }
         }
     }
 }
