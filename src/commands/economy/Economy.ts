@@ -13,6 +13,8 @@ export class EconomyCommand {
 
     private instance: Economy | null = null;
 
+    private user: string | null = null;
+
     /**
      * Access to the economy module.
      * @param interaction - The command interaction.
@@ -22,6 +24,7 @@ export class EconomyCommand {
     async economy(interaction: CommandInteraction, client: Client): Promise<void> {
         const economyInstance = new Economy();
         this.instance = economyInstance;
+        this.user = interaction.user.id;
 
         await economyInstance.home(interaction, client);
     }
@@ -33,6 +36,11 @@ export class EconomyCommand {
      */
     @ButtonComponent({ id: /^economy_.*/ })
     async buttonInteraction(interaction: ButtonInteraction, client: Client) {
+        if (this.user !== interaction.user.id) {
+            await RagnarokEmbed(client, interaction, 'Error', 'Only the command executor can select an option.', true);
+            return;
+        }
+
         if (!this.instance) {
             await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try running the economy command again.', true);
             return;
