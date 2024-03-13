@@ -31,217 +31,241 @@ interface Claim {
     Monthly?: number;
 }
 
-// Buttons to be applied to the embed
-const homeButton = new ButtonBuilder()
-    .setLabel('Home')
-    .setStyle(ButtonStyle.Success)
-    .setCustomId('economy_home');
+export class Economy {
+    homeButton;
 
-const baltopButton = new ButtonBuilder()
-    .setLabel('Baltop')
-    .setStyle(ButtonStyle.Primary)
-    .setCustomId('economy_baltop');
+    baltopButton;
 
-const claimButton = new ButtonBuilder()
-    .setLabel('Claim')
-    .setStyle(ButtonStyle.Primary)
-    .setCustomId('economy_claim');
+    claimButton;
 
-const depositButton = new ButtonBuilder()
-    .setLabel('Deposit')
-    .setStyle(ButtonStyle.Primary)
-    .setCustomId('economy_deposit');
+    depositButton;
 
-const coinflipButton = new ButtonBuilder()
-    .setLabel('Coin Flip')
-    .setStyle(ButtonStyle.Primary)
-    .setCustomId('economy_coinflip');
+    coinflipButton;
 
-const row = new ActionRowBuilder<ButtonBuilder>().addComponents(homeButton, baltopButton, claimButton, depositButton, coinflipButton);
+    row;
 
-function setButtonState(button: ButtonBuilder) {
-    [homeButton, baltopButton].forEach((otherButton) => {
-        if (otherButton !== button) {
-            otherButton.setStyle(ButtonStyle.Primary);
-            otherButton.setDisabled(false);
+    ecoPrices;
+
+    constructor() {
+        this.homeButton = new ButtonBuilder()
+            .setLabel('Home')
+            .setStyle(ButtonStyle.Success)
+            .setCustomId('economy_home');
+
+        this.baltopButton = new ButtonBuilder()
+            .setLabel('Baltop')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('economy_baltop');
+
+        this.claimButton = new ButtonBuilder()
+            .setLabel('Claim')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('economy_claim');
+
+        this.depositButton = new ButtonBuilder()
+            .setLabel('Deposit')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('economy_deposit');
+
+        this.coinflipButton = new ButtonBuilder()
+            .setLabel('Coin Flip')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('economy_coinflip');
+
+        this.row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            this.homeButton,
+            this.baltopButton,
+            this.claimButton,
+            this.depositButton,
+            this.coinflipButton,
+        );
+
+        // Bind methods to class instance
+        this.home = this.home.bind(this);
+        this.baltop = this.baltop.bind(this);
+        this.deposit = this.deposit.bind(this);
+        this.claim = this.claim.bind(this);
+        this.coinflip = this.coinflip.bind(this);
+
+        this.ecoPrices = {
+            // Amount you earn per message & cooldown
+            maxPerM: 40,
+            minPerM: 10,
+            // Time new users have to wait until using the claim command
+            newUserTime: 604800000, // 7 Days
+
+            // Claim amount
+            HourlyClaim: {
+                min: 50,
+                max: 150,
+            },
+            DailyClaim: {
+                min: 150,
+                max: 300,
+            },
+            WeeklyClaim: {
+                min: 750,
+                max: 1000,
+            },
+            MonthlyClaim: {
+                min: 4000,
+                max: 6000,
+            },
+
+            // Fishing related prices
+            fishBagFirst: 50,
+            fishBagLimit: 1000,
+            fishBagPrice: 450, // Price is current capacity * price (Upgrade adds 25 to capacity)
+            fishingRod: 15000,
+            treasure: 50000,
+            pufferfish: 3000,
+            swordfish: 1500,
+            kingSalmon: 500,
+            trout: 150,
+
+            // Fishing related timeouts
+            fishWinTime: 600000, // 10 Minutes
+            fishFailtime: 900000, // 15 Minutes
+
+            // Farming with tools prices
+            farmPlotFirst: 10,
+            farmPlotLimit: 1000,
+            farmPlotPrice: 750, // Price is current capacity * price (Upgrade adds 25 to capacity)
+            freeFarmLimit: 10,
+            farmingTools: 15000,
+            farmBagFirst: 50, // Inital bag purchase
+            farmBagLimit: 10000, // Max upgrade possible
+            farmBagPrice: 300, // Price is current capacity * price (Upgrade adds 25 to capacity)
+            goldBar: 25000,
+            corn: 650,
+            wheat: 500,
+            potatoes: 400,
+            tomatoes: 350,
+
+            // Planting Times
+            cornPlant: 600000, // 10 minutes
+            wheatPlant: 450000, // 7 min 30
+            potatoPlant: 210000, // 3 min 30
+            tomatoPlant: 90000, // 1 min 30
+
+            // Decay rate
+            DecayRate: 0.02,
+
+            // Farming without tools prices
+            goldNugget: 15000,
+            barley: 1200,
+            spinach: 600,
+            strawberries: 200,
+            lettuce: 60,
+
+            // Farming without tools timeouts
+            farmWinTime: 600000, // 10 Minutes
+            farmFailTime: 900000, // 15 Minutes,
+
+            // Seed prices
+            seedBagFirst: 50, // Inital bag purchase
+            seedBagLimit: 1000, // Max upgrade possible
+            seedBagPrice: 150, // Price is current capacity * price (Upgrade adds 25 to capacity)
+            cornSeed: 4000, // You get 10 per pack
+            wheatSeed: 3300,
+            potatoSeed: 2900,
+            tomatoSeed: 2800,
+
+            // Beg timeout
+            begTimer: 120000,
+        };
+    }
+
+    setButtonState(button: ButtonBuilder) {
+        [this.homeButton, this.baltopButton].forEach((otherButton) => {
+            if (otherButton !== button) {
+                otherButton.setStyle(ButtonStyle.Primary);
+                otherButton.setDisabled(false);
+            }
+        });
+
+        button.setDisabled(true);
+        button.setStyle(ButtonStyle.Success);
+    }
+
+    async home(interaction: CommandInteraction | ButtonInteraction, client: Client) {
+        const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
+
+        if (!balance) {
+            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            return;
         }
-    });
 
-    button.setDisabled(true);
-    button.setStyle(ButtonStyle.Success);
-}
+        const userRank: BalanceInterface[] = await Balance.find({ GuildId: interaction.guild!.id })
+            .sort({ Total: -1 });
+        const userPos = userRank.find((b) => b.IdJoined === `${interaction.user.id}-${interaction.guild!.id}`);
 
-const ecoPrices = {
-    // Amount you earn per message & cooldown
-    maxPerM: 40,
-    minPerM: 10,
-    // Time new users have to wait until using the claim command
-    newUserTime: 604800000, // 7 Days
+        const rankPos = converter.toOrdinal(userRank.indexOf(userPos!) + 1);
 
-    // Claim amount
-    HourlyClaim: {
-        min: 50,
-        max: 150,
-    },
-    DailyClaim: {
-        min: 150,
-        max: 300,
-    },
-    WeeklyClaim: {
-        min: 750,
-        max: 1000,
-    },
-    MonthlyClaim: {
-        min: 4000,
-        max: 6000,
-    },
+        const itemTypes = new Map<string, string[]>([
+            ['seeds', ['CornSeeds', 'WheatSeeds', 'PotatoSeeds', 'TomatoSeeds']],
+            ['fish', ['Trout', 'KingSalmon', 'Swordfish', 'Pufferfish']],
+            ['crops', ['corn', 'wheat', 'potato', 'tomato']],
+        ]);
 
-    // Fishing related prices
-    fishBagFirst: 50,
-    fishBagLimit: 1000,
-    fishBagPrice: 450, // Price is current capacity * price (Upgrade adds 25 to capacity)
-    fishingRod: 15000,
-    treasure: 50000,
-    pufferfish: 3000,
-    swordfish: 1500,
-    kingSalmon: 500,
-    trout: 150,
+        const claimUserTime = balance.ClaimNewUser ? Math.round(balance.ClaimNewUser / 1000) : 0;
 
-    // Fishing related timeouts
-    fishWinTime: 600000, // 10 Minutes
-    fishFailtime: 900000, // 15 Minutes
+        function calculateTotal(itemType: string, bal: BalanceInterface): number {
+            const types = itemTypes.get(itemType);
+            if (!types) return 0; // Handle unknown itemType
 
-    // Farming with tools prices
-    farmPlotFirst: 10,
-    farmPlotLimit: 1000,
-    farmPlotPrice: 750, // Price is current capacity * price (Upgrade adds 25 to capacity)
-    freeFarmLimit: 10,
-    farmingTools: 15000,
-    farmBagFirst: 50, // Inital bag purchase
-    farmBagLimit: 10000, // Max upgrade possible
-    farmBagPrice: 300, // Price is current capacity * price (Upgrade adds 25 to capacity)
-    goldBar: 25000,
-    corn: 650,
-    wheat: 500,
-    potatoes: 400,
-    tomatoes: 350,
+            return types.reduce((acc, type) => {
+                const itemQuantity = bal?.Items?.[type as keyof typeof bal.Items] || 0;
+                return acc + (typeof itemQuantity === 'number' ? itemQuantity : 0);
+            }, 0);
+        }
 
-    // Planting Times
-    cornPlant: 600000, // 10 minutes
-    wheatPlant: 450000, // 7 min 30
-    potatoPlant: 210000, // 3 min 30
-    tomatoPlant: 90000, // 1 min 30
+        // Sum up seed counts
+        const currentTotalSeeds = calculateTotal('seeds', balance);
 
-    // Decay rate
-    DecayRate: 0.02,
+        // Sum up fish counts
+        const currentTotalFish = calculateTotal('fish', balance);
 
-    // Farming without tools prices
-    goldNugget: 15000,
-    barley: 1200,
-    spinach: 600,
-    strawberries: 200,
-    lettuce: 60,
+        // Count harvested crops
+        const currentTotalFarm = balance.HarvestedCrops?.length
+            ? balance.HarvestedCrops.filter((crop: { CropType: string; }) => itemTypes.get('crops')
+                ?.includes(crop.CropType)).length : 0;
 
-    // Farming without tools timeouts
-    farmWinTime: 600000, // 10 Minutes
-    farmFailTime: 900000, // 15 Minutes,
-
-    // Seed prices
-    seedBagFirst: 50, // Inital bag purchase
-    seedBagLimit: 1000, // Max upgrade possible
-    seedBagPrice: 150, // Price is current capacity * price (Upgrade adds 25 to capacity)
-    cornSeed: 4000, // You get 10 per pack
-    wheatSeed: 3300,
-    potatoSeed: 2900,
-    tomatoSeed: 2800,
-
-    // Beg timeout
-    begTimer: 120000,
-};
-
-/**
- * Access to the home page.
- * @param interaction - The command interaction.
- * @param client - The Discord client.
- */
-export async function home(interaction: CommandInteraction | ButtonInteraction, client: Client) {
-    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
-
-    if (!balance) {
-        await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
-        return;
-    }
-
-    const userRank: BalanceInterface[] = await Balance.find({ GuildId: interaction.guild!.id })
-        .sort({ Total: -1 });
-    const userPos = userRank.find((b) => b.IdJoined === `${interaction.user.id}-${interaction.guild!.id}`);
-
-    const rankPos = converter.toOrdinal(userRank.indexOf(userPos!) + 1);
-
-    const itemTypes = new Map<string, string[]>([
-        ['seeds', ['CornSeeds', 'WheatSeeds', 'PotatoSeeds', 'TomatoSeeds']],
-        ['fish', ['Trout', 'KingSalmon', 'Swordfish', 'Pufferfish']],
-        ['crops', ['corn', 'wheat', 'potato', 'tomato']],
-    ]);
-
-    const claimUserTime = balance.ClaimNewUser ? Math.round(balance.ClaimNewUser / 1000) : 0;
-
-    function calculateTotal(itemType: string, bal: BalanceInterface): number {
-        const types = itemTypes.get(itemType);
-        if (!types) return 0; // Handle unknown itemType
-
-        return types.reduce((acc, type) => {
-            const itemQuantity = bal?.Items?.[type as keyof typeof bal.Items] || 0;
-            return acc + (typeof itemQuantity === 'number' ? itemQuantity : 0);
-        }, 0);
-    }
-
-    // Sum up seed counts
-    const currentTotalSeeds = calculateTotal('seeds', balance);
-
-    // Sum up fish counts
-    const currentTotalFish = calculateTotal('fish', balance);
-
-    // Count harvested crops
-    const currentTotalFarm = balance.HarvestedCrops?.length
-        ? balance.HarvestedCrops.filter((crop: { CropType: string; }) => itemTypes.get('crops')
-            ?.includes(crop.CropType)).length : 0;
-
-    const embed = new EmbedBuilder()
-        .setAuthor({
-            name: `${interaction.user.displayName}'s Balance`,
-            iconURL: `${interaction.user.displayAvatarURL()}`,
-        })
-        .setDescription(`Leaderboard Rank: \`${rankPos}\``)
-        .setColor(color(interaction.guild!.members.me!.displayHexColor))
-        .addFields(
-            {
-                name: 'Cash',
-                value: `<:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\``,
-                inline: true,
-            },
-            {
-                name: 'Bank',
-                value: `<:coin:706659001164628008> \`${balance.Bank.toLocaleString('en')}\``,
-                inline: true,
-            },
-            {
-                name: 'Total',
-                value: `<:coin:706659001164628008> \`${balance.Total.toLocaleString('en')}\``,
-                inline: true,
-            },
-            {
-                name: 'Cooldowns',
-                value: `
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${interaction.user.displayName}'s Balance`,
+                iconURL: `${interaction.user.displayAvatarURL()}`,
+            })
+            .setDescription(`Leaderboard Rank: \`${rankPos}\``)
+            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .addFields(
+                {
+                    name: 'Cash',
+                    value: `<:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\``,
+                    inline: true,
+                },
+                {
+                    name: 'Bank',
+                    value: `<:coin:706659001164628008> \`${balance.Bank.toLocaleString('en')}\``,
+                    inline: true,
+                },
+                {
+                    name: 'Total',
+                    value: `<:coin:706659001164628008> \`${balance.Total.toLocaleString('en')}\``,
+                    inline: true,
+                },
+                {
+                    name: 'Cooldowns',
+                    value: `
                 Steal: ${Date.now() > balance.StealCool ? '`Available!`' : `<t:${Math.round(balance.StealCool / 1000)}:R>`}
                 Fish: ${!balance.Items?.FishingRod ? '`Rod Not Owned`' : `${Date.now() > balance.FishCool ? '`Available!`' : `<t:${Math.round(balance.FishCool / 1000)}:R>`}`}
                 Farm: ${Date.now() > balance.FarmCool ? '`Available!`' : `<t:${Math.round(balance.FarmCool / 1000)}:R>`}
             `,
-                inline: false,
-            },
-            {
-                name: 'Boosts',
-                value: `
+                    inline: false,
+                },
+                {
+                    name: 'Boosts',
+                    value: `
                 Seed: ${balance.Boosts?.SeedBag ? `\`${Number(currentTotalSeeds)
         .toLocaleString('en')}\`/\`${Number(balance.Boosts.SeedBag)
         .toLocaleString('en')}\`` : '`Seed Not Owned`'}
@@ -254,328 +278,307 @@ export async function home(interaction: CommandInteraction | ButtonInteraction, 
                 Farm Plot: ${balance.Boosts?.FarmPlot ? `\`${balance.FarmPlot.length.toLocaleString('en')}\`/\`${Number(balance.Boosts.FarmPlot)
         .toLocaleString('en')}\`` : '`Not Owned`'}
             `,
-                inline: false,
-            },
-            {
-                name: '**Claim Cooldowns**',
-                value: `
+                    inline: false,
+                },
+                {
+                    name: '**Claim Cooldowns**',
+                    value: `
                 Hourly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Hourly ? '`Available!`' : `<t:${Math.round(balance.Hourly / 1000)}:R>`)}
                 Daily: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Daily ? '`Available!`' : `<t:${Math.round(balance.Daily / 1000)}:R>`)}
                 Weekly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Weekly ? '`Available!`' : `<t:${Math.round(balance.Weekly / 1000)}:R>`)}
                 Monthly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Monthly ? '`Available!`' : `<t:${Math.round(balance.Monthly / 1000)}:R>`)}
             `,
-            },
-        );
+                },
+            );
 
-    setButtonState(homeButton);
+        this.setButtonState(this.homeButton);
 
-    if (interaction instanceof ButtonInteraction) {
+        if (interaction instanceof ButtonInteraction) {
+            await interaction.deferReply();
+            await interaction.deleteReply();
+
+            await interaction.message.edit({
+                embeds: [embed],
+                components: [this.row],
+            });
+        } else {
+            await interaction.reply({
+                embeds: [embed],
+                components: [this.row],
+            });
+        }
+    }
+
+    async baltop(interaction: ButtonInteraction, client: Client) {
+        const top10: BalanceInterface[] = await Balance.find({ GuildId: interaction.guild!.id })
+            .sort({ Total: -1 })
+            .limit(10);
+
+        if (!top10 || top10.length === 0) {
+            await RagnarokEmbed(client, interaction, 'Error', 'No data found.', true);
+            return;
+        }
+
         await interaction.deferReply();
         await interaction.deleteReply();
 
-        await interaction.message.edit({
-            embeds: [embed],
-            components: [row],
-        });
-    } else {
-        await interaction.reply({
-            embeds: [embed],
-            components: [row],
-        });
+        let userNames: string = '';
+        let balance: string = '';
+
+        await Promise.all(top10.map(async (data, index: number) => {
+            let fetchUser = interaction.guild!.members.cache.get(data.UserId);
+
+            if (!fetchUser) {
+                try {
+                    fetchUser = await interaction.guild!.members.fetch(data.UserId);
+                } catch {
+                    // Do nothing because I am a monster
+                }
+            }
+
+            if (fetchUser) {
+                userNames += `\`${index + 1}\` ${fetchUser}\n`;
+
+                balance += `<:coin:706659001164628008> \`${data.Total}\`\n`;
+            }
+        }));
+
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `Leaderboard for ${interaction.guild!.name}`,
+                iconURL: `${interaction.guild!.iconURL({ extension: 'png' })}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .addFields(
+                {
+                    name: 'Top 10',
+                    value: userNames,
+                    inline: true,
+                },
+                {
+                    name: 'Balance',
+                    value: balance,
+                    inline: true,
+                },
+            );
+
+        this.setButtonState(this.baltopButton);
+
+        await interaction.message.edit({ embeds: [embed], components: [this.row] });
     }
-}
 
-/**
- * View the economy leaderboard for the guild.
- * @param interaction - The command interaction.
- * @param client - The Discord client.
- */
-export async function baltop(interaction: ButtonInteraction, client: Client) {
-    const top10: BalanceInterface[] = await Balance.find({ GuildId: interaction.guild!.id })
-        .sort({ Total: -1 })
-        .limit(10);
+    async deposit(interaction: ButtonInteraction, client: Client) {
+        const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
 
-    if (!top10 || top10.length === 0) {
-        await RagnarokEmbed(client, interaction, 'Error', 'No data found.', true);
-        return;
+        if (!balance || balance.Cash === 0) {
+            await RagnarokEmbed(client, interaction, 'Error', 'You do not have any cash to deposit.', true);
+            return;
+        }
+
+        const bankCalc = balance.Cash + balance.Bank;
+
+        await RagnarokEmbed(client, interaction, 'Success', `You have deposited <:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\` to your bank.`, true);
+
+        balance.Cash = 0;
+        balance.Bank = bankCalc;
+        balance.Total = bankCalc;
+
+        await balance.save();
     }
 
-    await interaction.deferReply();
-    await interaction.deleteReply();
+    async claim(interaction: ButtonInteraction, client: Client) {
+        const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
 
-    let userNames: string = '';
-    let balance: string = '';
+        if (!balance) {
+            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            return;
+        }
 
-    await Promise.all(top10.map(async (data, index: number) => {
-        let fetchUser = interaction.guild!.members.cache.get(data.UserId);
+        if (balance.ClaimNewUser) {
+            if (Date.now() > balance.ClaimNewUser) {
+                balance.ClaimNewUser = 0;
+            } else {
+                const nowInSecond = Math.round(balance.ClaimNewUser / 1000);
 
-        if (!fetchUser) {
-            try {
-                fetchUser = await interaction.guild!.members.fetch(data.UserId);
-            } catch {
-            // Do nothing because I am a monster
+                await RagnarokEmbed(client, interaction, 'Error', `Your Economy proifle is too new! Please wait another <t:${nowInSecond}:R> before using this command.`, true);
+                return;
             }
         }
 
-        if (fetchUser) {
-            userNames += `\`${index + 1}\` ${fetchUser}\n`;
+        const keys:(keyof Claim)[] = ['Hourly', 'Daily', 'Weekly', 'Monthly'];
 
-            balance += `<:coin:706659001164628008> \`${data.Total}\`\n`;
-        }
-    }));
+        keys.forEach((key) => {
+            if (balance[key] && Date.now() > balance[key]) {
+                balance[key] = 0;
+            }
+        });
 
-    const embed = new EmbedBuilder()
-        .setAuthor({
-            name: `Leaderboard for ${interaction.guild!.name}`,
-            iconURL: `${interaction.guild!.iconURL({ extension: 'png' })}`,
-        })
-        .setColor(color(interaction.guild!.members.me!.displayHexColor))
-        .addFields(
-            {
-                name: 'Top 10',
-                value: userNames,
-                inline: true,
-            },
-            {
-                name: 'Balance',
-                value: balance,
-                inline: true,
-            },
-        );
-
-    setButtonState(baltopButton);
-
-    await interaction.message.edit({ embeds: [embed], components: [row] });
-}
-
-/**
- * Deposit your balance into the bank
- * @param interaction - The command interaction.
- * @param client - The Discord client.
- */
-export async function deposit(interaction: ButtonInteraction, client: Client) {
-    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
-
-    if (!balance || balance.Cash === 0) {
-        await RagnarokEmbed(client, interaction, 'Error', 'You do not have any cash to deposit.', true);
-        return;
-    }
-
-    const bankCalc = balance.Cash + balance.Bank;
-
-    await RagnarokEmbed(client, interaction, 'Success', `You have deposited <:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\` to your bank.`, true);
-
-    balance.Cash = 0;
-    balance.Bank = bankCalc;
-    balance.Total = bankCalc;
-
-    await balance.save();
-}
-
-/**
- * Claim rewards
- * @param interaction - The command interaction.
- * @param client - The Discord client.
- */
-export async function claim(interaction: ButtonInteraction, client: Client) {
-    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
-
-    if (!balance) {
-        await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
-        return;
-    }
-
-    if (balance.ClaimNewUser) {
-        if (Date.now() > balance.ClaimNewUser) {
-            balance.ClaimNewUser = 0;
-        } else {
-            const nowInSecond = Math.round(balance.ClaimNewUser / 1000);
-
-            await RagnarokEmbed(client, interaction, 'Error', `Your Economy proifle is too new! Please wait another <t:${nowInSecond}:R> before using this command.`, true);
-            return;
-        }
-    }
-
-    const keys:(keyof Claim)[] = ['Hourly', 'Daily', 'Weekly', 'Monthly'];
-
-    keys.forEach((key) => {
-        if (balance[key] && Date.now() > balance[key]) {
-            balance[key] = 0;
-        }
-    });
-
-    if (Date.now() < Math.min(balance.Hourly, balance.Daily, balance.Weekly, balance.Monthly)) {
-        await RagnarokEmbed(client, interaction, 'Error', ' You have nothing to claim!', true);
-        return;
-    }
-
-    let fullPrice = 0;
-
-    const periods = ['Hourly', 'Daily', 'Weekly', 'Monthly'];
-    const prices: EcoPrices = {
-        Hourly: ecoPrices.HourlyClaim,
-        Daily: ecoPrices.DailyClaim,
-        Weekly: ecoPrices.WeeklyClaim,
-        Monthly: ecoPrices.MonthlyClaim,
-    };
-
-    periods.forEach((period) => {
-        if (!balance[period as keyof typeof balance]) {
-            const priceRange = prices[period as keyof EcoPrices];
-            fullPrice += Math.floor(Math.random() * (priceRange.max - priceRange.min + 1)) + priceRange.min;
-        }
-    });
-
-    const endTime = new Date().getTime();
-
-    balance.Hourly = !balance.Hourly ? endTime + 3600000 : balance.Hourly;
-    balance.Daily = !balance.Daily ? endTime + 86400000 : balance.Daily;
-    balance.Weekly = !balance.Weekly ? endTime + 604800000 : balance.Weekly;
-    balance.Monthly = !balance.Monthly ? endTime + 2629800000 : balance.Monthly;
-    balance.Bank += fullPrice;
-    balance.Total += fullPrice;
-
-    await balance.save();
-
-    const newTot = balance.Total + fullPrice;
-
-    await RagnarokEmbed(client, interaction, 'Success', `You have claimed all available claims! <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` has been credited to your Bank.\n Your new total is <:coin:706659001164628008> \`${newTot.toLocaleString('en')}\``, true);
-}
-
-/**
- * Coin flip game
- * @param interaction - The command interaction.
- * @param client - The Discord client.
- * @param amount - The amount to gamble
- * @param option - The selected option
- */
-export async function coinflip(
-    interaction: ModalSubmitInteraction | ButtonInteraction,
-    client: Client,
-    amount: string | null = null,
-    option: string | null = null,
-) {
-    const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
-
-    if (!balance) {
-        await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
-        return;
-    }
-
-    if (!amount && !option && interaction instanceof ButtonInteraction) {
-        // Creating a modal for specifying an amount
-        const coinflipModal = new ModalBuilder()
-            .setTitle('Coin Flip Amount')
-            .setCustomId('coinflipAmount');
-
-        // Creating number input field for amount
-        const amountField = new TextInputBuilder()
-            .setCustomId('amountField')
-            .setLabel('Amount to bet')
-            .setPlaceholder('2850')
-            .setStyle(TextInputStyle.Short)
-            .setMinLength(2)
-            .setRequired(true);
-
-        // Creating action rows with the respective input field
-        const coinRow = new ActionRowBuilder<TextInputBuilder>().addComponents(
-            amountField,
-        );
-
-        // Adding the action rows to the modal
-        coinflipModal.addComponents(coinRow);
-
-        // Displaying the modal in response to the interaction
-        await interaction.showModal(coinflipModal);
-        return;
-    }
-
-    const headsButton = new ButtonBuilder()
-        .setLabel('Heads!')
-        .setStyle(ButtonStyle.Primary)
-        .setCustomId('economy_coinflip_heads');
-
-    const tailsButton = new ButtonBuilder()
-        .setLabel('Tails!')
-        .setStyle(ButtonStyle.Primary)
-        .setCustomId('economy_coinflip_tails');
-
-    const cancelButton = new ButtonBuilder()
-        .setLabel('Cancel')
-        .setStyle(ButtonStyle.Danger)
-        .setCustomId('economy_home');
-
-    const coinRow = new ActionRowBuilder<ButtonBuilder>().addComponents(headsButton, tailsButton, cancelButton);
-
-    if (!option) {
-        if (Number.isNaN(Number(amount))) {
-            await RagnarokEmbed(client, interaction, 'Error', 'The specified amount was not a valid number.', true);
+        if (Date.now() < Math.min(balance.Hourly, balance.Daily, balance.Weekly, balance.Monthly)) {
+            await RagnarokEmbed(client, interaction, 'Error', ' You have nothing to claim!', true);
             return;
         }
 
-        if (Number(amount) > balance.Bank) {
-            await RagnarokEmbed(client, interaction, 'Error', `You do not have enough to bet <:coin:706659001164628008> \`${Number(amount)
-                .toLocaleString('en')}\`, you have <:coin:706659001164628008> \`${Number(balance.Bank)
-                .toLocaleString('en')}\` available in your Bank.`, true);
-            return;
-        }
+        let fullPrice = 0;
 
-        const initial = new EmbedBuilder()
-            .setAuthor({
-                name: `${interaction.user.tag}`,
-                iconURL: `${interaction.user.avatarURL()}`,
-            })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .addFields({
-                name: `**${client.user?.username} - Coin Flip**`,
-                value: `**◎** ${interaction.user} bet <:coin:706659001164628008> \`${Number(amount)
-                    .toLocaleString('en')}\``,
-            });
+        const periods = ['Hourly', 'Daily', 'Weekly', 'Monthly'];
+        const prices: EcoPrices = {
+            Hourly: this.ecoPrices.HourlyClaim,
+            Daily: this.ecoPrices.DailyClaim,
+            Weekly: this.ecoPrices.WeeklyClaim,
+            Monthly: this.ecoPrices.MonthlyClaim,
+        };
 
-        await interaction.message?.edit({ embeds: [initial], components: [coinRow] });
-    } else {
-        const flip = ['heads', 'tails'];
-        const answer = flip[Math.floor(Math.random() * flip.length)];
+        periods.forEach((period) => {
+            if (!balance[period as keyof typeof balance]) {
+                const priceRange = prices[period as keyof EcoPrices];
+                fullPrice += Math.floor(Math.random() * (priceRange.max - priceRange.min + 1)) + priceRange.min;
+            }
+        });
 
-        const win = new EmbedBuilder()
-            .setAuthor({
-                name: `${interaction.user.tag}`,
-                iconURL: `${interaction.user.avatarURL()}`,
-            })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .addFields({
-                name: `**${client.user?.username} - Coin Flip**`,
-                value: `**◎** ${interaction.user} won! <:coin:706659001164628008> \`${Number(amount)
-                    .toLocaleString('en')}\` has been credited to your Bank!`,
-            });
+        const endTime = new Date().getTime();
 
-        const lose = new EmbedBuilder()
-            .setAuthor({
-                name: `${interaction.user.tag}`,
-                iconURL: `${interaction.user.avatarURL()}`,
-            })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .addFields({
-                name: `**${client.user?.username} - Coin Flip**`,
-                value: `**◎** ${interaction.user} lost <:coin:706659001164628008> \`${Number(amount)
-                    .toLocaleString('en')}\``,
-            });
+        balance.Hourly = !balance.Hourly ? endTime + 3600000 : balance.Hourly;
+        balance.Daily = !balance.Daily ? endTime + 86400000 : balance.Daily;
+        balance.Weekly = !balance.Weekly ? endTime + 604800000 : balance.Weekly;
+        balance.Monthly = !balance.Monthly ? endTime + 2629800000 : balance.Monthly;
+        balance.Bank += fullPrice;
+        balance.Total += fullPrice;
 
-        headsButton.setDisabled(true);
-        tailsButton.setDisabled(true);
-
-        if (option === answer) {
-            balance.Bank += Number(amount);
-            balance.Total += Number(amount);
-        } else {
-            balance.Bank -= Number(amount);
-            balance.Total -= Number(amount);
-        }
-
-        await interaction.deferReply();
-        await interaction.deleteReply();
-
-        await interaction.message?.edit({ components: [coinRow], embeds: [option === answer ? win : lose] });
         await balance.save();
+
+        const newTot = balance.Total + fullPrice;
+
+        await RagnarokEmbed(client, interaction, 'Success', `You have claimed all available claims! <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` has been credited to your Bank.\n Your new total is <:coin:706659001164628008> \`${newTot.toLocaleString('en')}\``, true);
+    }
+
+    async coinflip(
+        interaction: ModalSubmitInteraction | ButtonInteraction,
+        client: Client,
+        amount: string | null = null,
+        option: string | null = null,
+    ) {
+        const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
+
+        if (!balance) {
+            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            return;
+        }
+
+        if (!amount && !option && interaction instanceof ButtonInteraction) {
+            // Creating a modal for specifying an amount
+            const coinflipModal = new ModalBuilder()
+                .setTitle('Coin Flip Amount')
+                .setCustomId('coinflipAmount');
+
+            // Creating number input field for amount
+            const amountField = new TextInputBuilder()
+                .setCustomId('amountField')
+                .setLabel('Amount to bet')
+                .setPlaceholder('2850')
+                .setStyle(TextInputStyle.Short)
+                .setMinLength(2)
+                .setRequired(true);
+
+            // Creating action rows with the respective input field
+            const coinRow = new ActionRowBuilder<TextInputBuilder>().addComponents(
+                amountField,
+            );
+
+            // Adding the action rows to the modal
+            coinflipModal.addComponents(coinRow);
+
+            // Displaying the modal in response to the interaction
+            await interaction.showModal(coinflipModal);
+            return;
+        }
+
+        const headsButton = new ButtonBuilder()
+            .setLabel('Heads!')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('economy_coinflip_heads');
+
+        const tailsButton = new ButtonBuilder()
+            .setLabel('Tails!')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('economy_coinflip_tails');
+
+        const cancelButton = new ButtonBuilder()
+            .setLabel('Cancel')
+            .setStyle(ButtonStyle.Danger)
+            .setCustomId('economy_home');
+
+        const coinRow = new ActionRowBuilder<ButtonBuilder>().addComponents(headsButton, tailsButton, cancelButton);
+
+        if (!option) {
+            if (Number.isNaN(Number(amount))) {
+                await RagnarokEmbed(client, interaction, 'Error', 'The specified amount was not a valid number.', true);
+                return;
+            }
+
+            if (Number(amount) > balance.Bank) {
+                await RagnarokEmbed(client, interaction, 'Error', `You do not have enough to bet <:coin:706659001164628008> \`${Number(amount)
+                    .toLocaleString('en')}\`, you have <:coin:706659001164628008> \`${Number(balance.Bank)
+                    .toLocaleString('en')}\` available in your Bank.`, true);
+                return;
+            }
+
+            const initial = new EmbedBuilder()
+                .setAuthor({
+                    name: `${interaction.user.tag}`,
+                    iconURL: `${interaction.user.avatarURL()}`,
+                })
+                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .addFields({
+                    name: `**${client.user?.username} - Coin Flip**`,
+                    value: `**◎** ${interaction.user} bet <:coin:706659001164628008> \`${Number(amount)
+                        .toLocaleString('en')}\``,
+                });
+
+            await interaction.message?.edit({ embeds: [initial], components: [coinRow] });
+        } else {
+            const flip = ['heads', 'tails'];
+            const answer = flip[Math.floor(Math.random() * flip.length)];
+
+            const win = new EmbedBuilder()
+                .setAuthor({
+                    name: `${interaction.user.tag}`,
+                    iconURL: `${interaction.user.avatarURL()}`,
+                })
+                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .addFields({
+                    name: `**${client.user?.username} - Coin Flip**`,
+                    value: `**◎** ${interaction.user} won! <:coin:706659001164628008> \`${Number(amount)
+                        .toLocaleString('en')}\` has been credited to your Bank!`,
+                });
+
+            const lose = new EmbedBuilder()
+                .setAuthor({
+                    name: `${interaction.user.tag}`,
+                    iconURL: `${interaction.user.avatarURL()}`,
+                })
+                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .addFields({
+                    name: `**${client.user?.username} - Coin Flip**`,
+                    value: `**◎** ${interaction.user} lost <:coin:706659001164628008> \`${Number(amount)
+                        .toLocaleString('en')}\``,
+                });
+
+            headsButton.setDisabled(true);
+            tailsButton.setDisabled(true);
+
+            if (option === answer) {
+                balance.Bank += Number(amount);
+                balance.Total += Number(amount);
+            } else {
+                balance.Bank -= Number(amount);
+                balance.Total -= Number(amount);
+            }
+
+            await interaction.deferReply();
+            await interaction.deleteReply();
+
+            await interaction.message?.edit({ components: [coinRow], embeds: [option === answer ? win : lose] });
+            await balance.save();
+        }
     }
 }
