@@ -45,16 +45,15 @@ export class EconomyCommand {
             ['baltop', async () => this.instance?.baltop(interaction, client)],
             ['deposit', async () => this.instance?.deposit(interaction, client)],
             ['claim', async () => this.instance?.claim(interaction, client)],
+            ['coinflip', async () => {
+                await this.instance?.coinflip(interaction, client, button[2] ? this.coinflipAmount : null, button[2] || null);
+            }],
         ]);
 
         const selectedAction = actionMap.get(button[1]);
 
         if (selectedAction) {
             await selectedAction();
-        }
-
-        if (button[1] === 'coinflip') {
-            await this.instance.coinflip(interaction, client, button[2] ? this.coinflipAmount : null, button[2] || null);
         }
     }
 
