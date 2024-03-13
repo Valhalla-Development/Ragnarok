@@ -56,6 +56,7 @@ export class EconomyCommand {
             ['coinflip', async () => {
                 await this.instance?.coinflip(interaction, client, button[2] ? this.coinflipAmount : null, button[2] || null);
             }],
+            ['farm', async () => this.instance?.farm(interaction, client)],
         ]);
 
         const selectedAction = actionMap.get(button[1]);
