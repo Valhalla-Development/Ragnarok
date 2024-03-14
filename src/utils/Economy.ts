@@ -133,91 +133,93 @@ export class Economy {
         this.coinflip = this.coinflip.bind(this);
 
         this.ecoPrices = {
-            // Amount you earn per message & cooldown
-            maxPerM: 40,
-            minPerM: 10,
-            // Time new users have to wait until using the claim command
-            newUserTime: 604800000, // 7 Days
-
-            // Claim amount
-            HourlyClaim: {
-                min: 50,
-                max: 150,
-            },
-            DailyClaim: {
-                min: 150,
-                max: 300,
-            },
-            WeeklyClaim: {
-                min: 750,
-                max: 1000,
-            },
-            MonthlyClaim: {
-                min: 4000,
-                max: 6000,
+            // Messaging Rewards
+            messaging: {
+                minPerMessage: 10,
+                maxPerMessage: 30,
             },
 
-            // Fishing related prices
-            fishBagFirst: 50,
-            fishBagLimit: 1000,
-            fishBagPrice: 450, // Price is current capacity * price (Upgrade adds 25 to capacity)
-            fishingRod: 15000,
-            treasure: 50000,
-            pufferfish: 3000,
-            swordfish: 1500,
-            kingSalmon: 500,
-            trout: 150,
+            // User Claims
+            claims: {
+                hourly: { min: 150, max: 400 },
+                daily: { min: 400, max: 800 },
+                weekly: { min: 2000, max: 3000 },
+                monthly: { min: 10000, max: 15000 },
+                newUserTime: 172800000, // 2 Days
+            },
 
-            // Fishing related timeouts
-            fishWinTime: 600000, // 10 Minutes
-            fishFailtime: 900000, // 15 Minutes
+            // Fishing
+            fishing: {
+                items: {
+                    fishBagFirst: 200,
+                    fishBagLimit: 1500,
+                    fishBagPrice: 800, // Upgrade adds 30 to capacity
+                    fishingRod: 25000,
+                },
+                rewards: {
+                    treasure: 75000,
+                    pufferfish: 5000,
+                    swordfish: 2500,
+                    kingSalmon: 1000,
+                    trout: 400,
+                },
+                cooldowns: {
+                    fishWinTime: 240000, // 4 Minutes
+                    fishFailTime: 480000, // 8 Minutes
+                },
+            },
 
-            // Farming with tools prices
-            farmPlotFirst: 10,
-            farmPlotLimit: 1000,
-            farmPlotPrice: 750, // Price is current capacity * price (Upgrade adds 25 to capacity)
-            freeFarmLimit: 10,
-            farmingTools: 15000,
-            farmBagFirst: 50, // Inital bag purchase
-            farmBagLimit: 10000, // Max upgrade possible
-            farmBagPrice: 300, // Price is current capacity * price (Upgrade adds 25 to capacity)
-            goldBar: 25000,
-            corn: 650,
-            wheat: 500,
-            potatoes: 400,
-            tomatoes: 350,
+            // Farming
+            farming: {
+                items: {
+                    farmPlotFirst: 150,
+                    farmPlotLimit: 1200,
+                    farmPlotPrice: 800, // Upgrade adds 30 to capacity
+                    farmingTools: 20000,
+                    farmBagFirst: 150,
+                    farmBagLimit: 12000,
+                    farmBagPrice: 800, // Upgrade adds 30 to capacity
+                },
+                rewards: {
+                    goldBar: 30000,
+                    corn: 800,
+                    wheat: 600,
+                    potatoes: 500,
+                    tomatoes: 450,
+                },
+                plantingTimes: {
+                    cornPlant: 480000, // 8 minutes
+                    wheatPlant: 360000, // 6 minutes
+                    potatoPlant: 180000, // 3 minutes
+                    tomatoPlant: 120000, // 2 minutes
+                },
+                decayRate: 0.015, // Lowered decay rate for better long-term value
+                farmingWithoutTools: {
+                    goldNugget: 15000,
+                    barley: 600,
+                    spinach: 400,
+                    strawberries: 200,
+                    lettuce: 150,
+                },
+                cooldowns: {
+                    farmWinTime: 240000, // 4 Minutes
+                    farmFailTime: 480000, // 8 Minutes
+                },
+                freeFarmLimit: 10,
+            },
 
-            // Planting Times
-            cornPlant: 600000, // 10 minutes
-            wheatPlant: 450000, // 7 min 30
-            potatoPlant: 210000, // 3 min 30
-            tomatoPlant: 90000, // 1 min 30
-
-            // Decay rate
-            DecayRate: 0.02,
-
-            // Farming without tools prices
-            goldNugget: 15000,
-            barley: 1200,
-            spinach: 600,
-            strawberries: 200,
-            lettuce: 60,
-
-            // Farming without tools timeouts
-            farmWinTime: 600000, // 10 Minutes
-            farmFailTime: 900000, // 15 Minutes,
-
-            // Seed prices
-            seedBagFirst: 50, // Inital bag purchase
-            seedBagLimit: 1000, // Max upgrade possible
-            seedBagPrice: 150, // Price is current capacity * price (Upgrade adds 25 to capacity)
-            cornSeed: 4000, // You get 10 per pack
-            wheatSeed: 3300,
-            potatoSeed: 2900,
-            tomatoSeed: 2800,
-
-            // Beg timeout
-            begTimer: 120000,
+            // Boosts
+            boosts: {
+                seedBagFirst: 150,
+                seedBagLimit: 1200,
+                seedBagPrice: 800, // Upgrade adds 30 to capacity
+                seeds: {
+                    cornSeed: 5000, // 15 per pack
+                    wheatSeed: 4000,
+                    potatoSeed: 3500,
+                    tomatoSeed: 3200,
+                },
+            },
         };
     }
 
@@ -535,10 +537,10 @@ export class Economy {
 
         const periods = ['Hourly', 'Daily', 'Weekly', 'Monthly'];
         const prices: EcoPrices = {
-            Hourly: this.ecoPrices.HourlyClaim,
-            Daily: this.ecoPrices.DailyClaim,
-            Weekly: this.ecoPrices.WeeklyClaim,
-            Monthly: this.ecoPrices.MonthlyClaim,
+            Hourly: this.ecoPrices.claims.hourly,
+            Daily: this.ecoPrices.claims.daily,
+            Weekly: this.ecoPrices.claims.weekly,
+            Monthly: this.ecoPrices.claims.monthly,
         };
 
         periods.forEach((period) => {
@@ -740,7 +742,7 @@ export class Economy {
             balance.FarmCool = 0;
         }
 
-        const freeLimit = this.ecoPrices.freeFarmLimit;
+        const freeLimit = this.ecoPrices.farming.freeFarmLimit;
         let currentTotalFarm = 0;
 
         currentTotalFarm += (Number(balance.Items?.Barley) || 0);
@@ -773,7 +775,7 @@ export class Economy {
         const embed = this.buildFarmEmbed(interaction, client, farmResult, amt);
         embed.setThumbnail(`attachment://${farmResult.name}.png`);
 
-        const endTime = new Date().getTime() + this.ecoPrices.farmWinTime;
+        const endTime = new Date().getTime() + this.ecoPrices.farming.cooldowns.farmWinTime;
         balance.FarmCool = Math.round(endTime);
 
         await balance.save();
@@ -792,11 +794,11 @@ export class Economy {
 
     generateFarmResult() {
         const farmChance = Math.random();
-        if (farmChance < 0.0018) return { name: 'Gold Nugget', price: this.ecoPrices.goldNugget };
-        if (farmChance < 0.0318) return { name: 'Barley', price: this.ecoPrices.barley };
-        if (farmChance < 0.0918) return { name: 'Spinach', price: this.ecoPrices.spinach };
-        if (farmChance < 0.3718) return { name: 'Strawberries', price: this.ecoPrices.strawberries };
-        return { name: 'Lettuce', price: this.ecoPrices.lettuce };
+        if (farmChance < 0.0018) return { name: 'Gold Nugget', price: this.ecoPrices.farming.farmingWithoutTools.goldNugget };
+        if (farmChance < 0.0318) return { name: 'Barley', price: this.ecoPrices.farming.farmingWithoutTools.barley };
+        if (farmChance < 0.0918) return { name: 'Spinach', price: this.ecoPrices.farming.farmingWithoutTools.spinach };
+        if (farmChance < 0.3718) return { name: 'Strawberries', price: this.ecoPrices.farming.farmingWithoutTools.strawberries };
+        return { name: 'Lettuce', price: this.ecoPrices.farming.farmingWithoutTools.lettuce };
     }
 
     buildFarmEmbed(interaction: ButtonInteraction, client: Client, farmResult: { name: string; price: number; }, amt: number) {
@@ -855,6 +857,11 @@ export class Economy {
 
         if (fishResult.name === 'fail') {
             await RagnarokEmbed(client, interaction, 'Fail', 'Your catch escaped the line.', true);
+
+            const endTime = new Date().getTime() + this.ecoPrices.fishing.cooldowns.fishFailTime;
+            balance.FishCool = Math.round(endTime);
+
+            await balance.save();
             return;
         }
 
@@ -871,7 +878,7 @@ export class Economy {
         const embed = this.buildFishEmbed(interaction, client, fishResult, amt);
         embed.setThumbnail(`attachment://${fishResult.name}.png`);
 
-        const endTime = new Date().getTime() + this.ecoPrices.fishWinTime;
+        const endTime = new Date().getTime() + this.ecoPrices.fishing.cooldowns.fishWinTime;
         balance.FishCool = Math.round(endTime);
 
         await balance.save();
@@ -890,11 +897,11 @@ export class Economy {
 
     generateFishResult() {
         const fishChance = Math.random();
-        if (fishChance < 0.0018) return { name: 'Treasure', price: this.ecoPrices.treasure };
-        if (fishChance < 0.0318) return { name: 'Pufferfish', price: this.ecoPrices.pufferfish };
-        if (fishChance < 0.0918) return { name: 'Swordfish', price: this.ecoPrices.swordfish };
-        if (fishChance < 0.2718) return { name: 'King Salmon', price: this.ecoPrices.kingSalmon };
-        if (fishChance < 0.7918) return { name: 'Trout', price: this.ecoPrices.trout };
+        if (fishChance < 0.0018) return { name: 'Treasure', price: this.ecoPrices.fishing.rewards.treasure };
+        if (fishChance < 0.0318) return { name: 'Pufferfish', price: this.ecoPrices.fishing.rewards.pufferfish };
+        if (fishChance < 0.0918) return { name: 'Swordfish', price: this.ecoPrices.fishing.rewards.swordfish };
+        if (fishChance < 0.2718) return { name: 'King Salmon', price: this.ecoPrices.fishing.rewards.kingSalmon };
+        if (fishChance < 0.7918) return { name: 'Trout', price: this.ecoPrices.fishing.rewards.trout };
         return { name: 'Fail', price: 0 };
     }
 
