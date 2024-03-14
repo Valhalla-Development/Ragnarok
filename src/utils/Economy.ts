@@ -66,6 +66,8 @@ export class Economy {
 
     farmButton;
 
+    fishButton;
+
     rows: ActionRowBuilder<ButtonBuilder>[] = [];
 
     ecoPrices;
@@ -103,6 +105,11 @@ export class Economy {
             .setStyle(ButtonStyle.Primary)
             .setCustomId('economy_farm');
 
+        this.fishButton = new ButtonBuilder()
+            .setLabel('Fish')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('economy_fish');
+
         const row1 = new ActionRowBuilder<ButtonBuilder>().addComponents(
             this.homeButton,
             this.baltopButton,
@@ -113,6 +120,7 @@ export class Economy {
 
         const row2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
             this.farmButton,
+            this.fishButton,
         );
 
         this.rows.push(row1, row2);
@@ -803,5 +811,104 @@ export class Economy {
             name: `**${client.user?.username} - Farm**`,
             value: `**◎ Success:** You found a ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt.toLocaleString('en')}\`.`,
         });
+    }
+
+    async fish(interaction: ButtonInteraction, client: Client) {
+        const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
+
+        if (!balance) {
+            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            return;
+        }
+
+        if (!balance.Items?.FishingRod) {
+            await RagnarokEmbed(client, interaction, 'Error', 'You do not have a fishing rod! You must buy one from the shop.', true);
+            return;
+        }
+
+        if (balance.FishCool !== null) {
+            if (Date.now() <= balance.FishCool) {
+                await RagnarokEmbed(client, interaction, 'Error', `You are on a cooldown! You will be able to perform this action again <t:${Math.floor((balance.FishCool) / 1000)}:R>.`, true);
+                return;
+            }
+            balance.FishCool = 0;
+        }
+
+        let currentTotalFish = 0;
+
+        currentTotalFish += (Number(balance.Items?.Trout) || 0);
+        currentTotalFish += (Number(balance.Items?.KingSalmon) || 0);
+        currentTotalFish += (Number(balance.Items?.SwordFish) || 0);
+        currentTotalFish += (Number(balance.Items?.PufferFish) || 0);
+
+        if (currentTotalFish >= Number(balance.Boosts?.FishBag)) {
+            await RagnarokEmbed(client, interaction, 'Error', 'Your fish bag is full! You can sell your fish via the `sell` button.', true);
+            return;
+        }
+
+        const fishResult = this.generateFishResult();
+
+        if (!fishResult) {
+            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            return;
+        }
+
+        if (fishResult.name === 'fail') {
+            await RagnarokEmbed(client, interaction, 'Fail', 'Your catch escaped the line.', true);
+            return;
+        }
+
+        if (!balance.Items) {
+            balance.Items = {} as Items;
+        }
+
+        const amt = (Number(balance.Items[fishResult.name as keyof typeof balance.Items]) || 0) + 1;
+
+        balance.Items[fishResult.name as keyof typeof balance.Items] = amt as never;
+
+        const attachment = new AttachmentBuilder(`assets/economy/${fishResult.name}.png`);
+
+        const embed = this.buildFishEmbed(interaction, client, fishResult, amt);
+        embed.setThumbnail(`attachment://${fishResult.name}.png`);
+
+        const endTime = new Date().getTime() + this.ecoPrices.fishWinTime;
+        balance.FishCool = Math.round(endTime);
+
+        await balance.save();
+
+        await interaction.deferReply();
+        await interaction.deleteReply();
+        await interaction.message?.edit({ components: [...this.rows], embeds: [embed], files: [attachment] });
+        await this.updateHomeEmbed(interaction, client);
+
+        if (this.homeEmbed) {
+            setTimeout(async () => {
+                await interaction.message?.edit({ components: [...this.rows], embeds: [this.homeEmbed as APIEmbed], files: [] });
+            }, 5000);
+        }
+    }
+
+    generateFishResult() {
+        const fishChance = Math.random();
+        if (fishChance < 0.0018) return { name: 'Treasure', price: this.ecoPrices.treasure };
+        if (fishChance < 0.0318) return { name: 'Pufferfish', price: this.ecoPrices.pufferfish };
+        if (fishChance < 0.0918) return { name: 'Swordfish', price: this.ecoPrices.swordfish };
+        if (fishChance < 0.2718) return { name: 'King Salmon', price: this.ecoPrices.kingSalmon };
+        if (fishChance < 0.7918) return { name: 'Trout', price: this.ecoPrices.trout };
+        return { name: 'Fail', price: 0 };
+    }
+
+    buildFishEmbed(interaction: ButtonInteraction, client: Client, fishResult: { name: string; price: number; }, amt: number) {
+        const { name, price } = fishResult;
+
+        const embed = new EmbedBuilder()
+            .setAuthor({ name: `${interaction.user.tag}`, iconURL: `${interaction.user.avatarURL()}` })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .addFields({
+                name: `**${client.user?.username} - Fish**`,
+                value: `**◎ Success:** You caught a ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt.toLocaleString('en')}\`.`,
+            });
+
+        return embed;
     }
 }
