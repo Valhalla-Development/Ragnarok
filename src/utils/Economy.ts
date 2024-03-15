@@ -647,7 +647,7 @@ export class Economy {
 
             const initial = new EmbedBuilder()
                 .setAuthor({
-                    name: `${interaction.user.tag}`,
+                    name: `${interaction.user.displayName}`,
                     iconURL: `${interaction.user.avatarURL()}`,
                 })
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
@@ -667,7 +667,7 @@ export class Economy {
 
             const win = new EmbedBuilder()
                 .setAuthor({
-                    name: `${interaction.user.tag}`,
+                    name: `${interaction.user.displayName}`,
                     iconURL: `${interaction.user.avatarURL()}`,
                 })
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
@@ -679,7 +679,7 @@ export class Economy {
 
             const lose = new EmbedBuilder()
                 .setAuthor({
-                    name: `${interaction.user.tag}`,
+                    name: `${interaction.user.displayName}`,
                     iconURL: `${interaction.user.avatarURL()}`,
                 })
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
@@ -805,7 +805,7 @@ export class Economy {
         const { name, price } = farmResult;
 
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `${interaction.user.tag}`, iconURL: `${interaction.user.avatarURL()}` })
+            .setAuthor({ name: `${interaction.user.displayName}`, iconURL: `${interaction.user.avatarURL()}` })
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
             .setFooter({ text: 'Planting crops yields a larger return! check it out with: /plant' });
 
@@ -909,7 +909,7 @@ export class Economy {
         const { name, price } = fishResult;
 
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `${interaction.user.tag}`, iconURL: `${interaction.user.avatarURL()}` })
+            .setAuthor({ name: `${interaction.user.displayName}`, iconURL: `${interaction.user.avatarURL()}` })
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
             .addFields({
                 name: `**${client.user?.username} - Fish**`,
