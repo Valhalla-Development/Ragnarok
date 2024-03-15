@@ -726,14 +726,18 @@ export class Economy {
         }
     }
 
+    // Asynchronous function to handle farming interaction
     async farm(interaction: ButtonInteraction, client: Client) {
+        // Retrieve user's balance
         const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
 
+        // If balance is not found, display error and return
         if (!balance) {
             await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
             return;
         }
 
+        // Check if user is on cooldown
         if (balance.FarmCool !== null) {
             if (Date.now() <= balance.FarmCool) {
                 await RagnarokEmbed(client, interaction, 'Error', `You are on a cooldown! You will be able to perform this action again <t:${Math.floor((balance.FarmCool) / 1000)}:R>.`, true);
@@ -742,6 +746,7 @@ export class Economy {
             balance.FarmCool = 0;
         }
 
+        // Calculate current total farm
         const freeLimit = this.ecoPrices.farming.freeFarmLimit;
         let currentTotalFarm = 0;
 
@@ -750,41 +755,51 @@ export class Economy {
         currentTotalFarm += (Number(balance.Items?.Strawberries) || 0);
         currentTotalFarm += (Number(balance.Items?.Lettuce) || 0);
 
+        // Check if farm bag is full
         if (!balance.Items?.FarmingTools && currentTotalFarm >= Number(freeLimit)) {
             await RagnarokEmbed(client, interaction, 'Error', 'Your farm bag is full! You can sell your produce via the `sell` button.', true);
             return;
         }
 
+        // Generate farm result
         const farmResult = this.generateFarmResult();
 
+        // If farm result is not generated, display error and return
         if (!farmResult) {
             await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
             return;
         }
 
+        // Initialize balance items if not present
         if (!balance.Items) {
             balance.Items = {} as Items;
         }
 
+        // Increment farm result amount in balance items
         const amt = (Number(balance.Items[farmResult.name as keyof typeof balance.Items]) || 0) + 1;
-
         balance.Items[farmResult.name as keyof typeof balance.Items] = amt as never;
 
+        // Build attachment for farm result image
         const attachment = new AttachmentBuilder(`assets/economy/${farmResult.name}.png`);
 
+        // Build farm embed
         const embed = this.buildFarmEmbed(interaction, client, farmResult, amt);
         embed.setThumbnail(`attachment://${farmResult.name}.png`);
 
+        // Calculate cooldown time and update balance
         const endTime = new Date().getTime() + this.ecoPrices.farming.cooldowns.farmWinTime;
         balance.FarmCool = Math.round(endTime);
-
         await balance.save();
 
+        // Defer reply, delete original interaction, update message with embed and attachment
         await interaction.deferReply();
         await interaction.deleteReply();
         await interaction.message?.edit({ components: [...this.rows], embeds: [embed], files: [attachment] });
+
+        // Update home embed
         await this.updateHomeEmbed(interaction, client);
 
+        // If home embed is available, reset after 5 seconds
         if (this.homeEmbed) {
             setTimeout(async () => {
                 await interaction.message?.edit({ components: [...this.rows], embeds: [this.homeEmbed as APIEmbed], files: [] });
@@ -792,6 +807,7 @@ export class Economy {
         }
     }
 
+    // Function to generate farm result
     generateFarmResult() {
         const farmChance = Math.random();
         if (farmChance < 0.0018) return { name: 'Gold Nugget', price: this.ecoPrices.farming.farmingWithoutTools.goldNugget };
@@ -801,6 +817,7 @@ export class Economy {
         return { name: 'Lettuce', price: this.ecoPrices.farming.farmingWithoutTools.lettuce };
     }
 
+    // Function to build farm embed
     buildFarmEmbed(interaction: ButtonInteraction, client: Client, farmResult: { name: string; price: number; }, amt: number) {
         const { name, price } = farmResult;
 
@@ -815,19 +832,24 @@ export class Economy {
         });
     }
 
+    // Asynchronous function to handle fishing interaction
     async fish(interaction: ButtonInteraction, client: Client) {
+        // Retrieve user's balance
         const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
 
+        // If balance is not found, display error and return
         if (!balance) {
             await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
             return;
         }
 
+        // Check if user has a fishing rod
         if (!balance.Items?.FishingRod) {
             await RagnarokEmbed(client, interaction, 'Error', 'You do not have a fishing rod! You must buy one from the shop.', true);
             return;
         }
 
+        // Check if user is on cooldown
         if (balance.FishCool !== null) {
             if (Date.now() <= balance.FishCool) {
                 await RagnarokEmbed(client, interaction, 'Error', `You are on a cooldown! You will be able to perform this action again <t:${Math.floor((balance.FishCool) / 1000)}:R>.`, true);
@@ -836,6 +858,7 @@ export class Economy {
             balance.FishCool = 0;
         }
 
+        // Calculate current total fish
         let currentTotalFish = 0;
 
         currentTotalFish += (Number(balance.Items?.Trout) || 0);
@@ -843,18 +866,22 @@ export class Economy {
         currentTotalFish += (Number(balance.Items?.SwordFish) || 0);
         currentTotalFish += (Number(balance.Items?.PufferFish) || 0);
 
+        // Check if fish bag is full
         if (currentTotalFish >= Number(balance.Boosts?.FishBag)) {
             await RagnarokEmbed(client, interaction, 'Error', 'Your fish bag is full! You can sell your fish via the `sell` button.', true);
             return;
         }
 
+        // Generate fish result
         const fishResult = this.generateFishResult();
 
+        // If fish result is not generated, display error and return
         if (!fishResult) {
             await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
             return;
         }
 
+        // If fish result is a fail, handle it and return
         if (fishResult.name === 'fail') {
             await RagnarokEmbed(client, interaction, 'Fail', 'Your catch escaped the line.', true);
 
@@ -865,29 +892,36 @@ export class Economy {
             return;
         }
 
+        // Initialize balance items if not present
         if (!balance.Items) {
             balance.Items = {} as Items;
         }
 
+        // Increment fish result amount in balance items
         const amt = (Number(balance.Items[fishResult.name as keyof typeof balance.Items]) || 0) + 1;
-
         balance.Items[fishResult.name as keyof typeof balance.Items] = amt as never;
 
+        // Build attachment for fish result image
         const attachment = new AttachmentBuilder(`assets/economy/${fishResult.name}.png`);
 
+        // Build fish embed
         const embed = this.buildFishEmbed(interaction, client, fishResult, amt);
         embed.setThumbnail(`attachment://${fishResult.name}.png`);
 
+        // Calculate cooldown time and update balance
         const endTime = new Date().getTime() + this.ecoPrices.fishing.cooldowns.fishWinTime;
         balance.FishCool = Math.round(endTime);
-
         await balance.save();
 
+        // Defer reply, delete original interaction, update message with embed and attachment
         await interaction.deferReply();
         await interaction.deleteReply();
         await interaction.message?.edit({ components: [...this.rows], embeds: [embed], files: [attachment] });
+
+        // Update home embed
         await this.updateHomeEmbed(interaction, client);
 
+        // If home embed is available, reset after 5 seconds
         if (this.homeEmbed) {
             setTimeout(async () => {
                 await interaction.message?.edit({ components: [...this.rows], embeds: [this.homeEmbed as APIEmbed], files: [] });
@@ -895,6 +929,7 @@ export class Economy {
         }
     }
 
+    // Function to generate fish result
     generateFishResult() {
         const fishChance = Math.random();
         if (fishChance < 0.0018) return { name: 'Treasure', price: this.ecoPrices.fishing.rewards.treasure };
@@ -905,6 +940,7 @@ export class Economy {
         return { name: 'Fail', price: 0 };
     }
 
+    // Function to build fish embed
     buildFishEmbed(interaction: ButtonInteraction, client: Client, fishResult: { name: string; price: number; }, amt: number) {
         const { name, price } = fishResult;
 
