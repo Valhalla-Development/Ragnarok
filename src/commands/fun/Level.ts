@@ -5,7 +5,6 @@ import {
     ApplicationCommandOptionType, AttachmentBuilder, CommandInteraction, GuildMember,
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
-// @ts-expect-error no type file available for this package
 import { parse } from '@twemoji/parser';
 import { getCountryData, getEmojiFlag, TCountryCode } from 'countries-list';
 // @ts-expect-error no type file available for this package
