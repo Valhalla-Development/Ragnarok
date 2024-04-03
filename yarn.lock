@@ -468,6 +468,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/luxon@npm:~3.3.0":
+  version: 3.3.8
+  resolution: "@types/luxon@npm:3.3.8"
+  checksum: 10c0/f2ffa31364eb94ca0474a196f533d301025a203bb2758ce0cf209f338cece0af169edea230b5c0b1a68a71adb02f369faa5ec0bd824deb8f0a08cac6803b1b06
+  languageName: node
+  linkType: hard
+
 "@types/ms@npm:^0.7.34":
   version: 0.7.34
   resolution: "@types/ms@npm:0.7.34"
@@ -1265,6 +1272,16 @@ __metadata:
   version: 1.1.1
   resolution: "create-require@npm:1.1.1"
   checksum: 10c0/157cbc59b2430ae9a90034a5f3a1b398b6738bf510f713edc4d4e45e169bc514d3d99dd34d8d01ca7ae7830b5b8b537e46ae8f3c8f932371b0875c0151d7ec91
+  languageName: node
+  linkType: hard
+
+"cron@npm:^3.1.6":
+  version: 3.1.6
+  resolution: "cron@npm:3.1.6"
+  dependencies:
+    "@types/luxon": "npm:~3.3.0"
+    luxon: "npm:~3.4.0"
+  checksum: 10c0/f8328ce1052531bc14372acbfbddb38db33b30b29ac878d574b317779160b2947c9315c81dccb8a33724418cd86440a92269055037c96a2e917c867d57274009
   languageName: node
   linkType: hard
 
@@ -2938,7 +2955,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:^3.4.4":
+"luxon@npm:^3.4.4, luxon@npm:~3.4.0":
   version: 3.4.4
   resolution: "luxon@npm:3.4.4"
   checksum: 10c0/02e26a0b039c11fd5b75e1d734c8f0332c95510f6a514a9a0991023e43fb233884da02d7f966823ffb230632a733fc86d4a4b1e63c3fbe00058b8ee0f8c728af
@@ -3756,6 +3773,7 @@ __metadata:
     cheerio: "npm:^1.0.0-rc.12"
     colors: "npm:^1.4.0"
     countries-list: "npm:^3.1.0"
+    cron: "npm:^3.1.6"
     cryptocurrencies: "npm:^7.0.0"
     discord.js: "npm:^14.14.1"
     discordx: "npm:^11.9.0"
