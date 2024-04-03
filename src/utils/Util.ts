@@ -1,5 +1,8 @@
 import {
+    ActionRowBuilder,
+    ButtonBuilder,
     ButtonInteraction,
+    ButtonStyle,
     ColorResolvable,
     CommandInteraction,
     EmbedBuilder,
@@ -244,4 +247,73 @@ export async function RagnarokEmbed(
     } catch (error) {
         console.error('Error sending embed:', error);
     }
+}
+
+export async function pagination(interaction: ButtonInteraction, embeds: EmbedBuilder[], economyHome: ButtonBuilder, emojiNext = '▶️', emojiHome = '🏠', emojiBack = '◀️') {
+    const back = new ButtonBuilder()
+        .setCustomId('back')
+        .setEmoji(emojiBack || '◀️')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(true);
+
+    const home = new ButtonBuilder()
+        .setCustomId('home')
+        .setEmoji(emojiHome || '🏠')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(true);
+
+    const next = new ButtonBuilder()
+        .setCustomId('next')
+        .setEmoji(emojiNext || '▶️')
+        .setStyle(ButtonStyle.Primary);
+
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(economyHome, back, home, next);
+
+    await interaction.message.edit({ embeds: [embeds[0]], components: [row] });
+
+    const collector = interaction.message.createMessageComponentCollector({
+        time: 30000,
+    });
+
+    let currentPage = 0;
+
+    collector.on('collect', async (b) => {
+        collector.resetTimer();
+
+        if (b.customId === 'back' && currentPage !== 0) {
+            currentPage -= 1;
+            next.setDisabled(false);
+            if (currentPage === 0) {
+                back.setDisabled(true);
+                home.setDisabled(true);
+            }
+        }
+
+        if (b.customId === 'next' && currentPage < embeds.length - 1) {
+            currentPage += 1;
+            back.setDisabled(false);
+            home.setDisabled(false);
+            if (currentPage === embeds.length - 1) {
+                next.setDisabled(true);
+            }
+        }
+
+        if (b.customId === 'home') {
+            currentPage = 0;
+            back.setDisabled(true);
+            home.setDisabled(true);
+            next.setDisabled(false);
+        }
+
+        await b.update({ embeds: [embeds[currentPage]], components: [row] });
+    });
+
+    collector.on('end', () => {
+        home.setDisabled(true);
+        back.setDisabled(true);
+        next.setDisabled(true);
+        interaction.message.edit({ embeds: [embeds[currentPage]], components: [row] });
+    });
+
+    collector.on('error', console.error);
 }
