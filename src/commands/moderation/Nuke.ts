@@ -33,9 +33,10 @@ export class Nuke {
                 reason: 'Nuked!',
             });
 
-            await interaction.channel.delete();
             await newChannel.setParent(interaction.channel.parentId);
             await newChannel.setPosition(interaction.channel.rawPosition);
+
+            await interaction.channel.delete();
 
             await newChannel.send({ content: 'Channel has been nuked!\nhttps://tenor.com/view/explosion-mushroom-cloud-atomic-bomb-bomb-boom-gif-4464831' });
         } catch (error) {
