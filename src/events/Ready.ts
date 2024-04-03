@@ -2,7 +2,8 @@ import type { Client } from 'discordx';
 import { Discord, Once } from 'discordx';
 import si from 'systeminformation';
 import 'colors';
-import { ActivityType, version } from 'discord.js';
+import { ActivityType, ChannelType, version } from 'discord.js';
+import StarBoard from '../mongo/StarBoard';
 
 /**
  * Discord.js Ready event handler.
@@ -86,5 +87,22 @@ export class Ready {
             name: `${client.guilds.cache.size.toLocaleString('en')} Guilds
             ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
         });
+
+        // On guilds with Starboard enabled, fetch the channel and the last 10 messages in the channel
+        const starboards = await StarBoard.find();
+
+        await Promise.all(
+            starboards.map(async (starboard) => {
+                if (!starboard.GuildId || !starboard.ChannelId) return;
+
+                const guild = await client.guilds.fetch(starboard.GuildId);
+                if (!guild) return;
+
+                const channel = await guild.channels.fetch(starboard.ChannelId);
+                if (!channel || channel.type !== ChannelType.GuildText) return;
+
+                await channel.messages.fetch({ limit: 10 });
+            }),
+        );
     }
 }
