@@ -58,6 +58,7 @@ export class EconomyCommand {
             }],
             ['farm', async () => this.instance?.farm(interaction, client)],
             ['fish', async () => this.instance?.fish(interaction, client)],
+            ['harvest', async () => this.instance?.harvest(interaction, client)],
         ]);
 
         const selectedAction = actionMap.get(button[1]);
