@@ -5,9 +5,9 @@ import 'colors';
 import { ActivityType, ChannelType, version } from 'discord.js';
 import { CronJob } from 'cron';
 import moment from 'moment';
-import StarBoard from '../mongo/StarBoard';
-import Birthdays from '../mongo/Birthdays';
-import BirthdayConfig from '../mongo/BirthdayConfig';
+import StarBoard from '../mongo/StarBoard.js';
+import Birthdays from '../mongo/Birthdays.js';
+import BirthdayConfig from '../mongo/BirthdayConfig.js';
 
 /**
  * Discord.js Ready event handler.
