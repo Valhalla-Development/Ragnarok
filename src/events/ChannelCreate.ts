@@ -24,7 +24,7 @@ export class ChannelCreate {
             // Check if the channel exists, is a text channel, and has the necessary permissions to send messages
             if (chn && chn.type === ChannelType.GuildText
                 && chn.permissionsFor(chn.guild.members.me!).has(PermissionsBitField.Flags.SendMessages)) {
-                const channelType = channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildStageVoice ? 'Voice' : 'Text';
+                const channelType = channel.type === ChannelType.GuildVoice || channel.type === ChannelType.GuildStageVoice ? 'Voice' : (channel.type === ChannelType.GuildCategory ? 'Category' : 'Text');
 
                 // Create an embed with information about the joined member
                 const embed = new EmbedBuilder()
@@ -33,7 +33,12 @@ export class ChannelCreate {
                         name: `${channelType} Channel Created`,
                         iconURL: `${channel.guild.iconURL()}`,
                     })
-                    .setTitle(`${channel} - \`${channelType === 'Text' ? '#' : ''}${channel.name}\``)
+                    .setTitle(
+                        `${channelType === 'Category'
+                            ? `\`${channel.name}\``
+                            : `${channel} - ${channelType === 'Text' ? '#' : ''}${channel.type !== ChannelType.GuildCategory ? channel.name : ''}`
+                        }`,
+                    )
                     .setFooter({ text: `ID: ${channel.id}` })
                     .setTimestamp();
 
