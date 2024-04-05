@@ -34,20 +34,11 @@ export class ChannelUpdate {
                 if (oldChannel.name !== newChannel.name) {
                     channelChanges.push(
                         oldChannel.type === ChannelType.GuildCategory
-                            ? `**${channelType} Name Updated**\nOld:\n\`${oldChannel.name}\`\nNew:\n\`${newChannel.name}\`\n`
+                            ? `**Name**\n\`${oldChannel.name}\` > (*\`${newChannel.name}\`*)\n`
                             : oldChannel.type === ChannelType.GuildVoice
-                                ? `**${channelType} Name Updated**\nOld:\n\`${oldChannel.name}\`\nNew:\n${newChannel} - \`${newChannel.name}\`\n`
-                                : `**${channelType} Name Updated**\nOld:\n\`#${oldChannel.name}\`\nNew:\n${newChannel} - \`#${newChannel.name}\`\n`,
+                                ? `**Name**\n\`${oldChannel.name}\` > ${newChannel} (*\`${newChannel.name}\`*)\n`
+                                : `**Name**\n\`#${oldChannel.name}\` > ${newChannel} (*\`#${newChannel.name}\`*)\n`,
                     );
-                }
-
-                if (oldChannel.type === ChannelType.GuildText
-                    && newChannel.type === ChannelType.GuildText
-                    && oldChannel.nsfw !== newChannel.nsfw) {
-                    const oldNs = oldChannel.nsfw ? 'Enabled' : 'Disabled';
-                    const newNs = newChannel.nsfw ? 'Enabled' : 'Disabled';
-
-                    channelChanges.push(`**${channelType} NSFW Status Updated**\nOld:\n\`${oldNs}\`\nNew:\n\`${newNs}\`\n`);
                 }
 
                 if (oldChannel.type === ChannelType.GuildText
@@ -57,8 +48,17 @@ export class ChannelUpdate {
                         const oldTopic = oldChannel.topic === '' ? 'None' : `${oldChannel.topic}`;
                         const newTopic = newChannel.topic === '' ? 'None' : `${newChannel.topic}`;
 
-                        channelChanges.push(`**${channelType} Topic Updated**\nOld:\n\`${oldTopic}\`\nNew:\n\`${newTopic}\`\n`);
+                        channelChanges.push(`**Topic**\n\`${oldTopic}\` > \`${newTopic}\`\n`);
                     }
+                }
+
+                if (oldChannel.type === ChannelType.GuildText
+                    && newChannel.type === ChannelType.GuildText
+                    && oldChannel.nsfw !== newChannel.nsfw) {
+                    const oldNs = oldChannel.nsfw ? 'Enabled' : 'Disabled';
+                    const newNs = newChannel.nsfw ? 'Enabled' : 'Disabled';
+
+                    channelChanges.push(`**NSFW Status**\n\`${oldNs}\` > \`${newNs}\`\n`);
                 }
 
                 if (channelChanges.length) {
