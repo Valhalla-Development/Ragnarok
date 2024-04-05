@@ -34,10 +34,10 @@ export class ChannelUpdate {
                 if (oldChannel.name !== newChannel.name) {
                     channelChanges.push(
                         oldChannel.type === ChannelType.GuildCategory
-                            ? `**Name**\n\`${oldChannel.name}\` > (*\`${newChannel.name}\`*)\n`
+                            ? `**Name**\n\`${oldChannel.name}\` -> (*\`${newChannel.name}\`*)\n`
                             : oldChannel.type === ChannelType.GuildVoice
-                                ? `**Name**\n\`${oldChannel.name}\` > ${newChannel} (*\`${newChannel.name}\`*)\n`
-                                : `**Name**\n\`#${oldChannel.name}\` > ${newChannel} (*\`#${newChannel.name}\`*)\n`,
+                                ? `**Name**\n\`${oldChannel.name}\` -> ${newChannel} (*\`${newChannel.name}\`*)\n`
+                                : `**Name**\n\`#${oldChannel.name}\` -> ${newChannel} (*\`#${newChannel.name}\`*)\n`,
                     );
                 }
 
@@ -48,7 +48,7 @@ export class ChannelUpdate {
                         const oldTopic = oldChannel.topic === '' ? 'None' : `${oldChannel.topic}`;
                         const newTopic = newChannel.topic === '' ? 'None' : `${newChannel.topic}`;
 
-                        channelChanges.push(`**Topic**\n\`${oldTopic}\` > \`${newTopic}\`\n`);
+                        channelChanges.push(`**Topic**\n\`${oldTopic}\` -> \`${newTopic}\`\n`);
                     }
                 }
 
@@ -58,7 +58,7 @@ export class ChannelUpdate {
                     const oldNs = oldChannel.nsfw ? 'Enabled' : 'Disabled';
                     const newNs = newChannel.nsfw ? 'Enabled' : 'Disabled';
 
-                    channelChanges.push(`**NSFW Status**\n\`${oldNs}\` > \`${newNs}\`\n`);
+                    channelChanges.push(`**NSFW Status**\n\`${oldNs}\` -> \`${newNs}\`\n`);
                 }
 
                 if (channelChanges.length) {
