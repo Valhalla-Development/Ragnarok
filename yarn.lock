@@ -3521,6 +3521,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ordinal@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "ordinal@npm:1.0.3"
+  checksum: 10c0/faa276fc1b1660477fd5c8749323c9715ae4f482c21fb8e67e57d1eb57845ba1b902796ecdcf6405325a8c3b042360970f5dc3b7f8cc7d79e0b2a756ab09174d
+  languageName: node
+  linkType: hard
+
 "p-limit@npm:^3.0.2":
   version: 3.1.0
   resolution: "p-limit@npm:3.1.0"
@@ -3792,6 +3799,7 @@ __metadata:
     ms: "npm:^2.1.3"
     number-abbreviate: "npm:^2.0.0"
     number-to-words-en: "npm:^1.2.5"
+    ordinal: "npm:^1.0.3"
     pretty-ms: "npm:^9.0.0"
     reddit-image-fetcher: "npm:^2.0.12"
     systeminformation: "npm:^5.22.7"
