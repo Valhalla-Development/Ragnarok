@@ -309,7 +309,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mongodb-js/saslprep@npm:^1.1.0":
+"@mongodb-js/saslprep@npm:^1.1.5":
   version: 1.1.5
   resolution: "@mongodb-js/saslprep@npm:1.1.5"
   dependencies:
@@ -491,12 +491,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.12.3":
-  version: 20.12.3
-  resolution: "@types/node@npm:20.12.3"
+"@types/node@npm:^20.12.4":
+  version: 20.12.4
+  resolution: "@types/node@npm:20.12.4"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10c0/45c8485a0e55276b42c26ba1df6c480e4e1a3a3abbf4ea0ff6b4e2823c4f77e32b7e166d4263d464f207cfea5bd4de8879b8df2c7132a727b0346a30191d6bea
+  checksum: 10c0/9b142fcd839a48c348d6b9acfc753dfa4b3fb1f3e23ed67e8952bee9b2dfdaffdddfbcf0e4701557b88631591a5f9968433910027532ef847759f8682e27ffe7
   languageName: node
   linkType: hard
 
@@ -1008,10 +1008,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bson@npm:^6.2.0":
-  version: 6.5.0
-  resolution: "bson@npm:6.5.0"
-  checksum: 10c0/3936c1cc4489588d86d81dd209af4ee51823d74629512e84e58559b96e2f4a070b20f48f2cbfff7dcbd432e10ac4c689686db0cd7523b30366404a3c98aa8e28
+"bson@npm:^6.4.0, bson@npm:^6.5.0":
+  version: 6.6.0
+  resolution: "bson@npm:6.6.0"
+  checksum: 10c0/cb1690c6a72fbda88bc6af97540d5152d8f5c7ce3f004012b3dc8bfc3420a30af8aaf4eee47c731432ab7e470e288d078b0a339bdfe9cab1ebfc7c3bb3dcebc4
   languageName: node
   linkType: hard
 
@@ -2874,10 +2874,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kareem@npm:2.5.1":
-  version: 2.5.1
-  resolution: "kareem@npm:2.5.1"
-  checksum: 10c0/30c6b9a39556d69108cac7cf7f87ca8c9f79d37ac58f2224e18d5e5b21191bbfbacee2070064f3c887bc00229d88b8bc728bcc98b07306edeaba85880f100b24
+"kareem@npm:2.6.0":
+  version: 2.6.0
+  resolution: "kareem@npm:2.6.0"
+  checksum: 10c0/abdd8129ebeca59963a4bb7f6f2c584465ef123c9c0d4a567a0fd5dc5edf01c15562fdb6a409382885f534f5a19643544924505193848a260109b4ea9157b049
   languageName: node
   linkType: hard
 
@@ -3193,12 +3193,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongodb@npm:6.3.0":
-  version: 6.3.0
-  resolution: "mongodb@npm:6.3.0"
+"mongodb@npm:6.5.0":
+  version: 6.5.0
+  resolution: "mongodb@npm:6.5.0"
   dependencies:
-    "@mongodb-js/saslprep": "npm:^1.1.0"
-    bson: "npm:^6.2.0"
+    "@mongodb-js/saslprep": "npm:^1.1.5"
+    bson: "npm:^6.4.0"
     mongodb-connection-string-url: "npm:^3.0.0"
   peerDependencies:
     "@aws-sdk/credential-providers": ^3.188.0
@@ -3223,22 +3223,22 @@ __metadata:
       optional: true
     socks:
       optional: true
-  checksum: 10c0/e846c941b739c503b34c02500db56f966fdb8930420db24214d4305ac987415464ebc9eefaf5da1ffb7521844fc733177433b4cc7ba43c423f55eed4f2670cfe
+  checksum: 10c0/d51f8673b76f073ef5d0101d96b1adc3ebacd63890771cb72ae245081415887a2e0b5a9451b18e370f930d63173f2af68fac98371487995ae921140756fe510b
   languageName: node
   linkType: hard
 
-"mongoose@npm:^8.2.4":
-  version: 8.2.4
-  resolution: "mongoose@npm:8.2.4"
+"mongoose@npm:^8.3.0":
+  version: 8.3.0
+  resolution: "mongoose@npm:8.3.0"
   dependencies:
-    bson: "npm:^6.2.0"
-    kareem: "npm:2.5.1"
-    mongodb: "npm:6.3.0"
+    bson: "npm:^6.5.0"
+    kareem: "npm:2.6.0"
+    mongodb: "npm:6.5.0"
     mpath: "npm:0.9.0"
     mquery: "npm:5.0.0"
     ms: "npm:2.1.3"
     sift: "npm:16.0.1"
-  checksum: 10c0/5f56144f461d61ef24c6ed097e45329c76d3097e8b1126809814a603af479b7bb88b92c398163271cbfa43c4b49bb488e7653bbe5475847e65427ba0cb1d99e1
+  checksum: 10c0/73f1fcc8b7abf94f40ea76541e7872ee2660932234be6cbcda1ce237a497882fd4a935baed6694b8b71f4a4fdf513f41ad14722ac7960792a3065e7e94799c55
   languageName: node
   linkType: hard
 
@@ -3764,7 +3764,7 @@ __metadata:
     "@twemoji/parser": "npm:^15.1.1"
     "@types/luxon": "npm:^3.4.2"
     "@types/ms": "npm:^0.7.34"
-    "@types/node": "npm:^20.12.3"
+    "@types/node": "npm:^20.12.4"
     "@types/url-regex-safe": "npm:^1.0.2"
     "@typescript-eslint/eslint-plugin": "npm:^7.5.0"
     "@typescript-eslint/parser": "npm:^7.5.0"
@@ -3787,7 +3787,7 @@ __metadata:
     eslint-plugin-prettier: "npm:^5.1.3"
     luxon: "npm:^3.4.4"
     moment: "npm:^2.30.1"
-    mongoose: "npm:^8.2.4"
+    mongoose: "npm:^8.3.0"
     movier: "npm:^3.0.7"
     ms: "npm:^2.1.3"
     number-abbreviate: "npm:^2.0.0"
@@ -3797,7 +3797,7 @@ __metadata:
     systeminformation: "npm:^5.22.7"
     ts-node: "npm:^10.9.2"
     tsc-watch: "npm:^6.2.0"
-    typescript: "npm:^5.4.3"
+    typescript: "npm:^5.4.4"
     url-regex-safe: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
@@ -4565,13 +4565,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.4.3":
-  version: 5.4.3
-  resolution: "typescript@npm:5.4.3"
+"typescript@npm:^5.4.4":
+  version: 5.4.4
+  resolution: "typescript@npm:5.4.4"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/22443a8760c3668e256c0b34b6b45c359ef6cecc10c42558806177a7d500ab1a7d7aac1f976d712e26989ddf6731d2fbdd3212b7c73290a45127c1c43ba2005a
+  checksum: 10c0/4d8de0291204ed61ca97ad0cba2ce064e09c4988ca1c451c787e4653ba76296ba35177a52694e8a00cf4ef899d0ee83338663b926d8b7d55167ff0ba81549999
   languageName: node
   linkType: hard
 
@@ -4585,13 +4585,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.4.3#optional!builtin<compat/typescript>":
-  version: 5.4.3
-  resolution: "typescript@patch:typescript@npm%3A5.4.3#optional!builtin<compat/typescript>::version=5.4.3&hash=5adc0c"
+"typescript@patch:typescript@npm%3A^5.4.4#optional!builtin<compat/typescript>":
+  version: 5.4.4
+  resolution: "typescript@patch:typescript@npm%3A5.4.4#optional!builtin<compat/typescript>::version=5.4.4&hash=5adc0c"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/6e51f8b7e6ec55b897b9e56b67e864fe8f44e30f4a14357aad5dc0f7432db2f01efc0522df0b6c36d361c51f2dc3dcac5c832efd96a404cfabf884e915d38828
+  checksum: 10c0/1fa41b9964a9ff0ed913b339c90b46031b2d2da3cb1a192af516610733f7f1d5f7f9754a8e22b9ac7076d3d8aedd2c4f84db3f113bad060eac3a95962443a1bf
   languageName: node
   linkType: hard
 
