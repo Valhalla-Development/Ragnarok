@@ -2,7 +2,7 @@ import {
     ArgsOf, Client, Discord, On,
 } from 'discordx';
 import {
-    ActivityType, AttachmentBuilder, ChannelType, EmbedBuilder,
+    ActivityType, AttachmentBuilder, ChannelType, EmbedBuilder, PermissionsBitField,
 } from 'discord.js';
 import { createCanvas, loadImage, registerFont } from 'canvas';
 import ordinal from 'ordinal';
@@ -11,6 +11,7 @@ import path from 'path';
 import { color } from '../utils/Util.js';
 import Tickets from '../mongo/Tickets.js';
 import Welcome from '../mongo/Welcome.js';
+import AutoRole from '../mongo/AutoRole.js';
 
 registerFont('./assets/canvas/fonts/Handlee-Regular.ttf', {
     family: 'Handlee',
@@ -136,5 +137,22 @@ export class GuildMemberAdd {
             }
         }
         await sendWelcomeMessage();
+
+        async function addUserRole() {
+            const autoRole = await AutoRole.findOne({ GuildId: member.guild.id });
+
+            if (!autoRole || !autoRole.Role) return;
+
+            const role = member.guild.roles.cache.get(autoRole.Role);
+            if (!role) return;
+
+            if (!member.guild!.members.me!.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+                await AutoRole.deleteMany({ GuildId: member.guild.id });
+                return;
+            }
+
+            await member.roles.add(role);
+        }
+        await addUserRole();
     }
 }
