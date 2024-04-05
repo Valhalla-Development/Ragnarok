@@ -1,10 +1,16 @@
 import {
     ArgsOf, Client, Discord, On,
 } from 'discordx';
-import { ActivityType, ChannelType, EmbedBuilder } from 'discord.js';
-import { registerFont } from 'canvas';
+import {
+    ActivityType, AttachmentBuilder, ChannelType, EmbedBuilder,
+} from 'discord.js';
+import { createCanvas, loadImage, registerFont } from 'canvas';
+import ordinal from 'ordinal';
+import { readFileSync } from 'fs';
+import path from 'path';
 import { color } from '../utils/Util.js';
 import Tickets from '../mongo/Tickets.js';
+import Welcome from '../mongo/Welcome.js';
 
 registerFont('./assets/canvas/fonts/Handlee-Regular.ttf', {
     family: 'Handlee',
@@ -55,6 +61,7 @@ export class GuildMemberAdd {
                             SendMessages: true,
                         })
                         .catch(console.error);
+
                     const embed = new EmbedBuilder()
                         .setColor(color(member.guild!.members.me!.displayHexColor))
                         .addFields({
@@ -67,5 +74,67 @@ export class GuildMemberAdd {
             }
         }
         await checkTicket();
+
+        async function sendWelcomeMessage() {
+            const welcome = await Welcome.findOne({ GuildId: member.guild.id });
+
+            if (!welcome) return;
+
+            const welcomeId = welcome.ChannelId;
+            const channel = member.guild.channels.cache.get(welcomeId);
+
+            if (!channel) {
+                await Welcome.deleteMany({ GuildId: member.guild.id });
+                return;
+            }
+
+            const img = readFileSync(path.join(process.cwd(), 'assets/canvas/images/Welcome.png'));
+
+            const canvas = createCanvas(700, 300);
+            const ctx = canvas.getContext('2d');
+
+            const background = await loadImage(img);
+            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+            // Bars
+            ctx.globalAlpha = 0.75;
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(-1, 7, 702, 52);
+            ctx.fillRect(-1, 240, 702, 52);
+            ctx.strokeStyle = '#ffffff';
+            ctx.strokeRect(-1, 7, 702, 52);
+            ctx.strokeRect(-1, 240, 702, 52);
+            ctx.globalAlpha = 1;
+
+            // Text
+            ctx.font = '42px Handlee';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.fillText('Welcome to the server', canvas.width / 2, 45);
+
+            ctx.font = '42px Handlee';
+            ctx.fillText(`${member.user.displayName}`, canvas.width / 2, 280);
+
+            ctx.font = '15px Montserrat';
+            ctx.textAlign = 'left';
+            ctx.fillText(`${ordinal(member.guild.memberCount - member.guild.members.cache.filter((mem: { user: { bot: boolean; }; }) => mem.user.bot).size)} member!`, 3.5, 45);
+
+            // Avatar
+            ctx.beginPath();
+            ctx.arc(350, 150, 85, 0, Math.PI * 2, true);
+            ctx.closePath();
+            ctx.clip();
+
+            const avatar = await loadImage(member.user.displayAvatarURL({ extension: 'png' }));
+
+            ctx.drawImage(avatar, 265, 65, 170, 170);
+
+            const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: 'welcome.jpg' });
+
+            if (channel && channel.type === ChannelType.GuildText) {
+                channel.send({ files: [attachment] });
+            }
+        }
+        await sendWelcomeMessage();
     }
 }
