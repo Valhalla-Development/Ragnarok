@@ -12,6 +12,7 @@ import { color } from '../utils/Util.js';
 import Tickets from '../mongo/Tickets.js';
 import Welcome from '../mongo/Welcome.js';
 import AutoRole from '../mongo/AutoRole.js';
+import Logging from '../mongo/Logging.js';
 
 registerFont('./assets/canvas/fonts/Handlee-Regular.ttf', {
     family: 'Handlee',
@@ -154,5 +155,49 @@ export class GuildMemberAdd {
             await member.roles.add(role);
         }
         await addUserRole();
+
+        // If logging is enabled, send an embed to the set channel
+        const logging = await Logging.findOne({ GuildId: member.guild.id });
+        if (logging) {
+            // Fetch the logging channel
+            const channel = member.guild?.channels.cache.get(logging.ChannelId) ?? await member.guild?.channels.fetch(logging.ChannelId);
+
+            // Check if the channel exists, is a text channel, and has the necessary permissions to send messages
+            if (channel && channel.type === ChannelType.GuildText
+                && channel.permissionsFor(channel.guild.members.me!).has(PermissionsBitField.Flags.SendMessages)) {
+                // Create an embed with information about the joined member
+                const embed = new EmbedBuilder()
+                    .setColor('#FE4611')
+                    .setThumbnail(member.user.displayAvatarURL())
+                    .setAuthor({
+                        name: 'Member Joined',
+                        iconURL: `${member.user.displayAvatarURL()}`,
+                    })
+                    .setDescription(
+                        `${member} - \`@${member.user.tag}${member.user.discriminator !== '0' ? `#${member.user.discriminator}` : ''}\``,
+                    )
+                    .addFields(
+                        {
+                            name: 'Account Age',
+                            value: `<t:${Math.round(
+                                member.user.createdTimestamp / 1000,
+                            )}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)`,
+                            inline: true,
+                        },
+                        {
+                            name: 'Joined',
+                            value: `<t:${Math.round(
+                                member.joinedTimestamp! / 1000,
+                            )}> - (<t:${Math.round(member.joinedTimestamp! / 1000)}:R>)`,
+                            inline: true,
+                        },
+                    )
+                    .setFooter({ text: `ID: ${member.user.id}` })
+                    .setTimestamp();
+
+                // Send the embed to the logging channel
+                if (channel) channel.send({ embeds: [embed] });
+            }
+        }
     }
 }
