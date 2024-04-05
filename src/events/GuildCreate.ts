@@ -1,0 +1,28 @@
+import {
+    ArgsOf, Client, Discord, On,
+} from 'discordx';
+import { ActivityType } from 'discord.js';
+
+/**
+ * Discord.js GuildCreate event handler.
+ */
+@Discord()
+export class GuildCreate {
+    /**
+     * Executes when the GuildCreate event is emitted.
+     * @param guild
+     * @param client - The Discord client.
+     * @returns void
+     */
+    @On({ event: 'guildCreate' })
+    async onGuildCreate([guild]: ArgsOf<'guildCreate'>, client: Client) {
+        // Set activity
+        client.user?.setActivity({
+            type: ActivityType.Watching,
+            name: `${client.guilds.cache.size.toLocaleString('en')} Guilds
+            ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
+        });
+
+        console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
+    }
+}
