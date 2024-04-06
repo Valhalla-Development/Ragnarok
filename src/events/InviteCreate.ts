@@ -36,7 +36,7 @@ export class InviteCreate {
                             iconURL: `${invite.guild!.iconURL()}`,
                         })
                         .setDescription(
-                            `**◎ Created By:** ${invite.inviter}\n**◎ Expires:** ${expiry}\n**◎ Location:** ${invite.channel}\n**◎ Invite:** https://discord.gg/${invite.code}`,
+                            `**Created By:** ${invite.inviter}\n**Expires:** ${expiry}\n**Location:** ${invite.channel}\n**Invite:** https://discord.gg/${invite.code}`,
                         )
                         .setFooter({ text: `ID: ${invite.code}` })
                         .setTimestamp();
