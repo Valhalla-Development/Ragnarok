@@ -1,6 +1,4 @@
-import {
-    ArgsOf, Client, Discord, On,
-} from 'discordx';
+import { ArgsOf, Discord, On } from 'discordx';
 import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
 import Logging from '../mongo/Logging.js';
 
@@ -11,12 +9,11 @@ import Logging from '../mongo/Logging.js';
 export class RoleCreate {
     /**
      * Executes when the RoleCreate event is emitted.
-     * @param guild
-     * @param client - The Discord client.
+     * @param role
      * @returns void
      */
     @On({ event: 'roleCreate' })
-    async onRoleCreate([role]: ArgsOf<'roleCreate'>, client: Client) {
+    async onRoleCreate([role]: ArgsOf<'roleCreate'>) {
         // If logging is enabled, send an embed to the set channel
         const logging = await Logging.findOne({ GuildId: role.guild.id });
         if (logging) {

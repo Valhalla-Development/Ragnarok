@@ -1,4 +1,4 @@
-import type { ArgsOf, Client } from 'discordx';
+import type { ArgsOf } from 'discordx';
 import { Discord, On } from 'discordx';
 import {
     AuditLogEvent, ChannelType, EmbedBuilder, PermissionsBitField,
@@ -10,11 +10,10 @@ import { color } from '../utils/Util.js';
 export class MessageDelete {
     /**
      * Handler for MessageDelete event.
-     * @param args - An array containing the interaction and client objects.
-     * @param client - The Discord client.
+     * @param message
      */
     @On({ event: 'messageDelete' })
-    async onMessageDelete([message]: ArgsOf<'messageDelete'>, client: Client) {
+    async onMessageDelete([message]: ArgsOf<'messageDelete'>) {
         if (!message.guild) return;
 
         // If logging is enabled, send an embed to the set channel

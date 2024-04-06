@@ -10,7 +10,6 @@ export class ChannelDelete {
     /**
      * Executes when the ChannelDelete event is emitted.
      * @param channel
-     * @param client - The Discord client.
      * @returns void
      */
     @On({ event: 'channelDelete' })

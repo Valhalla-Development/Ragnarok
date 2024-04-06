@@ -10,7 +10,6 @@ export class ChannelCreate {
     /**
      * Executes when the ChannelCreate event is emitted.
      * @param channel
-     * @param client - The Discord client.
      * @returns void
      */
     @On({ event: 'channelCreate' })

@@ -12,7 +12,6 @@ export class GuildBanRemove {
     /**
      * Executes when the GuildBanRemove event is emitted.
      * @param ban
-     * @param client - The Discord client.
      * @returns void
      */
     @On({ event: 'guildBanRemove' })

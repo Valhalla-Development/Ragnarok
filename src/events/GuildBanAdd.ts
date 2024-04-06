@@ -12,7 +12,6 @@ export class GuildBanAdd {
     /**
      * Executes when the GuildBanAdd event is emitted.
      * @param ban
-     * @param client - The Discord client.
      * @returns void
      */
     @On({ event: 'guildBanAdd' })

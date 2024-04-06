@@ -1,6 +1,4 @@
-import {
-    ArgsOf, Client, Discord, On,
-} from 'discordx';
+import { ArgsOf, Discord, On } from 'discordx';
 import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
 import Logging from '../mongo/Logging.js';
 
@@ -11,12 +9,11 @@ import Logging from '../mongo/Logging.js';
 export class RoleDelete {
     /**
      * Executes when the RoleDelete event is emitted.
-     * @param guild
-     * @param client - The Discord client.
+     * @param role
      * @returns void
      */
     @On({ event: 'roleDelete' })
-    async onRoleDelete([role]: ArgsOf<'roleDelete'>, client: Client) {
+    async onRoleDelete([role]: ArgsOf<'roleDelete'>) {
         // If logging is enabled, send an embed to the set channel
         const logging = await Logging.findOne({ GuildId: role.guild.id });
         if (logging) {

@@ -11,7 +11,6 @@ export class ChannelUpdate {
      * Executes when the ChannelUpdate event is emitted.
      * @param oldChannel
      * @param newChannel
-     * @param client - The Discord client.
      * @returns void
      */
     @On({ event: 'channelUpdate' })

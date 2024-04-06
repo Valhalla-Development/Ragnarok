@@ -7,7 +7,7 @@ import moment from 'moment';
 export class InteractionCreate {
     /**
      * Handler for interactionCreate event.
-     * @param args - An array containing the interaction and client objects.
+     * @param interaction - An array containing the interaction and client objects.
      * @param client - The Discord client.
      */
     @On({ event: 'interactionCreate' })
