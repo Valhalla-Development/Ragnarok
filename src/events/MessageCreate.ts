@@ -10,6 +10,10 @@ import AdsProtection from '../mongo/AdsProtection.js';
 import AntiScam from '../mongo/AntiScam.js';
 import linksContent from '../../assets/SpenLinks.json' assert {type: 'json'};
 import AFK from '../mongo/AFK.js';
+import Dad from '../mongo/Dad.js';
+
+const dadCooldown = new Set();
+const dadCooldownSeconds = 60;
 
 @Discord()
 export class MessageCreate {
@@ -206,6 +210,34 @@ export class MessageCreate {
             }
         }
         await linkTag();
+
+        async function dadBot() {
+            const dadData = await Dad.findOne({ GuildId: message.guild?.id });
+            if (!dadData || dadCooldown.has(message.author.id)) return;
+
+            const messageContent = message.content.toLowerCase();
+            if (!(messageContent.startsWith('im ') || messageContent.startsWith('i\'m '))) return;
+
+            const content = messageContent.split(' ').slice(1).join(' ');
+
+            switch (true) {
+            case urlRegexSafe({ strict: false }).test(messageContent):
+                message.channel.send({ files: ['./Storage/Images/dadNo.png'] });
+                break;
+            case messageContent.startsWith('im dad') || messageContent.startsWith('i\'m dad'):
+                message.channel.send({ content: 'No, I\'m Dad!' });
+                break;
+            case messageContent.includes('@everyone') || messageContent.includes('@here'):
+                await message.reply({ content: '<:pepebruh:987742251297931274>' });
+                break;
+            default:
+                message.channel.send({ content: `Hi ${content}, I'm Dad!` });
+            }
+
+            dadCooldown.add(message.author.id);
+            setTimeout(() => dadCooldown.delete(message.author.id), dadCooldownSeconds * 1000);
+        }
+        await dadBot();
 
         /**
          * Easter Eggs
