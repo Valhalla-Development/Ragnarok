@@ -3,7 +3,9 @@ import { Discord, On } from 'discordx';
 import type { Message, TextBasedChannel } from 'discord.js';
 import { EmbedBuilder, GuildTextBasedChannel, PermissionsBitField } from 'discord.js';
 import urlRegexSafe from 'url-regex-safe';
-import { color, deletableCheck, messageDelete } from '../utils/Util.js';
+import {
+    color, deletableCheck, messageDelete, updateLevel,
+} from '../utils/Util.js';
 import AdsProtection from '../mongo/AdsProtection.js';
 import AntiScam from '../mongo/AntiScam.js';
 import linksContent from '../../assets/SpenLinks.json' assert {type: 'json'};
@@ -213,5 +215,10 @@ export class MessageCreate {
                 content: 'Leave my table alone!\n┬─┬ ノ( ゜-゜ノ)',
             });
         }
+
+        /**
+         * Update Level module
+         */
+        await updateLevel(message);
     }
 }
