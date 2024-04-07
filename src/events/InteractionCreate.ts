@@ -2,6 +2,7 @@ import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import { ChannelType, codeBlock, EmbedBuilder } from 'discord.js';
 import moment from 'moment';
+import { updateLevel } from '../utils/Util.js';
 
 @Discord()
 export class InteractionCreate {
@@ -16,6 +17,11 @@ export class InteractionCreate {
         if (!interaction || !interaction.guild || !interaction.channel || interaction.channel.type !== ChannelType.GuildText
             || (!interaction.isButton() && !interaction.isStringSelectMenu() && !interaction.isChatInputCommand()
                 && !interaction.isContextMenuCommand() && !interaction.isContextMenuCommand() && !interaction.isModalSubmit())) return;
+
+        /**
+         * Update Level module
+         */
+        if (interaction.isCommand()) await updateLevel(interaction);
 
         try {
             await client.executeInteraction(interaction);
