@@ -1,14 +1,13 @@
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import type { Message, TextBasedChannel } from 'discord.js';
-import {
-    ButtonStyle, EmbedBuilder, GuildTextBasedChannel, PermissionsBitField,
-} from 'discord.js';
+import { EmbedBuilder, GuildTextBasedChannel, PermissionsBitField } from 'discord.js';
 import urlRegexSafe from 'url-regex-safe';
 import { color, deletableCheck, messageDelete } from '../utils/Util.js';
 import AdsProtection from '../mongo/AdsProtection.js';
 import AntiScam from '../mongo/AntiScam.js';
-import linksContent from '../../assets/SpenLinks.json' assert { type: 'json' };
+import linksContent from '../../assets/SpenLinks.json' assert {type: 'json'};
+import AFK from '../mongo/AFK.js';
 
 @Discord()
 export class MessageCreate {
@@ -19,7 +18,38 @@ export class MessageCreate {
      */
     @On({ event: 'messageCreate' })
     async onMessage([message]: ArgsOf<'messageCreate'>, client: Client) {
-        if (!message.guild) return;
+        if (!message.guild || message.author.bot) return;
+
+        async function afk() {
+            const pingCheck = await AFK.findOne({ GuildId: message.guild!.id });
+            const afkGrab = await AFK.findOne({ GuildId: message.guild!.id, UserId: message.author.id });
+
+            if (afkGrab) {
+                await AFK.deleteOne({ GuildId: message.guild!.id, UserId: message.author.id });
+                const embed = new EmbedBuilder()
+                    .setColor(color(`${message.member?.displayHexColor}`))
+                    .addFields({
+                        name: `**${client.user?.username} - AFK**`,
+                        value: `${message.author} is no longer AFK.`,
+                    });
+                message.channel.send({ embeds: [embed] }).then((m) => deletableCheck(m, 10000));
+                return;
+            }
+
+            if (message.mentions.users.size > 0 && pingCheck) {
+                const afkCheck = await AFK.findOne({ GuildId: message.guild!.id, UserId: message.mentions.users.first()?.id });
+                if (afkCheck) {
+                    const error = new EmbedBuilder()
+                        .setColor(color(`${message.member?.displayHexColor}`))
+                        .addFields({
+                            name: `**${client.user?.username} - AFK**`,
+                            value: `**◎** Please do not ping ${message.mentions.users.first()}, is currently AFK with the reason:\n\n${afkCheck.Reason}`,
+                        });
+                    message.channel.send({ embeds: [error] }).then((m) => deletableCheck(m, 10000));
+                }
+            }
+        }
+        await afk();
 
         /**
          * Checks for and handles potential scams in a message.
@@ -75,7 +105,7 @@ export class MessageCreate {
             if (adsProt) {
                 // Check if the bot has the MANAGE_MESSAGES permission
                 if (!message.member?.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-                    // Bot doesn't have MANAGE_MESSAGES permission, disable Ads Protection
+                    // Bot doesn't have MANAGE_MESSAGES permission, disable Ad Protection
                     const errorEmbed = new EmbedBuilder()
                         .setColor(color(`${message.guild?.members.me?.displayHexColor}`))
                         .addFields({
