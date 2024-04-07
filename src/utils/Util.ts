@@ -3,9 +3,11 @@ import {
     ButtonBuilder,
     ButtonInteraction,
     ButtonStyle,
+    ChannelType,
     ColorResolvable,
     CommandInteraction,
     EmbedBuilder,
+    GuildMember,
     Message,
     ModalSubmitInteraction,
     PermissionsBitField,
@@ -15,6 +17,11 @@ import { Client } from 'discordx';
 import 'colors';
 import mongoose from 'mongoose';
 import { getTitleDetailsByName, getTitleDetailsByUrl, TitleMainType } from 'movier';
+import LevelConfig from '../mongo/LevelConfig.js';
+import Level from '../mongo/Level.js';
+
+const xpCooldown = new Set();
+const xpCooldownSeconds = 60;
 
 /**
  * Capitalises the first letter of each word in a string.
@@ -316,4 +323,42 @@ export async function pagination(interaction: ButtonInteraction, embeds: EmbedBu
     });
 
     collector.on('error', console.error);
+}
+
+export async function updateLevel(interaction: Message | CommandInteraction) {
+    if (!interaction.guild || !interaction.channel || interaction.channel.type !== ChannelType.GuildText) return;
+
+    try {
+        const member = interaction.member as GuildMember;
+
+        if (!member) return;
+
+        if (xpCooldown.has(member.id)) return;
+
+        const levelDb = await LevelConfig.findOne({ GuildId: interaction.guild.id });
+
+        const xpAdd = Math.floor(Math.random() * 11 + 15);
+        const score = await Level.findOneAndUpdate(
+            { IdJoined: `${member.id}-${interaction.guild.id}` },
+            { $inc: { Xp: xpAdd }, $setOnInsert: { UserId: member.id, GuildId: interaction.guild.id, Level: 0 } },
+            { upsert: true, new: true },
+        ).exec();
+
+        const nxtLvl = (5 / 6) * (score.Level + 1) * (2 * (score.Level + 1) * (score.Level + 1) + 27 * (score.Level + 1) + 91);
+
+        if (nxtLvl <= score.Xp) {
+            score.Level += 1;
+
+            await score.save();
+
+            if (!levelDb && interaction.channel.permissionsFor(interaction.guild.members.me!).has(PermissionsBitField.Flags.SendMessages)) {
+                interaction.channel.send({ content: `${interaction.member} has reached level **${score.Level}**!`, allowedMentions: { parse: [] } }).then((m) => deletableCheck(m, 10000));
+            }
+        }
+
+        xpCooldown.add(member.id);
+        setTimeout(() => xpCooldown.delete(member.id), xpCooldownSeconds * 1000);
+    } catch (error) {
+        console.error(error);
+    }
 }
