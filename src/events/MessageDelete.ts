@@ -62,6 +62,8 @@ export class MessageDelete {
                     embed.addFields({ name: '**Attachments:**', value: `${attachments.join('\n')}` });
                 }
 
+                if (!message.content?.length && !attachments) return;
+
                 // Send the embed to the logging channel
                 chn.send({ embeds: [embed] });
             }
