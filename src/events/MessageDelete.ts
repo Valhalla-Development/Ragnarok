@@ -14,7 +14,7 @@ export class MessageDelete {
      */
     @On({ event: 'messageDelete' })
     async onMessageDelete([message]: ArgsOf<'messageDelete'>) {
-        if (!message.guild) return;
+        if (!message.guild || message.author?.bot) return;
 
         // If logging is enabled, send an embed to the set channel
         const logging = await Logging.findOne({ GuildId: message.guild!.id });
