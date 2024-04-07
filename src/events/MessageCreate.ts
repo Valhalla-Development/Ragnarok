@@ -204,5 +204,14 @@ export class MessageCreate {
             }
         }
         await linkTag();
+
+        /**
+         * Easter Eggs
+         */
+        if (message.content.includes('(╯°□°）╯︵ ┻━┻')) {
+            await message.reply({
+                content: 'Leave my table alone!\n┬─┬ ノ( ゜-゜ノ)',
+            });
+        }
     }
 }
