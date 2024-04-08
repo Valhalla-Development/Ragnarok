@@ -82,7 +82,7 @@ export class Help {
     @SelectMenuComponent({ id: 'helpSelect' })
     async handle(interaction: StringSelectMenuInteraction, client: Client): Promise<void> {
         // Check if the user interacting with the select menu is the command executor
-        if (interaction.user.id === interaction.message.interaction?.user.id) {
+        if (interaction.user.id !== interaction.message.interaction?.user.id) {
             await RagnarokEmbed(client, interaction, 'Error', 'Only the command executor can select an option.', true);
             return;
         }
