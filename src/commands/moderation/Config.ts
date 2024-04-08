@@ -1,5 +1,5 @@
 import {
-    Client, Discord, Slash, SlashGroup, SlashOption,
+    Client, Discord, Guard, Slash, SlashGroup, SlashOption,
 } from 'discordx';
 import {
     ActionRowBuilder,
@@ -8,14 +8,25 @@ import {
     ButtonStyle,
     CommandInteraction,
     EmbedBuilder,
+    GuildMemberRoleManager,
+    PermissionsBitField,
+    Role,
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
 import { color } from '../../utils/Util.js';
 import AdsProtection from '../../mongo/AdsProtection.js';
+import AutoRole from '../../mongo/AutoRole.js';
+import { BotHasPerm } from '../../guards/BotHasPerm.js';
+import { UserHasPerm } from '../../guards/UserHasPerm.js';
 
 @Discord()
 @Category('Moderation')
 @SlashGroup({ description: 'Configure bot modules', name: 'config' })
+@SlashGroup({
+    description: 'AutoRole',
+    name: 'autorole',
+    root: 'config',
+})
 @SlashGroup('config')
 export class Config {
     @Slash({ description: 'View all available options', name: 'all' })
@@ -322,6 +333,74 @@ export class Config {
                 { upsert: true, new: true },
             );
         }
+
+        await interaction.reply({ embeds: [embed], ephemeral: true });
+    }
+
+    @Slash({ description: 'AutoRole Module Configuration', name: 'role' })
+    @SlashGroup('autorole', 'config')
+    @Guard(BotHasPerm([PermissionsBitField.Flags.ManageRoles]), UserHasPerm([PermissionsBitField.Flags.ManageRoles]))
+    async configAutorole(
+        @SlashOption({
+            description: 'Set AutoRole',
+            name: 'role',
+            type: ApplicationCommandOptionType.Role,
+            required: true,
+        })
+            role: Role,
+            interaction: CommandInteraction,
+            client: Client,
+    ): Promise<void> {
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - AutoRole Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        const member = interaction.member!.roles as GuildMemberRoleManager;
+        const botHighestRole = interaction.guild!.members.me!.roles.highest.position;
+
+        if (role.position >= member.highest.position || role.position >= botHighestRole) {
+            embed.setDescription(role.position >= member.highest.position
+                ? 'You can not set a role that is higher than your highest role.'
+                : 'You can not set a role that is higher than my highest role.');
+        } else {
+            await AutoRole.findOneAndUpdate(
+                { GuildId: interaction.guild!.id },
+                { $set: { Role: role.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
+                { upsert: true, new: true },
+            );
+            embed.setDescription(`Autorole set to ${role}`);
+        }
+
+        await interaction.reply({ ephemeral: true, embeds: [embed] });
+    }
+
+    @Slash({ description: 'Disable AutoRole Module', name: 'disable' })
+    @SlashGroup('autorole', 'config')
+    async disableAutoRole(
+        interaction: CommandInteraction,
+        client: Client,
+    ): Promise<void> {
+        const currentStatus = await AutoRole.findOne({ GuildId: interaction.guild!.id });
+
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - AutoRole Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        if (!currentStatus) {
+            embed.setDescription('AutoRole is not enabled.');
+            await interaction.reply({ embeds: [embed], ephemeral: true });
+            return;
+        }
+
+        embed.setDescription('AutoRole **disabled**.');
+
+        await AutoRole.deleteOne({ GuildId: interaction.guild!.id });
 
         await interaction.reply({ embeds: [embed], ephemeral: true });
     }
