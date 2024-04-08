@@ -1,11 +1,17 @@
 import {
-    Client, Discord, Slash, SlashGroup,
+    Client, Discord, Slash, SlashGroup, SlashOption,
 } from 'discordx';
 import {
-    ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder,
+    ActionRowBuilder,
+    ApplicationCommandOptionType,
+    ButtonBuilder,
+    ButtonStyle,
+    CommandInteraction,
+    EmbedBuilder,
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
 import { color } from '../../utils/Util.js';
+import AdsProtection from '../../mongo/AdsProtection.js';
 
 @Discord()
 @Category('Moderation')
@@ -283,5 +289,40 @@ export class Config {
                 interaction.editReply({ components: [row1, row2] });
             }
         });
+    }
+
+    @Slash({ description: 'Advert Protection Configuration', name: 'adsprot' })
+    async configAdsProt(
+        @SlashOption({
+            description: 'Toggle Advert Protection',
+            name: 'state',
+            required: true,
+            type: ApplicationCommandOptionType.Boolean,
+        })
+            state: boolean,
+            interaction: CommandInteraction,
+            client: Client,
+    ): Promise<void> {
+        const currentStatus = await AdsProtection.findOne({ GuildId: interaction.guild!.id });
+
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - Advert Protection`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setDescription(currentStatus?.Status === state ? `Advert Protection is already **${state ? 'enabled.' : 'disabled.'}**` : (
+                state ? 'Advert Protection **enabled**.' : 'Advert Protection **disabled**.'
+            ));
+
+        if (currentStatus?.Status !== state) {
+            await AdsProtection.findOneAndUpdate(
+                { GuildId: interaction.guild!.id },
+                { $set: { Status: state } },
+                { upsert: true, new: true },
+            );
+        }
+
+        await interaction.reply({ embeds: [embed], ephemeral: true });
     }
 }
