@@ -125,7 +125,6 @@ export class Birthday {
      * @param client - The Discord client.
      */
     @Slash({ description: 'List all birthdays', name: 'all' })
-    @SlashGroup('list', 'birthday')
     async list(interaction: CommandInteraction, client: Client): Promise<void> {
         // Fetch all birthdays from the database
         const rows = await Birthdays.find();
