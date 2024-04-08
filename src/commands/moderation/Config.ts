@@ -30,7 +30,14 @@ import { UserHasPerm } from '../../guards/UserHasPerm.js';
 @SlashGroup('config')
 export class Config {
     @Slash({ description: 'View all available options', name: 'all' })
+    /**
+     * Displays a menu for configuring various modules.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
     async all(interaction: CommandInteraction, client: Client): Promise<void> {
+        // Create button components for the menu
         const homeButton = new ButtonBuilder()
             .setEmoji('🏠')
             .setStyle(ButtonStyle.Success)
@@ -98,6 +105,7 @@ export class Config {
             starboardButton,
         );
 
+        // Initial embed to display with the menu
         const initial = new EmbedBuilder()
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
             .addFields({
@@ -105,6 +113,7 @@ export class Config {
                 value: '**◎** Click the corresponding button for which module you would like to configure.',
             });
 
+        // Function to set button states when a button is clicked
         function setButtonState(button: ButtonBuilder) {
             // Loop through each button in the array, except the provided 'button'.
             [homeButton, adsProtButton, autoroleButton, birthdayButton, dadButton,
@@ -121,15 +130,19 @@ export class Config {
             button.setStyle(ButtonStyle.Success);
         }
 
+        // Send the initial menu message
         const m = await interaction.reply({ ephemeral: true, components: [row1, row2], embeds: [initial] });
 
         const filter = (but: { user: { id: string; }; }) => but.user.id !== client.user?.id;
 
+        // Create a message component collector to listen for button clicks
         const collector = m.createMessageComponentCollector({ filter, time: 15000 });
 
+        // Event listener for when a button is clicked
         collector.on('collect', async (b) => {
             collector.resetTimer();
 
+            // Check which button was clicked and update the menu accordingly
             if (b.customId === 'home') {
                 setButtonState(homeButton);
 
@@ -283,6 +296,7 @@ export class Config {
             }
         });
 
+        // Event listener for when the collector ends (due to timeout)
         collector.on('end', (_, reason) => {
             if (reason === 'time') {
                 // Disable button and update message
@@ -303,6 +317,13 @@ export class Config {
     }
 
     @Slash({ description: 'Advert Protection Configuration', name: 'adsprot' })
+    /**
+     * Configures the Advert Protection module.
+     * @param state - The new state to set for Advert Protection (true for enabled, false for disabled).
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
     async configAdsProt(
         @SlashOption({
             description: 'Toggle Advert Protection',
@@ -314,8 +335,10 @@ export class Config {
             interaction: CommandInteraction,
             client: Client,
     ): Promise<void> {
+        // Check the current status of Advert Protection for the guild
         const currentStatus = await AdsProtection.findOne({ GuildId: interaction.guild!.id });
 
+        // Construct the embed to display the updated status
         const embed = new EmbedBuilder()
             .setAuthor({
                 name: `${client.user?.username} - Advert Protection`,
@@ -326,6 +349,7 @@ export class Config {
                 state ? 'Advert Protection **enabled**.' : 'Advert Protection **disabled**.'
             ));
 
+        // Update the status of Advert Protection if it has changed
         if (currentStatus?.Status !== state) {
             await AdsProtection.findOneAndUpdate(
                 { GuildId: interaction.guild!.id },
@@ -340,6 +364,13 @@ export class Config {
     @Slash({ description: 'AutoRole Module Configuration', name: 'role' })
     @SlashGroup('autorole', 'config')
     @Guard(BotHasPerm([PermissionsBitField.Flags.ManageRoles]), UserHasPerm([PermissionsBitField.Flags.ManageRoles]))
+    /**
+     * Configures the AutoRole module.
+     * @param role - The role to set as AutoRole.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
     async configAutorole(
         @SlashOption({
             description: 'Set AutoRole',
@@ -351,6 +382,7 @@ export class Config {
             interaction: CommandInteraction,
             client: Client,
     ): Promise<void> {
+        // Construct the embed to display the result of the configuration
         const embed = new EmbedBuilder()
             .setAuthor({
                 name: `${client.user?.username} - AutoRole Module`,
@@ -358,14 +390,17 @@ export class Config {
             })
             .setColor(color(interaction.guild!.members.me!.displayHexColor));
 
+        // Get the member's roles and the bot's highest role position
         const member = interaction.member!.roles as GuildMemberRoleManager;
         const botHighestRole = interaction.guild!.members.me!.roles.highest.position;
 
+        // Check if the provided role is higher than the member's highest role or the bot's highest role
         if (role.position >= member.highest.position || role.position >= botHighestRole) {
             embed.setDescription(role.position >= member.highest.position
                 ? 'You can not set a role that is higher than your highest role.'
                 : 'You can not set a role that is higher than my highest role.');
         } else {
+            // Update or insert the AutoRole document in the database
             await AutoRole.findOneAndUpdate(
                 { GuildId: interaction.guild!.id },
                 { $set: { Role: role.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
@@ -379,12 +414,20 @@ export class Config {
 
     @Slash({ description: 'Disable AutoRole Module', name: 'disable' })
     @SlashGroup('autorole', 'config')
+    /**
+     * Disables the AutoRole module.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
     async disableAutoRole(
         interaction: CommandInteraction,
         client: Client,
     ): Promise<void> {
+        // Check the current status of AutoRole for the guild
         const currentStatus = await AutoRole.findOne({ GuildId: interaction.guild!.id });
 
+        // Construct the embed to display the result of the operation
         const embed = new EmbedBuilder()
             .setAuthor({
                 name: `${client.user?.username} - AutoRole Module`,
@@ -392,6 +435,7 @@ export class Config {
             })
             .setColor(color(interaction.guild!.members.me!.displayHexColor));
 
+        // If AutoRole is not enabled, inform the user and return
         if (!currentStatus) {
             embed.setDescription('AutoRole is not enabled.');
             await interaction.reply({ embeds: [embed], ephemeral: true });
@@ -400,6 +444,7 @@ export class Config {
 
         embed.setDescription('AutoRole **disabled**.');
 
+        // Delete the AutoRole document from the database
         await AutoRole.deleteOne({ GuildId: interaction.guild!.id });
 
         await interaction.reply({ embeds: [embed], ephemeral: true });
