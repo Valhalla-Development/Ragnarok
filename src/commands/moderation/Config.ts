@@ -25,6 +25,7 @@ import BirthdayConfig from '../../mongo/BirthdayConfig.js';
 import Dad from '../../mongo/Dad.js';
 import Logging from '../../mongo/Logging.js';
 import TicketConfig from '../../mongo/TicketConfig.js';
+import StarBoard from '../../mongo/StarBoard.js';
 
 @Discord()
 @Category('Moderation')
@@ -47,6 +48,11 @@ import TicketConfig from '../../mongo/TicketConfig.js';
 @SlashGroup({
     description: 'Ticket',
     name: 'ticket',
+    root: 'config',
+})
+@SlashGroup({
+    description: 'StarBoard',
+    name: 'starboard',
     root: 'config',
 })
 @SlashGroup('config')
@@ -887,6 +893,96 @@ export class Config {
 
         // Delete the Ticket document from the database
         await TicketConfig.deleteOne({ GuildId: interaction.guild!.id });
+
+        await interaction.reply({ embeds: [embed], ephemeral: true });
+    }
+
+    /**
+     * Configures the StarBoard module.
+     * @param channel - The channel to set as the Starboard channel.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
+    @Slash({ description: 'StarBoard Module Configuration', name: 'channel' })
+    @SlashGroup('starboard', 'config')
+    async configStarBoardChannel(
+        @SlashOption({
+            description: 'Set StarBoard Channel',
+            name: 'channel',
+            type: ApplicationCommandOptionType.Channel,
+            required: true,
+        })
+            channel: TextChannel,
+            interaction: CommandInteraction,
+            client: Client,
+    ): Promise<void> {
+        // Construct the embed to display the result of the configuration
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - StarBoard Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        if (channel.type !== ChannelType.GuildText) {
+            embed.setDescription('Please provide a valid `TextChannel`.');
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            return;
+        }
+
+        // Check if the bot has the SendMessages permissions within the provided channel
+        if (!interaction.guild!.members.me!.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
+            embed.setDescription('I lack the `SendMessages` permission within the provided channel.');
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            return;
+        }
+
+        // Update or insert the Logging document in the database
+        await StarBoard.findOneAndUpdate(
+            { GuildId: interaction.guild!.id },
+            { $set: { ChannelId: channel.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
+            { upsert: true, new: true },
+        );
+        embed.setDescription(`StarBoard channel set to ${channel}`);
+
+        await interaction.reply({ ephemeral: true, embeds: [embed] });
+    }
+
+    @Slash({ description: 'Disable StarBoard Module', name: 'disable' })
+    @SlashGroup('starboard', 'config')
+    /**
+     * Disables the StarBoard module.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
+    async disableStarBoard(
+        interaction: CommandInteraction,
+        client: Client,
+    ): Promise<void> {
+        // Check the current status of Birthday for the guild
+        const currentStatus = await StarBoard.findOne({ GuildId: interaction.guild!.id });
+
+        // Construct the embed to display the result of the operation
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - StarBoard Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        // If StarBoard is not enabled, inform the user and return
+        if (!currentStatus) {
+            embed.setDescription('StarBoard module is not enabled.');
+            await interaction.reply({ embeds: [embed], ephemeral: true });
+            return;
+        }
+
+        embed.setDescription('StarBoard module **disabled**.');
+
+        // Delete the StarBoard document from the database
+        await StarBoard.deleteOne({ GuildId: interaction.guild!.id });
 
         await interaction.reply({ embeds: [embed], ephemeral: true });
     }
