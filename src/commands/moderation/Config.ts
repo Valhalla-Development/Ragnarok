@@ -6,11 +6,13 @@ import {
     ApplicationCommandOptionType,
     ButtonBuilder,
     ButtonStyle,
+    ChannelType,
     CommandInteraction,
     EmbedBuilder,
     GuildMemberRoleManager,
     PermissionsBitField,
     Role,
+    TextChannel,
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
 import { color } from '../../utils/Util.js';
@@ -18,6 +20,7 @@ import AdsProtection from '../../mongo/AdsProtection.js';
 import AutoRole from '../../mongo/AutoRole.js';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
 import { UserHasPerm } from '../../guards/UserHasPerm.js';
+import BirthdayConfig from '../../mongo/BirthdayConfig.js';
 
 @Discord()
 @Category('Moderation')
@@ -25,6 +28,11 @@ import { UserHasPerm } from '../../guards/UserHasPerm.js';
 @SlashGroup({
     description: 'AutoRole',
     name: 'autorole',
+    root: 'config',
+})
+@SlashGroup({
+    description: 'Birthday',
+    name: 'birthday',
     root: 'config',
 })
 @SlashGroup('config')
@@ -191,8 +199,7 @@ export class Config {
                     })
                     .setColor(color(interaction.guild!.members.me!.displayHexColor))
                     .setDescription(`🎂 Set Birthday Alert Channel: \`/config birthday channel <#channel>\`
-                            🎂 Set Birthday Alert Role: \`/config birthday role <@role>\`
-                            🎂 Disable Birthday Module: \`/config birthday off\``);
+                            🎂 Disable Birthday Module: \`/config birthday disable\``);
 
                 await b.update({ embeds: [embed], components: [row1, row2] });
                 return;
@@ -446,6 +453,96 @@ export class Config {
 
         // Delete the AutoRole document from the database
         await AutoRole.deleteOne({ GuildId: interaction.guild!.id });
+
+        await interaction.reply({ embeds: [embed], ephemeral: true });
+    }
+
+    /**
+     * Configures the Birthday module.
+     * @param channel - The channel to set as Birthday alerts.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
+    @Slash({ description: 'Birthday Module Configuration', name: 'channel' })
+    @SlashGroup('birthday', 'config')
+    async configBirthdayChannel(
+        @SlashOption({
+            description: 'Set Birthday Channel',
+            name: 'channel',
+            type: ApplicationCommandOptionType.Channel,
+            required: true,
+        })
+            channel: TextChannel,
+            interaction: CommandInteraction,
+            client: Client,
+    ): Promise<void> {
+        // Construct the embed to display the result of the configuration
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - Birthday Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        if (channel.type !== ChannelType.GuildText) {
+            embed.setDescription('Please provide a valid `GuildTextBasedChannel`.');
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            return;
+        }
+
+        // Check if the bot has the SendMessages permissions within the provided channel
+        if (!interaction.guild!.members.me!.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
+            embed.setDescription('I lack the `SendMessages` permission within the provided channel.');
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            return;
+        }
+
+        // Update or insert the Birthday document in the database
+        await BirthdayConfig.findOneAndUpdate(
+            { GuildId: interaction.guild!.id },
+            { $set: { ChannelId: channel.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
+            { upsert: true, new: true },
+        );
+        embed.setDescription(`Birthday channel set to ${channel}`);
+
+        await interaction.reply({ ephemeral: true, embeds: [embed] });
+    }
+
+    @Slash({ description: 'Disable Birthday Module', name: 'disable' })
+    @SlashGroup('birthday', 'config')
+    /**
+     * Disables the Birthday module.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
+    async disableBirthday(
+        interaction: CommandInteraction,
+        client: Client,
+    ): Promise<void> {
+        // Check the current status of Birthday for the guild
+        const currentStatus = await BirthdayConfig.findOne({ GuildId: interaction.guild!.id });
+
+        // Construct the embed to display the result of the operation
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - Birthday Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        // If Birthday is not enabled, inform the user and return
+        if (!currentStatus) {
+            embed.setDescription('Birthday module is not enabled.');
+            await interaction.reply({ embeds: [embed], ephemeral: true });
+            return;
+        }
+
+        embed.setDescription('Birthday module **disabled**.');
+
+        // Delete the Birthday document from the database
+        await BirthdayConfig.deleteOne({ GuildId: interaction.guild!.id });
 
         await interaction.reply({ embeds: [embed], ephemeral: true });
     }
