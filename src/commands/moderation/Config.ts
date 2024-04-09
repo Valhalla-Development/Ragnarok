@@ -16,6 +16,8 @@ import {
     TextChannel,
 } from 'discord.js';
 import { Category } from '@discordx/utilities';
+import axios from 'axios';
+import { loadImage } from 'canvas';
 import { color } from '../../utils/Util.js';
 import AdsProtection from '../../mongo/AdsProtection.js';
 import AutoRole from '../../mongo/AutoRole.js';
@@ -26,6 +28,7 @@ import Dad from '../../mongo/Dad.js';
 import Logging from '../../mongo/Logging.js';
 import TicketConfig from '../../mongo/TicketConfig.js';
 import StarBoard from '../../mongo/StarBoard.js';
+import Welcome from '../../mongo/Welcome.js';
 
 @Discord()
 @Category('Moderation')
@@ -53,6 +56,11 @@ import StarBoard from '../../mongo/StarBoard.js';
 @SlashGroup({
     description: 'StarBoard',
     name: 'starboard',
+    root: 'config',
+})
+@SlashGroup({
+    description: 'Welcome',
+    name: 'welcome',
     root: 'config',
 })
 @SlashGroup('config')
@@ -893,6 +901,174 @@ export class Config {
 
         // Delete the Ticket document from the database
         await TicketConfig.deleteOne({ GuildId: interaction.guild!.id });
+
+        await interaction.reply({ embeds: [embed], ephemeral: true });
+    }
+
+    /**
+     * Configures the Welcome module.
+     * @param image - The image to set as the Welcome image.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
+    @Slash({ description: 'Welcome Module Configuration', name: 'image' })
+    @SlashGroup('welcome', 'config')
+    async configWelcomeImage(
+        @SlashOption({
+            description: 'Set Welcome Image',
+            name: 'welcome',
+            type: ApplicationCommandOptionType.String,
+            required: true,
+        })
+            image: string,
+            interaction: CommandInteraction,
+            client: Client,
+    ): Promise<void> {
+        // Construct the embed to display the result of the configuration
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - Welcome Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        const extension = image.substring(image.lastIndexOf('.') + 1);
+        const validExtensions = ['jpg', 'jpeg', 'png'];
+
+        if (!validExtensions.includes(extension)) {
+            embed.setDescription(`\`${extension}\` is not a valid image format.\n\n**Accepted formats:** \`${validExtensions.join(', ')}\``);
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            return;
+        }
+
+        const urlRegex = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
+
+        if (!urlRegex.test(image)) {
+            embed.setDescription('Please enter a valid absolute URL.\nExample: https://www.example.com');
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            return;
+        }
+
+        await axios(image).then(async (res) => {
+            const currentStatus = await Welcome.findOne({ GuildId: interaction.guild!.id });
+
+            if (res) {
+                if (!currentStatus) {
+                    embed.setDescription('You must enable the welcome module first. You can do this by running the following command. `/config welcome channel <#channel>`');
+                    await interaction.reply({ ephemeral: true, embeds: [embed] });
+                } else {
+                    try {
+                        await loadImage(image);
+                    } catch {
+                        embed.setDescription(`I was unable to process \`${image}\`\nIs it a valid image?`);
+                        await interaction.reply({ ephemeral: true, embeds: [embed] });
+                        return;
+                    }
+
+                    await Welcome.findOneAndUpdate(
+                        { GuildId: interaction.guild!.id },
+                        { Image: image },
+                        { upsert: true, new: true },
+                    );
+
+                    embed.setDescription('Image has been updated.');
+                    embed.setImage(image);
+                    await interaction.reply({ ephemeral: true, embeds: [embed] });
+                }
+            } else {
+                embed.setDescription('Please input a valid image URL. Ensure that the URL concludes with one of the supported extensions: `.jpg`, `.jpeg`, `.png`.');
+                await interaction.reply({ ephemeral: true, embeds: [embed] });
+            }
+        });
+    }
+
+    /**
+     * Configures the Welcome module.
+     * @param channel - The channel to set as Welcome alerts.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
+    @Slash({ description: 'Welcome Module Configuration', name: 'channel' })
+    @SlashGroup('welcome', 'config')
+    async configWelcomeChannel(
+        @SlashOption({
+            description: 'Set Welcome Channel',
+            name: 'channel',
+            type: ApplicationCommandOptionType.Channel,
+            required: true,
+        })
+            channel: TextChannel,
+            interaction: CommandInteraction,
+            client: Client,
+    ): Promise<void> {
+        // Construct the embed to display the result of the configuration
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - Welcome Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        if (channel.type !== ChannelType.GuildText) {
+            embed.setDescription('Please provide a valid `TextChannel`.');
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            return;
+        }
+
+        // Check if the bot has the SendMessages permissions within the provided channel
+        if (!interaction.guild!.members.me!.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
+            embed.setDescription('I lack the `SendMessages` permission within the provided channel.');
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            return;
+        }
+
+        // Update or insert the Welcome document in the database
+        await Welcome.findOneAndUpdate(
+            { GuildId: interaction.guild!.id },
+            { $set: { ChannelId: channel.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
+            { upsert: true, new: true },
+        );
+        embed.setDescription(`Welcome channel set to ${channel}`);
+
+        await interaction.reply({ ephemeral: true, embeds: [embed] });
+    }
+
+    @Slash({ description: 'Disable Welcome Module', name: 'disable' })
+    @SlashGroup('welcome', 'config')
+    /**
+     * Disables the Welcome module.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
+    async disableWelcome(
+        interaction: CommandInteraction,
+        client: Client,
+    ): Promise<void> {
+        // Check the current status of Ticket for the guild
+        const currentStatus = await Welcome.findOne({ GuildId: interaction.guild!.id });
+
+        // Construct the embed to display the result of the operation
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - Welcome Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        // If Welcome is not enabled, inform the user and return
+        if (!currentStatus) {
+            embed.setDescription('Welcome module is not enabled.');
+            await interaction.reply({ embeds: [embed], ephemeral: true });
+            return;
+        }
+
+        embed.setDescription('Welcome module **disabled**.');
+
+        // Delete the Welcome document from the database
+        await Welcome.deleteOne({ GuildId: interaction.guild!.id });
 
         await interaction.reply({ embeds: [embed], ephemeral: true });
     }
