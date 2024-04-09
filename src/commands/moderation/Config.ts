@@ -22,6 +22,7 @@ import { BotHasPerm } from '../../guards/BotHasPerm.js';
 import { UserHasPerm } from '../../guards/UserHasPerm.js';
 import BirthdayConfig from '../../mongo/BirthdayConfig.js';
 import Dad from '../../mongo/Dad.js';
+import Logging from '../../mongo/Logging.js';
 
 @Discord()
 @Category('Moderation')
@@ -34,6 +35,11 @@ import Dad from '../../mongo/Dad.js';
 @SlashGroup({
     description: 'Birthday',
     name: 'birthday',
+    root: 'config',
+})
+@SlashGroup({
+    description: 'Logging',
+    name: 'logging',
     root: 'config',
 })
 @SlashGroup('config')
@@ -610,6 +616,96 @@ export class Config {
 
         // Delete the Dad document from the database
         await Dad.deleteOne({ GuildId: interaction.guild!.id });
+
+        await interaction.reply({ embeds: [embed], ephemeral: true });
+    }
+
+    /**
+     * Configures the Logging module.
+     * @param channel - The channel to set as Logging alerts.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
+    @Slash({ description: 'Logging Module Configuration', name: 'channel' })
+    @SlashGroup('logging', 'config')
+    async configLoggingChannel(
+        @SlashOption({
+            description: 'Set Logging Channel',
+            name: 'channel',
+            type: ApplicationCommandOptionType.Channel,
+            required: true,
+        })
+            channel: TextChannel,
+            interaction: CommandInteraction,
+            client: Client,
+    ): Promise<void> {
+        // Construct the embed to display the result of the configuration
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - Logging Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        if (channel.type !== ChannelType.GuildText) {
+            embed.setDescription('Please provide a valid `GuildTextBasedChannel`.');
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            return;
+        }
+
+        // Check if the bot has the SendMessages permissions within the provided channel
+        if (!interaction.guild!.members.me!.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
+            embed.setDescription('I lack the `SendMessages` permission within the provided channel.');
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            return;
+        }
+
+        // Update or insert the Logging document in the database
+        await Logging.findOneAndUpdate(
+            { GuildId: interaction.guild!.id },
+            { $set: { ChannelId: channel.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
+            { upsert: true, new: true },
+        );
+        embed.setDescription(`Logging channel set to ${channel}`);
+
+        await interaction.reply({ ephemeral: true, embeds: [embed] });
+    }
+
+    @Slash({ description: 'Disable Logging Module', name: 'disable' })
+    @SlashGroup('logging', 'config')
+    /**
+     * Disables the Logging module.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
+    async disableLogging(
+        interaction: CommandInteraction,
+        client: Client,
+    ): Promise<void> {
+        // Check the current status of Birthday for the guild
+        const currentStatus = await Logging.findOne({ GuildId: interaction.guild!.id });
+
+        // Construct the embed to display the result of the operation
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - Logging Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        // If Logging is not enabled, inform the user and return
+        if (!currentStatus) {
+            embed.setDescription('Logging module is not enabled.');
+            await interaction.reply({ embeds: [embed], ephemeral: true });
+            return;
+        }
+
+        embed.setDescription('Logging module **disabled**.');
+
+        // Delete the Logging document from the database
+        await Logging.deleteOne({ GuildId: interaction.guild!.id });
 
         await interaction.reply({ embeds: [embed], ephemeral: true });
     }
