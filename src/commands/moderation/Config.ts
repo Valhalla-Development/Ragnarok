@@ -21,6 +21,7 @@ import AutoRole from '../../mongo/AutoRole.js';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
 import { UserHasPerm } from '../../guards/UserHasPerm.js';
 import BirthdayConfig from '../../mongo/BirthdayConfig.js';
+import Dad from '../../mongo/Dad.js';
 
 @Discord()
 @Category('Moderation')
@@ -543,6 +544,72 @@ export class Config {
 
         // Delete the Birthday document from the database
         await BirthdayConfig.deleteOne({ GuildId: interaction.guild!.id });
+
+        await interaction.reply({ embeds: [embed], ephemeral: true });
+    }
+
+    /**
+     * Configures the Dad module.
+     * @param state - The boolean value of the state of the Dad module.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
+    @Slash({ description: 'Dad Module Configuratin', name: 'dad' })
+    async configDadModule(
+        @SlashOption({
+            description: 'Toggle Dad module',
+            name: 'state',
+            type: ApplicationCommandOptionType.Boolean,
+            required: true,
+        })
+            state: boolean,
+            interaction: CommandInteraction,
+            client: Client,
+    ): Promise<void> {
+        // Check the current status of Dad for the guild
+        const currentStatus = await Dad.findOne({ GuildId: interaction.guild!.id });
+
+        // Construct the embed to display the result of the operation
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - Dad Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        // If the user is attempting to enable the Dad module
+        if (state) {
+            // If Dad is already enabled
+            if (currentStatus) {
+                embed.setDescription('Dad module is already enabled.');
+                await interaction.reply({ embeds: [embed], ephemeral: true });
+                return;
+            }
+
+            embed.setDescription('Dad module **enabled**.');
+            await interaction.reply({ embeds: [embed], ephemeral: true });
+            await new Dad({
+                GuildId: interaction.guild!.id,
+                Status: true,
+            }).save();
+            return;
+        }
+
+        if (!currentStatus) {
+            embed.setDescription('Dad module is not enabled.');
+            await interaction.reply({ embeds: [embed], ephemeral: true });
+            return;
+        }
+
+        embed.setDescription('Dad module **disabled**.');
+        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await Dad.deleteOne({ GuildId: interaction.guild!.id });
+
+        embed.setDescription('Dad module **disabled**.');
+
+        // Delete the Dad document from the database
+        await Dad.deleteOne({ GuildId: interaction.guild!.id });
 
         await interaction.reply({ embeds: [embed], ephemeral: true });
     }
