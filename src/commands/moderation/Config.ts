@@ -500,7 +500,7 @@ export class Config {
             .setColor(color(interaction.guild!.members.me!.displayHexColor));
 
         if (channel.type !== ChannelType.GuildText) {
-            embed.setDescription('Please provide a valid `GuildTextBasedChannel`.');
+            embed.setDescription('Please provide a valid `TextChannel`.');
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
         }
@@ -656,7 +656,7 @@ export class Config {
             .setColor(color(interaction.guild!.members.me!.displayHexColor));
 
         if (channel.type !== ChannelType.GuildText) {
-            embed.setDescription('Please provide a valid `GuildTextBasedChannel`.');
+            embed.setDescription('Please provide a valid `TextChannel`.');
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
         }
@@ -791,7 +791,7 @@ export class Config {
             .setColor(color(interaction.guild!.members.me!.displayHexColor));
 
         if (channel.type !== ChannelType.GuildText) {
-            embed.setDescription('Please provide a valid `GuildTextBasedChannel`.');
+            embed.setDescription('Please provide a valid `TextChannel`.');
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
         }
