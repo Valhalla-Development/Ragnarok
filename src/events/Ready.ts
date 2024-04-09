@@ -157,8 +157,7 @@ export class Ready {
                                 const lastRunForGuild = lastRunGuild.find((entry) => entry[guild.id]);
                                 if (lastRunForGuild && now.unix() < lastRunForGuild[guild.id] + 86400) return;
 
-                                const role = config.Role ? await guild.roles.fetch(config.Role) : null;
-                                const message = `It's ${user}'s birthday! ${role ? `${role} Say Happy Birthday! 🍰` : 'Say Happy Birthday! 🍰'}`;
+                                const message = `It's ${user}'s birthday! Say Happy Birthday! 🍰`;
 
                                 try {
                                     if (channel.type === ChannelType.GuildText) await channel.send(message);
