@@ -175,7 +175,7 @@ export class Config {
                     })
                     .setColor(color(interaction.guild!.members.me!.displayHexColor))
                     .setDescription(`🎭 Set AutoRole: \`/config autorole role <@role>\`
-                            🎭 Disable AutoRole Module: \`/config autorole off\``);
+                            🎭 Disable AutoRole Module: \`/config autorole disable\``);
 
                 await b.update({ embeds: [embed], components: [row1, row2] });
                 return;
