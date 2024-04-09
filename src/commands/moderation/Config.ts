@@ -6,6 +6,7 @@ import {
     ApplicationCommandOptionType,
     ButtonBuilder,
     ButtonStyle,
+    CategoryChannel,
     ChannelType,
     CommandInteraction,
     EmbedBuilder,
@@ -23,6 +24,7 @@ import { UserHasPerm } from '../../guards/UserHasPerm.js';
 import BirthdayConfig from '../../mongo/BirthdayConfig.js';
 import Dad from '../../mongo/Dad.js';
 import Logging from '../../mongo/Logging.js';
+import TicketConfig from '../../mongo/TicketConfig.js';
 
 @Discord()
 @Category('Moderation')
@@ -40,6 +42,11 @@ import Logging from '../../mongo/Logging.js';
 @SlashGroup({
     description: 'Logging',
     name: 'logging',
+    root: 'config',
+})
+@SlashGroup({
+    description: 'Ticket',
+    name: 'ticket',
     root: 'config',
 })
 @SlashGroup('config')
@@ -706,6 +713,180 @@ export class Config {
 
         // Delete the Logging document from the database
         await Logging.deleteOne({ GuildId: interaction.guild!.id });
+
+        await interaction.reply({ embeds: [embed], ephemeral: true });
+    }
+
+    /**
+     * Configures the Ticket module.
+     * @param category - The category to set as Ticket parents.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
+    @Slash({ description: 'Ticket Module Configuration', name: 'category' })
+    @SlashGroup('ticket', 'config')
+    async configTicketCategory(
+        @SlashOption({
+            description: 'Set Ticket Category',
+            name: 'channel',
+            type: ApplicationCommandOptionType.Channel,
+            required: true,
+        })
+            category: CategoryChannel,
+            interaction: CommandInteraction,
+            client: Client,
+    ): Promise<void> {
+        // Construct the embed to display the result of the configuration
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - Ticket Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        if (category.type !== ChannelType.GuildCategory) {
+            embed.setDescription('Please provide a valid `CategoryChannel`.');
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            return;
+        }
+
+        // Update or insert the Logging document in the database
+        await TicketConfig.findOneAndUpdate(
+            { GuildId: interaction.guild!.id },
+            { $set: { Category: category.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
+            { upsert: true, new: true },
+        );
+        embed.setDescription(`Ticket category set to \`${category.name}\``);
+
+        await interaction.reply({ ephemeral: true, embeds: [embed] });
+    }
+
+    /**
+     * Configures the Ticket module.
+     * @param channel - The channel to set as Logging alerts.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
+    @Slash({ description: 'Ticket Module Configuration', name: 'channel' })
+    @SlashGroup('ticket', 'config')
+    async configTicketChannel(
+        @SlashOption({
+            description: 'Set Ticket Logging Channel',
+            name: 'channel',
+            type: ApplicationCommandOptionType.Channel,
+            required: true,
+        })
+            channel: TextChannel,
+            interaction: CommandInteraction,
+            client: Client,
+    ): Promise<void> {
+        // Construct the embed to display the result of the configuration
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - Ticket Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        if (channel.type !== ChannelType.GuildText) {
+            embed.setDescription('Please provide a valid `GuildTextBasedChannel`.');
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            return;
+        }
+
+        // Check if the bot has the SendMessages permissions within the provided channel
+        if (!interaction.guild!.members.me!.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
+            embed.setDescription('I lack the `SendMessages` permission within the provided channel.');
+            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            return;
+        }
+
+        // Update or insert the Ticket document in the database
+        await TicketConfig.findOneAndUpdate(
+            { GuildId: interaction.guild!.id },
+            { $set: { LogChannel: channel.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
+            { upsert: true, new: true },
+        );
+        embed.setDescription(`Ticket Logging channel set to ${channel}`);
+
+        await interaction.reply({ ephemeral: true, embeds: [embed] });
+    }
+
+    /**
+     * Configures the Ticket module.
+     * @param role - The role to set as Support Team for Tickets.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
+    @Slash({ description: 'Ticket Module Configuration', name: 'role' })
+    @SlashGroup('ticket', 'config')
+    async configTicketRole(
+        @SlashOption({
+            description: 'Set Ticket Support Role',
+            name: 'role',
+            type: ApplicationCommandOptionType.Role,
+            required: true,
+        })
+            role: Role,
+            interaction: CommandInteraction,
+            client: Client,
+    ): Promise<void> {
+        // Construct the embed to display the result of the configuration
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - Ticket Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        // Update or insert the Ticket document in the database
+        await TicketConfig.findOneAndUpdate(
+            { GuildId: interaction.guild!.id },
+            { $set: { Role: role.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
+            { upsert: true, new: true },
+        );
+        embed.setDescription(`Ticket Support Role set to ${role}`);
+
+        await interaction.reply({ ephemeral: true, embeds: [embed] });
+    }
+
+    @Slash({ description: 'Disable Ticket Module', name: 'disable' })
+    @SlashGroup('ticket', 'config')
+    /**
+     * Disables the Ticket module.
+     * @param interaction - The command interaction triggering this method.
+     * @param client - The Discord client instance.
+     * @returns A Promise resolving to void.
+     */
+    async disableTicket(
+        interaction: CommandInteraction,
+        client: Client,
+    ): Promise<void> {
+        // Check the current status of Ticket for the guild
+        const currentStatus = await TicketConfig.findOne({ GuildId: interaction.guild!.id });
+
+        // Construct the embed to display the result of the operation
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${client.user?.username} - Ticket Module`,
+                iconURL: `${interaction.guild!.iconURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+
+        // If Ticket is not enabled, inform the user and return
+        if (!currentStatus) {
+            embed.setDescription('Ticket module is not enabled.');
+            await interaction.reply({ embeds: [embed], ephemeral: true });
+            return;
+        }
+
+        embed.setDescription('Ticket module **disabled**.');
+
+        // Delete the Ticket document from the database
+        await TicketConfig.deleteOne({ GuildId: interaction.guild!.id });
 
         await interaction.reply({ embeds: [embed], ephemeral: true });
     }
