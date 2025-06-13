@@ -42,7 +42,7 @@ export const client = new Client({
         Partials.Reaction,
     ],
     silent: true,
-    botGuilds: process.env.Dev === 'true' ? ['1109969181232877650'] : undefined,
+    botGuilds: process.env.GUILDS ? process.env.GUILDS.split(',') : undefined,
 }) as RagnarokClient;
 
 /**
