@@ -13,6 +13,8 @@ import {
     type ModalSubmitInteraction,
     PermissionsBitField,
     type StringSelectMenuInteraction,
+    type TextChannel,
+    codeBlock,
 } from 'discord.js';
 import type { Client } from 'discordx';
 import '@colors/colors';
@@ -281,7 +283,7 @@ export async function pagination(
     // Ensure embeds[0] exists before using it
     if (!embeds[0]) {
         return;
-    };
+    }
     await interaction.message.edit({ embeds: [embeds[0].toJSON()], components: [row] });
 
     const collector = interaction.message.createMessageComponentCollector({
@@ -293,7 +295,7 @@ export async function pagination(
     collector.on('collect', async (b) => {
         if (!b.message) {
             return;
-        };
+        }
         collector.resetTimer();
 
         if (b.customId === 'back' && currentPage !== 0) {
@@ -325,7 +327,7 @@ export async function pagination(
         const currentEmbed = embeds[currentPage];
         if (!currentEmbed) {
             return;
-        };
+        }
         await b.update({ embeds: [currentEmbed.toJSON()], components: [row] });
     });
 
@@ -333,7 +335,7 @@ export async function pagination(
         const message = interaction.message;
         if (!message) {
             return;
-        };
+        }
         home.setDisabled(true);
         back.setDisabled(true);
         next.setDisabled(true);
@@ -341,7 +343,7 @@ export async function pagination(
         const currentEmbed = embeds[currentPage];
         if (!currentEmbed) {
             return;
-        };
+        }
         message.edit({ embeds: [currentEmbed.toJSON()], components: [row] });
     });
 
@@ -436,3 +438,71 @@ export const reversedRainbow = (str: string): string => {
         .map((char, i) => char[colors[i % colors.length] as keyof typeof char])
         .join('');
 };
+
+/**
+ * Handles given error by logging it and optionally sending it to a Discord channel.
+ * @param client - The Discord client instance
+ * @param error - The unknown error
+ */
+export async function handleError(client: Client, error: unknown): Promise<void> {
+    // Properly log the raw error for debugging
+    console.error('Raw error:', error);
+
+    // Create an error object if we received something else
+    const normalizedError = error instanceof Error ? error : new Error(String(error));
+
+    // Ensure we have a stack trace
+    const errorStack = normalizedError.stack || normalizedError.message || String(error);
+
+    if (
+        process.env.ENABLE_LOGGING?.toLowerCase() !== 'true' ||
+        !process.env.ERROR_LOGGING_CHANNEL
+    ) {
+        return;
+    }
+
+    /**
+     * Truncates the description if it exceeds the maximum length.
+     * @param description - The description to truncate
+     * @returns The truncated description
+     */
+    function truncateDescription(description: string): string {
+        const maxLength = 4096;
+        if (description.length <= maxLength) {
+            return description;
+        }
+        const numTruncatedChars = description.length - maxLength;
+        return `${description.slice(0, maxLength)}... ${numTruncatedChars} more`;
+    }
+
+    try {
+        const channel = client.channels.cache.get(process.env.ERROR_LOGGING_CHANNEL) as
+            | TextChannel
+            | undefined;
+
+        if (!channel || channel.type !== ChannelType.GuildText) {
+            console.error(`Invalid logging channel: ${process.env.ERROR_LOGGING_CHANNEL}`);
+            return;
+        }
+
+        const typeOfError = normalizedError.name || 'Unknown Error';
+        const timeOfError = `<t:${Math.floor(Date.now() / 1000)}>`;
+
+        const fullString = [
+            `From: \`${typeOfError}\``,
+            `Time: ${timeOfError}`,
+            '',
+            'Error:',
+            codeBlock('js', errorStack),
+        ].join('\n');
+
+        const embed = new EmbedBuilder()
+            .setTitle('Error')
+            .setDescription(truncateDescription(fullString))
+            .setColor('#FF0000');
+
+        await channel.send({ embeds: [embed] });
+    } catch (sendError) {
+        console.error('Failed to send the error embed:', sendError);
+    }
+}
