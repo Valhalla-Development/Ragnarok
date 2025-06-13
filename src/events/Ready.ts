@@ -3,12 +3,12 @@ import { Discord, Once } from 'discordx';
 import si from 'systeminformation';
 import '@colors/colors';
 import { CronJob } from 'cron';
-import { ActivityType, ChannelType, version } from 'discord.js';
+import { ChannelType, version } from 'discord.js';
 import moment from 'moment';
+import { updateStatus } from 'utils/Util.js';
 import BirthdayConfig from '../mongo/BirthdayConfig.js';
 import Birthdays from '../mongo/Birthdays.js';
 import StarBoard from '../mongo/StarBoard.js';
-import { updateStatus } from 'utils/Util.js';
 
 /**
  * Discord.js Ready event handler.

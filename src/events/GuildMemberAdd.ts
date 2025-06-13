@@ -1,13 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { createCanvas, loadImage, registerFont } from 'canvas';
-import {
-    ActivityType,
-    AttachmentBuilder,
-    ChannelType,
-    EmbedBuilder,
-    PermissionsBitField,
-} from 'discord.js';
+import { AttachmentBuilder, ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import ordinal from 'ordinal';
 import AutoRole from '../mongo/AutoRole.js';

@@ -1,4 +1,4 @@
-import { ActivityType, ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
 import Tickets from '../mongo/Tickets.js';
