@@ -5,15 +5,15 @@
   "license": "GPL-3.0-or-later",
   "author": "Ragnar Lothbrok <ragnarlothbrokjr@proton.me>",
   "homepage": "https://github.com/Valhalla-Development/Ragnarok-Discord#readme",
-  "repository": "https://github.com/RagnarLothbrok-Odin/Ragnarok-Discord.git",
+  "repository": "https://github.com/Valhalla-Development/Ragnarok-Discord.git",
   "bugs": {
     "url": "https://github.com/Valhalla-Development/Ragnarok-Discord/issues"
   },
   "scripts": {
     "lint": "tsc --noEmit -p tsconfig.json && biome check --files-ignore-unknown=true --diagnostic-level=error --no-errors-on-unmatched src",
     "lint:fix": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true src",
-    "dev": "bun --watch src/Main.ts",
-    "start": "bun src/Main.ts",
+    "dev": "bun --watch src/Cluster.ts",
+    "start": "bun src/Cluster.ts",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
