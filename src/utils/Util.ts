@@ -25,12 +25,10 @@ const xpCooldownSeconds = 60;
 
 /**
  * Capitalises the first letter of each word in a string.
- * @param string - The string to be capitalised.
+ * @param str - The string to be capitalised.
  * @returns The capitalised string.
  */
-export function capitalise(string: string): string {
-    return string.replace(/\S+/g, (word) => word.slice(0, 1).toUpperCase() + word.slice(1));
-}
+export const capitalise = (str: string): string => str.replace(/\b\w/g, (c) => c.toUpperCase());
 
 /**
  * Returns a modified color value based on the input.
