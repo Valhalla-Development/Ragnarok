@@ -27,6 +27,7 @@
     "countries-list": "^3.1.1",
     "cron": "^4.3.1",
     "cryptocurrencies": "^8.0.1",
+    "discord-hybrid-sharding": "^2.2.6",
     "discord.js": "^14.19.3",
     "discordx": "^11.12.4",
     "dotenv": "^16.5.0",

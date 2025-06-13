@@ -2,12 +2,23 @@ import { dirname, importx } from '@discordx/importer';
 import { ChannelType, EmbedBuilder, IntentsBitField, Partials, codeBlock } from 'discord.js';
 import { Client } from 'discordx';
 import 'dotenv/config';
+import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
 import { loadMongoEvents } from './utils/Util.js';
+
+/**
+ * Extends the Discord.js Client to include cluster functionality
+ * This allows each shard to communicate with the cluster manager
+ */
+interface RagnarokClient extends Client {
+    cluster: ClusterClient<Client>;
+}
 
 /**
  * The Discord.js client instance.
  */
-const client = new Client({
+export const client = new Client({
+    shards: getInfo().SHARD_LIST,
+    shardCount: getInfo().TOTAL_SHARDS,
     intents: [
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMessages,
@@ -32,7 +43,7 @@ const client = new Client({
     ],
     silent: true,
     botGuilds: process.env.Dev === 'true' ? ['1109969181232877650'] : undefined,
-});
+}) as RagnarokClient;
 
 /**
  * Handles unhandled rejections by logging the error and sending an embed to a designated logging channel, if enabled.
@@ -125,6 +136,8 @@ async function run() {
             await sleep(time);
             await importx(`${dirname(import.meta.url)}/{events,commands,context}/**/*.{ts,js}`);
             await sleep(time);
+            client.cluster = new ClusterClient(client);
+            await sleep(time)
             await client.login(process.env.Token as string);
         } catch (error) {
             console.error('Initialization error:', error);
