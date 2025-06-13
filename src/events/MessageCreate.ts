@@ -92,7 +92,7 @@ export class MessageCreate {
                 return;
             }
 
-            const reasons = [];
+            const reasons: string[] = [];
 
             const linksRegex = new RegExp(`\\b${linksContent.join('\\b|\\b')}\\b`, 'ig');
             const match = linksRegex.exec(message.content.toLowerCase());
