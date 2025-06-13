@@ -91,17 +91,23 @@ export class Ready {
                     return;
                 }
 
-                const guild = await client.guilds.fetch(starboard.GuildId);
-                if (!guild) {
-                    return;
-                }
+                try {
+                    const guild = await client.guilds.fetch(starboard.GuildId);
+                    if (!guild) {
+                        await StarBoard.deleteOne({ GuildId: starboard.GuildId });
+                        return;
+                    }
 
-                const channel = await guild.channels.fetch(starboard.ChannelId);
-                if (!channel || channel.type !== ChannelType.GuildText) {
-                    return;
-                }
+                    const channel = await guild.channels.fetch(starboard.ChannelId).catch(() => null);
+                    if (!channel || channel.type !== ChannelType.GuildText) {
+                        await StarBoard.deleteOne({ GuildId: starboard.GuildId });
+                        return;
+                    }
 
-                await channel.messages.fetch({ limit: 10 });
+                    await channel.messages.fetch({ limit: 10 });
+                } catch (error) {
+                    console.error('Error in Starboard Cron Job:', error);
+                }
             })
         );
 
