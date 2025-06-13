@@ -196,8 +196,8 @@ export class MessageCreate {
                 const validExtensions = ['gif', 'png', 'jpeg', 'jpg'];
 
                 const messagePromises = [
-                    findChannel.messages.fetch({ message: messageID }),
-                    findChannel.messages.fetch({ message: messageID, cache: false }),
+                    findChannel.messages.fetch({ message: messageID as string }),
+                    findChannel.messages.fetch({ message: messageID as string, cache: false }),
                 ];
                 const settledPromises = await Promise.allSettled(messagePromises);
                 const resolvedPromise = settledPromises.find(
@@ -218,7 +218,7 @@ export class MessageCreate {
                                     user?.displayAvatarURL({ extension: 'png' }) ||
                                     message.author.displayAvatarURL({ extension: 'png' }),
                             })
-                            .setColor(color(`${message.guild.members.me?.displayHexColor}`))
+                            .setColor(color(`${message.guild?.members.me?.displayHexColor}`))
                             .setFooter({ text: `Quoted by ${message.author.displayName}` })
                             .setTimestamp();
 
