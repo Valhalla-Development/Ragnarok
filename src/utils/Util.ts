@@ -79,20 +79,13 @@ export async function messageDelete(message: Message, time: number): Promise<voi
 }
 
 /**
- * Checks if a message is deletable, and deletes it after a specified amount of time.
- * @param message - The message to check.
- * @param time - The amount of time to wait before deleting the message, in milliseconds.
- * @returns void
+ * Deletes a message after a specified delay if it's deletable.
+ * @param message - The message to delete.
+ * @param time - The delay before deletion, in milliseconds.
  */
 export function deletableCheck(message: Message, time: number): void {
-    setTimeout(async () => {
-        try {
-            if (message?.deletable) {
-                await message.delete();
-            }
-        } catch (_error) {
-            // Do nothing with the error
-        }
+    setTimeout(() => {
+        message.delete().catch((error) => console.error('Error deleting message:', error));
     }, time);
 }
 
