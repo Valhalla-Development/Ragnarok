@@ -14,7 +14,7 @@ import AutoRole from '../mongo/AutoRole.js';
 import Logging from '../mongo/Logging.js';
 import Tickets from '../mongo/Tickets.js';
 import Welcome from '../mongo/Welcome.js';
-import { color } from '../utils/Util.js';
+import { color, updateStatus } from '../utils/Util.js';
 
 registerFont('./assets/canvas/fonts/Handlee-Regular.ttf', {
     family: 'Handlee',
@@ -38,13 +38,7 @@ export class GuildMemberAdd {
     @On({ event: 'guildMemberAdd' })
     async onGuildMemberAdd([member]: ArgsOf<'guildMemberAdd'>, client: Client) {
         // Set activity
-        client.user?.setActivity({
-            type: ActivityType.Watching,
-            name: `${client.guilds.cache.size.toLocaleString('en')} Guilds
-            ${client.guilds.cache
-                .reduce((a, b) => a + b.memberCount, 0)
-                .toLocaleString('en')} Users`,
-        });
+        updateStatus(client);
 
         async function checkTicket() {
             // Check if the user has a ticket
