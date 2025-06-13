@@ -1,9 +1,9 @@
 import { dirname, importx } from '@discordx/importer';
-import { ChannelType, EmbedBuilder, IntentsBitField, Partials, codeBlock } from 'discord.js';
+import { IntentsBitField, Partials } from 'discord.js';
 import { Client } from 'discordx';
 import 'dotenv/config';
 import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
-import { loadMongoEvents } from './utils/Util.js';
+import { handleError, loadMongoEvents } from './utils/Util.js';
 
 /**
  * Extends the Discord.js Client to include cluster functionality
@@ -14,7 +14,14 @@ interface RagnarokClient extends Client {
 }
 
 /**
- * The Discord.js client instance.
+ * The Discord.js client instance with sharding support.
+ *
+ * Sharding Configuration:
+ * - shards: Uses getInfo().SHARD_LIST to get the list of shards this instance should handle
+ * - shardCount: Uses getInfo().TOTAL_SHARDS to know the total number of shards
+ *
+ * Each instance of the bot (cluster) will handle a subset of the total shards,
+ * as configured in Cluster.ts with shardsPerClusters
  */
 export const client = new Client({
     shards: getInfo().SHARD_LIST,
@@ -51,45 +58,26 @@ export const client = new Client({
  * @returns void
  */
 process.on('unhandledRejection', async (error) => {
-    if (!error || !(error instanceof Error) || !error.stack) {
-        return;
-    }
-    console.error(error);
+    await handleError(client, error);
+});
 
-    if (process.env.Logging && process.env.Logging.toLowerCase() === 'true') {
-        if (!process.env.LoggingChannel) {
-            return;
-        }
+/**
+ * Handles uncaught exception by logging the error and sending an embed to a designated logging channel, if enabled.
+ * @param error - The error that was not handled.
+ * @returns void
+ */
+process.on('uncaughtException', async (error) => {
+    await handleError(client, error);
+});
 
-        try {
-            const channel = client.channels.cache.get(process.env.LoggingChannel);
-            if (!channel || channel.type !== ChannelType.GuildText) {
-                return;
-            }
-
-            const typeOfError = error.stack.split(':')[0];
-            const fullError = error.stack.replace(/^[^:]+:/, '').trimStart();
-            const timeOfError = `<t:${Math.floor(Date.now() / 1000)}>`;
-            const fullString = `From: \`${typeOfError}\`\nTime: ${timeOfError}\n\nError:\n${codeBlock('js', fullError)}`;
-
-            function truncateDescription(description: string) {
-                const maxLength = 2048;
-                if (description.length > maxLength) {
-                    const numTruncatedChars = description.length - maxLength;
-                    return `${description.slice(0, maxLength)}... ${numTruncatedChars} more`;
-                }
-                return description;
-            }
-
-            const embed = new EmbedBuilder()
-                .setTitle('Error')
-                .setDescription(truncateDescription(fullString));
-
-            await channel.send({ embeds: [embed] });
-        } catch (sendError) {
-            console.error('Failed to send the error embed:', sendError);
-        }
-    }
+/**
+ * Event handler for client errors
+ * @param error - The error that occurred
+ * @returns Promise that resolves when error is handled
+ */
+client.on('error', async (error: unknown) => {
+    console.error('Client error:', error);
+    await handleError(client, error);
 });
 
 /**
@@ -99,20 +87,24 @@ process.on('unhandledRejection', async (error) => {
  * @throws An Error if any required environment variables are missing or invalid.
  */
 async function run() {
-    const missingTokenError = 'Error: The Token environment variable is missing.';
-    const invalidLoggingValueError =
-        'Error: The Logging environment variable must be set to either "true" or "false".';
-    const invalidLoggingChannel =
-        'Error: Please specify the LoggingChannel environment variable when logging is enabled.';
+    const missingVar = (v: string) => `The ${v} environment variable is missing.`;
 
-    if (!process.env.Token) {
-        throw new Error(missingTokenError);
+    const required = ['BOT_TOKEN'];
+
+    for (const v of required) {
+        if (!process.env[v]) {
+            throw new Error(missingVar(v));
+        }
     }
-    if (process.env.Logging === 'true' && !process.env.LoggingChannel) {
-        throw new Error(invalidLoggingChannel);
-    }
-    if (process.env.Logging !== 'true' && process.env.Logging !== 'false') {
-        throw new Error(invalidLoggingValueError);
+
+    if (
+        process.env.ENABLE_LOGGING?.toLowerCase() === 'true' &&
+        !process.env.ERROR_LOGGING_CHANNEL &&
+        !process.env.COMMAND_LOGGING_CHANNEL
+    ) {
+        throw new Error(
+            'ERROR_LOGGING_CHANNEL and COMMAND_LOGGING_CHANNEL are required when logging is enabled.'
+        );
     }
 
     /**
@@ -137,10 +129,10 @@ async function run() {
             await importx(`${dirname(import.meta.url)}/{events,commands,context}/**/*.{ts,js}`);
             await sleep(time);
             client.cluster = new ClusterClient(client);
-            await sleep(time)
-            await client.login(process.env.Token as string);
+            await sleep(time);
+            await client.login(process.env.BOT_TOKEN as string);
         } catch (error) {
-            console.error('Initialization error:', error);
+            console.error('An error occurred while initializing the bot:', error);
         }
     };
     await loadSequentially();
