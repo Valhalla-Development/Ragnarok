@@ -1,5 +1,6 @@
 import {
     ActionRowBuilder,
+    ActivityType,
     ButtonBuilder,
     type ButtonInteraction,
     ButtonStyle,
@@ -409,6 +410,18 @@ export async function updateLevel(interaction: Message | CommandInteraction) {
     } catch (error) {
         console.error(error);
     }
+}
+
+/**
+ * Updates the status of the Discord client with information about guilds and users.
+ * @param client - The Discord client instance.
+ */
+export function updateStatus(client: Client) {
+    client.user?.setActivity({
+        type: ActivityType.Watching,
+        name: `${client.guilds.cache.size.toLocaleString('en')} Guilds
+            ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
+    });
 }
 
 /**
