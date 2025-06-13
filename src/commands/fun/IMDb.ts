@@ -75,7 +75,11 @@ export class TraktCommand {
                 { name: 'Genres', value: details.genres || 'N/A', inline: true },
                 { name: 'Stars', value: details.cast || 'N/A', inline: true },
                 { name: 'Director', value: details.director || 'N/A', inline: true },
-                { name: 'Production Company', value: details.productionCompany || 'N/A', inline: true },
+                {
+                    name: 'Production Company',
+                    value: details.productionCompany || 'N/A',
+                    inline: true,
+                },
                 { name: 'Runtime', value: `\`${runTime}\``, inline: true }
             )
             .setDescription(`${codeBlock('text', `${details.plot}`)}`)

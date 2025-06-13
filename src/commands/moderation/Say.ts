@@ -47,7 +47,7 @@ export class Say {
         if (!interaction.channel || interaction.channel.type !== ChannelType.GuildText) {
             return;
         }
-        
+
         const member = interaction.member as GuildMember;
 
         if (

@@ -196,7 +196,9 @@ export class MessageCreate {
                 if (!findGuild) {
                     return;
                 }
-                const findChannel = findGuild.channels.cache.get(channelID as string) as TextBasedChannel;
+                const findChannel = findGuild.channels.cache.get(
+                    channelID as string
+                ) as TextBasedChannel;
                 if (!findChannel) {
                     return;
                 }

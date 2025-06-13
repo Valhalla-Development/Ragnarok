@@ -12,7 +12,7 @@ import {
     TextInputBuilder,
     TextInputStyle,
 } from 'discord.js';
-import 'colors';
+import '@colors/colors';
 import type { Client } from 'discordx';
 // @ts-expect-error no type file available for this package
 import converter from 'number-to-words-en';

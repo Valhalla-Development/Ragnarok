@@ -16,7 +16,7 @@ import {
 import type { Client } from 'discordx';
 import '@colors/colors';
 import mongoose from 'mongoose';
-import { TitleMainType, getTitleDetailsByName, getTitleDetailsByUrl } from 'movier';
+import { TitleMainType, getTitleDetailsByName, getTitleDetailsByUrl, type ITitle } from 'movier';
 import Level from '../mongo/Level.js';
 import LevelConfig from '../mongo/LevelConfig.js';
 
@@ -162,7 +162,7 @@ export async function loadMongoEvents(): Promise<void> {
  */
 export async function getContentDetails(url: string, type: 'name' | 'url') {
     try {
-        let data;
+        let data: ITitle | undefined;
 
         // Attempt to fetch the content data
         if (type === 'url') {

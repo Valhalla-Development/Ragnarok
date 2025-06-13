@@ -22,7 +22,7 @@ const subreddits = [
 ];
 
 async function getMeme() {
-    return RedditImageFetcher.fetch({
+    return await RedditImageFetcher.fetch({
         type: 'custom',
         total: 1,
         subreddit: subreddits,
@@ -30,7 +30,7 @@ async function getMeme() {
 }
 
 async function getNewMeme() {
-    return RedditImageFetcher.fetch({
+    return await RedditImageFetcher.fetch({
         type: 'custom',
         total: 25,
         subreddit: subreddits,
