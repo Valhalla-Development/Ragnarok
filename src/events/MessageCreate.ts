@@ -152,29 +152,18 @@ export class MessageCreate {
                 // Check if the user has MANAGE_MESSAGES permission and the channel is not a ticket
                 if (
                     !message.member.permissions.has(PermissionsBitField.Flags.ManageMessages) &&
-                    !channel.name.startsWith('ticket-')
+                    !channel.name.startsWith('ticket-') &&
+                    urlRegexSafe({ strict: false }).test(message.content.toLowerCase()) &&
+                    message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)
                 ) {
-                    // Use a regular expression to check for links in the message content
-                    const matches = urlRegexSafe({ strict: false }).test(
-                        message.content.toLowerCase()
-                    );
-                    if (matches) {
-                        // Delete the message and notify the user
-                        if (
-                            message.member.guild.members.me.permissions.has(
-                                PermissionsBitField.Flags.ManageMessages
-                            )
-                        ) {
-                            await messageDelete(message, 0);
-                            message.channel
-                                .send(
-                                    `**◎ Link detected:** Your message has been deleted, ${message.author}.`
-                                )
-                                .then((msg) => {
-                                    deletableCheck(msg, 5000);
-                                });
-                        }
-                    }
+                    await messageDelete(message, 0);
+                    message.channel
+                        .send(
+                            `**◎ Link detected:** Your message has been deleted, ${message.author}.`
+                        )
+                        .then((msg) => {
+                            deletableCheck(msg, 5000);
+                        });
                 }
             }
         }
