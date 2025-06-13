@@ -2,7 +2,7 @@ import { ChannelType, EmbedBuilder, codeBlock } from 'discord.js';
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import moment from 'moment';
-import { reversedRainbow, updateLevel } from '../utils/Util.js';
+import { handleError, reversedRainbow, updateLevel } from '../utils/Util.js';
 
 @Discord()
 export class InteractionCreate {
@@ -39,7 +39,8 @@ export class InteractionCreate {
         try {
             await client.executeInteraction(interaction);
         } catch (err) {
-            console.error('Interaction execution error:', err);
+            await handleError(client, err);
+            console.error(`Error executing interaction: ${err}`);
         }
 
         if (
