@@ -98,7 +98,9 @@ export class Ready {
                         return;
                     }
 
-                    const channel = await guild.channels.fetch(starboard.ChannelId).catch(() => null);
+                    const channel = await guild.channels
+                        .fetch(starboard.ChannelId)
+                        .catch(() => null);
                     if (!channel || channel.type !== ChannelType.GuildText) {
                         await StarBoard.deleteOne({ GuildId: starboard.GuildId });
                         return;

@@ -16,7 +16,7 @@ import {
 import type { Client } from 'discordx';
 import '@colors/colors';
 import mongoose from 'mongoose';
-import { TitleMainType, getTitleDetailsByName, getTitleDetailsByUrl, type ITitle } from 'movier';
+import { type ITitle, TitleMainType, getTitleDetailsByName, getTitleDetailsByUrl } from 'movier';
 import Level from '../mongo/Level.js';
 import LevelConfig from '../mongo/LevelConfig.js';
 

@@ -229,13 +229,13 @@ export class Economy {
      */
     setButtonState(button: ButtonBuilder) {
         // Loop through each button in the array, except the provided 'button'.
-        [this.homeButton, this.baltopButton].forEach((otherButton) => {
+        for (const otherButton of [this.homeButton, this.baltopButton]) {
             // If the button is not the provided 'button', set its style to primary and enable it.
             if (otherButton !== button) {
                 otherButton.setStyle(ButtonStyle.Primary);
                 otherButton.setDisabled(false);
             }
-        });
+        }
 
         // Disable the provided 'button' and set its style to success.
         button.setDisabled(true);
@@ -586,11 +586,11 @@ export class Economy {
         // Check and reset other claim cooldowns if necessary
         const keys: (keyof Claim)[] = ['Hourly', 'Daily', 'Weekly', 'Monthly'];
 
-        keys.forEach((key) => {
+        for (const key of keys) {
             if (balance[key] && Date.now() > balance[key]) {
                 balance[key] = 0;
             }
-        });
+        }
 
         // Check if there is anything to claim
         if (Date.now() < Math.min(balance.Hourly, balance.Daily, balance.Weekly, balance.Monthly)) {
@@ -609,14 +609,14 @@ export class Economy {
             Monthly: this.ecoPrices.claims.monthly,
         };
 
-        periods.forEach((period) => {
+        for (const period of periods) {
             if (!balance[period as keyof typeof balance]) {
                 const priceRange = prices[period as keyof EcoPrices];
                 fullPrice +=
                     Math.floor(Math.random() * (priceRange.max - priceRange.min + 1)) +
                     priceRange.min;
             }
-        });
+        }
 
         const endTime = Date.now();
 
