@@ -286,7 +286,11 @@ export async function pagination(
 
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(economyHome, back, home, next);
 
-    await interaction.message.edit({ embeds: [embeds[0]], components: [row] });
+    // Ensure embeds[0] exists before using it
+    if (!embeds[0]) {
+        return;
+    };
+    await interaction.message.edit({ embeds: [embeds[0].toJSON()], components: [row] });
 
     const collector = interaction.message.createMessageComponentCollector({
         time: 30000,
@@ -295,6 +299,9 @@ export async function pagination(
     let currentPage = 0;
 
     collector.on('collect', async (b) => {
+        if (!b.message) {
+            return;
+        };
         collector.resetTimer();
 
         if (b.customId === 'back' && currentPage !== 0) {
@@ -322,14 +329,28 @@ export async function pagination(
             next.setDisabled(false);
         }
 
-        await b.update({ embeds: [embeds[currentPage]], components: [row] });
+        // Ensure embeds[currentPage] exists before using it
+        const currentEmbed = embeds[currentPage];
+        if (!currentEmbed) {
+            return;
+        };
+        await b.update({ embeds: [currentEmbed.toJSON()], components: [row] });
     });
 
     collector.on('end', () => {
+        const message = interaction.message;
+        if (!message) {
+            return;
+        };
         home.setDisabled(true);
         back.setDisabled(true);
         next.setDisabled(true);
-        interaction.message.edit({ embeds: [embeds[currentPage]], components: [row] });
+        // Ensure embeds[currentPage] exists before using it
+        const currentEmbed = embeds[currentPage];
+        if (!currentEmbed) {
+            return;
+        };
+        message.edit({ embeds: [currentEmbed.toJSON()], components: [row] });
     });
 
     collector.on('error', console.error);
@@ -414,7 +435,7 @@ export function reversedRainbow(str: string): string {
         blue: (text: string) => text.blue,
         green: (text: string) => text.green,
         yellow: (text: string) => text.yellow,
-    };
+    } as const;
 
     // Type for valid color names based on the colorFunctions object keys
     type ColorName = keyof typeof colorFunctions;
@@ -426,10 +447,9 @@ export function reversedRainbow(str: string): string {
     return str
         .split('')
         .map((char, i) => {
-            // Determine the color for the current character
-            const determineColor = colors[i % colors.length];
-            // Apply the color function to the character
-            return colorFunctions[determineColor](char);
+            const colorIndex = i % colors.length;
+            const colorName = colors[colorIndex] as ColorName;
+            return colorFunctions[colorName](char);
         })
         .join('');
 }
