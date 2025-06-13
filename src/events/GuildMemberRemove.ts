@@ -2,7 +2,7 @@ import { ActivityType, ChannelType, EmbedBuilder, PermissionsBitField } from 'di
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
 import Tickets from '../mongo/Tickets.js';
-import { color } from '../utils/Util.js';
+import { color, updateStatus } from '../utils/Util.js';
 
 /**
  * Discord.js GuildMemberRemove event handler.
@@ -18,11 +18,7 @@ export class GuildMemberRemove {
     @On({ event: 'guildMemberRemove' })
     async onGuildMemberRemove([member]: ArgsOf<'guildMemberRemove'>, client: Client) {
         // Set activity
-        client.user?.setActivity({
-            type: ActivityType.Watching,
-            name: `${client.guilds.cache.size.toLocaleString('en')} Guilds
-            ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
-        });
+        updateStatus(client);
 
         // Check if the user has a ticket
         const userTicket = await Tickets.findOne({
