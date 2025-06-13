@@ -1,19 +1,17 @@
-import {
-    Client, Discord, Guard, Slash, SlashOption,
-} from 'discordx';
+import { Category } from '@discordx/utilities';
 import {
     ApplicationCommandOptionType,
-    CommandInteraction,
+    type CommandInteraction,
     EmbedBuilder,
-    GuildMember,
-    GuildMemberRoleManager,
-    GuildTextBasedChannel,
+    type GuildMember,
+    type GuildMemberRoleManager,
+    type GuildTextBasedChannel,
     PermissionsBitField,
 } from 'discord.js';
-import { Category } from '@discordx/utilities';
+import { type Client, Discord, Guard, Slash, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
-import { color, RagnarokEmbed } from '../../utils/Util.js';
 import Logging from '../../mongo/Logging.js';
+import { RagnarokEmbed, color } from '../../utils/Util.js';
 
 @Discord()
 @Category('Moderation')
@@ -37,15 +35,15 @@ export class Kick {
             required: true,
             type: ApplicationCommandOptionType.User,
         })
-            user: GuildMember,
+        user: GuildMember,
         @SlashOption({
             description: 'Provide a reason for the kick.',
             name: 'reason',
             type: ApplicationCommandOptionType.String,
         })
-            reason: string,
-            interaction: CommandInteraction,
-            client: Client,
+        reason: string,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         // If user id = message id
         if (user.id === interaction.user.id) {
@@ -56,15 +54,21 @@ export class Kick {
         // Check if the user has a role that is higher than the message author
         const memberRoles = interaction.member!.roles as GuildMemberRoleManager;
         if (user.roles.highest.position >= memberRoles.highest.position) {
-            await RagnarokEmbed(client, interaction, 'Error', 'You cannot kick someone with a higher role than yourself!', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'You cannot kick someone with a higher role than yourself!',
+                true
+            );
             return;
         }
 
         // Check if user is kickable
         if (
-            user.permissions.has(PermissionsBitField.Flags.ManageGuild)
-            || user.permissions.has(PermissionsBitField.Flags.Administrator)
-            || !user.kickable
+            user.permissions.has(PermissionsBitField.Flags.ManageGuild) ||
+            user.permissions.has(PermissionsBitField.Flags.Administrator) ||
+            !user.kickable
         ) {
             await RagnarokEmbed(client, interaction, 'Error', `You cannot kick ${user}`, true);
             return;
@@ -72,7 +76,13 @@ export class Kick {
 
         // Check if user is the bot
         if (user.id === client.user?.id) {
-            await RagnarokEmbed(client, interaction, 'Error', 'You cannot kick me. :slight_frown:', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'You cannot kick me. :slight_frown:',
+                true
+            );
             return;
         }
 
@@ -102,7 +112,9 @@ export class Kick {
             .setColor('#FE4611')
             .setAuthor({ name: 'Member Kicked', iconURL: user.user.displayAvatarURL() })
             .setThumbnail(user.user.displayAvatarURL())
-            .setDescription(`${user} - \`@${user.user.tag}${user.user.discriminator !== '0' ? `#${user.user.discriminator}` : ''}\``)
+            .setDescription(
+                `${user} - \`@${user.user.tag}${user.user.discriminator !== '0' ? `#${user.user.discriminator}` : ''}\``
+            )
             .setFooter({ text: `ID: ${user.id}` })
             .setTimestamp();
 
@@ -116,7 +128,9 @@ export class Kick {
         if (id) {
             const loggingChannel = client.channels.cache.get(id.ChannelId) as GuildTextBasedChannel;
 
-            if (loggingChannel) loggingChannel.send({ embeds: [embed] });
+            if (loggingChannel) {
+                loggingChannel.send({ embeds: [embed] });
+            }
         }
     }
 }

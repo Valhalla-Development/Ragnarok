@@ -1,11 +1,12 @@
-import {
-    Client, Discord, Slash, SlashChoice, SlashOption,
-} from 'discordx';
 import { Category } from '@discordx/utilities';
 import {
-    ApplicationCommandOptionType, ChannelType, CommandInteraction, EmbedBuilder,
+    ApplicationCommandOptionType,
+    ChannelType,
+    type CommandInteraction,
+    EmbedBuilder,
 } from 'discord.js';
-import { color, RagnarokEmbed } from '../../utils/Util.js';
+import { type Client, Discord, Slash, SlashChoice, SlashOption } from 'discordx';
+import { RagnarokEmbed, color } from '../../utils/Util.js';
 
 @Discord()
 @Category('Miscellaneous')
@@ -26,9 +27,9 @@ export class Ping {
             name: 'option',
             type: ApplicationCommandOptionType.String,
         })
-            option: string,
-            interaction: CommandInteraction,
-            client: Client,
+        option: string,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         const roles = interaction.guild?.roles.cache
             .sort((a, b) => b.position - a.position)
@@ -56,8 +57,12 @@ export class Ping {
             const guildOwner = await interaction.guild?.fetchOwner();
             const channels = interaction.guild?.channels.cache;
 
-            const textChannels = channels?.filter((channel) => channel.type === ChannelType.GuildText);
-            const voiceChannels = channels?.filter((channel) => channel.type === ChannelType.GuildVoice);
+            const textChannels = channels?.filter(
+                (channel) => channel.type === ChannelType.GuildText
+            );
+            const voiceChannels = channels?.filter(
+                (channel) => channel.type === ChannelType.GuildVoice
+            );
 
             const embed = new EmbedBuilder()
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
@@ -75,7 +80,7 @@ export class Ping {
                         **◎ 🔐 Verification Level:** \`${verificationLevels[interaction.guild?.verificationLevel ?? 0]}\`
                         **◎ 🔏 MFA Level:** \`${mfa[interaction.guild?.mfaLevel ?? 0]}\`
                         **◎ 🧑‍🤝‍🧑 Guild Members:** \`${(interaction.guild?.memberCount || 0) - (interaction.guild?.members.cache.filter((m) => m.user.bot).size || 0)}\`
-                        **◎ 🤖 Guild Bots:** \`${(interaction.guild?.members.cache.filter((m) => m.user.bot).size || 0)}\`
+                        **◎ 🤖 Guild Bots:** \`${interaction.guild?.members.cache.filter((m) => m.user.bot).size || 0}\`
                         \u200b`,
                     },
                     {
@@ -87,7 +92,7 @@ export class Ping {
                         name: '**Guild Perks**',
                         value: `<a:Booster:855593231294267412> | Boost Tier: \`${interaction.guild?.premiumTier ?? 0}\`\n<a:Booster:855593231294267412> | Boosts: \`${interaction.guild?.premiumSubscriptionCount ?? 0}\``,
                         inline: true,
-                    },
+                    }
                 )
                 .setFooter({
                     text: `${client.user?.username}`,
@@ -97,9 +102,15 @@ export class Ping {
             if ((roles && roles.length > 0) || (emojiMap && emojiMap.length > 0)) {
                 const value: string[] = [];
 
-                roles && roles.length && value.push(`**Server Roles [${roles.length}]**: To view all roles, run\n\`/serverinfo roles\``);
+                roles?.length &&
+                    value.push(
+                        `**Server Roles [${roles.length}]**: To view all roles, run\n\`/serverinfo roles\``
+                    );
 
-                emojiMap && emojiMap.length && value.push(`**Server Emojis [${emojiMap.length}]**: To view all emojis, run\n\`/serverinfo emojis\``);
+                emojiMap?.length &&
+                    value.push(
+                        `**Server Emojis [${emojiMap.length}]**: To view all emojis, run\n\`/serverinfo emojis\``
+                    );
 
                 embed.addFields({
                     name: '**Assets**',
@@ -113,7 +124,13 @@ export class Ping {
 
         if (option === 'roles') {
             if (!roles) {
-                await RagnarokEmbed(client, interaction, 'Error', 'Unable to locate any roles.', true);
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    'Unable to locate any roles.',
+                    true
+                );
                 return;
             }
 
@@ -132,8 +149,10 @@ export class Ping {
                 })
                 .setDescription(
                     `**Server Roles [${roles.length}]**\n${
-                        roles.length <= 25 ? roleList : `${roleList}... and ${roles.length - 25} more`
-                    }`,
+                        roles.length <= 25
+                            ? roleList
+                            : `${roleList}... and ${roles.length - 25} more`
+                    }`
                 )
                 .setFooter({
                     text: `${client.user?.username}`,
@@ -145,7 +164,13 @@ export class Ping {
 
         if (option === 'emojis') {
             if (!emojiMap) {
-                await RagnarokEmbed(client, interaction, 'Error', 'Unable to locate any emojis.', true);
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    'Unable to locate any emojis.',
+                    true
+                );
                 return;
             }
 
@@ -166,8 +191,10 @@ export class Ping {
                 })
                 .setDescription(
                     `**Server Emojis [${emojiMap?.length ?? 0}]**\n${
-                        emojiMap && emojiMap.length <= 25 ? emojiList : `${emojiList}... and ${emojiMap.length - 25} more`
-                    }`,
+                        emojiMap && emojiMap.length <= 25
+                            ? emojiList
+                            : `${emojiList}... and ${emojiMap.length - 25} more`
+                    }`
                 )
                 .setFooter({
                     text: `${client.user?.username}`,

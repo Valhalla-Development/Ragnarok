@@ -1,18 +1,16 @@
-import {
-    Client, Discord, Guard, Slash, SlashOption,
-} from 'discordx';
+import { Category } from '@discordx/utilities';
 import {
     ApplicationCommandOptionType,
-    codeBlock,
-    CommandInteraction,
-    GuildMember,
-    GuildMemberRoleManager,
+    type CommandInteraction,
+    type GuildMember,
+    type GuildMemberRoleManager,
     PermissionsBitField,
-    Role,
+    type Role,
+    codeBlock,
 } from 'discord.js';
-import { Category } from '@discordx/utilities';
-import { RagnarokEmbed } from '../../utils/Util.js';
+import { type Client, Discord, Guard, Slash, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
+import { RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Moderation')
@@ -36,21 +34,27 @@ export class AddRole {
             required: true,
             type: ApplicationCommandOptionType.User,
         })
-            user: GuildMember,
+        user: GuildMember,
         @SlashOption({
             description: 'Role to add to the user',
             name: 'role',
             required: true,
             type: ApplicationCommandOptionType.Role,
         })
-            role: Role,
-            interaction: CommandInteraction,
-            client: Client,
+        role: Role,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         const targetMember = user || interaction.member;
 
         if (targetMember.id === interaction.member!.user.id) {
-            await RagnarokEmbed(client, interaction, 'Error', 'You cannot give yourself a role!', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'You cannot give yourself a role!',
+                true
+            );
             return;
         }
 
@@ -58,23 +62,46 @@ export class AddRole {
             const memberRoles = interaction.member!.roles as GuildMemberRoleManager;
 
             if (role.position >= memberRoles.highest.position) {
-                await RagnarokEmbed(client, interaction, 'Error', 'You cannot give a user a role that is equal or greater than your own!', true);
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    'You cannot give a user a role that is equal or greater than your own!',
+                    true
+                );
                 return;
             }
 
             // Check if the user already has the role
             if (targetMember.roles.cache.has(role.id)) {
-                await RagnarokEmbed(client, interaction, 'Error', `${targetMember} already has the role: ${role}`, true);
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    `${targetMember} already has the role: ${role}`,
+                    true
+                );
                 return;
             }
 
             await targetMember.roles.add(role);
 
-            await RagnarokEmbed(client, interaction, 'Success', `I have added the ${role} role to ${targetMember}`);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Success',
+                `I have added the ${role} role to ${targetMember}`
+            );
         } catch (error) {
             console.error('Error adding role:', error);
 
-            await RagnarokEmbed(client, interaction, 'Error', `An error occurred\n${codeBlock('text', `${error}`)}`, true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `An error occurred\n${codeBlock('text', `${error}`)}`,
+                true
+            );
         }
     }
 }

@@ -1,10 +1,14 @@
-import {
-    Client, Discord, Slash, SlashOption,
-} from 'discordx';
-import {
-    ApplicationCommandOptionType, ChannelType, codeBlock, CommandInteraction, GuildMember, PermissionsBitField, TextChannel,
-} from 'discord.js';
 import { Category } from '@discordx/utilities';
+import {
+    ApplicationCommandOptionType,
+    ChannelType,
+    type CommandInteraction,
+    type GuildMember,
+    PermissionsBitField,
+    type TextChannel,
+    codeBlock,
+} from 'discord.js';
+import { type Client, Discord, Slash, SlashOption } from 'discordx';
 import { RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
@@ -30,33 +34,59 @@ export class Say {
             minLength: 2,
             maxLength: 100,
         })
-            input: string,
+        input: string,
         @SlashOption({
             description: 'The channel to send the message in (optional)',
             name: 'channel',
             type: ApplicationCommandOptionType.Channel,
         })
-            channel: TextChannel,
-            interaction: CommandInteraction,
-            client: Client,
+        channel: TextChannel,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
+        if (!interaction.channel || interaction.channel.type !== ChannelType.GuildText) {
+            return;
+        }
+        
         const member = interaction.member as GuildMember;
 
-        if (!member!.permissionsIn(channel || interaction.channel).has(PermissionsBitField.Flags.SendMessages)) {
-            await RagnarokEmbed(client, interaction, 'Error', `You do not have permission to send messages to ${channel}`, true);
+        if (
+            !member!
+                .permissionsIn(channel || interaction.channel)
+                .has(PermissionsBitField.Flags.SendMessages)
+        ) {
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `You do not have permission to send messages to ${channel}`,
+                true
+            );
             return;
         }
 
         try {
             if (channel) {
                 if (channel.type !== ChannelType.GuildText) {
-                    await RagnarokEmbed(client, interaction, 'Error', 'Please input a valid **Text** channel.', true);
+                    await RagnarokEmbed(
+                        client,
+                        interaction,
+                        'Error',
+                        'Please input a valid **Text** channel.',
+                        true
+                    );
                     return;
                 }
 
                 await channel.send(input);
 
-                await RagnarokEmbed(client, interaction, 'Success', `The following message has been posted in ${channel}\n\n${codeBlock('text', input)}`, true);
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Success',
+                    `The following message has been posted in ${channel}\n\n${codeBlock('text', input)}`,
+                    true
+                );
             } else {
                 await interaction.deferReply();
                 await interaction.deleteReply();
@@ -64,7 +94,13 @@ export class Say {
                 interaction.channel!.send(input);
             }
         } catch (error) {
-            await RagnarokEmbed(client, interaction, 'Error', `An error occurred\n${codeBlock('text', `${error}`)}`, true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `An error occurred\n${codeBlock('text', `${error}`)}`,
+                true
+            );
         }
     }
 }

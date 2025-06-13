@@ -1,24 +1,24 @@
 import {
     ActionRowBuilder,
     ButtonBuilder,
-    ButtonInteraction,
+    type ButtonInteraction,
     ButtonStyle,
     ChannelType,
-    ColorResolvable,
-    CommandInteraction,
+    type ColorResolvable,
+    type CommandInteraction,
     EmbedBuilder,
-    GuildMember,
-    Message,
-    ModalSubmitInteraction,
+    type GuildMember,
+    type Message,
+    type ModalSubmitInteraction,
     PermissionsBitField,
-    StringSelectMenuInteraction,
+    type StringSelectMenuInteraction,
 } from 'discord.js';
-import { Client } from 'discordx';
+import type { Client } from 'discordx';
 import '@colors/colors';
 import mongoose from 'mongoose';
-import { getTitleDetailsByName, getTitleDetailsByUrl, TitleMainType } from 'movier';
-import LevelConfig from '../mongo/LevelConfig.js';
+import { TitleMainType, getTitleDetailsByName, getTitleDetailsByUrl } from 'movier';
 import Level from '../mongo/Level.js';
+import LevelConfig from '../mongo/LevelConfig.js';
 
 const xpCooldown = new Set();
 const xpCooldownSeconds = 60;
@@ -89,42 +89,32 @@ export async function messageDelete(message: Message, time: number): Promise<voi
 export function deletableCheck(message: Message, time: number): void {
     setTimeout(async () => {
         try {
-            if (message && message.deletable) {
+            if (message?.deletable) {
                 await message.delete();
             }
-        } catch (error) {
+        } catch (_error) {
             // Do nothing with the error
         }
     }, time);
 }
 
 /**
- * Fetches the registered global application commands and returns an object
- * containing the command names as keys and their corresponding IDs as values.
- * @param client - The Discord Client instance.
- * @returns An object containing command names and their corresponding IDs.
- * If there are no commands or an error occurs, an empty object is returned.
+ * Fetches all registered global application command IDs.
+ * @param client - The Discord client instance.
+ * @returns A Promise that resolves to a record of command names to their corresponding IDs.
+ * @throws Error if unable to fetch commands or if the client's application is not available.
  */
-export async function getCommandIds(client: Client): Promise<{ [name: string]: string }> {
+export async function getCommandIds(client: Client): Promise<Record<string, string>> {
+    if (!client.application) {
+        throw new Error('Client application is not available');
+    }
+
     try {
-        // Fetch the registered global application commands
-        const commands = await client.application?.commands.fetch();
-
-        if (!commands) {
-            return {};
-        }
-
-        // Create an object to store the command IDs
-        const commandIds: { [name: string]: string } = {};
-
-        commands.forEach((command) => {
-            commandIds[command.name] = command.id;
-        });
-
-        return commandIds;
+        const commands = await client.application.commands.fetch();
+        return Object.fromEntries(commands.map((c) => [c.name, c.id]));
     } catch (error) {
-        console.error('Failed to fetch global commands:', error);
-        return {};
+        console.error('Error fetching global commands:', error);
+        throw error;
     }
 }
 
@@ -137,7 +127,10 @@ export async function loadMongoEvents(): Promise<void> {
         await mongoose.connect(`${process.env.MongoUri}`);
         console.log('[Database Status]: Connected.'.green.bold);
     } catch (err) {
-        console.error('[Database Status]: An error occurred with the Mongo connection:'.red.bold, `\n${err}`);
+        console.error(
+            '[Database Status]: An error occurred with the Mongo connection:'.red.bold,
+            `\n${err}`
+        );
         throw err;
     }
 
@@ -152,7 +145,7 @@ export async function loadMongoEvents(): Promise<void> {
     mongoose.connection.on('error', (err) => {
         console.error(
             '[Database Status]: An error occurred with the Mongo connection:'.red.bold,
-            `\n${err}`,
+            `\n${err}`
         );
     });
 
@@ -205,14 +198,17 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
             type: contentType[data.mainType],
             rating: data.mainRate.rate,
             totalVotes: data.mainRate.votesCount,
-            cast: data.casts.slice(0, 3).map((cast) => cast.name).join(', '),
+            cast: data.casts
+                .slice(0, 3)
+                .map((cast) => cast.name)
+                .join(', '),
             genres: capitalise(data.genres.join(', ')),
             image: data.posterImage.url,
             url: data.mainSource.sourceUrl,
             id: data.mainSource.sourceId,
-            productionCompany: data.productionCompanies[0].name,
+            productionCompany: data.productionCompanies[0]?.name,
             runtime: data.runtime,
-            director: data.directors[0].name,
+            director: data.directors[0]?.name,
         };
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -230,12 +226,16 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
  */
 export async function RagnarokEmbed(
     client: Client,
-    interaction: CommandInteraction | ButtonInteraction | StringSelectMenuInteraction | ModalSubmitInteraction,
+    interaction:
+        | CommandInteraction
+        | ButtonInteraction
+        | StringSelectMenuInteraction
+        | ModalSubmitInteraction,
     type: string,
     content: string,
-    ephemeral: boolean = false,
+    ephemeral = false
 ) {
-    let commandName: string = '';
+    let commandName = '';
 
     if (interaction.isStringSelectMenu() || interaction.isButton()) {
         commandName = interaction.message.interaction?.commandName || '';
@@ -245,7 +245,10 @@ export async function RagnarokEmbed(
 
     const embed = new EmbedBuilder()
         .setColor(color(interaction.guild!.members.me!.displayHexColor))
-        .addFields({ name: `**${client.user!.username}${commandName ? ` - ${capitalise(commandName)}` : ''}**`, value: `**◎ ${type}:** ${content}` });
+        .addFields({
+            name: `**${client.user!.username}${commandName ? ` - ${capitalise(commandName)}` : ''}**`,
+            value: `**◎ ${type}:** ${content}`,
+        });
 
     try {
         interaction.deferred
@@ -256,7 +259,14 @@ export async function RagnarokEmbed(
     }
 }
 
-export async function pagination(interaction: ButtonInteraction, embeds: EmbedBuilder[], economyHome: ButtonBuilder, emojiNext = '▶️', emojiHome = '🏠', emojiBack = '◀️') {
+export async function pagination(
+    interaction: ButtonInteraction,
+    embeds: EmbedBuilder[],
+    economyHome: ButtonBuilder,
+    emojiNext = '▶️',
+    emojiHome = '🏠',
+    emojiBack = '◀️'
+) {
     const back = new ButtonBuilder()
         .setCustomId('back')
         .setEmoji(emojiBack || '◀️')
@@ -326,33 +336,59 @@ export async function pagination(interaction: ButtonInteraction, embeds: EmbedBu
 }
 
 export async function updateLevel(interaction: Message | CommandInteraction) {
-    if (!interaction.guild || !interaction.channel || interaction.channel.type !== ChannelType.GuildText) return;
+    if (
+        !interaction.guild ||
+        !interaction.channel ||
+        interaction.channel.type !== ChannelType.GuildText
+    ) {
+        return;
+    }
 
     try {
         const member = interaction.member as GuildMember;
 
-        if (!member) return;
+        if (!member) {
+            return;
+        }
 
-        if (xpCooldown.has(member.id)) return;
+        if (xpCooldown.has(member.id)) {
+            return;
+        }
 
         const levelDb = await LevelConfig.findOne({ GuildId: interaction.guild.id });
 
         const xpAdd = Math.floor(Math.random() * 11 + 15);
         const score = await Level.findOneAndUpdate(
             { IdJoined: `${member.id}-${interaction.guild.id}` },
-            { $inc: { Xp: xpAdd }, $setOnInsert: { UserId: member.id, GuildId: interaction.guild.id, Level: 0 } },
-            { upsert: true, new: true },
+            {
+                $inc: { Xp: xpAdd },
+                $setOnInsert: { UserId: member.id, GuildId: interaction.guild.id, Level: 0 },
+            },
+            { upsert: true, new: true }
         ).exec();
 
-        const nxtLvl = (5 / 6) * (score.Level + 1) * (2 * (score.Level + 1) * (score.Level + 1) + 27 * (score.Level + 1) + 91);
+        const nxtLvl =
+            (5 / 6) *
+            (score.Level + 1) *
+            (2 * (score.Level + 1) * (score.Level + 1) + 27 * (score.Level + 1) + 91);
 
         if (nxtLvl <= score.Xp) {
             score.Level += 1;
 
             await score.save();
 
-            if (!levelDb && interaction.channel.permissionsFor(interaction.guild.members.me!).has(PermissionsBitField.Flags.SendMessages)) {
-                interaction.channel.send({ content: `${interaction.member} has reached level **${score.Level}**!`, allowedMentions: { parse: [] } }).then((m) => deletableCheck(m, 10000));
+            if (
+                !levelDb &&
+                interaction.channel
+                    .permissionsFor(interaction.guild.members.me!)
+                    .has(PermissionsBitField.Flags.SendMessages)
+            ) {
+                interaction.channel
+                    .send({
+                        content: `${interaction.member} has reached level **${score.Level}**!`,
+                        allowedMentions: { parse: [] },
+                    })
+                    .then((m) => deletableCheck(m, 10000));
             }
         }
 
@@ -387,7 +423,8 @@ export function reversedRainbow(str: string): string {
     const colors: ColorName[] = ['red', 'magenta', 'blue', 'green', 'yellow', 'red'];
 
     // Map each character of the string to its corresponding color and join them back into a string
-    return str.split('')
+    return str
+        .split('')
         .map((char, i) => {
             // Determine the color for the current character
             const determineColor = colors[i % colors.length];

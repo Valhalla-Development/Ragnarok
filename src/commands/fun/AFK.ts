@@ -1,8 +1,6 @@
-import {
-    Client, Discord, Slash, SlashOption,
-} from 'discordx';
-import { ApplicationCommandOptionType, CommandInteraction } from 'discord.js';
 import { Category } from '@discordx/utilities';
+import { ApplicationCommandOptionType, type CommandInteraction } from 'discord.js';
+import { type Client, Discord, Slash, SlashOption } from 'discordx';
 import AFKSchema from '../../mongo/AFK.js';
 import { RagnarokEmbed } from '../../utils/Util.js';
 
@@ -22,16 +20,21 @@ export class AFK {
             name: 'reason',
             type: ApplicationCommandOptionType.String,
         })
-            reason: string,
-            interaction: CommandInteraction,
-            client: Client,
+        reason: string,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         await AFKSchema.findOneAndUpdate(
             { IdJoined: `${interaction.user.id}-${interaction.guild!.id}` },
             { GuildId: interaction.guild!.id, UserId: interaction.user.id, Reason: reason },
-            { upsert: true, new: true },
+            { upsert: true, new: true }
         );
 
-        await RagnarokEmbed(client, interaction, 'Success', `${interaction.user} is now AFK. Reason:\n\n${reason ?? 'AFK'}`);
+        await RagnarokEmbed(
+            client,
+            interaction,
+            'Success',
+            `${interaction.user} is now AFK. Reason:\n\n${reason ?? 'AFK'}`
+        );
     }
 }

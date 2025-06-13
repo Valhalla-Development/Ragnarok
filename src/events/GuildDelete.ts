@@ -1,17 +1,15 @@
-import {
-    ArgsOf, Client, Discord, On,
-} from 'discordx';
 import { ActivityType } from 'discord.js';
+import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import AdsProtection from '../mongo/AdsProtection.js';
 import AutoRole from '../mongo/AutoRole.js';
 import BirthdayConfig from '../mongo/BirthdayConfig.js';
 import Dad from '../mongo/Dad.js';
 import Logging from '../mongo/Logging.js';
 import RoleMenu from '../mongo/RoleMenu.js';
-import Welcome from '../mongo/Welcome.js';
+import StarBoard from '../mongo/StarBoard.js';
 import TicketConfig from '../mongo/TicketConfig.js';
 import Tickets from '../mongo/Tickets.js';
-import StarBoard from '../mongo/StarBoard.js';
+import Welcome from '../mongo/Welcome.js';
 
 /**
  * Discord.js GuildDelete event handler.

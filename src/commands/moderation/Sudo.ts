@@ -1,10 +1,13 @@
-import {
-    Client, Discord, Guard, Slash, SlashOption,
-} from 'discordx';
-import {
-    ApplicationCommandOptionType, ChannelType, codeBlock, CommandInteraction, GuildMember, PermissionsBitField,
-} from 'discord.js';
 import { Category } from '@discordx/utilities';
+import {
+    ApplicationCommandOptionType,
+    ChannelType,
+    type CommandInteraction,
+    type GuildMember,
+    PermissionsBitField,
+    codeBlock,
+} from 'discord.js';
+import { type Client, Discord, Guard, Slash, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
 import { RagnarokEmbed } from '../../utils/Util.js';
 
@@ -30,36 +33,51 @@ export class Sudo {
             required: true,
             type: ApplicationCommandOptionType.User,
         })
-            user: GuildMember,
+        user: GuildMember,
         @SlashOption({
             description: 'The message to send as the user',
             name: 'input',
             type: ApplicationCommandOptionType.String,
         })
-            input: string,
-            interaction: CommandInteraction,
-            client: Client,
+        input: string,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         if (interaction.channel!.type !== ChannelType.GuildText) {
-            await RagnarokEmbed(client, interaction, 'Error', 'The channel type must be a text channel.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'The channel type must be a text channel.',
+                true
+            );
             return;
         }
 
-        await interaction.channel!.createWebhook({
-            name: user.displayName,
-            avatar: user.displayAvatarURL({ extension: 'png' }),
-            reason: 'Ragnarok sudo command',
-        }).then(async (webhook) => {
-            await interaction.deferReply();
-            await interaction.deleteReply();
+        await interaction
+            .channel!.createWebhook({
+                name: user.displayName,
+                avatar: user.displayAvatarURL({ extension: 'png' }),
+                reason: 'Ragnarok sudo command',
+            })
+            .then(async (webhook) => {
+                await interaction.deferReply();
+                await interaction.deleteReply();
 
-            webhook.send(input);
+                webhook.send(input);
 
-            setTimeout(() => {
-                webhook.delete();
-            }, 3000);
-        }).catch(async (error) => {
-            await RagnarokEmbed(client, interaction, 'Error', `An error occurred\n${codeBlock('text', `${error}`)}`, true);
-        });
+                setTimeout(() => {
+                    webhook.delete();
+                }, 3000);
+            })
+            .catch(async (error) => {
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    `An error occurred\n${codeBlock('text', `${error}`)}`,
+                    true
+                );
+            });
     }
 }

@@ -1,23 +1,23 @@
 import {
+    type APIEmbed,
     ActionRowBuilder,
-    APIEmbed,
     AttachmentBuilder,
     ButtonBuilder,
     ButtonInteraction,
     ButtonStyle,
-    CommandInteraction,
+    type CommandInteraction,
     EmbedBuilder,
     ModalBuilder,
-    ModalSubmitInteraction,
+    type ModalSubmitInteraction,
     TextInputBuilder,
     TextInputStyle,
 } from 'discord.js';
 import 'colors';
+import type { Client } from 'discordx';
 // @ts-expect-error no type file available for this package
 import converter from 'number-to-words-en';
-import { Client } from 'discordx';
-import Balance, { BalanceInterface } from '../mongo/Balance.js';
-import { color, RagnarokEmbed } from '../utils/Util.js';
+import Balance, { type BalanceInterface } from '../mongo/Balance.js';
+import { RagnarokEmbed, color } from '../utils/Util.js';
 
 interface EcoPrices {
     Hourly: { min: number; max: number };
@@ -115,12 +115,12 @@ export class Economy {
             this.baltopButton,
             this.claimButton,
             this.depositButton,
-            this.coinflipButton,
+            this.coinflipButton
         );
 
         const row2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
             this.farmButton,
-            this.fishButton,
+            this.fishButton
         );
 
         this.rows.push(row1, row2);
@@ -247,20 +247,34 @@ export class Economy {
      * @param interaction - The interaction (Command, Button, or Modal) triggering the update.
      * @param client - The Discord client.
      */
-    async updateHomeEmbed(interaction: CommandInteraction | ButtonInteraction | ModalSubmitInteraction, client: Client) {
+    async updateHomeEmbed(
+        interaction: CommandInteraction | ButtonInteraction | ModalSubmitInteraction,
+        client: Client
+    ) {
         // Fetch user balance based on their ID and guild ID
-        const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
+        const balance = await Balance.findOne({
+            IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
+        });
 
         // If balance is not found, show an error message and return
         if (!balance) {
-            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred, please try again.',
+                true
+            );
             return;
         }
 
         // Fetch user leaderboard rank
-        const userRank: BalanceInterface[] = await Balance.find({ GuildId: interaction.guild!.id })
-            .sort({ Total: -1 });
-        const userPos = userRank.find((b) => b.IdJoined === `${interaction.user.id}-${interaction.guild!.id}`);
+        const userRank: BalanceInterface[] = await Balance.find({
+            GuildId: interaction.guild!.id,
+        }).sort({ Total: -1 });
+        const userPos = userRank.find(
+            (b) => b.IdJoined === `${interaction.user.id}-${interaction.guild!.id}`
+        );
 
         const rankPos = converter.toOrdinal(userRank.indexOf(userPos!) + 1);
 
@@ -277,7 +291,9 @@ export class Economy {
         // Function to calculate total count of items of a specific type
         function calculateTotal(itemType: string, bal: BalanceInterface): number {
             const types = itemTypes.get(itemType);
-            if (!types) return 0; // Handle unknown itemType
+            if (!types) {
+                return 0; // Handle unknown itemType
+            }
 
             return types.reduce((acc, type) => {
                 const itemQuantity = bal?.Items?.[type as keyof typeof bal.Items] || 0;
@@ -293,8 +309,10 @@ export class Economy {
 
         // Count harvested crops
         const currentTotalFarm = balance.HarvestedCrops?.length
-            ? balance.HarvestedCrops.filter((crop: { CropType: string; }) => itemTypes.get('crops')
-                ?.includes(crop.CropType)).length : 0;
+            ? balance.HarvestedCrops.filter((crop: { CropType: string }) =>
+                  itemTypes.get('crops')?.includes(crop.CropType)
+              ).length
+            : 0;
 
         // Construct the home embed
         this.homeEmbed = new EmbedBuilder()
@@ -324,7 +342,7 @@ export class Economy {
                     name: 'Cooldowns',
                     value: `
                 Steal: ${Date.now() > balance.StealCool ? '`Available!`' : `<t:${Math.round(balance.StealCool / 1000)}:R>`}
-                Fish: ${!balance.Items?.FishingRod ? '`Rod Not Owned`' : `${Date.now() > balance.FishCool ? '`Available!`' : `<t:${Math.round(balance.FishCool / 1000)}:R>`}`}
+                Fish: ${balance.Items?.FishingRod ? `${Date.now() > balance.FishCool ? '`Available!`' : `<t:${Math.round(balance.FishCool / 1000)}:R>`}` : '`Rod Not Owned`'}
                 Farm: ${Date.now() > balance.FarmCool ? '`Available!`' : `<t:${Math.round(balance.FarmCool / 1000)}:R>`}
             `,
                     inline: false,
@@ -332,29 +350,46 @@ export class Economy {
                 {
                     name: 'Boosts',
                     value: `
-                Seed: ${balance.Boosts?.SeedBag ? `\`${Number(currentTotalSeeds)
-        .toLocaleString('en')}\`/\`${Number(balance.Boosts.SeedBag)
-        .toLocaleString('en')}\`` : '`Seed Not Owned`'}
-                Fish: ${balance.Boosts?.FishBag ? `\`${Number(currentTotalFish)
-        .toLocaleString('en')}\`/\`${Number(balance.Boosts.FishBag)
-        .toLocaleString('en')}\`` : '`Fish Not Owned`'}
-                Farm: ${balance.Boosts?.FarmBag ? `\`${Number(currentTotalFarm)
-        .toLocaleString('en')}\`/\`${Number(balance.Boosts.FarmBag)
-        .toLocaleString('en')}\`` : '`Farm Not Owned`'}
-                Farm Plot: ${balance.Boosts?.FarmPlot ? `\`${balance.FarmPlot.length.toLocaleString('en')}\`/\`${Number(balance.Boosts.FarmPlot)
-        .toLocaleString('en')}\`` : '`Not Owned`'}
+                Seed: ${
+                    balance.Boosts?.SeedBag
+                        ? `\`${Number(currentTotalSeeds).toLocaleString('en')}\`/\`${Number(
+                              balance.Boosts.SeedBag
+                          ).toLocaleString('en')}\``
+                        : '`Seed Not Owned`'
+                }
+                Fish: ${
+                    balance.Boosts?.FishBag
+                        ? `\`${Number(currentTotalFish).toLocaleString('en')}\`/\`${Number(
+                              balance.Boosts.FishBag
+                          ).toLocaleString('en')}\``
+                        : '`Fish Not Owned`'
+                }
+                Farm: ${
+                    balance.Boosts?.FarmBag
+                        ? `\`${Number(currentTotalFarm).toLocaleString('en')}\`/\`${Number(
+                              balance.Boosts.FarmBag
+                          ).toLocaleString('en')}\``
+                        : '`Farm Not Owned`'
+                }
+                Farm Plot: ${
+                    balance.Boosts?.FarmPlot
+                        ? `\`${balance.FarmPlot.length.toLocaleString('en')}\`/\`${Number(
+                              balance.Boosts.FarmPlot
+                          ).toLocaleString('en')}\``
+                        : '`Not Owned`'
+                }
             `,
                     inline: false,
                 },
                 {
                     name: '**Claim Cooldowns**',
                     value: `
-                Hourly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Hourly ? '`Available!`' : `<t:${Math.round(balance.Hourly / 1000)}:R>`)}
-                Daily: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Daily ? '`Available!`' : `<t:${Math.round(balance.Daily / 1000)}:R>`)}
-                Weekly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Weekly ? '`Available!`' : `<t:${Math.round(balance.Weekly / 1000)}:R>`)}
-                Monthly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : (Date.now() > balance.Monthly ? '`Available!`' : `<t:${Math.round(balance.Monthly / 1000)}:R>`)}
+                Hourly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Hourly ? '`Available!`' : `<t:${Math.round(balance.Hourly / 1000)}:R>`}
+                Daily: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Daily ? '`Available!`' : `<t:${Math.round(balance.Daily / 1000)}:R>`}
+                Weekly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Weekly ? '`Available!`' : `<t:${Math.round(balance.Weekly / 1000)}:R>`}
+                Monthly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Monthly ? '`Available!`' : `<t:${Math.round(balance.Monthly / 1000)}:R>`}
             `,
-                },
+                }
             );
     }
 
@@ -380,7 +415,8 @@ export class Economy {
                 embeds: [this.homeEmbed!],
                 components: [...this.rows],
             });
-        } else { // If the interaction is a CommandInteraction, reply with the updated embed and components
+        } else {
+            // If the interaction is a CommandInteraction, reply with the updated embed and components
             await interaction.reply({
                 embeds: [this.homeEmbed!],
                 components: [...this.rows],
@@ -409,27 +445,29 @@ export class Economy {
         await interaction.deferReply();
         await interaction.deleteReply();
 
-        let userNames: string = '';
-        let balance: string = '';
+        let userNames = '';
+        let balance = '';
 
         // Iterate over the top 10 balances and fetch corresponding member data
-        await Promise.all(top10.map(async (data, index: number) => {
-            let fetchUser = interaction.guild!.members.cache.get(data.UserId);
+        await Promise.all(
+            top10.map(async (data, index: number) => {
+                let fetchUser = interaction.guild!.members.cache.get(data.UserId);
 
-            if (!fetchUser) {
-                try {
-                    fetchUser = await interaction.guild!.members.fetch(data.UserId);
-                } catch {
-                    // Do nothing because I am a monster
+                if (!fetchUser) {
+                    try {
+                        fetchUser = await interaction.guild!.members.fetch(data.UserId);
+                    } catch {
+                        // Do nothing because I am a monster
+                    }
                 }
-            }
 
-            // If user data is found, append user name and balance to respective strings
-            if (fetchUser) {
-                userNames += `\`${index + 1}\` ${fetchUser}\n`;
-                balance += `<:coin:706659001164628008> \`${data.Total}\`\n`;
-            }
-        }));
+                // If user data is found, append user name and balance to respective strings
+                if (fetchUser) {
+                    userNames += `\`${index + 1}\` ${fetchUser}\n`;
+                    balance += `<:coin:706659001164628008> \`${data.Total}\`\n`;
+                }
+            })
+        );
 
         // Construct the embed with leaderboard information
         const embed = new EmbedBuilder()
@@ -448,7 +486,7 @@ export class Economy {
                     name: 'Balance',
                     value: balance,
                     inline: true,
-                },
+                }
             );
 
         // Set the state of the baltop button
@@ -468,11 +506,19 @@ export class Economy {
      */
     async deposit(interaction: ButtonInteraction, client: Client) {
         // Fetch user's balance based on their ID and guild ID
-        const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
+        const balance = await Balance.findOne({
+            IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
+        });
 
         // If balance is not found or user has no cash, show an error message and return
         if (!balance || balance.Cash === 0) {
-            await RagnarokEmbed(client, interaction, 'Error', 'You do not have any cash to deposit.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'You do not have any cash to deposit.',
+                true
+            );
             return;
         }
 
@@ -480,7 +526,13 @@ export class Economy {
         const bankCalc = balance.Cash + balance.Bank;
 
         // Show success message for the deposit
-        await RagnarokEmbed(client, interaction, 'Success', `You have deposited <:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\` to your bank.`, true);
+        await RagnarokEmbed(
+            client,
+            interaction,
+            'Success',
+            `You have deposited <:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\` to your bank.`,
+            true
+        );
 
         // Update balance: Set cash to 0, update bank balance and total balance
         balance.Cash = 0;
@@ -498,11 +550,19 @@ export class Economy {
      */
     async claim(interaction: ButtonInteraction, client: Client) {
         // Fetch user's balance based on their ID and guild ID
-        const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
+        const balance = await Balance.findOne({
+            IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
+        });
 
         // If balance is not found, show an error message and return
         if (!balance) {
-            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred, please try again.',
+                true
+            );
             return;
         }
 
@@ -512,7 +572,13 @@ export class Economy {
                 balance.ClaimNewUser = 0;
             } else {
                 const nowInSecond = Math.round(balance.ClaimNewUser / 1000);
-                await RagnarokEmbed(client, interaction, 'Error', `Your Economy profile is too new! Please wait another <t:${nowInSecond}:R> before using this command.`, true);
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    `Your Economy profile is too new! Please wait another <t:${nowInSecond}:R> before using this command.`,
+                    true
+                );
                 return;
             }
         }
@@ -546,16 +612,18 @@ export class Economy {
         periods.forEach((period) => {
             if (!balance[period as keyof typeof balance]) {
                 const priceRange = prices[period as keyof EcoPrices];
-                fullPrice += Math.floor(Math.random() * (priceRange.max - priceRange.min + 1)) + priceRange.min;
+                fullPrice +=
+                    Math.floor(Math.random() * (priceRange.max - priceRange.min + 1)) +
+                    priceRange.min;
             }
         });
 
-        const endTime = new Date().getTime();
+        const endTime = Date.now();
 
-        balance.Hourly = !balance.Hourly ? endTime + 3600000 : balance.Hourly;
-        balance.Daily = !balance.Daily ? endTime + 86400000 : balance.Daily;
-        balance.Weekly = !balance.Weekly ? endTime + 604800000 : balance.Weekly;
-        balance.Monthly = !balance.Monthly ? endTime + 2629800000 : balance.Monthly;
+        balance.Hourly = balance.Hourly ? balance.Hourly : endTime + 3600000;
+        balance.Daily = balance.Daily ? balance.Daily : endTime + 86400000;
+        balance.Weekly = balance.Weekly ? balance.Weekly : endTime + 604800000;
+        balance.Monthly = balance.Monthly ? balance.Monthly : endTime + 2629800000;
         balance.Bank += fullPrice;
         balance.Total += fullPrice;
 
@@ -564,7 +632,13 @@ export class Economy {
         // Show success message with claimed amount and new total
         const newTot = balance.Total + fullPrice;
 
-        await RagnarokEmbed(client, interaction, 'Success', `You have claimed all available claims! <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` has been credited to your Bank.\n Your new total is <:coin:706659001164628008> \`${newTot.toLocaleString('en')}\``, true);
+        await RagnarokEmbed(
+            client,
+            interaction,
+            'Success',
+            `You have claimed all available claims! <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` has been credited to your Bank.\n Your new total is <:coin:706659001164628008> \`${newTot.toLocaleString('en')}\``,
+            true
+        );
     }
 
     /**
@@ -578,14 +652,22 @@ export class Economy {
         interaction: ModalSubmitInteraction | ButtonInteraction,
         client: Client,
         amount: string | null = null,
-        option: string | null = null,
+        option: string | null = null
     ) {
         // Fetch user's balance based on their ID and guild ID
-        const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
+        const balance = await Balance.findOne({
+            IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
+        });
 
         // If balance is not found, show an error message and return
         if (!balance) {
-            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred, please try again.',
+                true
+            );
             return;
         }
 
@@ -603,9 +685,7 @@ export class Economy {
                 .setMinLength(2)
                 .setRequired(true);
 
-            const coinRow = new ActionRowBuilder<TextInputBuilder>().addComponents(
-                amountField,
-            );
+            const coinRow = new ActionRowBuilder<TextInputBuilder>().addComponents(amountField);
 
             coinflipModal.addComponents(coinRow);
 
@@ -629,39 +709,15 @@ export class Economy {
             .setStyle(ButtonStyle.Danger)
             .setCustomId('economy_home');
 
-        const coinRow = new ActionRowBuilder<ButtonBuilder>().addComponents(headsButton, tailsButton, cancelButton);
+        const coinRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            headsButton,
+            tailsButton,
+            cancelButton
+        );
 
         // If no option provided, check for valid amount and sufficient balance, then start the coin flip
-        if (!option) {
-            if (Number.isNaN(Number(amount))) {
-                await RagnarokEmbed(client, interaction, 'Error', 'The specified amount was not a valid number.', true);
-                return;
-            }
-
-            if (Number(amount) > balance.Bank) {
-                await RagnarokEmbed(client, interaction, 'Error', `You do not have enough to bet <:coin:706659001164628008> \`${Number(amount)
-                    .toLocaleString('en')}\`, you have <:coin:706659001164628008> \`${Number(balance.Bank)
-                    .toLocaleString('en')}\` available in your Bank.`, true);
-                return;
-            }
-
-            const initial = new EmbedBuilder()
-                .setAuthor({
-                    name: `${interaction.user.displayName}`,
-                    iconURL: `${interaction.user.avatarURL()}`,
-                })
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
-                .addFields({
-                    name: `**${client.user?.username} - Coin Flip**`,
-                    value: `**◎** ${interaction.user} bet <:coin:706659001164628008> \`${Number(amount)
-                        .toLocaleString('en')}\``,
-                });
-
-            await interaction.message?.edit({
-                embeds: [initial],
-                components: [coinRow],
-            });
-        } else { // If option is provided, determine win or loss, update balance, and display result
+        if (option) {
+            // If option is provided, determine win or loss, update balance, and display result
             const flip = ['heads', 'tails'];
             const answer = flip[Math.floor(Math.random() * flip.length)];
 
@@ -673,8 +729,9 @@ export class Economy {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .addFields({
                     name: `**${client.user?.username} - Coin Flip**`,
-                    value: `**◎** ${interaction.user} won! <:coin:706659001164628008> \`${Number(amount)
-                        .toLocaleString('en')}\` has been credited to your Bank!`,
+                    value: `**◎** ${interaction.user} won! <:coin:706659001164628008> \`${Number(
+                        amount
+                    ).toLocaleString('en')}\` has been credited to your Bank!`,
                 });
 
             const lose = new EmbedBuilder()
@@ -685,8 +742,9 @@ export class Economy {
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .addFields({
                     name: `**${client.user?.username} - Coin Flip**`,
-                    value: `**◎** ${interaction.user} lost <:coin:706659001164628008> \`${Number(amount)
-                        .toLocaleString('en')}\``,
+                    value: `**◎** ${interaction.user} lost <:coin:706659001164628008> \`${Number(
+                        amount
+                    ).toLocaleString('en')}\``,
                 });
 
             headsButton.setDisabled(true);
@@ -723,24 +781,82 @@ export class Economy {
                     });
                 }, 5000);
             }
+        } else {
+            if (Number.isNaN(Number(amount))) {
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    'The specified amount was not a valid number.',
+                    true
+                );
+                return;
+            }
+
+            if (Number(amount) > balance.Bank) {
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    `You do not have enough to bet <:coin:706659001164628008> \`${Number(
+                        amount
+                    ).toLocaleString('en')}\`, you have <:coin:706659001164628008> \`${Number(
+                        balance.Bank
+                    ).toLocaleString('en')}\` available in your Bank.`,
+                    true
+                );
+                return;
+            }
+
+            const initial = new EmbedBuilder()
+                .setAuthor({
+                    name: `${interaction.user.displayName}`,
+                    iconURL: `${interaction.user.avatarURL()}`,
+                })
+                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .addFields({
+                    name: `**${client.user?.username} - Coin Flip**`,
+                    value: `**◎** ${interaction.user} bet <:coin:706659001164628008> \`${Number(
+                        amount
+                    ).toLocaleString('en')}\``,
+                });
+
+            await interaction.message?.edit({
+                embeds: [initial],
+                components: [coinRow],
+            });
         }
     }
 
     // Asynchronous function to handle farming interaction
     async farm(interaction: ButtonInteraction, client: Client) {
         // Retrieve user's balance
-        const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
+        const balance = await Balance.findOne({
+            IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
+        });
 
         // If balance is not found, display error and return
         if (!balance) {
-            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred, please try again.',
+                true
+            );
             return;
         }
 
         // Check if user is on cooldown
         if (balance.FarmCool !== null) {
             if (Date.now() <= balance.FarmCool) {
-                await RagnarokEmbed(client, interaction, 'Error', `You are on a cooldown! You will be able to perform this action again <t:${Math.floor((balance.FarmCool) / 1000)}:R>.`, true);
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    `You are on a cooldown! You will be able to perform this action again <t:${Math.floor(balance.FarmCool / 1000)}:R>.`,
+                    true
+                );
                 return;
             }
             balance.FarmCool = 0;
@@ -750,14 +866,20 @@ export class Economy {
         const freeLimit = this.ecoPrices.farming.freeFarmLimit;
         let currentTotalFarm = 0;
 
-        currentTotalFarm += (Number(balance.Items?.Barley) || 0);
-        currentTotalFarm += (Number(balance.Items?.Spinach) || 0);
-        currentTotalFarm += (Number(balance.Items?.Strawberries) || 0);
-        currentTotalFarm += (Number(balance.Items?.Lettuce) || 0);
+        currentTotalFarm += Number(balance.Items?.Barley) || 0;
+        currentTotalFarm += Number(balance.Items?.Spinach) || 0;
+        currentTotalFarm += Number(balance.Items?.Strawberries) || 0;
+        currentTotalFarm += Number(balance.Items?.Lettuce) || 0;
 
         // Check if farm bag is full
         if (!balance.Items?.FarmingTools && currentTotalFarm >= Number(freeLimit)) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Your farm bag is full! You can sell your produce via the `sell` button.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Your farm bag is full! You can sell your produce via the `sell` button.',
+                true
+            );
             return;
         }
 
@@ -766,7 +888,13 @@ export class Economy {
 
         // If farm result is not generated, display error and return
         if (!farmResult) {
-            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred, please try again.',
+                true
+            );
             return;
         }
 
@@ -787,14 +915,18 @@ export class Economy {
         embed.setThumbnail(`attachment://${farmResult.name}.png`);
 
         // Calculate cooldown time and update balance
-        const endTime = new Date().getTime() + this.ecoPrices.farming.cooldowns.farmWinTime;
+        const endTime = Date.now() + this.ecoPrices.farming.cooldowns.farmWinTime;
         balance.FarmCool = Math.round(endTime);
         await balance.save();
 
         // Defer reply, delete original interaction, update message with embed and attachment
         await interaction.deferReply();
         await interaction.deleteReply();
-        await interaction.message?.edit({ components: [...this.rows], embeds: [embed], files: [attachment] });
+        await interaction.message?.edit({
+            components: [...this.rows],
+            embeds: [embed],
+            files: [attachment],
+        });
 
         // Update home embed
         await this.updateHomeEmbed(interaction, client);
@@ -802,7 +934,11 @@ export class Economy {
         // If home embed is available, reset after 5 seconds
         if (this.homeEmbed) {
             setTimeout(async () => {
-                await interaction.message?.edit({ components: [...this.rows], embeds: [this.homeEmbed as APIEmbed], files: [] });
+                await interaction.message?.edit({
+                    components: [...this.rows],
+                    embeds: [this.homeEmbed as APIEmbed],
+                    files: [],
+                });
             }, 5000);
         }
     }
@@ -810,21 +946,45 @@ export class Economy {
     // Function to generate farm result
     generateFarmResult() {
         const farmChance = Math.random();
-        if (farmChance < 0.0018) return { name: 'Gold Nugget', price: this.ecoPrices.farming.farmingWithoutTools.goldNugget };
-        if (farmChance < 0.0318) return { name: 'Barley', price: this.ecoPrices.farming.farmingWithoutTools.barley };
-        if (farmChance < 0.0918) return { name: 'Spinach', price: this.ecoPrices.farming.farmingWithoutTools.spinach };
-        if (farmChance < 0.3718) return { name: 'Strawberries', price: this.ecoPrices.farming.farmingWithoutTools.strawberries };
+        if (farmChance < 0.0018) {
+            return {
+                name: 'Gold Nugget',
+                price: this.ecoPrices.farming.farmingWithoutTools.goldNugget,
+            };
+        }
+        if (farmChance < 0.0318) {
+            return { name: 'Barley', price: this.ecoPrices.farming.farmingWithoutTools.barley };
+        }
+        if (farmChance < 0.0918) {
+            return { name: 'Spinach', price: this.ecoPrices.farming.farmingWithoutTools.spinach };
+        }
+        if (farmChance < 0.3718) {
+            return {
+                name: 'Strawberries',
+                price: this.ecoPrices.farming.farmingWithoutTools.strawberries,
+            };
+        }
         return { name: 'Lettuce', price: this.ecoPrices.farming.farmingWithoutTools.lettuce };
     }
 
     // Function to build farm embed
-    buildFarmEmbed(interaction: ButtonInteraction, client: Client, farmResult: { name: string; price: number; }, amt: number) {
+    buildFarmEmbed(
+        interaction: ButtonInteraction,
+        client: Client,
+        farmResult: { name: string; price: number },
+        amt: number
+    ) {
         const { name, price } = farmResult;
 
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `${interaction.user.displayName}`, iconURL: `${interaction.user.avatarURL()}` })
+            .setAuthor({
+                name: `${interaction.user.displayName}`,
+                iconURL: `${interaction.user.avatarURL()}`,
+            })
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .setFooter({ text: 'Planting crops yields a larger return! check it out with: /plant' });
+            .setFooter({
+                text: 'Planting crops yields a larger return! check it out with: /plant',
+            });
 
         return embed.addFields({
             name: `**${client.user?.username} - Farm**`,
@@ -835,24 +995,44 @@ export class Economy {
     // Asynchronous function to handle fishing interaction
     async fish(interaction: ButtonInteraction, client: Client) {
         // Retrieve user's balance
-        const balance = await Balance.findOne({ IdJoined: `${interaction.user.id}-${interaction.guild!.id}` });
+        const balance = await Balance.findOne({
+            IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
+        });
 
         // If balance is not found, display error and return
         if (!balance) {
-            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred, please try again.',
+                true
+            );
             return;
         }
 
         // Check if user has a fishing rod
         if (!balance.Items?.FishingRod) {
-            await RagnarokEmbed(client, interaction, 'Error', 'You do not have a fishing rod! You must buy one from the shop.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'You do not have a fishing rod! You must buy one from the shop.',
+                true
+            );
             return;
         }
 
         // Check if user is on cooldown
         if (balance.FishCool !== null) {
             if (Date.now() <= balance.FishCool) {
-                await RagnarokEmbed(client, interaction, 'Error', `You are on a cooldown! You will be able to perform this action again <t:${Math.floor((balance.FishCool) / 1000)}:R>.`, true);
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    `You are on a cooldown! You will be able to perform this action again <t:${Math.floor(balance.FishCool / 1000)}:R>.`,
+                    true
+                );
                 return;
             }
             balance.FishCool = 0;
@@ -861,14 +1041,20 @@ export class Economy {
         // Calculate current total fish
         let currentTotalFish = 0;
 
-        currentTotalFish += (Number(balance.Items?.Trout) || 0);
-        currentTotalFish += (Number(balance.Items?.KingSalmon) || 0);
-        currentTotalFish += (Number(balance.Items?.SwordFish) || 0);
-        currentTotalFish += (Number(balance.Items?.PufferFish) || 0);
+        currentTotalFish += Number(balance.Items?.Trout) || 0;
+        currentTotalFish += Number(balance.Items?.KingSalmon) || 0;
+        currentTotalFish += Number(balance.Items?.SwordFish) || 0;
+        currentTotalFish += Number(balance.Items?.PufferFish) || 0;
 
         // Check if fish bag is full
         if (currentTotalFish >= Number(balance.Boosts?.FishBag)) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Your fish bag is full! You can sell your fish via the `sell` button.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Your fish bag is full! You can sell your fish via the `sell` button.',
+                true
+            );
             return;
         }
 
@@ -877,7 +1063,13 @@ export class Economy {
 
         // If fish result is not generated, display error and return
         if (!fishResult) {
-            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred, please try again.',
+                true
+            );
             return;
         }
 
@@ -885,7 +1077,7 @@ export class Economy {
         if (fishResult.name === 'fail') {
             await RagnarokEmbed(client, interaction, 'Fail', 'Your catch escaped the line.', true);
 
-            const endTime = new Date().getTime() + this.ecoPrices.fishing.cooldowns.fishFailTime;
+            const endTime = Date.now() + this.ecoPrices.fishing.cooldowns.fishFailTime;
             balance.FishCool = Math.round(endTime);
 
             await balance.save();
@@ -909,14 +1101,18 @@ export class Economy {
         embed.setThumbnail(`attachment://${fishResult.name}.png`);
 
         // Calculate cooldown time and update balance
-        const endTime = new Date().getTime() + this.ecoPrices.fishing.cooldowns.fishWinTime;
+        const endTime = Date.now() + this.ecoPrices.fishing.cooldowns.fishWinTime;
         balance.FishCool = Math.round(endTime);
         await balance.save();
 
         // Defer reply, delete original interaction, update message with embed and attachment
         await interaction.deferReply();
         await interaction.deleteReply();
-        await interaction.message?.edit({ components: [...this.rows], embeds: [embed], files: [attachment] });
+        await interaction.message?.edit({
+            components: [...this.rows],
+            embeds: [embed],
+            files: [attachment],
+        });
 
         // Update home embed
         await this.updateHomeEmbed(interaction, client);
@@ -924,7 +1120,11 @@ export class Economy {
         // If home embed is available, reset after 5 seconds
         if (this.homeEmbed) {
             setTimeout(async () => {
-                await interaction.message?.edit({ components: [...this.rows], embeds: [this.homeEmbed as APIEmbed], files: [] });
+                await interaction.message?.edit({
+                    components: [...this.rows],
+                    embeds: [this.homeEmbed as APIEmbed],
+                    files: [],
+                });
             }, 5000);
         }
     }
@@ -932,20 +1132,38 @@ export class Economy {
     // Function to generate fish result
     generateFishResult() {
         const fishChance = Math.random();
-        if (fishChance < 0.0018) return { name: 'Treasure', price: this.ecoPrices.fishing.rewards.treasure };
-        if (fishChance < 0.0318) return { name: 'Pufferfish', price: this.ecoPrices.fishing.rewards.pufferfish };
-        if (fishChance < 0.0918) return { name: 'Swordfish', price: this.ecoPrices.fishing.rewards.swordfish };
-        if (fishChance < 0.2718) return { name: 'King Salmon', price: this.ecoPrices.fishing.rewards.kingSalmon };
-        if (fishChance < 0.7918) return { name: 'Trout', price: this.ecoPrices.fishing.rewards.trout };
+        if (fishChance < 0.0018) {
+            return { name: 'Treasure', price: this.ecoPrices.fishing.rewards.treasure };
+        }
+        if (fishChance < 0.0318) {
+            return { name: 'Pufferfish', price: this.ecoPrices.fishing.rewards.pufferfish };
+        }
+        if (fishChance < 0.0918) {
+            return { name: 'Swordfish', price: this.ecoPrices.fishing.rewards.swordfish };
+        }
+        if (fishChance < 0.2718) {
+            return { name: 'King Salmon', price: this.ecoPrices.fishing.rewards.kingSalmon };
+        }
+        if (fishChance < 0.7918) {
+            return { name: 'Trout', price: this.ecoPrices.fishing.rewards.trout };
+        }
         return { name: 'Fail', price: 0 };
     }
 
     // Function to build fish embed
-    buildFishEmbed(interaction: ButtonInteraction, client: Client, fishResult: { name: string; price: number; }, amt: number) {
+    buildFishEmbed(
+        interaction: ButtonInteraction,
+        client: Client,
+        fishResult: { name: string; price: number },
+        amt: number
+    ) {
         const { name, price } = fishResult;
 
         const embed = new EmbedBuilder()
-            .setAuthor({ name: `${interaction.user.displayName}`, iconURL: `${interaction.user.avatarURL()}` })
+            .setAuthor({
+                name: `${interaction.user.displayName}`,
+                iconURL: `${interaction.user.avatarURL()}`,
+            })
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
             .addFields({
                 name: `**${client.user?.username} - Fish**`,

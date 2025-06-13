@@ -2,12 +2,12 @@ import type { Client } from 'discordx';
 import { Discord, Once } from 'discordx';
 import si from 'systeminformation';
 import '@colors/colors';
-import { ActivityType, ChannelType, version } from 'discord.js';
 import { CronJob } from 'cron';
+import { ActivityType, ChannelType, version } from 'discord.js';
 import moment from 'moment';
-import StarBoard from '../mongo/StarBoard.js';
-import Birthdays from '../mongo/Birthdays.js';
 import BirthdayConfig from '../mongo/BirthdayConfig.js';
+import Birthdays from '../mongo/Birthdays.js';
+import StarBoard from '../mongo/StarBoard.js';
 
 /**
  * Discord.js Ready event handler.
@@ -32,57 +32,47 @@ export class Ready {
         const realMemUsed = Math.floor(memoryUsed - cachedMem);
 
         // Bot Info
-        console.log(
-            '\n',
-            `——————————[${client.user?.username} Info]——————————`.red.bold,
-        );
+        console.log('\n', `——————————[${client.user?.username} Info]——————————`.red.bold);
         console.log(
             'Users:'.white.bold,
-            `${client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0).toLocaleString('en')}`.yellow.bold,
+            `${client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0).toLocaleString('en')}`
+                .yellow.bold
         );
         console.log(
             'Guilds:'.white.bold,
-            `${client.guilds.cache.size.toLocaleString('en')}`.yellow.bold,
+            `${client.guilds.cache.size.toLocaleString('en')}`.yellow.bold
         );
         console.log(
             'Slash Commands:'.white.bold,
-            `${client.applicationCommands.length}`.yellow.bold,
+            `${client.applicationCommands.length}`.yellow.bold
         );
-        console.log(
-            'Events:'.white.bold,
-            `${client.events.length}`.yellow.bold,
-        );
+        console.log('Events:'.white.bold, `${client.events.length}`.yellow.bold);
         console.log(
             'Invite:'.white.bold,
-            `https://discordapp.com/oauth2/authorize?client_id=${client.user?.id}&scope=bot%20applications.commands&permissions=535327927376`.blue.underline.bold,
+            `https://discordapp.com/oauth2/authorize?client_id=${client.user?.id}&scope=bot%20applications.commands&permissions=535327927376`
+                .blue.underline.bold
         );
 
         // Bot Specs
-        console.log(
-            '\n',
-            `——————————[${client.user?.username} Specs]——————————`.red.bold,
-        );
+        console.log('\n', `——————————[${client.user?.username} Specs]——————————`.red.bold);
         console.log(
             'Running Node:'.white.bold,
             `${process.version}`.magenta.bold,
             'on'.white.bold,
-            `${process.platform} ${process.arch}`.magenta.bold,
+            `${process.platform} ${process.arch}`.magenta.bold
         );
         console.log(
             'Memory:'.white.bold,
             `${realMemUsed.toLocaleString('en')}`.yellow.bold,
             '/'.white.bold,
             `${totalMemory.toLocaleString('en')}`.yellow.bold,
-            'MB'.white.bold,
+            'MB'.white.bold
         );
-        console.log(
-            'Discord.js Version:'.white.bold,
-            `${version}`.green.bold,
-        );
+        console.log('Discord.js Version:'.white.bold, `${version}`.green.bold);
         console.log(
             `${client.user?.username} Version:`.white.bold,
             `${process.env.npm_package_version}`.green.bold,
-            '\n',
+            '\n'
         );
 
         // Set activity
@@ -97,16 +87,22 @@ export class Ready {
 
         await Promise.all(
             starboards.map(async (starboard) => {
-                if (!starboard.GuildId || !starboard.ChannelId) return;
+                if (!starboard.GuildId || !starboard.ChannelId) {
+                    return;
+                }
 
                 const guild = await client.guilds.fetch(starboard.GuildId);
-                if (!guild) return;
+                if (!guild) {
+                    return;
+                }
 
                 const channel = await guild.channels.fetch(starboard.ChannelId);
-                if (!channel || channel.type !== ChannelType.GuildText) return;
+                if (!channel || channel.type !== ChannelType.GuildText) {
+                    return;
+                }
 
                 await channel.messages.fetch({ limit: 10 });
-            }),
+            })
         );
 
         // Run a cron job once per day to check for users' birthdays
@@ -117,72 +113,105 @@ export class Ready {
                     const birthdays = await Birthdays.find();
                     const birthdayConfigs = await BirthdayConfig.find();
 
-                    const findUserBirthday = async (id: string) => Birthdays.findOne({ UserId: id });
+                    const findUserBirthday = async (id: string) =>
+                        Birthdays.findOne({ UserId: id });
 
-                    await Promise.all(birthdayConfigs.map(async (config) => {
-                        if (!config.GuildId) return;
+                    await Promise.all(
+                        birthdayConfigs.map(async (config) => {
+                            if (!config.GuildId) {
+                                return;
+                            }
 
-                        const guild = client.guilds.cache.get(config.GuildId);
-                        if (!guild) {
-                            await BirthdayConfig.deleteMany({ GuildId: config.GuildId });
-                            return;
-                        }
+                            const guild = client.guilds.cache.get(config.GuildId);
+                            if (!guild) {
+                                await BirthdayConfig.deleteMany({ GuildId: config.GuildId });
+                                return;
+                            }
 
-                        const channel = guild.channels.cache.get(config.ChannelId);
-                        if (!channel) {
-                            await BirthdayConfig.deleteMany({ GuildId: config.GuildId });
-                            return;
-                        }
+                            const channel = guild.channels.cache.get(config.ChannelId);
+                            if (!channel) {
+                                await BirthdayConfig.deleteMany({ GuildId: config.GuildId });
+                                return;
+                            }
 
-                        const currentDate = new Date();
-                        currentDate.setHours(0, 0, 0, 0);
+                            const currentDate = new Date();
+                            currentDate.setHours(0, 0, 0, 0);
 
-                        await Promise.all(birthdays.map(async (birthday) => {
-                            if (!birthday.UserId || !guild.members.cache.has(birthday.UserId)) return;
-
-                            const user = await guild.members.fetch(birthday.UserId);
-                            if (!user) return;
-
-                            const userBirthday = await findUserBirthday(user.id);
-                            if (!userBirthday) return;
-
-                            const now = moment();
-                            const lastRunGuild = userBirthday?.LastRun || [];
-
-                            const savedDate = new Date(Date.parse(userBirthday.Date));
-                            savedDate.setFullYear(currentDate.getFullYear());
-                            savedDate.setHours(0, 0, 0, 0);
-
-                            if (currentDate.getTime() === savedDate.getTime()) {
-                                const lastRunForGuild = lastRunGuild.find((entry) => entry[guild.id]);
-                                if (lastRunForGuild && now.unix() < lastRunForGuild[guild.id] + 86400) return;
-
-                                const message = `It's ${user}'s birthday! Say Happy Birthday! 🍰`;
-
-                                try {
-                                    if (channel.type === ChannelType.GuildText) await channel.send(message);
-
-                                    const guildIndex = lastRunGuild.findIndex((obj) => obj[guild.id]);
-
-                                    if (guildIndex === -1) {
-                                        lastRunGuild.push({ [guild.id]: now.unix() });
-                                    } else {
-                                        lastRunGuild[guildIndex][guild.id] = now.unix();
+                            await Promise.all(
+                                birthdays.map(async (birthday) => {
+                                    if (
+                                        !birthday.UserId ||
+                                        !guild.members.cache.has(birthday.UserId)
+                                    ) {
+                                        return;
                                     }
 
-                                    await Birthdays.findOneAndUpdate({ UserId: user.id }, { LastRun: lastRunGuild });
-                                } catch (error) {
-                                    console.error(`Error sending birthday message for ${user}:`, error);
-                                }
-                            }
-                        }));
-                    }));
+                                    const user = await guild.members.fetch(birthday.UserId);
+                                    if (!user) {
+                                        return;
+                                    }
+
+                                    const userBirthday = await findUserBirthday(user.id);
+                                    if (!userBirthday) {
+                                        return;
+                                    }
+
+                                    const now = moment();
+                                    const lastRunGuild = userBirthday?.LastRun || [];
+
+                                    const savedDate = new Date(Date.parse(userBirthday.Date));
+                                    savedDate.setFullYear(currentDate.getFullYear());
+                                    savedDate.setHours(0, 0, 0, 0);
+
+                                    if (currentDate.getTime() === savedDate.getTime()) {
+                                        const lastRunForGuild = lastRunGuild.find(
+                                            (entry) => entry[guild.id]
+                                        );
+                                        if (
+                                            lastRunForGuild &&
+                                            now.unix() < lastRunForGuild[guild.id] + 86400
+                                        ) {
+                                            return;
+                                        }
+
+                                        const message = `It's ${user}'s birthday! Say Happy Birthday! 🍰`;
+
+                                        try {
+                                            if (channel.type === ChannelType.GuildText) {
+                                                await channel.send(message);
+                                            }
+
+                                            const guildIndex = lastRunGuild.findIndex(
+                                                (obj) => obj[guild.id]
+                                            );
+
+                                            if (guildIndex === -1) {
+                                                lastRunGuild.push({ [guild.id]: now.unix() });
+                                            } else {
+                                                lastRunGuild[guildIndex][guild.id] = now.unix();
+                                            }
+
+                                            await Birthdays.findOneAndUpdate(
+                                                { UserId: user.id },
+                                                { LastRun: lastRunGuild }
+                                            );
+                                        } catch (error) {
+                                            console.error(
+                                                `Error sending birthday message for ${user}:`,
+                                                error
+                                            );
+                                        }
+                                    }
+                                })
+                            );
+                        })
+                    );
                 } catch (error) {
                     console.error('Error in Birthday Cron Job:', error);
                 }
             },
             null,
-            true,
+            true
         );
 
         // Run the birthdayCron job

@@ -1,8 +1,11 @@
-import { Discord, Slash, SlashOption } from 'discordx';
-import {
-    ApplicationCommandOptionType, CommandInteraction, EmbedBuilder, GuildMember,
-} from 'discord.js';
 import { Category } from '@discordx/utilities';
+import {
+    ApplicationCommandOptionType,
+    type CommandInteraction,
+    EmbedBuilder,
+    type GuildMember,
+} from 'discord.js';
+import { Discord, Slash, SlashOption } from 'discordx';
 import { color } from '../../utils/Util.js';
 
 @Discord()
@@ -13,15 +16,17 @@ export class Userinfo {
      * @param interaction - The command interaction.
      * @param user - Optional user to lookup.
      */
-    @Slash({ description: 'Displays information for the author of the interaction or a specified user.' })
+    @Slash({
+        description: 'Displays information for the author of the interaction or a specified user.',
+    })
     async userinfo(
         @SlashOption({
             description: 'User to look up (optional)',
             name: 'user',
             type: ApplicationCommandOptionType.User,
         })
-            user: GuildMember,
-            interaction: CommandInteraction,
+        user: GuildMember,
+        interaction: CommandInteraction
     ): Promise<void> {
         const flags: { [key: string]: string } = {
             ActiveDeveloper: '<:ActiveDeveloper:1094985831112003604>',
@@ -51,16 +56,24 @@ export class Userinfo {
             .map((role) => role.toString())
             .slice(0, -1);
 
-        const userFlags = member.user.flags?.toArray().map((flag) => flags[flag]).filter(Boolean);
+        const userFlags = member.user.flags
+            ?.toArray()
+            .map((flag) => flags[flag])
+            .filter(Boolean);
 
-        if (member.user.bot && !userFlags?.includes('VerifiedBot')) (userFlags as Array<keyof typeof flags>).push('Bot');
+        if (member.user.bot && !userFlags?.includes('VerifiedBot')) {
+            (userFlags as Array<keyof typeof flags>).push('Bot');
+        }
 
         const roleMsg = roles.length ? roles.join(', ') : 'None';
 
         const embed = new EmbedBuilder()
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
             .setThumbnail(member.user.displayAvatarURL() || '')
-            .setAuthor({ name: `Information for ${member.user.displayName}`, iconURL: member.user.displayAvatarURL() || '' })
+            .setAuthor({
+                name: `Information for ${member.user.displayName}`,
+                iconURL: member.user.displayAvatarURL() || '',
+            })
             .addFields({
                 name: 'User Information',
                 value: `**◎ 👑 User:** ${member.user}
@@ -68,9 +81,11 @@ export class Userinfo {
                 **◎ 📆 Created At** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)
                 **◎ 📆 Joined At** <t:${Math.round(member.joinedTimestamp! / 1000)}> - (<t:${Math.round(member.joinedTimestamp! / 1000)}:R>)
                 **◎ 🗺️ Flags:** ${userFlags?.length ? userFlags.join(', ') : 'None'}
-                **◎ <a:Booster:855593231294267412> Server Booster:** ${member.premiumSinceTimestamp
-        ? `<t:${Math.round(member.premiumSinceTimestamp / 1000)}> - (<t:${Math.round(member.premiumSinceTimestamp / 1000)}:R>)`
-        : 'No'}
+                **◎ <a:Booster:855593231294267412> Server Booster:** ${
+                    member.premiumSinceTimestamp
+                        ? `<t:${Math.round(member.premiumSinceTimestamp / 1000)}> - (<t:${Math.round(member.premiumSinceTimestamp / 1000)}:R>)`
+                        : 'No'
+                }
                 
                 **Roles: [${roles.length}]**\n${roleMsg}`,
             });

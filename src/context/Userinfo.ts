@@ -1,7 +1,10 @@
-import { ContextMenu, Discord } from 'discordx';
 import {
-    ApplicationCommandType, EmbedBuilder, GuildMember, UserContextMenuCommandInteraction,
+    ApplicationCommandType,
+    EmbedBuilder,
+    type GuildMember,
+    type UserContextMenuCommandInteraction,
 } from 'discord.js';
+import { ContextMenu, Discord } from 'discordx';
 import { color } from '../utils/Util.js';
 
 @Discord()
@@ -44,16 +47,24 @@ export class UserinfoContext {
             .map((role) => role.toString())
             .slice(0, -1);
 
-        const userFlags = member.user.flags?.toArray().map((flag) => flags[flag]).filter(Boolean);
+        const userFlags = member.user.flags
+            ?.toArray()
+            .map((flag) => flags[flag])
+            .filter(Boolean);
 
-        if (member.user.bot && !userFlags?.includes('VerifiedBot')) (userFlags as Array<keyof typeof flags>).push('Bot');
+        if (member.user.bot && !userFlags?.includes('VerifiedBot')) {
+            (userFlags as Array<keyof typeof flags>).push('Bot');
+        }
 
         const roleMsg = roles.length ? roles.join(', ') : 'None';
 
         const embed = new EmbedBuilder()
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
             .setThumbnail(member.user.displayAvatarURL() || '')
-            .setAuthor({ name: `Information for ${member.user.displayName}`, iconURL: member.user.displayAvatarURL() || '' })
+            .setAuthor({
+                name: `Information for ${member.user.displayName}`,
+                iconURL: member.user.displayAvatarURL() || '',
+            })
             .addFields({
                 name: 'User Information',
                 value: `**◎ 👑 User:** ${member.user}
@@ -61,9 +72,11 @@ export class UserinfoContext {
                 **◎ 📆 Created At** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)
                 **◎ 📆 Joined At** <t:${Math.round(member.joinedTimestamp! / 1000)}> - (<t:${Math.round(member.joinedTimestamp! / 1000)}:R>)
                 **◎ 🗺️ Flags:** ${userFlags?.length ? userFlags.join(', ') : 'None'}
-                **◎ <a:Booster:855593231294267412> Server Booster:** ${member.premiumSinceTimestamp
-        ? `<t:${Math.round(member.premiumSinceTimestamp / 1000)}> - (<t:${Math.round(member.premiumSinceTimestamp / 1000)}:R>)`
-        : 'No'}
+                **◎ <a:Booster:855593231294267412> Server Booster:** ${
+                    member.premiumSinceTimestamp
+                        ? `<t:${Math.round(member.premiumSinceTimestamp / 1000)}> - (<t:${Math.round(member.premiumSinceTimestamp / 1000)}:R>)`
+                        : 'No'
+                }
                 
                 **Roles: [${roles.length}]**\n${roleMsg}`,
             });

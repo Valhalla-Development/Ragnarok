@@ -1,16 +1,14 @@
+import type { Message, TextBasedChannel } from 'discord.js';
+import { EmbedBuilder, type GuildTextBasedChannel, PermissionsBitField } from 'discord.js';
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
-import type { Message, TextBasedChannel } from 'discord.js';
-import { EmbedBuilder, GuildTextBasedChannel, PermissionsBitField } from 'discord.js';
 import urlRegexSafe from 'url-regex-safe';
-import {
-    color, deletableCheck, messageDelete, updateLevel,
-} from '../utils/Util.js';
+import linksContent from '../../assets/SpenLinks.json' assert { type: 'json' };
+import AFK from '../mongo/AFK.js';
 import AdsProtection from '../mongo/AdsProtection.js';
 import AntiScam from '../mongo/AntiScam.js';
-import linksContent from '../../assets/SpenLinks.json' assert {type: 'json'};
-import AFK from '../mongo/AFK.js';
 import Dad from '../mongo/Dad.js';
+import { color, deletableCheck, messageDelete, updateLevel } from '../utils/Util.js';
 
 const dadCooldown = new Set();
 const dadCooldownSeconds = 60;
@@ -24,11 +22,16 @@ export class MessageCreate {
      */
     @On({ event: 'messageCreate' })
     async onMessage([message]: ArgsOf<'messageCreate'>, client: Client) {
-        if (!message.guild || message.author.bot) return;
+        if (!message.guild || message.author.bot) {
+            return;
+        }
 
         async function afk() {
             const pingCheck = await AFK.findOne({ GuildId: message.guild!.id });
-            const afkGrab = await AFK.findOne({ GuildId: message.guild!.id, UserId: message.author.id });
+            const afkGrab = await AFK.findOne({
+                GuildId: message.guild!.id,
+                UserId: message.author.id,
+            });
 
             if (afkGrab) {
                 await AFK.deleteOne({ GuildId: message.guild!.id, UserId: message.author.id });
@@ -43,7 +46,10 @@ export class MessageCreate {
             }
 
             if (message.mentions.users.size > 0 && pingCheck) {
-                const afkCheck = await AFK.findOne({ GuildId: message.guild!.id, UserId: message.mentions.users.first()?.id });
+                const afkCheck = await AFK.findOne({
+                    GuildId: message.guild!.id,
+                    UserId: message.mentions.users.first()?.id,
+                });
                 if (afkCheck) {
                     const error = new EmbedBuilder()
                         .setColor(color(`${message.member?.displayHexColor}`))
@@ -60,12 +66,19 @@ export class MessageCreate {
         /**
          * Checks for and handles potential scams in a message.
          */
-        async function antiScam() { // TODO needs testing ofc
+        async function antiScam() {
+            // TODO needs testing ofc
             const antiscam = await AntiScam.findOne({ GuildId: message.guild?.id });
 
-            if (!antiscam) return;
+            if (!antiscam) {
+                return;
+            }
 
-            if (!message.member?.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+            if (
+                !message.member?.guild.members.me?.permissions.has(
+                    PermissionsBitField.Flags.ManageMessages
+                )
+            ) {
                 const npPerms = new EmbedBuilder()
                     .setColor(color(`${message.guild?.members.me?.displayHexColor}`))
                     .addFields({
@@ -89,10 +102,16 @@ export class MessageCreate {
                 console.log(`Matched link: ${matchedLink}`);
                 reasons.push('Malicious Link');
 
-                if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)
-                    && message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+                if (
+                    !message.member.permissions.has(PermissionsBitField.Flags.ManageMessages) &&
+                    message.member.guild.members.me.permissions.has(
+                        PermissionsBitField.Flags.ManageMessages
+                    )
+                ) {
                     await messageDelete(message, 0);
-                    const deletionMessage = await message.channel.send(`**◎ Message deleted:** Your message contains: \`${reasons.join(', ')}\`, ${message.author}.`);
+                    const deletionMessage = await message.channel.send(
+                        `**◎ Message deleted:** Your message contains: \`${reasons.join(', ')}\`, ${message.author}.`
+                    );
                     deletableCheck(deletionMessage, 5000);
                 }
             }
@@ -110,7 +129,11 @@ export class MessageCreate {
             // Check if AdsProtection is enabled in the guild
             if (adsProt) {
                 // Check if the bot has the MANAGE_MESSAGES permission
-                if (!message.member?.guild.members.me?.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+                if (
+                    !message.member?.guild.members.me?.permissions.has(
+                        PermissionsBitField.Flags.ManageMessages
+                    )
+                ) {
                     // Bot doesn't have MANAGE_MESSAGES permission, disable Ad Protection
                     const errorEmbed = new EmbedBuilder()
                         .setColor(color(`${message.guild?.members.me?.displayHexColor}`))
@@ -119,22 +142,37 @@ export class MessageCreate {
                             value: '**Error:** I lack the `Manage Messages` permission required for Ads Protection. This feature has been disabled.',
                         });
 
-                    message.channel.send({ embeds: [errorEmbed] }).then((m) => deletableCheck(m, 0));
+                    message.channel
+                        .send({ embeds: [errorEmbed] })
+                        .then((m) => deletableCheck(m, 0));
                     await AdsProtection.deleteOne({ GuildId: message.guild?.id });
                     return;
                 }
 
                 // Check if the user has MANAGE_MESSAGES permission and the channel is not a ticket
-                if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages) && !channel.name.startsWith('ticket-')) {
+                if (
+                    !message.member.permissions.has(PermissionsBitField.Flags.ManageMessages) &&
+                    !channel.name.startsWith('ticket-')
+                ) {
                     // Use a regular expression to check for links in the message content
-                    const matches = urlRegexSafe({ strict: false }).test(message.content.toLowerCase());
+                    const matches = urlRegexSafe({ strict: false }).test(
+                        message.content.toLowerCase()
+                    );
                     if (matches) {
                         // Delete the message and notify the user
-                        if (message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+                        if (
+                            message.member.guild.members.me.permissions.has(
+                                PermissionsBitField.Flags.ManageMessages
+                            )
+                        ) {
                             await messageDelete(message, 0);
-                            message.channel.send(`**◎ Link detected:** Your message has been deleted, ${message.author}.`).then((msg) => {
-                                deletableCheck(msg, 5000);
-                            });
+                            message.channel
+                                .send(
+                                    `**◎ Link detected:** Your message has been deleted, ${message.author}.`
+                                )
+                                .then((msg) => {
+                                    deletableCheck(msg, 5000);
+                                });
                         }
                     }
                 }
@@ -146,17 +184,22 @@ export class MessageCreate {
          * Asynchronously extracts and handles links to Discord messages in a text message.
          */
         async function linkTag() {
-            const discordRegex = /https?:\/\/(?:ptb\.)?(?:canary\.)?(discordapp|discord)\.com\/channels\/(\d{1,19})\/(\d{1,19})\/(\d{1,19})/;
+            const discordRegex =
+                /https?:\/\/(?:ptb\.)?(?:canary\.)?(discordapp|discord)\.com\/channels\/(\d{1,19})\/(\d{1,19})\/(\d{1,19})/;
 
             const exec = discordRegex.exec(message.content);
 
             if (exec && message.guild?.id === exec[2]) {
                 const [, , guildID, channelID, messageID] = exec;
 
-                const findGuild = client.guilds.cache.get(guildID);
-                if (!findGuild) return;
-                const findChannel = findGuild.channels.cache.get(channelID) as TextBasedChannel;
-                if (!findChannel) return;
+                const findGuild = client.guilds.cache.get(guildID as string);
+                if (!findGuild) {
+                    return;
+                }
+                const findChannel = findGuild.channels.cache.get(channelID as string) as TextBasedChannel;
+                if (!findChannel) {
+                    return;
+                }
                 const validExtensions = ['gif', 'png', 'jpeg', 'jpg'];
 
                 const messagePromises = [
@@ -164,7 +207,9 @@ export class MessageCreate {
                     findChannel.messages.fetch({ message: messageID, cache: false }),
                 ];
                 const settledPromises = await Promise.allSettled(messagePromises);
-                const resolvedPromise = settledPromises.find((result) => result.status === 'fulfilled') as PromiseFulfilledResult<Message | undefined>;
+                const resolvedPromise = settledPromises.find(
+                    (result) => result.status === 'fulfilled'
+                ) as PromiseFulfilledResult<Message | undefined>;
 
                 if (resolvedPromise) {
                     const res = resolvedPromise.value;
@@ -176,7 +221,9 @@ export class MessageCreate {
                         const embed = new EmbedBuilder()
                             .setAuthor({
                                 name: user?.displayName || message.author.displayName,
-                                iconURL: user?.displayAvatarURL({ extension: 'png' }) || message.author.displayAvatarURL({ extension: 'png' }),
+                                iconURL:
+                                    user?.displayAvatarURL({ extension: 'png' }) ||
+                                    message.author.displayAvatarURL({ extension: 'png' }),
                             })
                             .setColor(color(`${message.guild.members.me?.displayHexColor}`))
                             .setFooter({ text: `Quoted by ${message.author.displayName}` })
@@ -185,23 +232,37 @@ export class MessageCreate {
                         const attachmentCheck = res.attachments.first();
                         if (res.content && attachmentCheck) {
                             const attachmentUrl = attachmentCheck.url;
-                            const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
-                            if (!validExtensions.includes(fileExtension)) {
-                                embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`);
-                            } else {
-                                embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`);
+                            const fileExtension = attachmentUrl.substring(
+                                attachmentUrl.lastIndexOf('.') + 1
+                            );
+                            if (validExtensions.includes(fileExtension)) {
+                                embed.setDescription(
+                                    `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`
+                                );
                                 embed.setImage(attachmentUrl);
+                            } else {
+                                embed.setDescription(
+                                    `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`
+                                );
                             }
                         } else if (res.content) {
-                            embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`);
+                            embed.setDescription(
+                                `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`
+                            );
                         } else if (attachmentCheck) {
                             const attachmentUrl = attachmentCheck.url;
-                            const fileExtension = attachmentUrl.substring(attachmentUrl.lastIndexOf('.') + 1);
-                            if (!validExtensions.includes(fileExtension)) {
-                                embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>`);
-                            } else {
-                                embed.setDescription(`**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>`);
+                            const fileExtension = attachmentUrl.substring(
+                                attachmentUrl.lastIndexOf('.') + 1
+                            );
+                            if (validExtensions.includes(fileExtension)) {
+                                embed.setDescription(
+                                    `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>`
+                                );
                                 embed.setImage(attachmentUrl);
+                            } else {
+                                embed.setDescription(
+                                    `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>`
+                                );
                             }
                         }
                         message.channel.send({ embeds: [embed] });
@@ -213,25 +274,29 @@ export class MessageCreate {
 
         async function dadBot() {
             const dadData = await Dad.findOne({ GuildId: message.guild?.id });
-            if (!dadData || dadCooldown.has(message.author.id)) return;
+            if (!dadData || dadCooldown.has(message.author.id)) {
+                return;
+            }
 
             const messageContent = message.content.toLowerCase();
-            if (!(messageContent.startsWith('im ') || messageContent.startsWith('i\'m '))) return;
+            if (!(messageContent.startsWith('im ') || messageContent.startsWith("i'm "))) {
+                return;
+            }
 
             const content = messageContent.split(' ').slice(1).join(' ');
 
             switch (true) {
-            case urlRegexSafe({ strict: false }).test(messageContent):
-                message.channel.send({ files: ['./Storage/Images/dadNo.png'] });
-                break;
-            case messageContent.startsWith('im dad') || messageContent.startsWith('i\'m dad'):
-                message.channel.send({ content: 'No, I\'m Dad!' });
-                break;
-            case messageContent.includes('@everyone') || messageContent.includes('@here'):
-                await message.reply({ content: '<:pepebruh:987742251297931274>' });
-                break;
-            default:
-                message.channel.send({ content: `Hi ${content}, I'm Dad!` });
+                case urlRegexSafe({ strict: false }).test(messageContent):
+                    message.channel.send({ files: ['./Storage/Images/dadNo.png'] });
+                    break;
+                case messageContent.startsWith('im dad') || messageContent.startsWith("i'm dad"):
+                    message.channel.send({ content: "No, I'm Dad!" });
+                    break;
+                case messageContent.includes('@everyone') || messageContent.includes('@here'):
+                    await message.reply({ content: '<:pepebruh:987742251297931274>' });
+                    break;
+                default:
+                    message.channel.send({ content: `Hi ${content}, I'm Dad!` });
             }
 
             dadCooldown.add(message.author.id);

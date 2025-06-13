@@ -1,10 +1,12 @@
-import {
-    Client, Discord, Guard, Slash, SlashOption,
-} from 'discordx';
-import {
-    ApplicationCommandOptionType, ChannelType, codeBlock, CommandInteraction, PermissionsBitField,
-} from 'discord.js';
 import { Category } from '@discordx/utilities';
+import {
+    ApplicationCommandOptionType,
+    ChannelType,
+    type CommandInteraction,
+    PermissionsBitField,
+    codeBlock,
+} from 'discord.js';
+import { type Client, Discord, Guard, Slash, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
 import { RagnarokEmbed } from '../../utils/Util.js';
 
@@ -31,9 +33,9 @@ export class Purge {
             minValue: 1,
             maxValue: 50,
         })
-            amount: number,
-            interaction: CommandInteraction,
-            client: Client,
+        amount: number,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         if (!interaction.channel || interaction.channel.type !== ChannelType.GuildText) {
             return;
@@ -43,9 +45,21 @@ export class Purge {
             const fetch = await interaction.channel.messages.fetch({ limit: Number(amount) });
             await interaction.channel.bulkDelete(fetch, true);
 
-            await RagnarokEmbed(client, interaction, 'Success', `${Number(amount)} message${Number(amount) > 1 ? 's were' : ' was'} removed.`, true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Success',
+                `${Number(amount)} message${Number(amount) > 1 ? 's were' : ' was'} removed.`,
+                true
+            );
         } catch (error) {
-            await RagnarokEmbed(client, interaction, 'Error', `An error occurred\n${codeBlock('text', `${error}`)}`, true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `An error occurred\n${codeBlock('text', `${error}`)}`,
+                true
+            );
         }
     }
 }

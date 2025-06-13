@@ -26,6 +26,9 @@
 		"formatter": {
 			"indentWidth": 4,
 			"lineWidth": 100
+		},
+		"parser": {
+			"unsafeParameterDecoratorsEnabled": true
 		}
 	}
 }

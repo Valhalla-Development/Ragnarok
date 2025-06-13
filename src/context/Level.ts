@@ -1,16 +1,19 @@
-import { Client, ContextMenu, Discord } from 'discordx';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { type Image, createCanvas, loadImage } from 'canvas';
 import {
-    ApplicationCommandType, AttachmentBuilder, GuildMember, UserContextMenuCommandInteraction,
+    ApplicationCommandType,
+    AttachmentBuilder,
+    type GuildMember,
+    type UserContextMenuCommandInteraction,
 } from 'discord.js';
-import { createCanvas, Image, loadImage } from 'canvas';
+import { type Client, ContextMenu, Discord } from 'discordx';
 // @ts-expect-error no type file available for this package
 import abbreviate from 'number-abbreviate';
 // @ts-expect-error no type file available for this package
 import converter from 'number-to-words-en';
-import path from 'path';
-import { readFileSync } from 'fs';
-import { color, RagnarokEmbed } from '../utils/Util.js';
 import Level from '../mongo/Level.js';
+import { RagnarokEmbed, color } from '../utils/Util.js';
 
 @Discord()
 export class LevelContext {
@@ -23,20 +26,35 @@ export class LevelContext {
         name: 'Level',
         type: ApplicationCommandType.User,
     })
-    async levelContext(interaction: UserContextMenuCommandInteraction, client: Client): Promise<void> {
+    async levelContext(
+        interaction: UserContextMenuCommandInteraction,
+        client: Client
+    ): Promise<void> {
         const member = interaction.targetMember as GuildMember;
         await member.fetch();
 
         await interaction.deferReply();
 
         if (member.user.bot) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Member does not have a level.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Member does not have a level.',
+                true
+            );
             return;
         }
 
         const score = await Level.findOne({ IdJoined: `${member.id}-${interaction.guild!.id}` });
         if (!score) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Member does not have a level.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Member does not have a level.',
+                true
+            );
             return;
         }
 
@@ -44,15 +62,19 @@ export class LevelContext {
 
         const levelNoMinus = level + 1;
         const currentLvl = level;
-        const nxtLvlXp = (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
-        const currentxpLvl = (5 / 6) * currentLvl * (2 * currentLvl * currentLvl + 27 * currentLvl + 91);
+        const nxtLvlXp =
+            (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
+        const currentxpLvl =
+            (5 / 6) * currentLvl * (2 * currentLvl * currentLvl + 27 * currentLvl + 91);
         const toLevel = Math.floor(nxtLvlXp - currentxpLvl);
         const inLevel = Math.floor(xp - currentxpLvl);
         const xpLevel = `${abbreviate(inLevel, 2)}/${abbreviate(toLevel, 2)} XP`;
         const xpPercent = (inLevel / toLevel) * 100;
 
         const getRank = await Level.find({ GuildId: interaction.guild!.id }).sort({ Xp: -1 });
-        const filterRank = getRank.find((b) => b.IdJoined === `${interaction.user.id}-${interaction.guild!.id}`);
+        const filterRank = getRank.find(
+            (b) => b.IdJoined === `${interaction.user.id}-${interaction.guild!.id}`
+        );
         const rankPos = converter.toOrdinal(getRank.indexOf(filterRank!) + 1);
 
         const canvas = createCanvas(934, 282);
@@ -63,18 +85,18 @@ export class LevelContext {
         const fetchUser = await interaction.guild!.members.fetch(member.id);
         if (fetchUser.presence) {
             switch (fetchUser.presence.status) {
-            case 'online':
-                userStatusColor = '#43B581';
-                break;
-            case 'idle':
-                userStatusColor = '#FAA61A';
-                break;
-            case 'dnd':
-                userStatusColor = '#F04747';
-                break;
-            default:
-                userStatusColor = null;
-                break;
+                case 'online':
+                    userStatusColor = '#43B581';
+                    break;
+                case 'idle':
+                    userStatusColor = '#FAA61A';
+                    break;
+                case 'dnd':
+                    userStatusColor = '#F04747';
+                    break;
+                default:
+                    userStatusColor = null;
+                    break;
             }
         }
 
@@ -124,13 +146,17 @@ export class LevelContext {
         const avatarGrab = member.user.displayAvatarURL({ extension: 'png' });
 
         class ProgressBar {
-            dim: { x: number, y: number, width: number, height: number };
+            dim: { x: number; y: number; width: number; height: number };
 
             color: string;
 
             percentage: number;
 
-            constructor(dimension: { x: number, y: number, width: number, height: number, }, colorC: string, percentage: number) {
+            constructor(
+                dimension: { x: number; y: number; width: number; height: number },
+                colorC: string,
+                percentage: number
+            ) {
                 this.dim = dimension;
                 this.color = colorC;
                 this.percentage = percentage / 100;
@@ -148,7 +174,7 @@ export class LevelContext {
                         this.dim.height / 2 + this.dim.y,
                         this.dim.height / 2,
                         Math.PI - Math.acos((this.dim.height - p) / this.dim.height),
-                        Math.PI + Math.acos((this.dim.height - p) / this.dim.height),
+                        Math.PI + Math.acos((this.dim.height - p) / this.dim.height)
                     );
                     ctx.save();
 
@@ -159,14 +185,20 @@ export class LevelContext {
                         this.dim.height / 2 + this.dim.y,
                         this.dim.height / 2,
                         Math.PI - Math.acos((this.dim.height - p) / this.dim.height),
-                        Math.PI + Math.acos((this.dim.height - p) / this.dim.height),
+                        Math.PI + Math.acos((this.dim.height - p) / this.dim.height)
                     );
                     ctx.restore();
                     ctx.closePath();
                 } else {
                     // draw left arc
                     ctx.beginPath();
-                    ctx.arc(this.dim.height / 2 + this.dim.x, this.dim.height / 2 + this.dim.y, this.dim.height / 2, Math.PI / 2, (3 / 2) * Math.PI);
+                    ctx.arc(
+                        this.dim.height / 2 + this.dim.x,
+                        this.dim.height / 2 + this.dim.y,
+                        this.dim.height / 2,
+                        Math.PI / 2,
+                        (3 / 2) * Math.PI
+                    );
 
                     // draw rectangle
                     ctx.lineTo(p - this.dim.height + this.dim.x, this.dim.y);
@@ -177,7 +209,7 @@ export class LevelContext {
                         this.dim.height / 2 + this.dim.y,
                         this.dim.height / 2,
                         (3 / 2) * Math.PI,
-                        Math.PI / 2,
+                        Math.PI / 2
                     );
 
                     // close path
@@ -197,7 +229,7 @@ export class LevelContext {
                 height: 36.5,
             },
             color(member.displayHexColor).toString(),
-            xpPercent,
+            xpPercent
         );
         progressbar.draw();
 
@@ -338,7 +370,6 @@ export class LevelContext {
         ctx.save();
 
         const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: 'level.jpg' });
-        interaction.editReply({ files: [attachment] })
-            .catch((err) => console.error(err));
+        interaction.editReply({ files: [attachment] }).catch((err) => console.error(err));
     }
 }

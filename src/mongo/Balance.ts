@@ -1,4 +1,4 @@
-import { InferSchemaType, model, Schema } from 'mongoose';
+import { type InferSchemaType, Schema, model } from 'mongoose';
 
 /**
  * Represents a schema for storing the Balance data for users in a guild.
@@ -48,6 +48,6 @@ const Balance = new Schema({
     HarvestedCrops: { type: Array, default: [] },
 });
 
-export type BalanceInterface = InferSchemaType<typeof Balance>
+export type BalanceInterface = InferSchemaType<typeof Balance>;
 
 export default model('Balance', Balance, 'Balance');

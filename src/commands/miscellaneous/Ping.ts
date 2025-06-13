@@ -1,32 +1,54 @@
-import type { Client } from 'discordx';
-import { Discord, Slash } from 'discordx';
-import type { CommandInteraction } from 'discord.js';
-import { EmbedBuilder } from 'discord.js';
 import { Category } from '@discordx/utilities';
-import { deletableCheck } from '../../utils/Util.js';
+import { ChannelType, type CommandInteraction, EmbedBuilder } from 'discord.js';
+import { type Client, Discord, Slash } from 'discordx';
 
 @Discord()
 @Category('Miscellaneous')
 export class Ping {
     /**
-     * Displays bot and API ping information.
+     * Displays ping information for the bot.
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      */
-    @Slash({ description: 'Displays bot and API ping information.' })
+    @Slash({ description: 'Displays bot and API ping.' })
     async ping(interaction: CommandInteraction, client: Client): Promise<void> {
-        const msg = await interaction.channel!.send({ content: 'Pinging...' });
-        const latency = msg.createdTimestamp - interaction.createdTimestamp;
-        deletableCheck(msg, 0);
+        if (!interaction.channel || interaction.channel.type !== ChannelType.GuildText) {
+            return;
+        }
 
-        const embed = new EmbedBuilder().setColor('#e91e63').addFields([
-            {
-                name: `**${client.user?.username} - Ping**`,
-                value: `**◎ Bot Latency:** \`${latency}ms\`
-          **◎ API Latency:** \`${Math.round(client.ws.ping)}ms\``,
-            },
-        ]);
+        const start = Date.now();
+        await interaction.deferReply();
+        const end = Date.now();
 
-        await interaction.reply({ embeds: [embed] });
+        const botLatency = Math.max(0, end - start);
+        const apiLatency = Math.max(0, Math.round(client.ws.ping));
+
+        const getLatencyEmoji = (ms: number) => {
+            if (ms < 100) {
+                return '🟢';
+            }
+            if (ms < 200) {
+                return '🟡';
+            }
+            return '🔴';
+        };
+
+        const embed = new EmbedBuilder()
+            .setColor('#e91e63')
+            .setTitle(`🏓 Pong! ${client.user?.username} is online`)
+            .addFields(
+                {
+                    name: 'Bot Latency',
+                    value: `${getLatencyEmoji(botLatency)} \`${botLatency}ms\``,
+                    inline: true,
+                },
+                {
+                    name: 'API Latency',
+                    value: `${getLatencyEmoji(apiLatency)} \`${apiLatency}ms\``,
+                    inline: true,
+                }
+            );
+
+        await interaction.editReply({ embeds: [embed] });
     }
 }

@@ -1,8 +1,8 @@
-import { Client, Discord, Slash } from 'discordx';
-import { codeBlock, CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Category } from '@discordx/utilities';
 import { load } from 'cheerio';
-import { capitalise, color, RagnarokEmbed } from '../../utils/Util.js';
+import { ChannelType, type CommandInteraction, EmbedBuilder, codeBlock } from 'discord.js';
+import { type Client, Discord, Slash } from 'discordx';
+import { RagnarokEmbed, capitalise, color } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -14,13 +14,15 @@ export class WOTD {
      */
     @Slash({ description: 'Display the Word of the Day' })
     async wotd(interaction: CommandInteraction, client: Client): Promise<void> {
+        if (!interaction.channel || interaction.channel.type !== ChannelType.GuildText) {
+            return;
+        }
+
         const replEm = (str: string) => {
             const boldStart = /<em>/g;
             const boldEnd = /<\/em>/g;
             const nonLinkBold = /em>/g;
-            return str.replace(boldStart, '**')
-                .replace(boldEnd, '**')
-                .replace(nonLinkBold, '**');
+            return str.replace(boldStart, '**').replace(boldEnd, '**').replace(nonLinkBold, '**');
         };
 
         try {
@@ -43,7 +45,7 @@ export class WOTD {
             const syllablesFetch = $('.word-syllables');
             const syllables = syllablesFetch.text();
 
-            const arr = [];
+            const arr: { name: string; value: string }[] = [];
 
             const wordDef = $('.wod-definition-container');
             if (wordDef.length) {
@@ -61,7 +63,8 @@ export class WOTD {
             const wordEx = $('.wod-definition-container p:eq(1)');
             if (wordEx.length) {
                 const def = wordEx.html();
-                const output = def?.substring(3)
+                const output = def
+                    ?.substring(3)
                     .replace(/<a href="([^"]+)">([^<]+)<\/a>/g, '[**$2**]($1)');
                 arr.push({
                     name: '**Example:**',
@@ -80,7 +83,13 @@ export class WOTD {
                 .addFields(...arr);
             interaction.channel!.send({ embeds: [embed] });
         } catch (error) {
-            await RagnarokEmbed(client, interaction, 'Error', `An error occurred\n${codeBlock('text', `${error}`)}`, true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `An error occurred\n${codeBlock('text', `${error}`)}`,
+                true
+            );
         }
     }
 }

@@ -1,7 +1,5 @@
-import { ArgsOf, Discord, On } from 'discordx';
-import {
-    ChannelType, EmbedBuilder, Guild, PermissionsBitField,
-} from 'discord.js';
+import { ChannelType, EmbedBuilder, Guild, PermissionsBitField } from 'discord.js';
+import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
 
 /**
@@ -21,13 +19,22 @@ export class InviteCreate {
             const logging = await Logging.findOne({ GuildId: invite.guild!.id });
             if (logging) {
                 // Fetch the logging channel
-                const chn = invite.guild?.channels.cache.get(logging.ChannelId) ?? await invite.guild?.channels.fetch(logging.ChannelId);
+                const chn =
+                    invite.guild?.channels.cache.get(logging.ChannelId) ??
+                    (await invite.guild?.channels.fetch(logging.ChannelId));
 
                 // Check if the channel exists, is a text channel, and has the necessary permissions to send messages
-                if (chn && chn.type === ChannelType.GuildText
-                    && chn.permissionsFor(chn.guild.members.me!)
-                        .has(PermissionsBitField.Flags.SendMessages)) {
-                    const expiry = invite.maxAge !== 0 ? `<t:${Math.floor(Date.now() / 1000) + invite.maxAge!}:R>` : '`Never`';
+                if (
+                    chn &&
+                    chn.type === ChannelType.GuildText &&
+                    chn
+                        .permissionsFor(chn.guild.members.me!)
+                        .has(PermissionsBitField.Flags.SendMessages)
+                ) {
+                    const expiry =
+                        invite.maxAge !== 0
+                            ? `<t:${Math.floor(Date.now() / 1000) + invite.maxAge!}:R>`
+                            : '`Never`';
 
                     const embed = new EmbedBuilder()
                         .setColor('#FE4611')
@@ -36,7 +43,7 @@ export class InviteCreate {
                             iconURL: `${invite.guild!.iconURL()}`,
                         })
                         .setDescription(
-                            `**Created By:** ${invite.inviter}\n**Expires:** ${expiry}\n**Location:** ${invite.channel}\n**Invite:** https://discord.gg/${invite.code}`,
+                            `**Created By:** ${invite.inviter}\n**Expires:** ${expiry}\n**Location:** ${invite.channel}\n**Invite:** https://discord.gg/${invite.code}`
                         )
                         .setFooter({ text: `ID: ${invite.code}` })
                         .setTimestamp();

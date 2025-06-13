@@ -1,18 +1,20 @@
-import {
-    ArgsOf, Client, Discord, On,
-} from 'discordx';
-import {
-    ActivityType, AttachmentBuilder, ChannelType, EmbedBuilder, PermissionsBitField,
-} from 'discord.js';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { createCanvas, loadImage, registerFont } from 'canvas';
+import {
+    ActivityType,
+    AttachmentBuilder,
+    ChannelType,
+    EmbedBuilder,
+    PermissionsBitField,
+} from 'discord.js';
+import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import ordinal from 'ordinal';
-import { readFileSync } from 'fs';
-import path from 'path';
-import { color } from '../utils/Util.js';
-import Tickets from '../mongo/Tickets.js';
-import Welcome from '../mongo/Welcome.js';
 import AutoRole from '../mongo/AutoRole.js';
 import Logging from '../mongo/Logging.js';
+import Tickets from '../mongo/Tickets.js';
+import Welcome from '../mongo/Welcome.js';
+import { color } from '../utils/Util.js';
 
 registerFont('./assets/canvas/fonts/Handlee-Regular.ttf', {
     family: 'Handlee',
@@ -39,8 +41,9 @@ export class GuildMemberAdd {
         client.user?.setActivity({
             type: ActivityType.Watching,
             name: `${client.guilds.cache.size.toLocaleString('en')} Guilds
-            ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0)
-        .toLocaleString('en')} Users`,
+            ${client.guilds.cache
+                .reduce((a, b) => a + b.memberCount, 0)
+                .toLocaleString('en')} Users`,
         });
 
         async function checkTicket() {
@@ -80,7 +83,9 @@ export class GuildMemberAdd {
         async function sendWelcomeMessage() {
             const welcome = await Welcome.findOne({ GuildId: member.guild.id });
 
-            if (!welcome) return;
+            if (!welcome) {
+                return;
+            }
 
             const welcomeId = welcome.ChannelId;
             const channel = member.guild.channels.cache.get(welcomeId);
@@ -119,7 +124,11 @@ export class GuildMemberAdd {
 
             ctx.font = '15px Montserrat';
             ctx.textAlign = 'left';
-            ctx.fillText(`${ordinal(member.guild.memberCount - member.guild.members.cache.filter((mem: { user: { bot: boolean; }; }) => mem.user.bot).size)} member!`, 3.5, 45);
+            ctx.fillText(
+                `${ordinal(member.guild.memberCount - member.guild.members.cache.filter((mem: { user: { bot: boolean } }) => mem.user.bot).size)} member!`,
+                3.5,
+                45
+            );
 
             // Avatar
             ctx.beginPath();
@@ -142,10 +151,14 @@ export class GuildMemberAdd {
         async function addUserRole() {
             const autoRole = await AutoRole.findOne({ GuildId: member.guild.id });
 
-            if (!autoRole || !autoRole.Role) return;
+            if (!autoRole || !autoRole.Role) {
+                return;
+            }
 
             const role = member.guild.roles.cache.get(autoRole.Role);
-            if (!role) return;
+            if (!role) {
+                return;
+            }
 
             if (!member.guild!.members.me!.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
                 await AutoRole.deleteMany({ GuildId: member.guild.id });
@@ -160,11 +173,18 @@ export class GuildMemberAdd {
         const logging = await Logging.findOne({ GuildId: member.guild.id });
         if (logging) {
             // Fetch the logging channel
-            const channel = member.guild?.channels.cache.get(logging.ChannelId) ?? await member.guild?.channels.fetch(logging.ChannelId);
+            const channel =
+                member.guild?.channels.cache.get(logging.ChannelId) ??
+                (await member.guild?.channels.fetch(logging.ChannelId));
 
             // Check if the channel exists, is a text channel, and has the necessary permissions to send messages
-            if (channel && channel.type === ChannelType.GuildText
-                && channel.permissionsFor(channel.guild.members.me!).has(PermissionsBitField.Flags.SendMessages)) {
+            if (
+                channel &&
+                channel.type === ChannelType.GuildText &&
+                channel
+                    .permissionsFor(channel.guild.members.me!)
+                    .has(PermissionsBitField.Flags.SendMessages)
+            ) {
                 // Create an embed with information about the joined member
                 const embed = new EmbedBuilder()
                     .setColor('#FE4611')
@@ -174,29 +194,31 @@ export class GuildMemberAdd {
                         iconURL: `${member.user.displayAvatarURL()}`,
                     })
                     .setDescription(
-                        `${member} - \`@${member.user.tag}${member.user.discriminator !== '0' ? `#${member.user.discriminator}` : ''}\``,
+                        `${member} - \`@${member.user.tag}${member.user.discriminator !== '0' ? `#${member.user.discriminator}` : ''}\``
                     )
                     .addFields(
                         {
                             name: 'Account Age',
                             value: `<t:${Math.round(
-                                member.user.createdTimestamp / 1000,
+                                member.user.createdTimestamp / 1000
                             )}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)`,
                             inline: true,
                         },
                         {
                             name: 'Joined',
                             value: `<t:${Math.round(
-                                member.joinedTimestamp! / 1000,
+                                member.joinedTimestamp! / 1000
                             )}> - (<t:${Math.round(member.joinedTimestamp! / 1000)}:R>)`,
                             inline: true,
-                        },
+                        }
                     )
                     .setFooter({ text: `ID: ${member.user.id}` })
                     .setTimestamp();
 
                 // Send the embed to the logging channel
-                if (channel) channel.send({ embeds: [embed] });
+                if (channel) {
+                    channel.send({ embeds: [embed] });
+                }
             }
         }
     }

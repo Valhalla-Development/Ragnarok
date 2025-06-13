@@ -1,7 +1,5 @@
-import { ArgsOf, Discord, On } from 'discordx';
-import {
-    ChannelType, EmbedBuilder, Guild, PermissionsBitField,
-} from 'discord.js';
+import { ChannelType, EmbedBuilder, Guild, PermissionsBitField } from 'discord.js';
+import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
 
 /**
@@ -21,21 +19,25 @@ export class InviteDelete {
             const logging = await Logging.findOne({ GuildId: invite.guild!.id });
             if (logging) {
                 // Fetch the logging channel
-                const chn = invite.guild?.channels.cache.get(logging.ChannelId) ?? await invite.guild?.channels.fetch(logging.ChannelId);
+                const chn =
+                    invite.guild?.channels.cache.get(logging.ChannelId) ??
+                    (await invite.guild?.channels.fetch(logging.ChannelId));
 
                 // Check if the channel exists, is a text channel, and has the necessary permissions to send messages
-                if (chn && chn.type === ChannelType.GuildText
-                    && chn.permissionsFor(chn.guild.members.me!)
-                        .has(PermissionsBitField.Flags.SendMessages)) {
+                if (
+                    chn &&
+                    chn.type === ChannelType.GuildText &&
+                    chn
+                        .permissionsFor(chn.guild.members.me!)
+                        .has(PermissionsBitField.Flags.SendMessages)
+                ) {
                     const embed = new EmbedBuilder()
                         .setColor('#FE4611')
                         .setAuthor({
                             name: 'Invite Deleted',
                             iconURL: `${invite.guild!.iconURL()}`,
                         })
-                        .setDescription(
-                            `**Invite:** https://discord.gg/${invite.code}`,
-                        )
+                        .setDescription(`**Invite:** https://discord.gg/${invite.code}`)
                         .setFooter({ text: `ID: ${invite.code}` })
                         .setTimestamp();
 

@@ -1,8 +1,10 @@
-import {
-    Client, Discord, Slash, SlashOption,
-} from 'discordx';
-import { ApplicationCommandOptionType, CommandInteraction, GuildMember } from 'discord.js';
 import { Category } from '@discordx/utilities';
+import {
+    ApplicationCommandOptionType,
+    type CommandInteraction,
+    type GuildMember,
+} from 'discord.js';
+import { type Client, Discord, Slash, SlashOption } from 'discordx';
 import Balance from '../../mongo/Balance.js';
 import { RagnarokEmbed } from '../../utils/Util.js';
 
@@ -24,7 +26,7 @@ export class Give {
             type: ApplicationCommandOptionType.User,
             required: true,
         })
-            user: GuildMember,
+        user: GuildMember,
         @SlashOption({
             description: 'Amount to give the user',
             name: 'amount',
@@ -32,9 +34,9 @@ export class Give {
             required: true,
             minValue: 10,
         })
-            amount: number,
-            interaction: CommandInteraction,
-            client: Client,
+        amount: number,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         const balance = await Balance.findOneAndUpdate(
             { IdJoined: `${interaction.user.id}-${interaction.guild!.id}` },
@@ -42,7 +44,7 @@ export class Give {
             {
                 upsert: true,
                 new: true,
-            },
+            }
         );
 
         const otherB = await Balance.findOneAndUpdate(
@@ -51,31 +53,61 @@ export class Give {
             {
                 upsert: true,
                 new: true,
-            },
+            }
         );
 
         if (!balance) {
-            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try again.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred, please try again.',
+                true
+            );
             return;
         }
 
         if (user.id === interaction.user.id) {
-            await RagnarokEmbed(client, interaction, 'Error', 'You can\'t give yourself money. <:wut:745408596233289839>', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                "You can't give yourself money. <:wut:745408596233289839>",
+                true
+            );
             return;
         }
 
         if (!otherB) {
-            await RagnarokEmbed(client, interaction, 'Error', `${user} does not have an economy account. They will instantly open one when they send a message within this guild.`, true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `${user} does not have an economy account. They will instantly open one when they send a message within this guild.`,
+                true
+            );
             return;
         }
 
         if (balance.Bank === 0) {
-            await RagnarokEmbed(client, interaction, 'Error', 'You only have <:coin:706659001164628008>', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'You only have <:coin:706659001164628008>',
+                true
+            );
             return;
         }
 
         if (amount > balance.Bank) {
-            await RagnarokEmbed(client, interaction, 'Error', `\`${balance.Bank.toLocaleString('en')}\`\nPlease try again with a valid amount.`, true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `\`${balance.Bank.toLocaleString('en')}\`\nPlease try again with a valid amount.`,
+                true
+            );
             return;
         }
 
@@ -87,6 +119,11 @@ export class Give {
         balance.Total -= amount;
         await balance.save();
 
-        await RagnarokEmbed(client, interaction, 'Success', `You have paid ${user} the sum of: <:coin:706659001164628008> \`${amount.toLocaleString('en')}\``);
+        await RagnarokEmbed(
+            client,
+            interaction,
+            'Success',
+            `You have paid ${user} the sum of: <:coin:706659001164628008> \`${amount.toLocaleString('en')}\``
+        );
     }
 }

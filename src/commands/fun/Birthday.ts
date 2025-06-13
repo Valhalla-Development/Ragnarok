@@ -1,15 +1,16 @@
-import {
-    Client, Discord, Slash, SlashGroup, SlashOption,
-} from 'discordx';
-import {
-    ApplicationCommandOptionType, CommandInteraction, EmbedBuilder, GuildMember,
-} from 'discord.js';
 import { Category } from '@discordx/utilities';
+import {
+    ApplicationCommandOptionType,
+    type CommandInteraction,
+    EmbedBuilder,
+    type GuildMember,
+} from 'discord.js';
+import { type Client, Discord, Slash, SlashGroup, SlashOption } from 'discordx';
 import moment from 'moment';
 import ms from 'ms';
 import BirthdayConfig from '../../mongo/BirthdayConfig.js';
 import Birthdays from '../../mongo/Birthdays.js';
-import { color, RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokEmbed, color } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -22,21 +23,30 @@ export class Birthday {
      * @param client - The Discord client.
      * @param user - Optional user to fetch
      */
-    @Slash({ description: 'View the birthday of the author of the interaction or a specified user.', name: 'view' })
+    @Slash({
+        description: 'View the birthday of the author of the interaction or a specified user.',
+        name: 'view',
+    })
     async view(
         @SlashOption({
             description: 'View birthday of a user',
             name: 'user',
             type: ApplicationCommandOptionType.User,
         })
-            user: GuildMember,
-            interaction: CommandInteraction,
-            client: Client,
+        user: GuildMember,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         const birthdayConfigDB = await BirthdayConfig.findOne({ GuildId: interaction.guild!.id });
 
         if (!birthdayConfigDB) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Birthdays are currently disabled on this server. An admin may need to enable this feature by running `/config birthday`.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Birthdays are currently disabled on this server. An admin may need to enable this feature by running `/config birthday`.',
+                true
+            );
             return;
         }
 
@@ -45,7 +55,13 @@ export class Birthday {
         const birthdayDB = await Birthdays.findOne({ UserId: member.id });
 
         if (!birthdayDB) {
-            await RagnarokEmbed(client, interaction, 'Error', `${member} does not have a birthday set!`, true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `${member} does not have a birthday set!`,
+                true
+            );
             return;
         }
 
@@ -57,7 +73,12 @@ export class Birthday {
         const timeUntilNextBirthday = moment.duration(nextBirthdayDate.diff(moment())).humanize();
         const nextBirthdayFormatted = nextBirthdayDate.format('MMMM Do');
 
-        await RagnarokEmbed(client, interaction, '🎉', `${member}'s **next** birthday is in **${timeUntilNextBirthday}**, on **${nextBirthdayFormatted}**.`);
+        await RagnarokEmbed(
+            client,
+            interaction,
+            '🎉',
+            `${member}'s **next** birthday is in **${timeUntilNextBirthday}**, on **${nextBirthdayFormatted}**.`
+        );
     }
 
     /**
@@ -74,14 +95,20 @@ export class Birthday {
             required: true,
             type: ApplicationCommandOptionType.String,
         })
-            date: string,
-            interaction: CommandInteraction,
-            client: Client,
+        date: string,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         const validateDate = moment(date, 'MM/DD/YYYY', true).isValid();
 
         if (!validateDate) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Please input a valid date! Input should be in the format `MM/DD/YYYY`. For example: `12/31/2024`', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Please input a valid date! Input should be in the format `MM/DD/YYYY`. For example: `12/31/2024`',
+                true
+            );
             return;
         }
 
@@ -89,17 +116,28 @@ export class Birthday {
         const now = moment();
 
         if (birthdayUpd.isAfter(now)) {
-            await RagnarokEmbed(client, interaction, 'Error', `You tried to set your birthday to: \`${date}\`. However, that date is in the future <:wut:745408596233289839>`, true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `You tried to set your birthday to: \`${date}\`. However, that date is in the future <:wut:745408596233289839>`,
+                true
+            );
             return;
         }
 
         await Birthdays.findOneAndUpdate(
             { UserId: interaction.user.id },
             { Date: date, UserId: interaction.user.id, LastRun: null },
-            { upsert: true, new: true },
+            { upsert: true, new: true }
         );
 
-        await RagnarokEmbed(client, interaction, 'Success', `Your birthday has been successfully set to \`${date}\`.`);
+        await RagnarokEmbed(
+            client,
+            interaction,
+            'Success',
+            `Your birthday has been successfully set to \`${date}\`.`
+        );
     }
 
     /**
@@ -112,11 +150,22 @@ export class Birthday {
         const birthdayDB = await Birthdays.findOneAndDelete({ UserId: interaction.user.id });
 
         if (!birthdayDB) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Unable to locate your birthday in the database.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Unable to locate your birthday in the database.',
+                true
+            );
             return;
         }
 
-        await RagnarokEmbed(client, interaction, 'Success', 'Your birthday has been successfully removed from the database.');
+        await RagnarokEmbed(
+            client,
+            interaction,
+            'Success',
+            'Your birthday has been successfully removed from the database.'
+        );
     }
 
     /**
@@ -139,7 +188,13 @@ export class Birthday {
         });
 
         if (!filteredRows.length) {
-            await RagnarokEmbed(client, interaction, 'Error', 'There are no users with a defined birthday within this guild.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'There are no users with a defined birthday within this guild.',
+                true
+            );
             return;
         }
 
@@ -162,12 +217,15 @@ export class Birthday {
 
         // Create paginated embeds
         const itemsPerPage = 10;
-        const embeds = [];
+        const embeds: EmbedBuilder[] = [];
         for (let i = 0; i < sortedRows.length; i += itemsPerPage) {
             const pageRows = sortedRows.slice(i, i + itemsPerPage);
 
             const embed = new EmbedBuilder()
-                .setAuthor({ name: `Birthdays for ${interaction.guild!.name}`, iconURL: `${interaction.guild!.iconURL()}` })
+                .setAuthor({
+                    name: `Birthdays for ${interaction.guild!.name}`,
+                    iconURL: `${interaction.guild!.iconURL()}`,
+                })
                 .setColor(color(interaction.guild!.members.me!.displayHexColor));
 
             const userField = pageRows
@@ -181,39 +239,45 @@ export class Birthday {
                 })
                 .join('\n');
 
-            const dateField = pageRows.map((row) => {
-                const date = moment(row.Date, 'MM/DD/YYYY').format('Do MMMM');
-                return `\`${date}\``;
-            }).join('\n');
+            const dateField = pageRows
+                .map((row) => {
+                    const date = moment(row.Date, 'MM/DD/YYYY').format('Do MMMM');
+                    return `\`${date}\``;
+                })
+                .join('\n');
 
-            const countdownField = pageRows.map((row) => {
-                let year;
+            const countdownField = pageRows
+                .map((row) => {
+                    let year: number;
 
-                const bdayNow = moment();
-                const nextBirthday = row.Date.slice(0, row.Date.length - 4);
+                    const bdayNow = moment();
+                    const nextBirthday = row.Date.slice(0, row.Date.length - 4);
 
-                const birthdayNext = new Date(nextBirthday + bdayNow.year());
-                const getNow = new Date();
-                if (birthdayNext > getNow) {
-                    year = bdayNow.year();
-                } else {
-                    year = bdayNow.year() + 1;
-                }
+                    const birthdayNext = new Date(nextBirthday + bdayNow.year());
+                    const getNow = new Date();
+                    if (birthdayNext > getNow) {
+                        year = bdayNow.year();
+                    } else {
+                        year = bdayNow.year() + 1;
+                    }
 
-                const then = moment(nextBirthday + year, 'MM/DD/YYYY');
-                const diffInMilliseconds = then.diff(bdayNow);
+                    const then = moment(nextBirthday + year, 'MM/DD/YYYY');
+                    const diffInMilliseconds = then.diff(bdayNow);
 
-                return `\`${ms(diffInMilliseconds, { long: true })}\``;
-            }).join('\n');
+                    return `\`${ms(diffInMilliseconds, { long: true })}\``;
+                })
+                .join('\n');
 
             embed.addFields(
                 { name: 'User', value: userField, inline: true },
                 { name: 'Date', value: dateField, inline: true },
-                { name: 'In', value: countdownField, inline: true },
+                { name: 'In', value: countdownField, inline: true }
             );
 
             if (sortedRows.length > itemsPerPage) {
-                embed.setFooter({ text: `Page ${Math.floor(i / itemsPerPage) + 1}/${Math.ceil(sortedRows.length / itemsPerPage)}` });
+                embed.setFooter({
+                    text: `Page ${Math.floor(i / itemsPerPage) + 1}/${Math.ceil(sortedRows.length / itemsPerPage)}`,
+                });
             }
 
             embeds.push(embed);

@@ -1,23 +1,27 @@
-import {
-    Client, Discord, Guard, Slash, SlashChoice, SlashOption,
-} from 'discordx';
+import { Category } from '@discordx/utilities';
 import {
     ActionRowBuilder,
     ApplicationCommandOptionType,
     ButtonBuilder,
     ButtonStyle,
-    codeBlock,
-    CommandInteraction,
+    type CommandInteraction,
     EmbedBuilder,
-    GuildMember,
-    GuildMemberRoleManager,
+    type GuildMember,
+    type GuildMemberRoleManager,
     PermissionsBitField,
+    codeBlock,
 } from 'discord.js';
-import { Category } from '@discordx/utilities';
+import { type Client, Discord, Guard, Slash, SlashChoice, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
-import { color, RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokEmbed, color } from '../../utils/Util.js';
 
-type DeleteTimeKey = 'Previous Hour' | 'Previous 6 Hours' | 'Previous 12 Hours' | 'Previous 24 Hours' | 'Previous 3 Days' | 'Previous 7 Days';
+type DeleteTimeKey =
+    | 'Previous Hour'
+    | 'Previous 6 Hours'
+    | 'Previous 12 Hours'
+    | 'Previous 24 Hours'
+    | 'Previous 3 Days'
+    | 'Previous 7 Days';
 
 @Discord()
 @Category('Moderation')
@@ -42,13 +46,13 @@ export class Ban {
             required: true,
             type: ApplicationCommandOptionType.User,
         })
-            user: GuildMember,
+        user: GuildMember,
         @SlashOption({
             description: 'Provide a reason for the ban.',
             name: 'reason',
             type: ApplicationCommandOptionType.String,
         })
-            reason: string,
+        reason: string,
         @SlashChoice({ name: 'Previous Hour', value: 'delete1h' })
         @SlashChoice({ name: 'Previous 6 Hours', value: 'delete6h' })
         @SlashChoice({ name: 'Previous 12 Hours', value: 'delete12h' })
@@ -60,9 +64,9 @@ export class Ban {
             name: 'delete_messages',
             type: ApplicationCommandOptionType.String,
         })
-            deleteMessages: DeleteTimeKey,
-            interaction: CommandInteraction,
-            client: Client,
+        deleteMessages: DeleteTimeKey,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         const deleteTime = {
             'Previous Hour': 3600,
@@ -84,15 +88,21 @@ export class Ban {
         // Check if the user has a role that is higher than the message author
         const memberRoles = interaction.member!.roles as GuildMemberRoleManager;
         if (user.roles.highest.position >= memberRoles.highest.position) {
-            await RagnarokEmbed(client, interaction, 'Error', 'You cannot ban someone with a higher role than yourself!', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'You cannot ban someone with a higher role than yourself!',
+                true
+            );
             return;
         }
 
         // Check if user is bannable
         if (
-            user.permissions.has(PermissionsBitField.Flags.ManageGuild)
-            || user.permissions.has(PermissionsBitField.Flags.Administrator)
-            || !user.bannable
+            user.permissions.has(PermissionsBitField.Flags.ManageGuild) ||
+            user.permissions.has(PermissionsBitField.Flags.Administrator) ||
+            !user.bannable
         ) {
             await RagnarokEmbed(client, interaction, 'Error', `You cannot ban ${user}`, true);
             return;
@@ -100,14 +110,25 @@ export class Ban {
 
         // Check if user is the bot
         if (user.id === client.user?.id) {
-            await RagnarokEmbed(client, interaction, 'Error', 'You cannot ban me. :slight_frown:', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'You cannot ban me. :slight_frown:',
+                true
+            );
             return;
         }
 
         // Ban the user and send the embed
-        interaction.guild!.members.ban(user, { deleteMessageSeconds: deleteMessage, reason: `${reason || 'No reason given.'}` }).catch(async () => {
-            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred!', true);
-        });
+        interaction
+            .guild!.members.ban(user, {
+                deleteMessageSeconds: deleteMessage,
+                reason: `${reason || 'No reason given.'}`,
+            })
+            .catch(async () => {
+                await RagnarokEmbed(client, interaction, 'Error', 'An error occurred!', true);
+            });
 
         try {
             const authoMes = new EmbedBuilder()
@@ -130,7 +151,9 @@ export class Ban {
             .setColor('#FE4611')
             .setAuthor({ name: 'Member Banned', iconURL: user.user.displayAvatarURL() })
             .setThumbnail(user.user.displayAvatarURL())
-            .setDescription(`${user} - \`@${user.user.tag}${user.user.discriminator !== '0' ? `#${user.user.discriminator}` : ''}\``)
+            .setDescription(
+                `${user} - \`@${user.user.tag}${user.user.discriminator !== '0' ? `#${user.user.discriminator}` : ''}\``
+            )
             .setFooter({ text: `ID: ${user.id}` })
             .setTimestamp();
 
@@ -144,8 +167,7 @@ export class Ban {
             .setStyle(ButtonStyle.Danger)
             .setCustomId(`unban_Ban_${user.id}`);
 
-        const row = new ActionRowBuilder<ButtonBuilder>()
-            .addComponents(button);
+        const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
 
         const m = await interaction.reply({ embeds: [embed], components: [row] });
 
@@ -156,28 +178,51 @@ export class Ban {
                 const memberPerms = interaction.member!.permissions as PermissionsBitField;
 
                 if (!memberPerms.has(PermissionsBitField.Flags.BanMembers)) {
-                    await RagnarokEmbed(client, interaction, 'Error', 'You require the `Ban Members` permission to execute this command!', true);
+                    await RagnarokEmbed(
+                        client,
+                        interaction,
+                        'Error',
+                        'You require the `Ban Members` permission to execute this command!',
+                        true
+                    );
                 }
 
-                interaction.guild!.bans.fetch()
-                    .then(async (bans) => {
-                        if (bans.size === 0) {
-                            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, is the user banned?', true);
-                            return;
-                        }
+                interaction.guild!.bans.fetch().then(async (bans) => {
+                    if (bans.size === 0) {
+                        await RagnarokEmbed(
+                            client,
+                            interaction,
+                            'Error',
+                            'An error occurred, is the user banned?',
+                            true
+                        );
+                        return;
+                    }
 
-                        const bUser = bans.find((ban) => ban.user.id === user.id);
-                        if (!bUser) {
-                            await RagnarokEmbed(client, interaction, 'Error', 'The user specified is not banned.', true);
-                            return;
-                        }
+                    const bUser = bans.find((ban) => ban.user.id === user.id);
+                    if (!bUser) {
+                        await RagnarokEmbed(
+                            client,
+                            interaction,
+                            'Error',
+                            'The user specified is not banned.',
+                            true
+                        );
+                        return;
+                    }
 
-                        await interaction.guild!.members.unban(bUser.user);
+                    await interaction.guild!.members.unban(bUser.user);
 
-                        collector.stop();
-                    });
+                    collector.stop();
+                });
             } catch (error) {
-                await RagnarokEmbed(client, interaction, 'Error', `An error occurred\n${codeBlock('text', `${error}`)}`, true);
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    `An error occurred\n${codeBlock('text', `${error}`)}`,
+                    true
+                );
             }
         });
 
@@ -191,7 +236,9 @@ export class Ban {
                     iconURL: user.displayAvatarURL(),
                 })
                 .setThumbnail(user.user.displayAvatarURL())
-                .setDescription(`${user} - \`@${user.user.tag}${user.user.discriminator !== '0' ? `#${user.user.discriminator}` : ''}\``)
+                .setDescription(
+                    `${user} - \`@${user.user.tag}${user.user.discriminator !== '0' ? `#${user.user.discriminator}` : ''}\``
+                )
                 .setFooter({ text: `ID: ${user.id}` })
                 .setTimestamp();
 

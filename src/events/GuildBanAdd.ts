@@ -1,7 +1,5 @@
-import { ArgsOf, Discord, On } from 'discordx';
-import {
-    AuditLogEvent, ChannelType, EmbedBuilder, PermissionsBitField,
-} from 'discord.js';
+import { AuditLogEvent, ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
 
 /**
@@ -20,33 +18,46 @@ export class GuildBanAdd {
         const logging = await Logging.findOne({ GuildId: ban.guild.id });
         if (logging) {
             // Fetch the logging channel
-            const channel = ban.guild?.channels.cache.get(logging.ChannelId) ?? await ban.guild?.channels.fetch(logging.ChannelId);
+            const channel =
+                ban.guild?.channels.cache.get(logging.ChannelId) ??
+                (await ban.guild?.channels.fetch(logging.ChannelId));
 
-            const entry = await ban.guild.fetchAuditLogs({ type: AuditLogEvent.MemberBanAdd }).then((audit) => audit.entries.first());
+            const entry = await ban.guild
+                .fetchAuditLogs({ type: AuditLogEvent.MemberBanAdd })
+                .then((audit) => audit.entries.first());
 
             // Check if the channel exists, is a text channel, and has the necessary permissions to send messages
-            if (channel && channel.type === ChannelType.GuildText
-                && channel.permissionsFor(channel.guild.members.me!).has(PermissionsBitField.Flags.SendMessages)) {
+            if (
+                channel &&
+                channel.type === ChannelType.GuildText &&
+                channel
+                    .permissionsFor(channel.guild.members.me!)
+                    .has(PermissionsBitField.Flags.SendMessages)
+            ) {
                 // Create an embed with information about the banned member
                 const embed = new EmbedBuilder()
                     .setColor('#FE4611')
                     .setAuthor({ name: 'Member Banned', iconURL: ban.user.displayAvatarURL() })
                     .setThumbnail(ban.user.displayAvatarURL())
-                    .setDescription(`${ban.user} - \`@${ban.user.tag}${ban.user.discriminator !== '0' ? `#${ban.user.discriminator}` : ''}\``)
+                    .setDescription(
+                        `${ban.user} - \`@${ban.user.tag}${ban.user.discriminator !== '0' ? `#${ban.user.discriminator}` : ''}\``
+                    )
                     .setFooter({ text: `ID: ${ban.user.id}` })
                     .setTimestamp();
 
                 // Add a field for the ban reason if it exists
-                if (entry && entry.reason) {
+                if (entry?.reason) {
                     embed.addFields({ name: 'Reason', value: `\`${entry.reason}\`` });
                 }
 
-                if (entry && entry.executor) {
+                if (entry?.executor) {
                     embed.addFields({ name: 'Moderator', value: `${entry.executor}` });
                 }
 
                 // Send the embed to the logging channel
-                if (channel) channel.send({ embeds: [embed] });
+                if (channel) {
+                    channel.send({ embeds: [embed] });
+                }
             }
         }
     }

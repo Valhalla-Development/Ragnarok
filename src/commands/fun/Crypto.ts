@@ -1,12 +1,10 @@
-import {
-    Client, Discord, Slash, SlashOption,
-} from 'discordx';
-import { ApplicationCommandOptionType, CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Category } from '@discordx/utilities';
+import axios from 'axios';
 // @ts-expect-error no type file available for this package
 import cryptocurrencies from 'cryptocurrencies';
-import axios from 'axios';
-import { capitalise, color, RagnarokEmbed } from '../../utils/Util.js';
+import { ApplicationCommandOptionType, type CommandInteraction, EmbedBuilder } from 'discord.js';
+import { type Client, Discord, Slash, SlashOption } from 'discordx';
+import { RagnarokEmbed, capitalise, color } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -26,15 +24,15 @@ export class Crypto {
             required: true,
             type: ApplicationCommandOptionType.String,
         })
-            crypto: string,
+        crypto: string,
         @SlashOption({
             description: 'Specify the currency to use (optional)',
             name: 'currency',
             type: ApplicationCommandOptionType.String,
         })
-            currency: string,
-            interaction: CommandInteraction,
-            client: Client,
+        currency: string,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         const symbolDict: { [key: string]: string } = {
             USD: '$',
@@ -80,13 +78,25 @@ export class Crypto {
         const cryptoUpperCase = crypto.toUpperCase();
 
         if (currency && !symbolDict[currency.toUpperCase()]) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Please enter a valid currency!', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Please enter a valid currency!',
+                true
+            );
             return;
         }
 
         const cryptoType = cryptocurrencies[cryptoUpperCase];
         if (!cryptoType) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Please enter a valid cryptocurrency!', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Please enter a valid cryptocurrency!',
+                true
+            );
             return;
         }
 
@@ -105,7 +115,12 @@ export class Crypto {
 
             // Check if the response contains valid data
             if (!Array.isArray(content) || content.length === 0 || !content[0].id) {
-                await RagnarokEmbed(client, interaction, 'Error', 'Please enter a valid cryptocurrency!');
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    'Please enter a valid cryptocurrency!'
+                );
                 return;
             }
 
@@ -126,7 +141,10 @@ export class Crypto {
 
             // Build and send the success embed
             const successEmb = new EmbedBuilder()
-                .setAuthor({ name: `${interaction.user.tag}`, iconURL: `${interaction.user.avatarURL()}` })
+                .setAuthor({
+                    name: `${interaction.user.tag}`,
+                    iconURL: `${interaction.user.avatarURL()}`,
+                })
                 .setColor(color(interaction.guild!.members.me!.displayHexColor))
                 .setThumbnail(image)
                 .addFields({
@@ -142,8 +160,13 @@ export class Crypto {
                 });
 
             await interaction.editReply({ embeds: [successEmb] });
-        } catch (error) {
-            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred while processing your request.');
+        } catch (_error) {
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred while processing your request.'
+            );
         }
     }
 }

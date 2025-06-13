@@ -1,7 +1,5 @@
-import {
-    ArgsOf, Client, Discord, On,
-} from 'discordx';
 import { ActivityType } from 'discord.js';
+import { type ArgsOf, type Client, Discord, On } from 'discordx';
 
 /**
  * Discord.js GuildCreate event handler.
@@ -23,6 +21,8 @@ export class GuildCreate {
             ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
         });
 
-        console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
+        console.log(
+            `New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`
+        );
     }
 }

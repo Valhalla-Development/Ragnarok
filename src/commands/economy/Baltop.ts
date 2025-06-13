@@ -1,6 +1,6 @@
-import { Client, Discord, Slash } from 'discordx';
-import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Category } from '@discordx/utilities';
+import { type CommandInteraction, EmbedBuilder } from 'discord.js';
+import { type Client, Discord, Slash } from 'discordx';
 import Balance from '../../mongo/Balance.js';
 import { color } from '../../utils/Util.js';
 
@@ -13,7 +13,7 @@ export class Baltop {
      * @param client - The Discord client.
      */
     @Slash({ description: 'Access to the economy module' })
-    async baltop(interaction: CommandInteraction, client: Client): Promise<void> {
+    async baltop(interaction: CommandInteraction, _client: Client): Promise<void> {
         const top10 = await Balance.find({ GuildId: interaction.guild!.id })
             .sort({ Total: -1 })
             .limit(10);
@@ -22,26 +22,28 @@ export class Baltop {
             return;
         }
 
-        let userNames: string = '';
-        let balance: string = '';
+        let userNames = '';
+        let balance = '';
 
-        await Promise.all(top10.map(async (data, index) => {
-            let fetchUser = interaction.guild!.members.cache.get(data.UserId);
+        await Promise.all(
+            top10.map(async (data, index) => {
+                let fetchUser = interaction.guild!.members.cache.get(data.UserId);
 
-            if (!fetchUser) {
-                try {
-                    fetchUser = await interaction.guild!.members.fetch(data.UserId);
-                } catch {
-                    // Do nothing because I am a monster
+                if (!fetchUser) {
+                    try {
+                        fetchUser = await interaction.guild!.members.fetch(data.UserId);
+                    } catch {
+                        // Do nothing because I am a monster
+                    }
                 }
-            }
 
-            if (fetchUser) {
-                userNames += `\`${index + 1}\` ${fetchUser}\n`;
+                if (fetchUser) {
+                    userNames += `\`${index + 1}\` ${fetchUser}\n`;
 
-                balance += `<:coin:706659001164628008> \`${data.Total}\`\n`;
-            }
-        }));
+                    balance += `<:coin:706659001164628008> \`${data.Total}\`\n`;
+                }
+            })
+        );
 
         const embed = new EmbedBuilder()
             .setAuthor({
@@ -59,7 +61,7 @@ export class Baltop {
                     name: 'Balance',
                     value: balance,
                     inline: true,
-                },
+                }
             );
         await interaction.reply({ embeds: [embed] });
     }

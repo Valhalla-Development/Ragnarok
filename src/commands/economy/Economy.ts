@@ -1,8 +1,6 @@
-import {
-    ButtonComponent, Client, Discord, ModalComponent, Slash,
-} from 'discordx';
-import { ButtonInteraction, CommandInteraction, ModalSubmitInteraction } from 'discord.js';
 import { Category } from '@discordx/utilities';
+import type { ButtonInteraction, CommandInteraction, ModalSubmitInteraction } from 'discord.js';
+import { ButtonComponent, type Client, Discord, ModalComponent, Slash } from 'discordx';
 import { Economy } from '../../utils/Economy.js';
 import { RagnarokEmbed } from '../../utils/Util.js';
 
@@ -37,12 +35,24 @@ export class EconomyCommand {
     @ButtonComponent({ id: /^economy_.*/ })
     async buttonInteraction(interaction: ButtonInteraction, client: Client) {
         if (this.user !== interaction.user.id) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Only the command executor can select an option.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Only the command executor can select an option.',
+                true
+            );
             return;
         }
 
         if (!this.instance) {
-            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try running the economy command again.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred, please try running the economy command again.',
+                true
+            );
             return;
         }
 
@@ -53,15 +63,23 @@ export class EconomyCommand {
             ['baltop', async () => this.instance?.baltop(interaction, client)],
             ['deposit', async () => this.instance?.deposit(interaction, client)],
             ['claim', async () => this.instance?.claim(interaction, client)],
-            ['coinflip', async () => {
-                await this.instance?.coinflip(interaction, client, button[2] ? this.coinflipAmount : null, button[2] || null);
-            }],
+            [
+                'coinflip',
+                async () => {
+                    await this.instance?.coinflip(
+                        interaction,
+                        client,
+                        button[2] ? this.coinflipAmount : null,
+                        button[2] || null
+                    );
+                },
+            ],
             ['farm', async () => this.instance?.farm(interaction, client)],
             ['fish', async () => this.instance?.fish(interaction, client)],
-            ['harvest', async () => this.instance?.harvest(interaction, client)],
+            //['harvest', async () => this.instance?.harvest(interaction, client)], TODO: Implement harvest command
         ]);
 
-        const selectedAction = actionMap.get(button[1]);
+        const selectedAction = actionMap.get(button[1] as string);
 
         if (selectedAction) {
             await selectedAction();
@@ -76,7 +94,13 @@ export class EconomyCommand {
     @ModalComponent({ id: 'coinflipAmount' })
     async modalSubmit(interaction: ModalSubmitInteraction, client: Client): Promise<void> {
         if (!this.instance) {
-            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred, please try running the economy command again.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred, please try running the economy command again.',
+                true
+            );
             return;
         }
 

@@ -1,7 +1,5 @@
 import { dirname, importx } from '@discordx/importer';
-import {
-    ChannelType, codeBlock, EmbedBuilder, IntentsBitField, Partials,
-} from 'discord.js';
+import { ChannelType, EmbedBuilder, IntentsBitField, Partials, codeBlock } from 'discord.js';
 import { Client } from 'discordx';
 import 'dotenv/config';
 import { loadMongoEvents } from './utils/Util.js';
@@ -25,7 +23,13 @@ const client = new Client({
         IntentsBitField.Flags.DirectMessageReactions,
         IntentsBitField.Flags.GuildInvites,
     ],
-    partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message, Partials.Reaction],
+    partials: [
+        Partials.User,
+        Partials.Channel,
+        Partials.GuildMember,
+        Partials.Message,
+        Partials.Reaction,
+    ],
     silent: true,
     botGuilds: process.env.Dev === 'true' ? ['1109969181232877650'] : undefined,
 });
@@ -36,19 +40,25 @@ const client = new Client({
  * @returns void
  */
 process.on('unhandledRejection', async (error) => {
-    if (!error || !(error instanceof Error) || !error.stack) return;
+    if (!error || !(error instanceof Error) || !error.stack) {
+        return;
+    }
     console.error(error);
 
     if (process.env.Logging && process.env.Logging.toLowerCase() === 'true') {
-        if (!process.env.LoggingChannel) return;
+        if (!process.env.LoggingChannel) {
+            return;
+        }
 
         try {
             const channel = client.channels.cache.get(process.env.LoggingChannel);
-            if (!channel || channel.type !== ChannelType.GuildText) return;
+            if (!channel || channel.type !== ChannelType.GuildText) {
+                return;
+            }
 
             const typeOfError = error.stack.split(':')[0];
             const fullError = error.stack.replace(/^[^:]+:/, '').trimStart();
-            const timeOfError = `<t:${Math.floor(new Date().getTime() / 1000)}>`;
+            const timeOfError = `<t:${Math.floor(Date.now() / 1000)}>`;
             const fullString = `From: \`${typeOfError}\`\nTime: ${timeOfError}\n\nError:\n${codeBlock('js', fullError)}`;
 
             function truncateDescription(description: string) {
@@ -60,7 +70,9 @@ process.on('unhandledRejection', async (error) => {
                 return description;
             }
 
-            const embed = new EmbedBuilder().setTitle('Error').setDescription(truncateDescription(fullString));
+            const embed = new EmbedBuilder()
+                .setTitle('Error')
+                .setDescription(truncateDescription(fullString));
 
             await channel.send({ embeds: [embed] });
         } catch (sendError) {
@@ -77,21 +89,30 @@ process.on('unhandledRejection', async (error) => {
  */
 async function run() {
     const missingTokenError = 'Error: The Token environment variable is missing.';
-    const invalidLoggingValueError = 'Error: The Logging environment variable must be set to either "true" or "false".';
-    const invalidLoggingChannel = 'Error: Please specify the LoggingChannel environment variable when logging is enabled.';
+    const invalidLoggingValueError =
+        'Error: The Logging environment variable must be set to either "true" or "false".';
+    const invalidLoggingChannel =
+        'Error: Please specify the LoggingChannel environment variable when logging is enabled.';
 
-    if (!process.env.Token) throw new Error(missingTokenError);
-    if (process.env.Logging === 'true' && !process.env.LoggingChannel) throw new Error(invalidLoggingChannel);
-    if (process.env.Logging !== 'true' && process.env.Logging !== 'false') throw new Error(invalidLoggingValueError);
+    if (!process.env.Token) {
+        throw new Error(missingTokenError);
+    }
+    if (process.env.Logging === 'true' && !process.env.LoggingChannel) {
+        throw new Error(invalidLoggingChannel);
+    }
+    if (process.env.Logging !== 'true' && process.env.Logging !== 'false') {
+        throw new Error(invalidLoggingValueError);
+    }
 
     /**
      * Delays the execution of the function for a specified time in milliseconds.
      * @param ms - The time in milliseconds to delay the execution of the function.
      * @returns A promise that resolves after the specified time has passed.
      */
-    const sleep = (ms: number): Promise<void> => new Promise<void>((resolve) => {
-        setTimeout(resolve, ms);
-    });
+    const sleep = (ms: number): Promise<void> =>
+        new Promise<void>((resolve) => {
+            setTimeout(resolve, ms);
+        });
     const time = 200;
 
     /**

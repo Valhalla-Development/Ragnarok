@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
 /**
  * Represents a schema for storing the status of the Dad module within a guild..

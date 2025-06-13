@@ -1,13 +1,11 @@
-import {
-    Client, DApplicationCommand, Discord, MetadataStorage, Slash,
-} from 'discordx';
-import { CommandInteraction, EmbedBuilder } from 'discord.js';
-import { Category, ICategory } from '@discordx/utilities';
-import os from 'os';
+import os from 'node:os';
+import { Category, type ICategory } from '@discordx/utilities';
+import { type CommandInteraction, EmbedBuilder } from 'discord.js';
+import { type Client, type DApplicationCommand, Discord, MetadataStorage, Slash } from 'discordx';
 import si from 'systeminformation';
+import packageJson from '../../../package.json' assert { type: 'json' };
 import Announcement from '../../mongo/Announcement.js';
 import { color } from '../../utils/Util.js';
-import packageJson from '../../../package.json' assert { type: 'json' };
 
 @Discord()
 @Category('Miscellaneous')
@@ -21,7 +19,7 @@ export class Stats {
     async stats(interaction: CommandInteraction, client: Client): Promise<void> {
         // Fetch announcement from database
         const dbAnnouncements = await Announcement.find();
-        const announcement = dbAnnouncements.length ? dbAnnouncements[0].Message : 'N/A';
+        const announcement = dbAnnouncements.length ? dbAnnouncements[0]?.Message : 'N/A';
 
         // Retrieve system information
         const systemInfo = await si.get({
@@ -62,8 +60,8 @@ export class Stats {
                 **◎ 💾 Memory Usage:** \`${realMemUsed.toLocaleString('en')} / ${totalMemory.toLocaleString('en')}MB - ${memPercent.toFixed(1)}%\`
                 **◎ 💻 CPU:**
                 \u3000 \u3000 ⌨️ Cores: \`${os.cpus().length}\`
-                \u3000 \u3000 ⌨️ Model: \`${os.cpus()[0].model}\`
-                \u3000 \u3000 ⌨️ Speed: \`${os.cpus()[0].speed}MHz\`
+                \u3000 \u3000 ⌨️ Model: \`${os.cpus()[0]?.model}\`
+                \u3000 \u3000 ⌨️ Speed: \`${os.cpus()[0]?.speed}MHz\`
                 \u3000 \u3000 ⌨️ Usage: \`${systemInfo.currentLoad.currentLoadUser.toFixed(1)}%\``,
             })
             .addFields({ name: 'Announcement', value: `\`\`\`${announcement}\`\`\`` })

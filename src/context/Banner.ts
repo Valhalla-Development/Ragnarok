@@ -1,8 +1,11 @@
-import { Client, ContextMenu, Discord } from 'discordx';
 import {
-    ApplicationCommandType, EmbedBuilder, GuildMember, UserContextMenuCommandInteraction,
+    ApplicationCommandType,
+    EmbedBuilder,
+    type GuildMember,
+    type UserContextMenuCommandInteraction,
 } from 'discord.js';
-import { color, RagnarokEmbed } from '../utils/Util.js';
+import { type Client, ContextMenu, Discord } from 'discordx';
+import { RagnarokEmbed, color } from '../utils/Util.js';
 
 @Discord()
 export class BannerContext {
@@ -15,7 +18,10 @@ export class BannerContext {
         name: 'Banner',
         type: ApplicationCommandType.User,
     })
-    async bannerAvatar(interaction: UserContextMenuCommandInteraction, client: Client): Promise<void> {
+    async bannerAvatar(
+        interaction: UserContextMenuCommandInteraction,
+        client: Client
+    ): Promise<void> {
         const member = interaction.targetMember as GuildMember;
 
         try {
@@ -24,7 +30,13 @@ export class BannerContext {
             const banner = member.user.bannerURL({ size: 2048 });
 
             if (!banner) {
-                await RagnarokEmbed(client, interaction, 'Error', `${member} does not have a banner set.`, true);
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    `${member} does not have a banner set.`,
+                    true
+                );
                 return;
             }
 
@@ -33,8 +45,14 @@ export class BannerContext {
                 .setImage(banner)
                 .setColor(color(interaction.guild!.members.me!.displayHexColor));
             await interaction.reply({ embeds: [embed] });
-        } catch (error) {
-            await RagnarokEmbed(client, interaction, 'Error', `An error occurred fetching ${member}'s banner`, true);
+        } catch (_error) {
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `An error occurred fetching ${member}'s banner`,
+                true
+            );
         }
     }
 }

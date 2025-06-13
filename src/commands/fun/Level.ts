@@ -1,26 +1,30 @@
-import {
-    Client, Discord, Slash, SlashGroup, SlashOption,
-} from 'discordx';
-import {
-    ApplicationCommandOptionType, AttachmentBuilder, CommandInteraction, GuildMember,
-} from 'discord.js';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
 import { Category } from '@discordx/utilities';
 import { parse } from '@twemoji/parser';
-import { getCountryData, getEmojiFlag, TCountryCode } from 'countries-list';
+import { type Image, createCanvas, loadImage } from 'canvas';
+import { type TCountryCode, getCountryData, getEmojiFlag } from 'countries-list';
+import {
+    ApplicationCommandOptionType,
+    AttachmentBuilder,
+    type CommandInteraction,
+    type GuildMember,
+} from 'discord.js';
+import { type Client, Discord, Slash, SlashGroup, SlashOption } from 'discordx';
 // @ts-expect-error no type file available for this package
 import abbreviate from 'number-abbreviate';
 // @ts-expect-error no type file available for this package
 import converter from 'number-to-words-en';
-import { createCanvas, Image, loadImage } from 'canvas';
-import path from 'path';
-import { readFileSync } from 'fs';
-import LevelConfig from '../../mongo/LevelConfig.js';
 import Level from '../../mongo/Level.js';
-import { color, RagnarokEmbed } from '../../utils/Util.js';
+import LevelConfig from '../../mongo/LevelConfig.js';
+import { RagnarokEmbed, color } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
-@SlashGroup({ description: 'Displays the level of the interaction author or specified user', name: 'level' })
+@SlashGroup({
+    description: 'Displays the level of the interaction author or specified user',
+    name: 'level',
+})
 @SlashGroup('level')
 export class LevelCommand {
     /**
@@ -36,22 +40,34 @@ export class LevelCommand {
             name: 'user',
             type: ApplicationCommandOptionType.User,
         })
-            user: GuildMember,
-            interaction: CommandInteraction,
-            client: Client,
+        user: GuildMember,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         await interaction.deferReply();
 
         const member = user || interaction.member;
 
         if (member.user.bot) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Member does not have a level.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Member does not have a level.',
+                true
+            );
             return;
         }
 
         const score = await Level.findOne({ IdJoined: `${member.id}-${interaction.guild!.id}` });
         if (!score) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Member does not have a level.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Member does not have a level.',
+                true
+            );
             return;
         }
 
@@ -59,15 +75,19 @@ export class LevelCommand {
 
         const levelNoMinus = level + 1;
         const currentLvl = level;
-        const nxtLvlXp = (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
-        const currentxpLvl = (5 / 6) * currentLvl * (2 * currentLvl * currentLvl + 27 * currentLvl + 91);
+        const nxtLvlXp =
+            (5 / 6) * levelNoMinus * (2 * levelNoMinus * levelNoMinus + 27 * levelNoMinus + 91);
+        const currentxpLvl =
+            (5 / 6) * currentLvl * (2 * currentLvl * currentLvl + 27 * currentLvl + 91);
         const toLevel = Math.floor(nxtLvlXp - currentxpLvl);
         const inLevel = Math.floor(xp - currentxpLvl);
         const xpLevel = `${abbreviate(inLevel, 2)}/${abbreviate(toLevel, 2)} XP`;
         const xpPercent = (inLevel / toLevel) * 100;
 
         const getRank = await Level.find({ GuildId: interaction.guild!.id }).sort({ Xp: -1 });
-        const filterRank = getRank.find((b) => b.IdJoined === `${interaction.user.id}-${interaction.guild!.id}`);
+        const filterRank = getRank.find(
+            (b) => b.IdJoined === `${interaction.user.id}-${interaction.guild!.id}`
+        );
         const rankPos = converter.toOrdinal(getRank.indexOf(filterRank!) + 1);
 
         const canvas = createCanvas(934, 282);
@@ -78,18 +98,18 @@ export class LevelCommand {
         const fetchUser = await interaction.guild!.members.fetch(member.id);
         if (fetchUser.presence) {
             switch (fetchUser.presence.status) {
-            case 'online':
-                userStatusColor = '#43B581';
-                break;
-            case 'idle':
-                userStatusColor = '#FAA61A';
-                break;
-            case 'dnd':
-                userStatusColor = '#F04747';
-                break;
-            default:
-                userStatusColor = null;
-                break;
+                case 'online':
+                    userStatusColor = '#43B581';
+                    break;
+                case 'idle':
+                    userStatusColor = '#FAA61A';
+                    break;
+                case 'dnd':
+                    userStatusColor = '#F04747';
+                    break;
+                default:
+                    userStatusColor = null;
+                    break;
             }
         }
 
@@ -139,13 +159,17 @@ export class LevelCommand {
         const avatarGrab = member.user.displayAvatarURL({ extension: 'png' });
 
         class ProgressBar {
-            dim: { x: number, y: number, width: number, height: number };
+            dim: { x: number; y: number; width: number; height: number };
 
             color: string;
 
             percentage: number;
 
-            constructor(dimension: { x: number, y: number, width: number, height: number, }, colorC: string, percentage: number) {
+            constructor(
+                dimension: { x: number; y: number; width: number; height: number },
+                colorC: string,
+                percentage: number
+            ) {
                 this.dim = dimension;
                 this.color = colorC;
                 this.percentage = percentage / 100;
@@ -163,7 +187,7 @@ export class LevelCommand {
                         this.dim.height / 2 + this.dim.y,
                         this.dim.height / 2,
                         Math.PI - Math.acos((this.dim.height - p) / this.dim.height),
-                        Math.PI + Math.acos((this.dim.height - p) / this.dim.height),
+                        Math.PI + Math.acos((this.dim.height - p) / this.dim.height)
                     );
                     ctx.save();
 
@@ -174,14 +198,20 @@ export class LevelCommand {
                         this.dim.height / 2 + this.dim.y,
                         this.dim.height / 2,
                         Math.PI - Math.acos((this.dim.height - p) / this.dim.height),
-                        Math.PI + Math.acos((this.dim.height - p) / this.dim.height),
+                        Math.PI + Math.acos((this.dim.height - p) / this.dim.height)
                     );
                     ctx.restore();
                     ctx.closePath();
                 } else {
                     // draw left arc
                     ctx.beginPath();
-                    ctx.arc(this.dim.height / 2 + this.dim.x, this.dim.height / 2 + this.dim.y, this.dim.height / 2, Math.PI / 2, (3 / 2) * Math.PI);
+                    ctx.arc(
+                        this.dim.height / 2 + this.dim.x,
+                        this.dim.height / 2 + this.dim.y,
+                        this.dim.height / 2,
+                        Math.PI / 2,
+                        (3 / 2) * Math.PI
+                    );
 
                     // draw rectangle
                     ctx.lineTo(p - this.dim.height + this.dim.x, this.dim.y);
@@ -192,7 +222,7 @@ export class LevelCommand {
                         this.dim.height / 2 + this.dim.y,
                         this.dim.height / 2,
                         (3 / 2) * Math.PI,
-                        Math.PI / 2,
+                        Math.PI / 2
                     );
 
                     // close path
@@ -212,7 +242,7 @@ export class LevelCommand {
                 height: 36.5,
             },
             color(member.displayHexColor).toString(),
-            xpPercent,
+            xpPercent
         );
         progressbar.draw();
 
@@ -353,8 +383,7 @@ export class LevelCommand {
         ctx.save();
 
         const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: 'level.jpg' });
-        interaction.editReply({ files: [attachment] })
-            .catch((err) => console.error(err));
+        interaction.editReply({ files: [attachment] }).catch((err) => console.error(err));
     }
 
     /**
@@ -371,30 +400,47 @@ export class LevelCommand {
             required: true,
             type: ApplicationCommandOptionType.String,
         })
-            country: string,
-            interaction: CommandInteraction,
-            client: Client,
+        country: string,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         const levelConfig = await LevelConfig.findOne({ GuildId: interaction.guild!.id });
 
         if (levelConfig) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Level system is disabled for this guild!', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Level system is disabled for this guild!',
+                true
+            );
             return;
         }
 
         const score = await Level.findOneAndUpdate(
             { IdJoined: `${interaction.user.id}-${interaction.guild!.id}` },
             { $setOnInsert: { IdJoined: `${interaction.user.id}-${interaction.guild!.id}` } },
-            { upsert: true, new: true },
+            { upsert: true, new: true }
         );
 
         if (country === 'off') {
             if (!score || !score.Country) {
-                await RagnarokEmbed(client, interaction, 'Error', 'You do not have a country set.', true);
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    'You do not have a country set.',
+                    true
+                );
                 return;
             }
 
-            await RagnarokEmbed(client, interaction, 'Success', 'I have disabled your country flag.');
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Success',
+                'I have disabled your country flag.'
+            );
 
             score.Country = '';
             await score.save();
@@ -403,17 +449,41 @@ export class LevelCommand {
 
         const countryData = getCountryData(<TCountryCode>country.toUpperCase());
         if (!countryData) {
-            await RagnarokEmbed(client, interaction, 'Error', `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`, true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`,
+                true
+            );
             return;
         }
 
         const countryEmoji = getEmojiFlag(countryData.iso2);
         if (!countryEmoji) {
-            await RagnarokEmbed(client, interaction, 'Error', `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`, true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`,
+                true
+            );
             return;
         }
 
         const url = await parse(countryEmoji);
+
+        if (!url || !url[0] || !url[0].url) {
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`,
+                true
+            );
+            return;
+        }
+
         score.Country = url[0].url;
         await score.save();
 

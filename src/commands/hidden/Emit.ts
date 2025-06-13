@@ -1,8 +1,10 @@
-import {
-    Client, Discord, Slash, SlashChoice, SlashOption,
-} from 'discordx';
-import { ApplicationCommandOptionType, CommandInteraction, PermissionsBitField } from 'discord.js';
 import { Category } from '@discordx/utilities';
+import {
+    ApplicationCommandOptionType,
+    type CommandInteraction,
+    PermissionsBitField,
+} from 'discord.js';
+import { type Client, Discord, Slash, SlashChoice, SlashOption } from 'discordx';
 
 @Discord()
 @Category('Hidden')
@@ -29,9 +31,9 @@ export class Emit {
             required: true,
             type: ApplicationCommandOptionType.String,
         })
-            event: string,
-            interaction: CommandInteraction,
-            client: Client,
+        event: string,
+        interaction: CommandInteraction,
+        client: Client
     ) {
         await interaction.deferReply();
         await interaction.deleteReply();

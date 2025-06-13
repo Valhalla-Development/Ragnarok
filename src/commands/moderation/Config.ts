@@ -1,34 +1,32 @@
-import {
-    Client, Discord, Guard, Slash, SlashGroup, SlashOption,
-} from 'discordx';
+import { Category } from '@discordx/utilities';
+import axios from 'axios';
+import { loadImage } from 'canvas';
 import {
     ActionRowBuilder,
     ApplicationCommandOptionType,
     ButtonBuilder,
     ButtonStyle,
-    CategoryChannel,
+    type CategoryChannel,
     ChannelType,
-    CommandInteraction,
+    type CommandInteraction,
     EmbedBuilder,
-    GuildMemberRoleManager,
+    type GuildMemberRoleManager,
     PermissionsBitField,
-    Role,
-    TextChannel,
+    type Role,
+    type TextChannel,
 } from 'discord.js';
-import { Category } from '@discordx/utilities';
-import axios from 'axios';
-import { loadImage } from 'canvas';
-import { color } from '../../utils/Util.js';
-import AdsProtection from '../../mongo/AdsProtection.js';
-import AutoRole from '../../mongo/AutoRole.js';
+import { type Client, Discord, Guard, Slash, SlashGroup, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
 import { UserHasPerm } from '../../guards/UserHasPerm.js';
+import AdsProtection from '../../mongo/AdsProtection.js';
+import AutoRole from '../../mongo/AutoRole.js';
 import BirthdayConfig from '../../mongo/BirthdayConfig.js';
 import Dad from '../../mongo/Dad.js';
 import Logging from '../../mongo/Logging.js';
-import TicketConfig from '../../mongo/TicketConfig.js';
 import StarBoard from '../../mongo/StarBoard.js';
+import TicketConfig from '../../mongo/TicketConfig.js';
 import Welcome from '../../mongo/Welcome.js';
+import { color } from '../../utils/Util.js';
 
 @Discord()
 @Category('Moderation')
@@ -130,7 +128,7 @@ export class Config {
             adsProtButton,
             autoroleButton,
             birthdayButton,
-            dadButton,
+            dadButton
         );
 
         const row2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -138,7 +136,7 @@ export class Config {
             rolemenuButton,
             ticketsButton,
             welcomeButton,
-            starboardButton,
+            starboardButton
         );
 
         // Initial embed to display with the menu
@@ -151,15 +149,24 @@ export class Config {
 
         // Function to set button states when a button is clicked
         function setButtonState(button: ButtonBuilder) {
-            // Loop through each button in the array, except the provided 'button'.
-            [homeButton, adsProtButton, autoroleButton, birthdayButton, dadButton,
-                loggingButton, rolemenuButton, ticketsButton, welcomeButton, starboardButton].forEach((otherButton) => {
-                // If the button is not the provided 'button', set its style to primary and enable it.
+            const buttons = [
+                homeButton,
+                adsProtButton,
+                autoroleButton,
+                birthdayButton,
+                dadButton,
+                loggingButton,
+                rolemenuButton,
+                ticketsButton,
+                welcomeButton,
+                starboardButton,
+            ];
+            for (const otherButton of buttons) {
                 if (otherButton !== button) {
                     otherButton.setStyle(ButtonStyle.Primary);
                     otherButton.setDisabled(false);
                 }
-            });
+            }
 
             // Disable the provided 'button' and set its style to success.
             button.setDisabled(true);
@@ -167,9 +174,13 @@ export class Config {
         }
 
         // Send the initial menu message
-        const m = await interaction.reply({ ephemeral: true, components: [row1, row2], embeds: [initial] });
+        const m = await interaction.reply({
+            ephemeral: true,
+            components: [row1, row2],
+            embeds: [initial],
+        });
 
-        const filter = (but: { user: { id: string; }; }) => but.user.id !== client.user?.id;
+        const filter = (but: { user: { id: string } }) => but.user.id !== client.user?.id;
 
         // Create a message component collector to listen for button clicks
         const collector = m.createMessageComponentCollector({ filter, time: 15000 });
@@ -366,9 +377,9 @@ export class Config {
             required: true,
             type: ApplicationCommandOptionType.Boolean,
         })
-            state: boolean,
-            interaction: CommandInteraction,
-            client: Client,
+        state: boolean,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         // Check the current status of Advert Protection for the guild
         const currentStatus = await AdsProtection.findOne({ GuildId: interaction.guild!.id });
@@ -380,16 +391,20 @@ export class Config {
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .setDescription(currentStatus?.Status === state ? `Advert Protection is already **${state ? 'enabled.' : 'disabled.'}**` : (
-                state ? 'Advert Protection **enabled**.' : 'Advert Protection **disabled**.'
-            ));
+            .setDescription(
+                currentStatus?.Status === state
+                    ? `Advert Protection is already **${state ? 'enabled.' : 'disabled.'}**`
+                    : state
+                      ? 'Advert Protection **enabled**.'
+                      : 'Advert Protection **disabled**.'
+            );
 
         // Update the status of Advert Protection if it has changed
         if (currentStatus?.Status !== state) {
             await AdsProtection.findOneAndUpdate(
                 { GuildId: interaction.guild!.id },
                 { $set: { Status: state } },
-                { upsert: true, new: true },
+                { upsert: true, new: true }
             );
         }
 
@@ -398,7 +413,10 @@ export class Config {
 
     @Slash({ description: 'AutoRole Module Configuration', name: 'role' })
     @SlashGroup('autorole', 'config')
-    @Guard(BotHasPerm([PermissionsBitField.Flags.ManageRoles]), UserHasPerm([PermissionsBitField.Flags.ManageRoles]))
+    @Guard(
+        BotHasPerm([PermissionsBitField.Flags.ManageRoles]),
+        UserHasPerm([PermissionsBitField.Flags.ManageRoles])
+    )
     /**
      * Configures the AutoRole module.
      * @param role - The role to set as AutoRole.
@@ -413,9 +431,9 @@ export class Config {
             type: ApplicationCommandOptionType.Role,
             required: true,
         })
-            role: Role,
-            interaction: CommandInteraction,
-            client: Client,
+        role: Role,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         // Construct the embed to display the result of the configuration
         const embed = new EmbedBuilder()
@@ -431,15 +449,17 @@ export class Config {
 
         // Check if the provided role is higher than the member's highest role or the bot's highest role
         if (role.position >= member.highest.position || role.position >= botHighestRole) {
-            embed.setDescription(role.position >= member.highest.position
-                ? 'You can not set a role that is higher than your highest role.'
-                : 'You can not set a role that is higher than my highest role.');
+            embed.setDescription(
+                role.position >= member.highest.position
+                    ? 'You can not set a role that is higher than your highest role.'
+                    : 'You can not set a role that is higher than my highest role.'
+            );
         } else {
             // Update or insert the AutoRole document in the database
             await AutoRole.findOneAndUpdate(
                 { GuildId: interaction.guild!.id },
                 { $set: { Role: role.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
-                { upsert: true, new: true },
+                { upsert: true, new: true }
             );
             embed.setDescription(`Autorole set to ${role}`);
         }
@@ -455,10 +475,7 @@ export class Config {
      * @param client - The Discord client instance.
      * @returns A Promise resolving to void.
      */
-    async disableAutoRole(
-        interaction: CommandInteraction,
-        client: Client,
-    ): Promise<void> {
+    async disableAutoRole(interaction: CommandInteraction, client: Client): Promise<void> {
         // Check the current status of AutoRole for the guild
         const currentStatus = await AutoRole.findOne({ GuildId: interaction.guild!.id });
 
@@ -501,9 +518,9 @@ export class Config {
             type: ApplicationCommandOptionType.Channel,
             required: true,
         })
-            channel: TextChannel,
-            interaction: CommandInteraction,
-            client: Client,
+        channel: TextChannel,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         // Construct the embed to display the result of the configuration
         const embed = new EmbedBuilder()
@@ -520,8 +537,14 @@ export class Config {
         }
 
         // Check if the bot has the SendMessages permissions within the provided channel
-        if (!interaction.guild!.members.me!.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
-            embed.setDescription('I lack the `SendMessages` permission within the provided channel.');
+        if (
+            !interaction
+                .guild!.members.me!.permissionsIn(channel)
+                .has(PermissionsBitField.Flags.SendMessages)
+        ) {
+            embed.setDescription(
+                'I lack the `SendMessages` permission within the provided channel.'
+            );
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
         }
@@ -530,7 +553,7 @@ export class Config {
         await BirthdayConfig.findOneAndUpdate(
             { GuildId: interaction.guild!.id },
             { $set: { ChannelId: channel.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
-            { upsert: true, new: true },
+            { upsert: true, new: true }
         );
         embed.setDescription(`Birthday channel set to ${channel}`);
 
@@ -545,10 +568,7 @@ export class Config {
      * @param client - The Discord client instance.
      * @returns A Promise resolving to void.
      */
-    async disableBirthday(
-        interaction: CommandInteraction,
-        client: Client,
-    ): Promise<void> {
+    async disableBirthday(interaction: CommandInteraction, client: Client): Promise<void> {
         // Check the current status of Birthday for the guild
         const currentStatus = await BirthdayConfig.findOne({ GuildId: interaction.guild!.id });
 
@@ -590,9 +610,9 @@ export class Config {
             type: ApplicationCommandOptionType.Boolean,
             required: true,
         })
-            state: boolean,
-            interaction: CommandInteraction,
-            client: Client,
+        state: boolean,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         // Check the current status of Dad for the guild
         const currentStatus = await Dad.findOne({ GuildId: interaction.guild!.id });
@@ -657,9 +677,9 @@ export class Config {
             type: ApplicationCommandOptionType.Channel,
             required: true,
         })
-            channel: TextChannel,
-            interaction: CommandInteraction,
-            client: Client,
+        channel: TextChannel,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         // Construct the embed to display the result of the configuration
         const embed = new EmbedBuilder()
@@ -676,8 +696,14 @@ export class Config {
         }
 
         // Check if the bot has the SendMessages permissions within the provided channel
-        if (!interaction.guild!.members.me!.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
-            embed.setDescription('I lack the `SendMessages` permission within the provided channel.');
+        if (
+            !interaction
+                .guild!.members.me!.permissionsIn(channel)
+                .has(PermissionsBitField.Flags.SendMessages)
+        ) {
+            embed.setDescription(
+                'I lack the `SendMessages` permission within the provided channel.'
+            );
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
         }
@@ -686,7 +712,7 @@ export class Config {
         await Logging.findOneAndUpdate(
             { GuildId: interaction.guild!.id },
             { $set: { ChannelId: channel.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
-            { upsert: true, new: true },
+            { upsert: true, new: true }
         );
         embed.setDescription(`Logging channel set to ${channel}`);
 
@@ -701,10 +727,7 @@ export class Config {
      * @param client - The Discord client instance.
      * @returns A Promise resolving to void.
      */
-    async disableLogging(
-        interaction: CommandInteraction,
-        client: Client,
-    ): Promise<void> {
+    async disableLogging(interaction: CommandInteraction, client: Client): Promise<void> {
         // Check the current status of Birthday for the guild
         const currentStatus = await Logging.findOne({ GuildId: interaction.guild!.id });
 
@@ -747,9 +770,9 @@ export class Config {
             type: ApplicationCommandOptionType.Channel,
             required: true,
         })
-            category: CategoryChannel,
-            interaction: CommandInteraction,
-            client: Client,
+        category: CategoryChannel,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         // Construct the embed to display the result of the configuration
         const embed = new EmbedBuilder()
@@ -769,7 +792,7 @@ export class Config {
         await TicketConfig.findOneAndUpdate(
             { GuildId: interaction.guild!.id },
             { $set: { Category: category.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
-            { upsert: true, new: true },
+            { upsert: true, new: true }
         );
         embed.setDescription(`Ticket category set to \`${category.name}\``);
 
@@ -792,9 +815,9 @@ export class Config {
             type: ApplicationCommandOptionType.Channel,
             required: true,
         })
-            channel: TextChannel,
-            interaction: CommandInteraction,
-            client: Client,
+        channel: TextChannel,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         // Construct the embed to display the result of the configuration
         const embed = new EmbedBuilder()
@@ -811,8 +834,14 @@ export class Config {
         }
 
         // Check if the bot has the SendMessages permissions within the provided channel
-        if (!interaction.guild!.members.me!.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
-            embed.setDescription('I lack the `SendMessages` permission within the provided channel.');
+        if (
+            !interaction
+                .guild!.members.me!.permissionsIn(channel)
+                .has(PermissionsBitField.Flags.SendMessages)
+        ) {
+            embed.setDescription(
+                'I lack the `SendMessages` permission within the provided channel.'
+            );
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
         }
@@ -821,7 +850,7 @@ export class Config {
         await TicketConfig.findOneAndUpdate(
             { GuildId: interaction.guild!.id },
             { $set: { LogChannel: channel.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
-            { upsert: true, new: true },
+            { upsert: true, new: true }
         );
         embed.setDescription(`Ticket Logging channel set to ${channel}`);
 
@@ -844,9 +873,9 @@ export class Config {
             type: ApplicationCommandOptionType.Role,
             required: true,
         })
-            role: Role,
-            interaction: CommandInteraction,
-            client: Client,
+        role: Role,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         // Construct the embed to display the result of the configuration
         const embed = new EmbedBuilder()
@@ -860,7 +889,7 @@ export class Config {
         await TicketConfig.findOneAndUpdate(
             { GuildId: interaction.guild!.id },
             { $set: { Role: role.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
-            { upsert: true, new: true },
+            { upsert: true, new: true }
         );
         embed.setDescription(`Ticket Support Role set to ${role}`);
 
@@ -875,10 +904,7 @@ export class Config {
      * @param client - The Discord client instance.
      * @returns A Promise resolving to void.
      */
-    async disableTicket(
-        interaction: CommandInteraction,
-        client: Client,
-    ): Promise<void> {
+    async disableTicket(interaction: CommandInteraction, client: Client): Promise<void> {
         // Check the current status of Ticket for the guild
         const currentStatus = await TicketConfig.findOne({ GuildId: interaction.guild!.id });
 
@@ -921,9 +947,9 @@ export class Config {
             type: ApplicationCommandOptionType.String,
             required: true,
         })
-            image: string,
-            interaction: CommandInteraction,
-            client: Client,
+        image: string,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         // Construct the embed to display the result of the configuration
         const embed = new EmbedBuilder()
@@ -937,15 +963,20 @@ export class Config {
         const validExtensions = ['jpg', 'jpeg', 'png'];
 
         if (!validExtensions.includes(extension)) {
-            embed.setDescription(`\`${extension}\` is not a valid image format.\n\n**Accepted formats:** \`${validExtensions.join(', ')}\``);
+            embed.setDescription(
+                `\`${extension}\` is not a valid image format.\n\n**Accepted formats:** \`${validExtensions.join(', ')}\``
+            );
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
         }
 
-        const urlRegex = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
+        const urlRegex =
+            /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
 
         if (!urlRegex.test(image)) {
-            embed.setDescription('Please enter a valid absolute URL.\nExample: https://www.example.com');
+            embed.setDescription(
+                'Please enter a valid absolute URL.\nExample: https://www.example.com'
+            );
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
         }
@@ -954,14 +985,13 @@ export class Config {
             const currentStatus = await Welcome.findOne({ GuildId: interaction.guild!.id });
 
             if (res) {
-                if (!currentStatus) {
-                    embed.setDescription('You must enable the welcome module first. You can do this by running the following command. `/config welcome channel <#channel>`');
-                    await interaction.reply({ ephemeral: true, embeds: [embed] });
-                } else {
+                if (currentStatus) {
                     try {
                         await loadImage(image);
                     } catch {
-                        embed.setDescription(`I was unable to process \`${image}\`\nIs it a valid image?`);
+                        embed.setDescription(
+                            `I was unable to process \`${image}\`\nIs it a valid image?`
+                        );
                         await interaction.reply({ ephemeral: true, embeds: [embed] });
                         return;
                     }
@@ -969,15 +999,22 @@ export class Config {
                     await Welcome.findOneAndUpdate(
                         { GuildId: interaction.guild!.id },
                         { Image: image },
-                        { upsert: true, new: true },
+                        { upsert: true, new: true }
                     );
 
                     embed.setDescription('Image has been updated.');
                     embed.setImage(image);
                     await interaction.reply({ ephemeral: true, embeds: [embed] });
+                } else {
+                    embed.setDescription(
+                        'You must enable the welcome module first. You can do this by running the following command. `/config welcome channel <#channel>`'
+                    );
+                    await interaction.reply({ ephemeral: true, embeds: [embed] });
                 }
             } else {
-                embed.setDescription('Please input a valid image URL. Ensure that the URL concludes with one of the supported extensions: `.jpg`, `.jpeg`, `.png`.');
+                embed.setDescription(
+                    'Please input a valid image URL. Ensure that the URL concludes with one of the supported extensions: `.jpg`, `.jpeg`, `.png`.'
+                );
                 await interaction.reply({ ephemeral: true, embeds: [embed] });
             }
         });
@@ -999,9 +1036,9 @@ export class Config {
             type: ApplicationCommandOptionType.Channel,
             required: true,
         })
-            channel: TextChannel,
-            interaction: CommandInteraction,
-            client: Client,
+        channel: TextChannel,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         // Construct the embed to display the result of the configuration
         const embed = new EmbedBuilder()
@@ -1018,8 +1055,14 @@ export class Config {
         }
 
         // Check if the bot has the SendMessages permissions within the provided channel
-        if (!interaction.guild!.members.me!.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
-            embed.setDescription('I lack the `SendMessages` permission within the provided channel.');
+        if (
+            !interaction
+                .guild!.members.me!.permissionsIn(channel)
+                .has(PermissionsBitField.Flags.SendMessages)
+        ) {
+            embed.setDescription(
+                'I lack the `SendMessages` permission within the provided channel.'
+            );
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
         }
@@ -1028,7 +1071,7 @@ export class Config {
         await Welcome.findOneAndUpdate(
             { GuildId: interaction.guild!.id },
             { $set: { ChannelId: channel.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
-            { upsert: true, new: true },
+            { upsert: true, new: true }
         );
         embed.setDescription(`Welcome channel set to ${channel}`);
 
@@ -1043,10 +1086,7 @@ export class Config {
      * @param client - The Discord client instance.
      * @returns A Promise resolving to void.
      */
-    async disableWelcome(
-        interaction: CommandInteraction,
-        client: Client,
-    ): Promise<void> {
+    async disableWelcome(interaction: CommandInteraction, client: Client): Promise<void> {
         // Check the current status of Ticket for the guild
         const currentStatus = await Welcome.findOne({ GuildId: interaction.guild!.id });
 
@@ -1089,9 +1129,9 @@ export class Config {
             type: ApplicationCommandOptionType.Channel,
             required: true,
         })
-            channel: TextChannel,
-            interaction: CommandInteraction,
-            client: Client,
+        channel: TextChannel,
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         // Construct the embed to display the result of the configuration
         const embed = new EmbedBuilder()
@@ -1108,8 +1148,14 @@ export class Config {
         }
 
         // Check if the bot has the SendMessages permissions within the provided channel
-        if (!interaction.guild!.members.me!.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
-            embed.setDescription('I lack the `SendMessages` permission within the provided channel.');
+        if (
+            !interaction
+                .guild!.members.me!.permissionsIn(channel)
+                .has(PermissionsBitField.Flags.SendMessages)
+        ) {
+            embed.setDescription(
+                'I lack the `SendMessages` permission within the provided channel.'
+            );
             await interaction.reply({ ephemeral: true, embeds: [embed] });
             return;
         }
@@ -1118,7 +1164,7 @@ export class Config {
         await StarBoard.findOneAndUpdate(
             { GuildId: interaction.guild!.id },
             { $set: { ChannelId: channel.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
-            { upsert: true, new: true },
+            { upsert: true, new: true }
         );
         embed.setDescription(`StarBoard channel set to ${channel}`);
 
@@ -1133,10 +1179,7 @@ export class Config {
      * @param client - The Discord client instance.
      * @returns A Promise resolving to void.
      */
-    async disableStarBoard(
-        interaction: CommandInteraction,
-        client: Client,
-    ): Promise<void> {
+    async disableStarBoard(interaction: CommandInteraction, client: Client): Promise<void> {
         // Check the current status of Birthday for the guild
         const currentStatus = await StarBoard.findOne({ GuildId: interaction.guild!.id });
 

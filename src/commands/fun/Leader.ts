@@ -1,9 +1,9 @@
-import { Client, Discord, Slash } from 'discordx';
-import { CommandInteraction, EmbedBuilder } from 'discord.js';
 import { Category } from '@discordx/utilities';
+import { type CommandInteraction, EmbedBuilder } from 'discord.js';
+import { type Client, Discord, Slash } from 'discordx';
 import Level from '../../mongo/Level.js';
 import LevelConfig from '../../mongo/LevelConfig.js';
-import { color, RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokEmbed, color } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -19,7 +19,13 @@ export class Leader {
         const levelDb = await LevelConfig.findOne({ GuildId: interaction.guild!.id });
 
         if (levelDb) {
-            await RagnarokEmbed(client, interaction, 'Error', 'The level system is disabled for this guild.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'The level system is disabled for this guild.',
+                true
+            );
             return;
         }
 
@@ -31,29 +37,31 @@ export class Leader {
             return;
         }
 
-        let userNames: string = '';
-        let levels: string = '';
-        let xp: string = '';
+        let userNames = '';
+        let levels = '';
+        let xp = '';
 
-        await Promise.all(top10.map(async (data, index) => {
-            let fetchUser = interaction.guild!.members.cache.get(data.UserId);
+        await Promise.all(
+            top10.map(async (data, index) => {
+                let fetchUser = interaction.guild!.members.cache.get(data.UserId);
 
-            if (!fetchUser) {
-                try {
-                    fetchUser = await interaction.guild!.members.fetch(data.UserId);
-                } catch {
-                    // Do nothing because I am a monster
+                if (!fetchUser) {
+                    try {
+                        fetchUser = await interaction.guild!.members.fetch(data.UserId);
+                    } catch {
+                        // Do nothing because I am a monster
+                    }
                 }
-            }
 
-            if (fetchUser) {
-                userNames += `\`${index + 1}\` ${fetchUser}\n`;
+                if (fetchUser) {
+                    userNames += `\`${index + 1}\` ${fetchUser}\n`;
 
-                levels += `\`${data.Level}\`\n`;
+                    levels += `\`${data.Level}\`\n`;
 
-                xp += `\`${data.Xp.toLocaleString('en')}\`\n`;
-            }
-        }));
+                    xp += `\`${data.Xp.toLocaleString('en')}\`\n`;
+                }
+            })
+        );
 
         const embed = new EmbedBuilder()
             .setAuthor({
@@ -76,7 +84,7 @@ export class Leader {
                     name: 'XP',
                     value: xp,
                     inline: true,
-                },
+                }
             );
         await interaction.reply({ embeds: [embed] });
     }

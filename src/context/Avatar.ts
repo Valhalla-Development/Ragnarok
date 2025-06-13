@@ -1,8 +1,11 @@
-import { Client, ContextMenu, Discord } from 'discordx';
 import {
-    ApplicationCommandType, EmbedBuilder, GuildMember, UserContextMenuCommandInteraction,
+    ApplicationCommandType,
+    EmbedBuilder,
+    type GuildMember,
+    type UserContextMenuCommandInteraction,
 } from 'discord.js';
-import { color, RagnarokEmbed } from '../utils/Util.js';
+import { type Client, ContextMenu, Discord } from 'discordx';
+import { RagnarokEmbed, color } from '../utils/Util.js';
 
 @Discord()
 export class AvatarContext {
@@ -15,7 +18,10 @@ export class AvatarContext {
         name: 'Avatar',
         type: ApplicationCommandType.User,
     })
-    async avatarContext(interaction: UserContextMenuCommandInteraction, client: Client): Promise<void> {
+    async avatarContext(
+        interaction: UserContextMenuCommandInteraction,
+        client: Client
+    ): Promise<void> {
         const member = interaction.targetMember as GuildMember;
 
         try {
@@ -24,7 +30,13 @@ export class AvatarContext {
             const avatar = member.user.displayAvatarURL({ size: 2048 });
 
             if (!avatar) {
-                await RagnarokEmbed(client, interaction, 'Error', `${member} does not have an avatar set.`, true);
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    `${member} does not have an avatar set.`,
+                    true
+                );
                 return;
             }
 
@@ -33,8 +45,14 @@ export class AvatarContext {
                 .setImage(avatar)
                 .setColor(color(interaction.guild!.members.me!.displayHexColor));
             await interaction.reply({ embeds: [embed] });
-        } catch (error) {
-            await RagnarokEmbed(client, interaction, 'Error', `An error occurred fetching ${member}'s avatar`, true);
+        } catch (_error) {
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `An error occurred fetching ${member}'s avatar`,
+                true
+            );
         }
     }
 }

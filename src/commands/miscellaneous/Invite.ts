@@ -1,9 +1,13 @@
+import { Category } from '@discordx/utilities';
+import {
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    type CommandInteraction,
+    EmbedBuilder,
+} from 'discord.js';
 import type { Client } from 'discordx';
 import { Discord, Slash } from 'discordx';
-import {
-    ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, EmbedBuilder,
-} from 'discord.js';
-import { Category } from '@discordx/utilities';
 import { color } from '../../utils/Util.js';
 
 @Discord()
@@ -18,13 +22,18 @@ export class Invite {
     async invite(interaction: CommandInteraction, client: Client): Promise<void> {
         const embed = new EmbedBuilder()
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .addFields({ name: `**${client.user?.username} - Invite**`, value: `Would you like to invite ${client.user}?` });
+            .addFields({
+                name: `**${client.user?.username} - Invite**`,
+                value: `Would you like to invite ${client.user}?`,
+            });
 
         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
             new ButtonBuilder()
                 .setStyle(ButtonStyle.Link)
                 .setLabel('Invite')
-                .setURL(`https://discordapp.com/oauth2/authorize?client_id=${client.user?.id}&scope=bot%20applications.commands&permissions=415306870006`),
+                .setURL(
+                    `https://discordapp.com/oauth2/authorize?client_id=${client.user?.id}&scope=bot%20applications.commands&permissions=415306870006`
+                )
         );
 
         await interaction.reply({ components: [row], embeds: [embed] });

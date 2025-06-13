@@ -1,14 +1,25 @@
-import {
-    ButtonComponent, Client, Discord, Slash,
-} from 'discordx';
-import {
-    ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CommandInteraction, EmbedBuilder,
-} from 'discord.js';
 import { Category } from '@discordx/utilities';
+import {
+    ActionRowBuilder,
+    ButtonBuilder,
+    type ButtonInteraction,
+    ButtonStyle,
+    type CommandInteraction,
+    EmbedBuilder,
+} from 'discord.js';
+import { ButtonComponent, type Client, Discord, Slash } from 'discordx';
 import RedditImageFetcher from 'reddit-image-fetcher';
-import { color, RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokEmbed, color } from '../../utils/Util.js';
 
-const subreddits = ['memes', 'bonehurtingjuice', 'surrealmemes', 'dankmemes', 'meirl', 'me_irl', 'funny'];
+const subreddits = [
+    'memes',
+    'bonehurtingjuice',
+    'surrealmemes',
+    'dankmemes',
+    'meirl',
+    'me_irl',
+    'funny',
+];
 
 async function getMeme() {
     return RedditImageFetcher.fetch({
@@ -52,7 +63,7 @@ export class Meme {
             new ButtonBuilder()
                 .setLabel('Next Meme')
                 .setStyle(ButtonStyle.Primary)
-                .setCustomId(`nextMeme_${interaction.user.id}`),
+                .setCustomId(`nextMeme_${interaction.user.id}`)
         );
 
         await interaction.reply({ components: [row], embeds: [embed] });
@@ -68,7 +79,13 @@ export class Meme {
         const button = interaction.customId.split('_');
 
         if (interaction.user.id !== button[1]) {
-            await RagnarokEmbed(client, interaction, 'Error', 'Only the command executor can load the next meme.', true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Only the command executor can load the next meme.',
+                true
+            );
             return;
         }
 

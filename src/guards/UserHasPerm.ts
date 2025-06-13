@@ -1,5 +1,5 @@
-import { GuardFunction } from 'discordx';
-import { CommandInteraction, PermissionsBitField } from 'discord.js';
+import { type CommandInteraction, PermissionsBitField } from 'discord.js';
+import type { GuardFunction } from 'discordx';
 import { RagnarokEmbed } from '../utils/Util.js';
 
 /**
@@ -9,12 +9,20 @@ import { RagnarokEmbed } from '../utils/Util.js';
  */
 export function UserHasPerm(requiredPermissions: bigint[]): GuardFunction<CommandInteraction> {
     return async (interaction, client, next) => {
-        const missingPermissions = requiredPermissions.filter((permission) => !(<PermissionsBitField>interaction.member?.permissions).has(permission));
+        const missingPermissions = requiredPermissions.filter(
+            (permission) => !(<PermissionsBitField>interaction.member?.permissions).has(permission)
+        );
 
         if (missingPermissions.length > 0) {
             const permissionNames = new PermissionsBitField(missingPermissions).toArray();
 
-            await RagnarokEmbed(client, interaction, 'Error', `You lack the following permissions required for this action: \`${permissionNames.join(', ')}\``, true);
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `You lack the following permissions required for this action: \`${permissionNames.join(', ')}\``,
+                true
+            );
             return;
         }
 
