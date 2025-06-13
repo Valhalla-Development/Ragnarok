@@ -154,7 +154,9 @@ export class MessageCreate {
                     !message.member.permissions.has(PermissionsBitField.Flags.ManageMessages) &&
                     !channel.name.startsWith('ticket-') &&
                     urlRegexSafe({ strict: false }).test(message.content.toLowerCase()) &&
-                    message.member.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)
+                    message.member.guild.members.me.permissions.has(
+                        PermissionsBitField.Flags.ManageMessages
+                    )
                 ) {
                     await messageDelete(message, 0);
                     message.channel
