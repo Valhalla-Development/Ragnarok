@@ -442,6 +442,7 @@ export class Economy {
             await interaction.message.edit({
                 embeds: [this.homeEmbed!],
                 components: [...this.rows],
+                files: [],
             });
         } else {
             // If the interaction is a CommandInteraction, reply with the updated embed and components
@@ -524,6 +525,7 @@ export class Economy {
         await interaction.message.edit({
             embeds: [embed],
             components: [...this.rows],
+            files: [],
         });
     }
 
@@ -828,6 +830,7 @@ export class Economy {
                     await interaction.message?.edit({
                         components: [...this.rows],
                         embeds: [this.homeEmbed as APIEmbed],
+                        files: [],
                     });
                 }, this.commandTimeout);
             }
@@ -874,6 +877,7 @@ export class Economy {
             await interaction.message?.edit({
                 embeds: [initial],
                 components: [coinRow],
+                files: [],
             });
         }
     }

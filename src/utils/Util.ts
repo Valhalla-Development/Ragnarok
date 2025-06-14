@@ -296,7 +296,11 @@ export async function pagination(
     let message: Message;
     if (interaction instanceof ButtonInteraction) {
         // ButtonInteraction
-        await interaction.message.edit({ embeds: [embeds[0].toJSON()], components: [row] });
+        await interaction.message.edit({
+            embeds: [embeds[0].toJSON()],
+            components: [row],
+            files: [],
+        });
         message = interaction.message;
     } else {
         // CommandInteraction
@@ -360,7 +364,11 @@ export async function pagination(
         if (!currentEmbed) {
             return;
         }
-        await b.update({ embeds: [currentEmbed.toJSON()], components: [row] });
+        await b.update({
+            embeds: [currentEmbed.toJSON()],
+            components: [row],
+            files: [],
+        });
     });
 
     collector.on('end', () => {
@@ -375,7 +383,13 @@ export async function pagination(
         if (!currentEmbed) {
             return;
         }
-        message.edit({ embeds: [currentEmbed.toJSON()], components: [row] }).catch(console.error);
+        message
+            .edit({
+                embeds: [currentEmbed.toJSON()],
+                components: [row],
+                files: [],
+            })
+            .catch(console.error);
     });
 
     collector.on('error', console.error);
