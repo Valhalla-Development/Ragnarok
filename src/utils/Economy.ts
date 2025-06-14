@@ -1301,5 +1301,315 @@ export class Economy {
                 );
                 return;
         }
+
+        await balance.FarmPlot.map(async (key) => {
+            if (Date.now() > key.CropGrowTime) {
+              key.CropStatus = 'harvest';
+              key.CropGrowTime = 'na';
+              key.Decay = 0;
+      
+              await balance.save();
+            }
+          });
+      
+          let harvestable;
+      
+          if (balance.FarmPlot.length) {
+            harvestable = balance.FarmPlot.filter((key) => key.CropStatus === 'harvest');
+          } else {
+            harvestable = [];
+          }
+      
+          if (!balance.FarmPlot.length && !harvestable.length) {
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'You have nothing to harvest!',
+                true
+            );
+            return;
+          }
+      
+          if (balance.FarmPlot.length && !harvestable.length) {
+            const arr = [];
+      
+            const Embeds = [];
+            // Luke gets credit for this magic
+            let PageNo = 1;
+      
+            const filter = balance.FarmPlot.filter((e) => e.CropGrowTime !== 'na');
+            const filterHarvest = balance.FarmPlot.filter((e) => e.CropStatus === 'harvest');
+      
+            filterHarvest.forEach((key) => {
+              arr.push(`\u3000Crop Type: \`${this.client.utils.capitalise(key.CropType)}\` - Crop Decay: \`${key.Decay.toFixed(4)}%\``);
+            });
+      
+            filter.forEach((key) => {
+              const then = prettyMilliseconds(new Date().getTime() - key.CropGrowTime.toFixed(0), { millisecondsDecimalDigits: true });
+              const test = then.replace(/-/g, '');
+              const thenTime = test.substring(0, test.indexOf('s') + 1);
+      
+              if (key.CropType === 'corn') {
+                arr.push(`\u3000Crop Type: \`Corn\` - Time until grown: \`${thenTime}\``);
+              }
+              if (key.CropType === 'wheat') {
+                arr.push(`\u3000Crop Type: \`Wheat\` - Time until grown: \`${thenTime}\``);
+              }
+              if (key.CropType === 'potato') {
+                arr.push(`\u3000Crop Type: \`Potato\` - Time until grown: \`${thenTime}\``);
+              }
+              if (key.CropType === 'tomato') {
+                arr.push(`\u3000Crop Type: \`Tomato\` - Time until grown: \`${thenTime}\``);
+              }
+            });
+      
+            const TestPages = arr.length;
+            const TotalPage = Math.ceil(TestPages / 5);
+      
+            for (const Page of arr) {
+              const Embed = new EmbedBuilder()
+                .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
+                .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+                .addFields({
+                  name: `**${this.client.user.username} - Harvest**`,
+                  value: `**◎ Success:** Current crop status:
+                              ${arr.splice(0, 5).join('\n')}`
+                })
+                .setFooter({ text: `${TotalPage > 1 ? `Page: ${PageNo++}/${TotalPage}` : 'Page 1/1'}` });
+              Embeds.push(Embed);
+            }
+            TotalPage > 1 ? this.client.functions.pagination(interaction, Embeds) : interaction.reply({ embeds: [Embeds[0]] });
+            return;
+          }
+          
+          const availableSpots = balance.Boosts.FarmBag - balance.HarvestedCrops.length;
+      
+          const cornPrice = this.client.ecoPrices.corn;
+          const wheatPrice = this.client.ecoPrices.wheat;
+          const potatoesPrice = this.client.ecoPrices.potatoes;
+          const tomatoesPrice = this.client.ecoPrices.tomatoes;
+      
+          if (availableSpots <= 0) {
+            const embed = new EmbedBuilder()
+              .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
+              .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+              .addFields({
+                name: `**${this.client.user.username} - Harvest**`,
+                value: '**◎ Error:** You do not have enough space to harvest anything!\nYou can upgrade your storage with the command `/shop upgrade`'
+              });
+            interaction.reply({ ephemeral: true, embeds: [embed] });
+            return;
+          }
+      
+          const harvestedFunc = [];
+      
+          let totalToAdd = 0;
+          let sellPrice;
+          const arr = [];
+      
+          harvestCrops();
+      
+          harvestedFunc.forEach((key) => {
+            if (key.CropType === 'corn') {
+              totalToAdd += Math.floor(cornPrice * (1 - key.Decay.toFixed(4) / 100));
+              sellPrice = Math.floor(cornPrice * (1 - key.Decay.toFixed(4) / 100));
+              arr.push(
+                `\u3000Crop Type: \`Corn\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString(
+                  'en'
+                )}\` - Decayed: \`${key.Decay.toFixed(4)}\`%`
+              );
+            }
+            if (key.CropType === 'wheat') {
+              totalToAdd += Math.floor(wheatPrice * (1 - key.Decay.toFixed(4) / 100));
+              sellPrice = Math.floor(wheatPrice * (1 - key.Decay.toFixed(4) / 100));
+              arr.push(
+                `\u3000Crop Type: \`Wheat\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString(
+                  'en'
+                )}\` - Decayed: \`${key.Decay.toFixed(4)}\`%`
+              );
+            }
+            if (key.CropType === 'potato') {
+              totalToAdd += Math.floor(potatoesPrice * (1 - key.Decay.toFixed(4) / 100));
+              sellPrice = Math.floor(potatoesPrice * (1 - key.Decay.toFixed(4) / 100));
+              arr.push(
+                `\u3000Crop Type: \`Potato\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString(
+                  'en'
+                )}\` - Decayed: \`${key.Decay.toFixed(4)}\`%`
+              );
+            }
+            if (key.CropType === 'tomato') {
+              totalToAdd += Math.floor(tomatoesPrice * (1 - key.Decay.toFixed(4) / 100));
+              sellPrice = Math.floor(tomatoesPrice * (1 - key.Decay.toFixed(4) / 100));
+              arr.push(
+                `\u3000Crop Type: \`Tomato\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString(
+                  'en'
+                )}\` - Decayed: \`${key.Decay.toFixed(4)}\`%`
+              );
+            }
+          });
+      
+          const filteredPlots = balance.FarmPlot.filter((plot) => plot !== null);
+          if (filteredPlots.length === 0) {
+            balance.FarmPlot = [];
+          } else {
+            balance.FarmPlot = filteredPlots;
+          }
+      
+          await balance.save();
+      
+          const Embeds = [];
+          const TestPages = arr.length;
+          const TotalPage = Math.ceil(TestPages / 5);
+          // Luke gets credit for this magic
+          let PageNo = 1;
+      
+          for (const Page of arr) {
+            const Embed = new EmbedBuilder()
+              .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
+              .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
+              .addFields({
+                name: `**${this.client.user.username} - Harvest**`,
+                value: `**◎ Success:** You have harvested the following crops:
+                              ${arr.splice(0, 5).join('\n')}\n\n In total, the current value is <:coin:706659001164628008>\`${totalToAdd.toLocaleString(
+                  'en'
+                )}\`\nThis value of each crop will continue to depreciate, I recommend you sell your crops.`
+              })
+              .setFooter({ text: `${TotalPage > 1 ? `Page: ${PageNo++}/${TotalPage}` : 'Page 1/1'}` });
+            Embeds.push(Embed);
+          }
+          TotalPage > 1 ? this.client.functions.pagination(interaction, Embeds) : interaction.reply({ embeds: [Embeds[0]] });
+      
+          function harvestCrops() {
+            for (let removeCounter = 0, harvestCounter = 0; removeCounter < balance.FarmPlot.length && harvestCounter < availableSpots; removeCounter++) {
+              if (balance.FarmPlot[removeCounter].CropStatus === 'harvest') {
+                const removedArray = balance.FarmPlot.splice(removeCounter, 1);
+                balance.HarvestedCrops.push(removedArray[0]);
+                harvestedFunc.push(removedArray[0]);
+                harvestCounter++;
+                removeCounter--;
+              }
+            }
+            return balance.HarvestedCrops;
+          }
+          
+
+        /* REFERENCE OF HOW I DID THE FARM COMMAND */
+        // Calculate current total farm
+        const freeLimit = this.ecoPrices.farming.freeFarmLimit;
+        let currentTotalFarm = 0;
+
+        currentTotalFarm += Number(balance.Items?.Barley) || 0;
+        currentTotalFarm += Number(balance.Items?.Spinach) || 0;
+        currentTotalFarm += Number(balance.Items?.Strawberries) || 0;
+        currentTotalFarm += Number(balance.Items?.Lettuce) || 0;
+
+        // Check if farm bag is full
+        if (!balance.Items?.FarmingTools && currentTotalFarm >= Number(freeLimit)) {
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Your farm bag is full! You can sell your produce via the `sell` button.',
+                true
+            );
+            return;
+        }
+
+        // Generate farm result
+        const farmResult = this.generateFarmResult();
+
+        // If farm result is not generated, display error and return
+        if (!farmResult) {
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred, please try again.',
+                true
+            );
+            return;
+        }
+
+        // Initialize balance items if not present
+        if (!balance.Items) {
+            balance.Items = {} as Items;
+        }
+
+        // Increment farm result amount in balance items
+        const amt = (Number(balance.Items[farmResult.name as keyof typeof balance.Items]) || 0) + 1;
+        balance.Items[farmResult.name as keyof typeof balance.Items] = amt as never;
+
+        // Build attachment for farm result image
+        const attachment = new AttachmentBuilder(`assets/economy/${farmResult.name}.png`);
+
+        // Build farm embed
+        const embed = this.buildFarmEmbed(interaction, client, farmResult, amt);
+        embed.setThumbnail(`attachment://${farmResult.name}.png`);
+
+        // Calculate cooldown time and update balance
+        const endTime = Date.now() + this.ecoPrices.farming.cooldowns.farmWinTime;
+        balance.FarmCool = Math.round(endTime);
+        await balance.save();
+
+        // Defer reply, delete original interaction, update message with embed and attachment
+        await interaction.deferReply();
+        await interaction.deleteReply();
+        await interaction.message?.edit({
+            components: [...this.rows],
+            embeds: [embed],
+            files: [attachment],
+        });
+
+        // Update home embed
+        await this.updateHomeEmbed(interaction, client);
+
+        // If home embed is available, reset after timeout
+        if (this.homeEmbed) {
+            setTimeout(async () => {
+                // Reset all buttons to primary style and enabled
+                for (const row of this.rows) {
+                    for (const button of row.components) {
+                        button.setStyle(ButtonStyle.Primary);
+                        button.setDisabled(false);
+                    }
+                }
+                // Set home button to success style and disabled
+                this.homeButton.setStyle(ButtonStyle.Success);
+                this.homeButton.setDisabled(true);
+
+                await interaction.message?.edit({
+                    components: [...this.rows],
+                    embeds: [this.homeEmbed as APIEmbed],
+                    files: [],
+                });
+            }, this.commandTimeout);
+        }
+    }
+
+    // Function to build harvest embed
+    /* REFERENCE OF HOW I DID THE FARM COMMAND */
+    buildHarvestEmbed(
+        interaction: ButtonInteraction,
+        client: Client,
+        farmResult: { name: string; price: number },
+        amt: number
+    ) {
+        const { name, price } = farmResult;
+
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: `${interaction.user.displayName}`,
+                iconURL: `${interaction.user.avatarURL()}`,
+            })
+            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setFooter({
+                text: 'Planting crops yields a larger return! check it out with: /plant',
+            });
+
+        return embed.addFields({
+            name: `**${client.user?.username} - Farm**`,
+            value: `**◎ Success:** You found a ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt.toLocaleString('en')}\`.`,
+        });
     }
 }
