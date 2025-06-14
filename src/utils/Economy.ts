@@ -1119,7 +1119,27 @@ export class Economy {
 
         // If fish result is a fail, handle it and return
         if (fishResult.name === 'Fail') {
-            await RagnarokEmbed(client, interaction, 'Fail', 'Your catch escaped the line.', true);
+            const failMessages = [
+                'Your catch escaped the line.',
+                'The fish was too strong and broke free!',
+                'You felt a tug, but the line went slack...',
+                'A big one got away! Better luck next time.',
+                'Your bait was stolen by a sneaky fish.',
+                'The fish outsmarted you this time.',
+                'You reeled in nothing but seaweed.',
+                'A school of fish swam right past your hook.',
+                'Your line got tangled in some rocks.',
+                'The fish took one look at your bait and swam away.',
+                'You dozed off and missed the bite.',
+                'A crab cut your fishing line!',
+                'The current was too strong today.',
+                'You cast your line but forgot the bait.',
+                'A seagull stole your catch right off the hook!',
+            ];
+
+            const randomFailMessage = failMessages[Math.floor(Math.random() * failMessages.length)];
+
+            await RagnarokEmbed(client, interaction, 'Fail', randomFailMessage!, true);
 
             const endTime = Date.now() + this.ecoPrices.fishing.cooldowns.fishFailTime;
             balance.FishCool = Math.round(endTime);
