@@ -1350,9 +1350,6 @@ export class Economy {
         // Harvest crops and calculate results
         const harvestResults = this.processHarvest(balance, availableSpots);
 
-        // Clean up empty farm plots
-        this.cleanupFarmPlots(balance);
-
         // await balance.save();
 
         // Display harvest results
