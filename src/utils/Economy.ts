@@ -59,7 +59,7 @@ interface CropData {
     CropType: string;
     Decay: number;
     CropGrowTime: number | string;
-    lastUpdateTime?: number;
+    LastUpdateTime?: number;
 }
 
 interface HarvestResult {
@@ -1365,13 +1365,13 @@ export class Economy {
 
         // Calculate time elapsed in minutes since last update
         const timeElapsedMinutes =
-            (currentTime - (crop.lastUpdateTime || currentTime)) / (1000 * 60);
+            (currentTime - (crop.LastUpdateTime || currentTime)) / (1000 * 60);
 
         // Calculate decay increase (decayRate per minute)
         const decayIncrease = timeElapsedMinutes * this.ecoPrices.farming.decayRate;
 
         // Update the last update time
-        crop.lastUpdateTime = currentTime;
+        crop.LastUpdateTime = currentTime;
 
         // Return new decay value, capped at 100
         return Math.min(100, crop.Decay + decayIncrease);
@@ -1387,7 +1387,7 @@ export class Economy {
                 crop.CropStatus = 'harvest';
                 crop.CropGrowTime = 'na';
                 crop.Decay = 0;
-                crop.lastUpdateTime = currentTime;
+                crop.LastUpdateTime = currentTime;
             }
 
             // Update decay for harvestable crops
@@ -1509,7 +1509,7 @@ export class Economy {
 
                 const removedCrop = balance.FarmPlot.splice(i, 1)[0];
                 if (removedCrop) {
-                    removedCrop.lastUpdateTime = currentTime; // Set harvest time
+                    removedCrop.LastUpdateTime = currentTime; // Set harvest time
                     balance.HarvestedCrops.push(removedCrop);
                     harvestedCrops.push(removedCrop);
                     harvested++;

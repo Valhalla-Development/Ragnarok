@@ -49,7 +49,7 @@ const Balance = new Schema({
             CropStatus: { type: String, required: true },
             CropGrowTime: { type: Schema.Types.Mixed, required: true },
             Decay: { type: Number, default: 0 },
-            lastUpdateTime: { type: Number, default: Date.now },
+            LastUpdateTime: { type: Number, default: Date.now },
         },
     ],
     DmHarvest: { type: String, default: null },
@@ -59,7 +59,7 @@ const Balance = new Schema({
             CropStatus: { type: String, required: true },
             CropGrowTime: { type: Schema.Types.Mixed, required: true },
             Decay: { type: Number, default: 0 },
-            lastUpdateTime: { type: Number, default: Date.now },
+            LastUpdateTime: { type: Number, default: Date.now },
         },
     ],
 });
