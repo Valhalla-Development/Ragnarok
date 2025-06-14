@@ -248,10 +248,10 @@ export async function RagnarokEmbed(
     try {
         interaction.deferred
             ? await interaction.editReply({ embeds: [embed] })
-            : await interaction.reply({ 
-                embeds: [embed],
-                flags: ephemeral ? [MessageFlags.Ephemeral] : undefined 
-            });
+            : await interaction.reply({
+                  embeds: [embed],
+                  flags: ephemeral ? [MessageFlags.Ephemeral] : undefined,
+              });
     } catch (error) {
         console.error('Error sending embed:', error);
     }
@@ -325,6 +325,11 @@ export async function pagination(
             back.setDisabled(true);
             home.setDisabled(true);
             next.setDisabled(false);
+        }
+
+        // Don't do anything if the home button for the economy module is pressed
+        if (b.customId === 'economy_home') {
+            return;
         }
 
         // Ensure embeds[currentPage] exists before using it
