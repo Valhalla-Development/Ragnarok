@@ -1503,16 +1503,18 @@ export class Economy {
             i++
         ) {
             const crop = balance.FarmPlot[i];
-            if (crop.CropStatus === 'harvest') {
+            if (crop && crop.CropStatus === 'harvest') {
                 // Calculate final decay before harvesting
                 crop.Decay = this.calculateDecay(crop, currentTime);
 
                 const removedCrop = balance.FarmPlot.splice(i, 1)[0];
-                removedCrop.lastUpdateTime = currentTime; // Set harvest time
-                balance.HarvestedCrops.push(removedCrop);
-                harvestedCrops.push(removedCrop);
-                harvested++;
-                i--; // Adjust index after splice
+                if (removedCrop) {
+                    removedCrop.lastUpdateTime = currentTime; // Set harvest time
+                    balance.HarvestedCrops.push(removedCrop);
+                    harvestedCrops.push(removedCrop);
+                    harvested++;
+                    i--; // Adjust index after splice
+                }
             }
         }
 
