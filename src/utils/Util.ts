@@ -2,7 +2,7 @@ import {
     ActionRowBuilder,
     ActivityType,
     ButtonBuilder,
-    type ButtonInteraction,
+    ButtonInteraction,
     ButtonStyle,
     ChannelType,
     type ColorResolvable,
@@ -258,9 +258,9 @@ export async function RagnarokEmbed(
 }
 
 export async function pagination(
-    interaction: ButtonInteraction,
+    interaction: ButtonInteraction | CommandInteraction,
     embeds: EmbedBuilder[],
-    economyHome: ButtonBuilder,
+    externalHome?: ButtonBuilder,
     emojiNext = '▶️',
     emojiHome = '🏠',
     emojiBack = '◀️'
@@ -282,15 +282,38 @@ export async function pagination(
         .setEmoji(emojiNext || '▶️')
         .setStyle(ButtonStyle.Primary);
 
-    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(economyHome, back, home, next);
+    // Create components array conditionally based on whether externalHome exists
+    const components = externalHome 
+        ? [externalHome, back, home, next]
+        : [back, home, next];
+    
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(...components);
 
     // Ensure embeds[0] exists before using it
     if (!embeds[0]) {
         return;
     }
-    await interaction.message.edit({ embeds: [embeds[0].toJSON()], components: [row] });
 
-    const collector = interaction.message.createMessageComponentCollector({
+    // Handle initial response based on interaction type
+    let message: Message;
+    if (interaction instanceof ButtonInteraction) {
+        // ButtonInteraction
+        await interaction.message.edit({ embeds: [embeds[0].toJSON()], components: [row] });
+        message = interaction.message;
+    } else {
+        // CommandInteraction
+        const response = await interaction.reply({ 
+            embeds: [embeds[0].toJSON()], 
+            components: [row], 
+            withResponse: true 
+        });
+        if (!response.resource?.message) {
+            throw new Error('Failed to get message from interaction response');
+        }
+        message = response.resource.message;
+    }
+
+    const collector = message.createMessageComponentCollector({
         time: 30000,
     });
 
@@ -341,7 +364,6 @@ export async function pagination(
     });
 
     collector.on('end', () => {
-        const message = interaction.message;
         if (!message) {
             return;
         }
@@ -353,7 +375,7 @@ export async function pagination(
         if (!currentEmbed) {
             return;
         }
-        message.edit({ embeds: [currentEmbed.toJSON()], components: [row] });
+        message.edit({ embeds: [currentEmbed.toJSON()], components: [row] }).catch(console.error);
     });
 
     collector.on('error', console.error);
