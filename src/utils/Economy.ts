@@ -320,7 +320,7 @@ export class Economy {
         function calculateTotal(itemType: string, bal: BalanceInterface): number {
             const types = itemTypes.get(itemType);
             if (!types) {
-                return 0; // Handle unknown itemType
+                return 0;
             }
 
             return types.reduce((acc, type) => {
@@ -331,11 +331,7 @@ export class Economy {
 
         // Sum up seed counts
         const currentTotalSeeds = calculateTotal('seeds', balance);
-
-        // Sum up fish counts
         const currentTotalFish = calculateTotal('fish', balance);
-
-        // Count harvested crops
         const currentTotalFarm = balance.HarvestedCrops?.length
             ? balance.HarvestedCrops.filter((crop: { CropType: string }) =>
                   itemTypes.get('crops')?.includes(crop.CropType)
@@ -345,78 +341,73 @@ export class Economy {
         // Construct the home embed
         this.homeEmbed = new EmbedBuilder()
             .setAuthor({
-                name: `${interaction.user.displayName}'s Balance`,
-                iconURL: `${interaction.user.displayAvatarURL()}`,
+                name: `${interaction.user.displayName}'s Economy Profile`,
+                iconURL: interaction.user.displayAvatarURL(),
             })
-            .setDescription(`Leaderboard Rank: \`${rankPos}\``)
             .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setDescription(`🏆 **Leaderboard Rank:** \`${rankPos}\``)
             .addFields(
                 {
-                    name: 'Cash',
-                    value: `<:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\``,
-                    inline: true,
-                },
-                {
-                    name: 'Bank',
-                    value: `<:coin:706659001164628008> \`${balance.Bank.toLocaleString('en')}\``,
-                    inline: true,
-                },
-                {
-                    name: 'Total',
-                    value: `<:coin:706659001164628008> \`${balance.Total.toLocaleString('en')}\``,
-                    inline: true,
-                },
-                {
-                    name: 'Cooldowns',
-                    value: `
-                Steal: ${Date.now() > balance.StealCool ? '`Available!`' : `<t:${Math.round(balance.StealCool / 1000)}:R>`}
-                Fish: ${balance.Items?.FishingRod ? `${Date.now() > balance.FishCool ? '`Available!`' : `<t:${Math.round(balance.FishCool / 1000)}:R>`}` : '`Rod Not Owned`'}
-                Farm: ${Date.now() > balance.FarmCool ? '`Available!`' : `<t:${Math.round(balance.FarmCool / 1000)}:R>`}
-            `,
+                    name: '💰 **Balance Overview**',
+                    value: [
+                        `┌ **Cash:** <:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\``,
+                        `├ **Bank:** <:coin:706659001164628008> \`${balance.Bank.toLocaleString('en')}\``,
+                        `└ **Total:** <:coin:706659001164628008> \`${balance.Total.toLocaleString('en')}\``,
+                    ].join('\n'),
                     inline: false,
                 },
                 {
-                    name: 'Boosts',
-                    value: `
-                Seed: ${
-                    balance.Boosts?.SeedBag
-                        ? `\`${Number(currentTotalSeeds).toLocaleString('en')}\`/\`${Number(
-                              balance.Boosts.SeedBag
-                          ).toLocaleString('en')}\``
-                        : '`Seed Not Owned`'
-                }
-                Fish: ${
-                    balance.Boosts?.FishBag
-                        ? `\`${Number(currentTotalFish).toLocaleString('en')}\`/\`${Number(
-                              balance.Boosts.FishBag
-                          ).toLocaleString('en')}\``
-                        : '`Fish Not Owned`'
-                }
-                Farm: ${
-                    balance.Boosts?.FarmBag
-                        ? `\`${Number(currentTotalFarm).toLocaleString('en')}\`/\`${Number(
-                              balance.Boosts.FarmBag
-                          ).toLocaleString('en')}\``
-                        : '`Farm Not Owned`'
-                }
-                Farm Plot: ${
-                    balance.Boosts?.FarmPlot
-                        ? `\`${balance.FarmPlot.length.toLocaleString('en')}\`/\`${Number(
-                              balance.Boosts.FarmPlot
-                          ).toLocaleString('en')}\``
-                        : '`Not Owned`'
-                }
-            `,
+                    name: '⏰ **Activity Cooldowns**',
+                    value: [
+                        `┌ **Steal:** ${Date.now() > balance.StealCool ? '`Available!`' : `<t:${Math.round(balance.StealCool / 1000)}:R>`}`,
+                        `├ **Fish:** ${balance.Items?.FishingRod ? `${Date.now() > balance.FishCool ? '`Available!`' : `<t:${Math.round(balance.FishCool / 1000)}:R>`}` : '`Rod Not Owned`'}`,
+                        `└ **Farm:** ${Date.now() > balance.FarmCool ? '`Available!`' : `<t:${Math.round(balance.FarmCool / 1000)}:R>`}`,
+                    ].join('\n'),
                     inline: false,
                 },
                 {
-                    name: '**Claim Cooldowns**',
-                    value: `
-                Hourly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Hourly ? '`Available!`' : `<t:${Math.round(balance.Hourly / 1000)}:R>`}
-                Daily: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Daily ? '`Available!`' : `<t:${Math.round(balance.Daily / 1000)}:R>`}
-                Weekly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Weekly ? '`Available!`' : `<t:${Math.round(balance.Weekly / 1000)}:R>`}
-                Monthly: ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Monthly ? '`Available!`' : `<t:${Math.round(balance.Monthly / 1000)}:R>`}
-            `,
+                    name: '🎒 **Inventory Capacity**',
+                    value: [
+                        `┌ **Seed Bag:** ${
+                            balance.Boosts?.SeedBag
+                                ? `\`${Number(currentTotalSeeds).toLocaleString('en')}\`/\`${Number(
+                                      balance.Boosts.SeedBag
+                                  ).toLocaleString('en')}\``
+                                : '`Not Owned`'
+                        }`,
+                        `├ **Fish Bag:** ${
+                            balance.Boosts?.FishBag
+                                ? `\`${Number(currentTotalFish).toLocaleString('en')}\`/\`${Number(
+                                      balance.Boosts.FishBag
+                                  ).toLocaleString('en')}\``
+                                : '`Not Owned`'
+                        }`,
+                        `├ **Farm Bag:** ${
+                            balance.Boosts?.FarmBag
+                                ? `\`${Number(currentTotalFarm).toLocaleString('en')}\`/\`${Number(
+                                      balance.Boosts.FarmBag
+                                  ).toLocaleString('en')}\``
+                                : '`Not Owned`'
+                        }`,
+                        `└ **Farm Plot:** ${
+                            balance.Boosts?.FarmPlot
+                                ? `\`${balance.FarmPlot.length.toLocaleString('en')}\`/\`${Number(
+                                      balance.Boosts.FarmPlot
+                                  ).toLocaleString('en')}\``
+                                : '`Not Owned`'
+                        }`,
+                    ].join('\n'),
+                    inline: false,
+                },
+                {
+                    name: '🎁 **Claim Rewards**',
+                    value: [
+                        `┌ **Hourly:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Hourly ? '`Available!`' : `<t:${Math.round(balance.Hourly / 1000)}:R>`}`,
+                        `├ **Daily:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Daily ? '`Available!`' : `<t:${Math.round(balance.Daily / 1000)}:R>`}`,
+                        `├ **Weekly:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Weekly ? '`Available!`' : `<t:${Math.round(balance.Weekly / 1000)}:R>`}`,
+                        `└ **Monthly:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Monthly ? '`Available!`' : `<t:${Math.round(balance.Monthly / 1000)}:R>`}`,
+                    ].join('\n'),
+                    inline: false,
                 }
             );
     }
