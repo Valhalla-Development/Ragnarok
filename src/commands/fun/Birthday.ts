@@ -10,7 +10,7 @@ import moment from 'moment';
 import ms from 'ms';
 import BirthdayConfig from '../../mongo/BirthdayConfig.js';
 import Birthdays from '../../mongo/Birthdays.js';
-import { RagnarokEmbed, color } from '../../utils/Util.js';
+import { RagnarokEmbed, color, pagination } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -285,7 +285,7 @@ export class Birthday {
 
         // Send the paginated list to the channel
         if (embeds.length > 1) {
-            // pagination(interaction, embeds); // got to update
+            pagination(interaction, embeds);
         } else {
             await interaction.reply({ embeds });
         }
