@@ -11,6 +11,7 @@ import {
     type CommandInteraction,
     EmbedBuilder,
     type GuildMemberRoleManager,
+    MessageFlags,
     PermissionsBitField,
     type Role,
     type TextChannel,
@@ -175,7 +176,7 @@ export class Config {
 
         // Send the initial menu message
         const m = await interaction.reply({
-            ephemeral: true,
+            flags: [MessageFlags.Ephemeral],
             components: [row1, row2],
             embeds: [initial],
         });
@@ -408,7 +409,7 @@ export class Config {
             );
         }
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
     }
 
     @Slash({ description: 'AutoRole Module Configuration', name: 'role' })
@@ -464,7 +465,7 @@ export class Config {
             embed.setDescription(`Autorole set to ${role}`);
         }
 
-        await interaction.reply({ ephemeral: true, embeds: [embed] });
+        await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
     }
 
     @Slash({ description: 'Disable AutoRole Module', name: 'disable' })
@@ -490,7 +491,7 @@ export class Config {
         // If AutoRole is not enabled, inform the user and return
         if (!currentStatus) {
             embed.setDescription('AutoRole is not enabled.');
-            await interaction.reply({ embeds: [embed], ephemeral: true });
+            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
             return;
         }
 
@@ -499,7 +500,7 @@ export class Config {
         // Delete the AutoRole document from the database
         await AutoRole.deleteOne({ GuildId: interaction.guild!.id });
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
     }
 
     /**
@@ -532,7 +533,7 @@ export class Config {
 
         if (channel.type !== ChannelType.GuildText) {
             embed.setDescription('Please provide a valid `TextChannel`.');
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             return;
         }
 
@@ -545,7 +546,7 @@ export class Config {
             embed.setDescription(
                 'I lack the `SendMessages` permission within the provided channel.'
             );
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             return;
         }
 
@@ -557,7 +558,7 @@ export class Config {
         );
         embed.setDescription(`Birthday channel set to ${channel}`);
 
-        await interaction.reply({ ephemeral: true, embeds: [embed] });
+        await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
     }
 
     @Slash({ description: 'Disable Birthday Module', name: 'disable' })
@@ -583,7 +584,7 @@ export class Config {
         // If Birthday is not enabled, inform the user and return
         if (!currentStatus) {
             embed.setDescription('Birthday module is not enabled.');
-            await interaction.reply({ embeds: [embed], ephemeral: true });
+            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
             return;
         }
 
@@ -592,7 +593,7 @@ export class Config {
         // Delete the Birthday document from the database
         await BirthdayConfig.deleteOne({ GuildId: interaction.guild!.id });
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
     }
 
     /**
@@ -630,12 +631,12 @@ export class Config {
             // If Dad is already enabled
             if (currentStatus) {
                 embed.setDescription('Dad module is already enabled.');
-                await interaction.reply({ embeds: [embed], ephemeral: true });
+                await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
                 return;
             }
 
             embed.setDescription('Dad module **enabled**.');
-            await interaction.reply({ embeds: [embed], ephemeral: true });
+            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
             await new Dad({
                 GuildId: interaction.guild!.id,
                 Status: true,
@@ -645,12 +646,12 @@ export class Config {
 
         if (!currentStatus) {
             embed.setDescription('Dad module is not enabled.');
-            await interaction.reply({ embeds: [embed], ephemeral: true });
+            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
             return;
         }
 
         embed.setDescription('Dad module **disabled**.');
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
         await Dad.deleteOne({ GuildId: interaction.guild!.id });
 
         embed.setDescription('Dad module **disabled**.');
@@ -658,7 +659,7 @@ export class Config {
         // Delete the Dad document from the database
         await Dad.deleteOne({ GuildId: interaction.guild!.id });
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
     }
 
     /**
@@ -691,7 +692,7 @@ export class Config {
 
         if (channel.type !== ChannelType.GuildText) {
             embed.setDescription('Please provide a valid `TextChannel`.');
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             return;
         }
 
@@ -704,7 +705,7 @@ export class Config {
             embed.setDescription(
                 'I lack the `SendMessages` permission within the provided channel.'
             );
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             return;
         }
 
@@ -716,7 +717,7 @@ export class Config {
         );
         embed.setDescription(`Logging channel set to ${channel}`);
 
-        await interaction.reply({ ephemeral: true, embeds: [embed] });
+        await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
     }
 
     @Slash({ description: 'Disable Logging Module', name: 'disable' })
@@ -742,7 +743,7 @@ export class Config {
         // If Logging is not enabled, inform the user and return
         if (!currentStatus) {
             embed.setDescription('Logging module is not enabled.');
-            await interaction.reply({ embeds: [embed], ephemeral: true });
+            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
             return;
         }
 
@@ -751,7 +752,7 @@ export class Config {
         // Delete the Logging document from the database
         await Logging.deleteOne({ GuildId: interaction.guild!.id });
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
     }
 
     /**
@@ -784,7 +785,7 @@ export class Config {
 
         if (category.type !== ChannelType.GuildCategory) {
             embed.setDescription('Please provide a valid `CategoryChannel`.');
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             return;
         }
 
@@ -796,7 +797,7 @@ export class Config {
         );
         embed.setDescription(`Ticket category set to \`${category.name}\``);
 
-        await interaction.reply({ ephemeral: true, embeds: [embed] });
+        await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
     }
 
     /**
@@ -829,7 +830,7 @@ export class Config {
 
         if (channel.type !== ChannelType.GuildText) {
             embed.setDescription('Please provide a valid `TextChannel`.');
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             return;
         }
 
@@ -842,7 +843,7 @@ export class Config {
             embed.setDescription(
                 'I lack the `SendMessages` permission within the provided channel.'
             );
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             return;
         }
 
@@ -854,7 +855,7 @@ export class Config {
         );
         embed.setDescription(`Ticket Logging channel set to ${channel}`);
 
-        await interaction.reply({ ephemeral: true, embeds: [embed] });
+        await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
     }
 
     /**
@@ -893,7 +894,7 @@ export class Config {
         );
         embed.setDescription(`Ticket Support Role set to ${role}`);
 
-        await interaction.reply({ ephemeral: true, embeds: [embed] });
+        await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
     }
 
     @Slash({ description: 'Disable Ticket Module', name: 'disable' })
@@ -919,7 +920,7 @@ export class Config {
         // If Ticket is not enabled, inform the user and return
         if (!currentStatus) {
             embed.setDescription('Ticket module is not enabled.');
-            await interaction.reply({ embeds: [embed], ephemeral: true });
+            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
             return;
         }
 
@@ -928,7 +929,7 @@ export class Config {
         // Delete the Ticket document from the database
         await TicketConfig.deleteOne({ GuildId: interaction.guild!.id });
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
     }
 
     /**
@@ -966,7 +967,7 @@ export class Config {
             embed.setDescription(
                 `\`${extension}\` is not a valid image format.\n\n**Accepted formats:** \`${validExtensions.join(', ')}\``
             );
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             return;
         }
 
@@ -977,7 +978,7 @@ export class Config {
             embed.setDescription(
                 'Please enter a valid absolute URL.\nExample: https://www.example.com'
             );
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             return;
         }
 
@@ -992,7 +993,10 @@ export class Config {
                         embed.setDescription(
                             `I was unable to process \`${image}\`\nIs it a valid image?`
                         );
-                        await interaction.reply({ ephemeral: true, embeds: [embed] });
+                        await interaction.reply({
+                            flags: [MessageFlags.Ephemeral],
+                            embeds: [embed],
+                        });
                         return;
                     }
 
@@ -1004,18 +1008,18 @@ export class Config {
 
                     embed.setDescription('Image has been updated.');
                     embed.setImage(image);
-                    await interaction.reply({ ephemeral: true, embeds: [embed] });
+                    await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
                 } else {
                     embed.setDescription(
                         'You must enable the welcome module first. You can do this by running the following command. `/config welcome channel <#channel>`'
                     );
-                    await interaction.reply({ ephemeral: true, embeds: [embed] });
+                    await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
                 }
             } else {
                 embed.setDescription(
                     'Please input a valid image URL. Ensure that the URL concludes with one of the supported extensions: `.jpg`, `.jpeg`, `.png`.'
                 );
-                await interaction.reply({ ephemeral: true, embeds: [embed] });
+                await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             }
         });
     }
@@ -1050,7 +1054,7 @@ export class Config {
 
         if (channel.type !== ChannelType.GuildText) {
             embed.setDescription('Please provide a valid `TextChannel`.');
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             return;
         }
 
@@ -1063,7 +1067,7 @@ export class Config {
             embed.setDescription(
                 'I lack the `SendMessages` permission within the provided channel.'
             );
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             return;
         }
 
@@ -1075,7 +1079,7 @@ export class Config {
         );
         embed.setDescription(`Welcome channel set to ${channel}`);
 
-        await interaction.reply({ ephemeral: true, embeds: [embed] });
+        await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
     }
 
     @Slash({ description: 'Disable Welcome Module', name: 'disable' })
@@ -1101,7 +1105,7 @@ export class Config {
         // If Welcome is not enabled, inform the user and return
         if (!currentStatus) {
             embed.setDescription('Welcome module is not enabled.');
-            await interaction.reply({ embeds: [embed], ephemeral: true });
+            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
             return;
         }
 
@@ -1110,7 +1114,7 @@ export class Config {
         // Delete the Welcome document from the database
         await Welcome.deleteOne({ GuildId: interaction.guild!.id });
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
     }
 
     /**
@@ -1143,7 +1147,7 @@ export class Config {
 
         if (channel.type !== ChannelType.GuildText) {
             embed.setDescription('Please provide a valid `TextChannel`.');
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             return;
         }
 
@@ -1156,7 +1160,7 @@ export class Config {
             embed.setDescription(
                 'I lack the `SendMessages` permission within the provided channel.'
             );
-            await interaction.reply({ ephemeral: true, embeds: [embed] });
+            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             return;
         }
 
@@ -1168,7 +1172,7 @@ export class Config {
         );
         embed.setDescription(`StarBoard channel set to ${channel}`);
 
-        await interaction.reply({ ephemeral: true, embeds: [embed] });
+        await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
     }
 
     @Slash({ description: 'Disable StarBoard Module', name: 'disable' })
@@ -1194,7 +1198,7 @@ export class Config {
         // If StarBoard is not enabled, inform the user and return
         if (!currentStatus) {
             embed.setDescription('StarBoard module is not enabled.');
-            await interaction.reply({ embeds: [embed], ephemeral: true });
+            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
             return;
         }
 
@@ -1203,6 +1207,6 @@ export class Config {
         // Delete the StarBoard document from the database
         await StarBoard.deleteOne({ GuildId: interaction.guild!.id });
 
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
     }
 }
