@@ -3,7 +3,6 @@ import { EmbedBuilder, type GuildTextBasedChannel, PermissionsBitField } from 'd
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import urlRegexSafe from 'url-regex-safe';
-import linksContent from '../../assets/SpenLinks.json' assert { type: 'json' };
 import AFK from '../mongo/AFK.js';
 import AdsProtection from '../mongo/AdsProtection.js';
 import Dad from '../mongo/Dad.js';
