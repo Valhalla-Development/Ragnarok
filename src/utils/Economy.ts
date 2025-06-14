@@ -791,6 +791,17 @@ export class Economy {
             // If interaction is a ButtonInteraction and home embed exists, update the message with home embed after a delay
             if (interaction instanceof ButtonInteraction && this.homeEmbed) {
                 setTimeout(async () => {
+                    // Reset all buttons to primary style and enabled
+                    for (const row of this.rows) {
+                        for (const button of row.components) {
+                            button.setStyle(ButtonStyle.Primary);
+                            button.setDisabled(false);
+                        }
+                    }
+                    // Set home button to success style and disabled
+                    this.homeButton.setStyle(ButtonStyle.Success);
+                    this.homeButton.setDisabled(true);
+
                     await interaction.message?.edit({
                         components: [...this.rows],
                         embeds: [this.homeEmbed as APIEmbed],
@@ -950,9 +961,20 @@ export class Economy {
         // Update home embed
         await this.updateHomeEmbed(interaction, client);
 
-        // If home embed is available, reset after 5 seconds
+        // If home embed is available, reset after timeout
         if (this.homeEmbed) {
             setTimeout(async () => {
+                // Reset all buttons to primary style and enabled
+                for (const row of this.rows) {
+                    for (const button of row.components) {
+                        button.setStyle(ButtonStyle.Primary);
+                        button.setDisabled(false);
+                    }
+                }
+                // Set home button to success style and disabled
+                this.homeButton.setStyle(ButtonStyle.Success);
+                this.homeButton.setDisabled(true);
+
                 await interaction.message?.edit({
                     components: [...this.rows],
                     embeds: [this.homeEmbed as APIEmbed],
@@ -1139,9 +1161,20 @@ export class Economy {
         // Update home embed
         await this.updateHomeEmbed(interaction, client);
 
-        // If home embed is available, reset after 5 seconds
+        // If home embed is available, reset after timeout
         if (this.homeEmbed) {
             setTimeout(async () => {
+                // Reset all buttons to primary style and enabled
+                for (const row of this.rows) {
+                    for (const button of row.components) {
+                        button.setStyle(ButtonStyle.Primary);
+                        button.setDisabled(false);
+                    }
+                }
+                // Set home button to success style and disabled
+                this.homeButton.setStyle(ButtonStyle.Success);
+                this.homeButton.setDisabled(true);
+
                 await interaction.message?.edit({
                     components: [...this.rows],
                     embeds: [this.homeEmbed as APIEmbed],
