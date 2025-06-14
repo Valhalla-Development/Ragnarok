@@ -10,6 +10,7 @@ import {
     EmbedBuilder,
     type GuildMember,
     type Message,
+    MessageFlags,
     type ModalSubmitInteraction,
     PermissionsBitField,
     type StringSelectMenuInteraction,
@@ -247,7 +248,10 @@ export async function RagnarokEmbed(
     try {
         interaction.deferred
             ? await interaction.editReply({ embeds: [embed] })
-            : await interaction.reply({ ephemeral, embeds: [embed] });
+            : await interaction.reply({ 
+                embeds: [embed],
+                flags: ephemeral ? [MessageFlags.Ephemeral] : undefined 
+            });
     } catch (error) {
         console.error('Error sending embed:', error);
     }
