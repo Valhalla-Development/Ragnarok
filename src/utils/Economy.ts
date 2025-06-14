@@ -231,12 +231,14 @@ export class Economy {
      * @param button - The button to set the state for.
      */
     setButtonState(button: ButtonBuilder) {
-        // Loop through each button in the array, except the provided 'button'.
-        for (const otherButton of [this.homeButton, this.baltopButton]) {
-            // If the button is not the provided 'button', set its style to primary and enable it.
-            if (otherButton !== button) {
-                otherButton.setStyle(ButtonStyle.Primary);
-                otherButton.setDisabled(false);
+        // Loop through all buttons in the rows
+        for (const row of this.rows) {
+            for (const otherButton of row.components) {
+                // If the button is not the provided 'button', set its style to primary and enable it
+                if (otherButton !== button) {
+                    otherButton.setStyle(ButtonStyle.Primary);
+                    otherButton.setDisabled(false);
+                }
             }
         }
 
@@ -508,6 +510,9 @@ export class Economy {
      * @param client - The Discord client.
      */
     async deposit(interaction: ButtonInteraction, client: Client) {
+        // Set the state of the deposit button first
+        this.setButtonState(this.depositButton);
+        
         // Fetch user's balance based on their ID and guild ID
         const balance = await Balance.findOne({
             IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
@@ -552,6 +557,9 @@ export class Economy {
      * @param client - The Discord client.
      */
     async claim(interaction: ButtonInteraction, client: Client) {
+        // Set the state of the claim button first
+        this.setButtonState(this.claimButton);
+        
         // Fetch user's balance based on their ID and guild ID
         const balance = await Balance.findOne({
             IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
@@ -657,6 +665,11 @@ export class Economy {
         amount: string | null = null,
         option: string | null = null
     ) {
+        // Set the state of the coinflip button first if it's a button interaction
+        if (interaction instanceof ButtonInteraction) {
+            this.setButtonState(this.coinflipButton);
+        }
+        
         // Fetch user's balance based on their ID and guild ID
         const balance = await Balance.findOne({
             IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
@@ -833,6 +846,9 @@ export class Economy {
 
     // Asynchronous function to handle farming interaction
     async farm(interaction: ButtonInteraction, client: Client) {
+        // Set the state of the farm button first
+        this.setButtonState(this.farmButton);
+        
         // Retrieve user's balance
         const balance = await Balance.findOne({
             IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
@@ -997,6 +1013,9 @@ export class Economy {
 
     // Asynchronous function to handle fishing interaction
     async fish(interaction: ButtonInteraction, client: Client) {
+        // Set the state of the fish button first
+        this.setButtonState(this.fishButton);
+        
         // Retrieve user's balance
         const balance = await Balance.findOne({
             IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
