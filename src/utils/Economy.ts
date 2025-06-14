@@ -74,6 +74,9 @@ export class Economy {
 
     homeEmbed: EmbedBuilder | null = null;
 
+    // Add timeout duration property (in milliseconds)
+    private readonly commandTimeout = 10000; // 10 seconds
+
     constructor() {
         this.homeButton = new ButtonBuilder()
             .setLabel('Home')
@@ -779,7 +782,7 @@ export class Economy {
                         components: [...this.rows],
                         embeds: [this.homeEmbed as APIEmbed],
                     });
-                }, 5000);
+                }, this.commandTimeout);
             }
         } else {
             if (Number.isNaN(Number(amount))) {
@@ -939,7 +942,7 @@ export class Economy {
                     embeds: [this.homeEmbed as APIEmbed],
                     files: [],
                 });
-            }, 5000);
+            }, this.commandTimeout);
         }
     }
 
@@ -1125,7 +1128,7 @@ export class Economy {
                     embeds: [this.homeEmbed as APIEmbed],
                     files: [],
                 });
-            }, 5000);
+            }, this.commandTimeout);
         }
     }
 
