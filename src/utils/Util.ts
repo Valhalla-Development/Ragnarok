@@ -283,10 +283,8 @@ export async function pagination(
         .setStyle(ButtonStyle.Primary);
 
     // Create components array conditionally based on whether externalHome exists
-    const components = externalHome 
-        ? [externalHome, back, home, next]
-        : [back, home, next];
-    
+    const components = externalHome ? [externalHome, back, home, next] : [back, home, next];
+
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(...components);
 
     // Ensure embeds[0] exists before using it
@@ -302,10 +300,10 @@ export async function pagination(
         message = interaction.message;
     } else {
         // CommandInteraction
-        const response = await interaction.reply({ 
-            embeds: [embeds[0].toJSON()], 
-            components: [row], 
-            withResponse: true 
+        const response = await interaction.reply({
+            embeds: [embeds[0].toJSON()],
+            components: [row],
+            withResponse: true,
         });
         if (!response.resource?.message) {
             throw new Error('Failed to get message from interaction response');
