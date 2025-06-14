@@ -1118,7 +1118,7 @@ export class Economy {
         }
 
         // If fish result is a fail, handle it and return
-        if (fishResult.name === 'fail') {
+        if (fishResult.name === 'Fail') {
             await RagnarokEmbed(client, interaction, 'Fail', 'Your catch escaped the line.', true);
 
             const endTime = Date.now() + this.ecoPrices.fishing.cooldowns.fishFailTime;
