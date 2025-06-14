@@ -68,6 +68,8 @@ export class Economy {
 
     fishButton;
 
+    harvestButton;
+
     rows: ActionRowBuilder<ButtonBuilder>[] = [];
 
     ecoPrices;
@@ -113,6 +115,11 @@ export class Economy {
             .setStyle(ButtonStyle.Primary)
             .setCustomId('economy_fish');
 
+        this.harvestButton = new ButtonBuilder()
+            .setLabel('Harvest')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('economy_harvest');
+
         const row1 = new ActionRowBuilder<ButtonBuilder>().addComponents(
             this.homeButton,
             this.baltopButton,
@@ -123,7 +130,8 @@ export class Economy {
 
         const row2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
             this.farmButton,
-            this.fishButton
+            this.fishButton,
+            this.harvestButton
         );
 
         this.rows.push(row1, row2);
@@ -1258,5 +1266,40 @@ export class Economy {
             });
 
         return embed;
+    }
+
+    // Asynchronous function to handle harvest interaction
+    async harvest(interaction: ButtonInteraction, client: Client) {
+        // Set the state of the harvest button first
+        this.setButtonState(this.harvestButton);
+
+        // Retrieve user's balance
+        const balance = await Balance.findOne({
+            IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
+        });
+
+        // If balance is not found, display error and return
+        if (!balance) {
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred, please try again.',
+                true
+            );
+            return;
+        }
+
+        // Check if user has a farm plot
+        if (balance.Boosts?.FarmPlot) {
+                await RagnarokEmbed(
+                    client,
+                    interaction,
+                    'Error',
+                    'You do not have a farming plot! You will be awarded one once you purhcase farming tools from the shop. Check \`/economy\` for more information.',
+                    true
+                );
+                return;
+        }
     }
 }
