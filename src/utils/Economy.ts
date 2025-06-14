@@ -1306,7 +1306,7 @@ export class Economy {
         }
 
         // Check if user has a farm plot
-        if (!balance.Boosts?.FarmPlot) {
+        if (!balance.Boosts!.FarmPlot) {
             await RagnarokEmbed(
                 client,
                 interaction,
@@ -1544,14 +1544,6 @@ export class Economy {
         const value = Math.floor(basePrice * (1 - Number(crop.Decay.toFixed(4)) / 100));
 
         return { value };
-    }
-
-    // Helper method to clean up empty farm plots
-    private cleanupFarmPlots(balance: BalanceInterface) {
-        balance.FarmPlot = balance.FarmPlot.filter((plot) => plot !== null);
-        if (balance.FarmPlot.length === 0) {
-            balance.FarmPlot = [];
-        }
     }
 
     // Helper method to display harvest results
