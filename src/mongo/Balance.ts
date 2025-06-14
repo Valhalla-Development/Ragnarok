@@ -43,9 +43,25 @@ const Balance = new Schema({
     Bank: { type: Number, default: null },
     Total: { type: Number, default: null },
     ClaimNewUser: { type: Number, default: null },
-    FarmPlot: { type: Array, default: [] },
+    FarmPlot: [
+        {
+            CropType: { type: String, required: true },
+            CropStatus: { type: String, required: true },
+            CropGrowTime: { type: Schema.Types.Mixed, required: true },
+            Decay: { type: Number, default: 0 },
+            lastUpdateTime: { type: Number, default: Date.now },
+        },
+    ],
     DmHarvest: { type: String, default: null },
-    HarvestedCrops: { type: Array, default: [] },
+    HarvestedCrops: [
+        {
+            CropType: { type: String, required: true },
+            CropStatus: { type: String, required: true },
+            CropGrowTime: { type: Schema.Types.Mixed, required: true },
+            Decay: { type: Number, default: 0 },
+            lastUpdateTime: { type: Number, default: Date.now },
+        },
+    ],
 });
 
 export type BalanceInterface = InferSchemaType<typeof Balance>;
