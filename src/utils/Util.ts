@@ -350,6 +350,8 @@ export async function pagination(
 
         // Don't do anything if the home button for the economy module is pressed
         if (b.customId === 'economy_home') {
+            // Stop the collector since we're navigating away from pagination
+            collector.stop();
             return;
         }
 
