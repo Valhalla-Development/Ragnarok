@@ -16,8 +16,9 @@ import '@colors/colors';
 import type { Client } from 'discordx';
 // @ts-expect-error no type file available for this package
 import converter from 'number-to-words-en';
+import prettyMilliseconds from 'pretty-ms';
 import Balance, { type BalanceInterface } from '../mongo/Balance.js';
-import { RagnarokEmbed, color } from '../utils/Util.js';
+import { RagnarokEmbed, capitalise, color, pagination } from '../utils/Util.js';
 
 interface EcoPrices {
     Hourly: { min: number; max: number };
@@ -51,6 +52,20 @@ interface Items {
     TomatoSeeds: number;
     FarmingTools: boolean;
     FishingRod: boolean;
+}
+
+interface CropData {
+    CropStatus: string;
+    CropType: string;
+    Decay: number;
+    CropGrowTime: number | string;
+    lastUpdateTime?: number;
+}
+
+interface HarvestResult {
+    crops: CropData[];
+    totalValue: number;
+    displayEntries: string[];
 }
 
 export class Economy {
@@ -1270,7 +1285,7 @@ export class Economy {
 
     // Asynchronous function to handle harvest interaction
     async harvest(interaction: ButtonInteraction, client: Client) {
-        // Set the state of the harvest button first
+        // Set the state of the harvest button
         this.setButtonState(this.harvestButton);
 
         // Retrieve user's balance
@@ -1279,7 +1294,7 @@ export class Economy {
         });
 
         // If balance is not found, display error and return
-        if (!balance) {
+        if (!balance || !balance.Boosts) {
             await RagnarokEmbed(
                 client,
                 interaction,
@@ -1291,325 +1306,303 @@ export class Economy {
         }
 
         // Check if user has a farm plot
-        if (balance.Boosts?.FarmPlot) {
-                await RagnarokEmbed(
-                    client,
-                    interaction,
-                    'Error',
-                    'You do not have a farming plot! You will be awarded one once you purhcase farming tools from the shop. Check \`/economy\` for more information.',
-                    true
-                );
-                return;
-        }
-
-        await balance.FarmPlot.map(async (key) => {
-            if (Date.now() > key.CropGrowTime) {
-              key.CropStatus = 'harvest';
-              key.CropGrowTime = 'na';
-              key.Decay = 0;
-      
-              await balance.save();
-            }
-          });
-      
-          let harvestable;
-      
-          if (balance.FarmPlot.length) {
-            harvestable = balance.FarmPlot.filter((key) => key.CropStatus === 'harvest');
-          } else {
-            harvestable = [];
-          }
-      
-          if (!balance.FarmPlot.length && !harvestable.length) {
+        if (!balance.Boosts?.FarmPlot) {
             await RagnarokEmbed(
                 client,
                 interaction,
                 'Error',
-                'You have nothing to harvest!',
-                true
-            );
-            return;
-          }
-      
-          if (balance.FarmPlot.length && !harvestable.length) {
-            const arr = [];
-      
-            const Embeds = [];
-            // Luke gets credit for this magic
-            let PageNo = 1;
-      
-            const filter = balance.FarmPlot.filter((e) => e.CropGrowTime !== 'na');
-            const filterHarvest = balance.FarmPlot.filter((e) => e.CropStatus === 'harvest');
-      
-            filterHarvest.forEach((key) => {
-              arr.push(`\u3000Crop Type: \`${this.client.utils.capitalise(key.CropType)}\` - Crop Decay: \`${key.Decay.toFixed(4)}%\``);
-            });
-      
-            filter.forEach((key) => {
-              const then = prettyMilliseconds(new Date().getTime() - key.CropGrowTime.toFixed(0), { millisecondsDecimalDigits: true });
-              const test = then.replace(/-/g, '');
-              const thenTime = test.substring(0, test.indexOf('s') + 1);
-      
-              if (key.CropType === 'corn') {
-                arr.push(`\u3000Crop Type: \`Corn\` - Time until grown: \`${thenTime}\``);
-              }
-              if (key.CropType === 'wheat') {
-                arr.push(`\u3000Crop Type: \`Wheat\` - Time until grown: \`${thenTime}\``);
-              }
-              if (key.CropType === 'potato') {
-                arr.push(`\u3000Crop Type: \`Potato\` - Time until grown: \`${thenTime}\``);
-              }
-              if (key.CropType === 'tomato') {
-                arr.push(`\u3000Crop Type: \`Tomato\` - Time until grown: \`${thenTime}\``);
-              }
-            });
-      
-            const TestPages = arr.length;
-            const TotalPage = Math.ceil(TestPages / 5);
-      
-            for (const Page of arr) {
-              const Embed = new EmbedBuilder()
-                .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
-                .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-                .addFields({
-                  name: `**${this.client.user.username} - Harvest**`,
-                  value: `**◎ Success:** Current crop status:
-                              ${arr.splice(0, 5).join('\n')}`
-                })
-                .setFooter({ text: `${TotalPage > 1 ? `Page: ${PageNo++}/${TotalPage}` : 'Page 1/1'}` });
-              Embeds.push(Embed);
-            }
-            TotalPage > 1 ? this.client.functions.pagination(interaction, Embeds) : interaction.reply({ embeds: [Embeds[0]] });
-            return;
-          }
-          
-          const availableSpots = balance.Boosts.FarmBag - balance.HarvestedCrops.length;
-      
-          const cornPrice = this.client.ecoPrices.corn;
-          const wheatPrice = this.client.ecoPrices.wheat;
-          const potatoesPrice = this.client.ecoPrices.potatoes;
-          const tomatoesPrice = this.client.ecoPrices.tomatoes;
-      
-          if (availableSpots <= 0) {
-            const embed = new EmbedBuilder()
-              .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
-              .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-              .addFields({
-                name: `**${this.client.user.username} - Harvest**`,
-                value: '**◎ Error:** You do not have enough space to harvest anything!\nYou can upgrade your storage with the command `/shop upgrade`'
-              });
-            interaction.reply({ ephemeral: true, embeds: [embed] });
-            return;
-          }
-      
-          const harvestedFunc = [];
-      
-          let totalToAdd = 0;
-          let sellPrice;
-          const arr = [];
-      
-          harvestCrops();
-      
-          harvestedFunc.forEach((key) => {
-            if (key.CropType === 'corn') {
-              totalToAdd += Math.floor(cornPrice * (1 - key.Decay.toFixed(4) / 100));
-              sellPrice = Math.floor(cornPrice * (1 - key.Decay.toFixed(4) / 100));
-              arr.push(
-                `\u3000Crop Type: \`Corn\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString(
-                  'en'
-                )}\` - Decayed: \`${key.Decay.toFixed(4)}\`%`
-              );
-            }
-            if (key.CropType === 'wheat') {
-              totalToAdd += Math.floor(wheatPrice * (1 - key.Decay.toFixed(4) / 100));
-              sellPrice = Math.floor(wheatPrice * (1 - key.Decay.toFixed(4) / 100));
-              arr.push(
-                `\u3000Crop Type: \`Wheat\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString(
-                  'en'
-                )}\` - Decayed: \`${key.Decay.toFixed(4)}\`%`
-              );
-            }
-            if (key.CropType === 'potato') {
-              totalToAdd += Math.floor(potatoesPrice * (1 - key.Decay.toFixed(4) / 100));
-              sellPrice = Math.floor(potatoesPrice * (1 - key.Decay.toFixed(4) / 100));
-              arr.push(
-                `\u3000Crop Type: \`Potato\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString(
-                  'en'
-                )}\` - Decayed: \`${key.Decay.toFixed(4)}\`%`
-              );
-            }
-            if (key.CropType === 'tomato') {
-              totalToAdd += Math.floor(tomatoesPrice * (1 - key.Decay.toFixed(4) / 100));
-              sellPrice = Math.floor(tomatoesPrice * (1 - key.Decay.toFixed(4) / 100));
-              arr.push(
-                `\u3000Crop Type: \`Tomato\` - Current Value: <:coin:706659001164628008>\`${sellPrice.toLocaleString(
-                  'en'
-                )}\` - Decayed: \`${key.Decay.toFixed(4)}\`%`
-              );
-            }
-          });
-      
-          const filteredPlots = balance.FarmPlot.filter((plot) => plot !== null);
-          if (filteredPlots.length === 0) {
-            balance.FarmPlot = [];
-          } else {
-            balance.FarmPlot = filteredPlots;
-          }
-      
-          await balance.save();
-      
-          const Embeds = [];
-          const TestPages = arr.length;
-          const TotalPage = Math.ceil(TestPages / 5);
-          // Luke gets credit for this magic
-          let PageNo = 1;
-      
-          for (const Page of arr) {
-            const Embed = new EmbedBuilder()
-              .setAuthor({ name: `${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
-              .setColor(this.client.utils.color(interaction.guild.members.me.displayHexColor))
-              .addFields({
-                name: `**${this.client.user.username} - Harvest**`,
-                value: `**◎ Success:** You have harvested the following crops:
-                              ${arr.splice(0, 5).join('\n')}\n\n In total, the current value is <:coin:706659001164628008>\`${totalToAdd.toLocaleString(
-                  'en'
-                )}\`\nThis value of each crop will continue to depreciate, I recommend you sell your crops.`
-              })
-              .setFooter({ text: `${TotalPage > 1 ? `Page: ${PageNo++}/${TotalPage}` : 'Page 1/1'}` });
-            Embeds.push(Embed);
-          }
-          TotalPage > 1 ? this.client.functions.pagination(interaction, Embeds) : interaction.reply({ embeds: [Embeds[0]] });
-      
-          function harvestCrops() {
-            for (let removeCounter = 0, harvestCounter = 0; removeCounter < balance.FarmPlot.length && harvestCounter < availableSpots; removeCounter++) {
-              if (balance.FarmPlot[removeCounter].CropStatus === 'harvest') {
-                const removedArray = balance.FarmPlot.splice(removeCounter, 1);
-                balance.HarvestedCrops.push(removedArray[0]);
-                harvestedFunc.push(removedArray[0]);
-                harvestCounter++;
-                removeCounter--;
-              }
-            }
-            return balance.HarvestedCrops;
-          }
-          
-
-        /* REFERENCE OF HOW I DID THE FARM COMMAND */
-        // Calculate current total farm
-        const freeLimit = this.ecoPrices.farming.freeFarmLimit;
-        let currentTotalFarm = 0;
-
-        currentTotalFarm += Number(balance.Items?.Barley) || 0;
-        currentTotalFarm += Number(balance.Items?.Spinach) || 0;
-        currentTotalFarm += Number(balance.Items?.Strawberries) || 0;
-        currentTotalFarm += Number(balance.Items?.Lettuce) || 0;
-
-        // Check if farm bag is full
-        if (!balance.Items?.FarmingTools && currentTotalFarm >= Number(freeLimit)) {
-            await RagnarokEmbed(
-                client,
-                interaction,
-                'Error',
-                'Your farm bag is full! You can sell your produce via the `sell` button.',
+                'You do not have a farming plot! You will be awarded one once you purchase farming tools from the shop. Check `/economy` for more information.',
                 true
             );
             return;
         }
 
-        // Generate farm result
-        const farmResult = this.generateFarmResult();
+        // Update crop statuses
+        await this.updateCropStatuses(balance);
 
-        // If farm result is not generated, display error and return
-        if (!farmResult) {
+        const harvestablecrops = this.getHarvestableCrops(balance);
+
+        // If no farm plots exist
+        if (!balance.FarmPlot.length) {
+            await RagnarokEmbed(client, interaction, 'Error', 'You have nothing to harvest!', true);
+            return;
+        }
+
+        // If no crops are ready to harvest, show crop status
+        if (!harvestablecrops.length) {
+            await this.showCropStatus(interaction, client, balance);
+            return;
+        }
+
+        // Check if user has space in farm bag
+        const availableSpots = balance.Boosts.FarmBag - balance.HarvestedCrops.length;
+        if (availableSpots <= 0) {
             await RagnarokEmbed(
                 client,
                 interaction,
                 'Error',
-                'An error occurred, please try again.',
+                'You do not have enough space to harvest anything!\nYou can upgrade your storage in the shop from `/economy`.',
                 true
             );
             return;
         }
 
-        // Initialize balance items if not present
-        if (!balance.Items) {
-            balance.Items = {} as Items;
+        // Harvest crops and calculate results
+        const harvestResults = this.processHarvest(balance, availableSpots);
+
+        // Clean up empty farm plots
+        this.cleanupFarmPlots(balance);
+
+        // await balance.save();
+
+        // Display harvest results
+        await this.displayHarvestResults(interaction, client, harvestResults);
+    }
+
+    // Helper method to calculate decay based on time elapsed
+    private calculateDecay(crop: CropData, currentTime: number): number {
+        // If crop is not ready for harvest, no decay
+        if (crop.CropStatus !== 'harvest') {
+            return crop.Decay;
         }
 
-        // Increment farm result amount in balance items
-        const amt = (Number(balance.Items[farmResult.name as keyof typeof balance.Items]) || 0) + 1;
-        balance.Items[farmResult.name as keyof typeof balance.Items] = amt as never;
+        // Calculate time elapsed in minutes since last update
+        const timeElapsedMinutes =
+            (currentTime - (crop.lastUpdateTime || currentTime)) / (1000 * 60);
 
-        // Build attachment for farm result image
-        const attachment = new AttachmentBuilder(`assets/economy/${farmResult.name}.png`);
+        // Calculate decay increase (decayRate per minute)
+        const decayIncrease = timeElapsedMinutes * this.ecoPrices.farming.decayRate;
 
-        // Build farm embed
-        const embed = this.buildFarmEmbed(interaction, client, farmResult, amt);
-        embed.setThumbnail(`attachment://${farmResult.name}.png`);
+        // Update the last update time
+        crop.lastUpdateTime = currentTime;
 
-        // Calculate cooldown time and update balance
-        const endTime = Date.now() + this.ecoPrices.farming.cooldowns.farmWinTime;
-        balance.FarmCool = Math.round(endTime);
-        await balance.save();
+        // Return new decay value, capped at 100
+        return Math.min(100, crop.Decay + decayIncrease);
+    }
 
-        // Defer reply, delete original interaction, update message with embed and attachment
-        await interaction.deferReply();
-        await interaction.deleteReply();
-        await interaction.message?.edit({
-            components: [...this.rows],
-            embeds: [embed],
-            files: [attachment],
-        });
+    // Helper method to update crop growth statuses
+    private updateCropStatuses(balance: BalanceInterface) {
+        const currentTime = Date.now();
 
-        // Update home embed
-        await this.updateHomeEmbed(interaction, client);
+        for (const crop of balance.FarmPlot) {
+            // Update growth status
+            if (typeof crop.CropGrowTime === 'number' && currentTime > crop.CropGrowTime) {
+                crop.CropStatus = 'harvest';
+                crop.CropGrowTime = 'na';
+                crop.Decay = 0;
+                crop.lastUpdateTime = currentTime;
+            }
 
-        // If home embed is available, reset after timeout
-        if (this.homeEmbed) {
-            setTimeout(async () => {
-                // Reset all buttons to primary style and enabled
-                for (const row of this.rows) {
-                    for (const button of row.components) {
-                        button.setStyle(ButtonStyle.Primary);
-                        button.setDisabled(false);
-                    }
-                }
-                // Set home button to success style and disabled
-                this.homeButton.setStyle(ButtonStyle.Success);
-                this.homeButton.setDisabled(true);
+            // Update decay for harvestable crops
+            if (crop.CropStatus === 'harvest') {
+                crop.Decay = this.calculateDecay(crop, currentTime);
+            }
+        }
 
-                await interaction.message?.edit({
-                    components: [...this.rows],
-                    embeds: [this.homeEmbed as APIEmbed],
-                    files: [],
-                });
-            }, this.commandTimeout);
+        // Update decay for harvested crops
+        if (balance.HarvestedCrops) {
+            for (const crop of balance.HarvestedCrops) {
+                crop.Decay = this.calculateDecay(crop, currentTime);
+            }
         }
     }
 
-    // Function to build harvest embed
-    /* REFERENCE OF HOW I DID THE FARM COMMAND */
-    buildHarvestEmbed(
+    // Helper method to get harvestable crops
+    private getHarvestableCrops(balance: BalanceInterface) {
+        return balance.FarmPlot.filter((crop) => crop.CropStatus === 'harvest');
+    }
+
+    // Helper method to show current crop status when nothing is harvestable
+    private async showCropStatus(
         interaction: ButtonInteraction,
         client: Client,
-        farmResult: { name: string; price: number },
-        amt: number
+        balance: BalanceInterface
     ) {
-        const { name, price } = farmResult;
+        const statusEntries: string[] = [];
 
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${interaction.user.displayName}`,
-                iconURL: `${interaction.user.avatarURL()}`,
-            })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .setFooter({
-                text: 'Planting crops yields a larger return! check it out with: /plant',
-            });
+        const growingCrops = balance.FarmPlot.filter((crop) => crop.CropGrowTime !== 'na');
+        const readyCrops = balance.FarmPlot.filter((crop) => crop.CropStatus === 'harvest');
 
-        return embed.addFields({
-            name: `**${client.user?.username} - Farm**`,
-            value: `**◎ Success:** You found a ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt.toLocaleString('en')}\`.`,
+        // Add ready crops to status
+        for (const crop of readyCrops) {
+            statusEntries.push(
+                `\u3000Crop Type: \`${capitalise(crop.CropType)}\` - Crop Decay: \`${crop.Decay.toFixed(4)}%\``
+            );
+        }
+
+        // Add growing crops to status
+        for (const crop of growingCrops) {
+            const timeRemaining = this.calculateTimeRemaining(crop.CropGrowTime);
+            statusEntries.push(
+                `\u3000Crop Type: \`${capitalise(crop.CropType)}\` - Time until grown: \`${timeRemaining}\``
+            );
+        }
+
+        const embeds = this.createCropStatusEmbeds(interaction, client, statusEntries);
+        const firstEmbed = embeds[0];
+
+        if (!firstEmbed) {
+            return;
+        }
+
+        if (embeds.length > 1) {
+            await pagination(interaction, embeds, this.homeButton);
+        } else {
+            await interaction.reply({ embeds: [firstEmbed.toJSON()], ephemeral: true });
+        }
+    }
+
+    // Helper method to calculate time remaining for crop growth
+    private calculateTimeRemaining(cropGrowTime: number): string {
+        const timeDiff = prettyMilliseconds(Date.now() - cropGrowTime, {
+            millisecondsDecimalDigits: 1,
         });
+        const cleanTime = timeDiff.replace(/-/g, '');
+        return cleanTime.substring(0, cleanTime.indexOf('s') + 1);
+    }
+
+    // Helper method to create crop status embeds
+    private createCropStatusEmbeds(
+        interaction: ButtonInteraction,
+        client: Client,
+        statusEntries: string[]
+    ): EmbedBuilder[] {
+        const embeds: EmbedBuilder[] = [];
+        const totalPages = Math.ceil(statusEntries.length / 5);
+        let pageNumber = 1;
+
+        while (statusEntries.length > 0) {
+            const pageEntries = statusEntries.splice(0, 5);
+            const embed = new EmbedBuilder()
+                .setAuthor({
+                    name: `${interaction.user.displayName}`,
+                    iconURL: `${interaction.user.avatarURL()}`,
+                })
+                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .addFields({
+                    name: `**${client.user?.username} - Harvest**`,
+                    value: `**◎ Success:** Current crop status:\n${pageEntries.join('\n')}`,
+                })
+                .setFooter({
+                    text: totalPages > 1 ? `Page: ${pageNumber++}/${totalPages}` : 'Page 1/1',
+                });
+            embeds.push(embed);
+        }
+
+        return embeds;
+    }
+
+    // Helper method to process harvest and return results
+    private processHarvest(balance: BalanceInterface, availableSpots: number): HarvestResult {
+        const currentTime = Date.now();
+        const harvestedCrops: CropData[] = [];
+        const displayEntries: string[] = [];
+        let totalValue = 0;
+
+        // Process harvest
+        for (
+            let i = 0, harvested = 0;
+            i < balance.FarmPlot.length && harvested < availableSpots;
+            i++
+        ) {
+            const crop = balance.FarmPlot[i];
+            if (crop.CropStatus === 'harvest') {
+                // Calculate final decay before harvesting
+                crop.Decay = this.calculateDecay(crop, currentTime);
+
+                const removedCrop = balance.FarmPlot.splice(i, 1)[0];
+                removedCrop.lastUpdateTime = currentTime; // Set harvest time
+                balance.HarvestedCrops.push(removedCrop);
+                harvestedCrops.push(removedCrop);
+                harvested++;
+                i--; // Adjust index after splice
+            }
+        }
+
+        // Calculate values and create display entries
+        for (const crop of harvestedCrops) {
+            const cropData = this.calculateCropValue(crop);
+            totalValue += cropData.value;
+            displayEntries.push(
+                `\u3000Crop Type: \`${capitalise(crop.CropType)}\` - Current Value: <:coin:706659001164628008>\`${cropData.value.toLocaleString('en')}\` - Decayed: \`${crop.Decay.toFixed(4)}\`%`
+            );
+        }
+
+        return { crops: harvestedCrops, totalValue, displayEntries };
+    }
+
+    // Helper method to calculate individual crop value with decay
+    private calculateCropValue(crop: { CropType: string; Decay: number }): { value: number } {
+        const cropPrices: { [key: string]: number } = {
+            corn: this.ecoPrices.farming.rewards.corn,
+            wheat: this.ecoPrices.farming.rewards.wheat,
+            potato: this.ecoPrices.farming.rewards.potatoes,
+            tomato: this.ecoPrices.farming.rewards.tomatoes,
+        };
+
+        const basePrice = cropPrices[crop.CropType] || 0;
+        const value = Math.floor(basePrice * (1 - Number(crop.Decay.toFixed(4)) / 100));
+
+        return { value };
+    }
+
+    // Helper method to clean up empty farm plots
+    private cleanupFarmPlots(balance: BalanceInterface) {
+        balance.FarmPlot = balance.FarmPlot.filter((plot) => plot !== null);
+        if (balance.FarmPlot.length === 0) {
+            balance.FarmPlot = [];
+        }
+    }
+
+    // Helper method to display harvest results
+    private async displayHarvestResults(
+        interaction: ButtonInteraction,
+        client: Client,
+        harvestResults: HarvestResult
+    ) {
+        const embeds = this.createHarvestResultEmbeds(interaction, client, harvestResults);
+        const firstEmbed = embeds[0];
+
+        if (!firstEmbed) {
+            return;
+        }
+
+        if (embeds.length > 1) {
+            await pagination(interaction, embeds, this.homeButton);
+        } else {
+            await interaction.reply({ embeds: [firstEmbed.toJSON()], ephemeral: true });
+        }
+    }
+
+    // Helper method to create harvest result embeds
+    private createHarvestResultEmbeds(
+        interaction: ButtonInteraction,
+        client: Client,
+        harvestResults: HarvestResult
+    ): EmbedBuilder[] {
+        const embeds: EmbedBuilder[] = [];
+        const { displayEntries, totalValue } = harvestResults;
+        const totalPages = Math.ceil(displayEntries.length / 5);
+        let pageNumber = 1;
+
+        while (displayEntries.length > 0) {
+            const pageEntries = displayEntries.splice(0, 5);
+            const embed = new EmbedBuilder()
+                .setAuthor({
+                    name: `${interaction.user.displayName}`,
+                    iconURL: `${interaction.user.avatarURL()}`,
+                })
+                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .addFields({
+                    name: `**${client.user?.username} - Harvest**`,
+                    value: `**◎ Success:** You have harvested the following crops:\n${pageEntries.join('\n')}\n\nIn total, the current value is <:coin:706659001164628008>\`${totalValue.toLocaleString('en')}\`\nThis value of each crop will continue to depreciate, I recommend you sell your crops.`,
+                })
+                .setFooter({
+                    text: totalPages > 1 ? `Page: ${pageNumber++}/${totalPages}` : 'Page 1/1',
+                });
+            embeds.push(embed);
+        }
+
+        return embeds;
     }
 }
