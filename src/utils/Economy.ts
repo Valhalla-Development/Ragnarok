@@ -512,7 +512,7 @@ export class Economy {
     async deposit(interaction: ButtonInteraction, client: Client) {
         // Set the state of the deposit button first
         this.setButtonState(this.depositButton);
-        
+
         // Fetch user's balance based on their ID and guild ID
         const balance = await Balance.findOne({
             IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
@@ -559,7 +559,7 @@ export class Economy {
     async claim(interaction: ButtonInteraction, client: Client) {
         // Set the state of the claim button first
         this.setButtonState(this.claimButton);
-        
+
         // Fetch user's balance based on their ID and guild ID
         const balance = await Balance.findOne({
             IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
@@ -669,7 +669,7 @@ export class Economy {
         if (interaction instanceof ButtonInteraction) {
             this.setButtonState(this.coinflipButton);
         }
-        
+
         // Fetch user's balance based on their ID and guild ID
         const balance = await Balance.findOne({
             IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
@@ -859,7 +859,7 @@ export class Economy {
     async farm(interaction: ButtonInteraction, client: Client) {
         // Set the state of the farm button first
         this.setButtonState(this.farmButton);
-        
+
         // Retrieve user's balance
         const balance = await Balance.findOne({
             IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
@@ -1037,7 +1037,7 @@ export class Economy {
     async fish(interaction: ButtonInteraction, client: Client) {
         // Set the state of the fish button first
         this.setButtonState(this.fishButton);
-        
+
         // Retrieve user's balance
         const balance = await Balance.findOne({
             IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
@@ -1187,21 +1187,33 @@ export class Economy {
     // Function to generate fish result
     generateFishResult() {
         const fishChance = Math.random();
+
+        // Treasure - 0.18% chance
         if (fishChance < 0.0018) {
             return { name: 'Treasure', price: this.ecoPrices.fishing.rewards.treasure };
         }
+
+        // Pufferfish - 3% chance (0.18% to 3.18%)
         if (fishChance < 0.0318) {
             return { name: 'Pufferfish', price: this.ecoPrices.fishing.rewards.pufferfish };
         }
+
+        // Swordfish - 6% chance (3.18% to 9.18%)
         if (fishChance < 0.0918) {
             return { name: 'Swordfish', price: this.ecoPrices.fishing.rewards.swordfish };
         }
+
+        // King Salmon - 18% chance (9.18% to 27.18%)
         if (fishChance < 0.2718) {
             return { name: 'King Salmon', price: this.ecoPrices.fishing.rewards.kingSalmon };
         }
+
+        // Trout - 52% chance (27.18% to 79.18%)
         if (fishChance < 0.7918) {
             return { name: 'Trout', price: this.ecoPrices.fishing.rewards.trout };
         }
+
+        // Fail - 20.82% chance (79.18% to 100%)
         return { name: 'Fail', price: 0 };
     }
 
