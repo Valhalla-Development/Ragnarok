@@ -11,7 +11,6 @@ import {
     MessageFlags,
     ModalBuilder,
     type ModalSubmitInteraction,
-    SectionBuilder,
     SeparatorSpacingSize,
     TextDisplayBuilder,
     TextInputBuilder,
@@ -76,8 +75,6 @@ interface HarvestResult {
 export class Economy {
     homeButton;
 
-    wealthButton;
-
     baltopButton;
 
     claimButton;
@@ -86,11 +83,15 @@ export class Economy {
 
     coinflipButton;
 
+    heistButton;
+
     farmButton;
 
     fishButton;
 
     harvestButton;
+
+    itemsButton;
 
     rows: ActionRowBuilder<ButtonBuilder>[] = [];
 
@@ -199,58 +200,45 @@ export class Economy {
             ].join('\n')
         );
 
-        // Create a section for wealth with the button
-        const wealthSection = new SectionBuilder()
-            .addTextDisplayComponents(wealthText)
-            .setButtonAccessory(this.wealthButton)
-            .setButtonAccessory(this.depositButton);
-
         // Build and return the stunning container
         return new ContainerBuilder()
             .addTextDisplayComponents(headerText)
             .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Large))
-            .addSectionComponents(wealthSection)
+            .addTextDisplayComponents(wealthText)
+            .addActionRowComponents((row) =>
+                row.addComponents(this.baltopButton, this.depositButton)
+            )
             .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
             .addTextDisplayComponents(activityText)
+            .addActionRowComponents((row) =>
+                row.addComponents(this.heistButton, this.fishButton, this.farmButton)
+            )
             .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
             .addTextDisplayComponents(storageText)
+            .addActionRowComponents((row) => row.addComponents(this.itemsButton))
             .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
             .addTextDisplayComponents(treasureText)
-            .addSeparatorComponents((separator) =>
-                separator.setSpacing(SeparatorSpacingSize.Large)
-            );
+            .addActionRowComponents((row) => row.addComponents(this.claimButton));
     }
 
-    /* TODO
-    Since im going to be using containers now instead of embed
-    I now need to remake so much lmao
-    first, the new buttons are awesome inside the container, but bad news is its only 1 per section.
-    meaning wealth section can oly have 1 button, but has 2 actions (baltop and deposit))
-    so i need to make a button that will have a wealth container with 2 buttons
-    */
     constructor() {
         this.homeButton = new ButtonBuilder()
             .setLabel('Home')
             .setStyle(ButtonStyle.Success)
             .setCustomId('economy_home');
 
-        this.wealthButton = new ButtonBuilder()
-            .setLabel('Wealth')
-            .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_wealth');
-
         this.baltopButton = new ButtonBuilder()
-            .setLabel('Baltop')
+            .setLabel('Leaderboard')
             .setStyle(ButtonStyle.Primary)
             .setCustomId('economy_baltop');
 
         this.claimButton = new ButtonBuilder()
-            .setLabel('Claim')
+            .setLabel('Claim Rewards')
             .setStyle(ButtonStyle.Primary)
             .setCustomId('economy_claim');
 
         this.depositButton = new ButtonBuilder()
-            .setLabel('Deposit')
+            .setLabel('Deposit Cash')
             .setStyle(ButtonStyle.Primary)
             .setCustomId('economy_deposit');
 
@@ -259,20 +247,30 @@ export class Economy {
             .setStyle(ButtonStyle.Primary)
             .setCustomId('economy_coinflip');
 
+        this.heistButton = new ButtonBuilder()
+            .setLabel('Start Heist')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('economy_heist');
+
         this.farmButton = new ButtonBuilder()
-            .setLabel('Farm')
+            .setLabel('Plant Crops')
             .setStyle(ButtonStyle.Primary)
             .setCustomId('economy_farm');
 
         this.fishButton = new ButtonBuilder()
-            .setLabel('Fish')
+            .setLabel('Go Fishing')
             .setStyle(ButtonStyle.Primary)
             .setCustomId('economy_fish');
 
         this.harvestButton = new ButtonBuilder()
-            .setLabel('Harvest')
+            .setLabel('Harvest Crops')
             .setStyle(ButtonStyle.Primary)
             .setCustomId('economy_harvest');
+
+        this.itemsButton = new ButtonBuilder()
+            .setLabel('View Inventory')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('economy_items');
 
         const row1 = new ActionRowBuilder<ButtonBuilder>().addComponents(
             this.homeButton,
