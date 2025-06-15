@@ -11,10 +11,10 @@ import {
     MessageFlags,
     ModalBuilder,
     type ModalSubmitInteraction,
+    SeparatorSpacingSize,
     TextDisplayBuilder,
     TextInputBuilder,
     TextInputStyle,
-    SeparatorSpacingSize,
 } from 'discord.js';
 import '@colors/colors';
 import type { Client } from 'discordx';
@@ -127,7 +127,7 @@ export class Economy {
             [
                 `# 🏰 **${interaction.user.displayName}'s Empire**`,
                 `> 👑 ***Rank #${rankPos} on Leaderboard***`,
-            ].join('\n'),
+            ].join('\n')
         );
 
         // ═══════════════════════════════════════════════════════════════
@@ -139,7 +139,7 @@ export class Economy {
                 `> 💵 **Wallet Cash:** \`${balance.Cash.toLocaleString('en')}\` <:coin:706659001164628008>`,
                 `> 🏦 **Bank Vault:** \`${balance.Bank.toLocaleString('en')}\` <:coin:706659001164628008>`,
                 `> 🌟 **Net Worth:** \`${balance.Total.toLocaleString('en')}\` <:coin:706659001164628008>`,
-            ].join('\n'),
+            ].join('\n')
         );
 
         // ═══════════════════════════════════════════════════════════════
@@ -151,7 +151,7 @@ export class Economy {
                 `> 🔥 **Heist:** ${Date.now() > balance.StealCool ? '✅ `Ready to Strike!`' : `⏳ <t:${Math.round(balance.StealCool / 1000)}:R>`}`,
                 `> 🎣 **Fishing:** ${balance.Items?.FishingRod ? `${Date.now() > balance.FishCool ? '✅ `Cast Your Line!`' : `⏳ <t:${Math.round(balance.FishCool / 1000)}:R>`}` : '❌ `Need Fishing Rod`'}`,
                 `> 🌾 **Farming:** ${Date.now() > balance.FarmCool ? '✅ `Harvest Time!`' : `⏳ <t:${Math.round(balance.FarmCool / 1000)}:R>`}`,
-            ].join('\n'),
+            ].join('\n')
         );
 
         // ═══════════════════════════════════════════════════════════════
@@ -180,7 +180,7 @@ export class Economy {
                         ? `\`${balance.FarmPlot.length.toLocaleString('en')}\` / \`${Number(balance.Boosts.FarmPlot).toLocaleString('en')}\``
                         : '🚫 `No Land Owned`'
                 }`,
-            ].join('\n'),
+            ].join('\n')
         );
 
         // ═══════════════════════════════════════════════════════════════
@@ -193,21 +193,23 @@ export class Economy {
                 `> 🌅 **Daily Vault:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : Date.now() > balance.Daily ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(balance.Daily / 1000)}:R>`}`,
                 `> 📅 **Weekly Safe:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : Date.now() > balance.Weekly ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(balance.Weekly / 1000)}:R>`}`,
                 `> 🗓️ **Monthly Prize:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : Date.now() > balance.Monthly ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(balance.Monthly / 1000)}:R>`}`,
-            ].join('\n'),
+            ].join('\n')
         );
 
         // Build and return the stunning container
         return new ContainerBuilder()
             .addTextDisplayComponents(headerText)
-            .addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Large))
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Large))
             .addTextDisplayComponents(wealthText)
-            .addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
             .addTextDisplayComponents(activityText)
-            .addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
             .addTextDisplayComponents(storageText)
-            .addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
             .addTextDisplayComponents(treasureText)
-            .addSeparatorComponents(separator => separator.setSpacing(SeparatorSpacingSize.Large));
+            .addSeparatorComponents((separator) =>
+                separator.setSpacing(SeparatorSpacingSize.Large)
+            );
     }
 
     constructor() {
@@ -566,7 +568,7 @@ export class Economy {
             // If the interaction is a CommandInteraction, reply with the updated embed and components
             await interaction.reply({
                 components: [this.homeContainer!],
-                flags: MessageFlags.IsComponentsV2
+                flags: MessageFlags.IsComponentsV2,
             });
         }
     }
