@@ -1,0 +1,283 @@
+import {
+    type APIEmbed,
+    AttachmentBuilder,
+    type ButtonBuilder,
+    type ButtonInteraction,
+    ButtonStyle,
+    EmbedBuilder,
+} from 'discord.js';
+import type { Client } from 'discordx';
+import Balance from '../../mongo/Balance.js';
+import { RagnarokEmbed, color } from '../Util.js';
+import { ecoPrices } from './Config.js';
+import { updateHomeContainer } from './Home.js';
+import type { ButtonRows } from './Types.js';
+import type { Items } from './Types.js';
+
+// Add timeout duration property (in milliseconds)
+const commandTimeout = 10000; // 10 seconds
+
+/**
+ * This method sets the state of a button.
+ * @param button - The button to set the state for.
+ * @param rows - All button rows to iterate through
+ */
+function setButtonState(button: ButtonBuilder, rows: ButtonRows) {
+    // Loop through all buttons in the rows
+    for (const row of rows) {
+        for (const otherButton of row.components) {
+            // If the button is not the provided 'button', set its style to primary and enable it
+            if (otherButton !== button) {
+                otherButton.setStyle(ButtonStyle.Primary);
+                otherButton.setDisabled(false);
+            }
+        }
+    }
+
+    // Disable the provided 'button' and set its style to success.
+    button.setDisabled(true);
+    button.setStyle(ButtonStyle.Success);
+}
+
+// Function to generate fish result
+export function generateFishResult() {
+    const fishChance = Math.random();
+
+    // Treasure - 0.18% chance
+    if (fishChance < 0.0018) {
+        return { name: 'Treasure', price: ecoPrices.fishing.rewards.treasure };
+    }
+
+    // Pufferfish - 3% chance (0.18% to 3.18%)
+    if (fishChance < 0.0318) {
+        return { name: 'PufferFish', price: ecoPrices.fishing.rewards.pufferfish };
+    }
+
+    // Swordfish - 6% chance (3.18% to 9.18%)
+    if (fishChance < 0.0918) {
+        return { name: 'SwordFish', price: ecoPrices.fishing.rewards.swordfish };
+    }
+
+    // King Salmon - 18% chance (9.18% to 27.18%)
+    if (fishChance < 0.2718) {
+        return { name: 'KingSalmon', price: ecoPrices.fishing.rewards.kingSalmon };
+    }
+
+    // Trout - 52% chance (27.18% to 79.18%)
+    if (fishChance < 0.7918) {
+        return { name: 'Trout', price: ecoPrices.fishing.rewards.trout };
+    }
+
+    // Fail - 20.82% chance (79.18% to 100%)
+    return { name: 'Fail', price: 0 };
+}
+
+// Function to build fish embed
+export function buildFishEmbed(
+    interaction: ButtonInteraction,
+    client: Client,
+    fishResult: { name: string; price: number },
+    amt: number
+) {
+    const { name, price } = fishResult;
+
+    const embed = new EmbedBuilder()
+        .setAuthor({
+            name: `${interaction.user.displayName}`,
+            iconURL: `${interaction.user.avatarURL()}`,
+        })
+        .setColor(color(interaction.guild!.members.me!.displayHexColor))
+        .addFields({
+            name: `**${client.user?.username} - Fish**`,
+            value: `**◎ Success:** You caught a ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt.toLocaleString('en')}\`.`,
+        });
+
+    return embed;
+}
+
+// Asynchronous function to handle fishing interaction
+export async function handleFish(
+    interaction: ButtonInteraction,
+    client: Client,
+    fishButton: ButtonBuilder,
+    homeButton: ButtonBuilder,
+    homeEmbed: EmbedBuilder | null,
+    rows: ButtonRows,
+    buttons: {
+        baltopButton: ButtonBuilder;
+        depositButton: ButtonBuilder;
+        heistButton: ButtonBuilder;
+        fishButton: ButtonBuilder;
+        farmButton: ButtonBuilder;
+        itemsButton: ButtonBuilder;
+        claimButton: ButtonBuilder;
+    }
+) {
+    // Set the state of the fish button first
+    setButtonState(fishButton, rows);
+
+    // Retrieve user's balance
+    const balance = await Balance.findOne({
+        IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
+    });
+
+    // If balance is not found, display error and return
+    if (!balance) {
+        await RagnarokEmbed(
+            client,
+            interaction,
+            'Error',
+            'An error occurred, please try again.',
+            true
+        );
+        return;
+    }
+
+    // Check if user has a fishing rod
+    if (!balance.Items?.FishingRod) {
+        await RagnarokEmbed(
+            client,
+            interaction,
+            'Error',
+            'You do not have a fishing rod! You must buy one from the shop.',
+            true
+        );
+        return;
+    }
+
+    // Check if user is on cooldown
+    if (balance.FishCool !== null) {
+        if (Date.now() <= balance.FishCool) {
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                `You are on a cooldown! You will be able to perform this action again <t:${Math.floor(balance.FishCool / 1000)}:R>.`,
+                true
+            );
+            return;
+        }
+        balance.FishCool = 0;
+    }
+
+    // Calculate current total fish
+    let currentTotalFish = 0;
+
+    currentTotalFish += Number(balance.Items?.Trout) || 0;
+    currentTotalFish += Number(balance.Items?.KingSalmon) || 0;
+    currentTotalFish += Number(balance.Items?.SwordFish) || 0;
+    currentTotalFish += Number(balance.Items?.PufferFish) || 0;
+
+    // Check if fish bag is full
+    if (currentTotalFish >= Number(balance.Boosts?.FishBag)) {
+        await RagnarokEmbed(
+            client,
+            interaction,
+            'Error',
+            'Your fish bag is full! You can sell your fish via the `sell` button.',
+            true
+        );
+        return;
+    }
+
+    // Generate fish result
+    const fishResult = generateFishResult();
+
+    // If fish result is not generated, display error and return
+    if (!fishResult) {
+        await RagnarokEmbed(
+            client,
+            interaction,
+            'Error',
+            'An error occurred, please try again.',
+            true
+        );
+        return;
+    }
+
+    // If fish result is a fail, handle it and return
+    if (fishResult.name === 'Fail') {
+        const failMessages = [
+            'Your catch escaped the line.',
+            'The fish was too strong and broke free!',
+            'You felt a tug, but the line went slack...',
+            'A big one got away! Better luck next time.',
+            'Your bait was stolen by a sneaky fish.',
+            'The fish outsmarted you this time.',
+            'You reeled in nothing but seaweed.',
+            'A school of fish swam right past your hook.',
+            'Your line got tangled in some rocks.',
+            'The fish took one look at your bait and swam away.',
+            'You dozed off and missed the bite.',
+            'A crab cut your fishing line!',
+            'The current was too strong today.',
+            'You cast your line but forgot the bait.',
+            'A seagull stole your catch right off the hook!',
+        ];
+
+        const randomFailMessage = failMessages[Math.floor(Math.random() * failMessages.length)];
+
+        await RagnarokEmbed(client, interaction, 'Fail', randomFailMessage!, true);
+
+        const endTime = Date.now() + ecoPrices.fishing.cooldowns.fishFailTime;
+        balance.FishCool = Math.round(endTime);
+
+        await balance.save();
+        return;
+    }
+
+    // Initialize balance items if not present
+    if (!balance.Items) {
+        balance.Items = {} as Items;
+    }
+
+    // Increment fish result amount in balance items
+    const amt = (Number(balance.Items[fishResult.name as keyof typeof balance.Items]) || 0) + 1;
+    balance.Items[fishResult.name as keyof typeof balance.Items] = amt as never;
+
+    // Build attachment for fish result image
+    const attachment = new AttachmentBuilder(`assets/economy/${fishResult.name}.png`);
+
+    // Build fish embed
+    const embed = buildFishEmbed(interaction, client, fishResult, amt);
+    embed.setThumbnail(`attachment://${fishResult.name}.png`);
+
+    // Calculate cooldown time and update balance
+    const endTime = Date.now() + ecoPrices.fishing.cooldowns.fishWinTime;
+    balance.FishCool = Math.round(endTime);
+    await balance.save();
+
+    // Defer reply, delete original interaction, update message with embed and attachment
+    await interaction.deferReply();
+    await interaction.deleteReply();
+    await interaction.message?.edit({
+        components: rows,
+        embeds: [embed],
+        files: [attachment],
+    });
+
+    // Update home embed
+    const homeContainer = await updateHomeContainer(interaction, client, buttons);
+
+    // If home embed is available, reset after timeout
+    if (homeEmbed && homeContainer) {
+        setTimeout(async () => {
+            // Reset all buttons to primary style and enabled
+            for (const row of rows) {
+                for (const button of row.components) {
+                    button.setStyle(ButtonStyle.Primary);
+                    button.setDisabled(false);
+                }
+            }
+            // Set home button to success style and disabled
+            homeButton.setStyle(ButtonStyle.Success);
+            homeButton.setDisabled(true);
+
+            await interaction.message?.edit({
+                components: [homeContainer],
+                embeds: [homeEmbed as APIEmbed],
+                files: [],
+            });
+        }, commandTimeout);
+    }
+}
