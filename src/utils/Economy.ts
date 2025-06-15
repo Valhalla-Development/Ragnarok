@@ -11,6 +11,7 @@ import {
     MessageFlags,
     ModalBuilder,
     type ModalSubmitInteraction,
+    SectionBuilder,
     SeparatorSpacingSize,
     TextDisplayBuilder,
     TextInputBuilder,
@@ -75,6 +76,8 @@ interface HarvestResult {
 export class Economy {
     homeButton;
 
+    wealthButton;
+
     baltopButton;
 
     claimButton;
@@ -126,7 +129,7 @@ export class Economy {
         const headerText = new TextDisplayBuilder().setContent(
             [
                 `# 🏰 **${interaction.user.displayName}'s Empire**`,
-                `> 👑 ***Rank #${rankPos} on Leaderboard***`,
+                `> 👑 ***Rank ${rankPos} on Leaderboard***`,
             ].join('\n')
         );
 
@@ -196,11 +199,17 @@ export class Economy {
             ].join('\n')
         );
 
+        // Create a section for wealth with the button
+        const wealthSection = new SectionBuilder()
+            .addTextDisplayComponents(wealthText)
+            .setButtonAccessory(this.wealthButton)
+            .setButtonAccessory(this.depositButton);
+
         // Build and return the stunning container
         return new ContainerBuilder()
             .addTextDisplayComponents(headerText)
             .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Large))
-            .addTextDisplayComponents(wealthText)
+            .addSectionComponents(wealthSection)
             .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
             .addTextDisplayComponents(activityText)
             .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
@@ -212,11 +221,23 @@ export class Economy {
             );
     }
 
+    /* TODO
+    Since im going to be using containers now instead of embed
+    I now need to remake so much lmao
+    first, the new buttons are awesome inside the container, but bad news is its only 1 per section.
+    meaning wealth section can oly have 1 button, but has 2 actions (baltop and deposit))
+    so i need to make a button that will have a wealth container with 2 buttons
+    */
     constructor() {
         this.homeButton = new ButtonBuilder()
             .setLabel('Home')
             .setStyle(ButtonStyle.Success)
             .setCustomId('economy_home');
+
+        this.wealthButton = new ButtonBuilder()
+            .setLabel('Wealth')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('economy_wealth');
 
         this.baltopButton = new ButtonBuilder()
             .setLabel('Baltop')
