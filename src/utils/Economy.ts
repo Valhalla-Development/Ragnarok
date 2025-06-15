@@ -613,8 +613,8 @@ export class Economy {
         await interaction.deferReply();
         await interaction.deleteReply();
 
-        let userNames = '';
-        let balance = '';
+        // Build leaderboard content
+        let leaderboardContent = '';
 
         // Iterate over the top 10 balances and fetch corresponding member data
         await Promise.all(
@@ -629,42 +629,34 @@ export class Economy {
                     }
                 }
 
-                // If user data is found, append user name and balance to respective strings
+                // If user data is found, build leaderboard entry
                 if (fetchUser) {
-                    userNames += `\`${index + 1}\` ${fetchUser}\n`;
-                    balance += `<:coin:706659001164628008> \`${data.Total}\`\n`;
+                    const medal =
+                        index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🏅';
+                    leaderboardContent += `> ${medal} **#${index + 1}** ${fetchUser.displayName} - \`${data.Total.toLocaleString('en')}\` <:coin:706659001164628008>\n`;
                 }
             })
         );
 
-        // Construct the embed with leaderboard information
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `Leaderboard for ${interaction.guild!.name}`,
-                iconURL: `${interaction.guild!.iconURL({ extension: 'png' })}`,
-            })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .addFields(
-                {
-                    name: 'Top 10',
-                    value: userNames,
-                    inline: true,
-                },
-                {
-                    name: 'Balance',
-                    value: balance,
-                    inline: true,
-                }
-            );
+        // Construct the container with leaderboard information
+        const embed = new ContainerBuilder()
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent('## 💎 **Hall of Fame**'))
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(leaderboardContent.trim())
+            )
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addActionRowComponents((row) => row.addComponents(this.homeButton));
 
         // Set the state of the baltop button
         this.setButtonState(this.baltopButton);
 
         // Update the original message with the updated embed and components
         await interaction.message.edit({
-            embeds: [embed],
-            components: [...this.rows],
+            embeds: [],
             files: [],
+            components: [embed],
+            flags: MessageFlags.IsComponentsV2,
         });
     }
 
