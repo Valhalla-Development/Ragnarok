@@ -587,9 +587,6 @@ export class Economy {
      * @param client - The Discord client.
      */
     async deposit(interaction: ButtonInteraction, client: Client) {
-        // Set the state of the deposit button first
-        this.setButtonState(this.depositButton);
-
         // Fetch user's balance based on their ID and guild ID
         const balance = await Balance.findOne({
             IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
@@ -626,6 +623,18 @@ export class Economy {
 
         // Save the updated balance to the database
         await balance.save();
+
+        // Update home container to reflect new balance
+        await this.updateHomeContainer(interaction, client);
+
+        // If home container is available, update the message
+        if (this.homeContainer) {
+            await interaction.message?.edit({
+                components: [this.homeContainer],
+                files: [],
+                flags: MessageFlags.IsComponentsV2,
+            });
+        }
     }
 
     /**
