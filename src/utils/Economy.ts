@@ -408,11 +408,11 @@ export class Economy {
     }
 
     /**
-     * Asynchronously updates the home embed based on user interaction.
+     * Asynchronously updates the home container based on user interaction.
      * @param interaction - The interaction (Command, Button, or Modal) triggering the update.
      * @param client - The Discord client.
      */
-    async updateHomeEmbed(
+    async updateHomeContainer(
         interaction: CommandInteraction | ButtonInteraction | ModalSubmitInteraction,
         client: Client
     ) {
@@ -485,79 +485,6 @@ export class Economy {
             currentTotalFarm,
             claimUserTime
         );
-
-        // Construct the home embed
-        this.homeEmbed = new EmbedBuilder()
-            .setAuthor({
-                name: `${interaction.user.displayName}'s Economy Profile`,
-                iconURL: interaction.user.displayAvatarURL(),
-            })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
-            .setDescription(`🏆 **Leaderboard Rank:** \`${rankPos}\``)
-            .addFields(
-                {
-                    name: '💰 **Balance Overview**',
-                    value: [
-                        `┌ **Cash:** <:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\``,
-                        `├ **Bank:** <:coin:706659001164628008> \`${balance.Bank.toLocaleString('en')}\``,
-                        `└ **Total:** <:coin:706659001164628008> \`${balance.Total.toLocaleString('en')}\``,
-                    ].join('\n'),
-                    inline: false,
-                },
-                {
-                    name: '⏰ **Activity Cooldowns**',
-                    value: [
-                        `┌ **Steal:** ${Date.now() > balance.StealCool ? '`Available!`' : `<t:${Math.round(balance.StealCool / 1000)}:R>`}`,
-                        `├ **Fish:** ${balance.Items?.FishingRod ? `${Date.now() > balance.FishCool ? '`Available!`' : `<t:${Math.round(balance.FishCool / 1000)}:R>`}` : '`Rod Not Owned`'}`,
-                        `└ **Farm:** ${Date.now() > balance.FarmCool ? '`Available!`' : `<t:${Math.round(balance.FarmCool / 1000)}:R>`}`,
-                    ].join('\n'),
-                    inline: false,
-                },
-                {
-                    name: '🎒 **Inventory Capacity**',
-                    value: [
-                        `┌ **Seed Bag:** ${
-                            balance.Boosts?.SeedBag
-                                ? `\`${Number(currentTotalSeeds).toLocaleString('en')}\`/\`${Number(
-                                      balance.Boosts.SeedBag
-                                  ).toLocaleString('en')}\``
-                                : '`Not Owned`'
-                        }`,
-                        `├ **Fish Bag:** ${
-                            balance.Boosts?.FishBag
-                                ? `\`${Number(currentTotalFish).toLocaleString('en')}\`/\`${Number(
-                                      balance.Boosts.FishBag
-                                  ).toLocaleString('en')}\``
-                                : '`Not Owned`'
-                        }`,
-                        `├ **Farm Bag:** ${
-                            balance.Boosts?.FarmBag
-                                ? `\`${Number(currentTotalFarm).toLocaleString('en')}\`/\`${Number(
-                                      balance.Boosts.FarmBag
-                                  ).toLocaleString('en')}\``
-                                : '`Not Owned`'
-                        }`,
-                        `└ **Farm Plot:** ${
-                            balance.Boosts?.FarmPlot
-                                ? `\`${balance.FarmPlot.length.toLocaleString('en')}\`/\`${Number(
-                                      balance.Boosts.FarmPlot
-                                  ).toLocaleString('en')}\``
-                                : '`Not Owned`'
-                        }`,
-                    ].join('\n'),
-                    inline: false,
-                },
-                {
-                    name: '🎁 **Claim Rewards**',
-                    value: [
-                        `┌ **Hourly:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Hourly ? '`Available!`' : `<t:${Math.round(balance.Hourly / 1000)}:R>`}`,
-                        `├ **Daily:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Daily ? '`Available!`' : `<t:${Math.round(balance.Daily / 1000)}:R>`}`,
-                        `├ **Weekly:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Weekly ? '`Available!`' : `<t:${Math.round(balance.Weekly / 1000)}:R>`}`,
-                        `└ **Monthly:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '`Available`' : `<t:${claimUserTime}:R>`) : Date.now() > balance.Monthly ? '`Available!`' : `<t:${Math.round(balance.Monthly / 1000)}:R>`}`,
-                    ].join('\n'),
-                    inline: false,
-                }
-            );
     }
 
     /**
@@ -567,10 +494,7 @@ export class Economy {
      */
     async home(interaction: CommandInteraction | ButtonInteraction, client: Client) {
         // Update the home embed based on the interaction
-        await this.updateHomeEmbed(interaction, client);
-
-        // Set the state of the home button
-        this.setButtonState(this.homeButton);
+        await this.updateHomeContainer(interaction, client);
 
         // If the interaction is a ButtonInteraction, update the original message
         if (interaction instanceof ButtonInteraction) {
@@ -579,9 +503,9 @@ export class Economy {
 
             // Edit the original message with the updated embed and components
             await interaction.message.edit({
-                embeds: [this.homeEmbed!],
-                components: [...this.rows],
+                components: [this.homeContainer!],
                 files: [],
+                flags: MessageFlags.IsComponentsV2,
             });
         } else {
             // If the interaction is a CommandInteraction, reply with the updated embed and components
@@ -942,7 +866,7 @@ export class Economy {
             await balance.save();
 
             // Update home embed after the coin flip
-            await this.updateHomeEmbed(interaction, client);
+            await this.updateHomeContainer(interaction, client);
 
             // If interaction is a ButtonInteraction and home embed exists, update the message with home embed after a delay
             if (interaction instanceof ButtonInteraction && this.homeEmbed) {
@@ -1117,7 +1041,7 @@ export class Economy {
         });
 
         // Update home embed
-        await this.updateHomeEmbed(interaction, client);
+        await this.updateHomeContainer(interaction, client);
 
         // If home embed is available, reset after timeout
         if (this.homeEmbed) {
@@ -1337,7 +1261,7 @@ export class Economy {
         });
 
         // Update home embed
-        await this.updateHomeEmbed(interaction, client);
+        await this.updateHomeContainer(interaction, client);
 
         // If home embed is available, reset after timeout
         if (this.homeEmbed) {
