@@ -224,7 +224,7 @@ export class Economy {
     constructor() {
         this.homeButton = new ButtonBuilder()
             .setLabel('Home')
-            .setStyle(ButtonStyle.Success)
+            .setStyle(ButtonStyle.Primary)
             .setCustomId('economy_home');
 
         this.baltopButton = new ButtonBuilder()
@@ -571,9 +571,6 @@ export class Economy {
             )
             .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
             .addActionRowComponents((row) => row.addComponents(this.homeButton));
-
-        // Set the state of the baltop button
-        this.setButtonState(this.baltopButton);
 
         // Update the original message with the updated embed and components
         await interaction.message.edit({
