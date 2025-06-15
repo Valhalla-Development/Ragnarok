@@ -113,6 +113,7 @@ export class Economy {
      * @param currentTotalFish - Total number of fish
      * @param currentTotalFarm - Total number of farm items
      * @param claimUserTime - Time for claim cooldown
+     * @param wealthStatusMessage - Temporary message to display under wealth text
      * @returns ContainerBuilder with all sections
      */
     private buildHomeContainer(
@@ -122,7 +123,8 @@ export class Economy {
         currentTotalSeeds: number,
         currentTotalFish: number,
         currentTotalFarm: number,
-        claimUserTime: number
+        claimUserTime: number,
+        wealthStatusMessage?: string
     ): ContainerBuilder {
         // ═══════════════════════════════════════════════════════════════
         // User Profile & Rank
@@ -143,6 +145,7 @@ export class Economy {
                 `> 💵 **Wallet Cash:** \`${balance.Cash.toLocaleString('en')}\` <:coin:706659001164628008>`,
                 `> 🏦 **Bank Vault:** \`${balance.Bank.toLocaleString('en')}\` <:coin:706659001164628008>`,
                 `> 🌟 **Net Worth:** \`${balance.Total.toLocaleString('en')}\` <:coin:706659001164628008>`,
+                wealthStatusMessage ? `> ${wealthStatusMessage}` : '',
             ].join('\n')
         );
 
@@ -411,10 +414,12 @@ export class Economy {
      * Asynchronously updates the home container based on user interaction.
      * @param interaction - The interaction (Command, Button, or Modal) triggering the update.
      * @param client - The Discord client.
+     * @param wealthStatusMessage - Temporary message to display under wealth text
      */
     async updateHomeContainer(
         interaction: CommandInteraction | ButtonInteraction | ModalSubmitInteraction,
-        client: Client
+        client: Client,
+        wealthStatusMessage?: string
     ) {
         // Fetch user balance based on their ID and guild ID
         const balance = await Balance.findOne({
@@ -483,7 +488,8 @@ export class Economy {
             currentTotalSeeds,
             currentTotalFish,
             currentTotalFarm,
-            claimUserTime
+            claimUserTime,
+            wealthStatusMessage
         );
     }
 
@@ -587,6 +593,10 @@ export class Economy {
      * @param client - The Discord client.
      */
     async deposit(interaction: ButtonInteraction, client: Client) {
+        // Defer the reply to prevent interaction timeout
+        await interaction.deferReply();
+        await interaction.deleteReply();
+
         // Fetch user's balance based on their ID and guild ID
         const balance = await Balance.findOne({
             IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
@@ -594,27 +604,35 @@ export class Economy {
 
         // If balance is not found or user has no cash, show an error message and return
         if (!balance || balance.Cash === 0) {
-            await RagnarokEmbed(
-                client,
-                interaction,
-                'Error',
-                'You do not have any cash to deposit.',
-                true
-            );
+            // Update home container with error message
+            await this.updateHomeContainer(interaction, client, '❌ `You do not have any cash to deposit.`');
+            
+            // If home container is available, update the message
+            if (this.homeContainer) {
+                await interaction.message?.edit({
+                    components: [this.homeContainer],
+                    files: [],
+                    flags: MessageFlags.IsComponentsV2,
+                });
+            }
+
+            // Remove the message after 5 seconds
+            setTimeout(async () => {
+                await this.updateHomeContainer(interaction, client);
+                if (this.homeContainer) {
+                    await interaction.message?.edit({
+                        components: [this.homeContainer],
+                        files: [],
+                        flags: MessageFlags.IsComponentsV2,
+                    });
+                }
+            }, 5000);
             return;
         }
 
         // Calculate total amount in the bank after deposit
         const bankCalc = balance.Cash + balance.Bank;
-
-        // Show success message for the deposit
-        await RagnarokEmbed(
-            client,
-            interaction,
-            'Success',
-            `You have deposited <:coin:706659001164628008> \`${balance.Cash.toLocaleString('en')}\` to your bank.`,
-            true
-        );
+        const depositAmount = balance.Cash;
 
         // Update balance: Set cash to 0, update bank balance and total balance
         balance.Cash = 0;
@@ -624,8 +642,12 @@ export class Economy {
         // Save the updated balance to the database
         await balance.save();
 
-        // Update home container to reflect new balance
-        await this.updateHomeContainer(interaction, client);
+        // Update home container with success message
+        await this.updateHomeContainer(
+            interaction, 
+            client, 
+            `✅ \`Successfully deposited\` <:coin:706659001164628008> \`${depositAmount.toLocaleString('en')}\` \`to your bank\``
+        );
 
         // If home container is available, update the message
         if (this.homeContainer) {
@@ -635,6 +657,18 @@ export class Economy {
                 flags: MessageFlags.IsComponentsV2,
             });
         }
+
+        // Remove the message after 5 seconds
+        setTimeout(async () => {
+            await this.updateHomeContainer(interaction, client);
+            if (this.homeContainer) {
+                await interaction.message?.edit({
+                    components: [this.homeContainer],
+                    files: [],
+                    flags: MessageFlags.IsComponentsV2,
+                });
+            }
+        }, 5000);
     }
 
     /**
