@@ -17,7 +17,6 @@ import type { Client } from 'discordx';
  */
 export async function handleHeist(
     interaction: ButtonInteraction,
-    client: Client,
     homeButton: ButtonBuilder
 ) {
     // Defer the original reply to prevent timeout and delete the original reply
