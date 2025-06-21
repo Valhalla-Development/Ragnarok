@@ -17,6 +17,7 @@ import { handleFarm } from './economy/Farm.js';
 import { handleFish } from './economy/Fish.js';
 import { handleCoinflip } from './economy/Gamble.js';
 import { handleHarvest } from './economy/Harvest.js';
+import { handleHeist } from './economy/Heist.js';
 import { handleHome } from './economy/Home.js';
 import { handleBaltop } from './economy/Leaderboard.js';
 
@@ -108,6 +109,7 @@ export class Economy {
         this.deposit = this.deposit.bind(this);
         this.claim = this.claim.bind(this);
         this.coinflip = this.coinflip.bind(this);
+        this.heist = this.heist.bind(this);
         this.farm = this.farm.bind(this);
         this.fish = this.fish.bind(this);
         this.harvest = this.harvest.bind(this);
@@ -209,6 +211,13 @@ export class Economy {
     }
 
     /**
+     * Asynchronously handles the heist interaction.
+     */
+    async heist(interaction: ButtonInteraction, client: Client) {
+        await handleHeist(interaction, client, this.homeButton);
+    }
+
+    /**
      * Asynchronously handles the harvest interaction.
      */
     async harvest(interaction: ButtonInteraction, client: Client) {
@@ -231,6 +240,7 @@ export * from './economy/Leaderboard.js';
 export * from './economy/Bank.js';
 export * from './economy/Claims.js';
 export * from './economy/Gamble.js';
+export * from './economy/Heist.js';
 export * from './economy/Farm.js';
 export * from './economy/Fish.js';
 export * from './economy/Harvest.js';
