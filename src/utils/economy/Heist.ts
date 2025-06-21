@@ -7,7 +7,6 @@ import {
     TextDisplayBuilder,
     UserSelectMenuBuilder,
 } from 'discord.js';
-import type { Client } from 'discordx';
 
 /**
  * Asynchronously handles the heist button interaction.
@@ -15,10 +14,7 @@ import type { Client } from 'discordx';
  * @param client - The Discord client.
  * @param homeButton - The home button to display
  */
-export async function handleHeist(
-    interaction: ButtonInteraction,
-    homeButton: ButtonBuilder
-) {
+export async function handleHeist(interaction: ButtonInteraction, homeButton: ButtonBuilder) {
     // Defer the original reply to prevent timeout and delete the original reply
     await interaction.deferReply();
     await interaction.deleteReply();
