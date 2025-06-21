@@ -74,6 +74,7 @@ export class EconomyCommand {
                     );
                 },
             ],
+            ['heist', async () => this.instance?.heist(interaction, client)],
             ['farm', async () => this.instance?.farm(interaction, client)],
             ['fish', async () => this.instance?.fish(interaction, client)],
             ['harvest', async () => this.instance?.harvest(interaction, client)],
