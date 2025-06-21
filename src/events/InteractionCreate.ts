@@ -24,7 +24,8 @@ export class InteractionCreate {
                 !interaction.isChatInputCommand() &&
                 !interaction.isContextMenuCommand() &&
                 !interaction.isContextMenuCommand() &&
-                !interaction.isModalSubmit())
+                !interaction.isModalSubmit() &&
+                !interaction.isUserSelectMenu())
         ) {
             return;
         }
