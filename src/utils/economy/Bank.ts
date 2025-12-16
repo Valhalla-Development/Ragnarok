@@ -1,5 +1,5 @@
-import { type ButtonInteraction, MessageFlags } from 'discord.js';
 import type { ButtonBuilder } from 'discord.js';
+import { type ButtonInteraction, MessageFlags } from 'discord.js';
 import type { Client } from 'discordx';
 import Balance from '../../mongo/Balance.js';
 import { updateHomeContainer } from './Home.js';
