@@ -1,4 +1,4 @@
-import { type InferSchemaType, Schema, model } from 'mongoose';
+import { type InferSchemaType, model, Schema } from 'mongoose';
 
 /**
  * Represents a schema for storing the Balance data for users in a guild.

@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { model, Schema } from 'mongoose';
 
 /**
  * Represents a schema for storing the state of the StarBoard module

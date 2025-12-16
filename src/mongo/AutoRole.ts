@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { model, Schema } from 'mongoose';
 
 /**
  * Represents a schema for storing the data for AutoRole within a guild.
