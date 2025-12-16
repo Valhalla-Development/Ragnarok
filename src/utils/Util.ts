@@ -251,12 +251,14 @@ export async function RagnarokEmbed(
         });
 
     try {
-        interaction.deferred
-            ? await interaction.editReply({ embeds: [embed] })
-            : await interaction.reply({
-                  embeds: [embed],
-                  flags: ephemeral ? [MessageFlags.Ephemeral] : undefined,
-              });
+        if (interaction.deferred) {
+            await interaction.editReply({ embeds: [embed] });
+        } else {
+            await interaction.reply({
+                embeds: [embed],
+                flags: ephemeral ? [MessageFlags.Ephemeral] : undefined,
+            });
+        }
     } catch (error) {
         console.error('Error sending embed:', error);
     }
