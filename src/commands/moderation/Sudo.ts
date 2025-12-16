@@ -37,6 +37,9 @@ export class Sudo {
         @SlashOption({
             description: 'The message to send as the user',
             name: 'input',
+            required: true,
+            minLength: 2,
+            maxLength: 1000,
             type: ApplicationCommandOptionType.String,
         })
         input: string,
