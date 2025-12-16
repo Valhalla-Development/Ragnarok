@@ -3,7 +3,7 @@ import { Category, type ICategory } from '@discordx/utilities';
 import { type CommandInteraction, EmbedBuilder } from 'discord.js';
 import { type Client, type DApplicationCommand, Discord, MetadataStorage, Slash } from 'discordx';
 import si from 'systeminformation';
-import packageJson from '../../../package.json' assert { type: 'json' };
+
 import Announcement from '../../mongo/Announcement.js';
 import { color } from '../../utils/Util.js';
 
@@ -50,7 +50,7 @@ export class Stats {
                 **◎ 👯 Users:** \`${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')}\`
                 **◎ 📝 Channels:** \`${client.channels.cache.size.toLocaleString()}\`
                 **◎ 📅 Creation Date:** <t:${Math.round(client.user!.createdTimestamp / 1000)}> - (<t:${Math.round(client.user!.createdTimestamp / 1000)}:R>)
-                **◎ 💹 Bot Version:** \`v${packageJson.version}\`
+                **◎ 💹 Bot Version:** \`v${process.env.npm_package_version}\`
                 \u200b`,
             })
             .addFields({
