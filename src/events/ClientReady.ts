@@ -3,7 +3,7 @@ import { Discord, Once } from 'discordx';
 import si from 'systeminformation';
 import '@colors/colors';
 import { CronJob } from 'cron';
-import { ChannelType, version } from 'discord.js';
+import { ChannelType, Events, version } from 'discord.js';
 import moment from 'moment';
 import { updateStatus } from 'utils/Util.js';
 import BirthdayConfig from '../mongo/BirthdayConfig.js';
@@ -11,16 +11,16 @@ import Birthdays from '../mongo/Birthdays.js';
 import StarBoard from '../mongo/StarBoard.js';
 
 /**
- * Discord.js Ready event handler.
+ * Discord.js ClientReady event handler.
  */
 @Discord()
-export class Ready {
+export class ClientReady {
     /**
-     * Executes when the ready event is emitted.
+     * Executes when the ClientReady event is emitted.
      * @param client - The Discord client.
      * @returns void
      */
-    @Once({ event: 'ready' })
+    @Once({ event: Events.ClientReady })
     async onReady([client]: [Client]) {
         // Init slash commands
         await client.initApplicationCommands();

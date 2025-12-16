@@ -1,18 +1,18 @@
-import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
 
 /**
- * Discord.js RoleDelete event handler.
+ * Discord.js GuildRoleDelete event handler.
  */
 @Discord()
-export class RoleDelete {
+export class GuildRoleDelete {
     /**
-     * Executes when the RoleDelete event is emitted.
+     * Executes when the GuildRoleDelete event is emitted.
      * @param role
      * @returns void
      */
-    @On({ event: 'roleDelete' })
+    @On({ event: Events.GuildRoleDelete })
     async onRoleDelete([role]: ArgsOf<'roleDelete'>) {
         // If logging is enabled, send an embed to the set channel
         const logging = await Logging.findOne({ GuildId: role.guild.id });

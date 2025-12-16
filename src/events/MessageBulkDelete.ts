@@ -1,16 +1,19 @@
-import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
 
+/**
+ * Discord.js MessageBulkDelete event handler.
+ */
 @Discord()
-export class MessageDeleteBulk {
+export class MessageBulkDelete {
     /**
-     * Handler for MessageDeleteBulk event.
+     * Executes when the MessageBulkDelete event is emitted.
      * @param messages
      * @param client - The Discord client.
      */
-    @On({ event: 'messageDeleteBulk' })
+    @On({ event: Events.MessageBulkDelete })
     async onMessageDelete([messages]: ArgsOf<'messageDeleteBulk'>, client: Client) {
         if (!messages.first()) {
             return;
