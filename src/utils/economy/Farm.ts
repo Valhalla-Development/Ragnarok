@@ -8,14 +8,13 @@ import {
 } from 'discord.js';
 import type { Client } from 'discordx';
 import Balance from '../../mongo/Balance.js';
-import { RagnarokEmbed, color } from '../Util.js';
+import { color, RagnarokEmbed } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import { updateHomeContainer } from './Home.js';
-import type { ButtonRows } from './Types.js';
-import type { Items } from './Types.js';
+import type { ButtonRows, Items } from './Types.js';
 
 // Add timeout duration property (in milliseconds)
-const commandTimeout = 10000; // 10 seconds
+const commandTimeout = 10_000; // 10 seconds
 
 /**
  * This method sets the state of a button.
