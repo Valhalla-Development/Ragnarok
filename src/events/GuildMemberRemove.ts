@@ -1,4 +1,4 @@
-import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
 import Tickets from '../mongo/Tickets.js';
@@ -15,7 +15,7 @@ export class GuildMemberRemove {
      * @param client - The Discord client.
      * @returns void
      */
-    @On({ event: 'guildMemberRemove' })
+    @On({ event: Events.GuildMemberRemove })
     async onGuildMemberRemove([member]: ArgsOf<'guildMemberRemove'>, client: Client) {
         // Set activity
         updateStatus(client);

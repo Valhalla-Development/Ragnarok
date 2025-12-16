@@ -1,4 +1,4 @@
-import { ActivityType } from 'discord.js';
+import { ActivityType, Events } from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
 
 /**
@@ -12,8 +12,8 @@ export class GuildCreate {
      * @param client - The Discord client.
      * @returns void
      */
-    @On({ event: 'guildCreate' })
-    async onGuildCreate([guild]: ArgsOf<'guildCreate'>, client: Client) {
+    @On({ event: Events.GuildCreate })
+    onGuildCreate([guild]: ArgsOf<'guildCreate'>, client: Client) {
         // Set activity
         client.user?.setActivity({
             type: ActivityType.Watching,

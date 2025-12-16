@@ -1,4 +1,4 @@
-import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
 
@@ -12,7 +12,7 @@ export class ChannelDelete {
      * @param channel
      * @returns void
      */
-    @On({ event: 'channelDelete' })
+    @On({ event: Events.ChannelDelete })
     async onChannelDelete([channel]: ArgsOf<'channelDelete'>) {
         if (channel.type === ChannelType.DM) {
             return;

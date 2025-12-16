@@ -1,4 +1,4 @@
-import { ChannelType, EmbedBuilder, Guild, PermissionsBitField } from 'discord.js';
+import { ChannelType, EmbedBuilder, Events, Guild, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
 
@@ -12,7 +12,7 @@ export class InviteDelete {
      * @param invite
      * @returns void
      */
-    @On({ event: 'inviteDelete' })
+    @On({ event: Events.InviteDelete })
     async onInviteDelete([invite]: ArgsOf<'inviteDelete'>) {
         if (invite.guild instanceof Guild) {
             // If logging is enabled, send an embed to the set channel

@@ -1,4 +1,4 @@
-import { AuditLogEvent, ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { AuditLogEvent, ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
 
@@ -12,7 +12,7 @@ export class GuildBanAdd {
      * @param ban
      * @returns void
      */
-    @On({ event: 'guildBanAdd' })
+    @On({ event: Events.GuildBanAdd })
     async onGuildBanAdd([ban]: ArgsOf<'guildBanAdd'>) {
         // If logging is enabled, send an embed to the set channel
         const logging = await Logging.findOne({ GuildId: ban.guild.id });

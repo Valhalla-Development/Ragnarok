@@ -1,4 +1,4 @@
-import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
 
@@ -13,7 +13,7 @@ export class ChannelUpdate {
      * @param newChannel
      * @returns void
      */
-    @On({ event: 'channelUpdate' })
+    @On({ event: Events.ChannelUpdate })
     async onChannelUpdate([oldChannel, newChannel]: ArgsOf<'channelUpdate'>) {
         if (oldChannel.type === ChannelType.DM || newChannel.type === ChannelType.DM) {
             return;

@@ -1,4 +1,4 @@
-import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
 
@@ -12,7 +12,7 @@ export class ChannelCreate {
      * @param channel
      * @returns void
      */
-    @On({ event: 'channelCreate' })
+    @On({ event: Events.ChannelCreate })
     async onChannelCreate([channel]: ArgsOf<'channelCreate'>) {
         // If logging is enabled, send an embed to the set channel
         const logging = await Logging.findOne({ GuildId: channel.guild.id });

@@ -1,4 +1,4 @@
-import { ChannelType, codeBlock, EmbedBuilder } from 'discord.js';
+import { ChannelType, codeBlock, EmbedBuilder, Events } from 'discord.js';
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import moment from 'moment';
@@ -11,7 +11,7 @@ export class InteractionCreate {
      * @param interaction - An array containing the interaction and client objects.
      * @param client - The Discord client.
      */
-    @On({ event: 'interactionCreate' })
+    @On({ event: Events.InteractionCreate })
     async onInteraction([interaction]: ArgsOf<'interactionCreate'>, client: Client) {
         // Check if the interaction is in a guild and in a guild text channel, and is either a string select menu or a chat input command.
         if (

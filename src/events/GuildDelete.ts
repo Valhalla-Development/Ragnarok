@@ -1,4 +1,4 @@
-import { ActivityType } from 'discord.js';
+import { ActivityType, Events } from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import AdsProtection from '../mongo/AdsProtection.js';
 import AutoRole from '../mongo/AutoRole.js';
@@ -22,7 +22,7 @@ export class GuildDelete {
      * @param client - The Discord client.
      * @returns void
      */
-    @On({ event: 'guildDelete' })
+    @On({ event: Events.GuildDelete })
     async onGuildDelete([guild]: ArgsOf<'guildDelete'>, client: Client) {
         // Set activity
         client.user?.setActivity({

@@ -1,4 +1,4 @@
-import { AuditLogEvent, ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { AuditLogEvent, ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
 import type { ArgsOf } from 'discordx';
 import { Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
@@ -10,7 +10,7 @@ export class MessageDelete {
      * Handler for MessageDelete event.
      * @param message
      */
-    @On({ event: 'messageDelete' })
+    @On({ event: Events.MessageDelete })
     async onMessageDelete([message]: ArgsOf<'messageDelete'>) {
         if (!message.guild || message.author?.bot) {
             return;

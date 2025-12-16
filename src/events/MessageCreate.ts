@@ -1,5 +1,5 @@
 import type { Message, TextBasedChannel } from 'discord.js';
-import { EmbedBuilder, type GuildTextBasedChannel, PermissionsBitField } from 'discord.js';
+import { EmbedBuilder, Events, type GuildTextBasedChannel, PermissionsBitField } from 'discord.js';
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import urlRegexSafe from 'url-regex-safe';
@@ -18,7 +18,7 @@ export class MessageCreate {
      * @param args - An array containing the interaction and client objects.
      * @param client - The Discord client.
      */
-    @On({ event: 'messageCreate' })
+    @On({ event: Events.MessageCreate })
     async onMessage([message]: ArgsOf<'messageCreate'>, client: Client) {
         if (!message.guild || message.author.bot) {
             return;

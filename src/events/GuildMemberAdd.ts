@@ -1,7 +1,13 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { createCanvas, loadImage, registerFont } from 'canvas';
-import { AttachmentBuilder, ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
+import {
+    AttachmentBuilder,
+    ChannelType,
+    EmbedBuilder,
+    Events,
+    PermissionsBitField,
+} from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import ordinal from 'ordinal';
 import AutoRole from '../mongo/AutoRole.js';
@@ -29,7 +35,7 @@ export class GuildMemberAdd {
      * @param client - The Discord client.
      * @returns void
      */
-    @On({ event: 'guildMemberAdd' })
+    @On({ event: Events.GuildMemberAdd })
     async onGuildMemberAdd([member]: ArgsOf<'guildMemberAdd'>, client: Client) {
         // Set activity
         updateStatus(client);
