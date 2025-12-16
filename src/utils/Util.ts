@@ -20,7 +20,7 @@ import {
 import type { Client } from 'discordx';
 import '@colors/colors';
 import mongoose from 'mongoose';
-import { type ITitle, TitleMainType, getTitleDetailsByName, getTitleDetailsByUrl } from 'movier';
+import { type ITitle, TitleMainType, getTitleDetailsByName, getTitleDetailsByUrl } from '@valhalladev/movier';
 import Level from '../mongo/Level.js';
 import LevelConfig from '../mongo/LevelConfig.js';
 
