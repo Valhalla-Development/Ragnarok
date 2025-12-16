@@ -473,7 +473,7 @@ export class LevelCommand {
 
         const url = await parse(countryEmoji);
 
-        if (!(url?.[0] && url[0].url)) {
+        if (!url?.[0]?.url) {
             await RagnarokEmbed(
                 client,
                 interaction,
