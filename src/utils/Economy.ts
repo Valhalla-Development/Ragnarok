@@ -213,8 +213,8 @@ export class Economy {
     /**
      * Asynchronously handles the heist interaction.
      */
-    async heist(interaction: ButtonInteraction, client: Client) {
-        await handleHeist(interaction, client, this.homeButton);
+    async heist(interaction: ButtonInteraction) {
+        await handleHeist(interaction, this.homeButton);
     }
 
     /**
