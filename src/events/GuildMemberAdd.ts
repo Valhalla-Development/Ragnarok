@@ -56,7 +56,7 @@ export class GuildMemberAdd {
                         .catch(console.error);
 
                     const embed = new EmbedBuilder()
-                        .setColor(color(member.guild!.members.me!.displayHexColor))
+                        .setColor(color(member.guild?.members.me?.displayHexColor ?? '#5865F2'))
                         .addFields({
                             name: `**${client.user?.username} - Ticket**`,
                             value: `**◎:** \`${member.user}\` has rejoined the server\nThey have been added back to the ticket.`,
@@ -148,7 +148,7 @@ export class GuildMemberAdd {
                 return;
             }
 
-            if (!member.guild!.members.me!.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+            if (!member.guild?.members.me?.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
                 await AutoRole.deleteMany({ GuildId: member.guild.id });
                 return;
             }

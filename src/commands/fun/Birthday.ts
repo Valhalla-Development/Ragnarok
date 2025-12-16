@@ -226,7 +226,7 @@ export class Birthday {
                     name: `Birthdays for ${interaction.guild!.name}`,
                     iconURL: `${interaction.guild!.iconURL()}`,
                 })
-                .setColor(color(interaction.guild!.members.me!.displayHexColor));
+                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
             const userField = pageRows
                 .map((row) => {

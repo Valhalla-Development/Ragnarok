@@ -33,7 +33,7 @@ export class GuildMemberRemove {
             if (channel && channel.type === ChannelType.GuildText) {
                 // Send a message that the user left
                 const existTM = new EmbedBuilder()
-                    .setColor(color(member.guild!.members.me!.displayHexColor))
+                    .setColor(color(member.guild?.members.me?.displayHexColor ?? '#5865F2'))
                     .addFields({
                         name: `**${client.user?.username} - Ticket**`,
                         value: `${member} - \`@${member.user.tag}${member.user.discriminator !== '0' ? `#${member.user.discriminator}` : ''}\` has the left the server\nThey will be added back to the ticket if they rejoin.`,

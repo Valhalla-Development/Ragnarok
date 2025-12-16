@@ -77,7 +77,7 @@ export function buildFarmEmbed(
             name: `${interaction.user.displayName}`,
             iconURL: `${interaction.user.avatarURL()}`,
         })
-        .setColor(color(interaction.guild!.members.me!.displayHexColor))
+        .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
         .setFooter({
             text: 'Planting crops yields a larger return! check it out with: /plant',
         });

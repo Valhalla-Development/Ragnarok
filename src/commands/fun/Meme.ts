@@ -49,7 +49,7 @@ export class Meme {
         const meme = await getMeme();
 
         const embed = new EmbedBuilder()
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
             .setAuthor({
                 name: `${meme[0].title.length >= 256 ? `${meme[0].title.substring(0, 253)}...` : meme[0].title}`,
                 url: `${meme[0].postLink}`,
@@ -103,7 +103,7 @@ export class Meme {
         // If there are no more memes, remove the button
         if (newMemes.length === 0) {
             const newMeme = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                 .setAuthor({
                     name: `${randomMeme.title.length >= 256 ? `${randomMeme.title.substring(0, 253)}...` : randomMeme.title}`,
                     url: `${randomMeme.postLink}`,
@@ -116,7 +116,7 @@ export class Meme {
         }
 
         const newMeme = new EmbedBuilder()
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
             .setAuthor({
                 name: `${randomMeme.title.length >= 256 ? `${randomMeme.title.substring(0, 253)}...` : randomMeme.title}`,
                 url: `${randomMeme.postLink}`,

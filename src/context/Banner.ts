@@ -43,7 +43,7 @@ export class BannerContext {
             const embed = new EmbedBuilder()
                 .setAuthor({ name: `${member.displayName}'s Banner`, iconURL: banner })
                 .setImage(banner)
-                .setColor(color(interaction.guild!.members.me!.displayHexColor));
+                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
             await interaction.reply({ embeds: [embed] });
         } catch (_error) {
             await RagnarokEmbed(

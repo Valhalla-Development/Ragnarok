@@ -106,7 +106,7 @@ function createCropStatusEmbeds(
                 name: `${interaction.user.displayName}`,
                 iconURL: `${interaction.user.avatarURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
             .addFields({
                 name: `**${client.user?.username} - Harvest**`,
                 value: `**◎ Success:** Current crop status:\n${pageEntries.join('\n')}`,
@@ -231,7 +231,7 @@ function createHarvestResultEmbeds(
                 name: `${interaction.user.displayName}`,
                 iconURL: `${interaction.user.avatarURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
             .addFields({
                 name: `**${client.user?.username} - Harvest**`,
                 value: `**◎ Success:** You have harvested the following crops:\n${pageEntries.join('\n')}\n\nIn total, the current value is <:coin:706659001164628008>\`${totalValue.toLocaleString('en')}\`\nThis value of each crop will continue to depreciate, I recommend you sell your crops.`,

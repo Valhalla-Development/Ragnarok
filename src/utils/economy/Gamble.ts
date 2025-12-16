@@ -149,7 +149,7 @@ export async function handleCoinflip(
                 name: `${interaction.user.displayName}`,
                 iconURL: `${interaction.user.avatarURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
             .addFields({
                 name: `**${client.user?.username} - Coin Flip**`,
                 value: `**◎** ${interaction.user} won! <:coin:706659001164628008> \`${Number(
@@ -162,7 +162,7 @@ export async function handleCoinflip(
                 name: `${interaction.user.displayName}`,
                 iconURL: `${interaction.user.avatarURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
             .addFields({
                 name: `**${client.user?.username} - Coin Flip**`,
                 value: `**◎** ${interaction.user} lost <:coin:706659001164628008> \`${Number(
@@ -248,7 +248,7 @@ export async function handleCoinflip(
                 name: `${interaction.user.displayName}`,
                 iconURL: `${interaction.user.avatarURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
             .addFields({
                 name: `**${client.user?.username} - Coin Flip**`,
                 value: `**◎** ${interaction.user} bet <:coin:706659001164628008> \`${Number(

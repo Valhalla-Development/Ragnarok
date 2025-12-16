@@ -40,7 +40,7 @@ export class MessageDelete {
 
                 if (!deletionLog) {
                     const noLogE = new EmbedBuilder()
-                        .setColor(color(message.guild!.members.me!.displayHexColor))
+                        .setColor(color(message.guild?.members.me?.displayHexColor ?? '#5865F2'))
                         .setAuthor({
                             name: 'Message Deleted',
                             iconURL: `${message.guild.iconURL()}`,

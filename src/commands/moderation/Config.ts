@@ -142,7 +142,7 @@ export class Config {
 
         // Initial embed to display with the menu
         const initial = new EmbedBuilder()
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
             .addFields({
                 name: `**${client.user?.username} - Config**`,
                 value: '**◎** Click the corresponding button for which module you would like to configure.',
@@ -206,7 +206,7 @@ export class Config {
                         name: `${client.user?.username} - Advert Protection Configuration`,
                         iconURL: `${interaction.guild!.iconURL()}`,
                     })
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                     .setDescription('🚫 Toggle Advert Protection: `/config adsprot <true/false>`');
 
                 await b.update({ embeds: [embed], components: [row1, row2] });
@@ -221,7 +221,7 @@ export class Config {
                         name: `${client.user?.username} - AutoRole Module Configuration`,
                         iconURL: `${interaction.guild!.iconURL()}`,
                     })
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                     .setDescription(`🎭 Set AutoRole: \`/config autorole role <@role>\`
                             🎭 Disable AutoRole Module: \`/config autorole disable\``);
 
@@ -237,7 +237,7 @@ export class Config {
                         name: `${client.user?.username} - Birthday Module Configuration`,
                         iconURL: `${interaction.guild!.iconURL()}`,
                     })
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                     .setDescription(`🎂 Set Birthday Alert Channel: \`/config birthday channel <#channel>\`
                             🎂 Disable Birthday Module: \`/config birthday disable\``);
 
@@ -253,7 +253,7 @@ export class Config {
                         name: `${client.user?.username} - Dad Bot Module Configuration`,
                         iconURL: `${interaction.guild!.iconURL()}`,
                     })
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                     .setDescription('👨‍👧 Toggle Dad Bot: `/config dadbot <true/false>`');
 
                 await b.update({ embeds: [embed], components: [row1, row2] });
@@ -268,7 +268,7 @@ export class Config {
                         name: `${client.user?.username} - Logging Module Configuration`,
                         iconURL: `${interaction.guild!.iconURL()}`,
                     })
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                     .setDescription(`📝 Set Logging Channel: \`/config logging channel <#channel>\`
                             📝 Disable Logging Module: \`/config logging off\``);
 
@@ -284,7 +284,7 @@ export class Config {
                         name: `${client.user?.username} - Role Menu Configuration`,
                         iconURL: `${interaction.guild!.iconURL()}`,
                     })
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                     .setDescription(`🔵 Add Role to Role Menu: \`/config rolemenu add <@role>\`
                             🔵 Remove Role from Role Menu: \`/config rolemenu remove <@role>\`
                             🔵 Clear Role Menu: \`/config rolemenu clear\``);
@@ -301,7 +301,7 @@ export class Config {
                         name: `${client.user?.username} - Ticket Module Configuration`,
                         iconURL: `${interaction.guild!.iconURL()}`,
                     })
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                     .setDescription(`🔹 Assign Ticket Category: \`/config ticket category <#category>\`
                             🔹 Assign Ticket Logging Channel: \`/config ticket channel <#channel>\`
                             🔹 Specify Custom Support Role: \`/config ticket role <@role>\`
@@ -319,7 +319,7 @@ export class Config {
                         name: `${client.user?.username} - Welcome Module Configuration`,
                         iconURL: `${interaction.guild!.iconURL()}`,
                     })
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                     .setDescription(`🖼 Set Welcome Image: \`/config welcome image <url-to-image>\`
                             🖼 Set Welcome Channel: \`/config welcome channel <#channel>\`
                             🖼 Disable Welcome Module: \`/config welcome off\``);
@@ -336,7 +336,7 @@ export class Config {
                         name: `${client.user?.username} - Star Board Module Configuration`,
                         iconURL: `${interaction.guild!.iconURL()}`,
                     })
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                     .setDescription(`🌟 Set Star Board Channel: \`/config starboard channel <#channel>\`
                             🌟 Disable Star Board Module: \`/config starboard off\``);
                 await b.update({ embeds: [embed], components: [row1, row2] });
@@ -391,7 +391,7 @@ export class Config {
                 name: `${client.user?.username} - Advert Protection`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
             .setDescription(
                 currentStatus?.Status === state
                     ? `Advert Protection is already **${state ? 'enabled.' : 'disabled.'}**`
@@ -442,11 +442,11 @@ export class Config {
                 name: `${client.user?.username} - AutoRole Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         // Get the member's roles and the bot's highest role position
         const member = interaction.member!.roles as GuildMemberRoleManager;
-        const botHighestRole = interaction.guild!.members.me!.roles.highest.position;
+        const botHighestRole = interaction.guild?.members.me?.roles.highest.position ?? 0;
 
         // Check if the provided role is higher than the member's highest role or the bot's highest role
         if (role.position >= member.highest.position || role.position >= botHighestRole) {
@@ -486,7 +486,7 @@ export class Config {
                 name: `${client.user?.username} - AutoRole Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         // If AutoRole is not enabled, inform the user and return
         if (!currentStatus) {
@@ -529,7 +529,7 @@ export class Config {
                 name: `${client.user?.username} - Birthday Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         if (channel.type !== ChannelType.GuildText) {
             embed.setDescription('Please provide a valid `TextChannel`.');
@@ -540,7 +540,7 @@ export class Config {
         // Check if the bot has the SendMessages permissions within the provided channel
         if (
             !interaction
-                .guild!.members.me!.permissionsIn(channel)
+                .guild?.members.me?.permissionsIn(channel)
                 .has(PermissionsBitField.Flags.SendMessages)
         ) {
             embed.setDescription(
@@ -579,7 +579,7 @@ export class Config {
                 name: `${client.user?.username} - Birthday Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         // If Birthday is not enabled, inform the user and return
         if (!currentStatus) {
@@ -624,7 +624,7 @@ export class Config {
                 name: `${client.user?.username} - Dad Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         // If the user is attempting to enable the Dad module
         if (state) {
@@ -688,7 +688,7 @@ export class Config {
                 name: `${client.user?.username} - Logging Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         if (channel.type !== ChannelType.GuildText) {
             embed.setDescription('Please provide a valid `TextChannel`.');
@@ -699,7 +699,7 @@ export class Config {
         // Check if the bot has the SendMessages permissions within the provided channel
         if (
             !interaction
-                .guild!.members.me!.permissionsIn(channel)
+                .guild?.members.me?.permissionsIn(channel)
                 .has(PermissionsBitField.Flags.SendMessages)
         ) {
             embed.setDescription(
@@ -738,7 +738,7 @@ export class Config {
                 name: `${client.user?.username} - Logging Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         // If Logging is not enabled, inform the user and return
         if (!currentStatus) {
@@ -781,7 +781,7 @@ export class Config {
                 name: `${client.user?.username} - Ticket Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         if (category.type !== ChannelType.GuildCategory) {
             embed.setDescription('Please provide a valid `CategoryChannel`.');
@@ -826,7 +826,7 @@ export class Config {
                 name: `${client.user?.username} - Ticket Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         if (channel.type !== ChannelType.GuildText) {
             embed.setDescription('Please provide a valid `TextChannel`.');
@@ -837,7 +837,7 @@ export class Config {
         // Check if the bot has the SendMessages permissions within the provided channel
         if (
             !interaction
-                .guild!.members.me!.permissionsIn(channel)
+                .guild?.members.me?.permissionsIn(channel)
                 .has(PermissionsBitField.Flags.SendMessages)
         ) {
             embed.setDescription(
@@ -884,7 +884,7 @@ export class Config {
                 name: `${client.user?.username} - Ticket Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         // Update or insert the Ticket document in the database
         await TicketConfig.findOneAndUpdate(
@@ -915,7 +915,7 @@ export class Config {
                 name: `${client.user?.username} - Ticket Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         // If Ticket is not enabled, inform the user and return
         if (!currentStatus) {
@@ -958,7 +958,7 @@ export class Config {
                 name: `${client.user?.username} - Welcome Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         const extension = image.substring(image.lastIndexOf('.') + 1);
         const validExtensions = ['jpg', 'jpeg', 'png'];
@@ -1050,7 +1050,7 @@ export class Config {
                 name: `${client.user?.username} - Welcome Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         if (channel.type !== ChannelType.GuildText) {
             embed.setDescription('Please provide a valid `TextChannel`.');
@@ -1061,7 +1061,7 @@ export class Config {
         // Check if the bot has the SendMessages permissions within the provided channel
         if (
             !interaction
-                .guild!.members.me!.permissionsIn(channel)
+                .guild?.members.me?.permissionsIn(channel)
                 .has(PermissionsBitField.Flags.SendMessages)
         ) {
             embed.setDescription(
@@ -1100,7 +1100,7 @@ export class Config {
                 name: `${client.user?.username} - Welcome Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         // If Welcome is not enabled, inform the user and return
         if (!currentStatus) {
@@ -1143,7 +1143,7 @@ export class Config {
                 name: `${client.user?.username} - StarBoard Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         if (channel.type !== ChannelType.GuildText) {
             embed.setDescription('Please provide a valid `TextChannel`.');
@@ -1154,7 +1154,7 @@ export class Config {
         // Check if the bot has the SendMessages permissions within the provided channel
         if (
             !interaction
-                .guild!.members.me!.permissionsIn(channel)
+                .guild?.members.me?.permissionsIn(channel)
                 .has(PermissionsBitField.Flags.SendMessages)
         ) {
             embed.setDescription(
@@ -1193,7 +1193,7 @@ export class Config {
                 name: `${client.user?.username} - StarBoard Module`,
                 iconURL: `${interaction.guild!.iconURL()}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor));
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
 
         // If StarBoard is not enabled, inform the user and return
         if (!currentStatus) {

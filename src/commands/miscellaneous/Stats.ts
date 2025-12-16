@@ -38,7 +38,7 @@ export class Stats {
         const memPercent = (realMemUsed / totalMemory) * 100;
 
         const embed = new EmbedBuilder()
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
             .setThumbnail(client.user?.displayAvatarURL() || '')
             .setAuthor({ name: 'Bot Statistics', iconURL: client.user?.displayAvatarURL() || '' })
             .addFields({

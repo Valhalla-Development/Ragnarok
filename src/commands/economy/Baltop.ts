@@ -50,7 +50,7 @@ export class Baltop {
                 name: `Leaderboard for ${interaction.guild!.name}`,
                 iconURL: `${interaction.guild!.iconURL({ extension: 'png' })}`,
             })
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
             .addFields(
                 {
                     name: 'Top 10',

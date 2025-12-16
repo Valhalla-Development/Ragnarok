@@ -47,7 +47,7 @@ export class Reddit {
                         iconURL:
                             'https://logodownload.org/wp-content/uploads/2018/02/reddit-logo-16.png',
                     })
-                    .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                     .setDescription(`[**◎ ${children[0].data.title}**](${children[0].data.url})\n
         \`\`\`${children[0].data.selftext.substring(0, 150)}...\`\`\`\n
         [**◎ ${children[1].data.title}**](${children[1].data.url})\n

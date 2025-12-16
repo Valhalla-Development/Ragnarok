@@ -7,6 +7,7 @@ import {
     ChannelType,
     type ColorResolvable,
     type CommandInteraction,
+    codeBlock,
     EmbedBuilder,
     type GuildMember,
     type Message,
@@ -15,12 +16,16 @@ import {
     PermissionsBitField,
     type StringSelectMenuInteraction,
     type TextChannel,
-    codeBlock,
 } from 'discord.js';
 import type { Client } from 'discordx';
 import '@colors/colors';
+import {
+    getTitleDetailsByName,
+    getTitleDetailsByUrl,
+    type ITitle,
+    TitleMainType,
+} from '@valhalladev/movier';
 import mongoose from 'mongoose';
-import { type ITitle, TitleMainType, getTitleDetailsByName, getTitleDetailsByUrl } from '@valhalladev/movier';
 import Level from '../mongo/Level.js';
 import LevelConfig from '../mongo/LevelConfig.js';
 
@@ -170,7 +175,7 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
 
         if (!data) {
             console.error('Content is not available.');
-            return undefined; // Return early if data is not available
+            return; // Return early if data is not available
         }
 
         const contentType = {
@@ -239,7 +244,7 @@ export async function RagnarokEmbed(
     }
 
     const embed = new EmbedBuilder()
-        .setColor(color(interaction.guild!.members.me!.displayHexColor))
+        .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
         .addFields({
             name: `**${client.user!.username}${commandName ? ` - ${capitalise(commandName)}` : ''}**`,
             value: `**◎ ${type}:** ${content}`,
@@ -316,7 +321,7 @@ export async function pagination(
     }
 
     const collector = message.createMessageComponentCollector({
-        time: 30000,
+        time: 30_000,
     });
 
     let currentPage = 0;
@@ -397,8 +402,7 @@ export async function pagination(
 
 export async function updateLevel(interaction: Message | CommandInteraction) {
     if (
-        !interaction.guild ||
-        !interaction.channel ||
+        !(interaction.guild && interaction.channel) ||
         interaction.channel.type !== ChannelType.GuildText
     ) {
         return;
@@ -448,7 +452,7 @@ export async function updateLevel(interaction: Message | CommandInteraction) {
                         content: `${interaction.member} has reached level **${score.Level}**!`,
                         allowedMentions: { parse: [] },
                     })
-                    .then((m) => deletableCheck(m, 10000));
+                    .then((m) => deletableCheck(m, 10_000));
             }
         }
 

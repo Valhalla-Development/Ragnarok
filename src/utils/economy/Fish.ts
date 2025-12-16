@@ -86,7 +86,7 @@ export function buildFishEmbed(
             name: `${interaction.user.displayName}`,
             iconURL: `${interaction.user.avatarURL()}`,
         })
-        .setColor(color(interaction.guild!.members.me!.displayHexColor))
+        .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
         .addFields({
             name: `**${client.user?.username} - Fish**`,
             value: `**◎ Success:** You caught a ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt.toLocaleString('en')}\`.`,

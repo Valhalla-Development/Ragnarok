@@ -145,7 +145,7 @@ export class Crypto {
                     name: `${interaction.user.tag}`,
                     iconURL: `${interaction.user.avatarURL()}`,
                 })
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                 .setThumbnail(image)
                 .addFields({
                     name: `**Crypto - ${capitalise(id)} (${currencyUpperCase})**`,

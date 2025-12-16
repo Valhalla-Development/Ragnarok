@@ -65,7 +65,7 @@ export class Ping {
             );
 
             const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                 .setThumbnail(interaction.guild?.iconURL() || '')
                 .setAuthor({
                     name: `Guild Information: ${interaction.guild?.name}`,
@@ -76,7 +76,7 @@ export class Ping {
                         name: 'Guild information',
                         value: `**◎ 👑 Owner:** ${guildOwner?.user}
                         **◎ 🆔 ID:** \`${interaction.guild?.id}\`
-                        **◎ 📅 Created At:** <t:${Math.round(interaction.guild!.createdTimestamp! / 1000)}> - (<t:${Math.round(interaction.guild!.createdTimestamp! / 1000)}:R>)
+                        **◎ 📅 Created At:** <t:${Math.round((interaction.guild?.createdTimestamp ?? 0) / 1000)}> - (<t:${Math.round((interaction.guild?.createdTimestamp ?? 0) / 1000)}:R>)
                         **◎ 🔐 Verification Level:** \`${verificationLevels[interaction.guild?.verificationLevel ?? 0]}\`
                         **◎ 🔏 MFA Level:** \`${mfa[interaction.guild?.mfaLevel ?? 0]}\`
                         **◎ 🧑‍🤝‍🧑 Guild Members:** \`${(interaction.guild?.memberCount || 0) - (interaction.guild?.members.cache.filter((m) => m.user.bot).size || 0)}\`
@@ -142,7 +142,7 @@ export class Ping {
             }
 
             const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                 .setAuthor({
                     name: `Guild Information: ${interaction.guild?.name}`,
                     iconURL: `${interaction.guild?.iconURL()}`,
@@ -184,7 +184,7 @@ export class Ping {
             }
 
             const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                 .setAuthor({
                     name: `Guild Information: ${interaction.guild?.name}`,
                     iconURL: `${interaction.guild?.iconURL()}`,

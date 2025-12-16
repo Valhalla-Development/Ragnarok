@@ -73,7 +73,7 @@ export class WOTD {
             }
             // Embed
             const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                 .setAuthor({
                     name: 'Word of the Day',
                     url: 'https://www.merriam-webster.com/word-of-the-day',

@@ -59,7 +59,7 @@ export class UserinfoContext {
         const roleMsg = roles.length ? roles.join(', ') : 'None';
 
         const embed = new EmbedBuilder()
-            .setColor(color(interaction.guild!.members.me!.displayHexColor))
+            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
             .setThumbnail(member.user.displayAvatarURL() || '')
             .setAuthor({
                 name: `Information for ${member.user.displayName}`,

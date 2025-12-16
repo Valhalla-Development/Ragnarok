@@ -16,7 +16,7 @@ export class MessageDeleteBulk {
             return;
         }
 
-        const guild = client.guilds.cache.get(messages.first()!.guildId!);
+        const guild = client.guilds.cache.get(messages.first()?.guildId ?? '');
         if (!guild) {
             return;
         }

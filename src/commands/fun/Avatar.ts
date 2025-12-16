@@ -51,7 +51,7 @@ export class Avatar {
             const embed = new EmbedBuilder()
                 .setAuthor({ name: `${member.displayName}'s Avatar`, iconURL: avatar })
                 .setImage(avatar)
-                .setColor(color(interaction.guild!.members.me!.displayHexColor));
+                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
             await interaction.reply({ embeds: [embed] });
         } catch (_error) {
             await RagnarokEmbed(

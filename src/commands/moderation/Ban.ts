@@ -133,7 +133,7 @@ export class Ban {
         try {
             const authoMes = new EmbedBuilder()
                 .setThumbnail(`${client.user?.displayAvatarURL()}`)
-                .setColor(color(interaction.guild!.members.me!.displayHexColor))
+                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
                 .addFields({
                     name: `You have been banned from: \`${interaction.guild!.name}\``,
                     value: `**◎ Reason:** ${reason || 'No reason given.'}
