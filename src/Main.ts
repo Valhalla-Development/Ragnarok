@@ -14,18 +14,19 @@ interface RagnarokClient extends Client {
 }
 
 /**
- * The Discord.js client instance with sharding support.
+ * The Discord.js client instance with conditional sharding support.
  *
- * Sharding Configuration:
+ * Development Mode:
+ * - Single process, no sharding
+ * - Direct client without cluster functionality
+ *
+ * Production Mode:
+ * - Sharding Configuration:
  * - shards: Uses getInfo().SHARD_LIST to get the list of shards this instance should handle
  * - shardCount: Uses getInfo().TOTAL_SHARDS to know the total number of shards
- *
- * Each instance of the bot (cluster) will handle a subset of the total shards,
- * as configured in Cluster.ts with shardsPerClusters
+ * - Each instance of the bot (cluster) will handle a subset of the total shards
  */
-export const client = new Client({
-    shards: getInfo().SHARD_LIST,
-    shardCount: getInfo().TOTAL_SHARDS,
+const clientConfig = {
     intents: [
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMessages,
@@ -49,8 +50,16 @@ export const client = new Client({
         Partials.Reaction,
     ],
     silent: true,
-    botGuilds: process.env.GUILDS ? process.env.GUILDS.split(',') : undefined,
-}) as RagnarokClient;
+    botGuilds: config.GUILDS,
+    ...(isDev
+        ? {}
+        : {
+              shards: getInfo().SHARD_LIST,
+              shardCount: getInfo().TOTAL_SHARDS,
+          }),
+};
+
+export const client = new Client(clientConfig) as RagnarokClient;
 
 /**
  * Handles unhandled rejections by logging the error and sending an embed to a designated logging channel, if enabled.
@@ -87,7 +96,7 @@ client.on('error', async (error: unknown) => {
  * @throws An Error if any required environment variables are missing or invalid.
  */
 async function run() {
-    const missingVar = (v: string) => `The ${v} environment variable is missing.`;
+    /* const missingVar = (v: string) => `The ${v} environment variable is missing.`;
 
     const required = ['BOT_TOKEN'];
 
@@ -106,7 +115,7 @@ async function run() {
             'ERROR_LOGGING_CHANNEL and COMMAND_LOGGING_CHANNEL are required when logging is enabled.'
         );
     }
-
+*/
     /**
      * Delays the execution of the function for a specified time in milliseconds.
      * @param ms - The time in milliseconds to delay the execution of the function.
@@ -128,9 +137,11 @@ async function run() {
             await sleep(time);
             await importx(`${dirname(import.meta.url)}/{events,commands,context}/**/*.{ts,js}`);
             await sleep(time);
-            client.cluster = new ClusterClient(client);
-            await sleep(time);
-            await client.login(process.env.BOT_TOKEN as string);
+            if (!isDev) {
+                client.cluster = new ClusterClient(client);
+                await sleep(time);
+            }
+            await client.login(config.BOT_TOKEN);
         } catch (error) {
             console.error('An error occurred while initializing the bot:', error);
         }

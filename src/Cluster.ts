@@ -22,7 +22,7 @@ const manager = new ClusterManager(`${dir}/Main.ts`, {
     totalClusters: 'auto',
     shardsPerClusters: 2,
     mode: 'worker',
-    token: process.env.BOT_TOKEN,
+    token: config.BOT_TOKEN,
 });
 
 // Event fired when a new cluster is created
