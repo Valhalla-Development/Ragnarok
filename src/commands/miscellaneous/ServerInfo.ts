@@ -102,15 +102,17 @@ export class Ping {
             if ((roles && roles.length > 0) || (emojiMap && emojiMap.length > 0)) {
                 const value: string[] = [];
 
-                roles?.length &&
+                if (roles?.length) {
                     value.push(
                         `**Server Roles [${roles.length}]**: To view all roles, run\n\`/serverinfo roles\``
                     );
+                }
 
-                emojiMap?.length &&
+                if (emojiMap?.length) {
                     value.push(
                         `**Server Emojis [${emojiMap.length}]**: To view all emojis, run\n\`/serverinfo emojis\``
                     );
+                }
 
                 embed.addFields({
                     name: '**Assets**',
