@@ -1,37 +1,34 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-	"extends": ["ultracite"],
-	"files": {
-		"ignore": ["*.json"]
-	},
-	"linter": {
-		"rules": {
-			"suspicious": {
-				"noConsole": "off",
-				"noConsoleLog": "off"
-			},
-			"style": {
-				"useFilenamingConvention": "off",
-				"noNonNullAssertion": "off"
-			},
-			"nursery": {
-				"noNestedTernary": "off"
-			},
-			"complexity": {
-				"noExcessiveCognitiveComplexity": "off"
-			},
-			"performance": {
-				"useTopLevelRegex": "off"
-			}
-		}
-	},
-	"javascript": {
-		"formatter": {
-			"indentWidth": 4,
-			"lineWidth": 100
-		},
-		"parser": {
-			"unsafeParameterDecoratorsEnabled": true
-		}
-	}
+  "$schema": "https://biomejs.dev/schemas/2.3.9/schema.json",
+  "extends": ["ultracite/core"],
+  "files": {
+    "includes": ["**", "!**/*.json"]
+  },
+  "linter": {
+    "rules": {
+      "suspicious": {
+        "noConsole": "off"
+      },
+      "style": {
+        "useFilenamingConvention": "off",
+        "noNonNullAssertion": "off",
+        "noNestedTernary": "off"
+      },
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "off"
+      },
+      "performance": {
+        "useTopLevelRegex": "off"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "indentWidth": 4,
+      "lineWidth": 100
+    },
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  }
 }
