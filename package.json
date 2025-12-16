@@ -42,7 +42,8 @@
     "pretty-ms": "^9.3.0",
     "reddit-image-fetcher": "^2.0.12",
     "systeminformation": "^5.27.14",
-    "url-regex-safe": "^4.0.0"
+    "url-regex-safe": "^4.0.0",
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.9",

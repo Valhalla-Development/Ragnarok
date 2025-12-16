@@ -3,6 +3,7 @@ import { IntentsBitField, Partials } from 'discord.js';
 import { Client } from 'discordx';
 import 'dotenv/config';
 import { ClusterClient, getInfo } from 'discord-hybrid-sharding';
+import { config, isDev } from './config/Config.js';
 import { handleError, loadMongoEvents } from './utils/Util.js';
 
 /**
@@ -96,26 +97,6 @@ client.on('error', async (error: unknown) => {
  * @throws An Error if any required environment variables are missing or invalid.
  */
 async function run() {
-    /* const missingVar = (v: string) => `The ${v} environment variable is missing.`;
-
-    const required = ['BOT_TOKEN'];
-
-    for (const v of required) {
-        if (!process.env[v]) {
-            throw new Error(missingVar(v));
-        }
-    }
-
-    if (
-        process.env.ENABLE_LOGGING?.toLowerCase() === 'true' &&
-        !process.env.ERROR_LOGGING_CHANNEL &&
-        !process.env.COMMAND_LOGGING_CHANNEL
-    ) {
-        throw new Error(
-            'ERROR_LOGGING_CHANNEL and COMMAND_LOGGING_CHANNEL are required when logging is enabled.'
-        );
-    }
-*/
     /**
      * Delays the execution of the function for a specified time in milliseconds.
      * @param ms - The time in milliseconds to delay the execution of the function.

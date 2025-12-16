@@ -1,5 +1,6 @@
 import { dirname } from '@discordx/importer';
 import { ClusterManager } from 'discord-hybrid-sharding';
+import { config } from './config/Config.js';
 
 // Get the directory path of the current module
 const dir = dirname(import.meta.url);
