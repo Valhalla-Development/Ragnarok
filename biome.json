@@ -19,7 +19,10 @@
       },
       "performance": {
         "useTopLevelRegex": "off"
-      }
+      },
+	  "nursery": {
+		"useMaxParams": "off"
+	  }
     }
   },
   "javascript": {
