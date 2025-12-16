@@ -1,6 +1,6 @@
 import {
-    type APIEmbed,
     ActionRowBuilder,
+    type APIEmbed,
     ButtonBuilder,
     ButtonInteraction,
     ButtonStyle,
@@ -12,12 +12,12 @@ import {
 } from 'discord.js';
 import type { Client } from 'discordx';
 import Balance from '../../mongo/Balance.js';
-import { RagnarokEmbed, color } from '../Util.js';
+import { color, RagnarokEmbed } from '../Util.js';
 import { updateHomeContainer } from './Home.js';
 import type { ButtonRows } from './Types.js';
 
 // Add timeout duration property (in milliseconds)
-const commandTimeout = 10000; // 10 seconds
+const commandTimeout = 10_000; // 10 seconds
 
 /**
  * This method sets the state of a button.
@@ -95,7 +95,7 @@ export async function handleCoinflip(
     }
 
     // If no amount and option are provided and the interaction is a ButtonInteraction, show a modal for specifying an amount
-    if (!amount && !option && interaction instanceof ButtonInteraction) {
+    if (!(amount || option) && interaction instanceof ButtonInteraction) {
         const coinflipModal = new ModalBuilder()
             .setTitle('Coin Flip Amount')
             .setCustomId('coinflipAmount');
