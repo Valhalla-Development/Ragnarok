@@ -12,8 +12,8 @@
   "scripts": {
     "lint": "tsc --noEmit -p tsconfig.json && biome check --files-ignore-unknown=true --diagnostic-level=error --no-errors-on-unmatched src",
     "lint:fix": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true src",
-    "dev": "bun --watch src/Cluster.ts",
-    "start": "bun src/Cluster.ts",
+    "dev": "NODE_ENV=development bun --watch src/Main.ts",
+    "start": "NODE_ENV=production bun src/Cluster.ts",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
