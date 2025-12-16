@@ -5,7 +5,7 @@ import {
     type UserContextMenuCommandInteraction,
 } from 'discord.js';
 import { type Client, ContextMenu, Discord } from 'discordx';
-import { RagnarokEmbed, color } from '../utils/Util.js';
+import { color, RagnarokEmbed } from '../utils/Util.js';
 
 @Discord()
 export class AvatarContext {

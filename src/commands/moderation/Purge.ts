@@ -3,8 +3,8 @@ import {
     ApplicationCommandOptionType,
     ChannelType,
     type CommandInteraction,
-    PermissionsBitField,
     codeBlock,
+    PermissionsBitField,
 } from 'discord.js';
 import { type Client, Discord, Guard, Slash, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';

@@ -139,7 +139,7 @@ export class GuildMemberAdd {
         async function addUserRole() {
             const autoRole = await AutoRole.findOne({ GuildId: member.guild.id });
 
-            if (!autoRole || !autoRole.Role) {
+            if (!autoRole?.Role) {
                 return;
             }
 

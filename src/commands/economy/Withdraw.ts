@@ -35,7 +35,7 @@ export class Withdraw {
             }
         );
 
-        if (!balance || !balance.Bank) {
+        if (!balance?.Bank) {
             await RagnarokEmbed(
                 client,
                 interaction,

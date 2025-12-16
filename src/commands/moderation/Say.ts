@@ -3,10 +3,10 @@ import {
     ApplicationCommandOptionType,
     ChannelType,
     type CommandInteraction,
+    codeBlock,
     type GuildMember,
     PermissionsBitField,
     type TextChannel,
-    codeBlock,
 } from 'discord.js';
 import { type Client, Discord, Slash, SlashOption } from 'discordx';
 import { RagnarokEmbed } from '../../utils/Util.js';

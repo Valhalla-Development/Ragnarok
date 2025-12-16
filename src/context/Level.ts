@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { type Image, createCanvas, loadImage } from 'canvas';
+import { createCanvas, type Image, loadImage } from 'canvas';
 import {
     ApplicationCommandType,
     AttachmentBuilder,
@@ -13,7 +13,7 @@ import abbreviate from 'number-abbreviate';
 // @ts-expect-error no type file available for this package
 import converter from 'number-to-words-en';
 import Level from '../mongo/Level.js';
-import { RagnarokEmbed, color } from '../utils/Util.js';
+import { color, RagnarokEmbed } from '../utils/Util.js';
 
 @Discord()
 export class LevelContext {

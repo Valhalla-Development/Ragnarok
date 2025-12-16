@@ -1,5 +1,5 @@
 import { Category } from '@discordx/utilities';
-import { ChannelType, type CommandInteraction, PermissionsBitField, codeBlock } from 'discord.js';
+import { ChannelType, type CommandInteraction, codeBlock, PermissionsBitField } from 'discord.js';
 import { type Client, Discord, Guard, Slash } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
 import { RagnarokEmbed } from '../../utils/Util.js';

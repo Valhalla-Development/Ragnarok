@@ -4,7 +4,7 @@ import axios from 'axios';
 import cryptocurrencies from 'cryptocurrencies';
 import { ApplicationCommandOptionType, type CommandInteraction, EmbedBuilder } from 'discord.js';
 import { type Client, Discord, Slash, SlashOption } from 'discordx';
-import { RagnarokEmbed, capitalise, color } from '../../utils/Util.js';
+import { capitalise, color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')

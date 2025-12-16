@@ -3,9 +3,9 @@ import {
     ApplicationCommandOptionType,
     ChannelType,
     type CommandInteraction,
+    codeBlock,
     type GuildMember,
     PermissionsBitField,
-    codeBlock,
 } from 'discord.js';
 import { type Client, Discord, Guard, Slash, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';

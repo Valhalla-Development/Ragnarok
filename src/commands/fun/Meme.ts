@@ -9,7 +9,7 @@ import {
 } from 'discord.js';
 import { ButtonComponent, type Client, Discord, Slash } from 'discordx';
 import RedditImageFetcher from 'reddit-image-fetcher';
-import { RagnarokEmbed, color } from '../../utils/Util.js';
+import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 const subreddits = [
     'memes',

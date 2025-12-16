@@ -111,7 +111,7 @@ export class Rob {
                 await otherB.save();
 
                 // Sets cooldown time
-                balance.StealCool = Date.now() + 120000;
+                balance.StealCool = Date.now() + 120_000;
                 balance.Cash += stealAmount;
                 balance.Total += stealAmount;
                 await balance.save();
@@ -186,7 +186,7 @@ export class Rob {
                 await otherB.save();
 
                 // Sets cooldown time
-                balance.StealCool = Date.now() + 240000;
+                balance.StealCool = Date.now() + 240_000;
                 balance.Bank -= stealAmount;
                 balance.Total -= stealAmount;
                 await balance.save();

@@ -2,11 +2,11 @@ import { Category } from '@discordx/utilities';
 import {
     ApplicationCommandOptionType,
     type CommandInteraction,
+    codeBlock,
     type GuildMember,
     type GuildMemberRoleManager,
     PermissionsBitField,
     type Role,
-    codeBlock,
 } from 'discord.js';
 import { type Client, Discord, Guard, Slash, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';

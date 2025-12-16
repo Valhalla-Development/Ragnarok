@@ -184,7 +184,7 @@ export class Config {
         const filter = (but: { user: { id: string } }) => but.user.id !== client.user?.id;
 
         // Create a message component collector to listen for button clicks
-        const collector = m.createMessageComponentCollector({ filter, time: 15000 });
+        const collector = m.createMessageComponentCollector({ filter, time: 15_000 });
 
         // Event listener for when a button is clicked
         collector.on('collect', async (b) => {
@@ -539,8 +539,8 @@ export class Config {
 
         // Check if the bot has the SendMessages permissions within the provided channel
         if (
-            !interaction
-                .guild?.members.me?.permissionsIn(channel)
+            !interaction.guild?.members.me
+                ?.permissionsIn(channel)
                 .has(PermissionsBitField.Flags.SendMessages)
         ) {
             embed.setDescription(
@@ -698,8 +698,8 @@ export class Config {
 
         // Check if the bot has the SendMessages permissions within the provided channel
         if (
-            !interaction
-                .guild?.members.me?.permissionsIn(channel)
+            !interaction.guild?.members.me
+                ?.permissionsIn(channel)
                 .has(PermissionsBitField.Flags.SendMessages)
         ) {
             embed.setDescription(
@@ -836,8 +836,8 @@ export class Config {
 
         // Check if the bot has the SendMessages permissions within the provided channel
         if (
-            !interaction
-                .guild?.members.me?.permissionsIn(channel)
+            !interaction.guild?.members.me
+                ?.permissionsIn(channel)
                 .has(PermissionsBitField.Flags.SendMessages)
         ) {
             embed.setDescription(
@@ -1060,8 +1060,8 @@ export class Config {
 
         // Check if the bot has the SendMessages permissions within the provided channel
         if (
-            !interaction
-                .guild?.members.me?.permissionsIn(channel)
+            !interaction.guild?.members.me
+                ?.permissionsIn(channel)
                 .has(PermissionsBitField.Flags.SendMessages)
         ) {
             embed.setDescription(
@@ -1153,8 +1153,8 @@ export class Config {
 
         // Check if the bot has the SendMessages permissions within the provided channel
         if (
-            !interaction
-                .guild?.members.me?.permissionsIn(channel)
+            !interaction.guild?.members.me
+                ?.permissionsIn(channel)
                 .has(PermissionsBitField.Flags.SendMessages)
         ) {
             embed.setDescription(

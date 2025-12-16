@@ -10,7 +10,7 @@ import moment from 'moment';
 import ms from 'ms';
 import BirthdayConfig from '../../mongo/BirthdayConfig.js';
 import Birthdays from '../../mongo/Birthdays.js';
-import { RagnarokEmbed, color, pagination } from '../../utils/Util.js';
+import { color, pagination, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')

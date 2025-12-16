@@ -5,12 +5,12 @@ import {
     ButtonBuilder,
     ButtonStyle,
     type CommandInteraction,
-    EmbedBuilder,
     codeBlock,
+    EmbedBuilder,
 } from 'discord.js';
 import { type Client, Discord, Slash, SlashOption } from 'discordx';
 import { Duration } from 'luxon';
-import { RagnarokEmbed, getContentDetails } from '../../utils/Util.js';
+import { getContentDetails, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')

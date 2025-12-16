@@ -77,7 +77,7 @@ export class MessageDelete {
                     });
                 }
 
-                if (!message.content?.length && !attachments) {
+                if (!(message.content?.length || attachments)) {
                     return;
                 }
 

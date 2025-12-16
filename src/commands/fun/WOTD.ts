@@ -1,8 +1,8 @@
 import { Category } from '@discordx/utilities';
 import { load } from 'cheerio';
-import { ChannelType, type CommandInteraction, EmbedBuilder, codeBlock } from 'discord.js';
+import { ChannelType, type CommandInteraction, codeBlock, EmbedBuilder } from 'discord.js';
 import { type Client, Discord, Slash } from 'discordx';
-import { RagnarokEmbed, capitalise, color } from '../../utils/Util.js';
+import { capitalise, color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')

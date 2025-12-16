@@ -98,7 +98,7 @@ export class Ready {
 
         await Promise.all(
             starboards.map(async (starboard) => {
-                if (!starboard.GuildId || !starboard.ChannelId) {
+                if (!(starboard.GuildId && starboard.ChannelId)) {
                     return;
                 }
 
@@ -159,8 +159,10 @@ export class Ready {
                             await Promise.all(
                                 birthdays.map(async (birthday) => {
                                     if (
-                                        !birthday.UserId ||
-                                        !guild.members.cache.has(birthday.UserId)
+                                        !(
+                                            birthday.UserId &&
+                                            guild.members.cache.has(birthday.UserId)
+                                        )
                                     ) {
                                         return;
                                     }
@@ -188,7 +190,7 @@ export class Ready {
                                         );
                                         if (
                                             lastRunForGuild &&
-                                            now.unix() < lastRunForGuild[guild.id] + 86400
+                                            now.unix() < lastRunForGuild[guild.id] + 86_400
                                         ) {
                                             return;
                                         }

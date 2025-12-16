@@ -11,7 +11,7 @@ import {
 import { type Client, Discord, Guard, Slash, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
 import Logging from '../../mongo/Logging.js';
-import { RagnarokEmbed, color } from '../../utils/Util.js';
+import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Moderation')

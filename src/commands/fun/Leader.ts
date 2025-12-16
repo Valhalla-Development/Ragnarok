@@ -3,7 +3,7 @@ import { type CommandInteraction, EmbedBuilder } from 'discord.js';
 import { type Client, Discord, Slash } from 'discordx';
 import Level from '../../mongo/Level.js';
 import LevelConfig from '../../mongo/LevelConfig.js';
-import { RagnarokEmbed, color } from '../../utils/Util.js';
+import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')

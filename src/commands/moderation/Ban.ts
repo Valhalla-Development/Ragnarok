@@ -5,15 +5,15 @@ import {
     ButtonBuilder,
     ButtonStyle,
     type CommandInteraction,
+    codeBlock,
     EmbedBuilder,
     type GuildMember,
     type GuildMemberRoleManager,
     PermissionsBitField,
-    codeBlock,
 } from 'discord.js';
 import { type Client, Discord, Guard, Slash, SlashChoice, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
-import { RagnarokEmbed, color } from '../../utils/Util.js';
+import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 type DeleteTimeKey =
     | 'Previous Hour'
@@ -70,11 +70,11 @@ export class Ban {
     ): Promise<void> {
         const deleteTime = {
             'Previous Hour': 3600,
-            'Previous 6 Hours': 21600,
-            'Previous 12 Hours': 43200,
-            'Previous 24 Hours': 86400,
-            'Previous 3 Days': 259200,
-            'Previous 7 Days': 604800,
+            'Previous 6 Hours': 21_600,
+            'Previous 12 Hours': 43_200,
+            'Previous 24 Hours': 86_400,
+            'Previous 3 Days': 259_200,
+            'Previous 7 Days': 604_800,
         };
 
         const deleteMessage = deleteTime[deleteMessages || 'Previous Hour'];
@@ -171,7 +171,7 @@ export class Ban {
 
         const m = await interaction.reply({ embeds: [embed], components: [row] });
 
-        const collector = m.createMessageComponentCollector({ time: 30000 });
+        const collector = m.createMessageComponentCollector({ time: 30_000 });
 
         collector.on('collect', async () => {
             try {

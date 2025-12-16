@@ -3,13 +3,13 @@ import {
     ApplicationCommandType,
     ButtonBuilder,
     ButtonStyle,
+    codeBlock,
     EmbedBuilder,
     type MessageContextMenuCommandInteraction,
-    codeBlock,
 } from 'discord.js';
 import { type Client, ContextMenu, Discord } from 'discordx';
 import { Duration } from 'luxon';
-import { RagnarokEmbed, getContentDetails } from '../utils/Util.js';
+import { getContentDetails, RagnarokEmbed } from '../utils/Util.js';
 
 @Discord()
 export class IMDbContext {

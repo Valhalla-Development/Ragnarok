@@ -2,8 +2,8 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { Category } from '@discordx/utilities';
 import { parse } from '@twemoji/parser';
-import { type Image, createCanvas, loadImage } from 'canvas';
-import { type TCountryCode, getCountryData, getEmojiFlag } from 'countries-list';
+import { createCanvas, type Image, loadImage } from 'canvas';
+import { getCountryData, getEmojiFlag, type TCountryCode } from 'countries-list';
 import {
     ApplicationCommandOptionType,
     AttachmentBuilder,
@@ -17,7 +17,7 @@ import abbreviate from 'number-abbreviate';
 import converter from 'number-to-words-en';
 import Level from '../../mongo/Level.js';
 import LevelConfig from '../../mongo/LevelConfig.js';
-import { RagnarokEmbed, color } from '../../utils/Util.js';
+import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -424,7 +424,7 @@ export class LevelCommand {
         );
 
         if (country === 'off') {
-            if (!score || !score.Country) {
+            if (!score?.Country) {
                 await RagnarokEmbed(
                     client,
                     interaction,
@@ -473,7 +473,7 @@ export class LevelCommand {
 
         const url = await parse(countryEmoji);
 
-        if (!url || !url[0] || !url[0].url) {
+        if (!(url?.[0] && url[0].url)) {
             await RagnarokEmbed(
                 client,
                 interaction,

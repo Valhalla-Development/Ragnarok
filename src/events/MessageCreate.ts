@@ -3,8 +3,8 @@ import { EmbedBuilder, type GuildTextBasedChannel, PermissionsBitField } from 'd
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import urlRegexSafe from 'url-regex-safe';
-import AFK from '../mongo/AFK.js';
 import AdsProtection from '../mongo/AdsProtection.js';
+import AFK from '../mongo/AFK.js';
 import Dad from '../mongo/Dad.js';
 import { color, deletableCheck, messageDelete, updateLevel } from '../utils/Util.js';
 
@@ -39,7 +39,7 @@ export class MessageCreate {
                         name: `**${client.user?.username} - AFK**`,
                         value: `${message.author} is no longer AFK.`,
                     });
-                message.channel.send({ embeds: [embed] }).then((m) => deletableCheck(m, 10000));
+                message.channel.send({ embeds: [embed] }).then((m) => deletableCheck(m, 10_000));
                 return;
             }
 
@@ -55,7 +55,9 @@ export class MessageCreate {
                             name: `**${client.user?.username} - AFK**`,
                             value: `**◎** Please do not ping ${message.mentions.users.first()}, is currently AFK with the reason:\n\n${afkCheck.Reason}`,
                         });
-                    message.channel.send({ embeds: [error] }).then((m) => deletableCheck(m, 10000));
+                    message.channel
+                        .send({ embeds: [error] })
+                        .then((m) => deletableCheck(m, 10_000));
                 }
             }
         }
@@ -94,8 +96,10 @@ export class MessageCreate {
 
                 // Check if the user has MANAGE_MESSAGES permission and the channel is not a ticket
                 if (
-                    !message.member.permissions.has(PermissionsBitField.Flags.ManageMessages) &&
-                    !channel.name.startsWith('ticket-') &&
+                    !(
+                        message.member.permissions.has(PermissionsBitField.Flags.ManageMessages) ||
+                        channel.name.startsWith('ticket-')
+                    ) &&
                     urlRegexSafe({ strict: false }).test(message.content.toLowerCase()) &&
                     message.member.guild.members.me.permissions.has(
                         PermissionsBitField.Flags.ManageMessages

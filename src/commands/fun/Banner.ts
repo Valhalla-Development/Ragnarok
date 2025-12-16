@@ -6,7 +6,7 @@ import {
     type GuildMember,
 } from 'discord.js';
 import { type Client, Discord, Slash, SlashOption } from 'discordx';
-import { RagnarokEmbed, color } from '../../utils/Util.js';
+import { color, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
