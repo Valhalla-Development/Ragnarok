@@ -2,7 +2,7 @@ import { type ButtonBuilder, type ButtonInteraction, ButtonStyle, EmbedBuilder }
 import type { Client } from 'discordx';
 import prettyMilliseconds from 'pretty-ms';
 import Balance, { type BalanceInterface } from '../../mongo/Balance.js';
-import { RagnarokEmbed, capitalise, color, pagination } from '../Util.js';
+import { capitalise, color, pagination, RagnarokEmbed } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import type { ButtonRows, CropData, HarvestResult } from './Types.js';
 
@@ -112,8 +112,9 @@ function createCropStatusEmbeds(
                 value: `**◎ Success:** Current crop status:\n${pageEntries.join('\n')}`,
             })
             .setFooter({
-                text: totalPages > 1 ? `Page: ${pageNumber++}/${totalPages}` : 'Page 1/1',
+                text: totalPages > 1 ? `Page: ${pageNumber + 1}/${totalPages}` : 'Page 1/1',
             });
+        pageNumber += 1;
         embeds.push(embed);
     }
 
@@ -195,8 +196,8 @@ function processHarvest(balance: BalanceInterface, availableSpots: number): Harv
                 removedCrop.LastUpdateTime = currentTime; // Set harvest time
                 balance.HarvestedCrops.push(removedCrop);
                 harvestedCrops.push(removedCrop);
-                harvested++;
-                i--; // Adjust index after splice
+                harvested += 1;
+                i -= 1; // Adjust index after splice
             }
         }
     }
@@ -237,8 +238,9 @@ function createHarvestResultEmbeds(
                 value: `**◎ Success:** You have harvested the following crops:\n${pageEntries.join('\n')}\n\nIn total, the current value is <:coin:706659001164628008>\`${totalValue.toLocaleString('en')}\`\nThis value of each crop will continue to depreciate, I recommend you sell your crops.`,
             })
             .setFooter({
-                text: totalPages > 1 ? `Page: ${pageNumber++}/${totalPages}` : 'Page 1/1',
+                text: totalPages > 1 ? `Page: ${pageNumber + 1}/${totalPages}` : 'Page 1/1',
             });
+        pageNumber += 1;
         embeds.push(embed);
     }
 
@@ -283,7 +285,7 @@ export async function handleHarvest(
     });
 
     // If balance is not found, display error and return
-    if (!balance || !balance.Boosts) {
+    if (!balance?.Boosts) {
         await RagnarokEmbed(
             client,
             interaction,
