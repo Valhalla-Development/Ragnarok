@@ -113,10 +113,10 @@ export async function handleClaim(
 
     const endTime = Date.now();
 
-    balance.Hourly = balance.Hourly ? balance.Hourly : endTime + 3600000;
-    balance.Daily = balance.Daily ? balance.Daily : endTime + 86400000;
-    balance.Weekly = balance.Weekly ? balance.Weekly : endTime + 604800000;
-    balance.Monthly = balance.Monthly ? balance.Monthly : endTime + 2629800000;
+    balance.Hourly = balance.Hourly ? balance.Hourly : endTime + 3_600_000;
+    balance.Daily = balance.Daily ? balance.Daily : endTime + 86_400_000;
+    balance.Weekly = balance.Weekly ? balance.Weekly : endTime + 604_800_000;
+    balance.Monthly = balance.Monthly ? balance.Monthly : endTime + 2_629_800_000;
     balance.Bank += fullPrice;
     balance.Total += fullPrice;
 
