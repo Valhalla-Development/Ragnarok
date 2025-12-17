@@ -16,8 +16,8 @@ import {
     SelectMenuComponent,
     Slash,
 } from 'discordx';
-import Balance from '../../mongo/Balance.js';
 import { Economy } from '../../utils/Economy.js';
+import { getOrCreateBalance } from '../../utils/economy/Profile.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
@@ -180,12 +180,12 @@ export class EconomyCommand {
         }
 
         // Heist mechanics
-        const authorBalance = await Balance.findOne({
-            IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
-        });
-        const targetBalance = await Balance.findOne({
-            IdJoined: `${selectedUser.id}-${interaction.guild!.id}`,
-        });
+        const authorBalance = await getOrCreateBalance(interaction);
+        const targetBalance = await getOrCreateBalance(
+            interaction,
+            selectedUser.id,
+            interaction.guild!.id
+        );
 
         if (!authorBalance) {
             await RagnarokComponent(

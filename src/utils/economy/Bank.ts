@@ -1,7 +1,7 @@
 import type { ButtonBuilder } from 'discord.js';
 import { type ButtonInteraction, MessageFlags } from 'discord.js';
-import Balance from '../../mongo/Balance.js';
 import { updateHomeContainer } from './Home.js';
+import { getOrCreateBalance } from './Profile.js';
 
 /**
  * Asynchronously handles the deposit button interaction.
@@ -24,10 +24,8 @@ export async function handleDeposit(
     await interaction.deferReply();
     await interaction.deleteReply();
 
-    // Fetch user's balance based on their ID and guild ID
-    const balance = await Balance.findOne({
-        IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
-    });
+    // Fetch or create user's balance
+    const balance = await getOrCreateBalance(interaction);
 
     // If balance is not found or user has no cash, show an error message and return
     if (!balance || balance.Cash === 0) {

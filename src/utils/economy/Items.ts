@@ -7,8 +7,8 @@ import {
     TextDisplayBuilder,
 } from 'discord.js';
 import type { BalanceInterface } from '../../mongo/Balance.js';
-import Balance from '../../mongo/Balance.js';
 import { RagnarokComponent } from '../Util.js';
+import { getOrCreateBalance } from './Profile.js';
 
 const num = (value: unknown) => Number(value ?? 0);
 
@@ -135,9 +135,7 @@ export async function handleItems(interaction: ButtonInteraction, homeButton: Bu
     await interaction.deferReply();
     await interaction.deleteReply();
 
-    const balance = await Balance.findOne({
-        IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
-    });
+    const balance = await getOrCreateBalance(interaction);
 
     if (!balance) {
         await RagnarokComponent(

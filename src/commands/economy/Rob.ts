@@ -6,7 +6,7 @@ import {
 } from 'discord.js';
 import { Discord, Slash, SlashOption } from 'discordx';
 import ms from 'ms';
-import Balance from '../../mongo/Balance.js';
+import { getOrCreateBalance } from '../../utils/economy/Profile.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
@@ -29,23 +29,9 @@ export class Rob {
         user: GuildMember,
         interaction: CommandInteraction
     ): Promise<void> {
-        const balance = await Balance.findOneAndUpdate(
-            { IdJoined: `${interaction.user.id}-${interaction.guild!.id}` },
-            { $setOnInsert: { IdJoined: `${interaction.user.id}-${interaction.guild!.id}` } },
-            {
-                upsert: true,
-                new: true,
-            }
-        );
+        const balance = await getOrCreateBalance(interaction);
 
-        const otherB = await Balance.findOneAndUpdate(
-            { IdJoined: `${user.id}-${interaction.guild!.id}` },
-            { $setOnInsert: { IdJoined: `${user.id}-${interaction.guild!.id}` } },
-            {
-                upsert: true,
-                new: true,
-            }
-        );
+        const otherB = await getOrCreateBalance(interaction, user.id, interaction.guild!.id);
 
         if (!balance) {
             await RagnarokComponent(

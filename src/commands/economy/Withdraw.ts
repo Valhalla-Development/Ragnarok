@@ -1,7 +1,7 @@
 import { Category } from '@discordx/utilities';
 import { ApplicationCommandOptionType, type CommandInteraction } from 'discord.js';
 import { Discord, Slash, SlashOption } from 'discordx';
-import Balance from '../../mongo/Balance.js';
+import { getOrCreateBalance } from '../../utils/economy/Profile.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
@@ -25,14 +25,7 @@ export class Withdraw {
         amount: number,
         interaction: CommandInteraction
     ): Promise<void> {
-        const balance = await Balance.findOneAndUpdate(
-            { IdJoined: `${interaction.user.id}-${interaction.guild!.id}` },
-            { $setOnInsert: { IdJoined: `${interaction.user.id}-${interaction.guild!.id}` } },
-            {
-                upsert: true,
-                new: true,
-            }
-        );
+        const balance = await getOrCreateBalance(interaction);
 
         if (!balance?.Bank) {
             await RagnarokComponent(

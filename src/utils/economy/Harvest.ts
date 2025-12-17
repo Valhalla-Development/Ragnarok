@@ -1,9 +1,10 @@
 import { type ButtonBuilder, type ButtonInteraction, ButtonStyle, EmbedBuilder } from 'discord.js';
 import type { Client } from 'discordx';
 import prettyMilliseconds from 'pretty-ms';
-import Balance, { type BalanceInterface } from '../../mongo/Balance.js';
+import type { BalanceInterface } from '../../mongo/Balance.js';
 import { capitalise, color, pagination, RagnarokComponent } from '../Util.js';
 import { ecoPrices } from './Config.js';
+import { getOrCreateBalance } from './Profile.js';
 import type { ButtonRows, CropData, HarvestResult } from './Types.js';
 
 /**
@@ -280,9 +281,7 @@ export async function handleHarvest(
     setButtonState(harvestButton, rows);
 
     // Retrieve user's balance
-    const balance = await Balance.findOne({
-        IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
-    });
+    const balance = await getOrCreateBalance(interaction);
 
     // If balance is not found, display error and return
     if (!balance?.Boosts) {

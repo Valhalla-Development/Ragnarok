@@ -1,8 +1,8 @@
 import { type ButtonBuilder, type ButtonInteraction, ButtonStyle, MessageFlags } from 'discord.js';
-import Balance from '../../mongo/Balance.js';
 import { RagnarokComponent } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import { updateHomeContainer } from './Home.js';
+import { getOrCreateBalance } from './Profile.js';
 import type { ButtonRows, Claim, EcoPrices } from './Types.js';
 
 /**
@@ -52,9 +52,7 @@ export async function handleClaim(
     setButtonState(claimButton, rows);
 
     // Fetch user's balance based on their ID and guild ID
-    const balance = await Balance.findOne({
-        IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
-    });
+    const balance = await getOrCreateBalance(interaction);
 
     // If balance is not found, show an error message and return
     if (!balance) {

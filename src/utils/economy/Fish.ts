@@ -7,10 +7,10 @@ import {
     EmbedBuilder,
 } from 'discord.js';
 import type { Client } from 'discordx';
-import Balance from '../../mongo/Balance.js';
 import { color, RagnarokComponent } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import { updateHomeContainer } from './Home.js';
+import { getOrCreateBalance } from './Profile.js';
 import type { ButtonRows, Items } from './Types.js';
 
 // Add timeout duration property (in milliseconds)
@@ -116,9 +116,7 @@ export async function handleFish(
     setButtonState(fishButton, rows);
 
     // Retrieve user's balance
-    const balance = await Balance.findOne({
-        IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
-    });
+    const balance = await getOrCreateBalance(interaction);
 
     // If balance is not found, display error and return
     if (!balance) {

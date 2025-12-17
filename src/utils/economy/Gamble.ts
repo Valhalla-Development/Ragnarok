@@ -11,9 +11,9 @@ import {
     TextInputStyle,
 } from 'discord.js';
 import type { Client } from 'discordx';
-import Balance from '../../mongo/Balance.js';
 import { color, RagnarokComponent } from '../Util.js';
 import { updateHomeContainer } from './Home.js';
+import { getOrCreateBalance } from './Profile.js';
 import type { ButtonRows } from './Types.js';
 
 // Add timeout duration property (in milliseconds)
@@ -78,9 +78,7 @@ export async function handleCoinflip(
     }
 
     // Fetch user's balance based on their ID and guild ID
-    const balance = await Balance.findOne({
-        IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
-    });
+    const balance = await getOrCreateBalance(interaction);
 
     // If balance is not found, show an error message and return
     if (!balance) {
