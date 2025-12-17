@@ -17,6 +17,7 @@ import {
     PermissionsBitField,
     type StringSelectMenuInteraction,
     type TextChannel,
+    type UserSelectMenuInteraction,
 } from 'discord.js';
 import type { Client } from 'discordx';
 import '@colors/colors';
@@ -255,7 +256,8 @@ export async function RagnarokEmbed(
         | CommandInteraction
         | ButtonInteraction
         | StringSelectMenuInteraction
-        | ModalSubmitInteraction,
+        | ModalSubmitInteraction
+        | UserSelectMenuInteraction,
     type: string,
     content: string,
     ephemeral = false
