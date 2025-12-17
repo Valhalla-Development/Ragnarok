@@ -19,6 +19,7 @@ import { handleCoinflip } from './economy/Gamble.js';
 import { handleHarvest } from './economy/Harvest.js';
 import { handleHeist } from './economy/Heist.js';
 import { handleHome } from './economy/Home.js';
+import { handleItems } from './economy/Items.js';
 import { handleBaltop } from './economy/Leaderboard.js';
 
 export class Economy {
@@ -113,6 +114,7 @@ export class Economy {
         this.farm = this.farm.bind(this);
         this.fish = this.fish.bind(this);
         this.harvest = this.harvest.bind(this);
+        this.items = this.items.bind(this);
     }
 
     /**
@@ -211,6 +213,13 @@ export class Economy {
     }
 
     /**
+     * Asynchronously handles the inventory interaction.
+     */
+    async items(interaction: ButtonInteraction, client: Client) {
+        await handleItems(interaction, client, this.homeButton);
+    }
+
+    /**
      * Asynchronously handles the heist interaction.
      */
     async heist(interaction: ButtonInteraction) {
@@ -241,6 +250,7 @@ export * from './economy/Gamble.js';
 export * from './economy/Harvest.js';
 export * from './economy/Heist.js';
 export * from './economy/Home.js';
+export * from './economy/Items.js';
 export * from './economy/Leaderboard.js';
 // Export all the types and config for external use
 export * from './economy/Types.js';
