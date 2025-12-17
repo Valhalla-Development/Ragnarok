@@ -110,6 +110,7 @@ export async function handleFish(
         farmButton: ButtonBuilder;
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
+        withdrawButton: ButtonBuilder;
     }
 ) {
     // Set the state of the fish button first

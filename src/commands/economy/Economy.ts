@@ -76,6 +76,7 @@ export class EconomyCommand {
             ['home', async () => this.instance?.home(interaction)],
             ['baltop', async () => this.instance?.baltop(interaction)],
             ['deposit', async () => this.instance?.deposit(interaction)],
+            ['withdraw', async () => this.instance?.withdraw(interaction)],
             ['claim', async () => this.instance?.claim(interaction)],
             ['items', async () => this.instance?.items(interaction)],
             [
@@ -124,6 +125,33 @@ export class EconomyCommand {
         this.coinflipAmount = amount;
         await this.instance.coinflip(interaction, client, amount);
         await interaction.deleteReply();
+    }
+
+    @ModalComponent({ id: 'economy_withdraw_modal' })
+    async withdrawModal(interaction: ModalSubmitInteraction): Promise<void> {
+        if (!this.instance) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Session expired. Please run /economy again to refresh your controls.',
+                true
+            );
+            return;
+        }
+
+        if (this.user !== interaction.user.id) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Only the command executor can submit this form.',
+                true
+            );
+            return;
+        }
+
+        const amountInput = interaction.fields.getTextInputValue('withdrawAmount');
+        const amount = Number(amountInput.replace(/,/g, ''));
+        await this.instance.processWithdraw(interaction, amount);
     }
 
     /**

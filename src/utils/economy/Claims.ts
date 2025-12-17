@@ -46,6 +46,7 @@ export async function handleClaim(
         farmButton: ButtonBuilder;
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
+        withdrawButton: ButtonBuilder;
     }
 ) {
     // Set the state of the claim button first

@@ -68,6 +68,7 @@ export async function handleCoinflip(
         farmButton: ButtonBuilder;
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
+        withdrawButton: ButtonBuilder;
     },
     amount: string | null = null,
     option: string | null = null

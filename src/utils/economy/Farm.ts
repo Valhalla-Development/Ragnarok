@@ -103,6 +103,7 @@ export async function handleFarm(
         farmButton: ButtonBuilder;
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
+        withdrawButton: ButtonBuilder;
     }
 ) {
     // Set the state of the farm button first

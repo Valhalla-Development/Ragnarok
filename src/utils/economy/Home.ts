@@ -44,6 +44,7 @@ export function buildHomeContainer(
         farmButton: ButtonBuilder;
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
+        withdrawButton: ButtonBuilder;
     },
     wealthStatusMessage?: string,
     claimStatusMessage?: string
@@ -138,11 +139,17 @@ export function buildHomeContainer(
         !hasClaimNewUserBlock &&
         (isHourlyClaimable || isDailyClaimable || isWeeklyClaimable || isMonthlyClaimable);
 
-    // Clone the claim button and disable it if nothing is claimable
-    const claimButton = ButtonBuilder.from(buttons.claimButton.toJSON());
+    // Clone the deposit and withdraw buttons to disable when resource is unavailable
+    const depositButton = ButtonBuilder.from(buttons.depositButton.toJSON());
 
-    if (!hasClaimableRewards) {
-        claimButton.setDisabled(true);
+    if (!balance.Cash || balance.Cash === 0) {
+        depositButton.setDisabled(true);
+    }
+
+    const withdrawButton = ButtonBuilder.from(buttons.withdrawButton.toJSON());
+
+    if (!balance.Bank || balance.Bank === 0) {
+        withdrawButton.setDisabled(true);
     }
 
     // Clone the fish button and disable it if user doesn't own a fishing rod
@@ -152,11 +159,11 @@ export function buildHomeContainer(
         fishButton.setDisabled(true);
     }
 
-    // Clone the deposit button and disable it if user has no cash to deposit
-    const depositButton = ButtonBuilder.from(buttons.depositButton.toJSON());
+    // Clone the claim button and disable it if nothing is claimable
+    const claimButton = ButtonBuilder.from(buttons.claimButton.toJSON());
 
-    if (!balance.Cash || balance.Cash === 0) {
-        depositButton.setDisabled(true);
+    if (!hasClaimableRewards) {
+        claimButton.setDisabled(true);
     }
 
     // Build and return the stunning container
@@ -164,7 +171,9 @@ export function buildHomeContainer(
         .addTextDisplayComponents(headerText)
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Large))
         .addTextDisplayComponents(wealthText)
-        .addActionRowComponents((row) => row.addComponents(buttons.baltopButton, depositButton))
+        .addActionRowComponents((row) =>
+            row.addComponents(buttons.baltopButton, depositButton, withdrawButton)
+        )
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(activityText)
         .addActionRowComponents((row) =>
@@ -197,6 +206,7 @@ export async function updateHomeContainer(
         farmButton: ButtonBuilder;
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
+        withdrawButton: ButtonBuilder;
     },
     wealthStatusMessage?: string,
     claimStatusMessage?: string
@@ -287,6 +297,7 @@ export async function handleHome(
         farmButton: ButtonBuilder;
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
+        withdrawButton: ButtonBuilder;
     }
 ) {
     // Update the home embed based on the interaction

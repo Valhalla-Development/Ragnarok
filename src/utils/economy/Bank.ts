@@ -1,4 +1,4 @@
-import type { ButtonBuilder } from 'discord.js';
+import type { ButtonBuilder, ModalSubmitInteraction } from 'discord.js';
 import { type ButtonInteraction, MessageFlags } from 'discord.js';
 import { updateHomeContainer } from './Home.js';
 import { getOrCreateBalance } from './Profile.js';
@@ -18,6 +18,7 @@ export async function handleDeposit(
         farmButton: ButtonBuilder;
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
+        withdrawButton: ButtonBuilder;
     }
 ) {
     // Defer the reply to prevent interaction timeout
@@ -98,4 +99,86 @@ export async function handleDeposit(
             });
         }
     }, 5000);
+}
+
+/**
+ * Handles the withdraw modal submission by updating the balance and refreshing the home container.
+ */
+export async function handleWithdraw(
+    interaction: ModalSubmitInteraction,
+    amount: number,
+    buttons: {
+        baltopButton: ButtonBuilder;
+        depositButton: ButtonBuilder;
+        heistButton: ButtonBuilder;
+        fishButton: ButtonBuilder;
+        farmButton: ButtonBuilder;
+        itemsButton: ButtonBuilder;
+        claimButton: ButtonBuilder;
+        withdrawButton: ButtonBuilder;
+    }
+) {
+    await interaction.deferReply();
+    await interaction.deleteReply();
+
+    const balance = await getOrCreateBalance(interaction);
+
+    async function showTemporaryMessage(message: string) {
+        const homeContainer = await updateHomeContainer(interaction, buttons, message);
+
+        if (homeContainer) {
+            await interaction.message?.edit({
+                components: [homeContainer],
+                files: [],
+                flags: MessageFlags.IsComponentsV2,
+            });
+        }
+
+        setTimeout(async () => {
+            const updatedHomeContainer = await updateHomeContainer(interaction, buttons);
+            if (updatedHomeContainer) {
+                await interaction.message?.edit({
+                    components: [updatedHomeContainer],
+                    files: [],
+                    flags: MessageFlags.IsComponentsV2,
+                });
+            }
+        }, 5000);
+    }
+
+    if (!balance) {
+        await showTemporaryMessage(
+            '❌ `No economy profile found. Please talk in this server first.`'
+        );
+        return;
+    }
+
+    if (!balance.Bank || balance.Bank <= 0) {
+        await showTemporaryMessage('❌ `You have no funds in the bank to withdraw.`');
+        return;
+    }
+
+    if (Number.isNaN(amount) || amount <= 0) {
+        await showTemporaryMessage('❌ `Please enter a valid amount to withdraw.`');
+        return;
+    }
+
+    if (amount > balance.Bank) {
+        await showTemporaryMessage(
+            `❌ \`Insufficient funds.\` You only have <:coin:706659001164628008> \`${balance.Bank.toLocaleString(
+                'en'
+            )}\` in the bank.`
+        );
+        return;
+    }
+
+    balance.Cash += amount;
+    balance.Bank -= amount;
+    balance.Total = balance.Cash + balance.Bank;
+
+    await balance.save();
+
+    await showTemporaryMessage(
+        `✅ \`Withdrew\` <:coin:706659001164628008> \`${amount.toLocaleString('en')}\` \`from your bank\``
+    );
 }

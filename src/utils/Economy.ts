@@ -6,11 +6,14 @@ import {
     type CommandInteraction,
     type ContainerBuilder,
     type EmbedBuilder,
+    ModalBuilder,
     type ModalSubmitInteraction,
+    TextInputBuilder,
+    TextInputStyle,
 } from 'discord.js';
 import '@colors/colors';
 import type { Client } from 'discordx';
-import { handleDeposit } from './economy/Bank.js';
+import { handleDeposit, handleWithdraw } from './economy/Bank.js';
 import { handleClaim } from './economy/Claims.js';
 import { ecoPrices } from './economy/Config.js';
 import { handleFarm } from './economy/Farm.js';
@@ -27,6 +30,7 @@ export class Economy {
     baltopButton: ButtonBuilder;
     claimButton: ButtonBuilder;
     depositButton: ButtonBuilder;
+    withdrawButton: ButtonBuilder;
     coinflipButton: ButtonBuilder;
     heistButton: ButtonBuilder;
     farmButton: ButtonBuilder;
@@ -57,6 +61,11 @@ export class Economy {
             .setLabel('Deposit Cash')
             .setStyle(ButtonStyle.Primary)
             .setCustomId('economy_deposit');
+
+        this.withdrawButton = new ButtonBuilder()
+            .setLabel('Withdraw Cash')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('economy_withdraw');
 
         this.coinflipButton = new ButtonBuilder()
             .setLabel('Coin Flip')
@@ -93,10 +102,11 @@ export class Economy {
             this.baltopButton,
             this.claimButton,
             this.depositButton,
-            this.coinflipButton
+            this.withdrawButton
         );
 
         const row2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            this.coinflipButton,
             this.farmButton,
             this.fishButton,
             this.harvestButton
@@ -115,6 +125,8 @@ export class Economy {
         this.fish = this.fish.bind(this);
         this.harvest = this.harvest.bind(this);
         this.items = this.items.bind(this);
+        this.withdraw = this.withdraw.bind(this);
+        this.processWithdraw = this.processWithdraw.bind(this);
     }
 
     /**
@@ -129,6 +141,7 @@ export class Economy {
             farmButton: this.farmButton,
             itemsButton: this.itemsButton,
             claimButton: this.claimButton,
+            withdrawButton: this.withdrawButton,
         };
     }
 
@@ -151,6 +164,35 @@ export class Economy {
      */
     async deposit(interaction: ButtonInteraction) {
         await handleDeposit(interaction, this.getButtons());
+    }
+
+    /**
+     * Displays the withdraw modal so the user can specify an amount.
+     */
+    async withdraw(interaction: ButtonInteraction) {
+        const withdrawModal = new ModalBuilder()
+            .setTitle('Withdraw Cash')
+            .setCustomId('economy_withdraw_modal');
+
+        const amountField = new TextInputBuilder()
+            .setCustomId('withdrawAmount')
+            .setLabel('Amount to withdraw')
+            .setPlaceholder('100')
+            .setStyle(TextInputStyle.Short)
+            .setRequired(true);
+
+        withdrawModal.addComponents(
+            new ActionRowBuilder<TextInputBuilder>().addComponents(amountField)
+        );
+
+        await interaction.showModal(withdrawModal);
+    }
+
+    /**
+     * Processes the withdraw modal submission by updating balances.
+     */
+    async processWithdraw(interaction: ModalSubmitInteraction, amount: number) {
+        await handleWithdraw(interaction, amount, this.getButtons());
     }
 
     /**
