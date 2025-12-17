@@ -1,12 +1,18 @@
 import { Category } from '@discordx/utilities';
 import {
     ApplicationCommandOptionType,
+    AttachmentBuilder,
+    ButtonBuilder,
+    type ButtonInteraction,
+    ButtonStyle,
     type CommandInteraction,
-    EmbedBuilder,
+    ContainerBuilder,
     type GuildMember,
+    MessageFlags,
+    SeparatorSpacingSize,
+    TextDisplayBuilder,
 } from 'discord.js';
-import { Discord, Slash, SlashOption } from 'discordx';
-import { color } from '../../utils/Util.js';
+import { ButtonComponent, Discord, Slash, SlashOption } from 'discordx';
 
 @Discord()
 @Category('Miscellaneous')
@@ -49,7 +55,8 @@ export class Userinfo {
             Bot: '<:Bot:854724408458870814>',
         };
 
-        const member = user || interaction.member;
+        const member = (user || interaction.member) as GuildMember;
+        await member.user.fetch();
 
         const roles = member.roles.cache
             .sort((a, b) => b.position - a.position)
@@ -67,29 +74,127 @@ export class Userinfo {
 
         const roleMsg = roles.length ? roles.join(', ') : 'None';
 
-        const embed = new EmbedBuilder()
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-            .setThumbnail(member.user.displayAvatarURL() || '')
-            .setAuthor({
-                name: `Information for ${member.user.displayName}`,
-                iconURL: member.user.displayAvatarURL() || '',
-            })
-            .addFields({
-                name: 'User Information',
-                value: `**◎ 👑 User:** ${member.user}
-                **◎ 🆔 ID:** \`${member.user.id}\`
-                **◎ 📆 Created At** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)
-                **◎ 📆 Joined At** <t:${Math.round(member.joinedTimestamp! / 1000)}> - (<t:${Math.round(member.joinedTimestamp! / 1000)}:R>)
-                **◎ 🗺️ Flags:** ${userFlags?.length ? userFlags.join(', ') : 'None'}
-                **◎ <a:Booster:855593231294267412> Server Booster:** ${
-                    member.premiumSinceTimestamp
-                        ? `<t:${Math.round(member.premiumSinceTimestamp / 1000)}> - (<t:${Math.round(member.premiumSinceTimestamp / 1000)}:R>)`
-                        : 'No'
-                }
-                
-                **Roles: [${roles.length}]**\n${roleMsg}`,
-            });
+        const boosterInfo = member.premiumSinceTimestamp
+            ? `<t:${Math.round(member.premiumSinceTimestamp / 1000)}> - (<t:${Math.round(
+                  member.premiumSinceTimestamp / 1000
+              )}:R>)`
+            : 'No';
 
-        await interaction.reply({ embeds: [embed] });
+        const header = new TextDisplayBuilder().setContent(
+            [
+                `# 🧾 Information for ${member.user.displayName}`,
+                `> 👑 User: ${member}`,
+                `> 🆔 ID: \`${member.user.id}\``,
+            ].join('\n')
+        );
+
+        const timeline = new TextDisplayBuilder().setContent(
+            [
+                '## 🗓️ Timeline',
+                '',
+                `> 🕰️ Created: <t:${Math.round(member.user.createdTimestamp / 1000)}:F> (<t:${Math.round(
+                    member.user.createdTimestamp / 1000
+                )}:R>)`,
+                `> 🏠 Joined: <t:${Math.round(member.joinedTimestamp! / 1000)}:F> (<t:${Math.round(
+                    member.joinedTimestamp! / 1000
+                )}:R>)`,
+            ].join('\n')
+        );
+
+        const flagsDisplay = new TextDisplayBuilder().setContent(
+            [
+                '## 🏷️ Flags & Booster',
+                '',
+                `> 🗺️ Flags: ${userFlags?.length ? userFlags.join(', ') : 'None'}`,
+                `> <a:Booster:855593231294267412> Server Booster: ${boosterInfo}`,
+            ].join('\n')
+        );
+
+        const rolesDisplay = new TextDisplayBuilder().setContent(
+            [`## 🎭 Roles [${roles.length}]`, '', roles.length ? `> ${roleMsg}` : '> None'].join(
+                '\n'
+            )
+        );
+
+        const avatarUrl = member.user.displayAvatarURL();
+        const bannerUrl = member.user.bannerURL();
+
+        const avatarButton = new ButtonBuilder()
+            .setLabel('Avatar')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId(`userinfo_avatar_${member.user.id}`);
+
+        const bannerButton = new ButtonBuilder()
+            .setLabel('Banner')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId(`userinfo_banner_${member.user.id}`);
+
+        const buttons: ButtonBuilder[] = [];
+        if (avatarUrl) {
+            buttons.push(avatarButton);
+        }
+        if (bannerUrl) {
+            buttons.push(bannerButton);
+        }
+
+        const container = new ContainerBuilder()
+            .addTextDisplayComponents(header)
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(timeline)
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(flagsDisplay)
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(rolesDisplay);
+
+        if (buttons.length > 0) {
+            container
+                .addSeparatorComponents((separator) =>
+                    separator.setSpacing(SeparatorSpacingSize.Small)
+                )
+                .addActionRowComponents((row) => row.addComponents(...buttons));
+        }
+
+        await interaction.reply({
+            components: [container],
+            flags: MessageFlags.IsComponentsV2,
+        });
+    }
+
+    @ButtonComponent({ id: /^userinfo_avatar_/ })
+    async avatarButton(interaction: ButtonInteraction): Promise<void> {
+        const userId = interaction.customId.split('_')[2]!.toString();
+        const member = interaction.guild?.members.cache.get(userId);
+
+        if (!member) {
+            await interaction.reply({ content: 'Avatar not found.', ephemeral: true });
+            return;
+        }
+
+        const avatarUrl = member.user.displayAvatarURL({ size: 1024 });
+
+        const attachment = new AttachmentBuilder(avatarUrl);
+
+        await interaction.reply({
+            files: [attachment],
+        });
+    }
+
+    @ButtonComponent({ id: /^userinfo_banner_/ })
+    async bannerButton(interaction: ButtonInteraction): Promise<void> {
+        const userId = interaction.customId.split('_')[2]!.toString();
+        const member = await interaction.client.users.fetch(userId, { force: true });
+
+        if (!member) {
+            await interaction.reply({ content: 'Banner not found.', ephemeral: true });
+            return;
+        }
+
+        const bannerUrl = member.bannerURL({ size: 1024 });
+
+        const attachment = new AttachmentBuilder(bannerUrl!);
+
+        await interaction.reply({
+            files: [attachment],
+        });
     }
 }
