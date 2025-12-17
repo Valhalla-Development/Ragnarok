@@ -134,40 +134,54 @@ export class EconomyCommand {
      * @param client - The Discord client
      */
     @SelectMenuComponent({ id: 'heist_target_select' })
-    async heistTargetSelect(interaction: UserSelectMenuInteraction): Promise<void> {
-        // idk switch to ragnarokembed? i cannae think, too hot
+    async heistTargetSelect(interaction: UserSelectMenuInteraction, client: Client): Promise<void> {
+        if (!this.instance) {
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred, please try running the economy command again.',
+                true
+            );
+            return;
+        }
+
         if (this.user !== interaction.user.id) {
-            await interaction.reply({
-                content: '❌ Only the command executor can select a target.',
-                flags: MessageFlags.Ephemeral,
-            });
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'Only the command executor can select a target.',
+                true
+            );
             return;
         }
 
         const selectedUser = interaction.users.first();
         if (!selectedUser) {
-            await interaction.reply({
-                content: '❌ No user selected.',
-                flags: MessageFlags.Ephemeral,
-            });
+            await RagnarokEmbed(client, interaction, 'Error', 'No user selected.', true);
             return;
         }
 
-        // Filter out the author (person who started the heist)
         if (selectedUser.id === interaction.user.id) {
-            await interaction.reply({
-                content: "❌ You can't target yourself in a heist!",
-                flags: MessageFlags.Ephemeral,
-            });
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                "You can't target yourself in a heist!",
+                true
+            );
             return;
         }
 
-        // Filter out bots
         if (selectedUser.bot) {
-            await interaction.reply({
-                content: "❌ You can't target bots in a heist!",
-                flags: MessageFlags.Ephemeral,
-            });
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                "You can't target bots in a heist!",
+                true
+            );
             return;
         }
 
