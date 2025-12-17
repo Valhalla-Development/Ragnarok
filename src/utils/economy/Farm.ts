@@ -115,7 +115,12 @@ export async function handleFarm(
 
     // If balance is not found, display error and return
     if (!balance) {
-        await RagnarokComponent(interaction, 'Error', 'An error occurred, please try again.', true);
+        await RagnarokComponent(
+            interaction,
+            'Error',
+            'No economy profile found. Send a message in this server to create one, then retry farming.',
+            true
+        );
         return;
     }
 
@@ -158,7 +163,12 @@ export async function handleFarm(
 
     // If farm result is not generated, display error and return
     if (!farmResult) {
-        await RagnarokComponent(interaction, 'Error', 'An error occurred, please try again.', true);
+        await RagnarokComponent(
+            interaction,
+            'Error',
+            'Could not roll a farm outcome. Please try again in a moment.',
+            true
+        );
         return;
     }
 

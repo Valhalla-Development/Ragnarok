@@ -140,7 +140,12 @@ export async function handleItems(interaction: ButtonInteraction, homeButton: Bu
     });
 
     if (!balance) {
-        await RagnarokComponent(interaction, 'Error', 'An error occurred, please try again.', true);
+        await RagnarokComponent(
+            interaction,
+            'Error',
+            'No economy profile found. Send a message in this server to create one, then rerun `/economy` → Inventory.',
+            true
+        );
         return;
     }
 

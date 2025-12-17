@@ -125,7 +125,12 @@ export class Ban {
                 reason: `${reason || 'No reason given.'}`,
             })
             .catch(async () => {
-                await RagnarokComponent(interaction, 'Error', 'An error occurred!', true);
+                await RagnarokComponent(
+                    interaction,
+                    'Error',
+                    'Ban failed. Check role hierarchy and my Ban Members permission.',
+                    true
+                );
             });
 
         try {

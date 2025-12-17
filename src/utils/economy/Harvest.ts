@@ -286,7 +286,12 @@ export async function handleHarvest(
 
     // If balance is not found, display error and return
     if (!balance?.Boosts) {
-        await RagnarokComponent(interaction, 'Error', 'An error occurred, please try again.', true);
+        await RagnarokComponent(
+            interaction,
+            'Error',
+            'No economy profile or farming boosts found. Send a message to create a profile and buy farming tools to unlock harvesting.',
+            true
+        );
         return;
     }
 

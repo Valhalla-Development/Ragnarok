@@ -64,7 +64,7 @@ export class EconomyCommand {
             await RagnarokComponent(
                 interaction,
                 'Error',
-                'An error occurred, please try running the economy command again.',
+                'Session expired. Please run /economy again to refresh your controls.',
                 true
             );
             return;
@@ -113,7 +113,7 @@ export class EconomyCommand {
             await RagnarokComponent(
                 interaction,
                 'Error',
-                'An error occurred, please try running the economy command again.',
+                'Session expired. Please run /economy again to refresh your controls.',
                 true
             );
             return;
@@ -137,7 +137,7 @@ export class EconomyCommand {
             await RagnarokComponent(
                 interaction,
                 'Error',
-                'An error occurred, please try running the economy command again.',
+                'Session expired. Please run /economy again to refresh your controls.',
                 true
             );
             return;
@@ -310,7 +310,7 @@ export class EconomyCommand {
             await RagnarokComponent(
                 interaction,
                 'Error',
-                'An error occurred, please try running the economy command again.',
+                'Session expired. Please run /economy again to refresh your controls.',
                 true
             );
             return;

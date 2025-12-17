@@ -58,7 +58,12 @@ export async function handleClaim(
 
     // If balance is not found, show an error message and return
     if (!balance) {
-        await RagnarokComponent(interaction, 'Error', 'An error occurred, please try again.', true);
+        await RagnarokComponent(
+            interaction,
+            'Error',
+            'No economy profile found. Send a message in this server to create one, then rerun your claim.',
+            true
+        );
         return;
     }
 

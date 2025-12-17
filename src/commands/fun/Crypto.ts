@@ -174,7 +174,7 @@ export class Crypto {
             await RagnarokComponent(
                 interaction,
                 'Error',
-                'An error occurred while processing your request.'
+                'Could not fetch crypto data right now. Try another symbol or retry in a moment.'
             );
         }
     }

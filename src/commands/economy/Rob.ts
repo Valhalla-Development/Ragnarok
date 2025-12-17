@@ -51,7 +51,7 @@ export class Rob {
             await RagnarokComponent(
                 interaction,
                 'Error',
-                'An error occurred, please try again.',
+                'Could not load your balance. Send a message in this server to create an economy profile, then retry the heist.',
                 true
             );
             return;

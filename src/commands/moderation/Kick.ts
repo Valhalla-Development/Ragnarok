@@ -86,7 +86,12 @@ export class Kick {
 
         // Kick the user and send the embed
         interaction.guild!.members.kick(user, `${reason || 'No reason given.'}`).catch(async () => {
-            await RagnarokComponent(interaction, 'Error', 'An error occurred!', true);
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Kick failed. Check role hierarchy and my Kick Members permission.',
+                true
+            );
         });
 
         try {
