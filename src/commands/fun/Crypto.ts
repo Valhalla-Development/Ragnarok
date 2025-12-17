@@ -2,9 +2,16 @@ import { Category } from '@discordx/utilities';
 import axios from 'axios';
 // @ts-expect-error no type file available for this package
 import cryptocurrencies from 'cryptocurrencies';
-import { ApplicationCommandOptionType, type CommandInteraction, EmbedBuilder } from 'discord.js';
+import {
+    ApplicationCommandOptionType,
+    type CommandInteraction,
+    ContainerBuilder,
+    MessageFlags,
+    SeparatorSpacingSize,
+    TextDisplayBuilder,
+} from 'discord.js';
 import { type Client, Discord, Slash, SlashOption } from 'discordx';
-import { capitalise, color, RagnarokEmbed } from '../../utils/Util.js';
+import { capitalise, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -132,34 +139,46 @@ export class Crypto {
                 low_24h: low24 = 'N/A',
                 price_change_24h: pricech24 = 'N/A',
                 price_change_percentage_24h: priceper24 = 'N/A',
-                image,
                 id,
                 symbol,
             } = content[0];
 
             const parseCurrency = symbolDict[currencyUpperCase];
 
-            // Build and send the success embed
-            const successEmb = new EmbedBuilder()
-                .setAuthor({
-                    name: `${interaction.user.tag}`,
-                    iconURL: `${interaction.user.avatarURL()}`,
-                })
-                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                .setThumbnail(image)
-                .addFields({
-                    name: `**Crypto - ${capitalise(id)} (${currencyUpperCase})**`,
-                    value: `**◎ Name:** \`${capitalise(id)}\` **(${symbol.toUpperCase()})**
-            **◎ Current Price:** \`${parseCurrency}${currentPrice.toLocaleString('en')}\`
-            **◎ History:**
-            \u3000 Market Cap: \`${parseCurrency}${marketCap.toLocaleString('en')}\`
-            \u3000 High (24hr): \`${parseCurrency}${high24.toLocaleString('en')}\`
-            \u3000 Low (24hr): \`${parseCurrency}${low24.toLocaleString('en')}\`
-            \u3000 Price Change (24hr): \`${parseCurrency}${pricech24.toLocaleString('en')}\`
-            \u3000 Price Change Percentage (24hr): \`${priceper24.toLocaleString('en')}%\``,
-                });
+            const header = new TextDisplayBuilder().setContent(
+                [
+                    '# 💹 Crypto Snapshot',
+                    `> **${capitalise(id)} (${symbol.toUpperCase()})**`,
+                    `> 💰 Price: ${parseCurrency}${currentPrice.toLocaleString('en')}`,
+                    `> 📊 Change 24h: ${parseCurrency}${pricech24.toLocaleString('en')} (${priceper24.toLocaleString('en')}%)`,
+                ].join('\n')
+            );
 
-            await interaction.editReply({ embeds: [successEmb] });
+            const history = new TextDisplayBuilder().setContent(
+                [
+                    '## 🧾 Market History',
+                    '',
+                    `> 💸 Market Cap: ${parseCurrency}${marketCap.toLocaleString('en')}`,
+                    `> 🔼 High (24h): ${parseCurrency}${high24.toLocaleString('en')}`,
+                    `> 🔽 Low (24h): ${parseCurrency}${low24.toLocaleString('en')}`,
+                    `> 🔃 Updated: <t:${Math.round(Date.now() / 1000)}:R>`,
+                ].join('\n')
+            );
+
+            const container = new ContainerBuilder()
+                .addTextDisplayComponents(header)
+                .addSeparatorComponents((separator) =>
+                    separator.setSpacing(SeparatorSpacingSize.Small)
+                )
+                .addTextDisplayComponents(history)
+                .addSeparatorComponents((separator) =>
+                    separator.setSpacing(SeparatorSpacingSize.Small)
+                );
+
+            await interaction.editReply({
+                components: [container],
+                flags: MessageFlags.IsComponentsV2,
+            });
         } catch (_error) {
             await RagnarokEmbed(
                 client,
