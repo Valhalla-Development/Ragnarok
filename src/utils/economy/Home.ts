@@ -1,5 +1,5 @@
 import {
-    type ButtonBuilder,
+    ButtonBuilder,
     ButtonInteraction,
     type CommandInteraction,
     ContainerBuilder,
@@ -126,6 +126,25 @@ export function buildHomeContainer(
         ].join('\n')
     );
 
+    // Check if anything is claimable
+    const now = Date.now();
+    const hasClaimNewUserBlock = balance.ClaimNewUser && now <= balance.ClaimNewUser;
+    const isHourlyClaimable = !balance.Hourly || now > balance.Hourly;
+    const isDailyClaimable = !balance.Daily || now > balance.Daily;
+    const isWeeklyClaimable = !balance.Weekly || now > balance.Weekly;
+    const isMonthlyClaimable = !balance.Monthly || now > balance.Monthly;
+
+    const hasClaimableRewards =
+        !hasClaimNewUserBlock &&
+        (isHourlyClaimable || isDailyClaimable || isWeeklyClaimable || isMonthlyClaimable);
+
+    // Clone the claim button and disable it if nothing is claimable
+    const claimButton = ButtonBuilder.from(buttons.claimButton.toJSON());
+
+    if (!hasClaimableRewards) {
+        claimButton.setDisabled(true);
+    }
+
     // Build and return the stunning container
     return new ContainerBuilder()
         .addTextDisplayComponents(headerText)
@@ -144,7 +163,7 @@ export function buildHomeContainer(
         .addActionRowComponents((row) => row.addComponents(buttons.itemsButton))
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(treasureText)
-        .addActionRowComponents((row) => row.addComponents(buttons.claimButton));
+        .addActionRowComponents((row) => row.addComponents(claimButton));
 }
 
 /**
