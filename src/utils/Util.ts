@@ -7,6 +7,7 @@ import {
     ChannelType,
     type ColorResolvable,
     type CommandInteraction,
+    ContainerBuilder,
     codeBlock,
     EmbedBuilder,
     type GuildMember,
@@ -15,8 +16,10 @@ import {
     MessageFlags,
     type ModalSubmitInteraction,
     PermissionsBitField,
+    SeparatorSpacingSize,
     type StringSelectMenuInteraction,
     type TextChannel,
+    TextDisplayBuilder,
     type UserSelectMenuInteraction,
 } from 'discord.js';
 import type { Client } from 'discordx';
@@ -242,16 +245,16 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
 }
 
 /**
- * Creates and sends an embed in response to an interaction.
+ * Creates and sends a components-based message (Components V2) in response to an interaction.
  * @param client - The Discord client.
  * @param interaction - The interaction that triggered the function.
  * @param type - The type of the interaction.
- * @param content - The content of the embed.
+ * @param content - The content of the message.
  * @param ephemeral - Whether the interaction response should be ephemeral.
  * @returns - A promise that resolves when the interaction is replied to.
  */
 export async function RagnarokEmbed(
-    client: Client,
+    _client: Client,
     interaction:
         | CommandInteraction
         | ButtonInteraction
@@ -262,32 +265,42 @@ export async function RagnarokEmbed(
     content: string,
     ephemeral = false
 ) {
-    let commandName = '';
+    const lowerType = type.toLowerCase();
+    const typeEmoji =
+        lowerType.includes('error') || lowerType.includes('fail')
+            ? '⛔'
+            : lowerType.includes('warn')
+              ? '⚠️'
+              : lowerType.includes('success')
+                ? '✅'
+                : 'ℹ️';
 
-    if (interaction.isStringSelectMenu() || interaction.isButton()) {
-        commandName = interaction.message.interaction?.commandName || '';
-    } else if (interaction.isCommand()) {
-        commandName = interaction.command?.name || '';
-    }
+    const tagLine = new TextDisplayBuilder().setContent(`**${typeEmoji} ${type}**`);
+    const contentLine = new TextDisplayBuilder().setContent(codeBlock('text', content));
 
-    const embed = new EmbedBuilder()
-        .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-        .addFields({
-            name: `**${client.user!.username}${commandName ? ` - ${capitalise(commandName)}` : ''}**`,
-            value: `**◎ ${type}:** ${content}`,
-        });
+    const container = new ContainerBuilder()
+        .addTextDisplayComponents(tagLine)
+        .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+        .addTextDisplayComponents(contentLine);
+
+    const flags = ephemeral
+        ? MessageFlags.Ephemeral + MessageFlags.IsComponentsV2
+        : MessageFlags.IsComponentsV2;
 
     try {
         if (interaction.deferred) {
-            await interaction.editReply({ embeds: [embed] });
+            await interaction.editReply({
+                components: [container],
+                flags,
+            });
         } else {
             await interaction.reply({
-                embeds: [embed],
-                flags: ephemeral ? [MessageFlags.Ephemeral] : undefined,
+                components: [container],
+                flags,
             });
         }
     } catch (error) {
-        console.error('Error sending embed:', error);
+        console.error('Error sending component response:', error);
     }
 }
 
