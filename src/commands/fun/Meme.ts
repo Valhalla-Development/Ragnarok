@@ -1,15 +1,20 @@
 import { Category } from '@discordx/utilities';
 import {
-    ActionRowBuilder,
+    AttachmentBuilder,
     ButtonBuilder,
     type ButtonInteraction,
     ButtonStyle,
     type CommandInteraction,
-    EmbedBuilder,
+    ContainerBuilder,
+    MediaGalleryBuilder,
+    MediaGalleryItemBuilder,
+    MessageFlags,
+    SeparatorSpacingSize,
+    TextDisplayBuilder,
 } from 'discord.js';
 import { ButtonComponent, type Client, Discord, Slash } from 'discordx';
 import RedditImageFetcher from 'reddit-image-fetcher';
-import { color, RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokEmbed } from '../../utils/Util.js';
 
 const subreddits = [
     'memes',
@@ -48,25 +53,42 @@ export class Meme {
     async meme(interaction: CommandInteraction): Promise<void> {
         const meme = await getMeme();
 
-        const embed = new EmbedBuilder()
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-            .setAuthor({
-                name: `${meme[0].title.length >= 256 ? `${meme[0].title.substring(0, 253)}...` : meme[0].title}`,
-                url: `${meme[0].postLink}`,
-                iconURL: interaction.user.displayAvatarURL(),
-            })
-            .setImage(meme[0].image)
-            .setFooter({ text: `👍 ${meme[0].upvotes}` });
+        const title =
+            meme[0].title.length >= 256 ? `${meme[0].title.substring(0, 253)}...` : meme[0].title;
 
-        // Buttons to be applied to the embed
-        const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-            new ButtonBuilder()
-                .setLabel('Next Meme')
-                .setStyle(ButtonStyle.Primary)
-                .setCustomId(`nextMeme_${interaction.user.id}`)
+        const header = new TextDisplayBuilder().setContent(
+            [
+                '# 😂 Random Meme',
+                `> **[${title}](${meme[0].postLink})**`,
+                `> 👍 **Upvotes:** \`${meme[0].upvotes}\``,
+            ].join('\n')
         );
 
-        await interaction.reply({ components: [row], embeds: [embed] });
+        const nextButton = new ButtonBuilder()
+            .setLabel('Next Meme')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId(`nextMeme_${interaction.user.id}`);
+
+        const container = new ContainerBuilder()
+            .addTextDisplayComponents(header)
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addActionRowComponents((row) => row.addComponents(nextButton));
+
+        const response = await fetch(meme[0].image);
+        const buffer = Buffer.from(await response.arrayBuffer());
+        const attachment = new AttachmentBuilder(buffer, { name: 'meme.png' });
+
+        container.addMediaGalleryComponents(
+            new MediaGalleryBuilder().addItems(
+                new MediaGalleryItemBuilder().setURL('attachment://meme.png')
+            )
+        );
+
+        await interaction.reply({
+            components: [container],
+            files: [attachment],
+            flags: MessageFlags.IsComponentsV2,
+        });
     }
 
     /**
@@ -100,30 +122,48 @@ export class Meme {
         // Remove the used meme from the list
         newMemes.splice(newMemes.indexOf(randomMeme), 1);
 
+        const title =
+            randomMeme.title.length >= 256
+                ? `${randomMeme.title.substring(0, 253)}...`
+                : randomMeme.title;
+
+        const header = new TextDisplayBuilder().setContent(
+            [
+                '# 😂 Random Meme',
+                `> **[${title}](${randomMeme.postLink})**`,
+                `> 👍 **Upvotes:** \`${randomMeme.upvotes}\``,
+            ].join('\n')
+        );
+
+        const container = new ContainerBuilder().addTextDisplayComponents(header);
+
         // If there are no more memes, remove the button
-        if (newMemes.length === 0) {
-            const newMeme = new EmbedBuilder()
-                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                .setAuthor({
-                    name: `${randomMeme.title.length >= 256 ? `${randomMeme.title.substring(0, 253)}...` : randomMeme.title}`,
-                    url: `${randomMeme.postLink}`,
-                    iconURL: interaction.user.displayAvatarURL(),
-                })
-                .setImage(randomMeme.image)
-                .setFooter({ text: `👍 ${randomMeme.upvotes}` });
-            await interaction.message.edit({ embeds: [newMeme], components: [] });
-            return;
+        if (newMemes.length > 0) {
+            const nextButton = new ButtonBuilder()
+                .setLabel('Next Meme')
+                .setStyle(ButtonStyle.Primary)
+                .setCustomId(`nextMeme_${interaction.user.id}`);
+
+            container
+                .addSeparatorComponents((separator) =>
+                    separator.setSpacing(SeparatorSpacingSize.Small)
+                )
+                .addActionRowComponents((row) => row.addComponents(nextButton));
         }
 
-        const newMeme = new EmbedBuilder()
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-            .setAuthor({
-                name: `${randomMeme.title.length >= 256 ? `${randomMeme.title.substring(0, 253)}...` : randomMeme.title}`,
-                url: `${randomMeme.postLink}`,
-                iconURL: interaction.user.displayAvatarURL(),
-            })
-            .setImage(randomMeme.image)
-            .setFooter({ text: `👍 ${randomMeme.upvotes}` });
-        await interaction.message?.edit({ embeds: [newMeme] });
+        const response = await fetch(randomMeme.image);
+        const buffer = Buffer.from(await response.arrayBuffer());
+        const attachment = new AttachmentBuilder(buffer, { name: 'meme.png' });
+        container.addMediaGalleryComponents(
+            new MediaGalleryBuilder().addItems(
+                new MediaGalleryItemBuilder().setURL('attachment://meme.png')
+            )
+        );
+
+        await interaction.message?.edit({
+            components: [container],
+            files: [attachment],
+            flags: MessageFlags.IsComponentsV2,
+        });
     }
 }
