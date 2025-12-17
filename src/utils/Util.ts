@@ -254,7 +254,6 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
  * @returns - A promise that resolves when the interaction is replied to.
  */
 export async function RagnarokEmbed(
-    _client: Client,
     interaction:
         | CommandInteraction
         | ButtonInteraction
