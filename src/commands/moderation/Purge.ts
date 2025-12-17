@@ -6,9 +6,9 @@ import {
     codeBlock,
     PermissionsBitField,
 } from 'discord.js';
-import { type Client, Discord, Guard, Slash, SlashOption } from 'discordx';
+import { Discord, Guard, Slash, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
-import { RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Moderation')
@@ -34,8 +34,7 @@ export class Purge {
             maxValue: 50,
         })
         amount: number,
-        interaction: CommandInteraction,
-        client: Client
+        interaction: CommandInteraction
     ): Promise<void> {
         if (!interaction.channel || interaction.channel.type !== ChannelType.GuildText) {
             return;
@@ -45,16 +44,14 @@ export class Purge {
             const fetch = await interaction.channel.messages.fetch({ limit: Number(amount) });
             await interaction.channel.bulkDelete(fetch, true);
 
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Success',
                 `${Number(amount)} message${Number(amount) > 1 ? 's were' : ' was'} removed.`,
                 true
             );
         } catch (error) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `An error occurred\n${codeBlock('text', `${error}`)}`,

@@ -2,7 +2,7 @@ import { type ButtonBuilder, type ButtonInteraction, ButtonStyle, EmbedBuilder }
 import type { Client } from 'discordx';
 import prettyMilliseconds from 'pretty-ms';
 import Balance, { type BalanceInterface } from '../../mongo/Balance.js';
-import { capitalise, color, pagination, RagnarokEmbed } from '../Util.js';
+import { capitalise, color, pagination, RagnarokComponent } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import type { ButtonRows, CropData, HarvestResult } from './Types.js';
 
@@ -286,20 +286,13 @@ export async function handleHarvest(
 
     // If balance is not found, display error and return
     if (!balance?.Boosts) {
-        await RagnarokEmbed(
-            client,
-            interaction,
-            'Error',
-            'An error occurred, please try again.',
-            true
-        );
+        await RagnarokComponent(interaction, 'Error', 'An error occurred, please try again.', true);
         return;
     }
 
     // Check if user has a farm plot
     if (!balance.Boosts!.FarmPlot) {
-        await RagnarokEmbed(
-            client,
+        await RagnarokComponent(
             interaction,
             'Error',
             'You do not have a farming plot! You will be awarded one once you purchase farming tools from the shop. Check `/economy` for more information.',
@@ -315,7 +308,7 @@ export async function handleHarvest(
 
     // If no farm plots exist
     if (!balance.FarmPlot.length) {
-        await RagnarokEmbed(client, interaction, 'Error', 'You have nothing to harvest!', true);
+        await RagnarokComponent(interaction, 'Error', 'You have nothing to harvest!', true);
         return;
     }
 
@@ -328,8 +321,7 @@ export async function handleHarvest(
     // Check if user has space in farm bag
     const availableSpots = balance.Boosts.FarmBag - balance.HarvestedCrops.length;
     if (availableSpots <= 0) {
-        await RagnarokEmbed(
-            client,
+        await RagnarokComponent(
             interaction,
             'Error',
             'You do not have enough space to harvest anything!\nYou can upgrade your storage in the shop from `/economy`.',

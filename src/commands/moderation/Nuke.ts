@@ -1,8 +1,8 @@
 import { Category } from '@discordx/utilities';
 import { ChannelType, type CommandInteraction, codeBlock, PermissionsBitField } from 'discord.js';
-import { type Client, Discord, Guard, Slash } from 'discordx';
+import { Discord, Guard, Slash } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
-import { RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Moderation')
@@ -17,10 +17,9 @@ export class Nuke {
         defaultMemberPermissions: [PermissionsBitField.Flags.Administrator],
     })
     @Guard(BotHasPerm([PermissionsBitField.Flags.ManageChannels]))
-    async nuke(interaction: CommandInteraction, client: Client): Promise<void> {
+    async nuke(interaction: CommandInteraction): Promise<void> {
         if (!interaction.channel || interaction.channel.type !== ChannelType.GuildText) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'The interaction channel type was not a text based channel.',
@@ -45,8 +44,7 @@ export class Nuke {
                     'Channel has been nuked!\nhttps://tenor.com/view/explosion-mushroom-cloud-atomic-bomb-bomb-boom-gif-4464831',
             });
         } catch (error) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `An error occurred\n${codeBlock('text', `${error}`)}`,

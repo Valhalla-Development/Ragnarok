@@ -8,8 +8,8 @@ import {
     PermissionsBitField,
     type TextChannel,
 } from 'discord.js';
-import { type Client, Discord, Slash, SlashOption } from 'discordx';
-import { RagnarokEmbed } from '../../utils/Util.js';
+import { Discord, Slash, SlashOption } from 'discordx';
+import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Moderation')
@@ -41,8 +41,7 @@ export class Say {
             type: ApplicationCommandOptionType.Channel,
         })
         channel: TextChannel,
-        interaction: CommandInteraction,
-        client: Client
+        interaction: CommandInteraction
     ): Promise<void> {
         if (!interaction.channel || interaction.channel.type !== ChannelType.GuildText) {
             return;
@@ -55,8 +54,7 @@ export class Say {
                 .permissionsIn(channel || interaction.channel)
                 .has(PermissionsBitField.Flags.SendMessages)
         ) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `You do not have permission to send messages to ${channel}`,
@@ -68,8 +66,7 @@ export class Say {
         try {
             if (channel) {
                 if (channel.type !== ChannelType.GuildText) {
-                    await RagnarokEmbed(
-                        client,
+                    await RagnarokComponent(
                         interaction,
                         'Error',
                         'Please input a valid **Text** channel.',
@@ -80,8 +77,7 @@ export class Say {
 
                 await channel.send(input);
 
-                await RagnarokEmbed(
-                    client,
+                await RagnarokComponent(
                     interaction,
                     'Success',
                     `The following message has been posted in ${channel}\n\n${codeBlock('text', input)}`,
@@ -94,8 +90,7 @@ export class Say {
                 interaction.channel!.send(input);
             }
         } catch (error) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `An error occurred\n${codeBlock('text', `${error}`)}`,

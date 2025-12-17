@@ -1,8 +1,8 @@
 import { Category } from '@discordx/utilities';
 import { ApplicationCommandOptionType, type CommandInteraction } from 'discord.js';
-import { type Client, Discord, Slash, SlashOption } from 'discordx';
+import { Discord, Slash, SlashOption } from 'discordx';
 import Balance from '../../mongo/Balance.js';
-import { RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Economy')
@@ -23,8 +23,7 @@ export class Withdraw {
             minValue: 10,
         })
         amount: number,
-        interaction: CommandInteraction,
-        client: Client
+        interaction: CommandInteraction
     ): Promise<void> {
         const balance = await Balance.findOneAndUpdate(
             { IdJoined: `${interaction.user.id}-${interaction.guild!.id}` },
@@ -36,8 +35,7 @@ export class Withdraw {
         );
 
         if (!balance?.Bank) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'You do not have enough money in your bank for this action.',
@@ -47,8 +45,7 @@ export class Withdraw {
         }
 
         if (amount > balance.Bank) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `You only have <:coin:706659001164628008> \`${balance.Bank.toLocaleString('en')}\`. Please try again with a valid amount.`,
@@ -61,8 +58,7 @@ export class Withdraw {
         balance.Bank -= amount;
         await balance.save();
 
-        await RagnarokEmbed(
-            client,
+        await RagnarokComponent(
             interaction,
             'Success',
             `You have withdrawn <:coin:706659001164628008> \`${amount.toLocaleString('en')}\``,

@@ -7,9 +7,9 @@ import {
     type GuildMember,
     PermissionsBitField,
 } from 'discord.js';
-import { type Client, Discord, Guard, Slash, SlashOption } from 'discordx';
+import { Discord, Guard, Slash, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
-import { RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Moderation')
@@ -43,12 +43,10 @@ export class Sudo {
             type: ApplicationCommandOptionType.String,
         })
         input: string,
-        interaction: CommandInteraction,
-        client: Client
+        interaction: CommandInteraction
     ): Promise<void> {
         if (interaction.channel!.type !== ChannelType.GuildText) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'The channel type must be a text channel.',
@@ -74,8 +72,7 @@ export class Sudo {
                 }, 3000);
             })
             .catch(async (error) => {
-                await RagnarokEmbed(
-                    client,
+                await RagnarokComponent(
                     interaction,
                     'Error',
                     `An error occurred\n${codeBlock('text', `${error}`)}`,

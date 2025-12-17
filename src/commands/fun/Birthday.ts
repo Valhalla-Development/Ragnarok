@@ -5,12 +5,12 @@ import {
     EmbedBuilder,
     type GuildMember,
 } from 'discord.js';
-import { type Client, Discord, Slash, SlashGroup, SlashOption } from 'discordx';
+import { Discord, Slash, SlashGroup, SlashOption } from 'discordx';
 import moment from 'moment';
 import ms from 'ms';
 import BirthdayConfig from '../../mongo/BirthdayConfig.js';
 import Birthdays from '../../mongo/Birthdays.js';
-import { color, pagination, RagnarokEmbed } from '../../utils/Util.js';
+import { color, pagination, RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -34,14 +34,12 @@ export class Birthday {
             type: ApplicationCommandOptionType.User,
         })
         user: GuildMember,
-        interaction: CommandInteraction,
-        client: Client
+        interaction: CommandInteraction
     ): Promise<void> {
         const birthdayConfigDB = await BirthdayConfig.findOne({ GuildId: interaction.guild!.id });
 
         if (!birthdayConfigDB) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'Birthdays are currently disabled on this server. An admin may need to enable this feature by running `/config birthday`.',
@@ -55,8 +53,7 @@ export class Birthday {
         const birthdayDB = await Birthdays.findOne({ UserId: member.id });
 
         if (!birthdayDB) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `${member} does not have a birthday set!`,
@@ -73,8 +70,7 @@ export class Birthday {
         const timeUntilNextBirthday = moment.duration(nextBirthdayDate.diff(moment())).humanize();
         const nextBirthdayFormatted = nextBirthdayDate.format('MMMM Do');
 
-        await RagnarokEmbed(
-            client,
+        await RagnarokComponent(
             interaction,
             '🎉',
             `${member}'s **next** birthday is in **${timeUntilNextBirthday}**, on **${nextBirthdayFormatted}**.`
@@ -96,14 +92,12 @@ export class Birthday {
             type: ApplicationCommandOptionType.String,
         })
         date: string,
-        interaction: CommandInteraction,
-        client: Client
+        interaction: CommandInteraction
     ): Promise<void> {
         const validateDate = moment(date, 'MM/DD/YYYY', true).isValid();
 
         if (!validateDate) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'Please input a valid date! Input should be in the format `MM/DD/YYYY`. For example: `12/31/2024`',
@@ -116,8 +110,7 @@ export class Birthday {
         const now = moment();
 
         if (birthdayUpd.isAfter(now)) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `You tried to set your birthday to: \`${date}\`. However, that date is in the future <:wut:745408596233289839>`,
@@ -132,8 +125,7 @@ export class Birthday {
             { upsert: true, new: true }
         );
 
-        await RagnarokEmbed(
-            client,
+        await RagnarokComponent(
             interaction,
             'Success',
             `Your birthday has been successfully set to \`${date}\`.`
@@ -146,12 +138,11 @@ export class Birthday {
      * @param client - The Discord client.
      */
     @Slash({ description: 'Delete your birthday data', name: 'delete' })
-    async deleteBirthday(interaction: CommandInteraction, client: Client): Promise<void> {
+    async deleteBirthday(interaction: CommandInteraction): Promise<void> {
         const birthdayDB = await Birthdays.findOneAndDelete({ UserId: interaction.user.id });
 
         if (!birthdayDB) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'Unable to locate your birthday in the database.',
@@ -160,8 +151,7 @@ export class Birthday {
             return;
         }
 
-        await RagnarokEmbed(
-            client,
+        await RagnarokComponent(
             interaction,
             'Success',
             'Your birthday has been successfully removed from the database.'
@@ -174,7 +164,7 @@ export class Birthday {
      * @param client - The Discord client.
      */
     @Slash({ description: 'List all birthdays', name: 'all' })
-    async list(interaction: CommandInteraction, client: Client): Promise<void> {
+    async list(interaction: CommandInteraction): Promise<void> {
         // Fetch all birthdays from the database
         const rows = await Birthdays.find();
 
@@ -188,8 +178,7 @@ export class Birthday {
         });
 
         if (!filteredRows.length) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'There are no users with a defined birthday within this guild.',

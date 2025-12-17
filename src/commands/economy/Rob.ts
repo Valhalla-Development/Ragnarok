@@ -4,10 +4,10 @@ import {
     type CommandInteraction,
     type GuildMember,
 } from 'discord.js';
-import { type Client, Discord, Slash, SlashOption } from 'discordx';
+import { Discord, Slash, SlashOption } from 'discordx';
 import ms from 'ms';
 import Balance from '../../mongo/Balance.js';
-import { RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Economy')
@@ -27,8 +27,7 @@ export class Rob {
             required: true,
         })
         user: GuildMember,
-        interaction: CommandInteraction,
-        client: Client
+        interaction: CommandInteraction
     ): Promise<void> {
         const balance = await Balance.findOneAndUpdate(
             { IdJoined: `${interaction.user.id}-${interaction.guild!.id}` },
@@ -49,8 +48,7 @@ export class Rob {
         );
 
         if (!balance) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'An error occurred, please try again.',
@@ -60,8 +58,7 @@ export class Rob {
         }
 
         if (user.id === interaction.user.id) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 "You can't steal from yourself. <:wut:745408596233289839>",
@@ -71,8 +68,7 @@ export class Rob {
         }
 
         if (!otherB) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `${user} does not have an economy account. They will instantly open one when they send a message within this guild.`,
@@ -85,8 +81,7 @@ export class Rob {
             balance.StealCool = 0;
 
             if (otherB.Cash < 10) {
-                await RagnarokEmbed(
-                    client,
+                await RagnarokComponent(
                     interaction,
                     'Error',
                     'The specified user does not have enough cash to steal!',
@@ -168,8 +163,7 @@ export class Rob {
                     `You outsmarted ${user} and stole <:coin:706659001164628016> ${stealAmount.toLocaleString('en')}`,
                 ];
 
-                await RagnarokEmbed(
-                    client,
+                await RagnarokComponent(
                     interaction,
                     'Success',
                     `${succMessage[Math.floor(Math.random() * succMessage.length)]}`
@@ -236,16 +230,14 @@ export class Rob {
                     )}\`.`,
                 ];
 
-                await RagnarokEmbed(
-                    client,
+                await RagnarokComponent(
                     interaction,
                     'Fail',
                     `${failMessage[Math.floor(Math.random() * failMessage.length)]}`
                 );
             }
         } else {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `Please wait \`${ms(balance.StealCool - Date.now(), { long: true })}\`, before using this command again!`,

@@ -4,8 +4,8 @@ import {
     type GuildMember,
     type UserContextMenuCommandInteraction,
 } from 'discord.js';
-import { type Client, ContextMenu, Discord } from 'discordx';
-import { RagnarokEmbed } from '../utils/Util.js';
+import { ContextMenu, Discord } from 'discordx';
+import { RagnarokComponent } from '../utils/Util.js';
 
 @Discord()
 export class BannerContext {
@@ -18,10 +18,7 @@ export class BannerContext {
         name: 'Banner',
         type: ApplicationCommandType.User,
     })
-    async bannerAvatar(
-        interaction: UserContextMenuCommandInteraction,
-        client: Client
-    ): Promise<void> {
+    async bannerAvatar(interaction: UserContextMenuCommandInteraction): Promise<void> {
         const member = interaction.targetMember as GuildMember;
 
         try {
@@ -30,8 +27,7 @@ export class BannerContext {
             const banner = member.user.bannerURL({ size: 1024 });
 
             if (!banner) {
-                await RagnarokEmbed(
-                    client,
+                await RagnarokComponent(
                     interaction,
                     'Error',
                     `${member} does not have a banner set.`,
@@ -46,8 +42,7 @@ export class BannerContext {
                 files: [attachment],
             });
         } catch (_error) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `An error occurred fetching ${member}'s banner`,

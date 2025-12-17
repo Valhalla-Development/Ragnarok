@@ -13,7 +13,7 @@ import {
 } from 'discord.js';
 import { type Client, Discord, Guard, Slash, SlashChoice, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
-import { color, RagnarokEmbed } from '../../utils/Util.js';
+import { color, RagnarokComponent } from '../../utils/Util.js';
 
 type DeleteTimeKey =
     | 'Previous Hour'
@@ -81,15 +81,14 @@ export class Ban {
 
         // If user id = message id
         if (user.id === interaction.user.id) {
-            await RagnarokEmbed(client, interaction, 'Error', 'You cannot ban yourself!', true);
+            await RagnarokComponent(interaction, 'Error', 'You cannot ban yourself!', true);
             return;
         }
 
         // Check if the user has a role that is higher than the message author
         const memberRoles = interaction.member!.roles as GuildMemberRoleManager;
         if (user.roles.highest.position >= memberRoles.highest.position) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'You cannot ban someone with a higher role than yourself!',
@@ -104,14 +103,13 @@ export class Ban {
             user.permissions.has(PermissionsBitField.Flags.Administrator) ||
             !user.bannable
         ) {
-            await RagnarokEmbed(client, interaction, 'Error', `You cannot ban ${user}`, true);
+            await RagnarokComponent(interaction, 'Error', `You cannot ban ${user}`, true);
             return;
         }
 
         // Check if user is the bot
         if (user.id === client.user?.id) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'You cannot ban me. :slight_frown:',
@@ -127,7 +125,7 @@ export class Ban {
                 reason: `${reason || 'No reason given.'}`,
             })
             .catch(async () => {
-                await RagnarokEmbed(client, interaction, 'Error', 'An error occurred!', true);
+                await RagnarokComponent(interaction, 'Error', 'An error occurred!', true);
             });
 
         try {
@@ -178,8 +176,7 @@ export class Ban {
                 const memberPerms = interaction.member!.permissions as PermissionsBitField;
 
                 if (!memberPerms.has(PermissionsBitField.Flags.BanMembers)) {
-                    await RagnarokEmbed(
-                        client,
+                    await RagnarokComponent(
                         interaction,
                         'Error',
                         'You require the `Ban Members` permission to execute this command!',
@@ -189,8 +186,7 @@ export class Ban {
 
                 interaction.guild!.bans.fetch().then(async (bans) => {
                     if (bans.size === 0) {
-                        await RagnarokEmbed(
-                            client,
+                        await RagnarokComponent(
                             interaction,
                             'Error',
                             'An error occurred, is the user banned?',
@@ -201,8 +197,7 @@ export class Ban {
 
                     const bUser = bans.find((ban) => ban.user.id === user.id);
                     if (!bUser) {
-                        await RagnarokEmbed(
-                            client,
+                        await RagnarokComponent(
                             interaction,
                             'Error',
                             'The user specified is not banned.',
@@ -216,8 +211,7 @@ export class Ban {
                     collector.stop();
                 });
             } catch (error) {
-                await RagnarokEmbed(
-                    client,
+                await RagnarokComponent(
                     interaction,
                     'Error',
                     `An error occurred\n${codeBlock('text', `${error}`)}`,

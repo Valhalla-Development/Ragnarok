@@ -11,9 +11,9 @@ import {
     SeparatorSpacingSize,
     TextDisplayBuilder,
 } from 'discord.js';
-import { type Client, Discord, Slash, SlashOption } from 'discordx';
+import { Discord, Slash, SlashOption } from 'discordx';
 import { Duration } from 'luxon';
-import { getContentDetails, RagnarokEmbed } from '../../utils/Util.js';
+import { getContentDetails, RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -33,8 +33,7 @@ export class TraktCommand {
             type: ApplicationCommandOptionType.String,
         })
         content: string,
-        interaction: CommandInteraction,
-        client: Client
+        interaction: CommandInteraction
     ): Promise<void> {
         const imdbRegexPattern = /https?:\/\/(www\.|m\.)?imdb\.com\/title\/tt(\d+)(\/)?/;
 
@@ -48,8 +47,7 @@ export class TraktCommand {
         const details = await getContentDetails(content, typeOfRequest);
 
         if (!details) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'I was unable to find the content you were looking for. Please try again.',

@@ -5,8 +5,8 @@ import {
     type CommandInteraction,
     type GuildMember,
 } from 'discord.js';
-import { type Client, Discord, Slash, SlashOption } from 'discordx';
-import { RagnarokEmbed } from '../../utils/Util.js';
+import { Discord, Slash, SlashOption } from 'discordx';
+import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -27,8 +27,7 @@ export class Avatar {
             type: ApplicationCommandOptionType.User,
         })
         user: GuildMember,
-        interaction: CommandInteraction,
-        client: Client
+        interaction: CommandInteraction
     ): Promise<void> {
         const member = user || interaction.member;
 
@@ -38,8 +37,7 @@ export class Avatar {
             const avatar = member.user.displayAvatarURL({ size: 1024 });
 
             if (!avatar) {
-                await RagnarokEmbed(
-                    client,
+                await RagnarokComponent(
                     interaction,
                     'Error',
                     `${member} does not have an avatar set.`,
@@ -54,8 +52,7 @@ export class Avatar {
                 files: [attachment],
             });
         } catch (_error) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `An error occurred fetching ${member}'s avatar`,

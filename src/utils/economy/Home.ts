@@ -8,11 +8,10 @@ import {
     SeparatorSpacingSize,
     TextDisplayBuilder,
 } from 'discord.js';
-import type { Client } from 'discordx';
 // @ts-expect-error no type file available for this package
 import converter from 'number-to-words-en';
 import Balance, { type BalanceInterface } from '../../mongo/Balance.js';
-import { RagnarokEmbed } from '../Util.js';
+import { RagnarokComponent } from '../Util.js';
 
 /**
  * Builds the home container with all sections
@@ -177,7 +176,6 @@ export function buildHomeContainer(
  */
 export async function updateHomeContainer(
     interaction: CommandInteraction | ButtonInteraction | ModalSubmitInteraction,
-    client: Client,
     buttons: {
         baltopButton: ButtonBuilder;
         depositButton: ButtonBuilder;
@@ -197,13 +195,7 @@ export async function updateHomeContainer(
 
     // If balance is not found, show an error message and return
     if (!balance) {
-        await RagnarokEmbed(
-            client,
-            interaction,
-            'Error',
-            'An error occurred, please try again.',
-            true
-        );
+        await RagnarokComponent(interaction, 'Error', 'An error occurred, please try again.', true);
         return null;
     }
 
@@ -267,12 +259,10 @@ export async function updateHomeContainer(
 /**
  * Asynchronously handles the home interaction (Command or Button).
  * @param interaction - The interaction (Command or Button) triggering the home function.
- * @param client - The Discord client.
  * @param buttons - Button instances from the main Economy class
  */
 export async function handleHome(
     interaction: CommandInteraction | ButtonInteraction,
-    client: Client,
     buttons: {
         baltopButton: ButtonBuilder;
         depositButton: ButtonBuilder;
@@ -284,7 +274,7 @@ export async function handleHome(
     }
 ) {
     // Update the home embed based on the interaction
-    const homeContainer = await updateHomeContainer(interaction, client, buttons);
+    const homeContainer = await updateHomeContainer(interaction, buttons);
 
     if (!homeContainer) {
         return;

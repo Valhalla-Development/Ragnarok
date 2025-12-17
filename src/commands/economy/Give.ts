@@ -4,9 +4,9 @@ import {
     type CommandInteraction,
     type GuildMember,
 } from 'discord.js';
-import { type Client, Discord, Slash, SlashOption } from 'discordx';
+import { Discord, Slash, SlashOption } from 'discordx';
 import Balance from '../../mongo/Balance.js';
-import { RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Economy')
@@ -35,8 +35,7 @@ export class Give {
             minValue: 10,
         })
         amount: number,
-        interaction: CommandInteraction,
-        client: Client
+        interaction: CommandInteraction
     ): Promise<void> {
         const balance = await Balance.findOneAndUpdate(
             { IdJoined: `${interaction.user.id}-${interaction.guild!.id}` },
@@ -57,8 +56,7 @@ export class Give {
         );
 
         if (!balance) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'An error occurred, please try again.',
@@ -68,8 +66,7 @@ export class Give {
         }
 
         if (user.id === interaction.user.id) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 "You can't give yourself money. <:wut:745408596233289839>",
@@ -79,8 +76,7 @@ export class Give {
         }
 
         if (!otherB) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `${user} does not have an economy account. They will instantly open one when they send a message within this guild.`,
@@ -90,8 +86,7 @@ export class Give {
         }
 
         if (balance.Bank === 0) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'You only have <:coin:706659001164628008>',
@@ -101,8 +96,7 @@ export class Give {
         }
 
         if (amount > balance.Bank) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `\`${balance.Bank.toLocaleString('en')}\`\nPlease try again with a valid amount.`,
@@ -119,8 +113,7 @@ export class Give {
         balance.Total -= amount;
         await balance.save();
 
-        await RagnarokEmbed(
-            client,
+        await RagnarokComponent(
             interaction,
             'Success',
             `You have paid ${user} the sum of: <:coin:706659001164628008> \`${amount.toLocaleString('en')}\``

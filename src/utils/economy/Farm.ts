@@ -8,7 +8,7 @@ import {
 } from 'discord.js';
 import type { Client } from 'discordx';
 import Balance from '../../mongo/Balance.js';
-import { color, RagnarokEmbed } from '../Util.js';
+import { color, RagnarokComponent } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import { updateHomeContainer } from './Home.js';
 import type { ButtonRows, Items } from './Types.js';
@@ -115,21 +115,14 @@ export async function handleFarm(
 
     // If balance is not found, display error and return
     if (!balance) {
-        await RagnarokEmbed(
-            client,
-            interaction,
-            'Error',
-            'An error occurred, please try again.',
-            true
-        );
+        await RagnarokComponent(interaction, 'Error', 'An error occurred, please try again.', true);
         return;
     }
 
     // Check if user is on cooldown
     if (balance.FarmCool !== null) {
         if (Date.now() <= balance.FarmCool) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `You are on a cooldown! You will be able to perform this action again <t:${Math.floor(balance.FarmCool / 1000)}:R>.`,
@@ -151,8 +144,7 @@ export async function handleFarm(
 
     // Check if farm bag is full
     if (!balance.Items?.FarmingTools && currentTotalFarm >= Number(freeLimit)) {
-        await RagnarokEmbed(
-            client,
+        await RagnarokComponent(
             interaction,
             'Error',
             'Your farm bag is full! You can sell your produce via the `sell` button.',
@@ -166,13 +158,7 @@ export async function handleFarm(
 
     // If farm result is not generated, display error and return
     if (!farmResult) {
-        await RagnarokEmbed(
-            client,
-            interaction,
-            'Error',
-            'An error occurred, please try again.',
-            true
-        );
+        await RagnarokComponent(interaction, 'Error', 'An error occurred, please try again.', true);
         return;
     }
 
@@ -207,7 +193,7 @@ export async function handleFarm(
     });
 
     // Update home embed
-    const homeContainer = await updateHomeContainer(interaction, client, buttons);
+    const homeContainer = await updateHomeContainer(interaction, buttons);
 
     // If home embed is available, reset after timeout
     if (homeEmbed && homeContainer) {

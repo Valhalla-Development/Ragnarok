@@ -12,9 +12,9 @@ import {
     SeparatorSpacingSize,
     TextDisplayBuilder,
 } from 'discord.js';
-import { ButtonComponent, type Client, Discord, Slash } from 'discordx';
+import { ButtonComponent, Discord, Slash } from 'discordx';
 import RedditImageFetcher from 'reddit-image-fetcher';
-import { RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokComponent } from '../../utils/Util.js';
 
 const subreddits = [
     'memes',
@@ -94,12 +94,11 @@ export class Meme {
      * @param client - The Discord client.
      */
     @ButtonComponent({ id: /^nextMeme_(\d+)$/ })
-    async buttonInteraction(interaction: ButtonInteraction, client: Client) {
+    async buttonInteraction(interaction: ButtonInteraction) {
         const button = interaction.customId.split('_');
 
         if (interaction.user.id !== button[1]) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'Only the command executor can load the next meme.',

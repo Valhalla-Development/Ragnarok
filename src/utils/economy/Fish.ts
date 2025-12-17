@@ -8,7 +8,7 @@ import {
 } from 'discord.js';
 import type { Client } from 'discordx';
 import Balance from '../../mongo/Balance.js';
-import { color, RagnarokEmbed } from '../Util.js';
+import { color, RagnarokComponent } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import { updateHomeContainer } from './Home.js';
 import type { ButtonRows, Items } from './Types.js';
@@ -122,20 +122,13 @@ export async function handleFish(
 
     // If balance is not found, display error and return
     if (!balance) {
-        await RagnarokEmbed(
-            client,
-            interaction,
-            'Error',
-            'An error occurred, please try again.',
-            true
-        );
+        await RagnarokComponent(interaction, 'Error', 'An error occurred, please try again.', true);
         return;
     }
 
     // Check if user has a fishing rod
     if (!balance.Items?.FishingRod) {
-        await RagnarokEmbed(
-            client,
+        await RagnarokComponent(
             interaction,
             'Error',
             'You do not have a fishing rod! You must buy one from the shop.',
@@ -147,8 +140,7 @@ export async function handleFish(
     // Check if user is on cooldown
     if (balance.FishCool !== null) {
         if (Date.now() <= balance.FishCool) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `You are on a cooldown! You will be able to perform this action again <t:${Math.floor(balance.FishCool / 1000)}:R>.`,
@@ -169,8 +161,7 @@ export async function handleFish(
 
     // Check if fish bag is full
     if (currentTotalFish >= Number(balance.Boosts?.FishBag)) {
-        await RagnarokEmbed(
-            client,
+        await RagnarokComponent(
             interaction,
             'Error',
             'Your fish bag is full! You can sell your fish via the `sell` button.',
@@ -184,13 +175,7 @@ export async function handleFish(
 
     // If fish result is not generated, display error and return
     if (!fishResult) {
-        await RagnarokEmbed(
-            client,
-            interaction,
-            'Error',
-            'An error occurred, please try again.',
-            true
-        );
+        await RagnarokComponent(interaction, 'Error', 'An error occurred, please try again.', true);
         return;
     }
 
@@ -216,7 +201,7 @@ export async function handleFish(
 
         const randomFailMessage = failMessages[Math.floor(Math.random() * failMessages.length)];
 
-        await RagnarokEmbed(client, interaction, 'Fail', randomFailMessage!, true);
+        await RagnarokComponent(interaction, 'Fail', randomFailMessage!, true);
 
         const endTime = Date.now() + ecoPrices.fishing.cooldowns.fishFailTime;
         balance.FishCool = Math.round(endTime);
@@ -256,7 +241,7 @@ export async function handleFish(
     });
 
     // Update home embed
-    const homeContainer = await updateHomeContainer(interaction, client, buttons);
+    const homeContainer = await updateHomeContainer(interaction, buttons);
 
     // If home embed is available, reset after timeout
     if (homeEmbed && homeContainer) {

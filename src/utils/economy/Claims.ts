@@ -1,7 +1,6 @@
 import { type ButtonBuilder, type ButtonInteraction, ButtonStyle, MessageFlags } from 'discord.js';
-import type { Client } from 'discordx';
 import Balance from '../../mongo/Balance.js';
-import { RagnarokEmbed } from '../Util.js';
+import { RagnarokComponent } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import { updateHomeContainer } from './Home.js';
 import type { ButtonRows, Claim, EcoPrices } from './Types.js';
@@ -31,14 +30,12 @@ function setButtonState(button: ButtonBuilder, rows: ButtonRows) {
 /**
  * Asynchronously handles the claim button interaction.
  * @param interaction - The ButtonInteraction triggering the claim function.
- * @param client - The Discord client.
  * @param claimButton - The claim button instance
  * @param rows - Button rows for state management
  * @param buttons - Button instances from the main Economy class
  */
 export async function handleClaim(
     interaction: ButtonInteraction,
-    client: Client,
     claimButton: ButtonBuilder,
     rows: ButtonRows,
     buttons: {
@@ -61,13 +58,7 @@ export async function handleClaim(
 
     // If balance is not found, show an error message and return
     if (!balance) {
-        await RagnarokEmbed(
-            client,
-            interaction,
-            'Error',
-            'An error occurred, please try again.',
-            true
-        );
+        await RagnarokComponent(interaction, 'Error', 'An error occurred, please try again.', true);
         return;
     }
 
@@ -77,8 +68,7 @@ export async function handleClaim(
             balance.ClaimNewUser = 0;
         } else {
             const nowInSecond = Math.round(balance.ClaimNewUser / 1000);
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `Your Economy profile is too new! Please wait another <t:${nowInSecond}:R> before using this command.`,
@@ -99,7 +89,7 @@ export async function handleClaim(
 
     // Check if there is anything to claim
     if (Date.now() < Math.min(balance.Hourly, balance.Daily, balance.Weekly, balance.Monthly)) {
-        await RagnarokEmbed(client, interaction, 'Error', ' You have nothing to claim!', true);
+        await RagnarokComponent(interaction, 'Error', ' You have nothing to claim!', true);
         return;
     }
 
@@ -140,7 +130,6 @@ export async function handleClaim(
     // Update home container with success message in treasure vault section
     const homeContainer = await updateHomeContainer(
         interaction,
-        client,
         buttons,
         undefined,
         `✅ \`Claimed all available rewards!\` <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` \`added to bank\``
@@ -157,7 +146,7 @@ export async function handleClaim(
 
     // Remove the message after 5 seconds
     setTimeout(async () => {
-        const updatedHomeContainer = await updateHomeContainer(interaction, client, buttons);
+        const updatedHomeContainer = await updateHomeContainer(interaction, buttons);
         if (updatedHomeContainer) {
             await interaction.message?.edit({
                 components: [updatedHomeContainer],

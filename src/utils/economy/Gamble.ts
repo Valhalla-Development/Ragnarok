@@ -12,7 +12,7 @@ import {
 } from 'discord.js';
 import type { Client } from 'discordx';
 import Balance from '../../mongo/Balance.js';
-import { color, RagnarokEmbed } from '../Util.js';
+import { color, RagnarokComponent } from '../Util.js';
 import { updateHomeContainer } from './Home.js';
 import type { ButtonRows } from './Types.js';
 
@@ -84,13 +84,7 @@ export async function handleCoinflip(
 
     // If balance is not found, show an error message and return
     if (!balance) {
-        await RagnarokEmbed(
-            client,
-            interaction,
-            'Error',
-            'An error occurred, please try again.',
-            true
-        );
+        await RagnarokComponent(interaction, 'Error', 'An error occurred, please try again.', true);
         return;
     }
 
@@ -193,7 +187,7 @@ export async function handleCoinflip(
         await balance.save();
 
         // Update home embed after the coin flip
-        const homeContainer = await updateHomeContainer(interaction, client, buttons);
+        const homeContainer = await updateHomeContainer(interaction, buttons);
 
         // If interaction is a ButtonInteraction and home embed exists, update the message with home embed after a delay
         if (interaction instanceof ButtonInteraction && homeEmbed && homeContainer) {
@@ -218,8 +212,7 @@ export async function handleCoinflip(
         }
     } else {
         if (Number.isNaN(Number(amount))) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'The specified amount was not a valid number.',
@@ -229,8 +222,7 @@ export async function handleCoinflip(
         }
 
         if (Number(amount) > balance.Bank) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `You do not have enough to bet <:coin:706659001164628008> \`${Number(

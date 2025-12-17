@@ -11,7 +11,7 @@ import {
 import { type Client, Discord, Guard, Slash, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
 import Logging from '../../mongo/Logging.js';
-import { color, RagnarokEmbed } from '../../utils/Util.js';
+import { color, RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Moderation')
@@ -47,15 +47,14 @@ export class Kick {
     ): Promise<void> {
         // If user id = message id
         if (user.id === interaction.user.id) {
-            await RagnarokEmbed(client, interaction, 'Error', 'You cannot kick yourself!', true);
+            await RagnarokComponent(interaction, 'Error', 'You cannot kick yourself!', true);
             return;
         }
 
         // Check if the user has a role that is higher than the message author
         const memberRoles = interaction.member!.roles as GuildMemberRoleManager;
         if (user.roles.highest.position >= memberRoles.highest.position) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'You cannot kick someone with a higher role than yourself!',
@@ -70,14 +69,13 @@ export class Kick {
             user.permissions.has(PermissionsBitField.Flags.Administrator) ||
             !user.kickable
         ) {
-            await RagnarokEmbed(client, interaction, 'Error', `You cannot kick ${user}`, true);
+            await RagnarokComponent(interaction, 'Error', `You cannot kick ${user}`, true);
             return;
         }
 
         // Check if user is the bot
         if (user.id === client.user?.id) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'You cannot kick me. :slight_frown:',
@@ -88,7 +86,7 @@ export class Kick {
 
         // Kick the user and send the embed
         interaction.guild!.members.kick(user, `${reason || 'No reason given.'}`).catch(async () => {
-            await RagnarokEmbed(client, interaction, 'Error', 'An error occurred!', true);
+            await RagnarokComponent(interaction, 'Error', 'An error occurred!', true);
         });
 
         try {

@@ -7,13 +7,13 @@ import {
     type GuildMember,
     type UserContextMenuCommandInteraction,
 } from 'discord.js';
-import { type Client, ContextMenu, Discord } from 'discordx';
+import { ContextMenu, Discord } from 'discordx';
 // @ts-expect-error no type file available for this package
 import abbreviate from 'number-abbreviate';
 // @ts-expect-error no type file available for this package
 import converter from 'number-to-words-en';
 import Level from '../mongo/Level.js';
-import { color, RagnarokEmbed } from '../utils/Util.js';
+import { color, RagnarokComponent } from '../utils/Util.js';
 
 @Discord()
 export class LevelContext {
@@ -26,35 +26,20 @@ export class LevelContext {
         name: 'Level',
         type: ApplicationCommandType.User,
     })
-    async levelContext(
-        interaction: UserContextMenuCommandInteraction,
-        client: Client
-    ): Promise<void> {
+    async levelContext(interaction: UserContextMenuCommandInteraction): Promise<void> {
         const member = interaction.targetMember as GuildMember;
         await member.fetch();
 
         await interaction.deferReply();
 
         if (member.user.bot) {
-            await RagnarokEmbed(
-                client,
-                interaction,
-                'Error',
-                'Member does not have a level.',
-                true
-            );
+            await RagnarokComponent(interaction, 'Error', 'Member does not have a level.', true);
             return;
         }
 
         const score = await Level.findOne({ IdJoined: `${member.id}-${interaction.guild!.id}` });
         if (!score) {
-            await RagnarokEmbed(
-                client,
-                interaction,
-                'Error',
-                'Member does not have a level.',
-                true
-            );
+            await RagnarokComponent(interaction, 'Error', 'Member does not have a level.', true);
             return;
         }
 

@@ -3,11 +3,11 @@ import {
     type GuildMember,
     type UserContextMenuCommandInteraction,
 } from 'discord.js';
-import { type Client, ContextMenu, Discord } from 'discordx';
+import { ContextMenu, Discord } from 'discordx';
 import moment from 'moment';
 import BirthdayConfig from '../mongo/BirthdayConfig.js';
 import Birthdays from '../mongo/Birthdays.js';
-import { RagnarokEmbed } from '../utils/Util.js';
+import { RagnarokComponent } from '../utils/Util.js';
 
 @Discord()
 export class BirthdayContext {
@@ -20,15 +20,11 @@ export class BirthdayContext {
         name: 'Birthday',
         type: ApplicationCommandType.User,
     })
-    async birthdayContext(
-        interaction: UserContextMenuCommandInteraction,
-        client: Client
-    ): Promise<void> {
+    async birthdayContext(interaction: UserContextMenuCommandInteraction): Promise<void> {
         const birthdayConfigDB = await BirthdayConfig.findOne({ GuildId: interaction.guild!.id });
 
         if (!birthdayConfigDB) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'Birthdays are currently disabled on this server. An admin may need to enable this feature by running `/config birthday`.',
@@ -43,8 +39,7 @@ export class BirthdayContext {
         const birthdayDB = await Birthdays.findOne({ UserId: member.id });
 
         if (!birthdayDB) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `${member} does not have a birthday set!`,
@@ -61,8 +56,7 @@ export class BirthdayContext {
         const timeUntilNextBirthday = moment.duration(nextBirthdayDate.diff(moment())).humanize();
         const nextBirthdayFormatted = nextBirthdayDate.format('MMMM Do');
 
-        await RagnarokEmbed(
-            client,
+        await RagnarokComponent(
             interaction,
             '🎉',
             `${member}'s **next** birthday is in **${timeUntilNextBirthday}**, on **${nextBirthdayFormatted}**.`

@@ -8,9 +8,8 @@ import {
     SeparatorSpacingSize,
     TextDisplayBuilder,
 } from 'discord.js';
-import type { Client } from 'discordx';
 import Balance from '../../mongo/Balance.js';
-import { RagnarokEmbed } from '../Util.js';
+import { RagnarokComponent } from '../Util.js';
 
 const USERS_PER_PAGE = 10;
 
@@ -23,7 +22,6 @@ const USERS_PER_PAGE = 10;
  */
 export async function handleBaltop(
     interaction: ButtonInteraction,
-    client: Client,
     homeButton: ButtonBuilderType,
     pageIndex = 0
 ) {
@@ -32,7 +30,7 @@ export async function handleBaltop(
 
     // If no data found, show an error message and return
     if (!allUsers || allUsers.length === 0) {
-        await RagnarokEmbed(client, interaction, 'Error', 'No data found.', true);
+        await RagnarokComponent(interaction, 'Error', 'No data found.', true);
         return;
     }
 

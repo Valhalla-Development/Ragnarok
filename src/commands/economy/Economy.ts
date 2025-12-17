@@ -17,7 +17,7 @@ import {
     Slash,
 } from 'discordx';
 import { Economy } from '../../utils/Economy.js';
-import { RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Economy')
@@ -34,12 +34,12 @@ export class EconomyCommand {
      * @param client - The Discord client.
      */
     @Slash({ description: 'Access to the economy module' })
-    async economy(interaction: CommandInteraction, client: Client): Promise<void> {
+    async economy(interaction: CommandInteraction): Promise<void> {
         const economyInstance = new Economy();
         this.instance = economyInstance;
         this.user = interaction.user.id;
 
-        await economyInstance.home(interaction, client);
+        await economyInstance.home(interaction);
     }
 
     /**
@@ -50,8 +50,7 @@ export class EconomyCommand {
     @ButtonComponent({ id: /^economy_.*/ })
     async buttonInteraction(interaction: ButtonInteraction, client: Client) {
         if (this.user !== interaction.user.id) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'Only the command executor can select an option.',
@@ -61,8 +60,7 @@ export class EconomyCommand {
         }
 
         if (!this.instance) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'An error occurred, please try running the economy command again.',
@@ -74,11 +72,11 @@ export class EconomyCommand {
         const button = interaction.customId.split('_');
 
         const actionMap = new Map([
-            ['home', async () => this.instance?.home(interaction, client)],
-            ['baltop', async () => this.instance?.baltop(interaction, client)],
-            ['deposit', async () => this.instance?.deposit(interaction, client)],
-            ['claim', async () => this.instance?.claim(interaction, client)],
-            ['items', async () => this.instance?.items(interaction, client)],
+            ['home', async () => this.instance?.home(interaction)],
+            ['baltop', async () => this.instance?.baltop(interaction)],
+            ['deposit', async () => this.instance?.deposit(interaction)],
+            ['claim', async () => this.instance?.claim(interaction)],
+            ['items', async () => this.instance?.items(interaction)],
             [
                 'coinflip',
                 async () => {
@@ -111,8 +109,7 @@ export class EconomyCommand {
     @ModalComponent({ id: 'coinflipAmount' })
     async modalSubmit(interaction: ModalSubmitInteraction, client: Client): Promise<void> {
         if (!this.instance) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'An error occurred, please try running the economy command again.',
@@ -134,10 +131,9 @@ export class EconomyCommand {
      * @param client - The Discord client
      */
     @SelectMenuComponent({ id: 'heist_target_select' })
-    async heistTargetSelect(interaction: UserSelectMenuInteraction, client: Client): Promise<void> {
+    async heistTargetSelect(interaction: UserSelectMenuInteraction): Promise<void> {
         if (!this.instance) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'An error occurred, please try running the economy command again.',
@@ -147,8 +143,7 @@ export class EconomyCommand {
         }
 
         if (this.user !== interaction.user.id) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'Only the command executor can select a target.',
@@ -159,13 +154,12 @@ export class EconomyCommand {
 
         const selectedUser = interaction.users.first();
         if (!selectedUser) {
-            await RagnarokEmbed(client, interaction, 'Error', 'No user selected.', true);
+            await RagnarokComponent(interaction, 'Error', 'No user selected.', true);
             return;
         }
 
         if (selectedUser.id === interaction.user.id) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 "You can't target yourself in a heist!",
@@ -175,8 +169,7 @@ export class EconomyCommand {
         }
 
         if (selectedUser.bot) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 "You can't target bots in a heist!",
@@ -194,10 +187,9 @@ export class EconomyCommand {
      * @param client - The Discord client
      */
     @ButtonComponent({ id: /^baltop:nav:.+$/ })
-    async baltopNavigate(interaction: ButtonInteraction, client: Client): Promise<void> {
+    async baltopNavigate(interaction: ButtonInteraction): Promise<void> {
         if (!this.instance) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'An error occurred, please try running the economy command again.',
@@ -229,11 +221,6 @@ export class EconomyCommand {
 
         const page = Number.parseInt(pageStr, 10);
         const { handleBaltop } = await import('../../utils/economy/Leaderboard.js');
-        await handleBaltop(
-            interaction,
-            client,
-            this.instance.homeButton,
-            Number.isNaN(page) ? 0 : page
-        );
+        await handleBaltop(interaction, this.instance.homeButton, Number.isNaN(page) ? 0 : page);
     }
 }

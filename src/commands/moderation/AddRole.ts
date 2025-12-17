@@ -8,9 +8,9 @@ import {
     PermissionsBitField,
     type Role,
 } from 'discord.js';
-import { type Client, Discord, Guard, Slash, SlashOption } from 'discordx';
+import { Discord, Guard, Slash, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
-import { RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Moderation')
@@ -42,19 +42,12 @@ export class AddRole {
             type: ApplicationCommandOptionType.Role,
         })
         role: Role,
-        interaction: CommandInteraction,
-        client: Client
+        interaction: CommandInteraction
     ): Promise<void> {
         const targetMember = user || interaction.member;
 
         if (targetMember.id === interaction.member!.user.id) {
-            await RagnarokEmbed(
-                client,
-                interaction,
-                'Error',
-                'You cannot give yourself a role!',
-                true
-            );
+            await RagnarokComponent(interaction, 'Error', 'You cannot give yourself a role!', true);
             return;
         }
 
@@ -62,8 +55,7 @@ export class AddRole {
             const memberRoles = interaction.member!.roles as GuildMemberRoleManager;
 
             if (role.position >= memberRoles.highest.position) {
-                await RagnarokEmbed(
-                    client,
+                await RagnarokComponent(
                     interaction,
                     'Error',
                     'You cannot give a user a role that is equal or greater than your own!',
@@ -74,8 +66,7 @@ export class AddRole {
 
             // Check if the user already has the role
             if (targetMember.roles.cache.has(role.id)) {
-                await RagnarokEmbed(
-                    client,
+                await RagnarokComponent(
                     interaction,
                     'Error',
                     `${targetMember} already has the role: ${role}`,
@@ -86,8 +77,7 @@ export class AddRole {
 
             await targetMember.roles.add(role);
 
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Success',
                 `I have added the ${role} role to ${targetMember}`
@@ -95,8 +85,7 @@ export class AddRole {
         } catch (error) {
             console.error('Error adding role:', error);
 
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `An error occurred\n${codeBlock('text', `${error}`)}`,

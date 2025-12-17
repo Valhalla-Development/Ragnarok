@@ -135,29 +135,29 @@ export class Economy {
     /**
      * Asynchronously handles the home interaction (Command or Button).
      */
-    async home(interaction: CommandInteraction | ButtonInteraction, client: Client) {
-        await handleHome(interaction, client, this.getButtons());
+    async home(interaction: CommandInteraction | ButtonInteraction) {
+        await handleHome(interaction, this.getButtons());
     }
 
     /**
      * Asynchronously handles the baltop button interaction.
      */
-    async baltop(interaction: ButtonInteraction, client: Client) {
-        await handleBaltop(interaction, client, this.homeButton);
+    async baltop(interaction: ButtonInteraction) {
+        await handleBaltop(interaction, this.homeButton);
     }
 
     /**
      * Asynchronously handles the deposit button interaction.
      */
-    async deposit(interaction: ButtonInteraction, client: Client) {
-        await handleDeposit(interaction, client, this.getButtons());
+    async deposit(interaction: ButtonInteraction) {
+        await handleDeposit(interaction, this.getButtons());
     }
 
     /**
      * Asynchronously handles the claim button interaction.
      */
-    async claim(interaction: ButtonInteraction, client: Client) {
-        await handleClaim(interaction, client, this.claimButton, this.rows, this.getButtons());
+    async claim(interaction: ButtonInteraction) {
+        await handleClaim(interaction, this.claimButton, this.rows, this.getButtons());
     }
 
     /**
@@ -215,8 +215,8 @@ export class Economy {
     /**
      * Asynchronously handles the inventory interaction.
      */
-    async items(interaction: ButtonInteraction, client: Client) {
-        await handleItems(interaction, client, this.homeButton);
+    async items(interaction: ButtonInteraction) {
+        await handleItems(interaction, this.homeButton);
     }
 
     /**

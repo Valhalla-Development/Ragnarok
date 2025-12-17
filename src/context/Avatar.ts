@@ -4,8 +4,8 @@ import {
     type GuildMember,
     type UserContextMenuCommandInteraction,
 } from 'discord.js';
-import { type Client, ContextMenu, Discord } from 'discordx';
-import { RagnarokEmbed } from '../utils/Util.js';
+import { ContextMenu, Discord } from 'discordx';
+import { RagnarokComponent } from '../utils/Util.js';
 
 @Discord()
 export class AvatarContext {
@@ -18,10 +18,7 @@ export class AvatarContext {
         name: 'Avatar',
         type: ApplicationCommandType.User,
     })
-    async avatarContext(
-        interaction: UserContextMenuCommandInteraction,
-        client: Client
-    ): Promise<void> {
+    async avatarContext(interaction: UserContextMenuCommandInteraction): Promise<void> {
         const member = interaction.targetMember as GuildMember;
 
         try {
@@ -30,8 +27,7 @@ export class AvatarContext {
             const avatar = member.user.displayAvatarURL({ size: 1024 });
 
             if (!avatar) {
-                await RagnarokEmbed(
-                    client,
+                await RagnarokComponent(
                     interaction,
                     'Error',
                     `${member} does not have an avatar set.`,
@@ -46,8 +42,7 @@ export class AvatarContext {
                 files: [attachment],
             });
         } catch (_error) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `An error occurred fetching ${member}'s avatar`,

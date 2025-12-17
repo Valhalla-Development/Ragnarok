@@ -10,8 +10,8 @@ import {
     SeparatorSpacingSize,
     TextDisplayBuilder,
 } from 'discord.js';
-import { type Client, Discord, Slash, SlashOption } from 'discordx';
-import { capitalise, RagnarokEmbed } from '../../utils/Util.js';
+import { Discord, Slash, SlashOption } from 'discordx';
+import { capitalise, RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -38,8 +38,7 @@ export class Crypto {
             type: ApplicationCommandOptionType.String,
         })
         currency: string,
-        interaction: CommandInteraction,
-        client: Client
+        interaction: CommandInteraction
     ): Promise<void> {
         const symbolDict: { [key: string]: string } = {
             USD: '$',
@@ -85,20 +84,13 @@ export class Crypto {
         const cryptoUpperCase = crypto.toUpperCase();
 
         if (currency && !symbolDict[currency.toUpperCase()]) {
-            await RagnarokEmbed(
-                client,
-                interaction,
-                'Error',
-                'Please enter a valid currency!',
-                true
-            );
+            await RagnarokComponent(interaction, 'Error', 'Please enter a valid currency!', true);
             return;
         }
 
         const cryptoType = cryptocurrencies[cryptoUpperCase];
         if (!cryptoType) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'Please enter a valid cryptocurrency!',
@@ -122,8 +114,7 @@ export class Crypto {
 
             // Check if the response contains valid data
             if (!Array.isArray(content) || content.length === 0 || !content[0].id) {
-                await RagnarokEmbed(
-                    client,
+                await RagnarokComponent(
                     interaction,
                     'Error',
                     'Please enter a valid cryptocurrency!'
@@ -180,8 +171,7 @@ export class Crypto {
                 flags: MessageFlags.IsComponentsV2,
             });
         } catch (_error) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'An error occurred while processing your request.'

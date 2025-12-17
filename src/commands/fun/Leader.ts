@@ -10,10 +10,10 @@ import {
     SeparatorSpacingSize,
     TextDisplayBuilder,
 } from 'discord.js';
-import { ButtonComponent, type Client, Discord, Slash } from 'discordx';
+import { ButtonComponent, Discord, Slash } from 'discordx';
 import Level from '../../mongo/Level.js';
 import LevelConfig from '../../mongo/LevelConfig.js';
-import { RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -110,12 +110,11 @@ export class Leader {
      * @param client - The Discord client.
      */
     @Slash({ description: 'Displays the leaderboard for the level system' })
-    async leader(interaction: CommandInteraction, client: Client): Promise<void> {
+    async leader(interaction: CommandInteraction): Promise<void> {
         const levelDb = await LevelConfig.findOne({ GuildId: interaction.guild!.id });
 
         if (levelDb) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'The level system is disabled for this guild.',
@@ -127,8 +126,7 @@ export class Leader {
         const allUsers = await Level.find({ GuildId: interaction.guild!.id }).sort({ Xp: -1 });
 
         if (!allUsers || allUsers.length === 0) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'No level data found for this guild.',

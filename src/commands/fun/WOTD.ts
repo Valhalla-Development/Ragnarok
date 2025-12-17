@@ -11,9 +11,9 @@ import {
     SeparatorSpacingSize,
     TextDisplayBuilder,
 } from 'discord.js';
-import { type Client, Discord, Slash } from 'discordx';
+import { Discord, Slash } from 'discordx';
 import WOTDModel from '../../mongo/WOTD.js';
-import { capitalise, RagnarokEmbed } from '../../utils/Util.js';
+import { capitalise, RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -24,7 +24,7 @@ export class WOTD {
      * @param client - The Discord client.
      */
     @Slash({ description: 'Display the Word of the Day' })
-    async wotd(interaction: CommandInteraction, client: Client): Promise<void> {
+    async wotd(interaction: CommandInteraction): Promise<void> {
         if (!interaction.channel || interaction.channel.type !== ChannelType.GuildText) {
             return;
         }
@@ -158,8 +158,7 @@ export class WOTD {
                 flags: MessageFlags.IsComponentsV2,
             });
         } catch (error) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `An error occurred\n${codeBlock('text', `${error}`)}`,

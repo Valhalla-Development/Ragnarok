@@ -1,18 +1,15 @@
 import type { ButtonBuilder } from 'discord.js';
 import { type ButtonInteraction, MessageFlags } from 'discord.js';
-import type { Client } from 'discordx';
 import Balance from '../../mongo/Balance.js';
 import { updateHomeContainer } from './Home.js';
 
 /**
  * Asynchronously handles the deposit button interaction.
  * @param interaction - The ButtonInteraction triggering the deposit function.
- * @param client - The Discord client.
  * @param buttons - Button instances from the main Economy class
  */
 export async function handleDeposit(
     interaction: ButtonInteraction,
-    client: Client,
     buttons: {
         baltopButton: ButtonBuilder;
         depositButton: ButtonBuilder;
@@ -37,7 +34,6 @@ export async function handleDeposit(
         // Update home container with error message
         const homeContainer = await updateHomeContainer(
             interaction,
-            client,
             buttons,
             '❌ `You do not have any cash to deposit.`'
         );
@@ -53,7 +49,7 @@ export async function handleDeposit(
 
         // Remove the message after 5 seconds
         setTimeout(async () => {
-            const updatedHomeContainer = await updateHomeContainer(interaction, client, buttons);
+            const updatedHomeContainer = await updateHomeContainer(interaction, buttons);
             if (updatedHomeContainer) {
                 await interaction.message?.edit({
                     components: [updatedHomeContainer],
@@ -80,7 +76,6 @@ export async function handleDeposit(
     // Update home container with success message
     const homeContainer = await updateHomeContainer(
         interaction,
-        client,
         buttons,
         `✅ \`Successfully deposited\` <:coin:706659001164628008> \`${depositAmount.toLocaleString('en')}\` \`to your bank\``
     );
@@ -96,7 +91,7 @@ export async function handleDeposit(
 
     // Remove the message after 5 seconds
     setTimeout(async () => {
-        const updatedHomeContainer = await updateHomeContainer(interaction, client, buttons);
+        const updatedHomeContainer = await updateHomeContainer(interaction, buttons);
         if (updatedHomeContainer) {
             await interaction.message?.edit({
                 components: [updatedHomeContainer],

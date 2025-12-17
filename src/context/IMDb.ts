@@ -7,9 +7,9 @@ import {
     EmbedBuilder,
     type MessageContextMenuCommandInteraction,
 } from 'discord.js';
-import { type Client, ContextMenu, Discord } from 'discordx';
+import { ContextMenu, Discord } from 'discordx';
 import { Duration } from 'luxon';
-import { getContentDetails, RagnarokEmbed } from '../utils/Util.js';
+import { getContentDetails, RagnarokComponent } from '../utils/Util.js';
 
 @Discord()
 export class IMDbContext {
@@ -22,10 +22,7 @@ export class IMDbContext {
         name: 'IMDb',
         type: ApplicationCommandType.Message,
     })
-    async imdbContext(
-        interaction: MessageContextMenuCommandInteraction,
-        client: Client
-    ): Promise<void> {
+    async imdbContext(interaction: MessageContextMenuCommandInteraction): Promise<void> {
         const imdbRegexPattern = /https?:\/\/(www\.|m\.)?imdb\.com\/title\/tt(\d+)(\/)?/;
 
         const { content } = interaction.targetMessage;
@@ -41,8 +38,7 @@ export class IMDbContext {
         );
 
         if (!details) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'I was unable to find the content you were looking for. Please try again.',

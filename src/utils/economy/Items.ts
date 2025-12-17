@@ -6,10 +6,9 @@ import {
     SeparatorSpacingSize,
     TextDisplayBuilder,
 } from 'discord.js';
-import type { Client } from 'discordx';
 import type { BalanceInterface } from '../../mongo/Balance.js';
 import Balance from '../../mongo/Balance.js';
-import { RagnarokEmbed } from '../Util.js';
+import { RagnarokComponent } from '../Util.js';
 
 const num = (value: unknown) => Number(value ?? 0);
 
@@ -131,11 +130,7 @@ function buildInventoryContainer(
 /**
  * Handle the "View Inventory" button interaction.
  */
-export async function handleItems(
-    interaction: ButtonInteraction,
-    client: Client,
-    homeButton: ButtonBuilder
-) {
+export async function handleItems(interaction: ButtonInteraction, homeButton: ButtonBuilder) {
     // Defer to avoid timeout and remove the ephemeral placeholder
     await interaction.deferReply();
     await interaction.deleteReply();
@@ -145,13 +140,7 @@ export async function handleItems(
     });
 
     if (!balance) {
-        await RagnarokEmbed(
-            client,
-            interaction,
-            'Error',
-            'An error occurred, please try again.',
-            true
-        );
+        await RagnarokComponent(interaction, 'Error', 'An error occurred, please try again.', true);
         return;
     }
 

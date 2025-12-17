@@ -10,14 +10,14 @@ import {
     type CommandInteraction,
     type GuildMember,
 } from 'discord.js';
-import { type Client, Discord, Slash, SlashGroup, SlashOption } from 'discordx';
+import { Discord, Slash, SlashGroup, SlashOption } from 'discordx';
 // @ts-expect-error no type file available for this package
 import abbreviate from 'number-abbreviate';
 // @ts-expect-error no type file available for this package
 import converter from 'number-to-words-en';
 import Level from '../../mongo/Level.js';
 import LevelConfig from '../../mongo/LevelConfig.js';
-import { color, RagnarokEmbed } from '../../utils/Util.js';
+import { color, RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -41,33 +41,20 @@ export class LevelCommand {
             type: ApplicationCommandOptionType.User,
         })
         user: GuildMember,
-        interaction: CommandInteraction,
-        client: Client
+        interaction: CommandInteraction
     ): Promise<void> {
         await interaction.deferReply();
 
         const member = user || interaction.member;
 
         if (member.user.bot) {
-            await RagnarokEmbed(
-                client,
-                interaction,
-                'Error',
-                'Member does not have a level.',
-                true
-            );
+            await RagnarokComponent(interaction, 'Error', 'Member does not have a level.', true);
             return;
         }
 
         const score = await Level.findOne({ IdJoined: `${member.id}-${interaction.guild!.id}` });
         if (!score) {
-            await RagnarokEmbed(
-                client,
-                interaction,
-                'Error',
-                'Member does not have a level.',
-                true
-            );
+            await RagnarokComponent(interaction, 'Error', 'Member does not have a level.', true);
             return;
         }
 
@@ -401,14 +388,12 @@ export class LevelCommand {
             type: ApplicationCommandOptionType.String,
         })
         country: string,
-        interaction: CommandInteraction,
-        client: Client
+        interaction: CommandInteraction
     ): Promise<void> {
         const levelConfig = await LevelConfig.findOne({ GuildId: interaction.guild!.id });
 
         if (levelConfig) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 'Level system is disabled for this guild!',
@@ -425,8 +410,7 @@ export class LevelCommand {
 
         if (country === 'off') {
             if (!score?.Country) {
-                await RagnarokEmbed(
-                    client,
+                await RagnarokComponent(
                     interaction,
                     'Error',
                     'You do not have a country set.',
@@ -435,12 +419,7 @@ export class LevelCommand {
                 return;
             }
 
-            await RagnarokEmbed(
-                client,
-                interaction,
-                'Success',
-                'I have disabled your country flag.'
-            );
+            await RagnarokComponent(interaction, 'Success', 'I have disabled your country flag.');
 
             score.Country = '';
             await score.save();
@@ -449,8 +428,7 @@ export class LevelCommand {
 
         const countryData = getCountryData(<TCountryCode>country.toUpperCase());
         if (!countryData) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`,
@@ -461,8 +439,7 @@ export class LevelCommand {
 
         const countryEmoji = getEmojiFlag(countryData.iso2);
         if (!countryEmoji) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`,
@@ -474,8 +451,7 @@ export class LevelCommand {
         const url = await parse(countryEmoji);
 
         if (!url?.[0]?.url) {
-            await RagnarokEmbed(
-                client,
+            await RagnarokComponent(
                 interaction,
                 'Error',
                 `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`,
@@ -487,6 +463,6 @@ export class LevelCommand {
         score.Country = url[0].url;
         await score.save();
 
-        await RagnarokEmbed(client, interaction, 'Success', `You selected \`${countryData.name}\``);
+        await RagnarokComponent(interaction, 'Success', `You selected \`${countryData.name}\``);
     }
 }
