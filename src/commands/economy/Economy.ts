@@ -1,6 +1,21 @@
 import { Category } from '@discordx/utilities';
-import type { ButtonInteraction, CommandInteraction, ModalSubmitInteraction } from 'discord.js';
-import { ButtonComponent, type Client, Discord, ModalComponent, Slash } from 'discordx';
+import {
+    type ButtonInteraction,
+    type CommandInteraction,
+    ContainerBuilder,
+    MessageFlags,
+    type ModalSubmitInteraction,
+    TextDisplayBuilder,
+    type UserSelectMenuInteraction,
+} from 'discord.js';
+import {
+    ButtonComponent,
+    type Client,
+    Discord,
+    ModalComponent,
+    SelectMenuComponent,
+    Slash,
+} from 'discordx';
 import { Economy } from '../../utils/Economy.js';
 import { RagnarokEmbed } from '../../utils/Util.js';
 
@@ -63,6 +78,7 @@ export class EconomyCommand {
             ['baltop', async () => this.instance?.baltop(interaction, client)],
             ['deposit', async () => this.instance?.deposit(interaction, client)],
             ['claim', async () => this.instance?.claim(interaction, client)],
+            ['items', async () => this.instance?.items(interaction, client)],
             [
                 'coinflip',
                 async () => {
@@ -74,7 +90,7 @@ export class EconomyCommand {
                     );
                 },
             ],
-            ['heist', async () => this.instance?.heist(interaction, client)],
+            ['heist', async () => this.instance?.heist(interaction)],
             ['farm', async () => this.instance?.farm(interaction, client)],
             ['fish', async () => this.instance?.fish(interaction, client)],
             ['harvest', async () => this.instance?.harvest(interaction, client)],
@@ -110,5 +126,100 @@ export class EconomyCommand {
         this.coinflipAmount = amount;
         await this.instance.coinflip(interaction, client, amount);
         await interaction.deleteReply();
+    }
+
+    /**
+     * Handles heist target selection
+     * @param interaction - The UserSelectMenuInteraction object
+     * @param client - The Discord client
+     */
+    @SelectMenuComponent({ id: 'heist_target_select' })
+    async heistTargetSelect(interaction: UserSelectMenuInteraction): Promise<void> {
+        // idk switch to ragnarokembed? i cannae think, too hot
+        if (this.user !== interaction.user.id) {
+            await interaction.reply({
+                content: '❌ Only the command executor can select a target.',
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+
+        const selectedUser = interaction.users.first();
+        if (!selectedUser) {
+            await interaction.reply({
+                content: '❌ No user selected.',
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+
+        // Filter out the author (person who started the heist)
+        if (selectedUser.id === interaction.user.id) {
+            await interaction.reply({
+                content: "❌ You can't target yourself in a heist!",
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+
+        // Filter out bots
+        if (selectedUser.bot) {
+            await interaction.reply({
+                content: "❌ You can't target bots in a heist!",
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+
+        // TODO: Implement heist mechanics
+    }
+
+    /**
+     * Handles baltop navigation
+     * @param interaction - The ButtonInteraction object
+     * @param client - The Discord client
+     */
+    @ButtonComponent({ id: /^baltop:nav:.+$/ })
+    async baltopNavigate(interaction: ButtonInteraction, client: Client): Promise<void> {
+        if (!this.instance) {
+            await RagnarokEmbed(
+                client,
+                interaction,
+                'Error',
+                'An error occurred, please try running the economy command again.',
+                true
+            );
+            return;
+        }
+
+        const parts = interaction.customId.split(':');
+        // Format: ['baltop','nav','<dir>','<guildId>','<page>']
+        if (parts.length < 5) {
+            await interaction.update({
+                components: [
+                    new ContainerBuilder().addTextDisplayComponents(
+                        new TextDisplayBuilder().setContent('❌ Invalid navigation data.')
+                    ),
+                ],
+                flags: MessageFlags.IsComponentsV2,
+            });
+            return;
+        }
+
+        const guildId = parts[3]!;
+        const pageStr = parts[4]!;
+
+        if (guildId !== interaction.guild!.id) {
+            return;
+        }
+
+        const page = Number.parseInt(pageStr, 10);
+        const { handleBaltop } = await import('../../utils/economy/Leaderboard.js');
+        await handleBaltop(
+            interaction,
+            client,
+            this.instance.homeButton,
+            Number.isNaN(page) ? 0 : page
+        );
     }
 }
