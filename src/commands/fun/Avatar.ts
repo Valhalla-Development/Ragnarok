@@ -1,12 +1,12 @@
 import { Category } from '@discordx/utilities';
 import {
     ApplicationCommandOptionType,
+    AttachmentBuilder,
     type CommandInteraction,
-    EmbedBuilder,
     type GuildMember,
 } from 'discord.js';
 import { type Client, Discord, Slash, SlashOption } from 'discordx';
-import { color, RagnarokEmbed } from '../../utils/Util.js';
+import { RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -35,7 +35,7 @@ export class Avatar {
         try {
             await member.fetch();
 
-            const avatar = member.user.displayAvatarURL({ size: 2048 });
+            const avatar = member.user.displayAvatarURL({ size: 1024 });
 
             if (!avatar) {
                 await RagnarokEmbed(
@@ -48,11 +48,11 @@ export class Avatar {
                 return;
             }
 
-            const embed = new EmbedBuilder()
-                .setAuthor({ name: `${member.displayName}'s Avatar`, iconURL: avatar })
-                .setImage(avatar)
-                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
-            await interaction.reply({ embeds: [embed] });
+            const attachment = new AttachmentBuilder(avatar);
+
+            await interaction.reply({
+                files: [attachment],
+            });
         } catch (_error) {
             await RagnarokEmbed(
                 client,

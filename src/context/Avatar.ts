@@ -1,11 +1,11 @@
 import {
     ApplicationCommandType,
-    EmbedBuilder,
+    AttachmentBuilder,
     type GuildMember,
     type UserContextMenuCommandInteraction,
 } from 'discord.js';
 import { type Client, ContextMenu, Discord } from 'discordx';
-import { color, RagnarokEmbed } from '../utils/Util.js';
+import { RagnarokEmbed } from '../utils/Util.js';
 
 @Discord()
 export class AvatarContext {
@@ -27,7 +27,7 @@ export class AvatarContext {
         try {
             await member.fetch();
 
-            const avatar = member.user.displayAvatarURL({ size: 2048 });
+            const avatar = member.user.displayAvatarURL({ size: 1024 });
 
             if (!avatar) {
                 await RagnarokEmbed(
@@ -40,11 +40,11 @@ export class AvatarContext {
                 return;
             }
 
-            const embed = new EmbedBuilder()
-                .setAuthor({ name: `${member.displayName}'s Avatar`, iconURL: avatar })
-                .setImage(avatar)
-                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
-            await interaction.reply({ embeds: [embed] });
+            const attachment = new AttachmentBuilder(avatar);
+
+            await interaction.reply({
+                files: [attachment],
+            });
         } catch (_error) {
             await RagnarokEmbed(
                 client,
