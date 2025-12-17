@@ -16,6 +16,7 @@ import {
     SelectMenuComponent,
     Slash,
 } from 'discordx';
+import Balance from '../../mongo/Balance.js';
 import { Economy } from '../../utils/Economy.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
@@ -178,7 +179,124 @@ export class EconomyCommand {
             return;
         }
 
-        // TODO: Implement heist mechanics
+        // Heist mechanics
+        const authorBalance = await Balance.findOne({
+            IdJoined: `${interaction.user.id}-${interaction.guild!.id}`,
+        });
+        const targetBalance = await Balance.findOne({
+            IdJoined: `${selectedUser.id}-${interaction.guild!.id}`,
+        });
+
+        if (!authorBalance) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'You do not have an economy profile yet. Start chatting to create one.',
+                true
+            );
+            return;
+        }
+
+        if (!targetBalance) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                `${selectedUser} does not have an economy account. They will get one automatically when they speak.`,
+                true
+            );
+            return;
+        }
+
+        const now = Date.now();
+        if (authorBalance.StealCool && now < authorBalance.StealCool) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                `Please wait <t:${Math.round(authorBalance.StealCool / 1000)}:R> before attempting another heist.`,
+                true
+            );
+            return;
+        }
+
+        if (targetBalance.Cash < 10) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'The targeted user does not have enough cash to steal!',
+                true
+            );
+            return;
+        }
+
+        const successChance = Math.random() < 0.75;
+        const successMessages = [
+            `You held ${selectedUser} at gun-point and stole <:coin:706659001164628008>`,
+            `You stabbed ${selectedUser} and took <:coin:706659001164628008>`,
+            `You tricked ${selectedUser} into giving you <:coin:706659001164628008>`,
+            `You pick-pocketed ${selectedUser} and snagged <:coin:706659001164628008>`,
+            `You pulled off a daring heist on ${selectedUser} and secured <:coin:706659001164628008>`,
+            `You hacked ${selectedUser}'s wallet and siphoned <:coin:706659001164628008>`,
+        ];
+
+        const failMessages = [
+            `${selectedUser} over-powered you and took <:coin:706659001164628008>`,
+            `${selectedUser} knew karate and reversed the mugging, costing you <:coin:706659001164628008>`,
+            `You were outsmarted by ${selectedUser} and lost <:coin:706659001164628008>`,
+            `${selectedUser} had backup and you dropped <:coin:706659001164628008> while fleeing`,
+            `You slipped up and ${selectedUser} nabbed <:coin:706659001164628008> from you`,
+        ];
+
+        if (successChance) {
+            const maxPerc = (targetBalance.Cash * 85) / 100;
+            const minPerc = (targetBalance.Cash * 35) / 100;
+            const stealAmount =
+                Math.floor(Math.random() * (maxPerc - minPerc + 1)) + Math.floor(minPerc);
+
+            targetBalance.Cash -= stealAmount;
+            targetBalance.Total -= stealAmount;
+
+            authorBalance.Cash += stealAmount;
+            authorBalance.Total += stealAmount;
+            authorBalance.StealCool = now + 120_000; // 2 minutes
+
+            await targetBalance.save();
+            await authorBalance.save();
+
+            const msg =
+                successMessages[Math.floor(Math.random() * successMessages.length)] +
+                ` \`${stealAmount.toLocaleString('en')}\`.`;
+
+            await RagnarokComponent(interaction, 'Success', msg, true);
+        } else {
+            const bank = authorBalance.Bank ?? 0;
+            const maxPerc = (bank * 10) / 100;
+            const minPerc = (bank * 5) / 100;
+            const lossAmount =
+                bank > 0
+                    ? Math.max(
+                          0,
+                          Math.floor(Math.random() * (maxPerc - minPerc + 1)) + Math.floor(minPerc)
+                      )
+                    : 0;
+
+            targetBalance.Bank += lossAmount;
+            targetBalance.Total += lossAmount;
+
+            authorBalance.Bank -= lossAmount;
+            authorBalance.Total -= lossAmount;
+            authorBalance.StealCool = now + 240_000; // 4 minutes
+
+            await targetBalance.save();
+            await authorBalance.save();
+
+            const msg =
+                failMessages[Math.floor(Math.random() * failMessages.length)] +
+                (lossAmount > 0
+                    ? ` \`${lossAmount.toLocaleString('en')}\`.`
+                    : ' but you had no funds to lose.');
+
+            await RagnarokComponent(interaction, 'Error', msg, true);
+        }
     }
 
     /**
