@@ -1,8 +1,18 @@
 import { Category } from '@discordx/utilities';
 import { load } from 'cheerio';
-import { ChannelType, type CommandInteraction, codeBlock, EmbedBuilder } from 'discord.js';
+import {
+    ButtonBuilder,
+    ButtonStyle,
+    ChannelType,
+    type CommandInteraction,
+    ContainerBuilder,
+    codeBlock,
+    MessageFlags,
+    SeparatorSpacingSize,
+    TextDisplayBuilder,
+} from 'discord.js';
 import { type Client, Discord, Slash } from 'discordx';
-import { capitalise, color, RagnarokEmbed } from '../../utils/Util.js';
+import { capitalise, RagnarokEmbed } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -45,7 +55,8 @@ export class WOTD {
             const syllablesFetch = $('.word-syllables');
             const syllables = syllablesFetch.text();
 
-            const arr: { name: string; value: string }[] = [];
+            let definitionText = '';
+            let exampleText = '';
 
             const wordDef = $('.wod-definition-container');
             if (wordDef.length) {
@@ -54,10 +65,7 @@ export class WOTD {
                 const wordDefSplit2 = wordDefSplit1?.split('</p>')[0];
                 const repl = replEm(wordDefSplit2 || '');
                 const output = repl.replace(/<a href="([^"]+)">([^<]+)<\/a>/g, '[**$2**]($1)');
-                arr.push({
-                    name: '**Definition:**',
-                    value: `>>> *${replEm(output)}*`,
-                });
+                definitionText = replEm(output);
             }
 
             const wordEx = $('.wod-definition-container p:eq(1)');
@@ -66,22 +74,56 @@ export class WOTD {
                 const output = def
                     ?.substring(3)
                     .replace(/<a href="([^"]+)">([^<]+)<\/a>/g, '[**$2**]($1)');
-                arr.push({
-                    name: '**Example:**',
-                    value: `>>> ${replEm(output || '')}`,
-                });
+                exampleText = replEm(output || '');
             }
-            // Embed
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                .setAuthor({
-                    name: 'Word of the Day',
-                    url: 'https://www.merriam-webster.com/word-of-the-day',
-                    iconURL: `${interaction.guild!.iconURL({ extension: 'png' })}`,
-                })
-                .setDescription(`>>> **${capitalise(word)}**\n*[ ${syllables} ]*\n*${type}*`)
-                .addFields(...arr);
-            interaction.channel!.send({ embeds: [embed] });
+
+            const headerText = new TextDisplayBuilder().setContent(
+                [
+                    '# ✨ Word of the Day',
+                    `> **${capitalise(word)}**`,
+                    `> *[ ${syllables} ]*`,
+                    `> *${type}*`,
+                ].join('\n')
+            );
+
+            const container = new ContainerBuilder().addTextDisplayComponents(headerText);
+
+            if (definitionText) {
+                const definitionDisplay = new TextDisplayBuilder().setContent(
+                    ['## 📘 Definition', '', `>>> *${definitionText}*`].join('\n')
+                );
+                container
+                    .addSeparatorComponents((separator) =>
+                        separator.setSpacing(SeparatorSpacingSize.Large)
+                    )
+                    .addTextDisplayComponents(definitionDisplay);
+            }
+
+            if (exampleText) {
+                const exampleDisplay = new TextDisplayBuilder().setContent(
+                    ['## 📝 Example', '', `>>> ${exampleText}`].join('\n')
+                );
+                container
+                    .addSeparatorComponents((separator) =>
+                        separator.setSpacing(SeparatorSpacingSize.Large)
+                    )
+                    .addTextDisplayComponents(exampleDisplay);
+            }
+
+            container.addSeparatorComponents((separator) =>
+                separator.setSpacing(SeparatorSpacingSize.Small)
+            );
+
+            const sourceButton = new ButtonBuilder()
+                .setLabel('Explore Word of the Day')
+                .setStyle(ButtonStyle.Link)
+                .setURL('https://www.merriam-webster.com/word-of-the-day');
+            container.addActionRowComponents((row) => row.addComponents(sourceButton));
+
+            await interaction.reply({
+                components: [container],
+                flags: MessageFlags.IsComponentsV2,
+            });
         } catch (error) {
             await RagnarokEmbed(
                 client,
