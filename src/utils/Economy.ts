@@ -155,7 +155,7 @@ export class Economy {
      * Asynchronously handles the claim button interaction.
      */
     async claim(interaction: ButtonInteraction, client: Client) {
-        await handleClaim(interaction, client, this.claimButton, this.rows);
+        await handleClaim(interaction, client, this.claimButton, this.rows, this.getButtons());
     }
 
     /**
