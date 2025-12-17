@@ -152,14 +152,19 @@ export function buildHomeContainer(
         fishButton.setDisabled(true);
     }
 
+    // Clone the deposit button and disable it if user has no cash to deposit
+    const depositButton = ButtonBuilder.from(buttons.depositButton.toJSON());
+
+    if (!balance.Cash || balance.Cash === 0) {
+        depositButton.setDisabled(true);
+    }
+
     // Build and return the stunning container
     return new ContainerBuilder()
         .addTextDisplayComponents(headerText)
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Large))
         .addTextDisplayComponents(wealthText)
-        .addActionRowComponents((row) =>
-            row.addComponents(buttons.baltopButton, buttons.depositButton)
-        )
+        .addActionRowComponents((row) => row.addComponents(buttons.baltopButton, depositButton))
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(activityText)
         .addActionRowComponents((row) =>
