@@ -1,12 +1,16 @@
 import { Category } from '@discordx/utilities';
 import {
-    ApplicationCommandOptionType,
+    ButtonBuilder,
+    type ButtonInteraction,
+    ButtonStyle,
     ChannelType,
     type CommandInteraction,
-    EmbedBuilder,
+    ContainerBuilder,
+    MessageFlags,
+    SeparatorSpacingSize,
+    TextDisplayBuilder,
 } from 'discord.js';
-import { type Client, Discord, Slash, SlashChoice, SlashOption } from 'discordx';
-import { color, RagnarokEmbed } from '../../utils/Util.js';
+import { ButtonComponent, Discord, Slash } from 'discordx';
 
 @Discord()
 @Category('Miscellaneous')
@@ -15,22 +19,9 @@ export class Ping {
      * Displays guild statistics.
      * @param interaction - The command interaction.
      * @param client - The Discord client.
-     * @param option - The option selected from the command
      */
     @Slash({ description: 'Displays guild statistics.' })
-    async serverinfo(
-        @SlashChoice({ name: 'Server', value: 'server' })
-        @SlashChoice({ name: 'Roles', value: 'roles' })
-        @SlashChoice({ name: 'Emojis', value: 'emojis' })
-        @SlashOption({
-            description: 'Type of request (optional)',
-            name: 'option',
-            type: ApplicationCommandOptionType.String,
-        })
-        option: string,
-        interaction: CommandInteraction,
-        client: Client
-    ): Promise<void> {
+    async serverinfo(interaction: CommandInteraction): Promise<void> {
         const roles = interaction.guild?.roles.cache
             .sort((a, b) => b.position - a.position)
             .map((role) => role.toString())
@@ -53,157 +44,176 @@ export class Ping {
             1: 'Elevated',
         };
 
-        if (!option || option === 'server') {
-            const guildOwner = await interaction.guild?.fetchOwner();
-            const channels = interaction.guild?.channels.cache;
+        const guildOwner = await interaction.guild?.fetchOwner();
+        const channels = interaction.guild?.channels.cache;
 
-            const textChannels = channels?.filter(
-                (channel) => channel.type === ChannelType.GuildText
+        const textChannels = channels?.filter((channel) => channel.type === ChannelType.GuildText);
+        const voiceChannels = channels?.filter(
+            (channel) => channel.type === ChannelType.GuildVoice
+        );
+
+        const memberCount =
+            (interaction.guild?.memberCount || 0) -
+            (interaction.guild?.members.cache.filter((m) => m.user.bot).size || 0);
+        const botCount = interaction.guild?.members.cache.filter((m) => m.user.bot).size || 0;
+        const totalChannels = (textChannels?.size || 0) + (voiceChannels?.size || 0);
+
+        const header = new TextDisplayBuilder().setContent(
+            [
+                `# 🏰 Guild Information: ${interaction.guild?.name}`,
+                `> 👑 Owner: ${guildOwner?.user}`,
+                `> 🆔 ID: \`${interaction.guild?.id}\``,
+            ].join('\n')
+        );
+
+        const guildInfo = new TextDisplayBuilder().setContent(
+            [
+                '## 📋 Guild Information',
+                '',
+                `> 📅 **Created:** <t:${Math.round((interaction.guild?.createdTimestamp ?? 0) / 1000)}:F> (<t:${Math.round((interaction.guild?.createdTimestamp ?? 0) / 1000)}:R>)`,
+                `> 🔐 **Verification Level:** \`${verificationLevels[interaction.guild?.verificationLevel ?? 0]}\``,
+                `> 🔏 **MFA Level:** \`${mfa[interaction.guild?.mfaLevel ?? 0]}\``,
+                `> 🧑‍🤝‍🧑 **Members:** \`${memberCount}\``,
+                `> 🤖 **Bots:** \`${botCount}\``,
+            ].join('\n')
+        );
+
+        const channelsInfo = new TextDisplayBuilder().setContent(
+            [
+                `## 📝 Guild Channels [${totalChannels}]`,
+                '',
+                `> <:TextChannel:855591004236546058> **Text:** \`${textChannels?.size}\``,
+                `> <:VoiceChannel:855591004300115998> **Voice:** \`${voiceChannels?.size}\``,
+            ].join('\n')
+        );
+
+        const perksInfo = new TextDisplayBuilder().setContent(
+            [
+                '## ⭐ Guild Perks',
+                '',
+                `> <a:Booster:855593231294267412> **Boost Tier:** \`${interaction.guild?.premiumTier ?? 0}\``,
+                `> <a:Booster:855593231294267412> **Boosts:** \`${interaction.guild?.premiumSubscriptionCount ?? 0}\``,
+            ].join('\n')
+        );
+
+        const buttons: ButtonBuilder[] = [];
+        if (roles && roles.length > 0) {
+            buttons.push(
+                new ButtonBuilder()
+                    .setLabel(`View Roles [${roles.length}]`)
+                    .setStyle(ButtonStyle.Primary)
+                    .setCustomId('serverinfo_roles')
             );
-            const voiceChannels = channels?.filter(
-                (channel) => channel.type === ChannelType.GuildVoice
+        }
+        if (emojiMap && emojiMap.length > 0) {
+            buttons.push(
+                new ButtonBuilder()
+                    .setLabel(`View Emojis [${emojiMap.length}]`)
+                    .setStyle(ButtonStyle.Primary)
+                    .setCustomId('serverinfo_emojis')
             );
-
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                .setThumbnail(interaction.guild?.iconURL() || '')
-                .setAuthor({
-                    name: `Guild Information: ${interaction.guild?.name}`,
-                    iconURL: interaction.guild?.iconURL() || '',
-                })
-                .addFields(
-                    {
-                        name: 'Guild information',
-                        value: `**◎ 👑 Owner:** ${guildOwner?.user}
-                        **◎ 🆔 ID:** \`${interaction.guild?.id}\`
-                        **◎ 📅 Created At:** <t:${Math.round((interaction.guild?.createdTimestamp ?? 0) / 1000)}> - (<t:${Math.round((interaction.guild?.createdTimestamp ?? 0) / 1000)}:R>)
-                        **◎ 🔐 Verification Level:** \`${verificationLevels[interaction.guild?.verificationLevel ?? 0]}\`
-                        **◎ 🔏 MFA Level:** \`${mfa[interaction.guild?.mfaLevel ?? 0]}\`
-                        **◎ 🧑‍🤝‍🧑 Guild Members:** \`${(interaction.guild?.memberCount || 0) - (interaction.guild?.members.cache.filter((m) => m.user.bot).size || 0)}\`
-                        **◎ 🤖 Guild Bots:** \`${interaction.guild?.members.cache.filter((m) => m.user.bot).size || 0}\`
-                        \u200b`,
-                    },
-                    {
-                        name: `**Guild Channels** [${(textChannels?.size || 0) + (voiceChannels?.size || 0)}]`,
-                        value: `<:TextChannel:855591004236546058> | Text: \`${textChannels?.size}\`\n<:VoiceChannel:855591004300115998> | Voice: \`${voiceChannels?.size}\``,
-                        inline: true,
-                    },
-                    {
-                        name: '**Guild Perks**',
-                        value: `<a:Booster:855593231294267412> | Boost Tier: \`${interaction.guild?.premiumTier ?? 0}\`\n<a:Booster:855593231294267412> | Boosts: \`${interaction.guild?.premiumSubscriptionCount ?? 0}\``,
-                        inline: true,
-                    }
-                )
-                .setFooter({
-                    text: `${client.user?.username}`,
-                    iconURL: client.user?.displayAvatarURL(),
-                });
-
-            if ((roles && roles.length > 0) || (emojiMap && emojiMap.length > 0)) {
-                const value: string[] = [];
-
-                if (roles?.length) {
-                    value.push(
-                        `**Server Roles [${roles.length}]**: To view all roles, run\n\`/serverinfo roles\``
-                    );
-                }
-
-                if (emojiMap?.length) {
-                    value.push(
-                        `**Server Emojis [${emojiMap.length}]**: To view all emojis, run\n\`/serverinfo emojis\``
-                    );
-                }
-
-                embed.addFields({
-                    name: '**Assets**',
-                    value: value.join('\n'),
-                    inline: false,
-                });
-            }
-
-            await interaction.reply({ embeds: [embed] });
         }
 
-        if (option === 'roles') {
-            if (!roles) {
-                await RagnarokEmbed(
-                    client,
-                    interaction,
-                    'Error',
-                    'Unable to locate any roles.',
-                    true
-                );
-                return;
-            }
+        const container = new ContainerBuilder()
+            .addTextDisplayComponents(header)
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(guildInfo)
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(channelsInfo)
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(perksInfo);
 
-            let roleList = roles.join(', ');
-
-            if (roleList.length > 4000) {
-                roleList = roleList.substring(0, 4000);
-                roleList = roleList.substring(0, roleList.lastIndexOf('<'));
-            }
-
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                .setAuthor({
-                    name: `Guild Information: ${interaction.guild?.name}`,
-                    iconURL: `${interaction.guild?.iconURL()}`,
-                })
-                .setDescription(
-                    `**Server Roles [${roles.length}]**\n${
-                        roles.length <= 25
-                            ? roleList
-                            : `${roleList}... and ${roles.length - 25} more`
-                    }`
+        if (buttons.length > 0) {
+            container
+                .addSeparatorComponents((separator) =>
+                    separator.setSpacing(SeparatorSpacingSize.Small)
                 )
-                .setFooter({
-                    text: `${client.user?.username}`,
-                    iconURL: client.user?.displayAvatarURL(),
-                });
-
-            await interaction.reply({ embeds: [embed] });
+                .addActionRowComponents((row) => row.addComponents(...buttons));
         }
 
-        if (option === 'emojis') {
-            if (!emojiMap) {
-                await RagnarokEmbed(
-                    client,
-                    interaction,
-                    'Error',
-                    'Unable to locate any emojis.',
-                    true
-                );
-                return;
-            }
+        await interaction.reply({
+            components: [container],
+            flags: MessageFlags.IsComponentsV2,
+        });
+    }
 
-            emojiMap.sort((a, b) => a.localeCompare(b));
+    @ButtonComponent({ id: 'serverinfo_roles' })
+    async rolesButton(interaction: ButtonInteraction): Promise<void> {
+        const roles = interaction
+            .guild!.roles.cache.sort((a, b) => b.position - a.position)
+            .map((role) => role.toString())
+            .slice(0, -1);
 
-            let emojiList = emojiMap?.join(', ');
-
-            if (emojiList && emojiList.length > 4000) {
-                emojiList = emojiList.substring(0, 4000);
-                emojiList = emojiList.substring(0, emojiList.lastIndexOf('<'));
-            }
-
-            const embed = new EmbedBuilder()
-                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                .setAuthor({
-                    name: `Guild Information: ${interaction.guild?.name}`,
-                    iconURL: `${interaction.guild?.iconURL()}`,
-                })
-                .setDescription(
-                    `**Server Emojis [${emojiMap?.length ?? 0}]**\n${
-                        emojiMap && emojiMap.length <= 25
-                            ? emojiList
-                            : `${emojiList}... and ${emojiMap.length - 25} more`
-                    }`
-                )
-                .setFooter({
-                    text: `${client.user?.username}`,
-                    iconURL: client.user?.displayAvatarURL(),
-                });
-
-            await interaction.reply({ embeds: [embed] });
+        if (!roles || roles.length === 0) {
+            await interaction.reply({
+                content: 'Unable to locate any roles.',
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
         }
+
+        let roleList = roles.join(', ');
+
+        if (roleList.length > 4000) {
+            roleList = roleList.substring(0, 4000);
+            roleList = roleList.substring(0, roleList.lastIndexOf('<'));
+        }
+
+        const rolesDisplay = new TextDisplayBuilder().setContent(
+            [
+                `# 🎭 Server Roles [${roles.length}]`,
+                '',
+                roles.length <= 25
+                    ? `> ${roleList}`
+                    : `> ${roleList}... and ${roles.length - 25} more`,
+            ].join('\n')
+        );
+
+        const container = new ContainerBuilder().addTextDisplayComponents(rolesDisplay);
+
+        await interaction.reply({
+            components: [container],
+            flags: MessageFlags.IsComponentsV2,
+        });
+    }
+
+    @ButtonComponent({ id: 'serverinfo_emojis' })
+    async emojisButton(interaction: ButtonInteraction): Promise<void> {
+        const emojis = interaction.guild!.emojis.cache;
+        const emojiMap = emojis.map((emoji) => emoji.toString());
+
+        if (!emojiMap || emojiMap.length === 0) {
+            await interaction.reply({
+                content: 'Unable to locate any emojis.',
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+
+        emojiMap.sort((a, b) => a.localeCompare(b));
+
+        let emojiList = emojiMap.join(', ');
+
+        if (emojiList.length > 4000) {
+            emojiList = emojiList.substring(0, 4000);
+            emojiList = emojiList.substring(0, emojiList.lastIndexOf('<'));
+        }
+
+        const emojisDisplay = new TextDisplayBuilder().setContent(
+            [
+                `# 😀 Server Emojis [${emojiMap.length}]`,
+                '',
+                emojiMap.length <= 25
+                    ? `> ${emojiList}`
+                    : `> ${emojiList}... and ${emojiMap.length - 25} more`,
+            ].join('\n')
+        );
+
+        const container = new ContainerBuilder().addTextDisplayComponents(emojisDisplay);
+
+        await interaction.reply({
+            components: [container],
+            flags: MessageFlags.IsComponentsV2,
+        });
     }
 }
