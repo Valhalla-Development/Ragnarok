@@ -2,7 +2,7 @@ import {
     ActionRowBuilder,
     ActivityType,
     ButtonBuilder,
-    ButtonInteraction,
+    type ButtonInteraction,
     ButtonStyle,
     ChannelType,
     type ColorResolvable,
@@ -10,6 +10,7 @@ import {
     codeBlock,
     EmbedBuilder,
     type GuildMember,
+    type Interaction,
     type Message,
     MessageFlags,
     type ModalSubmitInteraction,
@@ -288,142 +289,129 @@ export async function RagnarokEmbed(
     }
 }
 
+/**
+ * Creates a pagination system for a list of embeds with next, back, and home buttons.
+ * @param interaction - The interaction that triggered the pagination.
+ * @param embeds - An array of EmbedBuilders to paginate.
+ * @param emojiNext - The emoji to use for the next button. Defaults to '▶️'.
+ * @param emojiHome - The emoji to use for the home button. Defaults to '🏠'.
+ * @param emojiBack - The emoji to use for the back button. Defaults to '◀️'.
+ * @returns A promise that resolves with void when the pagination is complete.
+ */
 export async function pagination(
-    interaction: ButtonInteraction | CommandInteraction,
+    interaction: CommandInteraction,
     embeds: EmbedBuilder[],
-    externalHome?: ButtonBuilder,
-    emojiNext = '▶️',
-    emojiHome = '🏠',
-    emojiBack = '◀️'
+    emojiNext: string,
+    emojiHome: string,
+    emojiBack: string
 ) {
+    // Guard: no embeds to paginate
+    if (embeds.length === 0) {
+        await interaction.reply({ content: 'Nothing to display.', ephemeral: true });
+        return;
+    }
     const back = new ButtonBuilder()
         .setCustomId('back')
-        .setEmoji(emojiBack || '◀️')
+        .setEmoji(emojiBack)
         .setStyle(ButtonStyle.Primary)
         .setDisabled(true);
 
     const home = new ButtonBuilder()
         .setCustomId('home')
-        .setEmoji(emojiHome || '🏠')
+        .setEmoji(emojiHome)
         .setStyle(ButtonStyle.Primary)
         .setDisabled(true);
 
     const next = new ButtonBuilder()
         .setCustomId('next')
-        .setEmoji(emojiNext || '▶️')
+        .setEmoji(emojiNext)
         .setStyle(ButtonStyle.Primary);
 
-    // Create components array conditionally based on whether externalHome exists
-    const components = externalHome ? [externalHome, back, home, next] : [back, home, next];
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(back, home, next);
 
-    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(...components);
+    const m = await interaction.reply({
+        embeds: [embeds[0]!],
+        components: [row],
+        fetchReply: true,
+    });
 
-    // Ensure embeds[0] exists before using it
-    if (!embeds[0]) {
-        return;
-    }
-
-    // Handle initial response based on interaction type
-    let message: Message;
-    if (interaction instanceof ButtonInteraction) {
-        // ButtonInteraction
-        await interaction.message.edit({
-            embeds: [embeds[0].toJSON()],
-            components: [row],
-            files: [],
-        });
-        message = interaction.message;
-    } else {
-        // CommandInteraction
-        const response = await interaction.reply({
-            embeds: [embeds[0].toJSON()],
-            components: [row],
-            withResponse: true,
-        });
-        if (!response.resource?.message) {
-            throw new Error('Failed to get message from interaction response');
+    const filter = (i: Interaction) => {
+        if (!i.isButton()) {
+            return false;
         }
-        message = response.resource.message;
-    }
+        const button = i as ButtonInteraction;
+        return button.user.id === interaction.user.id;
+    };
 
-    const collector = message.createMessageComponentCollector({
+    const collector = m.createMessageComponentCollector({
+        filter,
         time: 30_000,
     });
 
     let currentPage = 0;
 
     collector.on('collect', async (b) => {
-        if (!b.message) {
-            return;
-        }
         collector.resetTimer();
 
         if (b.customId === 'back' && currentPage !== 0) {
+            if (currentPage === embeds.length - 1) {
+                next.setDisabled(false);
+            }
+
             currentPage -= 1;
-            next.setDisabled(false);
+
             if (currentPage === 0) {
                 back.setDisabled(true);
                 home.setDisabled(true);
             }
+
+            const rowNew = new ActionRowBuilder<ButtonBuilder>().addComponents(back, home, next);
+
+            await b.update({
+                embeds: [embeds[currentPage]!],
+                components: [rowNew],
+            });
         }
 
         if (b.customId === 'next' && currentPage < embeds.length - 1) {
             currentPage += 1;
-            back.setDisabled(false);
-            home.setDisabled(false);
+
             if (currentPage === embeds.length - 1) {
                 next.setDisabled(true);
             }
+
+            home.setDisabled(false);
+            back.setDisabled(false);
+
+            const rowNew = new ActionRowBuilder<ButtonBuilder>().addComponents(back, home, next);
+
+            await b.update({
+                embeds: [embeds[currentPage]!],
+                components: [rowNew],
+            });
         }
 
         if (b.customId === 'home') {
             currentPage = 0;
-            back.setDisabled(true);
             home.setDisabled(true);
+            back.setDisabled(true);
             next.setDisabled(false);
-        }
 
-        // Don't do anything if the home button for the economy module is pressed
-        if (b.customId === 'economy_home') {
-            // Stop the collector since we're navigating away from pagination
-            collector.stop();
-            return;
-        }
+            const rowNew = new ActionRowBuilder<ButtonBuilder>().addComponents(back, home, next);
 
-        // Ensure embeds[currentPage] exists before using it
-        const currentEmbed = embeds[currentPage];
-        if (!currentEmbed) {
-            return;
+            await b.update({ embeds: [embeds[currentPage]!], components: [rowNew] });
         }
-        await b.update({
-            embeds: [currentEmbed.toJSON()],
-            components: [row],
-            files: [],
-        });
     });
 
     collector.on('end', () => {
-        if (!message) {
-            return;
-        }
         home.setDisabled(true);
         back.setDisabled(true);
         next.setDisabled(true);
-        // Ensure embeds[currentPage] exists before using it
-        const currentEmbed = embeds[currentPage];
-        if (!currentEmbed) {
-            return;
-        }
-        message
-            .edit({
-                embeds: [currentEmbed.toJSON()],
-                components: [row],
-                files: [],
-            })
-            .catch(console.error);
+
+        interaction.editReply({ embeds: [embeds[currentPage]!], components: [row] });
     });
 
-    collector.on('error', console.error);
+    collector.on('error', (e: Error) => console.log(e));
 }
 
 export async function updateLevel(interaction: Message | CommandInteraction) {
