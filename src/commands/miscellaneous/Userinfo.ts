@@ -122,12 +122,12 @@ export class Userinfo {
         const avatarButton = new ButtonBuilder()
             .setLabel('Avatar')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId(`userinfo_avatar_${member.user.id}`);
+            .setCustomId(`userinfo_cmd_avatar_${member.user.id}`);
 
         const bannerButton = new ButtonBuilder()
             .setLabel('Banner')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId(`userinfo_banner_${member.user.id}`);
+            .setCustomId(`userinfo_cmd_banner_${member.user.id}`);
 
         const buttons: ButtonBuilder[] = [];
         if (avatarUrl) {
@@ -160,9 +160,9 @@ export class Userinfo {
         });
     }
 
-    @ButtonComponent({ id: /^userinfo_avatar_/ })
+    @ButtonComponent({ id: /^userinfo_cmd_avatar_/ })
     async avatarButton(interaction: ButtonInteraction): Promise<void> {
-        const userId = interaction.customId.split('_')[2]!.toString();
+        const userId = interaction.customId.split('_')[3]!.toString();
         const member = interaction.guild?.members.cache.get(userId);
 
         if (!member) {
@@ -179,9 +179,9 @@ export class Userinfo {
         });
     }
 
-    @ButtonComponent({ id: /^userinfo_banner_/ })
+    @ButtonComponent({ id: /^userinfo_cmd_banner_/ })
     async bannerButton(interaction: ButtonInteraction): Promise<void> {
-        const userId = interaction.customId.split('_')[2]!.toString();
+        const userId = interaction.customId.split('_')[3]!.toString();
         const member = await interaction.client.users.fetch(userId, { force: true });
 
         if (!member) {
