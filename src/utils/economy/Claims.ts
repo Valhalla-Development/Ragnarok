@@ -1,8 +1,9 @@
-import { type ButtonBuilder, type ButtonInteraction, ButtonStyle } from 'discord.js';
+import { type ButtonBuilder, type ButtonInteraction, ButtonStyle, MessageFlags } from 'discord.js';
 import type { Client } from 'discordx';
 import Balance from '../../mongo/Balance.js';
 import { RagnarokEmbed } from '../Util.js';
 import { ecoPrices } from './Config.js';
+import { updateHomeContainer } from './Home.js';
 import type { ButtonRows, Claim, EcoPrices } from './Types.js';
 
 /**
@@ -33,12 +34,22 @@ function setButtonState(button: ButtonBuilder, rows: ButtonRows) {
  * @param client - The Discord client.
  * @param claimButton - The claim button instance
  * @param rows - Button rows for state management
+ * @param buttons - Button instances from the main Economy class
  */
 export async function handleClaim(
     interaction: ButtonInteraction,
     client: Client,
     claimButton: ButtonBuilder,
-    rows: ButtonRows
+    rows: ButtonRows,
+    buttons: {
+        baltopButton: ButtonBuilder;
+        depositButton: ButtonBuilder;
+        heistButton: ButtonBuilder;
+        fishButton: ButtonBuilder;
+        farmButton: ButtonBuilder;
+        itemsButton: ButtonBuilder;
+        claimButton: ButtonBuilder;
+    }
 ) {
     // Set the state of the claim button first
     setButtonState(claimButton, rows);
@@ -122,14 +133,36 @@ export async function handleClaim(
 
     await balance.save();
 
-    // Show success message with claimed amount and new total
-    const newTot = balance.Total + fullPrice;
+    // Defer the reply to prevent interaction timeout
+    await interaction.deferReply();
+    await interaction.deleteReply();
 
-    await RagnarokEmbed(
-        client,
+    // Update home container with success message
+    const homeContainer = await updateHomeContainer(
         interaction,
-        'Success',
-        `You have claimed all available claims! <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` has been credited to your Bank.\n Your new total is <:coin:706659001164628008> \`${newTot.toLocaleString('en')}\``,
-        true
+        client,
+        buttons,
+        `✅ \`Claimed all available rewards!\` <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` \`added to bank\``
     );
+
+    // If home container is available, update the message
+    if (homeContainer) {
+        await interaction.message?.edit({
+            components: [homeContainer],
+            files: [],
+            flags: MessageFlags.IsComponentsV2,
+        });
+    }
+
+    // Remove the message after 5 seconds
+    setTimeout(async () => {
+        const updatedHomeContainer = await updateHomeContainer(interaction, client, buttons);
+        if (updatedHomeContainer) {
+            await interaction.message?.edit({
+                components: [updatedHomeContainer],
+                files: [],
+                flags: MessageFlags.IsComponentsV2,
+            });
+        }
+    }, 5000);
 }
