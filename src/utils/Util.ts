@@ -274,7 +274,7 @@ export async function RagnarokComponent(
                 : 'ℹ️';
 
     const tagLine = new TextDisplayBuilder().setContent(`**${typeEmoji} ${type}**`);
-    const contentLine = new TextDisplayBuilder().setContent(codeBlock('text', content));
+    const contentLine = new TextDisplayBuilder().setContent(content);
 
     const container = new ContainerBuilder()
         .addTextDisplayComponents(tagLine)
