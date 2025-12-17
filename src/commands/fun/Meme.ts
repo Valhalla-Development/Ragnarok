@@ -74,19 +74,16 @@ export class Meme {
             .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
             .addActionRowComponents((row) => row.addComponents(nextButton));
 
-        const response = await fetch(meme[0].image);
-        const buffer = Buffer.from(await response.arrayBuffer());
-        const attachment = new AttachmentBuilder(buffer, { name: 'meme.png' });
-
-        container.addMediaGalleryComponents(
-            new MediaGalleryBuilder().addItems(
-                new MediaGalleryItemBuilder().setURL('attachment://meme.png')
-            )
+        const imageSection = new MediaGalleryBuilder().addItems(
+            new MediaGalleryItemBuilder().setURL(meme[0].image)
         );
+
+        container
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addMediaGalleryComponents(imageSection);
 
         await interaction.reply({
             components: [container],
-            files: [attachment],
             flags: MessageFlags.IsComponentsV2,
         });
     }
