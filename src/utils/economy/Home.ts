@@ -145,6 +145,13 @@ export function buildHomeContainer(
         claimButton.setDisabled(true);
     }
 
+    // Clone the fish button and disable it if user doesn't own a fishing rod
+    const fishButton = ButtonBuilder.from(buttons.fishButton.toJSON());
+
+    if (!balance.Items?.FishingRod) {
+        fishButton.setDisabled(true);
+    }
+
     // Build and return the stunning container
     return new ContainerBuilder()
         .addTextDisplayComponents(headerText)
@@ -156,7 +163,7 @@ export function buildHomeContainer(
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(activityText)
         .addActionRowComponents((row) =>
-            row.addComponents(buttons.heistButton, buttons.fishButton, buttons.farmButton)
+            row.addComponents(buttons.heistButton, fishButton, buttons.farmButton)
         )
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(storageText)
