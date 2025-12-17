@@ -24,6 +24,7 @@ import { RagnarokEmbed } from '../Util.js';
  * @param currentTotalFarm - Total number of farm items
  * @param claimUserTime - Time for claim cooldown
  * @param wealthStatusMessage - Temporary message to display under wealth text
+ * @param claimStatusMessage - Temporary message to display in treasure vault section
  * @param buttons - Button instances from the main Economy class
  * @returns ContainerBuilder with all sections
  */
@@ -44,7 +45,8 @@ export function buildHomeContainer(
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
     },
-    wealthStatusMessage?: string
+    wealthStatusMessage?: string,
+    claimStatusMessage?: string
 ): ContainerBuilder {
     // ═══════════════════════════════════════════════════════════════
     // User Profile & Rank
@@ -120,6 +122,7 @@ export function buildHomeContainer(
             `> 🌅 **Daily Vault:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : Date.now() > balance.Daily ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(balance.Daily / 1000)}:R>`}`,
             `> 📅 **Weekly Safe:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : Date.now() > balance.Weekly ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(balance.Weekly / 1000)}:R>`}`,
             `> 🗓️ **Monthly Prize:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : Date.now() > balance.Monthly ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(balance.Monthly / 1000)}:R>`}`,
+            claimStatusMessage ? `> ${claimStatusMessage}` : '',
         ].join('\n')
     );
 
@@ -150,6 +153,7 @@ export function buildHomeContainer(
  * @param client - The Discord client.
  * @param buttons - Button instances from the main Economy class
  * @param wealthStatusMessage - Temporary message to display under wealth text
+ * @param claimStatusMessage - Temporary message to display in treasure vault section
  * @returns The built home container
  */
 export async function updateHomeContainer(
@@ -164,7 +168,8 @@ export async function updateHomeContainer(
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
     },
-    wealthStatusMessage?: string
+    wealthStatusMessage?: string,
+    claimStatusMessage?: string
 ): Promise<ContainerBuilder | null> {
     // Fetch user balance based on their ID and guild ID
     const balance = await Balance.findOne({
@@ -235,7 +240,8 @@ export async function updateHomeContainer(
         currentTotalFarm,
         claimUserTime,
         buttons,
-        wealthStatusMessage
+        wealthStatusMessage,
+        claimStatusMessage
     );
 }
 

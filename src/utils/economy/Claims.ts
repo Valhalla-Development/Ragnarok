@@ -137,11 +137,12 @@ export async function handleClaim(
     await interaction.deferReply();
     await interaction.deleteReply();
 
-    // Update home container with success message
+    // Update home container with success message in treasure vault section
     const homeContainer = await updateHomeContainer(
         interaction,
         client,
         buttons,
+        undefined,
         `✅ \`Claimed all available rewards!\` <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` \`added to bank\``
     );
 
