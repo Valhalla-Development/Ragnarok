@@ -4,7 +4,6 @@ import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import urlRegexSafe from 'url-regex-safe';
 import AdsProtection from '../mongo/AdsProtection.js';
-import AFK from '../mongo/AFK.js';
 import Dad from '../mongo/Dad.js';
 import { color, deletableCheck, messageDelete, updateLevel } from '../utils/Util.js';
 
@@ -23,45 +22,6 @@ export class MessageCreate {
         if (!message.guild || message.author.bot) {
             return;
         }
-
-        async function afk() {
-            const pingCheck = await AFK.findOne({ GuildId: message.guild!.id });
-            const afkGrab = await AFK.findOne({
-                GuildId: message.guild!.id,
-                UserId: message.author.id,
-            });
-
-            if (afkGrab) {
-                await AFK.deleteOne({ GuildId: message.guild!.id, UserId: message.author.id });
-                const embed = new EmbedBuilder()
-                    .setColor(color(`${message.member?.displayHexColor}`))
-                    .addFields({
-                        name: `**${client.user?.username} - AFK**`,
-                        value: `${message.author} is no longer AFK.`,
-                    });
-                message.channel.send({ embeds: [embed] }).then((m) => deletableCheck(m, 10_000));
-                return;
-            }
-
-            if (message.mentions.users.size > 0 && pingCheck) {
-                const afkCheck = await AFK.findOne({
-                    GuildId: message.guild!.id,
-                    UserId: message.mentions.users.first()?.id,
-                });
-                if (afkCheck) {
-                    const error = new EmbedBuilder()
-                        .setColor(color(`${message.member?.displayHexColor}`))
-                        .addFields({
-                            name: `**${client.user?.username} - AFK**`,
-                            value: `**◎** Please do not ping ${message.mentions.users.first()}, is currently AFK with the reason:\n\n${afkCheck.Reason}`,
-                        });
-                    message.channel
-                        .send({ embeds: [error] })
-                        .then((m) => deletableCheck(m, 10_000));
-                }
-            }
-        }
-        await afk();
 
         /**
          * Function for protecting against ads and unwanted links in a text-based channel.
