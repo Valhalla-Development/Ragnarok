@@ -9,7 +9,6 @@ const Level = new Schema({
     GuildId: { type: String, default: null },
     Xp: { type: Number, default: null },
     Level: { type: Number, default: null },
-    Country: { type: String, default: null },
 });
 
 export default model('Level', Level, 'Level');

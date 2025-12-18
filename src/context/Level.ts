@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { createCanvas, type Image, loadImage } from 'canvas';
+import { createCanvas, loadImage } from 'canvas';
 import {
     ApplicationCommandType,
     AttachmentBuilder,
@@ -43,7 +43,7 @@ export class LevelContext {
             return;
         }
 
-        const { Level: level, Xp: xp, Country } = score;
+        const { Level: level, Xp: xp } = score;
 
         const levelNoMinus = level + 1;
         const currentLvl = level;
@@ -58,7 +58,7 @@ export class LevelContext {
 
         const getRank = await Level.find({ GuildId: interaction.guild!.id }).sort({ Xp: -1 });
         const filterRank = getRank.find(
-            (b) => b.IdJoined === `${interaction.user.id}-${interaction.guild!.id}`
+            (b) => b.IdJoined === `${member.id}-${interaction.guild!.id}`
         );
         const rankPos = converter.toOrdinal(getRank.indexOf(filterRank!) + 1);
 
@@ -231,20 +231,6 @@ export class LevelContext {
         }
 
         drawXP(880, 165.4, xpLevel);
-
-        function drawEmote(x: number, y: number, img: Image) {
-            ctx.drawImage(img, x, y, 50, 50);
-        }
-
-        if (score && Country) {
-            try {
-                const img = await loadImage(Country);
-                // Draw Contry Emoji
-                drawEmote(450, 54.3, img);
-            } catch {
-                // do nothing
-            }
-        }
 
         // Draw Percentage
         function drawPercent(x: number, y: number, input: string) {
