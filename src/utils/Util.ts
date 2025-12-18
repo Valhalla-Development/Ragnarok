@@ -640,7 +640,6 @@ export async function fetchAndScrambleWord(): Promise<{
         const { definition } = data;
         const { pronunciation } = data;
 
-        console.log(word);
         const fieldArray: { name: string; value: string }[] = [];
         fieldArray.push({ name: '**Definition:**', value: `>>> *${definition.join('\n')}*` });
 
@@ -655,5 +654,33 @@ export async function fetchAndScrambleWord(): Promise<{
     } catch (error) {
         console.error('Error fetching and scrambling word:', error);
         throw error;
+    }
+}
+
+/**
+ * Fetches a random word from the Valhalla API.
+ * @returns A Promise that resolves to a random word if successful or null if an error occurs.
+ * @throws Throws an error if the request fails or if there is an unexpected response status.
+ * @example
+ * const randomWord = await getRandomWord();
+ * console.log(randomWord);
+ */
+export async function getRandomWord(): Promise<string | null> {
+    const url = `${config.VALHALLA_API_URI}/word`;
+
+    try {
+        const response = await axios.get(url, {
+            headers: { Authorization: `Bearer ${config.VALHALLA_API_KEY}` },
+        });
+
+        if (response.status === 200) {
+            const { word } = response.data;
+            return word;
+        }
+        console.log(`Error: ${response.status}`);
+        return null;
+    } catch (error) {
+        console.log(`Error: ${error}`);
+        return null;
     }
 }
