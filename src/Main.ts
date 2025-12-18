@@ -37,6 +37,7 @@ const clientConfig = {
         IntentsBitField.Flags.GuildEmojisAndStickers,
         IntentsBitField.Flags.GuildIntegrations,
         IntentsBitField.Flags.GuildWebhooks,
+        IntentsBitField.Flags.GuildPresences,
         IntentsBitField.Flags.GuildMessageReactions,
         IntentsBitField.Flags.GuildMessageTyping,
         IntentsBitField.Flags.DirectMessages,
