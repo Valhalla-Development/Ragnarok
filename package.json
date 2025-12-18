@@ -41,6 +41,7 @@
     "reddit-image-fetcher": "^2.0.12",
     "systeminformation": "^5.27.14",
     "url-regex-safe": "^4.0.0",
+    "uuid": "^13.0.0",
     "zod": "^4.2.1"
   },
   "devDependencies": {
