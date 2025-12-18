@@ -1,31 +1,23 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { Category } from '@discordx/utilities';
-import { parse } from '@twemoji/parser';
-import { createCanvas, type Image, loadImage } from 'canvas';
-import { getCountryData, getEmojiFlag, type TCountryCode } from 'countries-list';
+import { createCanvas, loadImage } from 'canvas';
 import {
     ApplicationCommandOptionType,
     AttachmentBuilder,
     type CommandInteraction,
     type GuildMember,
 } from 'discord.js';
-import { Discord, Slash, SlashGroup, SlashOption } from 'discordx';
+import { Discord, Slash, SlashOption } from 'discordx';
 // @ts-expect-error no type file available for this package
 import abbreviate from 'number-abbreviate';
 // @ts-expect-error no type file available for this package
 import converter from 'number-to-words-en';
 import Level from '../../mongo/Level.js';
-import LevelConfig from '../../mongo/LevelConfig.js';
 import { color, RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
-@SlashGroup({
-    description: 'Displays the level of the interaction author or specified user',
-    name: 'level',
-})
-@SlashGroup('level')
 export class LevelCommand {
     /**
      * View users level
@@ -34,18 +26,24 @@ export class LevelCommand {
      * @param client - The Discord client.
      */
     @Slash({ description: 'View users level' })
-    async user(
+    async level(
         @SlashOption({
             description: 'Users level to check',
             name: 'user',
             type: ApplicationCommandOptionType.User,
+            required: false,
         })
-        user: GuildMember,
+        user: GuildMember | null,
         interaction: CommandInteraction
     ): Promise<void> {
         await interaction.deferReply();
 
-        const member = user || interaction.member;
+        const member = user || (interaction.member as GuildMember | null);
+
+        if (!member) {
+            await RagnarokComponent(interaction, 'Error', 'Could not find member.', true);
+            return;
+        }
 
         if (member.user.bot) {
             await RagnarokComponent(interaction, 'Error', 'Member does not have a level.', true);
@@ -58,7 +56,7 @@ export class LevelCommand {
             return;
         }
 
-        const { Level: level, Xp: xp, Country } = score;
+        const { Level: level, Xp: xp } = score;
 
         const levelNoMinus = level + 1;
         const currentLvl = level;
@@ -251,20 +249,6 @@ export class LevelCommand {
 
         drawXP(880, 165.4, xpLevel);
 
-        function drawEmote(x: number, y: number, img: Image) {
-            ctx.drawImage(img, x, y, 50, 50);
-        }
-
-        if (score && Country) {
-            try {
-                const img = await loadImage(Country);
-                // Draw Contry Emoji
-                drawEmote(450, 54.3, img);
-            } catch {
-                // do nothing
-            }
-        }
-
         // Draw Percentage
         function drawPercent(x: number, y: number, input: string) {
             ctx.font = '34px Shapirit';
@@ -375,98 +359,5 @@ export class LevelCommand {
 
         const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: 'level.jpg' });
         interaction.editReply({ files: [attachment] }).catch((err) => console.error(err));
-    }
-
-    /**
-     * Set your country
-     * @param interaction - The command interaction.
-     * @param client - The Discord client.
-     * @param country - Country of user
-     */
-    @Slash({ description: 'Set your country' })
-    async country(
-        @SlashOption({
-            description: 'Set your country',
-            name: 'country',
-            required: true,
-            type: ApplicationCommandOptionType.String,
-        })
-        country: string,
-        interaction: CommandInteraction
-    ): Promise<void> {
-        const levelConfig = await LevelConfig.findOne({ GuildId: interaction.guild!.id });
-
-        if (levelConfig) {
-            await RagnarokComponent(
-                interaction,
-                'Error',
-                'Level system is disabled for this guild!',
-                true
-            );
-            return;
-        }
-
-        const score = await Level.findOneAndUpdate(
-            { IdJoined: `${interaction.user.id}-${interaction.guild!.id}` },
-            { $setOnInsert: { IdJoined: `${interaction.user.id}-${interaction.guild!.id}` } },
-            { upsert: true, new: true }
-        );
-
-        if (country === 'off') {
-            if (!score?.Country) {
-                await RagnarokComponent(
-                    interaction,
-                    'Error',
-                    'You do not have a country set.',
-                    true
-                );
-                return;
-            }
-
-            await RagnarokComponent(interaction, 'Success', 'I have disabled your country flag.');
-
-            score.Country = '';
-            await score.save();
-            return;
-        }
-
-        const countryData = getCountryData(<TCountryCode>country.toUpperCase());
-        if (!countryData) {
-            await RagnarokComponent(
-                interaction,
-                'Error',
-                `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`,
-                true
-            );
-            return;
-        }
-
-        const countryEmoji = getEmojiFlag(countryData.iso2);
-        if (!countryEmoji) {
-            await RagnarokComponent(
-                interaction,
-                'Error',
-                `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`,
-                true
-            );
-            return;
-        }
-
-        const url = await parse(countryEmoji);
-
-        if (!url?.[0]?.url) {
-            await RagnarokComponent(
-                interaction,
-                'Error',
-                `Did you input a valid country code? Your input was: \`${country.toUpperCase()}\`\nYou can find your country code here: https://www.countrycode.org/\nPlease input the '2 DIGIT ISO' within your country page.`,
-                true
-            );
-            return;
-        }
-
-        score.Country = url[0].url;
-        await score.save();
-
-        await RagnarokComponent(interaction, 'Success', `You selected \`${countryData.name}\``);
     }
 }
