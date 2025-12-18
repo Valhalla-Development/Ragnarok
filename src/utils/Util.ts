@@ -1,5 +1,4 @@
 import {
-    ActionRowBuilder,
     ActivityType,
     ButtonBuilder,
     type ButtonInteraction,
@@ -312,128 +311,134 @@ export async function RagnarokComponent(
 }
 
 /**
- * Creates a pagination system for a list of embeds with next, back, and home buttons.
- * @param interaction - The interaction that triggered the pagination.
- * @param embeds - An array of EmbedBuilders to paginate.
- * @param emojiNext - The emoji to use for the next button. Defaults to '▶️'.
- * @param emojiHome - The emoji to use for the home button. Defaults to '🏠'.
- * @param emojiBack - The emoji to use for the back button. Defaults to '◀️'.
- * @returns A promise that resolves with void when the pagination is complete.
+ * Components V2 pagination helper (no custom :nav: handlers required).
+ *
+ * - Works for both Slash commands (replies) and Button interactions (edits the existing message)
+ * - Pages are generated on-demand via `getPage(pageIndex)`
+ * - Navigation lives in a normal ActionRow alongside the V2 container
  */
-export async function pagination(
-    interaction: CommandInteraction,
-    embeds: EmbedBuilder[],
-    emojiNext: string,
-    emojiHome: string,
-    emojiBack: string
-) {
-    // Guard: no embeds to paginate
-    if (embeds.length === 0) {
-        await interaction.reply({ content: 'Nothing to display.', ephemeral: true });
-        return;
+export async function paginationComponentsV2(
+    interaction: CommandInteraction | ButtonInteraction,
+    getPage: (pageIndex: number) => Promise<ContainerBuilder>,
+    totalPages: number,
+    options?: {
+        initialPage?: number;
+        timeoutMs?: number;
+        emojis?: { prev?: string; home?: string; next?: string };
     }
-    const back = new ButtonBuilder()
-        .setCustomId('back')
-        .setEmoji(emojiBack)
-        .setStyle(ButtonStyle.Primary)
-        .setDisabled(true);
-
-    const home = new ButtonBuilder()
-        .setCustomId('home')
-        .setEmoji(emojiHome)
-        .setStyle(ButtonStyle.Primary)
-        .setDisabled(true);
-
-    const next = new ButtonBuilder()
-        .setCustomId('next')
-        .setEmoji(emojiNext)
-        .setStyle(ButtonStyle.Primary);
-
-    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(back, home, next);
-
-    const m = await interaction.reply({
-        embeds: [embeds[0]!],
-        components: [row],
-        fetchReply: true,
-    });
-
-    const filter = (i: Interaction) => {
-        if (!i.isButton()) {
-            return false;
-        }
-        const button = i as ButtonInteraction;
-        return button.user.id === interaction.user.id;
+): Promise<void> {
+    const timeoutMs = options?.timeoutMs ?? 30_000;
+    const emojis = {
+        prev: options?.emojis?.prev ?? '◀️',
+        home: options?.emojis?.home ?? '🏠',
+        next: options?.emojis?.next ?? '▶️',
     };
 
-    const collector = m.createMessageComponentCollector({
-        filter,
-        time: 30_000,
-    });
+    const safeTotalPages = Math.max(1, totalPages);
+    const clamp = (n: number) => Math.min(Math.max(0, n), Math.max(0, safeTotalPages - 1));
+    let currentPage = clamp(options?.initialPage ?? 0);
 
-    let currentPage = 0;
+    // Unique-ish ids so multiple paginators don't collide
+    const prefix = `pg:${Date.now().toString(36)}:${Math.random().toString(36).slice(2, 8)}`;
+    const idPrev = `${prefix}:prev`;
+    const idHome = `${prefix}:home`;
+    const idNext = `${prefix}:next`;
+
+    const prev = new ButtonBuilder()
+        .setCustomId(idPrev)
+        .setEmoji(emojis.prev)
+        .setStyle(ButtonStyle.Secondary);
+
+    const home = new ButtonBuilder()
+        .setCustomId(idHome)
+        .setEmoji(emojis.home)
+        .setStyle(ButtonStyle.Primary);
+
+    const next = new ButtonBuilder()
+        .setCustomId(idNext)
+        .setEmoji(emojis.next)
+        .setStyle(ButtonStyle.Secondary);
+
+    const applyNavState = () => {
+        prev.setDisabled(currentPage === 0);
+        home.setDisabled(currentPage === 0);
+        next.setDisabled(currentPage >= safeTotalPages - 1);
+    };
+
+    const render = async () => {
+        const page = await getPage(currentPage);
+        // Only show pagination controls if there is more than 1 page
+        if (safeTotalPages > 1) {
+            applyNavState();
+            page.addSeparatorComponents((separator) =>
+                separator.setSpacing(SeparatorSpacingSize.Small)
+            );
+            // Put nav buttons "inside" the V2 container (not as a separate top-level row)
+            page.addActionRowComponents((row) => row.addComponents(prev, home, next));
+        }
+        return { components: [page], flags: MessageFlags.IsComponentsV2 as number };
+    };
+
+    // Initial render + acquire message to collect from
+    let message: Message;
+    if (interaction.isButton()) {
+        const payload = await render();
+        // Button interactions must be acknowledged. Prefer updating the original message;
+        // fall back to editing if this interaction was already acknowledged elsewhere.
+        if (interaction.deferred || interaction.replied) {
+            await interaction.message.edit(payload);
+        } else {
+            await interaction.update(payload);
+        }
+        message = interaction.message;
+    } else {
+        const payload = await render();
+        const resp = await interaction.reply({ ...payload, withResponse: true });
+        const msg = resp.resource?.message;
+        if (!msg) {
+            return;
+        }
+        message = msg;
+    }
+
+    // No need to collect button presses when there's only one page
+    if (safeTotalPages <= 1) {
+        return;
+    }
+
+    const filter = (i: Interaction) =>
+        i.isButton() &&
+        [idPrev, idHome, idNext].includes(i.customId) &&
+        i.user.id === interaction.user.id;
+
+    const collector = message.createMessageComponentCollector({
+        filter,
+        time: timeoutMs,
+    });
 
     collector.on('collect', async (b) => {
         collector.resetTimer();
 
-        if (b.customId === 'back' && currentPage !== 0) {
-            if (currentPage === embeds.length - 1) {
-                next.setDisabled(false);
-            }
-
-            currentPage -= 1;
-
-            if (currentPage === 0) {
-                back.setDisabled(true);
-                home.setDisabled(true);
-            }
-
-            const rowNew = new ActionRowBuilder<ButtonBuilder>().addComponents(back, home, next);
-
-            await b.update({
-                embeds: [embeds[currentPage]!],
-                components: [rowNew],
-            });
-        }
-
-        if (b.customId === 'next' && currentPage < embeds.length - 1) {
-            currentPage += 1;
-
-            if (currentPage === embeds.length - 1) {
-                next.setDisabled(true);
-            }
-
-            home.setDisabled(false);
-            back.setDisabled(false);
-
-            const rowNew = new ActionRowBuilder<ButtonBuilder>().addComponents(back, home, next);
-
-            await b.update({
-                embeds: [embeds[currentPage]!],
-                components: [rowNew],
-            });
-        }
-
-        if (b.customId === 'home') {
+        if (b.customId === idPrev) {
+            currentPage = clamp(currentPage - 1);
+        } else if (b.customId === idNext) {
+            currentPage = clamp(currentPage + 1);
+        } else if (b.customId === idHome) {
             currentPage = 0;
-            home.setDisabled(true);
-            back.setDisabled(true);
-            next.setDisabled(false);
-
-            const rowNew = new ActionRowBuilder<ButtonBuilder>().addComponents(back, home, next);
-
-            await b.update({ embeds: [embeds[currentPage]!], components: [rowNew] });
         }
+
+        const payload = await render();
+        await b.update(payload);
     });
 
-    collector.on('end', () => {
+    collector.on('end', async () => {
+        prev.setDisabled(true);
         home.setDisabled(true);
-        back.setDisabled(true);
         next.setDisabled(true);
 
-        interaction.editReply({ embeds: [embeds[currentPage]!], components: [row] });
+        const payload = await render();
+        await message.edit(payload);
     });
-
-    collector.on('error', (e: Error) => console.log(e));
 }
 
 export async function updateLevel(interaction: Message | CommandInteraction) {
