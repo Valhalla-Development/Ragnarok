@@ -5,6 +5,7 @@ import {
     ContainerBuilder,
     MessageFlags,
     type ModalSubmitInteraction,
+    SeparatorSpacingSize,
     TextDisplayBuilder,
     type UserSelectMenuInteraction,
 } from 'discord.js';
@@ -181,6 +182,36 @@ export class EconomyCommand {
             return;
         }
 
+        const economyInstance = this.instance;
+
+        const showHeistResult = async (statusLabel: string, statusMessage: string) => {
+            const resultContainer = new ContainerBuilder()
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(`## 🏴‍☠️ ${statusLabel}`)
+                )
+                .addSeparatorComponents((separator) =>
+                    separator.setSpacing(SeparatorSpacingSize.Small)
+                )
+                .addTextDisplayComponents(new TextDisplayBuilder().setContent(`> ${statusMessage}`))
+                .addSeparatorComponents((separator) =>
+                    separator.setSpacing(SeparatorSpacingSize.Small)
+                )
+                .addActionRowComponents((row) => row.addComponents(economyInstance.homeButton));
+
+            await interaction.deferReply();
+            await interaction.deleteReply();
+
+            if (!interaction.message) {
+                return;
+            }
+
+            await interaction.message.edit({
+                components: [resultContainer],
+                files: [],
+                flags: MessageFlags.IsComponentsV2,
+            });
+        };
+
         const selectedUser = interaction.users.first();
         if (!selectedUser) {
             await RagnarokComponent(interaction, 'Error', 'No user selected.', true);
@@ -294,7 +325,7 @@ export class EconomyCommand {
                 successMessages[Math.floor(Math.random() * successMessages.length)] +
                 ` \`${stealAmount.toLocaleString('en')}\`.`;
 
-            await RagnarokComponent(interaction, 'Success', msg, true);
+            await showHeistResult('Heist Victory', `✅ ${msg}`);
         } else {
             const bank = authorBalance.Bank ?? 0;
             const maxPerc = (bank * 10) / 100;
@@ -323,7 +354,7 @@ export class EconomyCommand {
                     ? ` \`${lossAmount.toLocaleString('en')}\`.`
                     : ' but you had no funds to lose.');
 
-            await RagnarokComponent(interaction, 'Error', msg, true);
+            await showHeistResult('Heist Defeat', `❌ ${msg}`);
         }
     }
 
