@@ -43,7 +43,8 @@ export class Economy {
 
     constructor() {
         this.homeButton = new ButtonBuilder()
-            .setLabel('Home')
+            .setEmoji('↩️')
+            .setLabel('Back')
             .setStyle(ButtonStyle.Primary)
             .setCustomId('economy_home');
 
