@@ -1,8 +1,15 @@
-import { type ButtonBuilder, type ButtonInteraction, ButtonStyle, EmbedBuilder } from 'discord.js';
+import {
+    type ButtonBuilder,
+    type ButtonInteraction,
+    ButtonStyle,
+    ContainerBuilder,
+    SeparatorSpacingSize,
+    TextDisplayBuilder,
+} from 'discord.js';
 import type { Client } from 'discordx';
 import prettyMilliseconds from 'pretty-ms';
 import type { BalanceInterface } from '../../mongo/Balance.js';
-import { capitalise, color, pagination, RagnarokComponent } from '../Util.js';
+import { capitalise, paginationComponentsV2, RagnarokComponent } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import { getOrCreateBalance } from './Profile.js';
 import type { ButtonRows, CropData, HarvestResult } from './Types.js';
@@ -90,38 +97,6 @@ function calculateTimeRemaining(cropGrowTime: number): string {
     return cleanTime.substring(0, cleanTime.indexOf('s') + 1);
 }
 
-// Helper method to create crop status embeds
-function createCropStatusEmbeds(
-    interaction: ButtonInteraction,
-    client: Client,
-    statusEntries: string[]
-): EmbedBuilder[] {
-    const embeds: EmbedBuilder[] = [];
-    const totalPages = Math.ceil(statusEntries.length / 5);
-    let pageNumber = 1;
-
-    while (statusEntries.length > 0) {
-        const pageEntries = statusEntries.splice(0, 5);
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${interaction.user.displayName}`,
-                iconURL: `${interaction.user.avatarURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-            .addFields({
-                name: `**${client.user?.username} - Harvest**`,
-                value: `**◎ Success:** Current crop status:\n${pageEntries.join('\n')}`,
-            })
-            .setFooter({
-                text: totalPages > 1 ? `Page: ${pageNumber + 1}/${totalPages}` : 'Page 1/1',
-            });
-        pageNumber += 1;
-        embeds.push(embed);
-    }
-
-    return embeds;
-}
-
 // Helper method to show current crop status when nothing is harvestable
 async function showCropStatus(
     interaction: ButtonInteraction,
@@ -149,18 +124,45 @@ async function showCropStatus(
         );
     }
 
-    const embeds = createCropStatusEmbeds(interaction, client, statusEntries);
-    const firstEmbed = embeds[0];
-
-    if (!firstEmbed) {
+    if (!statusEntries.length) {
+        await RagnarokComponent(interaction, 'Error', 'No crop data found.', true);
         return;
     }
 
-    if (embeds.length > 1) {
-        await pagination(interaction, embeds, homeButton);
-    } else {
-        await interaction.reply({ embeds: [firstEmbed.toJSON()], ephemeral: true });
-    }
+    const itemsPerPage = 5;
+    const totalPages = Math.max(1, Math.ceil(statusEntries.length / itemsPerPage));
+
+    const buildPage = (pageIndex: number): Promise<ContainerBuilder> => {
+        const clamped = Math.min(Math.max(0, pageIndex), totalPages - 1);
+        const start = clamped * itemsPerPage;
+        const pageEntries = statusEntries.slice(start, start + itemsPerPage);
+
+        const header = new TextDisplayBuilder().setContent(
+            ['# 🌾 Farm Status', totalPages > 1 ? `> Page: ${clamped + 1}/${totalPages}` : '']
+                .filter(Boolean)
+                .join('\n')
+        );
+
+        const body = new TextDisplayBuilder().setContent(
+            [
+                `**${client.user?.username ?? 'Ragnarok'} — Harvest**`,
+                '',
+                '**Current crop status:**',
+                ...pageEntries.map((e) => `- ${e.trim()}`),
+            ].join('\n')
+        );
+
+        return Promise.resolve(
+            new ContainerBuilder()
+                .addTextDisplayComponents(header)
+                .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+                .addTextDisplayComponents(body)
+                .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+                .addActionRowComponents((row) => row.addComponents(homeButton))
+        );
+    };
+
+    await paginationComponentsV2(interaction, buildPage, totalPages);
 }
 
 // Helper method to calculate individual crop value with decay
@@ -215,39 +217,6 @@ function processHarvest(balance: BalanceInterface, availableSpots: number): Harv
     return { crops: harvestedCrops, totalValue, displayEntries };
 }
 
-// Helper method to create harvest result embeds
-function createHarvestResultEmbeds(
-    interaction: ButtonInteraction,
-    client: Client,
-    harvestResults: HarvestResult
-): EmbedBuilder[] {
-    const embeds: EmbedBuilder[] = [];
-    const { displayEntries, totalValue } = harvestResults;
-    const totalPages = Math.ceil(displayEntries.length / 5);
-    let pageNumber = 1;
-
-    while (displayEntries.length > 0) {
-        const pageEntries = displayEntries.splice(0, 5);
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${interaction.user.displayName}`,
-                iconURL: `${interaction.user.avatarURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-            .addFields({
-                name: `**${client.user?.username} - Harvest**`,
-                value: `**◎ Success:** You have harvested the following crops:\n${pageEntries.join('\n')}\n\nIn total, the current value is <:coin:706659001164628008>\`${totalValue.toLocaleString('en')}\`\nThis value of each crop will continue to depreciate, I recommend you sell your crops.`,
-            })
-            .setFooter({
-                text: totalPages > 1 ? `Page: ${pageNumber + 1}/${totalPages}` : 'Page 1/1',
-            });
-        pageNumber += 1;
-        embeds.push(embed);
-    }
-
-    return embeds;
-}
-
 // Helper method to display harvest results
 async function displayHarvestResults(
     interaction: ButtonInteraction,
@@ -255,18 +224,52 @@ async function displayHarvestResults(
     harvestResults: HarvestResult,
     homeButton: ButtonBuilder
 ) {
-    const embeds = createHarvestResultEmbeds(interaction, client, harvestResults);
-    const firstEmbed = embeds[0];
+    const { displayEntries, totalValue } = harvestResults;
 
-    if (!firstEmbed) {
+    if (!displayEntries.length) {
+        await RagnarokComponent(interaction, 'Error', 'Nothing was harvested.', true);
         return;
     }
 
-    if (embeds.length > 1) {
-        await pagination(interaction, embeds, homeButton);
-    } else {
-        await interaction.reply({ embeds: [firstEmbed.toJSON()], ephemeral: true });
-    }
+    const itemsPerPage = 5;
+    const totalPages = Math.max(1, Math.ceil(displayEntries.length / itemsPerPage));
+
+    const buildPage = (pageIndex: number): Promise<ContainerBuilder> => {
+        const clamped = Math.min(Math.max(0, pageIndex), totalPages - 1);
+        const start = clamped * itemsPerPage;
+        const pageEntries = displayEntries.slice(start, start + itemsPerPage);
+
+        const header = new TextDisplayBuilder().setContent(
+            ['# ✅ Harvest Complete', totalPages > 1 ? `> Page: ${clamped + 1}/${totalPages}` : '']
+                .filter(Boolean)
+                .join('\n')
+        );
+
+        const body = new TextDisplayBuilder().setContent(
+            [
+                `**${client.user?.username ?? 'Ragnarok'} — Harvest**`,
+                '',
+                '**You harvested:**',
+                ...pageEntries.map((e) => `- ${e.trim()}`),
+                '',
+                `**Total value:** <:coin:706659001164628008> \`${totalValue.toLocaleString(
+                    'en'
+                )}\``,
+                '_Tip: crop value continues to decay after harvest — sell sooner rather than later._',
+            ].join('\n')
+        );
+
+        return Promise.resolve(
+            new ContainerBuilder()
+                .addTextDisplayComponents(header)
+                .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+                .addTextDisplayComponents(body)
+                .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+                .addActionRowComponents((row) => row.addComponents(homeButton))
+        );
+    };
+
+    await paginationComponentsV2(interaction, buildPage, totalPages);
 }
 
 // Asynchronous function to handle harvest interaction
