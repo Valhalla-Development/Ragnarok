@@ -73,7 +73,7 @@ export class LevelCommand {
 
         const getRank = await Level.find({ GuildId: interaction.guild!.id }).sort({ Xp: -1 });
         const filterRank = getRank.find(
-            (b) => b.IdJoined === `${interaction.user.id}-${interaction.guild!.id}`
+            (b) => b.IdJoined === `${member.id}-${interaction.guild!.id}`
         );
         const rankPos = converter.toOrdinal(getRank.indexOf(filterRank!) + 1);
 
