@@ -67,7 +67,11 @@ export class LevelContext {
 
         let userStatusColor: string | null = '#737F8D';
 
-        const fetchUser = await interaction.guild!.members.fetch(member.id);
+        const fetchUser = await interaction.guild!.members.fetch({
+            user: member.id,
+            force: true,
+            withPresences: true,
+        });
         if (fetchUser.presence) {
             switch (fetchUser.presence.status) {
                 case 'online':
