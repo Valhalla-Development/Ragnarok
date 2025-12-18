@@ -1,19 +1,28 @@
 import { Category } from '@discordx/utilities';
 import {
-    ActionRowBuilder,
     ApplicationCommandOptionType,
     ButtonBuilder,
     ButtonStyle,
     type CommandInteraction,
-    codeBlock,
-    EmbedBuilder,
+    ContainerBuilder,
     type GuildMember,
     type GuildMemberRoleManager,
+    MessageFlags,
     PermissionsBitField,
+    SeparatorSpacingSize,
+    TextDisplayBuilder,
 } from 'discord.js';
-import { type Client, Discord, Guard, Slash, SlashChoice, SlashOption } from 'discordx';
+import {
+    ButtonComponent,
+    type Client,
+    Discord,
+    Guard,
+    Slash,
+    SlashChoice,
+    SlashOption,
+} from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
-import { color, RagnarokComponent } from '../../utils/Util.js';
+import { RagnarokComponent } from '../../utils/Util.js';
 
 type DeleteTimeKey =
     | 'Previous Hour'
@@ -26,6 +35,66 @@ type DeleteTimeKey =
 @Discord()
 @Category('Moderation')
 export class Ban {
+    private buildBanContainer(params: {
+        guildName: string;
+        target: GuildMember;
+        moderator: string;
+        reason: string;
+        deleteMessagesLabel: string;
+        unbanCustomId: string;
+        unbanDisabled?: boolean;
+        statusLine?: string;
+    }): ContainerBuilder {
+        const header = new TextDisplayBuilder().setContent('# 🔨 Member Banned');
+
+        const details = new TextDisplayBuilder().setContent(
+            [
+                `> **User:** ${params.target} (\`${params.target.user.tag}\`)`,
+                `> **User ID:** \`${params.target.id}\``,
+                `> **Server:** **${params.guildName}**`,
+                `> **Moderator:** ${params.moderator}`,
+                `> **Delete Messages:** \`${params.deleteMessagesLabel}\``,
+                `> **Reason:** ${params.reason ? `\`${params.reason}\`` : '`No reason given.`'}`,
+                params.statusLine ? `> **Status:** ${params.statusLine}` : '',
+            ]
+                .filter(Boolean)
+                .join('\n')
+        );
+
+        const unbanButton = new ButtonBuilder()
+            .setCustomId(params.unbanCustomId)
+            .setStyle(ButtonStyle.Danger)
+            .setLabel('Unban')
+            .setDisabled(Boolean(params.unbanDisabled));
+
+        return new ContainerBuilder()
+            .addTextDisplayComponents(header)
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(details)
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addActionRowComponents((row) => row.addComponents(unbanButton));
+    }
+
+    private buildBanDmContainer(params: {
+        guildName: string;
+        moderator: string;
+        reason: string;
+    }): ContainerBuilder {
+        const header = new TextDisplayBuilder().setContent('# 🚫 You were banned');
+        const body = new TextDisplayBuilder().setContent(
+            [
+                `> **Server:** **${params.guildName}**`,
+                `> **Reason:** ${params.reason ? `\`${params.reason}\`` : '`No reason given.`'}`,
+                `> **Moderator:** ${params.moderator}`,
+            ].join('\n')
+        );
+
+        return new ContainerBuilder()
+            .addTextDisplayComponents(header)
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(body);
+    }
+
     /**
      * Ban a user from the server.
      * @param interaction - The command interaction.
@@ -78,6 +147,8 @@ export class Ban {
         };
 
         const deleteMessage = deleteTime[deleteMessages || 'Previous Hour'];
+        const deleteMessagesLabel = deleteMessages || 'Previous Hour';
+        const banReason = reason || 'No reason given.';
 
         // If user id = message id
         if (user.id === interaction.user.id) {
@@ -118,130 +189,110 @@ export class Ban {
             return;
         }
 
-        // Ban the user and send the embed
-        interaction
-            .guild!.members.ban(user, {
+        // Ban the user
+        try {
+            await interaction.guild!.members.ban(user, {
                 deleteMessageSeconds: deleteMessage,
-                reason: `${reason || 'No reason given.'}`,
-            })
-            .catch(async () => {
-                await RagnarokComponent(
-                    interaction,
-                    'Error',
-                    'Ban failed. Check role hierarchy and my Ban Members permission.',
-                    true
-                );
+                reason: banReason,
             });
+        } catch {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Ban failed. Check role hierarchy and my Ban Members permission.',
+                true
+            );
+            return;
+        }
 
         try {
-            const authoMes = new EmbedBuilder()
-                .setThumbnail(`${client.user?.displayAvatarURL()}`)
-                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                .addFields({
-                    name: `You have been banned from: \`${interaction.guild!.name}\``,
-                    value: `**◎ Reason:** ${reason || 'No reason given.'}
-                    **◎ Moderator:** ${interaction.user.tag}`,
-                })
-                .setFooter({ text: 'You have been banned' })
-                .setTimestamp();
-
-            await user.send({ embeds: [authoMes] });
+            const dmContainer = this.buildBanDmContainer({
+                guildName: interaction.guild!.name,
+                moderator: `${interaction.user}`,
+                reason: banReason,
+            });
+            await user.send({ components: [dmContainer], flags: MessageFlags.IsComponentsV2 });
         } catch {
             // Do nothing
         }
 
-        const embed = new EmbedBuilder()
-            .setColor('#FE4611')
-            .setAuthor({ name: 'Member Banned', iconURL: user.user.displayAvatarURL() })
-            .setThumbnail(user.user.displayAvatarURL())
-            .setDescription(
-                `${user} - \`@${user.user.tag}${user.user.discriminator !== '0' ? `#${user.user.discriminator}` : ''}\``
-            )
-            .setFooter({ text: `ID: ${user.id}` })
-            .setTimestamp();
-
-        // Add a field for the ban reason if it exists
-        if (reason) {
-            embed.addFields({ name: 'Reason', value: `\`${reason}\`` });
-        }
-
-        const button = new ButtonBuilder()
-            .setLabel('Unban')
-            .setStyle(ButtonStyle.Danger)
-            .setCustomId(`unban_Ban_${user.id}`);
-
-        const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
-
-        const m = await interaction.reply({ embeds: [embed], components: [row] });
-
-        const collector = m.createMessageComponentCollector({ time: 30_000 });
-
-        collector.on('collect', async () => {
-            try {
-                const memberPerms = interaction.member!.permissions as PermissionsBitField;
-
-                if (!memberPerms.has(PermissionsBitField.Flags.BanMembers)) {
-                    await RagnarokComponent(
-                        interaction,
-                        'Error',
-                        'You require the `Ban Members` permission to execute this command!',
-                        true
-                    );
-                }
-
-                interaction.guild!.bans.fetch().then(async (bans) => {
-                    if (bans.size === 0) {
-                        await RagnarokComponent(
-                            interaction,
-                            'Error',
-                            'An error occurred, is the user banned?',
-                            true
-                        );
-                        return;
-                    }
-
-                    const bUser = bans.find((ban) => ban.user.id === user.id);
-                    if (!bUser) {
-                        await RagnarokComponent(
-                            interaction,
-                            'Error',
-                            'The user specified is not banned.',
-                            true
-                        );
-                        return;
-                    }
-
-                    await interaction.guild!.members.unban(bUser.user);
-
-                    collector.stop();
-                });
-            } catch (error) {
-                await RagnarokComponent(
-                    interaction,
-                    'Error',
-                    `An error occurred\n${codeBlock('text', `${error}`)}`,
-                    true
-                );
-            }
+        const unbanCustomId = `ban:unban:${interaction.guild!.id}:${user.id}`;
+        const container = this.buildBanContainer({
+            guildName: interaction.guild!.name,
+            target: user,
+            moderator: `${interaction.user}`,
+            reason: banReason,
+            deleteMessagesLabel,
+            unbanCustomId,
         });
 
-        collector.on('end', async () => {
-            button.setDisabled(true);
+        await interaction.reply({
+            components: [container],
+            flags: MessageFlags.IsComponentsV2,
+        });
+    }
 
-            const unbanEmbed = new EmbedBuilder()
-                .setColor('#156FA4')
-                .setAuthor({
-                    name: 'Member Unbanned',
-                    iconURL: user.displayAvatarURL(),
-                })
-                .setThumbnail(user.user.displayAvatarURL())
-                .setDescription(
-                    `${user} - \`@${user.user.tag}${user.user.discriminator !== '0' ? `#${user.user.discriminator}` : ''}\``
-                )
-                .setFooter({ text: `ID: ${user.id}` })
-                .setTimestamp();
+    @ButtonComponent({ id: /^ban:unban:\d+:\d+$/ })
+    async onUnban(interaction: import('discord.js').ButtonInteraction): Promise<void> {
+        const parts = interaction.customId.split(':');
+        // ban:unban:<guildId>:<userId>
+        const guildId = parts[2];
+        const userId = parts[3];
 
-            await interaction.editReply({ embeds: [unbanEmbed], components: [row] });
+        if (!(interaction.guild && guildId && userId) || interaction.guild.id !== guildId) {
+            await RagnarokComponent(interaction, 'Error', 'Invalid guild for this action.', true);
+            return;
+        }
+
+        if (!interaction.memberPermissions?.has(PermissionsBitField.Flags.BanMembers)) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'You require the `Ban Members` permission to unban users.',
+                true
+            );
+            return;
+        }
+
+        try {
+            await interaction.guild.members.unban(userId);
+        } catch {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Unban failed. The user may already be unbanned, or I lack permission.',
+                true
+            );
+            return;
+        }
+
+        // Disable the button and update the message to show completion
+        // Rebuild a simple "unbanned" container
+        const header = new TextDisplayBuilder().setContent('# ✅ Member Unbanned');
+        const body = new TextDisplayBuilder().setContent(
+            [
+                `> **User ID:** \`${userId}\``,
+                `> **Moderator:** ${interaction.user}`,
+                '> **Status:** `Unbanned`',
+            ].join('\n')
+        );
+
+        const disabledButton = new ButtonBuilder()
+            .setCustomId(interaction.customId)
+            .setStyle(ButtonStyle.Secondary)
+            .setLabel('Unbanned')
+            .setDisabled(true);
+
+        const container = new ContainerBuilder()
+            .addTextDisplayComponents(header)
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(body)
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addActionRowComponents((row) => row.addComponents(disabledButton));
+
+        await interaction.update({
+            components: [container],
+            flags: MessageFlags.IsComponentsV2,
         });
     }
 }
