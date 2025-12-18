@@ -25,11 +25,16 @@ export class Avatar {
             description: 'User to fetch (optional)',
             name: 'user',
             type: ApplicationCommandOptionType.User,
+            required: false,
         })
-        user: GuildMember,
+        user: GuildMember | null,
         interaction: CommandInteraction
     ): Promise<void> {
-        const member = user || interaction.member;
+        const member = user || (interaction.member as GuildMember | null);
+        if (!member) {
+            await RagnarokComponent(interaction, 'Error', 'Could not find member.', true);
+            return;
+        }
 
         try {
             await member.fetch();
