@@ -30,7 +30,9 @@ import {
     type ITitle,
     TitleMainType,
 } from '@valhalladev/movier';
+import axios from 'axios';
 import mongoose from 'mongoose';
+import { config } from '../config/Config.js';
 import Level from '../mongo/Level.js';
 import LevelConfig from '../mongo/LevelConfig.js';
 
@@ -580,5 +582,78 @@ export async function handleError(client: Client, error: unknown): Promise<void>
         await channel.send({ embeds: [embed] });
     } catch (sendError) {
         console.error('Failed to send the error embed:', sendError);
+    }
+}
+
+/**
+ * Scrambles the input word using the Fisher-Yates shuffle algorithm.
+ * @param word - The input word to be scrambled.
+ * @returns The scrambled word as a string.
+ */
+export function scrambleWord(word: string): string {
+    const wordArray = word.split('');
+    let currentIndex = wordArray.length;
+    let temporaryValue: string;
+    let randomIndex: number;
+
+    // Fisher-Yates shuffle algorithm
+    while (currentIndex !== 0) {
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        temporaryValue = wordArray[currentIndex]!;
+        wordArray[currentIndex] = wordArray[randomIndex]!;
+        wordArray[randomIndex] = temporaryValue;
+    }
+
+    return wordArray.join('');
+}
+
+/**
+ * Fetches a random word based on the input difficulty level, scrambles it, and retrieves its pronunciation, part of speech,
+ * definition, and an example sentence from the Wordnik API.
+ *
+ * @param difficulty - The difficulty level of the word to be fetched: 'easy', 'medium', or 'hard'.
+ * @returns A Promise that resolves to an object containing the original word, scrambled word, pronunciation, part of speech,
+ * and an array of fields containing the definition and example sentence.
+ */
+export async function fetchAndScrambleWord(): Promise<{
+    originalWord: string;
+    scrambledWord: string;
+    pronunciation: string;
+    partOfSpeech: string;
+    definition: string[];
+    fieldArray: { name: string; value: string }[];
+}> {
+    const url = `${config.VALHALLA_API_URI}/wordEnhanced`;
+
+    try {
+        const response = await axios.get(url, {
+            headers: { Authorization: `Bearer ${config.VALHALLA_API_KEY}` },
+        });
+
+        const { data } = response;
+
+        const { word } = data;
+        const scrambledWord = scrambleWord(word);
+        const { partOfSpeech } = data;
+        const { definition } = data;
+        const { pronunciation } = data;
+
+        console.log(word);
+        const fieldArray: { name: string; value: string }[] = [];
+        fieldArray.push({ name: '**Definition:**', value: `>>> *${definition.join('\n')}*` });
+
+        return {
+            originalWord: word,
+            scrambledWord,
+            pronunciation,
+            partOfSpeech,
+            definition,
+            fieldArray,
+        };
+    } catch (error) {
+        console.error('Error fetching and scrambling word:', error);
+        throw error;
     }
 }
