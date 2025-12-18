@@ -5,7 +5,7 @@ import {
     EmbedBuilder,
     type GuildMember,
 } from 'discord.js';
-import { Discord, Slash, SlashGroup, SlashOption } from 'discordx';
+import { Discord, Slash, SlashOption } from 'discordx';
 import moment from 'moment';
 import ms from 'ms';
 import BirthdayConfig from '../../mongo/BirthdayConfig.js';
@@ -14,8 +14,6 @@ import { color, pagination, RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
-@SlashGroup({ description: 'Set or view birthdays', name: 'birthday' })
-@SlashGroup('birthday')
 export class Birthday {
     /**
      * View the birthday of the author of the interaction or a specified user.
@@ -24,16 +22,17 @@ export class Birthday {
      * @param user - Optional user to fetch
      */
     @Slash({
-        description: 'View the birthday of the author of the interaction or a specified user.',
-        name: 'view',
+        description: 'View the birthday of yourself or another user.',
+        name: 'birthday',
     })
-    async view(
+    async birthday(
         @SlashOption({
             description: 'View birthday of a user',
             name: 'user',
             type: ApplicationCommandOptionType.User,
+            required: false,
         })
-        user: GuildMember,
+        user: GuildMember | null,
         interaction: CommandInteraction
     ): Promise<void> {
         const birthdayConfigDB = await BirthdayConfig.findOne({ GuildId: interaction.guild!.id });
@@ -48,7 +47,11 @@ export class Birthday {
             return;
         }
 
-        const member = user || interaction.member;
+        const member = user || (interaction.member as GuildMember | null);
+        if (!member) {
+            await RagnarokComponent(interaction, 'Error', 'Could not find member.', true);
+            return;
+        }
 
         const birthdayDB = await Birthdays.findOne({ UserId: member.id });
 
@@ -83,10 +86,10 @@ export class Birthday {
      * @param client - The Discord client.
      * @param date - Date of users birthday
      */
-    @Slash({ description: 'The ability to set your birthdays', name: 'set' })
+    @Slash({ description: 'Set your birthday', name: 'birthday-set' })
     async set(
         @SlashOption({
-            description: 'Set your birthday',
+            description: 'Set your birthday (MM/DD/YYYY). Example: 12/31/2024',
             name: 'date',
             required: true,
             type: ApplicationCommandOptionType.String,
@@ -94,6 +97,17 @@ export class Birthday {
         date: string,
         interaction: CommandInteraction
     ): Promise<void> {
+        const birthdayConfigDB = await BirthdayConfig.findOne({ GuildId: interaction.guild!.id });
+        if (!birthdayConfigDB) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Birthdays are currently disabled on this server. An admin may need to enable this feature by running `/config birthday`.',
+                true
+            );
+            return;
+        }
+
         const validateDate = moment(date, 'MM/DD/YYYY', true).isValid();
 
         if (!validateDate) {
@@ -137,8 +151,19 @@ export class Birthday {
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      */
-    @Slash({ description: 'Delete your birthday data', name: 'delete' })
+    @Slash({ description: 'Delete your birthday data', name: 'birthday-delete' })
     async deleteBirthday(interaction: CommandInteraction): Promise<void> {
+        const birthdayConfigDB = await BirthdayConfig.findOne({ GuildId: interaction.guild!.id });
+        if (!birthdayConfigDB) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Birthdays are currently disabled on this server. An admin may need to enable this feature by running `/config birthday`.',
+                true
+            );
+            return;
+        }
+
         const birthdayDB = await Birthdays.findOneAndDelete({ UserId: interaction.user.id });
 
         if (!birthdayDB) {
@@ -163,8 +188,19 @@ export class Birthday {
      * @param interaction - The command interaction.
      * @param client - The Discord client.
      */
-    @Slash({ description: 'List all birthdays', name: 'all' })
+    @Slash({ description: 'List all birthdays', name: 'birthdays' })
     async list(interaction: CommandInteraction): Promise<void> {
+        const birthdayConfigDB = await BirthdayConfig.findOne({ GuildId: interaction.guild!.id });
+        if (!birthdayConfigDB) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Birthdays are currently disabled on this server. An admin may need to enable this feature by running `/config birthday`.',
+                true
+            );
+            return;
+        }
+
         // Fetch all birthdays from the database
         const rows = await Birthdays.find();
 
@@ -274,7 +310,7 @@ export class Birthday {
 
         // Send the paginated list to the channel
         if (embeds.length > 1) {
-            pagination(interaction, embeds);
+            await pagination(interaction, embeds, '▶️', '🏠', '◀️');
         } else {
             await interaction.reply({ embeds });
         }
