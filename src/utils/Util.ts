@@ -84,7 +84,14 @@ export async function messageDelete(message: Message, time: number): Promise<voi
 
             // Check if the message is deletable before attempting to delete it
             if (message.deletable) {
-                await message.delete();
+                await message.delete().catch((error: unknown) => {
+                    // Ignore races where the message was already deleted (DiscordAPIError 10008)
+                    const err = error as { code?: number; message?: string };
+                    if (err?.code === 10_008 || err?.message?.includes('Unknown Message')) {
+                        return;
+                    }
+                    throw error;
+                });
             }
         }
     } catch (error) {
