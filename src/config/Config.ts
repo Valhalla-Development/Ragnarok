@@ -27,6 +27,10 @@ const configSchema = z.object({
     ENABLE_LOGGING: z.string().optional().default('false').transform(stringToBoolean),
     ERROR_LOGGING_CHANNEL: z.string().optional(),
     COMMAND_LOGGING_CHANNEL: z.string().optional(),
+
+    // Valhalla API settings
+    VALHALLA_API_URI: z.string().min(1, 'VALHALLA_API_URI is required'),
+    VALHALLA_API_KEY: z.string().min(1, 'VALHALLA_API_KEY is required'),
 });
 
 // Parse config with error handling
