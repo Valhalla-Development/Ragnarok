@@ -357,47 +357,4 @@ export class EconomyCommand {
             await showHeistResult('Heist Defeat', `❌ ${msg}`);
         }
     }
-
-    /**
-     * Handles baltop navigation
-     * @param interaction - The ButtonInteraction object
-     * @param client - The Discord client
-     */
-    @ButtonComponent({ id: /^baltop:nav:.+$/ })
-    async baltopNavigate(interaction: ButtonInteraction): Promise<void> {
-        if (!this.instance) {
-            await RagnarokComponent(
-                interaction,
-                'Error',
-                'Session expired. Please run /economy again to refresh your controls.',
-                true
-            );
-            return;
-        }
-
-        const parts = interaction.customId.split(':');
-        // Format: ['baltop','nav','<dir>','<guildId>','<page>']
-        if (parts.length < 5) {
-            await interaction.update({
-                components: [
-                    new ContainerBuilder().addTextDisplayComponents(
-                        new TextDisplayBuilder().setContent('❌ Invalid navigation data.')
-                    ),
-                ],
-                flags: MessageFlags.IsComponentsV2,
-            });
-            return;
-        }
-
-        const guildId = parts[3]!;
-        const pageStr = parts[4]!;
-
-        if (guildId !== interaction.guild!.id) {
-            return;
-        }
-
-        const page = Number.parseInt(pageStr, 10);
-        const { handleBaltop } = await import('../../utils/economy/Leaderboard.js');
-        await handleBaltop(interaction, this.instance.homeButton, Number.isNaN(page) ? 0 : page);
-    }
 }
