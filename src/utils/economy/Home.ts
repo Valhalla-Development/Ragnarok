@@ -49,6 +49,7 @@ export function buildHomeContainer(
     wealthStatusMessage?: string,
     claimStatusMessage?: string
 ): ContainerBuilder {
+    const now = Date.now();
     // ═══════════════════════════════════════════════════════════════
     // User Profile & Rank
     // ═══════════════════════════════════════════════════════════════
@@ -78,9 +79,9 @@ export function buildHomeContainer(
     const activityText = new TextDisplayBuilder().setContent(
         [
             '## ⚡ **Activity Status**',
-            `> 🔥 **Heist:** ${Date.now() > balance.StealCool ? '✅ `Ready to Strike!`' : `⏳ <t:${Math.round(balance.StealCool / 1000)}:R>`}`,
-            `> 🎣 **Fishing:** ${balance.Items?.FishingRod ? `${Date.now() > balance.FishCool ? '✅ `Cast Your Line!`' : `⏳ <t:${Math.round(balance.FishCool / 1000)}:R>`}` : '❌ `Need Fishing Rod`'}`,
-            `> 🌾 **Farming:** ${Date.now() > balance.FarmCool ? '✅ `Harvest Time!`' : `⏳ <t:${Math.round(balance.FarmCool / 1000)}:R>`}`,
+            `> 🔥 **Heist:** ${now > balance.StealCool ? '✅ `Ready to Strike!`' : `⏳ <t:${Math.round(balance.StealCool / 1000)}:R>`}`,
+            `> 🎣 **Fishing:** ${balance.Items?.FishingRod ? `${now > balance.FishCool ? '✅ `Cast Your Line!`' : `⏳ <t:${Math.round(balance.FishCool / 1000)}:R>`}` : '❌ `Need Fishing Rod`'}`,
+            `> 🌾 **Farming:** ${now > balance.FarmCool ? '✅ `Harvest Time!`' : `⏳ <t:${Math.round(balance.FarmCool / 1000)}:R>`}`,
         ].join('\n')
     );
 
@@ -119,16 +120,15 @@ export function buildHomeContainer(
     const treasureText = new TextDisplayBuilder().setContent(
         [
             '## 🎁 **Treasure Vault**',
-            `> ⏰ **Hourly Chest:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : Date.now() > balance.Hourly ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(balance.Hourly / 1000)}:R>`}`,
-            `> 🌅 **Daily Vault:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : Date.now() > balance.Daily ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(balance.Daily / 1000)}:R>`}`,
-            `> 📅 **Weekly Safe:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : Date.now() > balance.Weekly ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(balance.Weekly / 1000)}:R>`}`,
-            `> 🗓️ **Monthly Prize:** ${balance.ClaimNewUser ? (Date.now() > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : Date.now() > balance.Monthly ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(balance.Monthly / 1000)}:R>`}`,
+            `> ⏰ **Hourly Chest:** ${balance.ClaimNewUser ? (now > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : now > balance.Hourly ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(balance.Hourly / 1000)}:R>`}`,
+            `> 🌅 **Daily Vault:** ${balance.ClaimNewUser ? (now > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : now > balance.Daily ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(balance.Daily / 1000)}:R>`}`,
+            `> 📅 **Weekly Safe:** ${balance.ClaimNewUser ? (now > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : now > balance.Weekly ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(balance.Weekly / 1000)}:R>`}`,
+            `> 🗓️ **Monthly Prize:** ${balance.ClaimNewUser ? (now > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : now > balance.Monthly ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(balance.Monthly / 1000)}:R>`}`,
             claimStatusMessage ? `> ${claimStatusMessage}` : '',
         ].join('\n')
     );
 
     // Check if anything is claimable
-    const now = Date.now();
     const hasClaimNewUserBlock = balance.ClaimNewUser && now <= balance.ClaimNewUser;
     const isHourlyClaimable = !balance.Hourly || now > balance.Hourly;
     const isDailyClaimable = !balance.Daily || now > balance.Daily;
@@ -159,6 +159,13 @@ export function buildHomeContainer(
         fishButton.setDisabled(true);
     }
 
+    // Clone the heist button and disable it if the user is on cooldown
+    const heistButton = ButtonBuilder.from(buttons.heistButton.toJSON());
+
+    if (balance.StealCool && now < balance.StealCool) {
+        heistButton.setDisabled(true);
+    }
+
     // Clone the claim button and disable it if nothing is claimable
     const claimButton = ButtonBuilder.from(buttons.claimButton.toJSON());
 
@@ -177,7 +184,7 @@ export function buildHomeContainer(
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(activityText)
         .addActionRowComponents((row) =>
-            row.addComponents(buttons.heistButton, fishButton, buttons.farmButton)
+            row.addComponents(heistButton, fishButton, buttons.farmButton)
         )
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(storageText)
