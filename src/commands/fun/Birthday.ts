@@ -2,15 +2,17 @@ import { Category } from '@discordx/utilities';
 import {
     ApplicationCommandOptionType,
     type CommandInteraction,
-    EmbedBuilder,
+    ContainerBuilder,
     type GuildMember,
+    SeparatorSpacingSize,
+    TextDisplayBuilder,
 } from 'discord.js';
 import { Discord, Slash, SlashOption } from 'discordx';
 import moment from 'moment';
 import ms from 'ms';
 import BirthdayConfig from '../../mongo/BirthdayConfig.js';
 import Birthdays from '../../mongo/Birthdays.js';
-import { color, pagination, RagnarokComponent } from '../../utils/Util.js';
+import { paginationComponentsV2, RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
 @Category('Fun')
@@ -223,96 +225,76 @@ export class Birthday {
             return;
         }
 
-        // Sort the birthdays by the number of days until each one
-        const sortedRows = filteredRows.sort((a, b) => {
-            const today = moment();
+        const now = moment();
 
-            const nextBirthdayA = moment(a.Date, 'MM/DD/YYYY');
-            const nextBirthdayB = moment(b.Date, 'MM/DD/YYYY');
-
-            if (nextBirthdayA.isBefore(today)) {
-                nextBirthdayA.add(1, 'year');
-            }
-            if (nextBirthdayB.isBefore(today)) {
-                nextBirthdayB.add(1, 'year');
+        const computeNextBirthday = (dateStr: string) => {
+            const parsed = moment(dateStr, ['MM/DD/YYYY', 'MM/DD'], true);
+            if (!parsed.isValid()) {
+                return null;
             }
 
-            return nextBirthdayA.diff(today, 'days') - nextBirthdayB.diff(today, 'days');
-        });
+            // Normalize to the next occurrence of this month/day
+            const next = moment(parsed).year(now.year());
+            // If it already passed (strictly before today), push to next year
+            if (next.isBefore(now, 'day')) {
+                next.add(1, 'year');
+            }
+            return next;
+        };
 
-        // Create paginated embeds
+        // Sort by upcoming birthday date (soonest first)
+        const sortedRows = filteredRows
+            .map((row) => {
+                const next = computeNextBirthday(row.Date);
+                return { row, next };
+            })
+            .filter(
+                (x): x is { row: (typeof filteredRows)[number]; next: moment.Moment } => !!x.next
+            )
+            .sort((a, b) => a.next.valueOf() - b.next.valueOf())
+            .map((x) => x.row);
+
         const itemsPerPage = 10;
-        const embeds: EmbedBuilder[] = [];
-        for (let i = 0; i < sortedRows.length; i += itemsPerPage) {
-            const pageRows = sortedRows.slice(i, i + itemsPerPage);
+        const totalPages = Math.max(1, Math.ceil(sortedRows.length / itemsPerPage));
 
-            const embed = new EmbedBuilder()
-                .setAuthor({
-                    name: `Birthdays for ${interaction.guild!.name}`,
-                    iconURL: `${interaction.guild!.iconURL()}`,
-                })
-                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
+        const buildPage = (pageIndex: number): Promise<ContainerBuilder> => {
+            const clamped = Math.min(Math.max(0, pageIndex), totalPages - 1);
+            const start = clamped * itemsPerPage;
+            const pageRows = sortedRows.slice(start, start + itemsPerPage);
 
-            const userField = pageRows
-                .map((row) => {
-                    // Check if UserId is defined and not null
-                    if (row.UserId) {
-                        const member = interaction.guild!.members.cache.get(row.UserId);
-                        return member ? member.toString() : 'Unknown User';
-                    }
-                    return 'Unknown User';
-                })
-                .join('\n');
+            const lines = pageRows.map((row) => {
+                const member = row.UserId
+                    ? (interaction.guild!.members.cache.get(row.UserId) ?? null)
+                    : null;
 
-            const dateField = pageRows
-                .map((row) => {
-                    const date = moment(row.Date, 'MM/DD/YYYY').format('Do MMMM');
-                    return `\`${date}\``;
-                })
-                .join('\n');
+                const bdayNow = moment();
+                const next =
+                    computeNextBirthday(row.Date) ?? moment(row.Date, ['MM/DD/YYYY', 'MM/DD']);
+                const datePretty = next.isValid() ? next.format('Do MMMM') : 'Unknown';
+                const diffInMilliseconds = next.isValid() ? next.diff(bdayNow) : 0;
+                const inText = next.isValid() ? ms(diffInMilliseconds, { long: true }) : 'Unknown';
 
-            const countdownField = pageRows
-                .map((row) => {
-                    let year: number;
+                return `- ${member ? member.toString() : '`Unknown User`'} • \`${datePretty}\` • \`${inText}\``;
+            });
 
-                    const bdayNow = moment();
-                    const nextBirthday = row.Date.slice(0, row.Date.length - 4);
-
-                    const birthdayNext = new Date(nextBirthday + bdayNow.year());
-                    const getNow = new Date();
-                    if (birthdayNext > getNow) {
-                        year = bdayNow.year();
-                    } else {
-                        year = bdayNow.year() + 1;
-                    }
-
-                    const then = moment(nextBirthday + year, 'MM/DD/YYYY');
-                    const diffInMilliseconds = then.diff(bdayNow);
-
-                    return `\`${ms(diffInMilliseconds, { long: true })}\``;
-                })
-                .join('\n');
-
-            embed.addFields(
-                { name: 'User', value: userField, inline: true },
-                { name: 'Date', value: dateField, inline: true },
-                { name: 'In', value: countdownField, inline: true }
+            const header = new TextDisplayBuilder().setContent(
+                ['# 🎂 Birthdays', totalPages > 1 ? `> Page: ${clamped + 1}/${totalPages}` : '']
+                    .filter(Boolean)
+                    .join('\n')
             );
 
-            if (sortedRows.length > itemsPerPage) {
-                embed.setFooter({
-                    text: `Page ${Math.floor(i / itemsPerPage) + 1}/${Math.ceil(sortedRows.length / itemsPerPage)}`,
-                });
-            }
+            const body = new TextDisplayBuilder().setContent(
+                lines.length ? lines.join('\n') : '_No results._'
+            );
 
-            embeds.push(embed);
-        }
+            return Promise.resolve(
+                new ContainerBuilder()
+                    .addTextDisplayComponents(header)
+                    .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+                    .addTextDisplayComponents(body)
+            );
+        };
 
-        // Send the paginated list to the channel
-        if (embeds.length > 1) {
-            await pagination(interaction, embeds, '▶️', '🏠', '◀️');
-        } else {
-            await interaction.reply({ embeds });
-        }
+        await paginationComponentsV2(interaction, buildPage, totalPages);
     }
 }
