@@ -1,18 +1,20 @@
 import {
     ActionRowBuilder,
-    type APIEmbed,
     ButtonBuilder,
     ButtonInteraction,
     ButtonStyle,
-    EmbedBuilder,
+    ContainerBuilder,
+    MessageFlags,
     ModalBuilder,
     type ModalSubmitInteraction,
+    SeparatorSpacingSize,
+    TextDisplayBuilder,
     TextInputBuilder,
     TextInputStyle,
 } from 'discord.js';
 import type { Client } from 'discordx';
-import { color, RagnarokComponent } from '../Util.js';
-import { updateHomeContainer } from './Home.js';
+import { RagnarokComponent } from '../Util.js';
+import { buildGambleMenuContainer } from './GambleMenu.js';
 import { getOrCreateBalance } from './Profile.js';
 import type { ButtonRows } from './Types.js';
 
@@ -47,7 +49,6 @@ function setButtonState(button: ButtonBuilder, rows: ButtonRows) {
  * @param client - The Discord client.
  * @param coinflipButton - The coinflip button instance
  * @param homeButton - The home button instance
- * @param homeEmbed - The home embed instance
  * @param rows - Button rows for state management
  * @param buttons - All button instances
  * @param amount - The amount to bet, default is null.
@@ -55,13 +56,13 @@ function setButtonState(button: ButtonBuilder, rows: ButtonRows) {
  */
 export async function handleCoinflip(
     interaction: ModalSubmitInteraction | ButtonInteraction,
-    client: Client,
+    _client: Client,
     coinflipButton: ButtonBuilder,
     homeButton: ButtonBuilder,
-    homeEmbed: EmbedBuilder | null,
     rows: ButtonRows,
-    buttons: {
+    _buttons: {
         baltopButton: ButtonBuilder;
+        gambleButton?: ButtonBuilder;
         depositButton: ButtonBuilder;
         heistButton: ButtonBuilder;
         fishButton: ButtonBuilder;
@@ -130,43 +131,31 @@ export async function handleCoinflip(
         .setStyle(ButtonStyle.Danger)
         .setCustomId('economy_home');
 
-    const coinRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-        headsButton,
-        tailsButton,
-        cancelButton
-    );
+    const buildContainer = (title: string, content: string, includeRow = true) => {
+        const header = new TextDisplayBuilder().setContent(title);
+        const body = new TextDisplayBuilder().setContent(content);
+
+        const container = new ContainerBuilder()
+            .addTextDisplayComponents(header)
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(body);
+
+        if (includeRow) {
+            container
+                .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+                .addActionRowComponents((row) =>
+                    row.addComponents(headsButton, tailsButton, cancelButton)
+                );
+        }
+
+        return container;
+    };
 
     // If no option provided, check for valid amount and sufficient balance, then start the coin flip
     if (option) {
         // If option is provided, determine win or loss, update balance, and display result
         const flip = ['heads', 'tails'];
         const answer = flip[Math.floor(Math.random() * flip.length)];
-
-        const win = new EmbedBuilder()
-            .setAuthor({
-                name: `${interaction.user.displayName}`,
-                iconURL: `${interaction.user.avatarURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-            .addFields({
-                name: `**${client.user?.username} - Coin Flip**`,
-                value: `**◎** ${interaction.user} won! <:coin:706659001164628008> \`${Number(
-                    amount
-                ).toLocaleString('en')}\` has been credited to your Bank!`,
-            });
-
-        const lose = new EmbedBuilder()
-            .setAuthor({
-                name: `${interaction.user.displayName}`,
-                iconURL: `${interaction.user.avatarURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-            .addFields({
-                name: `**${client.user?.username} - Coin Flip**`,
-                value: `**◎** ${interaction.user} lost <:coin:706659001164628008> \`${Number(
-                    amount
-                ).toLocaleString('en')}\``,
-            });
 
         headsButton.setDisabled(true);
         tailsButton.setDisabled(true);
@@ -183,18 +172,27 @@ export async function handleCoinflip(
         await interaction.deferReply();
         await interaction.deleteReply();
 
-        // Display result message with the appropriate embed
+        const wager = Number(amount);
+        const won = option === answer;
+
+        const resultTitle = won ? '# ✅ Coin Flip — Victory' : '# ❌ Coin Flip — Defeat';
+        const resultBody = won
+            ? `> ${interaction.user} won!\n> <:coin:706659001164628008> \`${wager.toLocaleString(
+                  'en'
+              )}\` has been credited to your Bank.`
+            : `> ${interaction.user} lost.\n> <:coin:706659001164628008> \`${wager.toLocaleString('en')}\` was deducted from your Bank.`;
+
+        const resultContainer = buildContainer(resultTitle, resultBody, true);
+
         await interaction.message?.edit({
-            components: [coinRow],
-            embeds: [option === answer ? win : lose],
+            components: [resultContainer],
+            files: [],
+            flags: MessageFlags.IsComponentsV2,
         });
         await balance.save();
 
-        // Update home embed after the coin flip
-        const homeContainer = await updateHomeContainer(interaction, buttons);
-
-        // If interaction is a ButtonInteraction and home embed exists, update the message with home embed after a delay
-        if (interaction instanceof ButtonInteraction && homeEmbed && homeContainer) {
+        // Reset back to the Gamble menu after a delay
+        if (interaction instanceof ButtonInteraction) {
             setTimeout(async () => {
                 // Reset all buttons to primary style and enabled
                 for (const row of rows) {
@@ -203,14 +201,16 @@ export async function handleCoinflip(
                         button.setDisabled(false);
                     }
                 }
-                // Set home button to success style and disabled
-                homeButton.setStyle(ButtonStyle.Success);
-                homeButton.setDisabled(true);
+
+                const gambleMenu = buildGambleMenuContainer({
+                    homeButton,
+                    coinflipButton,
+                });
 
                 await interaction.message?.edit({
-                    components: [homeContainer],
-                    embeds: [homeEmbed as APIEmbed],
+                    components: [gambleMenu],
                     files: [],
+                    flags: MessageFlags.IsComponentsV2,
                 });
             }, commandTimeout);
         }
@@ -239,23 +239,18 @@ export async function handleCoinflip(
             return;
         }
 
-        const initial = new EmbedBuilder()
-            .setAuthor({
-                name: `${interaction.user.displayName}`,
-                iconURL: `${interaction.user.avatarURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-            .addFields({
-                name: `**${client.user?.username} - Coin Flip**`,
-                value: `**◎** ${interaction.user} bet <:coin:706659001164628008> \`${Number(
-                    amount
-                ).toLocaleString('en')}\``,
-            });
+        const initialContainer = buildContainer(
+            '# 🪙 Coin Flip',
+            `> ${interaction.user} wagered <:coin:706659001164628008> \`${Number(
+                amount
+            ).toLocaleString('en')}\`.\n> Choose **Heads** or **Tails**.`,
+            true
+        );
 
         await interaction.message?.edit({
-            embeds: [initial],
-            components: [coinRow],
+            components: [initialContainer],
             files: [],
+            flags: MessageFlags.IsComponentsV2,
         });
     }
 }
