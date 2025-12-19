@@ -1,13 +1,17 @@
 import {
-    type APIEmbed,
     AttachmentBuilder,
     type ButtonBuilder,
     type ButtonInteraction,
     ButtonStyle,
-    EmbedBuilder,
+    ContainerBuilder,
+    MediaGalleryBuilder,
+    MediaGalleryItemBuilder,
+    MessageFlags,
+    SeparatorSpacingSize,
+    TextDisplayBuilder,
 } from 'discord.js';
 import type { Client } from 'discordx';
-import { color, RagnarokComponent } from '../Util.js';
+import { RagnarokComponent } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import { updateHomeContainer } from './Home.js';
 import { getOrCreateBalance } from './Profile.js';
@@ -72,26 +76,34 @@ export function generateFishResult() {
 }
 
 // Function to build fish embed
-export function buildFishEmbed(
+export function buildFishContainer(
     interaction: ButtonInteraction,
-    client: Client,
+    _client: Client,
     fishResult: { name: string; price: number },
-    amt: number
+    amt: number,
+    attachmentName: string
 ) {
     const { name, price } = fishResult;
+    const header = new TextDisplayBuilder().setContent('## 🎣 Fishing');
+    const body = new TextDisplayBuilder().setContent(
+        [
+            `> **Player:** ${interaction.user}`,
+            `> **Catch:** \`${name}\``,
+            `> **Value:** <:coin:706659001164628008> \`${price.toLocaleString('en')}\``,
+            `> **You now have:** \`${amt.toLocaleString('en')}\``,
+        ].join('\n')
+    );
 
-    const embed = new EmbedBuilder()
-        .setAuthor({
-            name: `${interaction.user.displayName}`,
-            iconURL: `${interaction.user.avatarURL()}`,
-        })
-        .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-        .addFields({
-            name: `**${client.user?.username} - Fish**`,
-            value: `**◎ Success:** You caught a ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt.toLocaleString('en')}\`.`,
-        });
+    const media = new MediaGalleryBuilder().addItems(
+        new MediaGalleryItemBuilder().setURL(`attachment://${attachmentName}`)
+    );
 
-    return embed;
+    return new ContainerBuilder()
+        .addTextDisplayComponents(header)
+        .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+        .addTextDisplayComponents(body)
+        .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+        .addMediaGalleryComponents(media);
 }
 
 // Asynchronous function to handle fishing interaction
@@ -100,10 +112,10 @@ export async function handleFish(
     client: Client,
     fishButton: ButtonBuilder,
     homeButton: ButtonBuilder,
-    homeEmbed: EmbedBuilder | null,
     rows: ButtonRows,
     buttons: {
         baltopButton: ButtonBuilder;
+        gambleButton?: ButtonBuilder;
         depositButton: ButtonBuilder;
         heistButton: ButtonBuilder;
         fishButton: ButtonBuilder;
@@ -229,11 +241,12 @@ export async function handleFish(
     balance.Items[fishResult.name as keyof typeof balance.Items] = amt as never;
 
     // Build attachment for fish result image
-    const attachment = new AttachmentBuilder(`assets/economy/${fishResult.name}.png`);
+    const attachmentName = `${fishResult.name}.png`;
+    const attachment = new AttachmentBuilder(`assets/economy/${fishResult.name}.png`).setName(
+        attachmentName
+    );
 
-    // Build fish embed
-    const embed = buildFishEmbed(interaction, client, fishResult, amt);
-    embed.setThumbnail(`attachment://${fishResult.name}.png`);
+    const container = buildFishContainer(interaction, client, fishResult, amt, attachmentName);
 
     // Calculate cooldown time and update balance
     const endTime = Date.now() + ecoPrices.fishing.cooldowns.fishWinTime;
@@ -244,16 +257,16 @@ export async function handleFish(
     await interaction.deferReply();
     await interaction.deleteReply();
     await interaction.message?.edit({
-        components: rows,
-        embeds: [embed],
+        components: [container],
         files: [attachment],
+        flags: MessageFlags.IsComponentsV2,
     });
 
-    // Update home embed
+    // Update home container
     const homeContainer = await updateHomeContainer(interaction, buttons);
 
-    // If home embed is available, reset after timeout
-    if (homeEmbed && homeContainer) {
+    // Reset after timeout
+    if (homeContainer) {
         setTimeout(async () => {
             // Reset all buttons to primary style and enabled
             for (const row of rows) {
@@ -268,8 +281,8 @@ export async function handleFish(
 
             await interaction.message?.edit({
                 components: [homeContainer],
-                embeds: [homeEmbed as APIEmbed],
                 files: [],
+                flags: MessageFlags.IsComponentsV2,
             });
         }, commandTimeout);
     }
