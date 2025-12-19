@@ -38,6 +38,7 @@ export function buildHomeContainer(
     claimUserTime: number,
     buttons: {
         baltopButton: ButtonBuilder;
+        gambleButton?: ButtonBuilder;
         depositButton: ButtonBuilder;
         heistButton: ButtonBuilder;
         fishButton: ButtonBuilder;
@@ -179,7 +180,12 @@ export function buildHomeContainer(
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Large))
         .addTextDisplayComponents(wealthText)
         .addActionRowComponents((row) =>
-            row.addComponents(buttons.baltopButton, depositButton, withdrawButton)
+            row.addComponents(
+                buttons.baltopButton,
+                ...(buttons.gambleButton ? [buttons.gambleButton] : []),
+                depositButton,
+                withdrawButton
+            )
         )
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(activityText)
@@ -207,6 +213,7 @@ export async function updateHomeContainer(
     interaction: CommandInteraction | ButtonInteraction | ModalSubmitInteraction,
     buttons: {
         baltopButton: ButtonBuilder;
+        gambleButton?: ButtonBuilder;
         depositButton: ButtonBuilder;
         heistButton: ButtonBuilder;
         fishButton: ButtonBuilder;
@@ -298,6 +305,7 @@ export async function handleHome(
     interaction: CommandInteraction | ButtonInteraction,
     buttons: {
         baltopButton: ButtonBuilder;
+        gambleButton?: ButtonBuilder;
         depositButton: ButtonBuilder;
         heistButton: ButtonBuilder;
         fishButton: ButtonBuilder;
