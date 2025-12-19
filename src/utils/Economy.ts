@@ -5,7 +5,6 @@ import {
     ButtonStyle,
     type CommandInteraction,
     type ContainerBuilder,
-    type EmbedBuilder,
     ModalBuilder,
     type ModalSubmitInteraction,
     TextInputBuilder,
@@ -19,6 +18,7 @@ import { ecoPrices } from './economy/Config.js';
 import { handleFarm } from './economy/Farm.js';
 import { handleFish } from './economy/Fish.js';
 import { handleCoinflip } from './economy/Gamble.js';
+import { showGambleMenu } from './economy/GambleMenu.js';
 import { handleHarvest } from './economy/Harvest.js';
 import { handleHeist } from './economy/Heist.js';
 import { handleHome } from './economy/Home.js';
@@ -31,6 +31,7 @@ export class Economy {
     claimButton: ButtonBuilder;
     depositButton: ButtonBuilder;
     withdrawButton: ButtonBuilder;
+    gambleButton: ButtonBuilder;
     coinflipButton: ButtonBuilder;
     heistButton: ButtonBuilder;
     farmButton: ButtonBuilder;
@@ -38,7 +39,6 @@ export class Economy {
     harvestButton: ButtonBuilder;
     itemsButton: ButtonBuilder;
     rows: ActionRowBuilder<ButtonBuilder>[] = [];
-    homeEmbed: EmbedBuilder | null = null;
     homeContainer: ContainerBuilder | null = null;
 
     constructor() {
@@ -67,6 +67,12 @@ export class Economy {
             .setLabel('Withdraw Cash')
             .setStyle(ButtonStyle.Primary)
             .setCustomId('economy_withdraw');
+
+        this.gambleButton = new ButtonBuilder()
+            .setLabel('Gamble')
+            .setEmoji('🎲')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('economy_gamble');
 
         this.coinflipButton = new ButtonBuilder()
             .setLabel('Coin Flip')
@@ -107,7 +113,7 @@ export class Economy {
         );
 
         const row2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
-            this.coinflipButton,
+            this.gambleButton,
             this.farmButton,
             this.fishButton,
             this.harvestButton
@@ -136,6 +142,7 @@ export class Economy {
     private getButtons() {
         return {
             baltopButton: this.baltopButton,
+            gambleButton: this.gambleButton,
             depositButton: this.depositButton,
             heistButton: this.heistButton,
             fishButton: this.fishButton,
@@ -217,12 +224,22 @@ export class Economy {
             client,
             this.coinflipButton,
             this.homeButton,
-            this.homeEmbed,
             this.rows,
             this.getButtons(),
             amount,
             option
         );
+    }
+
+    /**
+     * Shows the gambling menu (currently: Coin Flip).
+     * Coin flip behavior itself is unchanged; selecting it will run the existing modal-based flow.
+     */
+    async gamble(interaction: ButtonInteraction): Promise<void> {
+        await showGambleMenu(interaction, {
+            homeButton: this.homeButton,
+            coinflipButton: this.coinflipButton,
+        });
     }
 
     /**
@@ -234,7 +251,6 @@ export class Economy {
             client,
             this.farmButton,
             this.homeButton,
-            this.homeEmbed,
             this.rows,
             this.getButtons()
         );
@@ -249,7 +265,6 @@ export class Economy {
             client,
             this.fishButton,
             this.homeButton,
-            this.homeEmbed,
             this.rows,
             this.getButtons()
         );
