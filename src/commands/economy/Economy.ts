@@ -80,6 +80,7 @@ export class EconomyCommand {
             ['withdraw', async () => this.instance?.withdraw(interaction)],
             ['claim', async () => this.instance?.claim(interaction)],
             ['items', async () => this.instance?.items(interaction)],
+            ['gamble', async () => this.instance?.gamble(interaction)],
             [
                 'coinflip',
                 async () => {
