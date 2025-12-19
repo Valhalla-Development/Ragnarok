@@ -1,13 +1,17 @@
 import {
-    type APIEmbed,
     AttachmentBuilder,
     type ButtonBuilder,
     type ButtonInteraction,
     ButtonStyle,
-    EmbedBuilder,
+    ContainerBuilder,
+    MediaGalleryBuilder,
+    MediaGalleryItemBuilder,
+    MessageFlags,
+    SeparatorSpacingSize,
+    TextDisplayBuilder,
 } from 'discord.js';
 import type { Client } from 'discordx';
-import { color, RagnarokComponent } from '../Util.js';
+import { RagnarokComponent } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import { updateHomeContainer } from './Home.js';
 import { getOrCreateBalance } from './Profile.js';
@@ -63,28 +67,35 @@ export function generateFarmResult() {
 }
 
 // Function to build farm embed
-export function buildFarmEmbed(
+export function buildFarmContainer(
     interaction: ButtonInteraction,
-    client: Client,
+    _client: Client,
     farmResult: { name: string; price: number },
-    amt: number
+    amt: number,
+    attachmentName: string
 ) {
     const { name, price } = farmResult;
+    const header = new TextDisplayBuilder().setContent('## 🌾 Farm');
+    const body = new TextDisplayBuilder().setContent(
+        [
+            `> **Player:** ${interaction.user}`,
+            `> **Reward:** \`${name}\``,
+            `> **Value:** <:coin:706659001164628008> \`${price.toLocaleString('en')}\``,
+            `> **You now have:** \`${amt.toLocaleString('en')}\``,
+            '> **Tip:** `Planting crops yields a larger return.`',
+        ].join('\n')
+    );
 
-    const embed = new EmbedBuilder()
-        .setAuthor({
-            name: `${interaction.user.displayName}`,
-            iconURL: `${interaction.user.avatarURL()}`,
-        })
-        .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-        .setFooter({
-            text: 'Planting crops yields a larger return! check it out with: /plant',
-        });
+    const media = new MediaGalleryBuilder().addItems(
+        new MediaGalleryItemBuilder().setURL(`attachment://${attachmentName}`)
+    );
 
-    return embed.addFields({
-        name: `**${client.user?.username} - Farm**`,
-        value: `**◎ Success:** You found a ${name}! It is valued at: <:coin:706659001164628008> \`${price.toLocaleString('en')}\`\nYou now have \`${amt.toLocaleString('en')}\`.`,
-    });
+    return new ContainerBuilder()
+        .addTextDisplayComponents(header)
+        .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+        .addTextDisplayComponents(body)
+        .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+        .addMediaGalleryComponents(media);
 }
 
 // Asynchronous function to handle farming interaction
@@ -93,10 +104,10 @@ export async function handleFarm(
     client: Client,
     farmButton: ButtonBuilder,
     homeButton: ButtonBuilder,
-    homeEmbed: EmbedBuilder | null,
     rows: ButtonRows,
     buttons: {
         baltopButton: ButtonBuilder;
+        gambleButton?: ButtonBuilder;
         depositButton: ButtonBuilder;
         heistButton: ButtonBuilder;
         fishButton: ButtonBuilder;
@@ -181,11 +192,12 @@ export async function handleFarm(
     balance.Items[farmResult.name as keyof typeof balance.Items] = amt as never;
 
     // Build attachment for farm result image
-    const attachment = new AttachmentBuilder(`assets/economy/${farmResult.name}.png`);
+    const attachmentName = `${farmResult.name}.png`;
+    const attachment = new AttachmentBuilder(`assets/economy/${farmResult.name}.png`).setName(
+        attachmentName
+    );
 
-    // Build farm embed
-    const embed = buildFarmEmbed(interaction, client, farmResult, amt);
-    embed.setThumbnail(`attachment://${farmResult.name}.png`);
+    const container = buildFarmContainer(interaction, client, farmResult, amt, attachmentName);
 
     // Calculate cooldown time and update balance
     const endTime = Date.now() + ecoPrices.farming.cooldowns.farmWinTime;
@@ -196,16 +208,16 @@ export async function handleFarm(
     await interaction.deferReply();
     await interaction.deleteReply();
     await interaction.message?.edit({
-        components: rows,
-        embeds: [embed],
+        components: [container],
         files: [attachment],
+        flags: MessageFlags.IsComponentsV2,
     });
 
-    // Update home embed
+    // Update home container
     const homeContainer = await updateHomeContainer(interaction, buttons);
 
-    // If home embed is available, reset after timeout
-    if (homeEmbed && homeContainer) {
+    // Reset after timeout
+    if (homeContainer) {
         setTimeout(async () => {
             // Reset all buttons to primary style and enabled
             for (const row of rows) {
@@ -220,8 +232,8 @@ export async function handleFarm(
 
             await interaction.message?.edit({
                 components: [homeContainer],
-                embeds: [homeEmbed as APIEmbed],
                 files: [],
+                flags: MessageFlags.IsComponentsV2,
             });
         }, commandTimeout);
     }
