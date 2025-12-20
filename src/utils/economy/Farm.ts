@@ -1,6 +1,6 @@
 import {
     AttachmentBuilder,
-    type ButtonBuilder,
+    ButtonBuilder,
     type ButtonInteraction,
     ButtonStyle,
     ContainerBuilder,
@@ -197,7 +197,15 @@ export async function handleFarm(
         attachmentName
     );
 
-    const container = buildFarmContainer(interaction, client, farmResult, amt, attachmentName);
+    const container = buildFarmContainer(interaction, client, farmResult, amt, attachmentName)
+        .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+        .addActionRowComponents((row) =>
+            row.addComponents(
+                ButtonBuilder.from(homeButton.toJSON())
+                    .setDisabled(false)
+                    .setStyle(ButtonStyle.Primary)
+            )
+        );
 
     // Calculate cooldown time and update balance
     const endTime = Date.now() + ecoPrices.farming.cooldowns.farmWinTime;
