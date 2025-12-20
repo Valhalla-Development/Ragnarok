@@ -1,6 +1,6 @@
 import {
     AttachmentBuilder,
-    type ButtonBuilder,
+    ButtonBuilder,
     type ButtonInteraction,
     ButtonStyle,
     ContainerBuilder,
@@ -222,12 +222,62 @@ export async function handleFish(
 
         const randomFailMessage = failMessages[Math.floor(Math.random() * failMessages.length)];
 
-        await RagnarokComponent(interaction, 'Fail', randomFailMessage!, true);
-
         const endTime = Date.now() + ecoPrices.fishing.cooldowns.fishFailTime;
         balance.FishCool = Math.round(endTime);
 
         await balance.save();
+
+        const failContainer = new ContainerBuilder()
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent('## 🎣 Fishing'))
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(
+                    [
+                        `> **Player:** ${interaction.user}`,
+                        `> **Result:** ❌ ${randomFailMessage}`,
+                        `> **Cooldown:** ⏳ <t:${Math.round(balance.FishCool / 1000)}:R>`,
+                    ].join('\n')
+                )
+            )
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addActionRowComponents((row) =>
+                row.addComponents(
+                    ButtonBuilder.from(homeButton.toJSON())
+                        .setDisabled(false)
+                        .setStyle(ButtonStyle.Primary)
+                )
+            );
+
+        await interaction.deferReply();
+        await interaction.deleteReply();
+        await interaction.message?.edit({
+            components: [failContainer],
+            files: [],
+            flags: MessageFlags.IsComponentsV2,
+        });
+
+        // Reset back to home after a delay (same behavior as win flow)
+        const homeContainer = await updateHomeContainer(interaction, buttons);
+        if (homeContainer) {
+            setTimeout(async () => {
+                for (const row of rows) {
+                    for (const button of row.components) {
+                        button.setStyle(ButtonStyle.Primary);
+                        button.setDisabled(false);
+                    }
+                }
+
+                homeButton.setStyle(ButtonStyle.Success);
+                homeButton.setDisabled(true);
+
+                await interaction.message?.edit({
+                    components: [homeContainer],
+                    files: [],
+                    flags: MessageFlags.IsComponentsV2,
+                });
+            }, commandTimeout);
+        }
+
         return;
     }
 
@@ -246,7 +296,15 @@ export async function handleFish(
         attachmentName
     );
 
-    const container = buildFishContainer(interaction, client, fishResult, amt, attachmentName);
+    const container = buildFishContainer(interaction, client, fishResult, amt, attachmentName)
+        .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+        .addActionRowComponents((row) =>
+            row.addComponents(
+                ButtonBuilder.from(homeButton.toJSON())
+                    .setDisabled(false)
+                    .setStyle(ButtonStyle.Primary)
+            )
+        );
 
     // Calculate cooldown time and update balance
     const endTime = Date.now() + ecoPrices.fishing.cooldowns.fishWinTime;
