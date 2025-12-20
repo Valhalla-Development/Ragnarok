@@ -7,8 +7,6 @@ import Dad from '../mongo/Dad.js';
 import Logging from '../mongo/Logging.js';
 import RoleMenu from '../mongo/RoleMenu.js';
 import StarBoard from '../mongo/StarBoard.js';
-import TicketConfig from '../mongo/TicketConfig.js';
-import Tickets from '../mongo/Tickets.js';
 import Welcome from '../mongo/Welcome.js';
 
 /**
@@ -46,10 +44,6 @@ export class GuildDelete {
         await RoleMenu.deleteMany({ GuildId: guild.id });
 
         await Welcome.deleteMany({ GuildId: guild.id });
-
-        await TicketConfig.deleteMany({ GuildId: guild.id });
-
-        await Tickets.deleteMany({ GuildId: guild.id });
 
         await StarBoard.deleteMany({ GuildId: guild.id });
     }

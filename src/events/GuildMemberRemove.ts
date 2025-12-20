@@ -1,8 +1,7 @@
 import { ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
-import Tickets from '../mongo/Tickets.js';
-import { color, updateStatus } from '../utils/Util.js';
+import { updateStatus } from '../utils/Util.js';
 
 /**
  * Discord.js GuildMemberRemove event handler.
@@ -19,28 +18,6 @@ export class GuildMemberRemove {
     async onGuildMemberRemove([member]: ArgsOf<'guildMemberRemove'>, client: Client) {
         // Set activity
         updateStatus(client);
-
-        // Check if the user has a ticket
-        const userTicket = await Tickets.findOne({
-            GuildId: member.guild.id,
-            AuthorId: member.user.id,
-        });
-        if (userTicket) {
-            // Fetch the channel
-            const channel = member.guild.channels.cache.get(userTicket.ChannelId);
-
-            // Check if the channel exists
-            if (channel && channel.type === ChannelType.GuildText) {
-                // Send a message that the user left
-                const existTM = new EmbedBuilder()
-                    .setColor(color(member.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                    .addFields({
-                        name: `**${client.user?.username} - Ticket**`,
-                        value: `${member} - \`@${member.user.tag}${member.user.discriminator !== '0' ? `#${member.user.discriminator}` : ''}\` has the left the server\nThey will be added back to the ticket if they rejoin.`,
-                    });
-                channel.send({ embeds: [existTM] });
-            }
-        }
 
         // If logging is enabled, send an embed to the set channel
         const logging = await Logging.findOne({ GuildId: member.guild.id });

@@ -1,5 +1,5 @@
 import type { Message, TextBasedChannel } from 'discord.js';
-import { EmbedBuilder, Events, type GuildTextBasedChannel, PermissionsBitField } from 'discord.js';
+import { EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import urlRegexSafe from 'url-regex-safe';
@@ -28,7 +28,6 @@ export class MessageCreate {
          * @remarks This function checks if the AdsProtection feature is enabled in the guild and takes actions accordingly.
          */
         async function adsProtection() {
-            const channel = message.channel as GuildTextBasedChannel;
             const adsProt = await AdsProtection.findOne({ GuildId: message.guild?.id });
 
             // Check if AdsProtection is enabled in the guild
@@ -54,12 +53,9 @@ export class MessageCreate {
                     return;
                 }
 
-                // Check if the user has MANAGE_MESSAGES permission and the channel is not a ticket
+                // Check if the user has MANAGE_MESSAGES permission
                 if (
-                    !(
-                        message.member.permissions.has(PermissionsBitField.Flags.ManageMessages) ||
-                        channel.name.startsWith('ticket-')
-                    ) &&
+                    !message.member.permissions.has(PermissionsBitField.Flags.ManageMessages) &&
                     urlRegexSafe({ strict: false }).test(message.content.toLowerCase()) &&
                     message.member.guild.members.me.permissions.has(
                         PermissionsBitField.Flags.ManageMessages

@@ -12,9 +12,8 @@ import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import ordinal from 'ordinal';
 import AutoRole from '../mongo/AutoRole.js';
 import Logging from '../mongo/Logging.js';
-import Tickets from '../mongo/Tickets.js';
 import Welcome from '../mongo/Welcome.js';
-import { color, updateStatus } from '../utils/Util.js';
+import { updateStatus } from '../utils/Util.js';
 
 registerFont('./assets/canvas/fonts/Handlee-Regular.ttf', {
     family: 'Handlee',
@@ -39,40 +38,6 @@ export class GuildMemberAdd {
     async onGuildMemberAdd([member]: ArgsOf<'guildMemberAdd'>, client: Client) {
         // Set activity
         updateStatus(client);
-
-        async function checkTicket() {
-            // Check if the user has a ticket
-            const foundTicket = await Tickets.findOne({
-                GuildId: member.guild.id,
-                AuthorId: member.user.id,
-            });
-
-            if (foundTicket) {
-                // Fetch the channel
-                const channel = member.guild.channels.cache.get(foundTicket.ChannelId);
-
-                // Check if the channel exists
-                if (channel && channel.type === ChannelType.GuildText) {
-                    // Send a message that the user joined
-                    channel.permissionOverwrites
-                        .create(member, {
-                            ViewChannel: true,
-                            SendMessages: true,
-                        })
-                        .catch(console.error);
-
-                    const embed = new EmbedBuilder()
-                        .setColor(color(member.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                        .addFields({
-                            name: `**${client.user?.username} - Ticket**`,
-                            value: `**◎:** \`${member.user}\` has rejoined the server\nThey have been added back to the ticket.`,
-                        });
-
-                    channel.send({ embeds: [embed] });
-                }
-            }
-        }
-        await checkTicket();
 
         async function sendWelcomeMessage() {
             const welcome = await Welcome.findOne({ GuildId: member.guild.id });
