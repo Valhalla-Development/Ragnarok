@@ -4,11 +4,11 @@ import {
     type ButtonInteraction,
     ButtonStyle,
     ContainerBuilder,
-    MediaGalleryBuilder,
-    MediaGalleryItemBuilder,
     MessageFlags,
+    SectionBuilder,
     SeparatorSpacingSize,
     TextDisplayBuilder,
+    ThumbnailBuilder,
 } from 'discord.js';
 import type { Client } from 'discordx';
 import { RagnarokComponent } from '../Util.js';
@@ -72,7 +72,8 @@ export function buildFarmContainer(
     _client: Client,
     farmResult: { name: string; price: number },
     amt: number,
-    attachmentName: string
+    attachmentName: string,
+    homeButton?: ButtonBuilder
 ) {
     const { name, price } = farmResult;
     const header = new TextDisplayBuilder().setContent('## 🌾 Farm');
@@ -86,16 +87,31 @@ export function buildFarmContainer(
         ].join('\n')
     );
 
-    const media = new MediaGalleryBuilder().addItems(
-        new MediaGalleryItemBuilder().setURL(`attachment://${attachmentName}`)
-    );
+    const thumbnail = new ThumbnailBuilder().setURL(`attachment://${attachmentName}`);
 
-    return new ContainerBuilder()
+    const section = new SectionBuilder()
+        .addTextDisplayComponents(body)
+        .setThumbnailAccessory(thumbnail);
+
+    const container = new ContainerBuilder()
         .addTextDisplayComponents(header)
         .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
-        .addTextDisplayComponents(body)
-        .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
-        .addMediaGalleryComponents(media);
+        .addSectionComponents(section);
+
+    // Add "Back" button if provided
+    if (homeButton) {
+        container
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addActionRowComponents((row) =>
+                row.addComponents(
+                    ButtonBuilder.from(homeButton.toJSON())
+                        .setDisabled(false)
+                        .setStyle(ButtonStyle.Primary)
+                )
+            );
+    }
+
+    return container;
 }
 
 // Asynchronous function to handle farming interaction
@@ -197,15 +213,14 @@ export async function handleFarm(
         attachmentName
     );
 
-    const container = buildFarmContainer(interaction, client, farmResult, amt, attachmentName)
-        .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
-        .addActionRowComponents((row) =>
-            row.addComponents(
-                ButtonBuilder.from(homeButton.toJSON())
-                    .setDisabled(false)
-                    .setStyle(ButtonStyle.Primary)
-            )
-        );
+    const container = buildFarmContainer(
+        interaction,
+        client,
+        farmResult,
+        amt,
+        attachmentName,
+        homeButton
+    );
 
     // Calculate cooldown time and update balance
     const endTime = Date.now() + ecoPrices.farming.cooldowns.farmWinTime;

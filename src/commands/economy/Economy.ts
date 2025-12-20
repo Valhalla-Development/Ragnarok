@@ -1,6 +1,8 @@
 import { Category } from '@discordx/utilities';
 import {
+    ButtonBuilder,
     type ButtonInteraction,
+    ButtonStyle,
     type CommandInteraction,
     ContainerBuilder,
     MessageFlags,
@@ -197,7 +199,13 @@ export class EconomyCommand {
                 .addSeparatorComponents((separator) =>
                     separator.setSpacing(SeparatorSpacingSize.Small)
                 )
-                .addActionRowComponents((row) => row.addComponents(economyInstance.homeButton));
+                .addActionRowComponents((row) =>
+                    row.addComponents(
+                        ButtonBuilder.from(economyInstance.homeButton.toJSON())
+                            .setDisabled(false)
+                            .setStyle(ButtonStyle.Primary)
+                    )
+                );
 
             await interaction.deferReply();
             await interaction.deleteReply();

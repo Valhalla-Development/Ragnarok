@@ -143,15 +143,21 @@ export function buildHomeContainer(
 
     // Clone the deposit and withdraw buttons to disable when resource is unavailable
     const depositButton = ButtonBuilder.from(buttons.depositButton.toJSON());
+    // Normalize style in case upstream flows mutated the shared button instance
+    depositButton.setStyle(ButtonStyle.Primary);
 
     if (!balance.Cash || balance.Cash === 0) {
         depositButton.setDisabled(true);
+        depositButton.setStyle(ButtonStyle.Success);
     }
 
     const withdrawButton = ButtonBuilder.from(buttons.withdrawButton.toJSON());
+    // Normalize style in case upstream flows mutated the shared button instance
+    withdrawButton.setStyle(ButtonStyle.Primary);
 
     if (!balance.Bank || balance.Bank === 0) {
         withdrawButton.setDisabled(true);
+        withdrawButton.setStyle(ButtonStyle.Success);
     }
 
     // Clone the fish button and disable it if user doesn't own a fishing rod
@@ -191,9 +197,12 @@ export function buildHomeContainer(
 
     // Clone the claim button and disable it if nothing is claimable
     const claimButton = ButtonBuilder.from(buttons.claimButton.toJSON());
+    // Normalize style in case upstream flows mutated the shared button instance
+    claimButton.setStyle(ButtonStyle.Primary);
 
     if (!hasClaimableRewards) {
         claimButton.setDisabled(true);
+        claimButton.setStyle(ButtonStyle.Success);
     }
 
     // Build and return the stunning container

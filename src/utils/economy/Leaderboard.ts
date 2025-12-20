@@ -1,6 +1,7 @@
 import {
-    type ButtonBuilder as ButtonBuilderType,
+    ButtonBuilder,
     type ButtonInteraction,
+    ButtonStyle,
     ContainerBuilder,
     SeparatorSpacingSize,
     TextDisplayBuilder,
@@ -19,7 +20,7 @@ const USERS_PER_PAGE = 10;
  */
 export async function handleBaltop(
     interaction: ButtonInteraction,
-    homeButton: ButtonBuilderType,
+    homeButton: ButtonBuilder,
     pageIndex = 0
 ) {
     // Fetch all balances from the database sorted by total balance
@@ -72,6 +73,10 @@ export async function handleBaltop(
             })
         );
 
+        const backButton = ButtonBuilder.from(homeButton.toJSON())
+            .setDisabled(false)
+            .setStyle(ButtonStyle.Primary);
+
         const header = new TextDisplayBuilder().setContent(
             [
                 '# 💎 Hall of Fame',
@@ -87,7 +92,7 @@ export async function handleBaltop(
                 new TextDisplayBuilder().setContent(leaderboardContent.trim())
             )
             .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
-            .addActionRowComponents((row) => row.addComponents(homeButton));
+            .addActionRowComponents((row) => row.addComponents(backButton));
 
         return container;
     };

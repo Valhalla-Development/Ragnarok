@@ -1,6 +1,7 @@
 import {
     ButtonBuilder,
     type ButtonInteraction,
+    ButtonStyle,
     ContainerBuilder,
     MessageFlags,
     SectionBuilder,
@@ -33,7 +34,9 @@ export function buildGambleMenuContainer(buttons: {
     const coinflipText = new TextDisplayBuilder().setContent('> 🪙 **Coin Flip**');
     // Clone + force-enable so prior flows that temporarily disabled the shared button
     // don't cause the menu buttons to render greyed out.
-    const coinflipButton = ButtonBuilder.from(buttons.coinflipButton.toJSON()).setDisabled(false);
+    const coinflipButton = ButtonBuilder.from(buttons.coinflipButton.toJSON())
+        .setDisabled(false)
+        .setStyle(ButtonStyle.Primary);
 
     const coinflipSection = new SectionBuilder()
         .addTextDisplayComponents(coinflipText)
@@ -45,6 +48,10 @@ export function buildGambleMenuContainer(buttons: {
         .addSectionComponents(coinflipSection)
         .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
         .addActionRowComponents((row) =>
-            row.addComponents(ButtonBuilder.from(buttons.homeButton.toJSON()).setDisabled(false))
+            row.addComponents(
+                ButtonBuilder.from(buttons.homeButton.toJSON())
+                    .setDisabled(false)
+                    .setStyle(ButtonStyle.Primary)
+            )
         );
 }

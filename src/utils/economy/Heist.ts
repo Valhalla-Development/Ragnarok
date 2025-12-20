@@ -1,6 +1,7 @@
 import {
-    type ButtonBuilder,
+    ButtonBuilder,
     type ButtonInteraction,
+    ButtonStyle,
     ContainerBuilder,
     MessageFlags,
     SeparatorSpacingSize,
@@ -29,19 +30,22 @@ export async function handleHeist(interaction: ButtonInteraction, homeButton: Bu
         .setMaxValues(1);
 
     // Construct the container with heist information
-    const embed = new ContainerBuilder()
+    const backButton = ButtonBuilder.from(homeButton.toJSON())
+        .setDisabled(false)
+        .setStyle(ButtonStyle.Primary);
+
+    const container = new ContainerBuilder()
         .addTextDisplayComponents(new TextDisplayBuilder().setContent('## 🏴‍☠️ **Heist Planning**'))
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(new TextDisplayBuilder().setContent(heistContent.trim()))
         .addActionRowComponents((row) => row.addComponents(userSelectMenu))
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
-        .addActionRowComponents((row) => row.addComponents(homeButton));
+        .addActionRowComponents((row) => row.addComponents(backButton));
 
     // Update the original message with the updated embed and components
     await interaction.message.edit({
-        embeds: [],
         files: [],
-        components: [embed],
+        components: [container],
         flags: MessageFlags.IsComponentsV2,
     });
 }

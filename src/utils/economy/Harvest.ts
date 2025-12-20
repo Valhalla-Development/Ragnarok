@@ -1,5 +1,5 @@
 import {
-    type ButtonBuilder,
+    ButtonBuilder,
     type ButtonInteraction,
     ButtonStyle,
     ContainerBuilder,
@@ -152,13 +152,17 @@ async function showCropStatus(
             ].join('\n')
         );
 
+        const backButton = ButtonBuilder.from(homeButton.toJSON())
+            .setDisabled(false)
+            .setStyle(ButtonStyle.Primary);
+
         return Promise.resolve(
             new ContainerBuilder()
                 .addTextDisplayComponents(header)
                 .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
                 .addTextDisplayComponents(body)
                 .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
-                .addActionRowComponents((row) => row.addComponents(homeButton))
+                .addActionRowComponents((row) => row.addComponents(backButton))
         );
     };
 
@@ -259,13 +263,17 @@ async function displayHarvestResults(
             ].join('\n')
         );
 
+        const backButton = ButtonBuilder.from(homeButton.toJSON())
+            .setDisabled(false)
+            .setStyle(ButtonStyle.Primary);
+
         return Promise.resolve(
             new ContainerBuilder()
                 .addTextDisplayComponents(header)
                 .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
                 .addTextDisplayComponents(body)
                 .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
-                .addActionRowComponents((row) => row.addComponents(homeButton))
+                .addActionRowComponents((row) => row.addComponents(backButton))
         );
     };
 

@@ -126,10 +126,9 @@ export async function handleCoinflip(
         .setStyle(ButtonStyle.Primary)
         .setCustomId('economy_coinflip_tails');
 
-    const cancelButton = new ButtonBuilder()
-        .setLabel('Cancel')
-        .setStyle(ButtonStyle.Danger)
-        .setCustomId('economy_home');
+    const backButton = ButtonBuilder.from(homeButton.toJSON())
+        .setDisabled(false)
+        .setStyle(ButtonStyle.Primary);
 
     const buildContainer = (title: string, content: string, includeRow = true) => {
         const header = new TextDisplayBuilder().setContent(title);
@@ -144,7 +143,7 @@ export async function handleCoinflip(
             container
                 .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
                 .addActionRowComponents((row) =>
-                    row.addComponents(headsButton, tailsButton, cancelButton)
+                    row.addComponents(headsButton, tailsButton, backButton)
                 );
         }
 
@@ -158,7 +157,9 @@ export async function handleCoinflip(
         const answer = flip[Math.floor(Math.random() * flip.length)];
 
         headsButton.setDisabled(true);
+        headsButton.setStyle(ButtonStyle.Success);
         tailsButton.setDisabled(true);
+        tailsButton.setStyle(ButtonStyle.Success);
 
         // Update balance based on win or loss
         if (option === answer) {
