@@ -1,6 +1,7 @@
 import {
     ButtonBuilder,
     ButtonInteraction,
+    ButtonStyle,
     type CommandInteraction,
     ContainerBuilder,
     MessageFlags,
@@ -155,16 +156,37 @@ export function buildHomeContainer(
 
     // Clone the fish button and disable it if user doesn't own a fishing rod
     const fishButton = ButtonBuilder.from(buttons.fishButton.toJSON());
+    // Normalize style in case upstream flows mutated the shared button instance
+    fishButton.setStyle(ButtonStyle.Primary);
 
     if (!balance.Items?.FishingRod) {
         fishButton.setDisabled(true);
+        fishButton.setStyle(ButtonStyle.Success);
+    }
+    // Disable fishing while on cooldown
+    if (balance.FishCool && now < balance.FishCool) {
+        fishButton.setDisabled(true);
+        fishButton.setStyle(ButtonStyle.Success);
+    }
+
+    // Clone the farm button and disable it if the user is on cooldown
+    const farmButton = ButtonBuilder.from(buttons.farmButton.toJSON());
+    // Normalize style in case upstream flows mutated the shared button instance
+    farmButton.setStyle(ButtonStyle.Primary);
+
+    if (balance.FarmCool && now < balance.FarmCool) {
+        farmButton.setDisabled(true);
+        farmButton.setStyle(ButtonStyle.Success);
     }
 
     // Clone the heist button and disable it if the user is on cooldown
     const heistButton = ButtonBuilder.from(buttons.heistButton.toJSON());
+    // Normalize style in case upstream flows mutated the shared button instance
+    heistButton.setStyle(ButtonStyle.Primary);
 
     if (balance.StealCool && now < balance.StealCool) {
         heistButton.setDisabled(true);
+        heistButton.setStyle(ButtonStyle.Success);
     }
 
     // Clone the claim button and disable it if nothing is claimable
@@ -189,9 +211,7 @@ export function buildHomeContainer(
         )
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(activityText)
-        .addActionRowComponents((row) =>
-            row.addComponents(heistButton, fishButton, buttons.farmButton)
-        )
+        .addActionRowComponents((row) => row.addComponents(heistButton, fishButton, farmButton))
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(storageText)
         .addActionRowComponents((row) => row.addComponents(buttons.itemsButton))
