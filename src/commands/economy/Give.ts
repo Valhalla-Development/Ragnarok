@@ -71,27 +71,28 @@ export class Give {
             return;
         }
 
-        if (balance.Bank === 0) {
+        const senderBank = Number(balance.Bank ?? 0);
+        if (senderBank === 0) {
             await RagnarokComponent(interaction, 'Error', 'You only have 💰', true);
             return;
         }
 
-        if (amount > balance.Bank) {
+        if (amount > senderBank) {
             await RagnarokComponent(
                 interaction,
                 'Error',
-                `\`${balance.Bank.toLocaleString('en')}\`\nPlease try again with a valid amount.`,
+                `\`${senderBank.toLocaleString('en')}\`\nPlease try again with a valid amount.`,
                 true
             );
             return;
         }
 
-        otherB.Bank += amount;
-        otherB.Total += amount;
+        otherB.Bank = Number(otherB.Bank ?? 0) + amount;
+        otherB.Total = Number(otherB.Total ?? 0) + amount;
         await otherB.save();
 
-        balance.Bank -= amount;
-        balance.Total -= amount;
+        balance.Bank = senderBank - amount;
+        balance.Total = Number(balance.Total ?? 0) - amount;
         await balance.save();
 
         await RagnarokComponent(

@@ -95,6 +95,11 @@ export class Leader {
         }
 
         const allUsers = await Level.find({ GuildId: interaction.guild!.id }).sort({ Xp: -1 });
+        const mappedUsers = allUsers.map((row) => ({
+            UserId: row.UserId ?? '',
+            Level: Number(row.Level ?? 0),
+            Xp: Number(row.Xp ?? 0),
+        }));
 
         if (!allUsers || allUsers.length === 0) {
             await RagnarokComponent(
@@ -106,10 +111,10 @@ export class Leader {
             return;
         }
 
-        const totalPages = Math.max(1, Math.ceil(allUsers.length / Leader.USERS_PER_PAGE));
+        const totalPages = Math.max(1, Math.ceil(mappedUsers.length / Leader.USERS_PER_PAGE));
         await paginationComponentsV2(
             interaction,
-            async (page) => this.buildPageContainer(interaction.guild!, allUsers, page),
+            async (page) => this.buildPageContainer(interaction.guild!, mappedUsers, page),
             totalPages
         );
     }

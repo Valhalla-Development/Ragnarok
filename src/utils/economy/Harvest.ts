@@ -333,7 +333,8 @@ export async function handleHarvest(
     }
 
     // Check if user has space in farm bag
-    const availableSpots = balance.Boosts.FarmBag - balance.HarvestedCrops.length;
+    const farmBagCapacity = Number(balance.Boosts?.FarmBag ?? 0);
+    const availableSpots = farmBagCapacity - balance.HarvestedCrops.length;
     if (availableSpots <= 0) {
         await RagnarokComponent(
             interaction,

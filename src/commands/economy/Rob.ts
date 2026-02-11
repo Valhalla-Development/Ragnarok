@@ -63,10 +63,12 @@ export class Rob {
             return;
         }
 
-        if (Date.now() > balance.StealCool) {
+        const stealCooldown = Number(balance.StealCool ?? 0);
+        if (Date.now() > stealCooldown) {
             balance.StealCool = 0;
 
-            if (otherB.Cash < 10) {
+            const targetCash = Number(otherB.Cash ?? 0);
+            if (targetCash < 10) {
                 await RagnarokComponent(
                     interaction,
                     'Error',
@@ -85,16 +87,16 @@ export class Rob {
                 const stealPercentage = Math.floor(Math.random() * 51) + 35;
 
                 // Calculates the steal amount based on the percentage
-                stealAmount = Math.floor(otherB.Cash * (stealPercentage / 100));
+                stealAmount = Math.floor(targetCash * (stealPercentage / 100));
 
-                otherB.Cash -= stealAmount;
-                otherB.Total -= stealAmount;
+                otherB.Cash = targetCash - stealAmount;
+                otherB.Total = Number(otherB.Total ?? 0) - stealAmount;
                 await otherB.save();
 
                 // Sets cooldown time
                 balance.StealCool = Date.now() + 120_000;
-                balance.Cash += stealAmount;
-                balance.Total += stealAmount;
+                balance.Cash = Number(balance.Cash ?? 0) + stealAmount;
+                balance.Total = Number(balance.Total ?? 0) + stealAmount;
                 await balance.save();
 
                 const succMessage = [
@@ -159,16 +161,17 @@ export class Rob {
                 const stealPercentage = Math.floor(Math.random() * 6) + 5;
 
                 // Calculates the steal amount based on the percentage
-                stealAmount = Math.floor(balance.Bank * (stealPercentage / 100));
+                const authorBank = Number(balance.Bank ?? 0);
+                stealAmount = Math.floor(authorBank * (stealPercentage / 100));
 
-                otherB.Bank += stealAmount;
-                otherB.Total += stealAmount;
+                otherB.Bank = Number(otherB.Bank ?? 0) + stealAmount;
+                otherB.Total = Number(otherB.Total ?? 0) + stealAmount;
                 await otherB.save();
 
                 // Sets cooldown time
                 balance.StealCool = Date.now() + 240_000;
-                balance.Bank -= stealAmount;
-                balance.Total -= stealAmount;
+                balance.Bank = authorBank - stealAmount;
+                balance.Total = Number(balance.Total ?? 0) - stealAmount;
                 await balance.save();
 
                 const failMessage = [
@@ -226,7 +229,7 @@ export class Rob {
             await RagnarokComponent(
                 interaction,
                 'Error',
-                `Please wait \`${ms(balance.StealCool - Date.now(), { long: true })}\`, before using this command again!`,
+                `Please wait \`${ms(stealCooldown - Date.now(), { long: true })}\`, before using this command again!`,
                 true
             );
         }

@@ -515,13 +515,15 @@ export async function updateLevel(interaction: Message | CommandInteraction) {
             { upsert: true, new: true }
         ).exec();
 
+        const currentLevel = Number(score.Level ?? 0);
+        const currentXp = Number(score.Xp ?? 0);
         const nxtLvl =
             (5 / 6) *
-            (score.Level + 1) *
-            (2 * (score.Level + 1) * (score.Level + 1) + 27 * (score.Level + 1) + 91);
+            (currentLevel + 1) *
+            (2 * (currentLevel + 1) * (currentLevel + 1) + 27 * (currentLevel + 1) + 91);
 
-        if (nxtLvl <= score.Xp) {
-            score.Level += 1;
+        if (nxtLvl <= currentXp) {
+            score.Level = currentLevel + 1;
 
             await score.save();
 

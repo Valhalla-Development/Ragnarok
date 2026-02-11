@@ -16,11 +16,12 @@ export class GuildBanAdd {
     async onGuildBanAdd([ban]: ArgsOf<'guildBanAdd'>) {
         // If logging is enabled, send an embed to the set channel
         const logging = await Logging.findOne({ GuildId: ban.guild.id });
-        if (logging) {
+        if (logging?.ChannelId) {
+            const channelId = logging.ChannelId;
             // Fetch the logging channel
             const channel =
-                ban.guild?.channels.cache.get(logging.ChannelId) ??
-                (await ban.guild?.channels.fetch(logging.ChannelId));
+                ban.guild?.channels.cache.get(channelId) ??
+                (await ban.guild?.channels.fetch(channelId));
 
             const entry = await ban.guild
                 .fetchAuditLogs({ type: AuditLogEvent.MemberBanAdd })

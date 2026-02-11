@@ -425,7 +425,7 @@ export class EconomyCommand {
             return;
         }
 
-        if (targetBalance.Cash < 10) {
+        if (Number(targetBalance.Cash ?? 0) < 10) {
             await RagnarokComponent(
                 interaction,
                 'Error',
@@ -454,16 +454,17 @@ export class EconomyCommand {
         ];
 
         if (successChance) {
-            const maxPerc = (targetBalance.Cash * 85) / 100;
-            const minPerc = (targetBalance.Cash * 35) / 100;
+            const targetCash = Number(targetBalance.Cash ?? 0);
+            const maxPerc = (targetCash * 85) / 100;
+            const minPerc = (targetCash * 35) / 100;
             const stealAmount =
                 Math.floor(Math.random() * (maxPerc - minPerc + 1)) + Math.floor(minPerc);
 
-            targetBalance.Cash -= stealAmount;
-            targetBalance.Total -= stealAmount;
+            targetBalance.Cash = targetCash - stealAmount;
+            targetBalance.Total = Number(targetBalance.Total ?? 0) - stealAmount;
 
-            authorBalance.Cash += stealAmount;
-            authorBalance.Total += stealAmount;
+            authorBalance.Cash = Number(authorBalance.Cash ?? 0) + stealAmount;
+            authorBalance.Total = Number(authorBalance.Total ?? 0) + stealAmount;
             authorBalance.StealCool = now + 120_000; // 2 minutes
 
             await targetBalance.save();
@@ -486,11 +487,11 @@ export class EconomyCommand {
                       )
                     : 0;
 
-            targetBalance.Bank += lossAmount;
-            targetBalance.Total += lossAmount;
+            targetBalance.Bank = Number(targetBalance.Bank ?? 0) + lossAmount;
+            targetBalance.Total = Number(targetBalance.Total ?? 0) + lossAmount;
 
-            authorBalance.Bank -= lossAmount;
-            authorBalance.Total -= lossAmount;
+            authorBalance.Bank = bank - lossAmount;
+            authorBalance.Total = Number(authorBalance.Total ?? 0) - lossAmount;
             authorBalance.StealCool = now + 240_000; // 4 minutes
 
             await targetBalance.save();

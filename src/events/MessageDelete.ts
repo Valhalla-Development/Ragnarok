@@ -18,11 +18,12 @@ export class MessageDelete {
 
         // If logging is enabled, send an embed to the set channel
         const logging = await Logging.findOne({ GuildId: message.guild!.id });
-        if (logging) {
+        if (logging?.ChannelId) {
+            const channelId = logging.ChannelId;
             // Fetch the logging channel
             const chn =
-                message.guild?.channels.cache.get(logging.ChannelId) ??
-                (await message.guild?.channels.fetch(logging.ChannelId));
+                message.guild?.channels.cache.get(channelId) ??
+                (await message.guild?.channels.fetch(channelId));
 
             // Check if the channel exists, is a text channel, and has the necessary permissions to send messages
             if (

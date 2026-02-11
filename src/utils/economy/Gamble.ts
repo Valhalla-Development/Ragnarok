@@ -163,11 +163,11 @@ export async function handleCoinflip(
 
         // Update balance based on win or loss
         if (option === answer) {
-            balance.Bank += Number(amount);
-            balance.Total += Number(amount);
+            balance.Bank = Number(balance.Bank ?? 0) + Number(amount);
+            balance.Total = Number(balance.Total ?? 0) + Number(amount);
         } else {
-            balance.Bank -= Number(amount);
-            balance.Total -= Number(amount);
+            balance.Bank = Number(balance.Bank ?? 0) - Number(amount);
+            balance.Total = Number(balance.Total ?? 0) - Number(amount);
         }
 
         await interaction.deferReply();
@@ -226,15 +226,14 @@ export async function handleCoinflip(
             return;
         }
 
-        if (Number(amount) > balance.Bank) {
+        const bankAmount = Number(balance.Bank ?? 0);
+        if (Number(amount) > bankAmount) {
             await RagnarokComponent(
                 interaction,
                 'Error',
                 `You do not have enough to bet 💰 \`${Number(amount).toLocaleString(
                     'en'
-                )}\`, you have 💰 \`${Number(balance.Bank).toLocaleString(
-                    'en'
-                )}\` available in your Bank.`,
+                )}\`, you have 💰 \`${bankAmount.toLocaleString('en')}\` available in your Bank.`,
                 true
             );
             return;

@@ -151,12 +151,13 @@ export async function handleFarm(
     }
 
     // Check if user is on cooldown
-    if (balance.FarmCool !== null) {
-        if (Date.now() <= balance.FarmCool) {
+    const farmCooldown = Number(balance.FarmCool ?? 0);
+    if (farmCooldown > 0) {
+        if (Date.now() <= farmCooldown) {
             await RagnarokComponent(
                 interaction,
                 'Error',
-                `You are on a cooldown! You will be able to perform this action again <t:${Math.floor(balance.FarmCool / 1000)}:R>.`,
+                `You are on a cooldown! You will be able to perform this action again <t:${Math.floor(farmCooldown / 1000)}:R>.`,
                 true
             );
             return;

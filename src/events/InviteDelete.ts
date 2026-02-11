@@ -17,11 +17,12 @@ export class InviteDelete {
         if (invite.guild instanceof Guild) {
             // If logging is enabled, send an embed to the set channel
             const logging = await Logging.findOne({ GuildId: invite.guild!.id });
-            if (logging) {
+            if (logging?.ChannelId) {
+                const channelId = logging.ChannelId;
                 // Fetch the logging channel
                 const chn =
-                    invite.guild?.channels.cache.get(logging.ChannelId) ??
-                    (await invite.guild?.channels.fetch(logging.ChannelId));
+                    invite.guild?.channels.cache.get(channelId) ??
+                    (await invite.guild?.channels.fetch(channelId));
 
                 // Check if the channel exists, is a text channel, and has the necessary permissions to send messages
                 if (

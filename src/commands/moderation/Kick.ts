@@ -128,7 +128,7 @@ export class Kick {
 
         const id = await Logging.findOne({ GuildId: interaction.guild!.id });
 
-        if (id) {
+        if (id?.ChannelId) {
             const loggingChannel = client.channels.cache.get(id.ChannelId) as GuildTextBasedChannel;
 
             if (loggingChannel) {

@@ -16,11 +16,12 @@ export class ChannelCreate {
     async onChannelCreate([channel]: ArgsOf<'channelCreate'>) {
         // If logging is enabled, send an embed to the set channel
         const logging = await Logging.findOne({ GuildId: channel.guild.id });
-        if (logging) {
+        if (logging?.ChannelId) {
+            const channelId = logging.ChannelId;
             // Fetch the logging channel
             const chn =
-                channel.guild?.channels.cache.get(logging.ChannelId) ??
-                (await channel.guild?.channels.fetch(logging.ChannelId));
+                channel.guild?.channels.cache.get(channelId) ??
+                (await channel.guild?.channels.fetch(channelId));
 
             // Check if the channel exists, is a text channel, and has the necessary permissions to send messages
             if (

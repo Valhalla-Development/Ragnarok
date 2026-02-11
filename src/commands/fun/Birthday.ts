@@ -245,7 +245,7 @@ export class Birthday {
         // Sort by upcoming birthday date (soonest first)
         const sortedRows = filteredRows
             .map((row) => {
-                const next = computeNextBirthday(row.Date);
+                const next = row.Date ? computeNextBirthday(row.Date) : null;
                 return { row, next };
             })
             .filter(
@@ -269,7 +269,8 @@ export class Birthday {
 
                 const bdayNow = moment();
                 const next =
-                    computeNextBirthday(row.Date) ?? moment(row.Date, ['MM/DD/YYYY', 'MM/DD']);
+                    (row.Date ? computeNextBirthday(row.Date) : null) ??
+                    moment(row.Date ?? '', ['MM/DD/YYYY', 'MM/DD']);
                 const datePretty = next.isValid() ? next.format('Do MMMM') : 'Unknown';
                 const diffInMilliseconds = next.isValid() ? next.diff(bdayNow) : 0;
                 const inText = next.isValid() ? ms(diffInMilliseconds, { long: true }) : 'Unknown';

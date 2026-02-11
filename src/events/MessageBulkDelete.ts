@@ -31,11 +31,11 @@ export class MessageBulkDelete {
 
         // If logging is enabled, send an embed to the set channel
         const logging = await Logging.findOne({ GuildId: guild.id });
-        if (logging) {
+        if (logging?.ChannelId) {
+            const channelId = logging.ChannelId;
             // Fetch the logging channel
             const chn =
-                guild.channels.cache.get(logging.ChannelId) ??
-                (await guild.channels.fetch(logging.ChannelId));
+                guild.channels.cache.get(channelId) ?? (await guild.channels.fetch(channelId));
 
             // Check if the channel exists, is a text channel, and has the necessary permissions to send messages
             if (

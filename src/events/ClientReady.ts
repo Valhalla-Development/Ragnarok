@@ -147,7 +147,13 @@ export class ClientReady {
                                 return;
                             }
 
-                            const channel = guild.channels.cache.get(config.ChannelId);
+                            const channelId = config.ChannelId;
+                            if (!channelId) {
+                                await BirthdayConfig.deleteMany({ GuildId: config.GuildId });
+                                return;
+                            }
+
+                            const channel = guild.channels.cache.get(channelId);
                             if (!channel) {
                                 await BirthdayConfig.deleteMany({ GuildId: config.GuildId });
                                 return;
@@ -180,7 +186,12 @@ export class ClientReady {
                                     const now = moment();
                                     const lastRunGuild = userBirthday?.LastRun || [];
 
-                                    const savedDate = new Date(Date.parse(userBirthday.Date));
+                                    const birthdayDate = userBirthday.Date;
+                                    if (!birthdayDate) {
+                                        return;
+                                    }
+
+                                    const savedDate = new Date(Date.parse(birthdayDate));
                                     savedDate.setFullYear(currentDate.getFullYear());
                                     savedDate.setHours(0, 0, 0, 0);
 

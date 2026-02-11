@@ -92,7 +92,11 @@ export async function handleClaim(
     }
 
     // Check if there is anything to claim
-    if (Date.now() < Math.min(balance.Hourly, balance.Daily, balance.Weekly, balance.Monthly)) {
+    const hourlyAt = Number(balance.Hourly ?? 0);
+    const dailyAt = Number(balance.Daily ?? 0);
+    const weeklyAt = Number(balance.Weekly ?? 0);
+    const monthlyAt = Number(balance.Monthly ?? 0);
+    if (Date.now() < Math.min(hourlyAt, dailyAt, weeklyAt, monthlyAt)) {
         await RagnarokComponent(interaction, 'Error', ' You have nothing to claim!', true);
         return;
     }
@@ -122,8 +126,8 @@ export async function handleClaim(
     balance.Daily = balance.Daily ? balance.Daily : endTime + 86_400_000;
     balance.Weekly = balance.Weekly ? balance.Weekly : endTime + 604_800_000;
     balance.Monthly = balance.Monthly ? balance.Monthly : endTime + 2_629_800_000;
-    balance.Bank += fullPrice;
-    balance.Total += fullPrice;
+    balance.Bank = Number(balance.Bank ?? 0) + fullPrice;
+    balance.Total = Number(balance.Total ?? 0) + fullPrice;
 
     await balance.save();
 

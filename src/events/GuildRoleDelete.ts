@@ -16,11 +16,12 @@ export class GuildRoleDelete {
     async onRoleDelete([role]: ArgsOf<'roleDelete'>) {
         // If logging is enabled, send an embed to the set channel
         const logging = await Logging.findOne({ GuildId: role.guild.id });
-        if (logging) {
+        if (logging?.ChannelId) {
+            const channelId = logging.ChannelId;
             // Fetch the logging channel
             const chn =
-                role.guild?.channels.cache.get(logging.ChannelId) ??
-                (await role.guild?.channels.fetch(logging.ChannelId));
+                role.guild?.channels.cache.get(channelId) ??
+                (await role.guild?.channels.fetch(channelId));
 
             // Check if the channel exists, is a text channel, and has the necessary permissions to send messages
             if (

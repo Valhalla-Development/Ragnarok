@@ -21,11 +21,12 @@ export class ChannelUpdate {
 
         // If logging is enabled, send an embed to the set channel
         const logging = await Logging.findOne({ GuildId: oldChannel.guild.id });
-        if (logging) {
+        if (logging?.ChannelId) {
+            const channelId = logging.ChannelId;
             // Fetch the logging channel
             const chn =
-                oldChannel.guild?.channels.cache.get(logging.ChannelId) ??
-                (await oldChannel.guild?.channels.fetch(logging.ChannelId));
+                oldChannel.guild?.channels.cache.get(channelId) ??
+                (await oldChannel.guild?.channels.fetch(channelId));
 
             // Check if the channel exists, is a text channel, and has the necessary permissions to send messages
             if (

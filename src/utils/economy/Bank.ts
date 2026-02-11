@@ -61,8 +61,10 @@ export async function handleDeposit(
     }
 
     // Calculate total amount in the bank after deposit
-    const bankCalc = balance.Cash + balance.Bank;
-    const depositAmount = balance.Cash;
+    const cashAmount = Number(balance.Cash ?? 0);
+    const bankAmount = Number(balance.Bank ?? 0);
+    const bankCalc = cashAmount + bankAmount;
+    const depositAmount = cashAmount;
 
     // Update balance: Set cash to 0, update bank balance and total balance
     balance.Cash = 0;
@@ -172,9 +174,9 @@ export async function handleWithdraw(
         return;
     }
 
-    balance.Cash += amount;
-    balance.Bank -= amount;
-    balance.Total = balance.Cash + balance.Bank;
+    balance.Cash = Number(balance.Cash ?? 0) + amount;
+    balance.Bank = Number(balance.Bank ?? 0) - amount;
+    balance.Total = Number(balance.Cash ?? 0) + Number(balance.Bank ?? 0);
 
     await balance.save();
 

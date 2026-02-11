@@ -48,11 +48,16 @@ export async function handleBaltop(
         await Promise.all(
             pageUsers.map(async (data, index: number) => {
                 const globalIndex = start + index;
-                let fetchUser = interaction.guild!.members.cache.get(data.UserId);
+                const userId = data.UserId ?? '';
+                if (!userId) {
+                    return;
+                }
+
+                let fetchUser = interaction.guild!.members.cache.get(userId);
 
                 if (!fetchUser) {
                     try {
-                        fetchUser = await interaction.guild!.members.fetch(data.UserId);
+                        fetchUser = await interaction.guild!.members.fetch(userId);
                     } catch {
                         // ignore
                     }
@@ -68,7 +73,7 @@ export async function handleBaltop(
                                 ? '🥉'
                                 : '🔹';
                     leaderboardContent += `${medal} **#${globalIndex + 1}** ${fetchUser}\n`;
-                    leaderboardContent += `\u3000\u3000💰 \`${data.Total.toLocaleString('en')}\`\n\n`;
+                    leaderboardContent += `\u3000\u3000💰 \`${Number(data.Total ?? 0).toLocaleString('en')}\`\n\n`;
                 }
             })
         );

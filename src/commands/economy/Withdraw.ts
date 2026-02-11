@@ -27,7 +27,8 @@ export class Withdraw {
     ): Promise<void> {
         const balance = await getOrCreateBalance(interaction);
 
-        if (!balance?.Bank) {
+        const bankAmount = Number(balance?.Bank ?? 0);
+        if (!bankAmount) {
             await RagnarokComponent(
                 interaction,
                 'Error',
@@ -37,18 +38,18 @@ export class Withdraw {
             return;
         }
 
-        if (amount > balance.Bank) {
+        if (amount > bankAmount) {
             await RagnarokComponent(
                 interaction,
                 'Error',
-                `You only have 💰 \`${balance.Bank.toLocaleString('en')}\`. Please try again with a valid amount.`,
+                `You only have 💰 \`${bankAmount.toLocaleString('en')}\`. Please try again with a valid amount.`,
                 true
             );
             return;
         }
 
-        balance.Cash += amount;
-        balance.Bank -= amount;
+        balance.Cash = Number(balance.Cash ?? 0) + amount;
+        balance.Bank = bankAmount - amount;
         await balance.save();
 
         await RagnarokComponent(

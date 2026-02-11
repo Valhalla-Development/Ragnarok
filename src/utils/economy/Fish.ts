@@ -170,12 +170,13 @@ export async function handleFish(
     }
 
     // Check if user is on cooldown
-    if (balance.FishCool !== null) {
-        if (Date.now() <= balance.FishCool) {
+    const fishCooldown = Number(balance.FishCool ?? 0);
+    if (fishCooldown > 0) {
+        if (Date.now() <= fishCooldown) {
             await RagnarokComponent(
                 interaction,
                 'Error',
-                `You are on a cooldown! You will be able to perform this action again <t:${Math.floor(balance.FishCool / 1000)}:R>.`,
+                `You are on a cooldown! You will be able to perform this action again <t:${Math.floor(fishCooldown / 1000)}:R>.`,
                 true
             );
             return;

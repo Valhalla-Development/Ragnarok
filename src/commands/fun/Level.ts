@@ -56,7 +56,8 @@ export class LevelCommand {
             return;
         }
 
-        const { Level: level, Xp: xp } = score;
+        const level = Number(score.Level ?? 0);
+        const xp = Number(score.Xp ?? 0);
 
         const levelNoMinus = level + 1;
         const currentLvl = level;

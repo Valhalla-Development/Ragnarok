@@ -21,11 +21,12 @@ export class GuildMemberRemove {
 
         // If logging is enabled, send an embed to the set channel
         const logging = await Logging.findOne({ GuildId: member.guild.id });
-        if (logging) {
+        if (logging?.ChannelId) {
+            const channelId = logging.ChannelId;
             // Fetch the logging channel
             const channel =
-                member.guild?.channels.cache.get(logging.ChannelId) ??
-                (await member.guild?.channels.fetch(logging.ChannelId));
+                member.guild?.channels.cache.get(channelId) ??
+                (await member.guild?.channels.fetch(channelId));
 
             // Check if the channel exists, is a text channel, and has the necessary permissions to send messages
             if (
