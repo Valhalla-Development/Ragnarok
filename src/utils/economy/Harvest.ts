@@ -36,8 +36,9 @@ function setButtonState(button: ButtonBuilder, rows: ButtonRows) {
     button.setStyle(ButtonStyle.Success);
 }
 
-// Helper method to calculate decay based on time elapsed
-function calculateDecay(crop: CropData, currentTime: number): number {
+// Helper method to calculate decay based on time elapsed.
+// `multiplier` lets harvested inventory decay faster than in-ground crops.
+function calculateDecay(crop: CropData, currentTime: number, multiplier = 1): number {
     // If crop is not ready for harvest, no decay
     if (crop.CropStatus !== 'harvest') {
         return crop.Decay;
@@ -47,7 +48,7 @@ function calculateDecay(crop: CropData, currentTime: number): number {
     const timeElapsedMinutes = (currentTime - (crop.LastUpdateTime || currentTime)) / (1000 * 60);
 
     // Calculate decay increase (decayRate per minute)
-    const decayIncrease = timeElapsedMinutes * ecoPrices.farming.decayRate;
+    const decayIncrease = timeElapsedMinutes * ecoPrices.farming.decayRate * multiplier;
 
     // Update the last update time
     crop.LastUpdateTime = currentTime;
@@ -78,7 +79,7 @@ function updateCropStatuses(balance: BalanceInterface) {
     // Update decay for harvested crops
     if (balance.HarvestedCrops) {
         for (const crop of balance.HarvestedCrops) {
-            crop.Decay = calculateDecay(crop, currentTime);
+            crop.Decay = calculateDecay(crop, currentTime, 6);
         }
     }
 }
