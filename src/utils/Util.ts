@@ -32,11 +32,53 @@ import {
 import axios from 'axios';
 import mongoose from 'mongoose';
 import { config } from '../config/Config.js';
+import Balance from '../mongo/Balance.js';
 import Level from '../mongo/Level.js';
 import LevelConfig from '../mongo/LevelConfig.js';
+import { ecoPrices } from './economy/Config.js';
 
 const xpCooldown = new Set();
 const xpCooldownSeconds = 60;
+
+function getPerMessagePayout(): number {
+    const min = Math.min(ecoPrices.messaging.minPerMessage, ecoPrices.messaging.maxPerMessage);
+    const max = Math.max(ecoPrices.messaging.minPerMessage, ecoPrices.messaging.maxPerMessage);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+async function awardPerMessagePayout(interaction: Message, memberId: string): Promise<void> {
+    const guildId = interaction.guild?.id;
+    if (!guildId) {
+        return;
+    }
+
+    const payout = getPerMessagePayout();
+    if (payout <= 0) {
+        return;
+    }
+
+    const idJoined = `${memberId}-${guildId}`;
+    await Balance.findOneAndUpdate(
+        { IdJoined: idJoined },
+        {
+            $setOnInsert: {
+                IdJoined: idJoined,
+                UserId: memberId,
+                GuildId: guildId,
+                Cash: 0,
+                Bank: 500,
+                Total: 500,
+                ClaimNewUser: Date.now() + ecoPrices.claims.newUserTime,
+            },
+            $inc: { Cash: payout, Total: payout },
+        },
+        {
+            upsert: true,
+            new: true,
+            setDefaultsOnInsert: true,
+        }
+    ).exec();
+}
 
 /**
  * Capitalises the first letter of each word in a string.
@@ -496,6 +538,10 @@ export async function updateLevel(interaction: Message | CommandInteraction) {
                     })
                     .then((m) => deletableCheck(m, 10_000));
             }
+        }
+
+        if ('author' in interaction) {
+            await awardPerMessagePayout(interaction as Message, member.id);
         }
 
         xpCooldown.add(member.id);
