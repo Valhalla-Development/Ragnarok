@@ -98,11 +98,27 @@ export class TraktCommand {
                 .setStyle(ButtonStyle.Link)
                 .setLabel('View Cast')
                 .setURL(`https://imdb.com/title/${details.id}/fullcredits`),
-            new ButtonBuilder()
-                .setStyle(ButtonStyle.Link)
-                .setLabel('Trivia')
-                .setURL(`https://imdb.com/title/${details.id}/trivia`),
         ];
+
+        const trailerId = details.trailers?.[0]?.id;
+        const trailerUrl =
+            details.trailers?.[0]?.playbackUrls?.[0] ??
+            (trailerId ? `https://www.imdb.com/video/${trailerId}` : undefined);
+        if (trailerUrl) {
+            buttonRow.push(
+                new ButtonBuilder()
+                    .setStyle(ButtonStyle.Link)
+                    .setLabel('Watch Trailer')
+                    .setURL(trailerUrl)
+            );
+        } else {
+            buttonRow.push(
+                new ButtonBuilder()
+                    .setStyle(ButtonStyle.Link)
+                    .setLabel('Trivia')
+                    .setURL(`https://imdb.com/title/${details.id}/trivia`)
+            );
+        }
 
         const container = new ContainerBuilder()
             .addTextDisplayComponents(header)
