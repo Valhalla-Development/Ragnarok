@@ -8,6 +8,7 @@ import {
     MessageFlags,
     type ModalSubmitInteraction,
     SeparatorSpacingSize,
+    type StringSelectMenuInteraction,
     TextDisplayBuilder,
     type UserSelectMenuInteraction,
 } from 'discord.js';
@@ -73,6 +74,23 @@ export class EconomyCommand {
             return;
         }
 
+        if (interaction.customId === 'economy_plant_confirm') {
+            await this.instance.processPlant(interaction);
+            return;
+        }
+        if (interaction.customId === 'economy_shop_confirm') {
+            await this.instance.processShopConfirm(interaction);
+            return;
+        }
+
+        if (interaction.customId.startsWith('economy_shop_mode_')) {
+            const mode = interaction.customId.replace('economy_shop_mode_', '');
+            if (mode === 'buy' || mode === 'sell' || mode === 'upgrade') {
+                await this.instance.setShopMode(interaction, mode);
+                return;
+            }
+        }
+
         const button = interaction.customId.split('_');
 
         const actionMap = new Map([
@@ -98,6 +116,8 @@ export class EconomyCommand {
             ['farm', async () => this.instance?.farm(interaction, client)],
             ['fish', async () => this.instance?.fish(interaction, client)],
             ['harvest', async () => this.instance?.harvest(interaction, client)],
+            ['shop', async () => this.instance?.shop(interaction)],
+            ['plant', async () => this.instance?.plant(interaction)],
         ]);
 
         const selectedAction = actionMap.get(button[1] as string);
@@ -156,6 +176,125 @@ export class EconomyCommand {
         const amountInput = interaction.fields.getTextInputValue('withdrawAmount');
         const amount = Number(amountInput.replace(/,/g, ''));
         await this.instance.processWithdraw(interaction, amount);
+    }
+
+    @SelectMenuComponent({ id: 'economy_shop_action_select' })
+    async onShopActionSelect(interaction: StringSelectMenuInteraction): Promise<void> {
+        if (!this.instance) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Session expired. Please run /economy again to refresh your controls.',
+                true
+            );
+            return;
+        }
+        if (this.user !== interaction.user.id) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Only the command executor can select an option.',
+                true
+            );
+            return;
+        }
+
+        const selected = interaction.values[0];
+        if (!selected) {
+            await this.instance.shop(interaction, 'No option selected.');
+            return;
+        }
+        await this.instance.processShopAction(interaction, selected);
+    }
+
+    @SelectMenuComponent({ id: 'economy_shop_qty_select' })
+    async onShopQuantitySelect(interaction: StringSelectMenuInteraction): Promise<void> {
+        if (!this.instance) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Session expired. Please run /economy again to refresh your controls.',
+                true
+            );
+            return;
+        }
+        if (this.user !== interaction.user.id) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Only the command executor can select an option.',
+                true
+            );
+            return;
+        }
+
+        const selected = interaction.values[0];
+        if (!selected) {
+            await this.instance.shop(interaction);
+            return;
+        }
+        await this.instance.setShopQuantity(interaction, selected);
+    }
+
+    @SelectMenuComponent({ id: 'economy_plant_crop_select' })
+    async onPlantCropSelect(interaction: StringSelectMenuInteraction): Promise<void> {
+        if (!this.instance) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Session expired. Please run /economy again to refresh your controls.',
+                true
+            );
+            return;
+        }
+        if (this.user !== interaction.user.id) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Only the command executor can select an option.',
+                true
+            );
+            return;
+        }
+
+        const selected = interaction.values[0];
+        if (!(selected && ['corn', 'wheat', 'potato', 'tomato'].includes(selected))) {
+            await this.instance.plant(interaction, 'Invalid crop selection.');
+            return;
+        }
+        await this.instance.setPlantCrop(
+            interaction,
+            selected as 'corn' | 'wheat' | 'potato' | 'tomato'
+        );
+    }
+
+    @SelectMenuComponent({ id: 'economy_plant_amount_select' })
+    async onPlantAmountSelect(interaction: StringSelectMenuInteraction): Promise<void> {
+        if (!this.instance) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Session expired. Please run /economy again to refresh your controls.',
+                true
+            );
+            return;
+        }
+        if (this.user !== interaction.user.id) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Only the command executor can select an option.',
+                true
+            );
+            return;
+        }
+
+        const selected = interaction.values[0];
+        if (!selected) {
+            await this.instance.plant(interaction);
+            return;
+        }
+        await this.instance.setPlantAmount(interaction, selected);
     }
 
     /**
@@ -298,20 +437,20 @@ export class EconomyCommand {
 
         const successChance = Math.random() < 0.75;
         const successMessages = [
-            `You held ${selectedUser} at gun-point and stole <:coin:706659001164628008>`,
-            `You stabbed ${selectedUser} and took <:coin:706659001164628008>`,
-            `You tricked ${selectedUser} into giving you <:coin:706659001164628008>`,
-            `You pick-pocketed ${selectedUser} and snagged <:coin:706659001164628008>`,
-            `You pulled off a daring heist on ${selectedUser} and secured <:coin:706659001164628008>`,
-            `You hacked ${selectedUser}'s wallet and siphoned <:coin:706659001164628008>`,
+            `You held ${selectedUser} at gun-point and stole 💰`,
+            `You stabbed ${selectedUser} and took 💰`,
+            `You tricked ${selectedUser} into giving you 💰`,
+            `You pick-pocketed ${selectedUser} and snagged 💰`,
+            `You pulled off a daring heist on ${selectedUser} and secured 💰`,
+            `You hacked ${selectedUser}'s wallet and siphoned 💰`,
         ];
 
         const failMessages = [
-            `${selectedUser} over-powered you and took <:coin:706659001164628008>`,
-            `${selectedUser} knew karate and reversed the mugging, costing you <:coin:706659001164628008>`,
-            `You were outsmarted by ${selectedUser} and lost <:coin:706659001164628008>`,
-            `${selectedUser} had backup and you dropped <:coin:706659001164628008> while fleeing`,
-            `You slipped up and ${selectedUser} nabbed <:coin:706659001164628008> from you`,
+            `${selectedUser} over-powered you and took 💰`,
+            `${selectedUser} knew karate and reversed the mugging, costing you 💰`,
+            `You were outsmarted by ${selectedUser} and lost 💰`,
+            `${selectedUser} had backup and you dropped 💰 while fleeing`,
+            `You slipped up and ${selectedUser} nabbed 💰 from you`,
         ];
 
         if (successChance) {
