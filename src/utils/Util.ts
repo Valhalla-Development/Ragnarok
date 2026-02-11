@@ -246,6 +246,7 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
             productionCompany: data.productionCompanies[0]?.name,
             runtime: data.runtime,
             director: data.directors[0]?.name,
+            trailers: data.trailers ?? [],
         };
     } catch (error) {
         console.error('Error fetching data:', error);
