@@ -227,7 +227,9 @@ export function buildHomeContainer(
                 heistButton,
                 fishButton,
                 farmButton,
-                ...(buttons.plantButton ? [buttons.plantButton] : []),
+                ...(buttons.plantButton && balance.Items?.FarmingTools
+                    ? [buttons.plantButton]
+                    : []),
                 ...(buttons.shopButton ? [buttons.shopButton] : [])
             )
         )
