@@ -2,6 +2,7 @@ import type {
     ButtonInteraction,
     CommandInteraction,
     ModalSubmitInteraction,
+    StringSelectMenuInteraction,
     UserSelectMenuInteraction,
 } from 'discord.js';
 import type { HydratedDocument } from 'mongoose';
@@ -14,6 +15,7 @@ type AnyInteraction =
     | CommandInteraction
     | ButtonInteraction
     | ModalSubmitInteraction
+    | StringSelectMenuInteraction
     | UserSelectMenuInteraction;
 
 /**
