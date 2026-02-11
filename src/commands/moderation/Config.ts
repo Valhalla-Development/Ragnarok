@@ -1,23 +1,24 @@
 import { Category } from '@discordx/utilities';
-import axios from 'axios';
-import { loadImage } from 'canvas';
 import {
-    ActionRowBuilder,
-    ApplicationCommandOptionType,
+    type AnySelectMenuInteraction,
     ButtonBuilder,
+    type ButtonInteraction,
     ButtonStyle,
+    ChannelSelectMenuBuilder,
+    type ChannelSelectMenuInteraction,
     ChannelType,
     type CommandInteraction,
-    EmbedBuilder,
-    type GuildMemberRoleManager,
+    ContainerBuilder,
+    type Guild,
     MessageFlags,
     PermissionsBitField,
-    type Role,
-    type TextChannel,
+    RoleSelectMenuBuilder,
+    type RoleSelectMenuInteraction,
+    SeparatorSpacingSize,
+    StringSelectMenuBuilder,
+    TextDisplayBuilder,
 } from 'discord.js';
-import { type Client, Discord, Guard, Slash, SlashGroup, SlashOption } from 'discordx';
-import { BotHasPerm } from '../../guards/BotHasPerm.js';
-import { UserHasPerm } from '../../guards/UserHasPerm.js';
+import { ButtonComponent, Discord, SelectMenuComponent, Slash } from 'discordx';
 import AdsProtection from '../../mongo/AdsProtection.js';
 import AutoRole from '../../mongo/AutoRole.js';
 import BirthdayConfig from '../../mongo/BirthdayConfig.js';
@@ -25,977 +26,678 @@ import Dad from '../../mongo/Dad.js';
 import Logging from '../../mongo/Logging.js';
 import StarBoard from '../../mongo/StarBoard.js';
 import Welcome from '../../mongo/Welcome.js';
-import { color } from '../../utils/Util.js';
+
+type ConfigModule =
+    | 'home'
+    | 'ads'
+    | 'autorole'
+    | 'birthday'
+    | 'dad'
+    | 'logging'
+    | 'starboard'
+    | 'welcome';
+
+interface ModuleViewResult {
+    title: string;
+    lines: string[];
+    controls: (
+        | StringSelectMenuBuilder
+        | ButtonBuilder
+        | RoleSelectMenuBuilder
+        | ChannelSelectMenuBuilder
+    )[];
+}
+
+const MODULE_SELECT_ID = 'cfg:module';
+const ADS_ENABLE_BUTTON_ID = 'cfg:ads:enable';
+const ADS_DISABLE_BUTTON_ID = 'cfg:ads:disable';
+const DAD_ENABLE_BUTTON_ID = 'cfg:dad:enable';
+const DAD_DISABLE_BUTTON_ID = 'cfg:dad:disable';
+const AUTOROLE_SELECT_ID = 'cfg:autorole:role';
+const AUTOROLE_DISABLE_BUTTON_ID = 'cfg:autorole:disable';
+const BIRTHDAY_CHANNEL_SELECT_ID = 'cfg:birthday:channel';
+const BIRTHDAY_DISABLE_BUTTON_ID = 'cfg:birthday:disable';
+const LOGGING_CHANNEL_SELECT_ID = 'cfg:logging:channel';
+const LOGGING_DISABLE_BUTTON_ID = 'cfg:logging:disable';
+const STARBOARD_CHANNEL_SELECT_ID = 'cfg:starboard:channel';
+const STARBOARD_DISABLE_BUTTON_ID = 'cfg:starboard:disable';
+const WELCOME_CHANNEL_SELECT_ID = 'cfg:welcome:channel';
+const WELCOME_DISABLE_BUTTON_ID = 'cfg:welcome:disable';
 
 @Discord()
 @Category('Moderation')
-@SlashGroup({ description: 'Configure bot modules', name: 'config' })
-@SlashGroup({
-    description: 'AutoRole',
-    name: 'autorole',
-    root: 'config',
-})
-@SlashGroup({
-    description: 'Birthday',
-    name: 'birthday',
-    root: 'config',
-})
-@SlashGroup({
-    description: 'Logging',
-    name: 'logging',
-    root: 'config',
-})
-@SlashGroup({
-    description: 'StarBoard',
-    name: 'starboard',
-    root: 'config',
-})
-@SlashGroup({
-    description: 'Welcome',
-    name: 'welcome',
-    root: 'config',
-})
-@SlashGroup('config')
 export class Config {
-    @Slash({ description: 'View all available options', name: 'all' })
-    /**
-     * Displays a menu for configuring various modules.
-     * @param interaction - The command interaction triggering this method.
-     * @param client - The Discord client instance.
-     * @returns A Promise resolving to void.
-     */
-    async all(interaction: CommandInteraction, client: Client): Promise<void> {
-        // Create button components for the menu
-        const homeButton = new ButtonBuilder()
-            .setEmoji('🏠')
-            .setStyle(ButtonStyle.Success)
-            .setCustomId('home')
-            .setDisabled(true);
-
-        const adsProtButton = new ButtonBuilder()
-            .setLabel('Ad Prot')
-            .setStyle(ButtonStyle.Primary)
-            .setCustomId('ads');
-
-        const autoroleButton = new ButtonBuilder()
-            .setLabel('Autorole')
-            .setStyle(ButtonStyle.Primary)
-            .setCustomId('autorole');
-
-        const birthdayButton = new ButtonBuilder()
-            .setLabel('Birthday')
-            .setStyle(ButtonStyle.Primary)
-            .setCustomId('birthday');
-
-        const dadButton = new ButtonBuilder()
-            .setLabel('Dad')
-            .setStyle(ButtonStyle.Primary)
-            .setCustomId('dad');
-
-        const loggingButton = new ButtonBuilder()
-            .setLabel('Logging')
-            .setStyle(ButtonStyle.Primary)
-            .setCustomId('logging');
-
-        const rolemenuButton = new ButtonBuilder()
-            .setLabel('Rolemenu')
-            .setStyle(ButtonStyle.Primary)
-            .setCustomId('rolemenu');
-
-        const welcomeButton = new ButtonBuilder()
-            .setLabel('Welcome')
-            .setStyle(ButtonStyle.Primary)
-            .setCustomId('welcome');
-
-        const starboardButton = new ButtonBuilder()
-            .setLabel('Starboard')
-            .setStyle(ButtonStyle.Primary)
-            .setCustomId('starboard');
-
-        const row1 = new ActionRowBuilder<ButtonBuilder>().addComponents(
-            homeButton,
-            adsProtButton,
-            autoroleButton,
-            birthdayButton,
-            dadButton
-        );
-
-        const row2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
-            loggingButton,
-            rolemenuButton,
-            welcomeButton,
-            starboardButton
-        );
-
-        // Initial embed to display with the menu
-        const initial = new EmbedBuilder()
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-            .addFields({
-                name: `**${client.user?.username} - Config**`,
-                value: '**◎** Click the corresponding button for which module you would like to configure.',
-            });
-
-        // Function to set button states when a button is clicked
-        function setButtonState(button: ButtonBuilder) {
-            const buttons = [
-                homeButton,
-                adsProtButton,
-                autoroleButton,
-                birthdayButton,
-                dadButton,
-                loggingButton,
-                rolemenuButton,
-                welcomeButton,
-                starboardButton,
-            ];
-            for (const otherButton of buttons) {
-                if (otherButton !== button) {
-                    otherButton.setStyle(ButtonStyle.Primary);
-                    otherButton.setDisabled(false);
-                }
-            }
-
-            // Disable the provided 'button' and set its style to success.
-            button.setDisabled(true);
-            button.setStyle(ButtonStyle.Success);
+    @Slash({
+        description: 'Configure server modules',
+        defaultMemberPermissions: [PermissionsBitField.Flags.ManageGuild],
+    })
+    async config(interaction: CommandInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
         }
 
-        // Send the initial menu message
-        const m = await interaction.reply({
-            flags: [MessageFlags.Ephemeral],
-            components: [row1, row2],
-            embeds: [initial],
-        });
-
-        const filter = (but: { user: { id: string } }) => but.user.id !== client.user?.id;
-
-        // Create a message component collector to listen for button clicks
-        const collector = m.createMessageComponentCollector({ filter, time: 15_000 });
-
-        // Event listener for when a button is clicked
-        collector.on('collect', async (b) => {
-            collector.resetTimer();
-
-            // Check which button was clicked and update the menu accordingly
-            if (b.customId === 'home') {
-                setButtonState(homeButton);
-
-                await b.update({ embeds: [initial], components: [row1, row2] });
-                return;
-            }
-
-            if (b.customId === 'ads') {
-                setButtonState(adsProtButton);
-
-                const embed = new EmbedBuilder()
-                    .setAuthor({
-                        name: `${client.user?.username} - Advert Protection Configuration`,
-                        iconURL: `${interaction.guild!.iconURL()}`,
-                    })
-                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                    .setDescription('🚫 Toggle Advert Protection: `/config adsprot <true/false>`');
-
-                await b.update({ embeds: [embed], components: [row1, row2] });
-                return;
-            }
-
-            if (b.customId === 'autorole') {
-                setButtonState(autoroleButton);
-
-                const embed = new EmbedBuilder()
-                    .setAuthor({
-                        name: `${client.user?.username} - AutoRole Module Configuration`,
-                        iconURL: `${interaction.guild!.iconURL()}`,
-                    })
-                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                    .setDescription(`🎭 Set AutoRole: \`/config autorole role <@role>\`
-                            🎭 Disable AutoRole Module: \`/config autorole disable\``);
-
-                await b.update({ embeds: [embed], components: [row1, row2] });
-                return;
-            }
-
-            if (b.customId === 'birthday') {
-                setButtonState(birthdayButton);
-
-                const embed = new EmbedBuilder()
-                    .setAuthor({
-                        name: `${client.user?.username} - Birthday Module Configuration`,
-                        iconURL: `${interaction.guild!.iconURL()}`,
-                    })
-                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                    .setDescription(`🎂 Set Birthday Alert Channel: \`/config birthday channel <#channel>\`
-                            🎂 Disable Birthday Module: \`/config birthday disable\``);
-
-                await b.update({ embeds: [embed], components: [row1, row2] });
-                return;
-            }
-
-            if (b.customId === 'dad') {
-                setButtonState(dadButton);
-
-                const embed = new EmbedBuilder()
-                    .setAuthor({
-                        name: `${client.user?.username} - Dad Bot Module Configuration`,
-                        iconURL: `${interaction.guild!.iconURL()}`,
-                    })
-                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                    .setDescription('👨‍👧 Toggle Dad Bot: `/config dadbot <true/false>`');
-
-                await b.update({ embeds: [embed], components: [row1, row2] });
-                return;
-            }
-
-            if (b.customId === 'logging') {
-                setButtonState(loggingButton);
-
-                const embed = new EmbedBuilder()
-                    .setAuthor({
-                        name: `${client.user?.username} - Logging Module Configuration`,
-                        iconURL: `${interaction.guild!.iconURL()}`,
-                    })
-                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                    .setDescription(`📝 Set Logging Channel: \`/config logging channel <#channel>\`
-                            📝 Disable Logging Module: \`/config logging off\``);
-
-                await b.update({ embeds: [embed], components: [row1, row2] });
-                return;
-            }
-
-            if (b.customId === 'rolemenu') {
-                setButtonState(rolemenuButton);
-
-                const embed = new EmbedBuilder()
-                    .setAuthor({
-                        name: `${client.user?.username} - Role Menu Configuration`,
-                        iconURL: `${interaction.guild!.iconURL()}`,
-                    })
-                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                    .setDescription(`🔵 Add Role to Role Menu: \`/config rolemenu add <@role>\`
-                            🔵 Remove Role from Role Menu: \`/config rolemenu remove <@role>\`
-                            🔵 Clear Role Menu: \`/config rolemenu clear\``);
-
-                await b.update({ embeds: [embed], components: [row1, row2] });
-                return;
-            }
-
-            if (b.customId === 'welcome') {
-                setButtonState(welcomeButton);
-
-                const embed = new EmbedBuilder()
-                    .setAuthor({
-                        name: `${client.user?.username} - Welcome Module Configuration`,
-                        iconURL: `${interaction.guild!.iconURL()}`,
-                    })
-                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                    .setDescription(`🖼 Set Welcome Image: \`/config welcome image <url-to-image>\`
-                            🖼 Set Welcome Channel: \`/config welcome channel <#channel>\`
-                            🖼 Disable Welcome Module: \`/config welcome off\``);
-
-                await b.update({ embeds: [embed], components: [row1, row2] });
-                return;
-            }
-
-            if (b.customId === 'starboard') {
-                setButtonState(starboardButton);
-
-                const embed = new EmbedBuilder()
-                    .setAuthor({
-                        name: `${client.user?.username} - Star Board Module Configuration`,
-                        iconURL: `${interaction.guild!.iconURL()}`,
-                    })
-                    .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                    .setDescription(`🌟 Set Star Board Channel: \`/config starboard channel <#channel>\`
-                            🌟 Disable Star Board Module: \`/config starboard off\``);
-                await b.update({ embeds: [embed], components: [row1, row2] });
-            }
-        });
-
-        // Event listener for when the collector ends (due to timeout)
-        collector.on('end', (_, reason) => {
-            if (reason === 'time') {
-                // Disable button and update message
-                homeButton.setDisabled(true);
-                adsProtButton.setDisabled(true);
-                autoroleButton.setDisabled(true);
-                birthdayButton.setDisabled(true);
-                dadButton.setDisabled(true);
-                loggingButton.setDisabled(true);
-                rolemenuButton.setDisabled(true);
-                welcomeButton.setDisabled(true);
-                starboardButton.setDisabled(true);
-
-                interaction.editReply({ components: [row1, row2] });
-            }
+        const payload = await this.buildPayload(interaction.guild, 'home');
+        await interaction.reply({
+            ...payload,
+            flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
         });
     }
 
-    @Slash({ description: 'Advert Protection Configuration', name: 'adsprot' })
-    /**
-     * Configures the Advert Protection module.
-     * @param state - The new state to set for Advert Protection (true for enabled, false for disabled).
-     * @param interaction - The command interaction triggering this method.
-     * @param client - The Discord client instance.
-     * @returns A Promise resolving to void.
-     */
-    async configAdsProt(
-        @SlashOption({
-            description: 'Toggle Advert Protection',
-            name: 'state',
-            required: true,
-            type: ApplicationCommandOptionType.Boolean,
-        })
-        state: boolean,
-        interaction: CommandInteraction,
-        client: Client
-    ): Promise<void> {
-        // Check the current status of Advert Protection for the guild
-        const currentStatus = await AdsProtection.findOne({ GuildId: interaction.guild!.id });
-
-        // Construct the embed to display the updated status
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${client.user?.username} - Advert Protection`,
-                iconURL: `${interaction.guild!.iconURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-            .setDescription(
-                currentStatus?.Status === state
-                    ? `Advert Protection is already **${state ? 'enabled.' : 'disabled.'}**`
-                    : state
-                      ? 'Advert Protection **enabled**.'
-                      : 'Advert Protection **disabled**.'
-            );
-
-        // Update the status of Advert Protection if it has changed
-        if (currentStatus?.Status !== state) {
-            await AdsProtection.findOneAndUpdate(
-                { GuildId: interaction.guild!.id },
-                { $set: { Status: state } },
-                { upsert: true, new: true }
-            );
+    @SelectMenuComponent({ id: MODULE_SELECT_ID })
+    async onModuleSelect(interaction: AnySelectMenuInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
         }
-
-        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
+        if (!interaction.isStringSelectMenu()) {
+            return;
+        }
+        const selected = interaction.values[0] as ConfigModule | undefined;
+        if (!selected) {
+            return;
+        }
+        const payload = await this.buildPayload(interaction.guild, selected);
+        await interaction.update(payload);
     }
 
-    @Slash({ description: 'AutoRole Module Configuration', name: 'role' })
-    @SlashGroup('autorole', 'config')
-    @Guard(
-        BotHasPerm([PermissionsBitField.Flags.ManageRoles]),
-        UserHasPerm([PermissionsBitField.Flags.ManageRoles])
-    )
-    /**
-     * Configures the AutoRole module.
-     * @param role - The role to set as AutoRole.
-     * @param interaction - The command interaction triggering this method.
-     * @param client - The Discord client instance.
-     * @returns A Promise resolving to void.
-     */
-    async configAutorole(
-        @SlashOption({
-            description: 'Set AutoRole',
-            name: 'role',
-            type: ApplicationCommandOptionType.Role,
-            required: true,
-        })
-        role: Role,
-        interaction: CommandInteraction,
-        client: Client
-    ): Promise<void> {
-        // Construct the embed to display the result of the configuration
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${client.user?.username} - AutoRole Module`,
-                iconURL: `${interaction.guild!.iconURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
+    @ButtonComponent({ id: ADS_ENABLE_BUTTON_ID })
+    async onAdsEnable(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        await AdsProtection.findOneAndUpdate(
+            { GuildId: interaction.guild.id },
+            { $set: { Status: true } },
+            { upsert: true, new: true }
+        );
+        const payload = await this.buildPayload(interaction.guild, 'ads');
+        await interaction.update(payload);
+    }
 
-        // Get the member's roles and the bot's highest role position
-        const member = interaction.member!.roles as GuildMemberRoleManager;
-        const botHighestRole = interaction.guild?.members.me?.roles.highest.position ?? 0;
+    @ButtonComponent({ id: ADS_DISABLE_BUTTON_ID })
+    async onAdsDisable(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        await AdsProtection.deleteOne({ GuildId: interaction.guild.id });
+        const payload = await this.buildPayload(interaction.guild, 'ads');
+        await interaction.update(payload);
+    }
 
-        // Check if the provided role is higher than the member's highest role or the bot's highest role
-        if (role.position >= member.highest.position || role.position >= botHighestRole) {
-            embed.setDescription(
-                role.position >= member.highest.position
-                    ? 'You can not set a role that is higher than your highest role.'
-                    : 'You can not set a role that is higher than my highest role.'
-            );
-        } else {
-            // Update or insert the AutoRole document in the database
+    @ButtonComponent({ id: DAD_ENABLE_BUTTON_ID })
+    async onDadEnable(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        await Dad.findOneAndUpdate(
+            { GuildId: interaction.guild.id },
+            { $set: { Status: true } },
+            { upsert: true, new: true }
+        );
+        const payload = await this.buildPayload(interaction.guild, 'dad');
+        await interaction.update(payload);
+    }
+
+    @ButtonComponent({ id: DAD_DISABLE_BUTTON_ID })
+    async onDadDisable(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        await Dad.deleteOne({ GuildId: interaction.guild.id });
+        const payload = await this.buildPayload(interaction.guild, 'dad');
+        await interaction.update(payload);
+    }
+
+    @SelectMenuComponent({ id: AUTOROLE_SELECT_ID })
+    async onAutoroleSelect(interaction: RoleSelectMenuInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+
+        try {
+            const roleId = interaction.values[0];
+            if (!roleId) {
+                await interaction.deferUpdate();
+                return;
+            }
+
+            const role = interaction.guild.roles.cache.get(roleId);
+            if (!role) {
+                const payload = await this.buildPayload(interaction.guild, 'autorole');
+                await interaction.update(payload);
+                return;
+            }
+
+            const member = await interaction.guild.members.fetch(interaction.user.id);
+            const botMember = interaction.guild.members.me;
+
+            if (!botMember) {
+                const payload = await this.buildPayload(interaction.guild, 'autorole');
+                await interaction.update(payload);
+                return;
+            }
+
+            if (role.position >= member.roles.highest.position) {
+                const payload = await this.buildPayload(interaction.guild, 'autorole');
+                await interaction.update(payload);
+                return;
+            }
+
+            if (role.position >= botMember.roles.highest.position) {
+                const payload = await this.buildPayload(interaction.guild, 'autorole');
+                await interaction.update(payload);
+                return;
+            }
+
             await AutoRole.findOneAndUpdate(
-                { GuildId: interaction.guild!.id },
-                { $set: { Role: role.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
+                { GuildId: interaction.guild.id },
+                { $set: { Role: role.id } },
                 { upsert: true, new: true }
             );
-            embed.setDescription(`Autorole set to ${role}`);
-        }
 
-        await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
-    }
-
-    @Slash({ description: 'Disable AutoRole Module', name: 'disable' })
-    @SlashGroup('autorole', 'config')
-    /**
-     * Disables the AutoRole module.
-     * @param interaction - The command interaction triggering this method.
-     * @param client - The Discord client instance.
-     * @returns A Promise resolving to void.
-     */
-    async disableAutoRole(interaction: CommandInteraction, client: Client): Promise<void> {
-        // Check the current status of AutoRole for the guild
-        const currentStatus = await AutoRole.findOne({ GuildId: interaction.guild!.id });
-
-        // Construct the embed to display the result of the operation
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${client.user?.username} - AutoRole Module`,
-                iconURL: `${interaction.guild!.iconURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
-
-        // If AutoRole is not enabled, inform the user and return
-        if (!currentStatus) {
-            embed.setDescription('AutoRole is not enabled.');
-            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
-            return;
-        }
-
-        embed.setDescription('AutoRole **disabled**.');
-
-        // Delete the AutoRole document from the database
-        await AutoRole.deleteOne({ GuildId: interaction.guild!.id });
-
-        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
-    }
-
-    /**
-     * Configures the Birthday module.
-     * @param channel - The channel to set as Birthday alerts.
-     * @param interaction - The command interaction triggering this method.
-     * @param client - The Discord client instance.
-     * @returns A Promise resolving to void.
-     */
-    @Slash({ description: 'Birthday Module Configuration', name: 'channel' })
-    @SlashGroup('birthday', 'config')
-    async configBirthdayChannel(
-        @SlashOption({
-            description: 'Set Birthday Channel',
-            name: 'channel',
-            type: ApplicationCommandOptionType.Channel,
-            required: true,
-        })
-        channel: TextChannel,
-        interaction: CommandInteraction,
-        client: Client
-    ): Promise<void> {
-        // Construct the embed to display the result of the configuration
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${client.user?.username} - Birthday Module`,
-                iconURL: `${interaction.guild!.iconURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
-
-        if (channel.type !== ChannelType.GuildText) {
-            embed.setDescription('Please provide a valid `TextChannel`.');
-            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
-            return;
-        }
-
-        // Check if the bot has the SendMessages permissions within the provided channel
-        if (
-            !interaction.guild?.members.me
-                ?.permissionsIn(channel)
-                .has(PermissionsBitField.Flags.SendMessages)
-        ) {
-            embed.setDescription(
-                'I lack the `SendMessages` permission within the provided channel.'
-            );
-            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
-            return;
-        }
-
-        // Update or insert the Birthday document in the database
-        await BirthdayConfig.findOneAndUpdate(
-            { GuildId: interaction.guild!.id },
-            { $set: { ChannelId: channel.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
-            { upsert: true, new: true }
-        );
-        embed.setDescription(`Birthday channel set to ${channel}`);
-
-        await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
-    }
-
-    @Slash({ description: 'Disable Birthday Module', name: 'disable' })
-    @SlashGroup('birthday', 'config')
-    /**
-     * Disables the Birthday module.
-     * @param interaction - The command interaction triggering this method.
-     * @param client - The Discord client instance.
-     * @returns A Promise resolving to void.
-     */
-    async disableBirthday(interaction: CommandInteraction, client: Client): Promise<void> {
-        // Check the current status of Birthday for the guild
-        const currentStatus = await BirthdayConfig.findOne({ GuildId: interaction.guild!.id });
-
-        // Construct the embed to display the result of the operation
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${client.user?.username} - Birthday Module`,
-                iconURL: `${interaction.guild!.iconURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
-
-        // If Birthday is not enabled, inform the user and return
-        if (!currentStatus) {
-            embed.setDescription('Birthday module is not enabled.');
-            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
-            return;
-        }
-
-        embed.setDescription('Birthday module **disabled**.');
-
-        // Delete the Birthday document from the database
-        await BirthdayConfig.deleteOne({ GuildId: interaction.guild!.id });
-
-        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
-    }
-
-    /**
-     * Configures the Dad module.
-     * @param state - The boolean value of the state of the Dad module.
-     * @param interaction - The command interaction triggering this method.
-     * @param client - The Discord client instance.
-     * @returns A Promise resolving to void.
-     */
-    @Slash({ description: 'Dad Module Configuratin', name: 'dad' })
-    async configDadModule(
-        @SlashOption({
-            description: 'Toggle Dad module',
-            name: 'state',
-            type: ApplicationCommandOptionType.Boolean,
-            required: true,
-        })
-        state: boolean,
-        interaction: CommandInteraction,
-        client: Client
-    ): Promise<void> {
-        // Check the current status of Dad for the guild
-        const currentStatus = await Dad.findOne({ GuildId: interaction.guild!.id });
-
-        // Construct the embed to display the result of the operation
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${client.user?.username} - Dad Module`,
-                iconURL: `${interaction.guild!.iconURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
-
-        // If the user is attempting to enable the Dad module
-        if (state) {
-            // If Dad is already enabled
-            if (currentStatus) {
-                embed.setDescription('Dad module is already enabled.');
-                await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
+            const payload = await this.buildPayload(interaction.guild, 'autorole');
+            await interaction.update(payload);
+        } catch (error) {
+            console.error('AutoRole select failed:', error);
+            if (interaction.deferred || interaction.replied) {
                 return;
             }
-
-            embed.setDescription('Dad module **enabled**.');
-            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
-            await new Dad({
-                GuildId: interaction.guild!.id,
-                Status: true,
-            }).save();
-            return;
+            await interaction.deferUpdate().catch((deferError) => {
+                console.error('AutoRole deferUpdate failed:', deferError);
+            });
         }
-
-        if (!currentStatus) {
-            embed.setDescription('Dad module is not enabled.');
-            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
-            return;
-        }
-
-        embed.setDescription('Dad module **disabled**.');
-        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
-        await Dad.deleteOne({ GuildId: interaction.guild!.id });
-
-        embed.setDescription('Dad module **disabled**.');
-
-        // Delete the Dad document from the database
-        await Dad.deleteOne({ GuildId: interaction.guild!.id });
-
-        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
     }
 
-    /**
-     * Configures the Logging module.
-     * @param channel - The channel to set as Logging alerts.
-     * @param interaction - The command interaction triggering this method.
-     * @param client - The Discord client instance.
-     * @returns A Promise resolving to void.
-     */
-    @Slash({ description: 'Logging Module Configuration', name: 'channel' })
-    @SlashGroup('logging', 'config')
-    async configLoggingChannel(
-        @SlashOption({
-            description: 'Set Logging Channel',
-            name: 'channel',
-            type: ApplicationCommandOptionType.Channel,
-            required: true,
-        })
-        channel: TextChannel,
-        interaction: CommandInteraction,
-        client: Client
-    ): Promise<void> {
-        // Construct the embed to display the result of the configuration
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${client.user?.username} - Logging Module`,
-                iconURL: `${interaction.guild!.iconURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
+    @ButtonComponent({ id: AUTOROLE_DISABLE_BUTTON_ID })
+    async onAutoroleDisable(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        await AutoRole.deleteOne({ GuildId: interaction.guild.id });
+        const payload = await this.buildPayload(interaction.guild, 'autorole');
+        await interaction.update(payload);
+    }
 
-        if (channel.type !== ChannelType.GuildText) {
-            embed.setDescription('Please provide a valid `TextChannel`.');
-            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
+    @SelectMenuComponent({ id: BIRTHDAY_CHANNEL_SELECT_ID })
+    async onBirthdayChannel(interaction: ChannelSelectMenuInteraction): Promise<void> {
+        await this.handleChannelConfigSelection(interaction, 'birthday');
+    }
+
+    @ButtonComponent({ id: BIRTHDAY_DISABLE_BUTTON_ID })
+    async onBirthdayDisable(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        await BirthdayConfig.deleteOne({ GuildId: interaction.guild.id });
+        const payload = await this.buildPayload(interaction.guild, 'birthday');
+        await interaction.update(payload);
+    }
+
+    @SelectMenuComponent({ id: LOGGING_CHANNEL_SELECT_ID })
+    async onLoggingChannel(interaction: ChannelSelectMenuInteraction): Promise<void> {
+        await this.handleChannelConfigSelection(interaction, 'logging');
+    }
+
+    @ButtonComponent({ id: LOGGING_DISABLE_BUTTON_ID })
+    async onLoggingDisable(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        await Logging.deleteOne({ GuildId: interaction.guild.id });
+        const payload = await this.buildPayload(interaction.guild, 'logging');
+        await interaction.update(payload);
+    }
+
+    @SelectMenuComponent({ id: STARBOARD_CHANNEL_SELECT_ID })
+    async onStarboardChannel(interaction: ChannelSelectMenuInteraction): Promise<void> {
+        await this.handleChannelConfigSelection(interaction, 'starboard');
+    }
+
+    @ButtonComponent({ id: STARBOARD_DISABLE_BUTTON_ID })
+    async onStarboardDisable(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        await StarBoard.deleteOne({ GuildId: interaction.guild.id });
+        const payload = await this.buildPayload(interaction.guild, 'starboard');
+        await interaction.update(payload);
+    }
+
+    @SelectMenuComponent({ id: WELCOME_CHANNEL_SELECT_ID })
+    async onWelcomeChannel(interaction: ChannelSelectMenuInteraction): Promise<void> {
+        await this.handleChannelConfigSelection(interaction, 'welcome');
+    }
+
+    @ButtonComponent({ id: WELCOME_DISABLE_BUTTON_ID })
+    async onWelcomeDisable(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        await Welcome.deleteOne({ GuildId: interaction.guild.id });
+        const payload = await this.buildPayload(interaction.guild, 'welcome');
+        await interaction.update(payload);
+    }
+
+    private async handleChannelConfigSelection(
+        interaction: ChannelSelectMenuInteraction,
+        module: 'birthday' | 'logging' | 'starboard' | 'welcome'
+    ): Promise<void> {
+        if (!interaction.guild) {
             return;
         }
 
-        // Check if the bot has the SendMessages permissions within the provided channel
+        const channelId = interaction.values[0];
+        if (!channelId) {
+            return;
+        }
+
+        const channel = interaction.guild.channels.cache.get(channelId);
+        if (!channel || channel.type !== ChannelType.GuildText) {
+            const payload = await this.buildPayload(interaction.guild, module);
+            await interaction.update(payload);
+            return;
+        }
+
         if (
-            !interaction.guild?.members.me
+            !interaction.guild.members.me
                 ?.permissionsIn(channel)
                 .has(PermissionsBitField.Flags.SendMessages)
         ) {
-            embed.setDescription(
-                'I lack the `SendMessages` permission within the provided channel.'
-            );
-            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
+            const payload = await this.buildPayload(interaction.guild, module);
+            await interaction.update(payload);
             return;
         }
 
-        // Update or insert the Logging document in the database
-        await Logging.findOneAndUpdate(
-            { GuildId: interaction.guild!.id },
-            { $set: { ChannelId: channel.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
-            { upsert: true, new: true }
-        );
-        embed.setDescription(`Logging channel set to ${channel}`);
+        if (module === 'birthday') {
+            await BirthdayConfig.findOneAndUpdate(
+                { GuildId: interaction.guild.id },
+                { $set: { ChannelId: channel.id } },
+                { upsert: true, new: true }
+            );
+        }
 
-        await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
+        if (module === 'logging') {
+            await Logging.findOneAndUpdate(
+                { GuildId: interaction.guild.id },
+                { $set: { ChannelId: channel.id } },
+                { upsert: true, new: true }
+            );
+        }
+
+        if (module === 'starboard') {
+            await StarBoard.findOneAndUpdate(
+                { GuildId: interaction.guild.id },
+                { $set: { ChannelId: channel.id } },
+                { upsert: true, new: true }
+            );
+        }
+
+        if (module === 'welcome') {
+            await Welcome.findOneAndUpdate(
+                { GuildId: interaction.guild.id },
+                { $set: { ChannelId: channel.id } },
+                { upsert: true, new: true }
+            );
+        }
+
+        const payload = await this.buildPayload(interaction.guild, module);
+        await interaction.update(payload);
     }
 
-    @Slash({ description: 'Disable Logging Module', name: 'disable' })
-    @SlashGroup('logging', 'config')
-    /**
-     * Disables the Logging module.
-     * @param interaction - The command interaction triggering this method.
-     * @param client - The Discord client instance.
-     * @returns A Promise resolving to void.
-     */
-    async disableLogging(interaction: CommandInteraction, client: Client): Promise<void> {
-        // Check the current status of Birthday for the guild
-        const currentStatus = await Logging.findOne({ GuildId: interaction.guild!.id });
-
-        // Construct the embed to display the result of the operation
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${client.user?.username} - Logging Module`,
-                iconURL: `${interaction.guild!.iconURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
-
-        // If Logging is not enabled, inform the user and return
-        if (!currentStatus) {
-            embed.setDescription('Logging module is not enabled.');
-            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
-            return;
+    private async resolveConfiguredChannelMention(
+        guild: Guild,
+        module: 'birthday' | 'logging' | 'starboard' | 'welcome',
+        channelId?: string | null
+    ): Promise<string> {
+        if (!channelId) {
+            return '`Not Set`';
         }
 
-        embed.setDescription('Logging module **disabled**.');
+        const channel =
+            guild.channels.cache.get(channelId) ??
+            (await guild.channels.fetch(channelId).catch(() => null));
 
-        // Delete the Logging document from the database
-        await Logging.deleteOne({ GuildId: interaction.guild!.id });
-
-        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
-    }
-
-    /**
-     * Configures the Welcome module.
-     * @param image - The image to set as the Welcome image.
-     * @param interaction - The command interaction triggering this method.
-     * @param client - The Discord client instance.
-     * @returns A Promise resolving to void.
-     */
-    @Slash({ description: 'Welcome Module Configuration', name: 'image' })
-    @SlashGroup('welcome', 'config')
-    async configWelcomeImage(
-        @SlashOption({
-            description: 'Set Welcome Image',
-            name: 'welcome',
-            type: ApplicationCommandOptionType.String,
-            required: true,
-        })
-        image: string,
-        interaction: CommandInteraction,
-        client: Client
-    ): Promise<void> {
-        // Construct the embed to display the result of the configuration
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${client.user?.username} - Welcome Module`,
-                iconURL: `${interaction.guild!.iconURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
-
-        const extension = image.substring(image.lastIndexOf('.') + 1);
-        const validExtensions = ['jpg', 'jpeg', 'png'];
-
-        if (!validExtensions.includes(extension)) {
-            embed.setDescription(
-                `\`${extension}\` is not a valid image format.\n\n**Accepted formats:** \`${validExtensions.join(', ')}\``
-            );
-            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
-            return;
-        }
-
-        const urlRegex =
-            /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/;
-
-        if (!urlRegex.test(image)) {
-            embed.setDescription(
-                'Please enter a valid absolute URL.\nExample: https://www.example.com'
-            );
-            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
-            return;
-        }
-
-        await axios(image).then(async (res) => {
-            const currentStatus = await Welcome.findOne({ GuildId: interaction.guild!.id });
-
-            if (res) {
-                if (currentStatus) {
-                    try {
-                        await loadImage(image);
-                    } catch {
-                        embed.setDescription(
-                            `I was unable to process \`${image}\`\nIs it a valid image?`
-                        );
-                        await interaction.reply({
-                            flags: [MessageFlags.Ephemeral],
-                            embeds: [embed],
-                        });
-                        return;
-                    }
-
-                    await Welcome.findOneAndUpdate(
-                        { GuildId: interaction.guild!.id },
-                        { Image: image },
-                        { upsert: true, new: true }
-                    );
-
-                    embed.setDescription('Image has been updated.');
-                    embed.setImage(image);
-                    await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
-                } else {
-                    embed.setDescription(
-                        'You must enable the welcome module first. You can do this by running the following command. `/config welcome channel <#channel>`'
-                    );
-                    await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
-                }
-            } else {
-                embed.setDescription(
-                    'Please input a valid image URL. Ensure that the URL concludes with one of the supported extensions: `.jpg`, `.jpeg`, `.png`.'
+        if (!channel || channel.type !== ChannelType.GuildText) {
+            if (module === 'birthday') {
+                await BirthdayConfig.findOneAndUpdate(
+                    { GuildId: guild.id },
+                    { $set: { ChannelId: null } },
+                    { upsert: true, new: true }
                 );
-                await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
             }
-        });
-    }
 
-    /**
-     * Configures the Welcome module.
-     * @param channel - The channel to set as Welcome alerts.
-     * @param interaction - The command interaction triggering this method.
-     * @param client - The Discord client instance.
-     * @returns A Promise resolving to void.
-     */
-    @Slash({ description: 'Welcome Module Configuration', name: 'channel' })
-    @SlashGroup('welcome', 'config')
-    async configWelcomeChannel(
-        @SlashOption({
-            description: 'Set Welcome Channel',
-            name: 'channel',
-            type: ApplicationCommandOptionType.Channel,
-            required: true,
-        })
-        channel: TextChannel,
-        interaction: CommandInteraction,
-        client: Client
-    ): Promise<void> {
-        // Construct the embed to display the result of the configuration
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${client.user?.username} - Welcome Module`,
-                iconURL: `${interaction.guild!.iconURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
+            if (module === 'logging') {
+                await Logging.findOneAndUpdate(
+                    { GuildId: guild.id },
+                    { $set: { ChannelId: null } },
+                    { upsert: true, new: true }
+                );
+            }
 
-        if (channel.type !== ChannelType.GuildText) {
-            embed.setDescription('Please provide a valid `TextChannel`.');
-            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
-            return;
+            if (module === 'starboard') {
+                await StarBoard.findOneAndUpdate(
+                    { GuildId: guild.id },
+                    { $set: { ChannelId: null } },
+                    { upsert: true, new: true }
+                );
+            }
+
+            if (module === 'welcome') {
+                await Welcome.findOneAndUpdate(
+                    { GuildId: guild.id },
+                    { $set: { ChannelId: null } },
+                    { upsert: true, new: true }
+                );
+            }
+
+            return '`Not Set`';
         }
 
-        // Check if the bot has the SendMessages permissions within the provided channel
-        if (
-            !interaction.guild?.members.me
-                ?.permissionsIn(channel)
-                .has(PermissionsBitField.Flags.SendMessages)
-        ) {
-            embed.setDescription(
-                'I lack the `SendMessages` permission within the provided channel.'
+        return `<#${channel.id}>`;
+    }
+
+    private buildModuleSelector(current: ConfigModule): StringSelectMenuBuilder {
+        const placeholder =
+            current === 'home' ? '⚙️ Home - Choose a module...' : '⚙️ Choose a module...';
+
+        return new StringSelectMenuBuilder()
+            .setCustomId(MODULE_SELECT_ID)
+            .setPlaceholder(placeholder)
+            .addOptions(
+                {
+                    label: 'Ads Protection',
+                    value: 'ads',
+                    description: 'Toggle link deletion module',
+                    default: current === 'ads',
+                },
+                {
+                    label: 'AutoRole',
+                    value: 'autorole',
+                    description: 'Set role granted on member join',
+                    default: current === 'autorole',
+                },
+                {
+                    label: 'Birthday',
+                    value: 'birthday',
+                    description: 'Configure birthday announcement channel',
+                    default: current === 'birthday',
+                },
+                {
+                    label: 'Dad',
+                    value: 'dad',
+                    description: 'Toggle Dad responses module',
+                    default: current === 'dad',
+                },
+                {
+                    label: 'Logging',
+                    value: 'logging',
+                    description: 'Set moderation logs channel',
+                    default: current === 'logging',
+                },
+                {
+                    label: 'Starboard',
+                    value: 'starboard',
+                    description: 'Set channel for starred messages',
+                    default: current === 'starboard',
+                },
+                {
+                    label: 'Welcome',
+                    value: 'welcome',
+                    description: 'Configure welcome channel and image',
+                    default: current === 'welcome',
+                }
             );
-            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
-            return;
-        }
-
-        // Update or insert the Welcome document in the database
-        await Welcome.findOneAndUpdate(
-            { GuildId: interaction.guild!.id },
-            { $set: { ChannelId: channel.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
-            { upsert: true, new: true }
-        );
-        embed.setDescription(`Welcome channel set to ${channel}`);
-
-        await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
     }
 
-    @Slash({ description: 'Disable Welcome Module', name: 'disable' })
-    @SlashGroup('welcome', 'config')
-    /**
-     * Disables the Welcome module.
-     * @param interaction - The command interaction triggering this method.
-     * @param client - The Discord client instance.
-     * @returns A Promise resolving to void.
-     */
-    async disableWelcome(interaction: CommandInteraction, client: Client): Promise<void> {
-        const currentStatus = await Welcome.findOne({ GuildId: interaction.guild!.id });
+    private async getModuleView(guild: Guild, module: ConfigModule): Promise<ModuleViewResult> {
+        const selector = this.buildModuleSelector(module);
 
-        // Construct the embed to display the result of the operation
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${client.user?.username} - Welcome Module`,
-                iconURL: `${interaction.guild!.iconURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
-
-        // If Welcome is not enabled, inform the user and return
-        if (!currentStatus) {
-            embed.setDescription('Welcome module is not enabled.');
-            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
-            return;
+        if (module === 'home') {
+            return {
+                title: '# ⚙️ Configuration',
+                lines: [
+                    '> Select a module from the dropdown.',
+                    '> Use the controls below to update settings.',
+                ].filter(Boolean),
+                controls: [selector],
+            };
         }
 
-        embed.setDescription('Welcome module **disabled**.');
-
-        // Delete the Welcome document from the database
-        await Welcome.deleteOne({ GuildId: interaction.guild!.id });
-
-        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
-    }
-
-    /**
-     * Configures the StarBoard module.
-     * @param channel - The channel to set as the Starboard channel.
-     * @param interaction - The command interaction triggering this method.
-     * @param client - The Discord client instance.
-     * @returns A Promise resolving to void.
-     */
-    @Slash({ description: 'StarBoard Module Configuration', name: 'channel' })
-    @SlashGroup('starboard', 'config')
-    async configStarBoardChannel(
-        @SlashOption({
-            description: 'Set StarBoard Channel',
-            name: 'channel',
-            type: ApplicationCommandOptionType.Channel,
-            required: true,
-        })
-        channel: TextChannel,
-        interaction: CommandInteraction,
-        client: Client
-    ): Promise<void> {
-        // Construct the embed to display the result of the configuration
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${client.user?.username} - StarBoard Module`,
-                iconURL: `${interaction.guild!.iconURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
-
-        if (channel.type !== ChannelType.GuildText) {
-            embed.setDescription('Please provide a valid `TextChannel`.');
-            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
-            return;
+        if (module === 'ads') {
+            const ads = await AdsProtection.findOne({ GuildId: guild.id });
+            const isEnabled = ads?.Status === true;
+            return {
+                title: '# 🛡️ Ads Protection',
+                lines: [
+                    `> Status: ${isEnabled ? '`Enabled`' : '`Disabled`'}`,
+                    '> Deletes non-mod link messages when enabled.',
+                ].filter(Boolean),
+                controls: [
+                    selector,
+                    new ButtonBuilder()
+                        .setCustomId(ADS_ENABLE_BUTTON_ID)
+                        .setLabel('Enable')
+                        .setStyle(ButtonStyle.Success)
+                        .setDisabled(isEnabled),
+                    new ButtonBuilder()
+                        .setCustomId(ADS_DISABLE_BUTTON_ID)
+                        .setLabel('Disable')
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(!isEnabled),
+                ],
+            };
         }
 
-        // Check if the bot has the SendMessages permissions within the provided channel
-        if (
-            !interaction.guild?.members.me
-                ?.permissionsIn(channel)
-                .has(PermissionsBitField.Flags.SendMessages)
-        ) {
-            embed.setDescription(
-                'I lack the `SendMessages` permission within the provided channel.'
+        if (module === 'dad') {
+            const dad = await Dad.findOne({ GuildId: guild.id });
+            const isEnabled = dad?.Status === true;
+            return {
+                title: '# 👨‍👧 Dad Module',
+                lines: [
+                    `> Status: ${isEnabled ? '`Enabled`' : '`Disabled`'}`,
+                    '> Responds to "im/i\'m ..." patterns.',
+                ].filter(Boolean),
+                controls: [
+                    selector,
+                    new ButtonBuilder()
+                        .setCustomId(DAD_ENABLE_BUTTON_ID)
+                        .setLabel('Enable')
+                        .setStyle(ButtonStyle.Success)
+                        .setDisabled(isEnabled),
+                    new ButtonBuilder()
+                        .setCustomId(DAD_DISABLE_BUTTON_ID)
+                        .setLabel('Disable')
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(!isEnabled),
+                ],
+            };
+        }
+
+        if (module === 'autorole') {
+            const autorole = await AutoRole.findOne({ GuildId: guild.id });
+            const isEnabled = Boolean(autorole?.Role);
+            const roleMention = autorole?.Role ? `<@&${autorole.Role}>` : '`Not Set`';
+            return {
+                title: '# 🎭 AutoRole',
+                lines: [
+                    `> Current Role: ${roleMention}`,
+                    '> Choose a role below to set AutoRole.',
+                ].filter(Boolean),
+                controls: [
+                    selector,
+                    new RoleSelectMenuBuilder()
+                        .setCustomId(AUTOROLE_SELECT_ID)
+                        .setPlaceholder('Select AutoRole'),
+                    new ButtonBuilder()
+                        .setCustomId(AUTOROLE_DISABLE_BUTTON_ID)
+                        .setLabel('Disable')
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(!isEnabled),
+                ],
+            };
+        }
+
+        if (module === 'birthday') {
+            const birthday = await BirthdayConfig.findOne({ GuildId: guild.id });
+            const channelMention = await this.resolveConfiguredChannelMention(
+                guild,
+                'birthday',
+                birthday?.ChannelId
             );
-            await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
-            return;
+            const isEnabled = channelMention !== '`Not Set`';
+            return {
+                title: '# 🎂 Birthday',
+                lines: [
+                    `> Channel: ${channelMention}`,
+                    '> Choose a text channel for birthday announcements.',
+                ].filter(Boolean),
+                controls: [
+                    selector,
+                    new ChannelSelectMenuBuilder()
+                        .setCustomId(BIRTHDAY_CHANNEL_SELECT_ID)
+                        .setPlaceholder('Select birthday channel')
+                        .addChannelTypes(ChannelType.GuildText),
+                    new ButtonBuilder()
+                        .setCustomId(BIRTHDAY_DISABLE_BUTTON_ID)
+                        .setLabel('Disable')
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(!isEnabled),
+                ],
+            };
         }
 
-        // Update or insert the Logging document in the database
-        await StarBoard.findOneAndUpdate(
-            { GuildId: interaction.guild!.id },
-            { $set: { ChannelId: channel.id }, $setOnInsert: { GuildId: interaction.guild!.id } },
-            { upsert: true, new: true }
-        );
-        embed.setDescription(`StarBoard channel set to ${channel}`);
+        if (module === 'logging') {
+            const logging = await Logging.findOne({ GuildId: guild.id });
+            const channelMention = await this.resolveConfiguredChannelMention(
+                guild,
+                'logging',
+                logging?.ChannelId
+            );
+            const isEnabled = channelMention !== '`Not Set`';
+            return {
+                title: '# 📝 Logging',
+                lines: [
+                    `> Channel: ${channelMention}`,
+                    '> Select where moderation logs should be sent.',
+                ].filter(Boolean),
+                controls: [
+                    selector,
+                    new ChannelSelectMenuBuilder()
+                        .setCustomId(LOGGING_CHANNEL_SELECT_ID)
+                        .setPlaceholder('Select logging channel')
+                        .addChannelTypes(ChannelType.GuildText),
+                    new ButtonBuilder()
+                        .setCustomId(LOGGING_DISABLE_BUTTON_ID)
+                        .setLabel('Disable')
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(!isEnabled),
+                ],
+            };
+        }
 
-        await interaction.reply({ flags: [MessageFlags.Ephemeral], embeds: [embed] });
+        if (module === 'starboard') {
+            const starboard = await StarBoard.findOne({ GuildId: guild.id });
+            const channelMention = await this.resolveConfiguredChannelMention(
+                guild,
+                'starboard',
+                starboard?.ChannelId
+            );
+            const isEnabled = channelMention !== '`Not Set`';
+            return {
+                title: '# ⭐ Starboard',
+                lines: [
+                    `> Channel: ${channelMention}`,
+                    '> Select where starred messages are posted.',
+                ].filter(Boolean),
+                controls: [
+                    selector,
+                    new ChannelSelectMenuBuilder()
+                        .setCustomId(STARBOARD_CHANNEL_SELECT_ID)
+                        .setPlaceholder('Select starboard channel')
+                        .addChannelTypes(ChannelType.GuildText),
+                    new ButtonBuilder()
+                        .setCustomId(STARBOARD_DISABLE_BUTTON_ID)
+                        .setLabel('Disable')
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(!isEnabled),
+                ],
+            };
+        }
+
+        const welcome = await Welcome.findOne({ GuildId: guild.id });
+        const channelMention = await this.resolveConfiguredChannelMention(
+            guild,
+            'welcome',
+            welcome?.ChannelId
+        );
+        const isEnabled = channelMention !== '`Not Set`';
+        return {
+            title: '# 🖼️ Welcome',
+            lines: [`> Channel: ${channelMention}`, '> Select a channel to enable Welcome.'].filter(
+                Boolean
+            ),
+            controls: [
+                selector,
+                new ChannelSelectMenuBuilder()
+                    .setCustomId(WELCOME_CHANNEL_SELECT_ID)
+                    .setPlaceholder('Select welcome channel')
+                    .addChannelTypes(ChannelType.GuildText),
+                new ButtonBuilder()
+                    .setCustomId(WELCOME_DISABLE_BUTTON_ID)
+                    .setLabel('Disable')
+                    .setStyle(ButtonStyle.Secondary)
+                    .setDisabled(!isEnabled),
+            ],
+        };
     }
 
-    @Slash({ description: 'Disable StarBoard Module', name: 'disable' })
-    @SlashGroup('starboard', 'config')
-    /**
-     * Disables the StarBoard module.
-     * @param interaction - The command interaction triggering this method.
-     * @param client - The Discord client instance.
-     * @returns A Promise resolving to void.
-     */
-    async disableStarBoard(interaction: CommandInteraction, client: Client): Promise<void> {
-        // Check the current status of Birthday for the guild
-        const currentStatus = await StarBoard.findOne({ GuildId: interaction.guild!.id });
+    private async buildPayload(guild: Guild, module: ConfigModule) {
+        const view = await this.getModuleView(guild, module);
 
-        // Construct the embed to display the result of the operation
-        const embed = new EmbedBuilder()
-            .setAuthor({
-                name: `${client.user?.username} - StarBoard Module`,
-                iconURL: `${interaction.guild!.iconURL()}`,
-            })
-            .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'));
+        const header = new TextDisplayBuilder().setContent(view.title);
+        const body = new TextDisplayBuilder().setContent(view.lines.join('\n'));
 
-        // If StarBoard is not enabled, inform the user and return
-        if (!currentStatus) {
-            embed.setDescription('StarBoard module is not enabled.');
-            await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
-            return;
+        const [firstControl, ...remainingControls] = view.controls;
+        const container = new ContainerBuilder().addTextDisplayComponents(header);
+
+        // Keep module dropdown close to title for a cleaner hierarchy.
+        if (firstControl) {
+            container.addActionRowComponents((row) => row.addComponents(firstControl));
         }
 
-        embed.setDescription('StarBoard module **disabled**.');
+        container
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(body);
 
-        // Delete the StarBoard document from the database
-        await StarBoard.deleteOne({ GuildId: interaction.guild!.id });
+        if (remainingControls.length > 0) {
+            container.addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small));
+        }
 
-        await interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
+        const buttonBuffer: ButtonBuilder[] = [];
+        const flushButtons = () => {
+            if (!buttonBuffer.length) {
+                return;
+            }
+            const chunk = buttonBuffer.splice(0, 5);
+            container.addActionRowComponents((row) => row.addComponents(...chunk));
+        };
+
+        // Select menus consume full width; buttons can be grouped.
+        for (const control of remainingControls) {
+            if (control instanceof ButtonBuilder) {
+                buttonBuffer.push(control);
+                if (buttonBuffer.length === 5) {
+                    flushButtons();
+                }
+                continue;
+            }
+
+            flushButtons();
+            container.addActionRowComponents((row) => row.addComponents(control));
+        }
+        flushButtons();
+
+        return {
+            components: [container],
+        };
     }
 }
