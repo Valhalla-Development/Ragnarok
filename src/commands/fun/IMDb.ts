@@ -56,10 +56,11 @@ export class TraktCommand {
             return;
         }
 
-        // Convert runtime and end time to readable format
-        const runTime = Duration.fromObject({ seconds: details.runtime.seconds }).toFormat(
-            "h'h' m'm'"
-        );
+        const runtimeSeconds = details.runtime?.seconds;
+        const runTime =
+            typeof runtimeSeconds === 'number' && runtimeSeconds > 0
+                ? Duration.fromObject({ seconds: runtimeSeconds }).toFormat("h'h' m'm'")
+                : null;
 
         const header = new TextDisplayBuilder().setContent(
             [
@@ -68,15 +69,16 @@ export class TraktCommand {
             ].join('\n')
         );
 
+        console.log(details.runtime);
         const stats = new TextDisplayBuilder().setContent(
             [
                 '## 📊 Stats',
                 '',
-                `> 🎭 Genres: \`${details.genres || 'N/A'}\``,
-                `> 🎬 Director: \`${details.director || 'N/A'}\``,
-                `> 🌟 Stars: \`${details.cast || 'N/A'}\``,
-                `> 🏢 Production: \`${details.productionCompany || 'N/A'}\``,
-                `> ⏱️ Runtime: \`${runTime}\``,
+                `> 🎭 **Genres**: \`${details.genres || 'N/A'}\``,
+                `> 🎬 **Director**: \`${details.director || 'N/A'}\``,
+                `> 🌟 **Stars**: \`${details.cast || 'N/A'}\``,
+                `> 🏢 **Production**: \`${details.productionCompany || 'N/A'}\``,
+                ...(runTime ? [`> ⏱️ **Runtime**: \`${runTime}\``] : []),
                 `> <:imdb:1202979511755612173> Rating: \`${details.rating}/10 (${details.totalVotes.toLocaleString('en')} votes)\``,
             ].join('\n')
         );
