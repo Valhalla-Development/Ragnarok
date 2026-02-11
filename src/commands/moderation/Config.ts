@@ -24,6 +24,7 @@ import AutoRole from '../../mongo/AutoRole.js';
 import BirthdayConfig from '../../mongo/BirthdayConfig.js';
 import Dad from '../../mongo/Dad.js';
 import Logging from '../../mongo/Logging.js';
+import RoleMenu from '../../mongo/RoleMenu.js';
 import StarBoard from '../../mongo/StarBoard.js';
 import Welcome from '../../mongo/Welcome.js';
 
@@ -33,6 +34,7 @@ type ConfigModule =
     | 'autorole'
     | 'birthday'
     | 'dad'
+    | 'rolemenu'
     | 'logging'
     | 'starboard'
     | 'welcome';
@@ -53,6 +55,8 @@ const ADS_ENABLE_BUTTON_ID = 'cfg:ads:enable';
 const ADS_DISABLE_BUTTON_ID = 'cfg:ads:disable';
 const DAD_ENABLE_BUTTON_ID = 'cfg:dad:enable';
 const DAD_DISABLE_BUTTON_ID = 'cfg:dad:disable';
+const ROLEMENU_SELECT_ID = 'cfg:rolemenu:roles:string';
+const ROLEMENU_CLEAR_BUTTON_ID = 'cfg:rolemenu:clear';
 const AUTOROLE_SELECT_ID = 'cfg:autorole:role';
 const AUTOROLE_DISABLE_BUTTON_ID = 'cfg:autorole:disable';
 const BIRTHDAY_CHANNEL_SELECT_ID = 'cfg:birthday:channel';
@@ -144,6 +148,68 @@ export class Config {
         }
         await Dad.deleteOne({ GuildId: interaction.guild.id });
         const payload = await this.buildPayload(interaction.guild, 'dad');
+        await interaction.update(payload);
+    }
+
+    @SelectMenuComponent({ id: ROLEMENU_SELECT_ID })
+    async onRolemenuSelect(interaction: AnySelectMenuInteraction): Promise<void> {
+        const guild = interaction.guild;
+        if (!guild) {
+            return;
+        }
+        if (!interaction.isStringSelectMenu()) {
+            return;
+        }
+
+        const member = await guild.members.fetch(interaction.user.id);
+        const botMember = guild.members.me;
+
+        if (!botMember) {
+            await interaction.deferUpdate();
+            return;
+        }
+
+        const selectedRoleIds = [...new Set(interaction.values)];
+        const validRoleIds = selectedRoleIds.filter((roleId) => {
+            const role = guild.roles.cache.get(roleId);
+            if (!role) {
+                return false;
+            }
+            if (role.position >= botMember.roles.highest.position) {
+                return false;
+            }
+            if (
+                guild.ownerId !== interaction.user.id &&
+                role.position >= member.roles.highest.position
+            ) {
+                return false;
+            }
+            return true;
+        });
+
+        await RoleMenu.findOneAndUpdate(
+            { GuildId: guild.id },
+            { $set: { RoleList: validRoleIds.slice(0, 25) } },
+            { upsert: true, new: true }
+        );
+
+        const payload = await this.buildPayload(guild, 'rolemenu');
+        await interaction.update(payload);
+    }
+
+    @ButtonComponent({ id: ROLEMENU_CLEAR_BUTTON_ID })
+    async onRolemenuClear(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+
+        await RoleMenu.findOneAndUpdate(
+            { GuildId: interaction.guild.id },
+            { $set: { RoleList: [] } },
+            { upsert: true, new: true }
+        );
+
+        const payload = await this.buildPayload(interaction.guild, 'rolemenu');
         await interaction.update(payload);
     }
 
@@ -395,6 +461,27 @@ export class Config {
         return `<#${channel.id}>`;
     }
 
+    private async sanitizeRoleMenuRoles(guild: Guild): Promise<string[]> {
+        const roleMenu = await RoleMenu.findOne({ GuildId: guild.id });
+        if (!roleMenu?.RoleList?.length) {
+            return [];
+        }
+
+        const validRoleIds = roleMenu.RoleList.filter((roleId: string) =>
+            guild.roles.cache.has(roleId)
+        );
+
+        if (validRoleIds.length !== roleMenu.RoleList.length) {
+            await RoleMenu.findOneAndUpdate(
+                { GuildId: guild.id },
+                { $set: { RoleList: validRoleIds } },
+                { upsert: true, new: true }
+            );
+        }
+
+        return validRoleIds;
+    }
+
     private buildModuleSelector(current: ConfigModule): StringSelectMenuBuilder {
         const placeholder =
             current === 'home' ? '⚙️ Home - Choose a module...' : '⚙️ Choose a module...';
@@ -426,6 +513,12 @@ export class Config {
                     value: 'dad',
                     description: 'Toggle Dad responses module',
                     default: current === 'dad',
+                },
+                {
+                    label: 'RoleMenu',
+                    value: 'rolemenu',
+                    description: 'Configure self-assign role menu',
+                    default: current === 'rolemenu',
                 },
                 {
                     label: 'Logging',
@@ -508,6 +601,35 @@ export class Config {
                         .setLabel('Disable')
                         .setStyle(ButtonStyle.Secondary)
                         .setDisabled(!isEnabled),
+                ],
+            };
+        }
+
+        if (module === 'rolemenu') {
+            const validRoleIds = await this.sanitizeRoleMenuRoles(guild);
+            const rolePreview = validRoleIds.length
+                ? validRoleIds
+                      .slice(0, 10)
+                      .map((id) => `<@&${id}>`)
+                      .join(', ')
+                : '`None configured`';
+
+            return {
+                title: '# 🎛️ RoleMenu',
+                lines: [
+                    `> Roles Configured: \`${validRoleIds.length}\``,
+                    `> ${rolePreview}`,
+                    `> Hidden (cannot be managed by bot): \`${Math.max(0, guild.roles.cache.size - 1 - this.getManageableRoleIds(guild).length)}\``,
+                    '> Set roles here, then mods can run `/rolemenu` to post/refresh the menu.',
+                ].filter(Boolean),
+                controls: [
+                    selector,
+                    this.buildRoleMenuSelect(guild, validRoleIds),
+                    new ButtonBuilder()
+                        .setCustomId(ROLEMENU_CLEAR_BUTTON_ID)
+                        .setLabel('Clear Roles')
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(validRoleIds.length === 0),
                 ],
             };
         }
@@ -699,5 +821,56 @@ export class Config {
         return {
             components: [container],
         };
+    }
+
+    private getManageableRoleIds(guild: Guild): string[] {
+        const botMember = guild.members.me;
+        if (!botMember) {
+            return [];
+        }
+
+        return guild.roles.cache
+            .filter(
+                (role) =>
+                    role.id !== guild.id &&
+                    !role.managed &&
+                    role.position < botMember.roles.highest.position
+            )
+            .sort((a, b) => b.position - a.position)
+            .map((role) => role.id);
+    }
+
+    private buildRoleMenuSelect(guild: Guild, selectedRoleIds: string[]): StringSelectMenuBuilder {
+        const selectedSet = new Set(selectedRoleIds);
+        const manageableRoleIds = this.getManageableRoleIds(guild);
+        const optionIds = manageableRoleIds.slice(0, 25);
+
+        const select = new StringSelectMenuBuilder().setCustomId(ROLEMENU_SELECT_ID);
+
+        if (optionIds.length === 0) {
+            return select
+                .setPlaceholder('No roles available for RoleMenu')
+                .setMinValues(0)
+                .setMaxValues(1)
+                .setDisabled(true)
+                .addOptions({ label: 'No manageable roles', value: 'none' });
+        }
+
+        select
+            .setPlaceholder('Select roles for RoleMenu')
+            .setMinValues(1)
+            .setMaxValues(optionIds.length)
+            .addOptions(
+                optionIds.map((roleId) => {
+                    const role = guild.roles.cache.get(roleId)!;
+                    return {
+                        label: role.name.slice(0, 100),
+                        value: role.id,
+                        default: selectedSet.has(role.id),
+                    };
+                })
+            );
+
+        return select;
     }
 }
