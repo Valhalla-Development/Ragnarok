@@ -236,7 +236,7 @@ export function buildHomeContainer(
             row.addComponents(
                 heistButton,
                 fishButton,
-                farmButton,
+                ...(balance.Items?.FarmingTools ? [] : [farmButton]),
                 ...(buttons.plantButton && balance.Items?.FarmingTools
                     ? [buttons.plantButton]
                     : []),
