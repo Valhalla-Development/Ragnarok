@@ -70,7 +70,7 @@ export class RoleMenuCommand {
                         RoleMenuId: { channel: null, message: null },
                     },
                 },
-                { upsert: true, new: true }
+                { upsert: true, returnDocument: 'after' }
             );
             await RagnarokComponent(
                 interaction,
@@ -86,7 +86,7 @@ export class RoleMenuCommand {
             await RoleMenu.findOneAndUpdate(
                 { GuildId: interaction.guild.id },
                 { $set: { RoleList: cleanRoleIds } },
-                { upsert: true, new: true }
+                { upsert: true, returnDocument: 'after' }
             );
         }
 
@@ -141,7 +141,7 @@ export class RoleMenuCommand {
                     RoleList: cleanRoleIds,
                 },
             },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         );
 
         await RagnarokComponent(
@@ -248,7 +248,7 @@ export class RoleMenuCommand {
         await RoleMenu.findOneAndUpdate(
             { GuildId: message.guild.id },
             { $set: { RoleMenuId: { channel: null, message: null } } },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         );
     }
 }

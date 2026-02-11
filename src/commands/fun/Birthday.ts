@@ -138,7 +138,7 @@ export class Birthday {
         await Birthdays.findOneAndUpdate(
             { UserId: interaction.user.id },
             { Date: date, UserId: interaction.user.id, LastRun: null },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         );
 
         await RagnarokComponent(

@@ -111,7 +111,7 @@ export class Config {
         await AdsProtection.findOneAndUpdate(
             { GuildId: interaction.guild.id },
             { $set: { Status: true } },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         );
         const payload = await this.buildPayload(interaction.guild, 'ads');
         await interaction.update(payload);
@@ -135,7 +135,7 @@ export class Config {
         await Dad.findOneAndUpdate(
             { GuildId: interaction.guild.id },
             { $set: { Status: true } },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         );
         const payload = await this.buildPayload(interaction.guild, 'dad');
         await interaction.update(payload);
@@ -190,7 +190,7 @@ export class Config {
         await RoleMenu.findOneAndUpdate(
             { GuildId: guild.id },
             { $set: { RoleList: validRoleIds.slice(0, 25) } },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         );
 
         const payload = await this.buildPayload(guild, 'rolemenu');
@@ -206,7 +206,7 @@ export class Config {
         await RoleMenu.findOneAndUpdate(
             { GuildId: interaction.guild.id },
             { $set: { RoleList: [] } },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         );
 
         const payload = await this.buildPayload(interaction.guild, 'rolemenu');
@@ -257,7 +257,7 @@ export class Config {
             await AutoRole.findOneAndUpdate(
                 { GuildId: interaction.guild.id },
                 { $set: { Role: role.id } },
-                { upsert: true, new: true }
+                { upsert: true, returnDocument: 'after' }
             );
 
             const payload = await this.buildPayload(interaction.guild, 'autorole');
@@ -377,7 +377,7 @@ export class Config {
             await BirthdayConfig.findOneAndUpdate(
                 { GuildId: interaction.guild.id },
                 { $set: { ChannelId: channel.id } },
-                { upsert: true, new: true }
+                { upsert: true, returnDocument: 'after' }
             );
         }
 
@@ -385,7 +385,7 @@ export class Config {
             await Logging.findOneAndUpdate(
                 { GuildId: interaction.guild.id },
                 { $set: { ChannelId: channel.id } },
-                { upsert: true, new: true }
+                { upsert: true, returnDocument: 'after' }
             );
         }
 
@@ -393,7 +393,7 @@ export class Config {
             await StarBoard.findOneAndUpdate(
                 { GuildId: interaction.guild.id },
                 { $set: { ChannelId: channel.id } },
-                { upsert: true, new: true }
+                { upsert: true, returnDocument: 'after' }
             );
         }
 
@@ -401,7 +401,7 @@ export class Config {
             await Welcome.findOneAndUpdate(
                 { GuildId: interaction.guild.id },
                 { $set: { ChannelId: channel.id } },
-                { upsert: true, new: true }
+                { upsert: true, returnDocument: 'after' }
             );
         }
 
@@ -427,7 +427,7 @@ export class Config {
                 await BirthdayConfig.findOneAndUpdate(
                     { GuildId: guild.id },
                     { $set: { ChannelId: null } },
-                    { upsert: true, new: true }
+                    { upsert: true, returnDocument: 'after' }
                 );
             }
 
@@ -435,7 +435,7 @@ export class Config {
                 await Logging.findOneAndUpdate(
                     { GuildId: guild.id },
                     { $set: { ChannelId: null } },
-                    { upsert: true, new: true }
+                    { upsert: true, returnDocument: 'after' }
                 );
             }
 
@@ -443,7 +443,7 @@ export class Config {
                 await StarBoard.findOneAndUpdate(
                     { GuildId: guild.id },
                     { $set: { ChannelId: null } },
-                    { upsert: true, new: true }
+                    { upsert: true, returnDocument: 'after' }
                 );
             }
 
@@ -451,7 +451,7 @@ export class Config {
                 await Welcome.findOneAndUpdate(
                     { GuildId: guild.id },
                     { $set: { ChannelId: null } },
-                    { upsert: true, new: true }
+                    { upsert: true, returnDocument: 'after' }
                 );
             }
 
@@ -475,7 +475,7 @@ export class Config {
             await RoleMenu.findOneAndUpdate(
                 { GuildId: guild.id },
                 { $set: { RoleList: validRoleIds } },
-                { upsert: true, new: true }
+                { upsert: true, returnDocument: 'after' }
             );
         }
 

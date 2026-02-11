@@ -101,7 +101,7 @@ export class WOTD {
                                 FetchedAt: new Date(),
                             },
                         },
-                        { upsert: true, new: true }
+                        { upsert: true, returnDocument: 'after' }
                     );
                 }
             }
