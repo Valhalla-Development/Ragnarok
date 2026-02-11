@@ -178,10 +178,10 @@ export async function handleCoinflip(
 
         const resultTitle = won ? '# ✅ Coin Flip — Victory' : '# ❌ Coin Flip — Defeat';
         const resultBody = won
-            ? `> ${interaction.user} won!\n> <:coin:706659001164628008> \`${wager.toLocaleString(
+            ? `> ${interaction.user} won!\n> 💰 \`${wager.toLocaleString(
                   'en'
               )}\` has been credited to your Bank.`
-            : `> ${interaction.user} lost.\n> <:coin:706659001164628008> \`${wager.toLocaleString('en')}\` was deducted from your Bank.`;
+            : `> ${interaction.user} lost.\n> 💰 \`${wager.toLocaleString('en')}\` was deducted from your Bank.`;
 
         const resultContainer = buildContainer(resultTitle, resultBody, true);
 
@@ -230,11 +230,11 @@ export async function handleCoinflip(
             await RagnarokComponent(
                 interaction,
                 'Error',
-                `You do not have enough to bet <:coin:706659001164628008> \`${Number(
-                    amount
-                ).toLocaleString('en')}\`, you have <:coin:706659001164628008> \`${Number(
-                    balance.Bank
-                ).toLocaleString('en')}\` available in your Bank.`,
+                `You do not have enough to bet 💰 \`${Number(amount).toLocaleString(
+                    'en'
+                )}\`, you have 💰 \`${Number(balance.Bank).toLocaleString(
+                    'en'
+                )}\` available in your Bank.`,
                 true
             );
             return;
@@ -242,9 +242,9 @@ export async function handleCoinflip(
 
         const initialContainer = buildContainer(
             '# 🪙 Coin Flip',
-            `> ${interaction.user} wagered <:coin:706659001164628008> \`${Number(
-                amount
-            ).toLocaleString('en')}\`.\n> Choose **Heads** or **Tails**.`,
+            `> ${interaction.user} wagered 💰 \`${Number(amount).toLocaleString(
+                'en'
+            )}\`.\n> Choose **Heads** or **Tails**.`,
             true
         );
 

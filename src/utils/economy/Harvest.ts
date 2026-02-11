@@ -215,7 +215,7 @@ function processHarvest(balance: BalanceInterface, availableSpots: number): Harv
         const cropData = calculateCropValue(crop);
         totalValue += cropData.value;
         displayEntries.push(
-            `\u3000Crop Type: \`${capitalise(crop.CropType)}\` - Current Value: <:coin:706659001164628008>\`${cropData.value.toLocaleString('en')}\` - Decayed: \`${crop.Decay.toFixed(4)}\`%`
+            `\u3000Crop Type: \`${capitalise(crop.CropType)}\` - Current Value: 💰\`${cropData.value.toLocaleString('en')}\` - Decayed: \`${crop.Decay.toFixed(4)}\`%`
         );
     }
 
@@ -257,9 +257,7 @@ async function displayHarvestResults(
                 '**You harvested:**',
                 ...pageEntries.map((e) => `- ${e.trim()}`),
                 '',
-                `**Total value:** <:coin:706659001164628008> \`${totalValue.toLocaleString(
-                    'en'
-                )}\``,
+                `**Total value:** 💰 \`${totalValue.toLocaleString('en')}\``,
                 '_Tip: crop value continues to decay after harvest — sell sooner rather than later._',
             ].join('\n')
         );

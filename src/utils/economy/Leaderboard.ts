@@ -68,7 +68,7 @@ export async function handleBaltop(
                                 ? '🥉'
                                 : '🔹';
                     leaderboardContent += `${medal} **#${globalIndex + 1}** ${fetchUser}\n`;
-                    leaderboardContent += `\u3000\u3000💰 \`${data.Total.toLocaleString('en')}\` <:coin:706659001164628008>\n\n`;
+                    leaderboardContent += `\u3000\u3000💰 \`${data.Total.toLocaleString('en')}\`\n\n`;
                 }
             })
         );

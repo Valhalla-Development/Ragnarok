@@ -76,7 +76,7 @@ export async function handleDeposit(
     const homeContainer = await updateHomeContainer(
         interaction,
         buttons,
-        `✅ \`Successfully deposited\` <:coin:706659001164628008> \`${depositAmount.toLocaleString('en')}\` \`to your bank\``
+        `✅ \`Successfully deposited\` 💰 \`${depositAmount.toLocaleString('en')}\` \`to your bank\``
     );
 
     // If home container is available, update the message
@@ -165,7 +165,7 @@ export async function handleWithdraw(
 
     if (amount > balance.Bank) {
         await showTemporaryMessage(
-            `❌ \`Insufficient funds.\` You only have <:coin:706659001164628008> \`${balance.Bank.toLocaleString(
+            `❌ \`Insufficient funds.\` You only have 💰 \`${balance.Bank.toLocaleString(
                 'en'
             )}\` in the bank.`
         );
@@ -179,6 +179,6 @@ export async function handleWithdraw(
     await balance.save();
 
     await showTemporaryMessage(
-        `✅ \`Withdrew\` <:coin:706659001164628008> \`${amount.toLocaleString('en')}\` \`from your bank\``
+        `✅ \`Withdrew\` 💰 \`${amount.toLocaleString('en')}\` \`from your bank\``
     );
 }

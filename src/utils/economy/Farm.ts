@@ -81,7 +81,7 @@ export function buildFarmContainer(
         [
             `> **Player:** ${interaction.user}`,
             `> **Reward:** \`${name}\``,
-            `> **Value:** <:coin:706659001164628008> \`${price.toLocaleString('en')}\``,
+            `> **Value:** 💰 \`${price.toLocaleString('en')}\``,
             `> **You now have:** \`${amt.toLocaleString('en')}\``,
             '> **Tip:** `Planting crops yields a larger return.`',
         ].join('\n')

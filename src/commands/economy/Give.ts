@@ -72,12 +72,7 @@ export class Give {
         }
 
         if (balance.Bank === 0) {
-            await RagnarokComponent(
-                interaction,
-                'Error',
-                'You only have <:coin:706659001164628008>',
-                true
-            );
+            await RagnarokComponent(interaction, 'Error', 'You only have 💰', true);
             return;
         }
 
@@ -102,7 +97,7 @@ export class Give {
         await RagnarokComponent(
             interaction,
             'Success',
-            `You have paid ${user} the sum of: <:coin:706659001164628008> \`${amount.toLocaleString('en')}\``
+            `You have paid ${user} the sum of: 💰 \`${amount.toLocaleString('en')}\``
         );
     }
 }

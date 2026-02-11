@@ -90,7 +90,7 @@ export function buildFishContainer(
         [
             `> **Player:** ${interaction.user}`,
             `> **Catch:** \`${name}\``,
-            `> **Value:** <:coin:706659001164628008> \`${price.toLocaleString('en')}\``,
+            `> **Value:** 💰 \`${price.toLocaleString('en')}\``,
             `> **You now have:** \`${amt.toLocaleString('en')}\``,
         ].join('\n')
     );

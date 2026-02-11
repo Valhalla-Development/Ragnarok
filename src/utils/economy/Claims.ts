@@ -136,7 +136,7 @@ export async function handleClaim(
         interaction,
         buttons,
         undefined,
-        `✅ \`Claimed all available rewards!\` <:coin:706659001164628008> \`${fullPrice.toLocaleString('en')}\` \`added to bank\``
+        `✅ \`Claimed all available rewards!\` 💰 \`${fullPrice.toLocaleString('en')}\` \`added to bank\``
     );
 
     // If home container is available, update the message
