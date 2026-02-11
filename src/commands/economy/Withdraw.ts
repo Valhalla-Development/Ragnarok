@@ -41,7 +41,7 @@ export class Withdraw {
             await RagnarokComponent(
                 interaction,
                 'Error',
-                `You only have <:coin:706659001164628008> \`${balance.Bank.toLocaleString('en')}\`. Please try again with a valid amount.`,
+                `You only have 💰 \`${balance.Bank.toLocaleString('en')}\`. Please try again with a valid amount.`,
                 true
             );
             return;
@@ -54,7 +54,7 @@ export class Withdraw {
         await RagnarokComponent(
             interaction,
             'Success',
-            `You have withdrawn <:coin:706659001164628008> \`${amount.toLocaleString('en')}\``,
+            `You have withdrawn 💰 \`${amount.toLocaleString('en')}\``,
             true
         );
     }
