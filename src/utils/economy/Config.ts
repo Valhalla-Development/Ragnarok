@@ -1,89 +1,89 @@
 export const ecoPrices = {
     // Messaging Rewards
     messaging: {
-        minPerMessage: 10,
-        maxPerMessage: 30,
+        minPerMessage: 8,
+        maxPerMessage: 16,
     },
 
     // User Claims
     claims: {
-        hourly: { min: 150, max: 400 },
-        daily: { min: 400, max: 800 },
-        weekly: { min: 2000, max: 3000 },
-        monthly: { min: 10_000, max: 15_000 },
-        newUserTime: 172_800_000, // 2 Days
+        hourly: { min: 200, max: 350 },
+        daily: { min: 1200, max: 2200 },
+        weekly: { min: 7000, max: 12_000 },
+        monthly: { min: 30_000, max: 50_000 },
+        newUserTime: 21_600_000, // 6 hours
     },
 
     // Fishing
     fishing: {
         items: {
-            fishBagFirst: 200,
-            fishBagLimit: 1500,
-            fishBagPrice: 800, // Upgrade adds 30 to capacity
-            fishingRod: 25_000,
+            fishBagFirst: 80,
+            fishBagLimit: 1200,
+            fishBagPrice: 12, // Upgrade adds 30 to capacity
+            fishingRod: 14_000,
         },
         rewards: {
-            treasure: 75_000,
-            pufferfish: 5000,
-            swordfish: 2500,
-            kingSalmon: 1000,
-            trout: 400,
+            treasure: 45_000,
+            pufferfish: 3500,
+            swordfish: 1800,
+            kingSalmon: 900,
+            trout: 300,
         },
         cooldowns: {
-            fishWinTime: 240_000, // 4 Minutes
-            fishFailTime: 480_000, // 8 Minutes
+            fishWinTime: 300_000, // 5 Minutes
+            fishFailTime: 540_000, // 9 Minutes
         },
     },
 
     // Farming
     farming: {
         items: {
-            farmPlotFirst: 150,
-            farmPlotLimit: 1200,
-            farmPlotPrice: 800, // Upgrade adds 30 to capacity
-            farmingTools: 20_000,
-            farmBagFirst: 150,
-            farmBagLimit: 12_000,
-            farmBagPrice: 800, // Upgrade adds 30 to capacity
+            farmPlotFirst: 25,
+            farmPlotLimit: 600,
+            farmPlotPrice: 15, // Upgrade adds 30 to capacity
+            farmingTools: 12_000,
+            farmBagFirst: 80,
+            farmBagLimit: 2400,
+            farmBagPrice: 10, // Upgrade adds 30 to capacity
         },
         rewards: {
-            goldBar: 30_000,
-            corn: 800,
-            wheat: 600,
-            potatoes: 500,
-            tomatoes: 450,
+            goldBar: 22_000,
+            corn: 700,
+            wheat: 560,
+            potatoes: 450,
+            tomatoes: 340,
         },
         plantingTimes: {
-            cornPlant: 480_000, // 8 minutes
-            wheatPlant: 360_000, // 6 minutes
-            potatoPlant: 180_000, // 3 minutes
-            tomatoPlant: 120_000, // 2 minutes
+            cornPlant: 900_000, // 15 minutes
+            wheatPlant: 600_000, // 10 minutes
+            potatoPlant: 420_000, // 7 minutes
+            tomatoPlant: 300_000, // 5 minutes
         },
-        decayRate: 0.015, // Lowered decay rate for better long-term value
+        decayRate: 0.03, // Per-minute decay for harvestable crops
         farmingWithoutTools: {
-            goldNugget: 15_000,
-            barley: 600,
-            spinach: 400,
-            strawberries: 200,
-            lettuce: 150,
+            goldNugget: 9000,
+            barley: 380,
+            spinach: 260,
+            strawberries: 180,
+            lettuce: 120,
         },
         cooldowns: {
-            farmWinTime: 240_000, // 4 Minutes
-            farmFailTime: 480_000, // 8 Minutes
+            farmWinTime: 300_000, // 5 Minutes
+            farmFailTime: 540_000, // 9 Minutes
         },
-        freeFarmLimit: 10,
+        freeFarmLimit: 12,
     },
 
     // Boosts
     boosts: {
-        seedBagFirst: 150,
+        seedBagFirst: 80,
         seedBagLimit: 1200,
-        seedBagPrice: 800, // Upgrade adds 30 to capacity
+        seedBagPrice: 10, // Upgrade adds 30 to capacity
         seeds: {
-            cornSeed: 5000, // 15 per pack
-            wheatSeed: 4000,
-            potatoSeed: 3500,
-            tomatoSeed: 3200,
+            cornSeed: 3000, // 10 per pack
+            wheatSeed: 2400,
+            potatoSeed: 2000,
+            tomatoSeed: 1700,
         },
     },
 };
