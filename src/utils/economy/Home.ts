@@ -44,6 +44,8 @@ export function buildHomeContainer(
         heistButton: ButtonBuilder;
         fishButton: ButtonBuilder;
         farmButton: ButtonBuilder;
+        plantButton?: ButtonBuilder;
+        shopButton?: ButtonBuilder;
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
         withdrawButton: ButtonBuilder;
@@ -68,9 +70,9 @@ export function buildHomeContainer(
     const wealthText = new TextDisplayBuilder().setContent(
         [
             '## 💎 **Wealth Portfolio**',
-            `> 💵 **Wallet Cash:** \`${balance.Cash.toLocaleString('en')}\` <:coin:706659001164628008>`,
-            `> 🏦 **Bank Vault:** \`${balance.Bank.toLocaleString('en')}\` <:coin:706659001164628008>`,
-            `> 🌟 **Net Worth:** \`${balance.Total.toLocaleString('en')}\` <:coin:706659001164628008>`,
+            `> 💵 **Wallet Cash:** 💰 \`${balance.Cash.toLocaleString('en')}\``,
+            `> 🏦 **Bank Vault:** 💰 \`${balance.Bank.toLocaleString('en')}\``,
+            `> 🌟 **Net Worth:** 💰 \`${balance.Total.toLocaleString('en')}\``,
             wealthStatusMessage ? `> ${wealthStatusMessage}` : '',
         ].join('\n')
     );
@@ -220,7 +222,15 @@ export function buildHomeContainer(
         )
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(activityText)
-        .addActionRowComponents((row) => row.addComponents(heistButton, fishButton, farmButton))
+        .addActionRowComponents((row) =>
+            row.addComponents(
+                heistButton,
+                fishButton,
+                farmButton,
+                ...(buttons.plantButton ? [buttons.plantButton] : []),
+                ...(buttons.shopButton ? [buttons.shopButton] : [])
+            )
+        )
         .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
         .addTextDisplayComponents(storageText)
         .addActionRowComponents((row) => row.addComponents(buttons.itemsButton))
@@ -247,6 +257,8 @@ export async function updateHomeContainer(
         heistButton: ButtonBuilder;
         fishButton: ButtonBuilder;
         farmButton: ButtonBuilder;
+        plantButton?: ButtonBuilder;
+        shopButton?: ButtonBuilder;
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
         withdrawButton: ButtonBuilder;
@@ -339,6 +351,8 @@ export async function handleHome(
         heistButton: ButtonBuilder;
         fishButton: ButtonBuilder;
         farmButton: ButtonBuilder;
+        plantButton?: ButtonBuilder;
+        shopButton?: ButtonBuilder;
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
         withdrawButton: ButtonBuilder;
