@@ -20,6 +20,9 @@ export class InteractionCreate {
             !(
                 interaction.isButton() ||
                 interaction.isStringSelectMenu() ||
+                interaction.isRoleSelectMenu() ||
+                interaction.isChannelSelectMenu() ||
+                interaction.isMentionableSelectMenu() ||
                 interaction.isChatInputCommand() ||
                 interaction.isContextMenuCommand() ||
                 interaction.isContextMenuCommand() ||
