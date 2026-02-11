@@ -1,18 +1,18 @@
-export type EcoPrices = {
+export interface EcoPrices {
     Hourly: { min: number; max: number };
     Daily: { min: number; max: number };
     Weekly: { min: number; max: number };
     Monthly: { min: number; max: number };
-};
+}
 
-export type Claim = {
+export interface Claim {
     Hourly?: number;
     Daily?: number;
     Weekly?: number;
     Monthly?: number;
-};
+}
 
-export type Items = {
+export interface Items {
     Trout: number;
     KingSalmon: number;
     SwordFish: number;
@@ -30,22 +30,22 @@ export type Items = {
     TomatoSeeds: number;
     FarmingTools: boolean;
     FishingRod: boolean;
-};
+}
 
-export type CropData = {
+export interface CropData {
     CropStatus: string;
     CropType: string;
     Decay: number;
     CropGrowTime: number | string;
     LastUpdateTime?: number;
-};
+}
 
 import type { ActionRowBuilder, ButtonBuilder } from 'discord.js';
 
-export type HarvestResult = {
+export interface HarvestResult {
     crops: CropData[];
     totalValue: number;
     displayEntries: string[];
-};
+}
 
 export type ButtonRows = ActionRowBuilder<ButtonBuilder>[];
