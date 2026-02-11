@@ -83,6 +83,7 @@ function buildInventoryContainer(
                     ? `\`${balance.FarmPlot?.length ?? 0}\` / \`${Number(boosts.FarmPlot).toLocaleString('en')}\``
                     : '🚫 No Land Owned'
             }`,
+            `> 🏦 Auto Deposit: ${boosts.AutoDeposit ? '✅ Enabled' : '❌ Not Owned'}`,
         ].join('\n')
     );
 
