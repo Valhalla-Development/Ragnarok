@@ -74,7 +74,7 @@ async function awardPerMessagePayout(interaction: Message, memberId: string): Pr
         },
         {
             upsert: true,
-            new: true,
+            returnDocument: 'after',
             setDefaultsOnInsert: true,
         }
     ).exec();
@@ -512,7 +512,7 @@ export async function updateLevel(interaction: Message | CommandInteraction) {
                 $inc: { Xp: xpAdd },
                 $setOnInsert: { UserId: member.id, GuildId: interaction.guild.id, Level: 0 },
             },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
         ).exec();
 
         const currentLevel = Number(score.Level ?? 0);
