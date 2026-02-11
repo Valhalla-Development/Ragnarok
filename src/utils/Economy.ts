@@ -758,7 +758,7 @@ export class Economy {
             },
         ];
 
-        return upgradeTargets
+        const capacityUpgrades = upgradeTargets
             .filter((x) => x.current > 0 && x.current < x.limit)
             .map((x) => ({
                 label: x.label,
@@ -766,6 +766,18 @@ export class Economy {
                 default: this.selectedShopItem === x.value,
                 description: `${x.current}/${x.limit} | Next ${this.coinFmt(x.current * x.price * 3)}`,
             }));
+
+        const autoDepositOwned = Boolean(boosts?.AutoDeposit);
+        if (!autoDepositOwned) {
+            capacityUpgrades.push({
+                label: 'Auto Deposit (Heist)',
+                value: 'autodeposit',
+                default: this.selectedShopItem === 'autodeposit',
+                description: `Heist wins go straight to bank | ${this.coinFmt(ecoPrices.boosts.autoDepositPrice)}`,
+            });
+        }
+
+        return capacityUpgrades;
     }
 
     private getMaxPlantable(

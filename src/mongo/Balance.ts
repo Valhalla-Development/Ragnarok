@@ -19,6 +19,7 @@ const Balance = new Schema({
         SeedBag: { type: Number, default: null },
         FarmBag: { type: Number, default: null },
         FarmPlot: { type: Number, default: null },
+        AutoDeposit: { type: Boolean, default: false },
     },
     Items: {
         Trout: { type: Number, default: 0 },

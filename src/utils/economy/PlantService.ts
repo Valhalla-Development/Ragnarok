@@ -113,7 +113,13 @@ function ensureItems(balance: BalanceInterface) {
 
 function ensureBoosts(balance: BalanceInterface) {
     if (!balance.Boosts) {
-        balance.Boosts = { FishBag: 0, SeedBag: 0, FarmBag: 0, FarmPlot: 0 };
+        balance.Boosts = {
+            FishBag: 0,
+            SeedBag: 0,
+            FarmBag: 0,
+            FarmPlot: 0,
+            AutoDeposit: false,
+        };
     }
 }
 

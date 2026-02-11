@@ -463,7 +463,12 @@ export class EconomyCommand {
             targetBalance.Cash = targetCash - stealAmount;
             targetBalance.Total = Number(targetBalance.Total ?? 0) - stealAmount;
 
-            authorBalance.Cash = Number(authorBalance.Cash ?? 0) + stealAmount;
+            const hasAutoDeposit = Boolean(authorBalance.Boosts?.AutoDeposit);
+            if (hasAutoDeposit) {
+                authorBalance.Bank = Number(authorBalance.Bank ?? 0) + stealAmount;
+            } else {
+                authorBalance.Cash = Number(authorBalance.Cash ?? 0) + stealAmount;
+            }
             authorBalance.Total = Number(authorBalance.Total ?? 0) + stealAmount;
             authorBalance.StealCool = now + 120_000; // 2 minutes
 
@@ -472,7 +477,8 @@ export class EconomyCommand {
 
             const msg =
                 successMessages[Math.floor(Math.random() * successMessages.length)] +
-                ` \`${stealAmount.toLocaleString('en')}\`.`;
+                ` \`${stealAmount.toLocaleString('en')}\`.` +
+                (hasAutoDeposit ? ' Auto-deposited to bank.' : '');
 
             await showHeistResult('Heist Victory', `✅ ${msg}`);
         } else {

@@ -79,6 +79,7 @@ export const ecoPrices = {
         seedBagFirst: 80,
         seedBagLimit: 1200,
         seedBagPrice: 10, // Upgrade adds 30 to capacity
+        autoDepositPrice: 250_000,
         seeds: {
             cornSeed: 3000, // 10 per pack
             wheatSeed: 2400,

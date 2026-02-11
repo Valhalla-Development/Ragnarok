@@ -95,7 +95,12 @@ export class Rob {
 
                 // Sets cooldown time
                 balance.StealCool = Date.now() + 120_000;
-                balance.Cash = Number(balance.Cash ?? 0) + stealAmount;
+                const hasAutoDeposit = Boolean(balance.Boosts?.AutoDeposit);
+                if (hasAutoDeposit) {
+                    balance.Bank = Number(balance.Bank ?? 0) + stealAmount;
+                } else {
+                    balance.Cash = Number(balance.Cash ?? 0) + stealAmount;
+                }
                 balance.Total = Number(balance.Total ?? 0) + stealAmount;
                 await balance.save();
 
@@ -154,7 +159,9 @@ export class Rob {
                 await RagnarokComponent(
                     interaction,
                     'Success',
-                    `${succMessage[Math.floor(Math.random() * succMessage.length)]}`
+                    `${succMessage[Math.floor(Math.random() * succMessage.length)]}${
+                        hasAutoDeposit ? ' Auto-deposited to your bank.' : ''
+                    }`
                 );
             } else {
                 // Generates a random percentage between 5 and 10

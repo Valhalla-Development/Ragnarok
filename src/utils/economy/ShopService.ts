@@ -18,7 +18,8 @@ export type ShopItem =
     | 'seedbag'
     | 'fishbag'
     | 'farmbag'
-    | 'plot';
+    | 'plot'
+    | 'autodeposit';
 
 const SEED_PACK_SIZE = 10;
 const UPGRADE_STEP = 30;
@@ -163,6 +164,26 @@ async function doUpgrade(
     item: ShopItem
 ): Promise<{ ok: boolean; message: string }> {
     ensureBoosts(balance);
+
+    if (item === 'autodeposit') {
+        if (balance.Boosts!.AutoDeposit) {
+            return { ok: false, message: 'Auto Deposit is already enabled.' };
+        }
+        const cost = ecoPrices.boosts.autoDepositPrice;
+        if (!hasBank(balance, cost)) {
+            return {
+                ok: false,
+                message: `Not enough bank coins. Need ${fmt(cost - bank(balance))} more.`,
+            };
+        }
+        spendBank(balance, cost);
+        balance.Boosts!.AutoDeposit = true;
+        await save(balance);
+        return {
+            ok: true,
+            message: `Enabled Auto Deposit for ${fmt(cost)}. Heist wins now go straight to your bank.`,
+        };
+    }
 
     const map = {
         seedbag: {
@@ -350,7 +371,13 @@ function ensureItems(balance: BalanceInterface) {
 
 function ensureBoosts(balance: BalanceInterface) {
     if (!balance.Boosts) {
-        balance.Boosts = { FishBag: 0, SeedBag: 0, FarmBag: 0, FarmPlot: 0 };
+        balance.Boosts = {
+            FishBag: 0,
+            SeedBag: 0,
+            FarmBag: 0,
+            FarmPlot: 0,
+            AutoDeposit: false,
+        };
     }
 }
 
