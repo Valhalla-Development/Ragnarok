@@ -30,7 +30,7 @@ import {
 } from '@valhalladev/movier';
 import axios from 'axios';
 import mongoose from 'mongoose';
-import { config } from '../config/Config.js';
+import { config, isValhallaEnabled } from '../config/Config.js';
 import Balance from '../mongo/Balance.js';
 import Level from '../mongo/Level.js';
 import LevelConfig from '../mongo/LevelConfig.js';
@@ -698,6 +698,9 @@ export async function fetchAndScrambleWord(): Promise<{
     definition: string[];
     fieldArray: { name: string; value: string }[];
 }> {
+    if (!isValhallaEnabled()) {
+        throw new Error('Valhalla word service is disabled (missing VALHALLA_API_KEY).');
+    }
     const url = `${config.VALHALLA_API_URI}/wordEnhanced`;
 
     try {
@@ -739,6 +742,9 @@ export async function fetchAndScrambleWord(): Promise<{
  * console.log(randomWord);
  */
 export async function getRandomWord(): Promise<string | null> {
+    if (!isValhallaEnabled()) {
+        return null;
+    }
     const url = `${config.VALHALLA_API_URI}/word`;
 
     try {

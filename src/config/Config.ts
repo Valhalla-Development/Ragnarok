@@ -29,8 +29,8 @@ const configSchema = z.object({
     COMMAND_LOGGING_CHANNEL: z.string().optional(),
 
     // Valhalla API settings
-    VALHALLA_API_URI: z.string().min(1, 'VALHALLA_API_URI is required'),
-    VALHALLA_API_KEY: z.string().min(1, 'VALHALLA_API_KEY is required'),
+    VALHALLA_API_URI: z.string().optional().default('https://api.valhalladev.org/v1'),
+    VALHALLA_API_KEY: z.string().optional().default(''),
 
     // OpenRouter AI settings (optional)
     OPENROUTER_API_KEY: z.string().optional().default(''),
@@ -54,6 +54,16 @@ let config: z.infer<typeof configSchema>;
 try {
     config = configSchema.parse(process.env);
 
+    if (!config.VALHALLA_API_KEY.trim()) {
+        console.warn(
+            [
+                '⚠️ Valhalla API key missing — Valhalla-powered word/Hangman/Scramble features are DISABLED.',
+                `- VALHALLA_API_URI: ${config.VALHALLA_API_URI}`,
+                '- To enable: set VALHALLA_API_KEY (request via emailing ragnarlothbrokjr@proton.me)',
+            ].join('\n')
+        );
+    }
+
     // Validate logging channels required when logging is enabled
     if (config.ENABLE_LOGGING && !config.ERROR_LOGGING_CHANNEL && !config.COMMAND_LOGGING_CHANNEL) {
         console.warn(
@@ -75,6 +85,10 @@ try {
 
 export { config };
 export const isDev = config.NODE_ENV === 'development';
+
+export function isValhallaEnabled(): boolean {
+    return Boolean(config.VALHALLA_API_KEY.trim());
+}
 
 /**
  * Converts duration string (e.g., "1h", "6h", "24h", "7d") to milliseconds.
