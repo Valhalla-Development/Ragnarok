@@ -69,7 +69,6 @@ export class TraktCommand {
             ].join('\n')
         );
 
-        console.log(details.runtime);
         const stats = new TextDisplayBuilder().setContent(
             [
                 '## 📊 Stats',
