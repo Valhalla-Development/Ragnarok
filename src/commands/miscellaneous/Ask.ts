@@ -26,8 +26,6 @@ export class Ask {
         query: string,
         interaction: CommandInteraction
     ): Promise<void> {
-        await interaction.deferReply();
-
         if (!(await isAIChannelAllowed(interaction.guildId, interaction.channelId))) {
             const guildId = interaction.guildId;
             const guildEnabled = guildId ? await isAIGuildEnabled(guildId) : true;
@@ -58,6 +56,8 @@ export class Ask {
             );
             return;
         }
+
+        await interaction.deferReply();
 
         const groupId = buildAIGroupId({
             guildId: interaction.guildId,
