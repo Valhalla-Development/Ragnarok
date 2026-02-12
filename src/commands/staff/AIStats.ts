@@ -8,7 +8,12 @@ import {
     TextDisplayBuilder,
 } from 'discord.js';
 import { Discord, Slash } from 'discordx';
-import { getAITopUsers, getAITotalQueryCount, isAIStaff } from '../../utils/ai/OpenRouter.js';
+import {
+    getAITopUsers,
+    getAITotalQueryCount,
+    isAIGuildEnabled,
+    isAIStaff,
+} from '../../utils/ai/OpenRouter.js';
 
 @Discord()
 @Category('Staff')
@@ -18,6 +23,10 @@ export class AIStats {
         defaultMemberPermissions: [PermissionsBitField.Flags.ManageMessages],
     })
     async aistats(interaction: CommandInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+
         const roleIds =
             interaction.member &&
             'roles' in interaction.member &&
@@ -36,7 +45,11 @@ export class AIStats {
             return;
         }
 
-        const [total, top] = await Promise.all([getAITotalQueryCount(), getAITopUsers(10)]);
+        const [enabled, total, top] = await Promise.all([
+            isAIGuildEnabled(interaction.guild.id),
+            getAITotalQueryCount(),
+            getAITopUsers(10),
+        ]);
         if (top.length === 0) {
             await interaction.reply({
                 content: 'No AI usage data found yet.',
@@ -57,6 +70,7 @@ export class AIStats {
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(
                     [
+                        `> **Global AI:** ${enabled ? '`Enabled` ✅' : '`Disabled` ⛔'} (toggle in \`/config\`)`,
                         `> **Total Queries:** \`${total.toLocaleString()}\``,
                         '',
                         '## 🏆 Top Users',
