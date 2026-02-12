@@ -79,29 +79,32 @@ export class LevelCommand {
         const canvas = createCanvas(934, 282);
         const ctx = canvas.getContext('2d');
 
-        let userStatusColor: string | null = '#737F8D';
+        // TEMP: presence disabled
+        const userStatusColor: string | null = '#737F8D';
 
-        const fetchUser = await interaction.guild!.members.fetch({
-            user: member.id,
-            force: true,
-            withPresences: true,
-        });
-        if (fetchUser.presence) {
-            switch (fetchUser.presence.status) {
-                case 'online':
-                    userStatusColor = '#43B581';
-                    break;
-                case 'idle':
-                    userStatusColor = '#FAA61A';
-                    break;
-                case 'dnd':
-                    userStatusColor = '#F04747';
-                    break;
-                default:
-                    userStatusColor = null;
-                    break;
-            }
-        }
+        // TEMP: Presence intent disabled on some deployments (Pterodactyl).
+        // Fallback: keep default status color without querying presence.
+        // const fetchUser = await interaction.guild!.members.fetch({
+        //     user: member.id,
+        //     force: true,
+        //     withPresences: true,
+        // });
+        // if (fetchUser.presence) {
+        //     switch (fetchUser.presence.status) {
+        //         case 'online':
+        //             userStatusColor = '#43B581';
+        //             break;
+        //         case 'idle':
+        //             userStatusColor = '#FAA61A';
+        //             break;
+        //         case 'dnd':
+        //             userStatusColor = '#F04747';
+        //             break;
+        //         default:
+        //             userStatusColor = null;
+        //             break;
+        //     }
+        // }
 
         const image = readFileSync(path.join(process.cwd(), 'assets/canvas/images/Level.png'));
 

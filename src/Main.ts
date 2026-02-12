@@ -37,7 +37,8 @@ const clientConfig = {
         IntentsBitField.Flags.GuildEmojisAndStickers,
         IntentsBitField.Flags.GuildIntegrations,
         IntentsBitField.Flags.GuildWebhooks,
-        IntentsBitField.Flags.GuildPresences,
+        // TEMP: Presence intent disabled until re-verified in Discord portal.
+        // IntentsBitField.Flags.GuildPresences,
         IntentsBitField.Flags.GuildMessageReactions,
         IntentsBitField.Flags.GuildMessageTyping,
         IntentsBitField.Flags.DirectMessages,
