@@ -1,15 +1,18 @@
 import {
-    type APIMessageTopLevelComponent,
     ContainerBuilder,
     Events,
     MediaGalleryBuilder,
     MessageFlags,
+    SectionBuilder,
+    SeparatorSpacingSize,
     TextDisplayBuilder,
+    ThumbnailBuilder,
 } from 'discord.js';
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import {
     findStarboardEntry,
+    getCurrentStarCount,
     getStarboardChannel,
     isImageAttachment,
     isStarEmoji,
@@ -17,12 +20,11 @@ import {
     removeSelfStar,
     resolveMessage,
     resolveReaction,
+    updateStarMetaComponents,
 } from './Starboard.shared.js';
 
 @Discord()
 export class MessageReactionAdd {
-    private static readonly STAR_META_REGEX = /⭐\s\d+\s\|\s\d{17,20}/;
-
     private buildStarboardContainer(
         authorTag: string,
         authorAvatar: string,
@@ -33,77 +35,38 @@ export class MessageReactionAdd {
         sourceMessageId: string,
         imageUrl: string | null
     ): ContainerBuilder {
-        const lines = [
-            '# Starboard',
-            `**Author:** ${authorTag}`,
-            `**Avatar:** ${authorAvatar}`,
+        const summaryLines = [
             `**Channel:** <#${channelId}>`,
             `**Message:** ${content.trim() ? content.substring(0, 1024) : 'N/A'}`,
             `**Jump:** [Jump To Message](${messageUrl})`,
-            `⭐ ${starCount} | ${sourceMessageId}`,
         ];
 
-        const container = new ContainerBuilder().addTextDisplayComponents(
-            new TextDisplayBuilder().setContent(lines.join('\n'))
-        );
+        const summarySection = new SectionBuilder()
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(summaryLines.join('\n')))
+            .setThumbnailAccessory(new ThumbnailBuilder().setURL(authorAvatar));
+
+        const container = new ContainerBuilder()
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent('# Starboard'))
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(`**Author:** ${authorTag}`)
+            )
+            .addSectionComponents(summarySection);
 
         if (imageUrl) {
+            container.addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small));
             container.addMediaGalleryComponents(
                 new MediaGalleryBuilder().addItems((item) => item.setURL(imageUrl))
             );
         }
 
+        container
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(`⭐ ${starCount} | ${sourceMessageId}`)
+            );
+
         return container;
-    }
-
-    private getUpdatedComponents(
-        sourceMessage: { components: readonly unknown[] },
-        starCount: number,
-        sourceMessageId: string
-    ): APIMessageTopLevelComponent[] {
-        const nextMeta = `⭐ ${starCount} | ${sourceMessageId}`;
-        const rows = sourceMessage.components.map((row) => {
-            const rowJson =
-                typeof row === 'object' &&
-                row !== null &&
-                'toJSON' in row &&
-                typeof (row as { toJSON?: () => unknown }).toJSON === 'function'
-                    ? (row as { toJSON: () => unknown }).toJSON()
-                    : row;
-
-            if (!rowJson || typeof rowJson !== 'object') {
-                return null;
-            }
-            const rowData = rowJson as { type?: number; components?: unknown[] };
-            if (!Array.isArray(rowData.components)) {
-                return rowData as APIMessageTopLevelComponent;
-            }
-
-            return {
-                ...rowData,
-                components: rowData.components.map((component) => {
-                    if (!component || typeof component !== 'object') {
-                        return component;
-                    }
-                    const componentData = component as { type?: number; content?: string };
-                    if (
-                        componentData.type !== 10 ||
-                        typeof componentData.content !== 'string' ||
-                        !MessageReactionAdd.STAR_META_REGEX.test(componentData.content)
-                    ) {
-                        return componentData;
-                    }
-                    return {
-                        ...componentData,
-                        content: componentData.content.replace(
-                            MessageReactionAdd.STAR_META_REGEX,
-                            nextMeta
-                        ),
-                    };
-                }),
-            } as APIMessageTopLevelComponent;
-        });
-        return rows.filter((row): row is APIMessageTopLevelComponent => row !== null);
     }
 
     @On({ event: Events.MessageReactionAdd })
@@ -118,7 +81,7 @@ export class MessageReactionAdd {
         }
 
         const message = await resolveMessage(resolvedReaction.message);
-        if (!message?.guild || message.author?.bot) {
+        if (!message?.guild) {
             return;
         }
 
@@ -126,25 +89,26 @@ export class MessageReactionAdd {
         if (!starChannel) {
             return;
         }
+        const isStarboardMessage = message.channelId === starChannel.id;
+        if (message.author?.bot && !isStarboardMessage) {
+            return;
+        }
 
         // Prevent users starring their own messages (OG behavior).
         await removeSelfStar(resolvedReaction, user);
-        const safeStarCount = Math.max(
-            0,
-            (resolvedReaction.count ?? 0) - (message.author?.id === user.id ? 1 : 0)
-        );
+        const safeStarCount = await getCurrentStarCount(message);
         if (safeStarCount < 1) {
             return;
         }
 
         // If the reaction happened on a starboard message, only update its footer count.
-        if (message.channelId === starChannel.id) {
+        if (isStarboardMessage) {
             const parsed = parseStarMessageMeta(message);
             if (!parsed) {
                 return;
             }
 
-            const updatedComponents = this.getUpdatedComponents(
+            const updatedComponents = updateStarMetaComponents(
                 message,
                 safeStarCount,
                 parsed.sourceMessageId
@@ -158,7 +122,7 @@ export class MessageReactionAdd {
 
         const existingStarboardMessage = await findStarboardEntry(starChannel, message.id);
         if (existingStarboardMessage) {
-            const updatedComponents = this.getUpdatedComponents(
+            const updatedComponents = updateStarMetaComponents(
                 existingStarboardMessage,
                 safeStarCount,
                 message.id
