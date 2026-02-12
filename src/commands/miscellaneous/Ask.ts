@@ -36,7 +36,7 @@ export class Ask {
                 await RagnarokComponent(
                     interaction,
                     'Error',
-                    'AI is currently disabled for this server. Staff can enable it via `/aichannels`.',
+                    'AI is currently disabled for this server. Staff can enable it via `/config` (AI module).',
                     true
                 );
                 return;
