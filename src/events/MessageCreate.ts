@@ -243,7 +243,9 @@ export class MessageCreate {
                 return;
             }
 
-            const isMentioningBot = message.mentions.has(client.user.id);
+            const hasExplicitBotMention = new RegExp(`<@!?${client.user.id}>`).test(
+                message.content
+            );
             let referencedMessage: Message | null = null;
             let isReplyingToBot = false;
             let isReplyingToOtherUser = false;
@@ -258,13 +260,13 @@ export class MessageCreate {
                 );
             }
 
-            if (!(isMentioningBot || isReplyingToBot)) {
+            if (!(hasExplicitBotMention || isReplyingToBot)) {
                 return;
             }
 
             const cleanedPrompt = message.content.replace(/<@!?(\d+)>/g, '').trim();
             const prompt =
-                isMentioningBot && isReplyingToOtherUser && referencedMessage
+                hasExplicitBotMention && isReplyingToOtherUser && referencedMessage
                     ? [
                           cleanedPrompt,
                           '',
@@ -300,7 +302,7 @@ export class MessageCreate {
             }
 
             const [first, ...rest] = result.chunks;
-            if (isMentioningBot && isReplyingToOtherUser && referencedMessage) {
+            if (hasExplicitBotMention && isReplyingToOtherUser && referencedMessage) {
                 await message.channel.send({
                     content: first,
                     reply: { messageReference: referencedMessage.id },
