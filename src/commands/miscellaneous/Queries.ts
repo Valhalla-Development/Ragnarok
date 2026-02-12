@@ -91,6 +91,18 @@ export class Queries {
         }
 
         if (!isStaffView) {
+            container
+                .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+                .addActionRowComponents((row) =>
+                    row.addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(RESET_HISTORY_BUTTON_ID)
+                            .setLabel('Reset History')
+                            .setStyle(ButtonStyle.Secondary)
+                            .setEmoji('🧹')
+                    )
+                );
+
             return {
                 components: [container],
                 allowedMentions: { parse: [] as never[] },
@@ -224,6 +236,9 @@ export class Queries {
                 ...payload,
                 flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
             });
+            const reply = await interaction.fetchReply();
+            this.ownerByMessage.set(reply.id, interaction.user.id);
+            this.targetByMessage.set(reply.id, target.id);
             return;
         }
 
@@ -231,11 +246,9 @@ export class Queries {
             ...payload,
             flags: MessageFlags.IsComponentsV2,
         });
-        if (isStaffView) {
-            const reply = await interaction.fetchReply();
-            this.ownerByMessage.set(reply.id, interaction.user.id);
-            this.targetByMessage.set(reply.id, target.id);
-        }
+        const reply = await interaction.fetchReply();
+        this.ownerByMessage.set(reply.id, interaction.user.id);
+        this.targetByMessage.set(reply.id, target.id);
     }
 
     @ButtonComponent({ id: RESET_BUTTON_ID })
