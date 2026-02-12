@@ -10,7 +10,6 @@ import {
 } from 'discord.js';
 import type { ArgsOf } from 'discordx';
 import { Discord, On } from 'discordx';
-import moment from 'moment';
 import {
     findStarboardEntry,
     getCurrentStarCount,
@@ -26,23 +25,6 @@ import {
 
 @Discord()
 export class MessageReactionAdd {
-    private logStarboard(
-        action: string,
-        guildId: string,
-        sourceMessageId: string,
-        stars: number
-    ): void {
-        if (process.env.ENABLE_LOGGING?.toLowerCase() !== 'true') {
-            return;
-        }
-
-        console.log(
-            `${'◆◆◆◆◆◆'.rainbow.bold} ${moment().format('MMM D, h:mm A')} ${'◆◆◆◆◆◆'.rainbow.bold}\n` +
-                `${'⭐ Starboard:'.brightBlue.bold} ${action.brightYellow.bold}\n` +
-                `${'🧾 Source:'.brightBlue.bold} ${sourceMessageId.brightMagenta.bold} ${'|'.gray.bold} ${'🌟 Stars:'.brightBlue.bold} ${String(stars).brightYellow.bold} ${'|'.gray.bold} ${'🏠 Guild:'.brightBlue.bold} ${guildId.brightMagenta.bold}`
-        );
-    }
-
     private buildStarboardContainer(
         authorTag: string,
         authorAvatar: string,
@@ -135,12 +117,6 @@ export class MessageReactionAdd {
                 components: updatedComponents,
                 flags: MessageFlags.IsComponentsV2,
             });
-            this.logStarboard(
-                'Updated Starboard Post Count',
-                message.guild.id,
-                parsed.sourceMessageId,
-                safeStarCount
-            );
             return;
         }
 
@@ -155,12 +131,6 @@ export class MessageReactionAdd {
                 components: updatedComponents,
                 flags: MessageFlags.IsComponentsV2,
             });
-            this.logStarboard(
-                'Updated Linked Star Count',
-                message.guild.id,
-                message.id,
-                safeStarCount
-            );
             return;
         }
 
@@ -188,6 +158,5 @@ export class MessageReactionAdd {
         await sent.react('⭐').catch((error) => {
             console.debug('Could not add star reaction to starboard post:', error);
         });
-        this.logStarboard('Created Starboard Post', message.guild.id, message.id, safeStarCount);
     }
 }
