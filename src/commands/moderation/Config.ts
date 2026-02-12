@@ -27,9 +27,11 @@ import Logging from '../../mongo/Logging.js';
 import RoleMenu from '../../mongo/RoleMenu.js';
 import StarBoard from '../../mongo/StarBoard.js';
 import Welcome from '../../mongo/Welcome.js';
+import { isAIGuildEnabled, setAIGuildEnabled } from '../../utils/ai/OpenRouter.js';
 
 type ConfigModule =
     | 'home'
+    | 'ai'
     | 'ads'
     | 'autorole'
     | 'birthday'
@@ -53,6 +55,8 @@ interface ModuleViewResult {
 const MODULE_SELECT_ID = 'cfg:module';
 const ADS_ENABLE_BUTTON_ID = 'cfg:ads:enable';
 const ADS_DISABLE_BUTTON_ID = 'cfg:ads:disable';
+const AI_ENABLE_BUTTON_ID = 'cfg:ai:enable';
+const AI_DISABLE_BUTTON_ID = 'cfg:ai:disable';
 const DAD_ENABLE_BUTTON_ID = 'cfg:dad:enable';
 const DAD_DISABLE_BUTTON_ID = 'cfg:dad:disable';
 const ROLEMENU_SELECT_ID = 'cfg:rolemenu:roles:string';
@@ -100,6 +104,26 @@ export class Config {
             return;
         }
         const payload = await this.buildPayload(interaction.guild, selected);
+        await interaction.update(payload);
+    }
+
+    @ButtonComponent({ id: AI_ENABLE_BUTTON_ID })
+    async onAiEnable(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        await setAIGuildEnabled(interaction.guild.id, true);
+        const payload = await this.buildPayload(interaction.guild, 'ai');
+        await interaction.update(payload);
+    }
+
+    @ButtonComponent({ id: AI_DISABLE_BUTTON_ID })
+    async onAiDisable(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        await setAIGuildEnabled(interaction.guild.id, false);
+        const payload = await this.buildPayload(interaction.guild, 'ai');
         await interaction.update(payload);
     }
 
@@ -491,6 +515,12 @@ export class Config {
             .setPlaceholder(placeholder)
             .addOptions(
                 {
+                    label: 'AI',
+                    value: 'ai',
+                    description: 'Enable or disable AI for this server',
+                    default: current === 'ai',
+                },
+                {
                     label: 'Ads Protection',
                     value: 'ads',
                     description: 'Toggle link deletion module',
@@ -552,6 +582,31 @@ export class Config {
                     '> Use the controls below to update settings.',
                 ].filter(Boolean),
                 controls: [selector],
+            };
+        }
+
+        if (module === 'ai') {
+            const enabled = await isAIGuildEnabled(guild.id);
+            return {
+                title: '# 🤖 AI',
+                lines: [
+                    `> Status: ${enabled ? '`Enabled`' : '`Disabled`'}`,
+                    '> Toggle global AI availability for this server.',
+                    '> Use `/aichannels` to configure channel allow-list.',
+                ].filter(Boolean),
+                controls: [
+                    selector,
+                    new ButtonBuilder()
+                        .setCustomId(AI_ENABLE_BUTTON_ID)
+                        .setLabel('Enable')
+                        .setStyle(ButtonStyle.Success)
+                        .setDisabled(enabled),
+                    new ButtonBuilder()
+                        .setCustomId(AI_DISABLE_BUTTON_ID)
+                        .setLabel('Disable')
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(!enabled),
+                ],
             };
         }
 
