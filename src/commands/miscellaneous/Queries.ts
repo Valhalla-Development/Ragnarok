@@ -36,7 +36,12 @@ export class Queries {
 
     private readonly ownerByMessage = new Map<string, string>();
 
-    private async buildPayload(target: User, invokerId: string, isStaffView: boolean) {
+    private async buildPayload(
+        target: User,
+        invokerId: string,
+        isStaffView: boolean,
+        actionNotice?: string
+    ) {
         const data = await getAiUserData(target.id);
         if (!data) {
             return {
@@ -47,37 +52,43 @@ export class Queries {
         const maxLimit = Math.max(1, Number(config.MAX_AI_QUERIES_LIMIT || 30));
         const isAdminUser = isAIAdmin(target.id);
         const usedQueries = maxLimit - data.queriesRemaining;
-        const resetAt = data.expiration > 1 ? `<t:${Math.floor(data.expiration / 1000)}:R>` : 'N/A';
-        const quotaProfile = data.blacklisted
-            ? '⛔ Blacklisted'
-            : data.whitelisted
-              ? '✅ Whitelisted'
-              : '🟡 Standard';
         const privilege = isAdminUser ? '👑 AI Admin' : '👤 Standard User';
+
+        const details = [
+            `## 👤 ${target.displayName}`,
+            `> **Privilege:** ${privilege}`,
+            '',
+            `- **Total Queries:** \`${data.totalQueries.toLocaleString()}\``,
+            isAdminUser
+                ? '- **Queries Used:** `Unlimited (Admin Bypass)`'
+                : `- **Queries Used:** \`${usedQueries}/${maxLimit}\``,
+            isAdminUser
+                ? '- **Queries Remaining:** `∞`'
+                : `- **Queries Remaining:** \`${data.queriesRemaining}\``,
+        ];
+
+        if (!isAdminUser) {
+            const resetAt =
+                data.expiration > 1 ? `<t:${Math.floor(data.expiration / 1000)}:R>` : 'N/A';
+            const quotaProfile = data.blacklisted
+                ? '⛔ Blacklisted'
+                : data.whitelisted
+                  ? '✅ Whitelisted'
+                  : '🟡 Standard';
+            details.splice(2, 0, `> **Quota Profile:** ${quotaProfile}`);
+            details.push(`- **Cooldown Reset:** ${resetAt}`);
+        }
 
         const container = new ContainerBuilder()
             .addTextDisplayComponents(new TextDisplayBuilder().setContent('# 🤖 AI Query Checker'))
             .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
-            .addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(
-                    [
-                        `## 👤 ${target.displayName}`,
-                        `> **Privilege:** ${privilege}`,
-                        `> **Quota Profile:** ${quotaProfile}`,
-                        '',
-                        `- **Total Queries:** \`${data.totalQueries.toLocaleString()}\``,
-                        isAdminUser
-                            ? '- **Queries Used:** `Unlimited (Admin Bypass)`'
-                            : `- **Queries Used:** \`${usedQueries}/${maxLimit}\``,
-                        isAdminUser
-                            ? '- **Queries Remaining:** `∞`'
-                            : `- **Queries Remaining:** \`${data.queriesRemaining}\``,
-                        isAdminUser
-                            ? '- **Cooldown Reset:** `N/A (Admin Bypass)`'
-                            : `- **Cooldown Reset:** ${resetAt}`,
-                    ].join('\n')
-                )
-            );
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(details.join('\n')));
+
+        if (actionNotice) {
+            container
+                .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+                .addTextDisplayComponents(new TextDisplayBuilder().setContent(`> ${actionNotice}`));
+        }
 
         if (!isStaffView) {
             return {
@@ -86,33 +97,41 @@ export class Queries {
             };
         }
 
-        const resetCooldown = new ButtonBuilder()
-            .setCustomId(RESET_BUTTON_ID)
-            .setLabel('Reset Cooldown')
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji('♻️');
         const resetHistory = new ButtonBuilder()
             .setCustomId(RESET_HISTORY_BUTTON_ID)
             .setLabel('Reset History')
             .setStyle(ButtonStyle.Secondary)
             .setEmoji('🧹');
-        const toggleBlacklist = new ButtonBuilder()
-            .setCustomId(BLACKLIST_BUTTON_ID)
-            .setLabel(data.blacklisted ? 'Unblacklist' : 'Blacklist')
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji(data.blacklisted ? '✅' : '⛔');
-        const toggleWhitelist = new ButtonBuilder()
-            .setCustomId(WHITELIST_BUTTON_ID)
-            .setLabel(data.whitelisted ? 'Unwhitelist' : 'Whitelist')
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji(data.whitelisted ? '✅' : '⭐')
-            .setDisabled(!isAIAdmin(invokerId));
+        const actionButtons = [resetHistory];
+
+        if (!isAdminUser) {
+            actionButtons.unshift(
+                new ButtonBuilder()
+                    .setCustomId(RESET_BUTTON_ID)
+                    .setLabel('Reset Cooldown')
+                    .setStyle(ButtonStyle.Secondary)
+                    .setEmoji('♻️')
+            );
+            actionButtons.push(
+                new ButtonBuilder()
+                    .setCustomId(BLACKLIST_BUTTON_ID)
+                    .setLabel(data.blacklisted ? 'Unblacklist' : 'Blacklist')
+                    .setStyle(ButtonStyle.Secondary)
+                    .setEmoji(data.blacklisted ? '✅' : '⛔')
+            );
+            actionButtons.push(
+                new ButtonBuilder()
+                    .setCustomId(WHITELIST_BUTTON_ID)
+                    .setLabel(data.whitelisted ? 'Unwhitelist' : 'Whitelist')
+                    .setStyle(ButtonStyle.Secondary)
+                    .setEmoji(data.whitelisted ? '✅' : '⭐')
+                    .setDisabled(!isAIAdmin(invokerId))
+            );
+        }
 
         container
             .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
-            .addActionRowComponents((row) =>
-                row.addComponents(resetCooldown, resetHistory, toggleBlacklist, toggleWhitelist)
-            );
+            .addActionRowComponents((row) => row.addComponents(...actionButtons));
 
         return {
             components: [container],
@@ -138,6 +157,31 @@ export class Queries {
             return null;
         }
         return { targetId, ownerId };
+    }
+
+    private async updateWithNotice(
+        interaction: ButtonInteraction,
+        target: User,
+        ownerId: string,
+        notice: string
+    ): Promise<void> {
+        const withNotice = await this.buildPayload(target, ownerId, true, notice);
+        await interaction.update({
+            ...withNotice,
+            flags: MessageFlags.IsComponentsV2,
+        });
+
+        setTimeout(async () => {
+            try {
+                const clean = await this.buildPayload(target, ownerId, true);
+                await interaction.message.edit({
+                    ...clean,
+                    flags: MessageFlags.IsComponentsV2,
+                });
+            } catch {
+                // Ignore message edit failures (deleted/expired interaction context).
+            }
+        }, 4000);
     }
 
     @Slash({ description: 'Check AI query usage for yourself or another user.' })
@@ -204,11 +248,7 @@ export class Queries {
         const { targetId, ownerId } = state;
         await resetAICooldown(targetId);
         const target = await interaction.client.users.fetch(targetId);
-        const payload = await this.buildPayload(target, ownerId, true);
-        await interaction.update({
-            ...payload,
-            flags: MessageFlags.IsComponentsV2,
-        });
+        await this.updateWithNotice(interaction, target, ownerId, '✅ Cooldown reset.');
     }
 
     @ButtonComponent({ id: BLACKLIST_BUTTON_ID })
@@ -219,13 +259,15 @@ export class Queries {
         }
         const { targetId, ownerId } = state;
         const existing = await getAiUserData(targetId);
-        await setAIBlacklist(targetId, !(existing?.blacklisted ?? false));
+        const nextBlacklisted = !(existing?.blacklisted ?? false);
+        await setAIBlacklist(targetId, nextBlacklisted);
         const target = await interaction.client.users.fetch(targetId);
-        const payload = await this.buildPayload(target, ownerId, true);
-        await interaction.update({
-            ...payload,
-            flags: MessageFlags.IsComponentsV2,
-        });
+        await this.updateWithNotice(
+            interaction,
+            target,
+            ownerId,
+            nextBlacklisted ? '⛔ User blacklisted from AI.' : '✅ User removed from blacklist.'
+        );
     }
 
     @ButtonComponent({ id: RESET_HISTORY_BUTTON_ID })
@@ -238,11 +280,7 @@ export class Queries {
         const { targetId, ownerId } = state;
         await resetAIHistory(targetId);
         const target = await interaction.client.users.fetch(targetId);
-        const payload = await this.buildPayload(target, ownerId, true);
-        await interaction.update({
-            ...payload,
-            flags: MessageFlags.IsComponentsV2,
-        });
+        await this.updateWithNotice(interaction, target, ownerId, '🧹 History reset.');
     }
 
     @ButtonComponent({ id: WHITELIST_BUTTON_ID })
@@ -263,12 +301,14 @@ export class Queries {
         }
 
         const existing = await getAiUserData(targetId);
-        await setAIWhitelist(targetId, !(existing?.whitelisted ?? false));
+        const nextWhitelisted = !(existing?.whitelisted ?? false);
+        await setAIWhitelist(targetId, nextWhitelisted);
         const target = await interaction.client.users.fetch(targetId);
-        const payload = await this.buildPayload(target, ownerId, true);
-        await interaction.update({
-            ...payload,
-            flags: MessageFlags.IsComponentsV2,
-        });
+        await this.updateWithNotice(
+            interaction,
+            target,
+            ownerId,
+            nextWhitelisted ? '⭐ User whitelisted for AI.' : '✅ User removed from whitelist.'
+        );
     }
 }
