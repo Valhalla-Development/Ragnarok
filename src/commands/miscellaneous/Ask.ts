@@ -1,7 +1,13 @@
 import { Category } from '@discordx/utilities';
 import { ApplicationCommandOptionType, type CommandInteraction } from 'discord.js';
 import { Discord, Slash, SlashOption } from 'discordx';
-import { buildAIGroupId, isAIChannelAllowed, runAIChat } from '../../utils/ai/OpenRouter.js';
+import {
+    buildAIGroupId,
+    getAIAllowedChannels,
+    isAIChannelAllowed,
+    isAIGuildEnabled,
+    runAIChat,
+} from '../../utils/ai/OpenRouter.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
@@ -23,10 +29,31 @@ export class Ask {
         await interaction.deferReply();
 
         if (!(await isAIChannelAllowed(interaction.guildId, interaction.channelId))) {
+            const guildId = interaction.guildId;
+            const guildEnabled = guildId ? await isAIGuildEnabled(guildId) : true;
+
+            if (!guildEnabled) {
+                await RagnarokComponent(
+                    interaction,
+                    'Error',
+                    'AI is currently disabled for this server. Staff can enable it via `/aichannels`.',
+                    true
+                );
+                return;
+            }
+
+            const allowedChannels = interaction.guildId
+                ? await getAIAllowedChannels(interaction.guildId)
+                : [];
+            const allowedChannelText =
+                allowedChannels.length > 0
+                    ? `Allowed channels: ${allowedChannels.map((id) => `<#${id}>`).join(', ')}`
+                    : 'All channels are currently allowed.';
+
             await RagnarokComponent(
                 interaction,
                 'Error',
-                'AI is disabled in this channel. Ask staff to allow it via `/aichannels`.',
+                `AI is disabled in this channel.\n${allowedChannelText}`,
                 true
             );
             return;
