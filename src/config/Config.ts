@@ -35,7 +35,7 @@ const configSchema = z.object({
     // OpenRouter AI settings (optional)
     OPENROUTER_API_KEY: z.string().optional().default(''),
     OPENROUTER_MODEL: z.string().optional().default('openai/gpt-4o-mini'),
-    OPENROUTER_SYSTEM_PROMPT_FILE: z.string().optional().default('assets/ai/system-prompt.md'),
+    OPENROUTER_SYSTEM_PROMPT_FILE: z.string().optional().default('src/config/system-prompt.md'),
     OPENROUTER_SYSTEM_PROMPT: z.string().optional().default(''),
     MAX_AI_QUERIES_LIMIT: z.string().optional().default('30').transform(Number),
     AI_QUERIES_RESET_TIME: z.string().optional().default('24h'),
