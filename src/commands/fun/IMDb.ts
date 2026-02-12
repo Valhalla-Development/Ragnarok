@@ -78,7 +78,7 @@ export class TraktCommand {
                 `> 🌟 **Stars**: \`${details.cast || 'N/A'}\``,
                 `> 🏢 **Production**: \`${details.productionCompany || 'N/A'}\``,
                 ...(runTime ? [`> ⏱️ **Runtime**: \`${runTime}\``] : []),
-                `> <:imdb:1202979511755612173> Rating: \`${details.rating}/10 (${details.totalVotes.toLocaleString('en')} votes)\``,
+                `> <:imdb:977228158615027803> Rating: \`${details.rating}/10 (${details.totalVotes.toLocaleString('en')} votes)\``,
             ].join('\n')
         );
 
