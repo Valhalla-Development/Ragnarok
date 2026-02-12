@@ -1,13 +1,19 @@
-import { EmbedBuilder, Events } from 'discord.js';
+import {
+    type APIMessageTopLevelComponent,
+    ContainerBuilder,
+    Events,
+    MediaGalleryBuilder,
+    MessageFlags,
+    TextDisplayBuilder,
+} from 'discord.js';
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
-import { color } from '../utils/Util.js';
 import {
     findStarboardEntry,
     getStarboardChannel,
     isImageAttachment,
     isStarEmoji,
-    parseStarFooter,
+    parseStarMessageMeta,
     removeSelfStar,
     resolveMessage,
     resolveReaction,
@@ -15,6 +21,91 @@ import {
 
 @Discord()
 export class MessageReactionAdd {
+    private static readonly STAR_META_REGEX = /⭐\s\d+\s\|\s\d{17,20}/;
+
+    private buildStarboardContainer(
+        authorTag: string,
+        authorAvatar: string,
+        channelId: string,
+        content: string,
+        messageUrl: string,
+        starCount: number,
+        sourceMessageId: string,
+        imageUrl: string | null
+    ): ContainerBuilder {
+        const lines = [
+            '# Starboard',
+            `**Author:** ${authorTag}`,
+            `**Avatar:** ${authorAvatar}`,
+            `**Channel:** <#${channelId}>`,
+            `**Message:** ${content.trim() ? content.substring(0, 1024) : 'N/A'}`,
+            `**Jump:** [Jump To Message](${messageUrl})`,
+            `⭐ ${starCount} | ${sourceMessageId}`,
+        ];
+
+        const container = new ContainerBuilder().addTextDisplayComponents(
+            new TextDisplayBuilder().setContent(lines.join('\n'))
+        );
+
+        if (imageUrl) {
+            container.addMediaGalleryComponents(
+                new MediaGalleryBuilder().addItems((item) => item.setURL(imageUrl))
+            );
+        }
+
+        return container;
+    }
+
+    private getUpdatedComponents(
+        sourceMessage: { components: readonly unknown[] },
+        starCount: number,
+        sourceMessageId: string
+    ): APIMessageTopLevelComponent[] {
+        const nextMeta = `⭐ ${starCount} | ${sourceMessageId}`;
+        const rows = sourceMessage.components.map((row) => {
+            const rowJson =
+                typeof row === 'object' &&
+                row !== null &&
+                'toJSON' in row &&
+                typeof (row as { toJSON?: () => unknown }).toJSON === 'function'
+                    ? (row as { toJSON: () => unknown }).toJSON()
+                    : row;
+
+            if (!rowJson || typeof rowJson !== 'object') {
+                return null;
+            }
+            const rowData = rowJson as { type?: number; components?: unknown[] };
+            if (!Array.isArray(rowData.components)) {
+                return rowData as APIMessageTopLevelComponent;
+            }
+
+            return {
+                ...rowData,
+                components: rowData.components.map((component) => {
+                    if (!component || typeof component !== 'object') {
+                        return component;
+                    }
+                    const componentData = component as { type?: number; content?: string };
+                    if (
+                        componentData.type !== 10 ||
+                        typeof componentData.content !== 'string' ||
+                        !MessageReactionAdd.STAR_META_REGEX.test(componentData.content)
+                    ) {
+                        return componentData;
+                    }
+                    return {
+                        ...componentData,
+                        content: componentData.content.replace(
+                            MessageReactionAdd.STAR_META_REGEX,
+                            nextMeta
+                        ),
+                    };
+                }),
+            } as APIMessageTopLevelComponent;
+        });
+        return rows.filter((row): row is APIMessageTopLevelComponent => row !== null);
+    }
+
     @On({ event: Events.MessageReactionAdd })
     async onReactionAdd([reaction, user]: ArgsOf<'messageReactionAdd'>, client: Client) {
         if (user.bot || !isStarEmoji(reaction)) {
@@ -48,30 +139,34 @@ export class MessageReactionAdd {
 
         // If the reaction happened on a starboard message, only update its footer count.
         if (message.channelId === starChannel.id) {
-            const existingEmbed = message.embeds[0];
-            const parsed = parseStarFooter(existingEmbed?.footer?.text);
-            if (!existingEmbed || parsed === null) {
+            const parsed = parseStarMessageMeta(message);
+            if (!parsed) {
                 return;
             }
 
-            const updated = EmbedBuilder.from(existingEmbed).setFooter({
-                text: `⭐ ${safeStarCount} | ${parsed.sourceMessageId}`,
+            const updatedComponents = this.getUpdatedComponents(
+                message,
+                safeStarCount,
+                parsed.sourceMessageId
+            );
+            await message.edit({
+                components: updatedComponents,
+                flags: MessageFlags.IsComponentsV2,
             });
-            await message.edit({ embeds: [updated] });
             return;
         }
 
         const existingStarboardMessage = await findStarboardEntry(starChannel, message.id);
         if (existingStarboardMessage) {
-            const existingEmbed = existingStarboardMessage.embeds[0];
-            if (!existingEmbed) {
-                return;
-            }
-
-            const updated = EmbedBuilder.from(existingEmbed).setFooter({
-                text: `⭐ ${safeStarCount} | ${message.id}`,
+            const updatedComponents = this.getUpdatedComponents(
+                existingStarboardMessage,
+                safeStarCount,
+                message.id
+            );
+            await existingStarboardMessage.edit({
+                components: updatedComponents,
+                flags: MessageFlags.IsComponentsV2,
             });
-            await existingStarboardMessage.edit({ embeds: [updated] });
             return;
         }
 
@@ -79,29 +174,22 @@ export class MessageReactionAdd {
         const imageUrl =
             attachment?.url && isImageAttachment(attachment.url) ? attachment.url : null;
 
-        const embed = new EmbedBuilder()
-            .setColor(color(message.guild.members.me?.displayHexColor ?? '#FEE75C'))
-            .setThumbnail(message.author.displayAvatarURL({ extension: 'png' }))
-            .addFields(
-                { name: '**Author**', value: `${message.author}`, inline: true },
-                { name: '**Channel**', value: `<#${message.channel.id}>`, inline: true },
-                {
-                    name: '**Message**',
-                    value: message.content?.trim() ? message.content.substring(0, 1024) : 'N/A',
-                },
-                {
-                    name: '**Jump**',
-                    value: `[Jump To Message](${message.url})`,
-                }
-            )
-            .setFooter({ text: `⭐ ${safeStarCount} | ${message.id}` })
-            .setTimestamp();
+        const container = this.buildStarboardContainer(
+            `${message.author}`,
+            message.author.displayAvatarURL({ extension: 'png' }),
+            message.channel.id,
+            message.content ?? '',
+            message.url,
+            safeStarCount,
+            message.id,
+            imageUrl
+        );
 
-        if (imageUrl) {
-            embed.setImage(imageUrl);
-        }
-
-        const sent = await starChannel.send({ embeds: [embed] });
+        const sent = await starChannel.send({
+            components: [container],
+            flags: MessageFlags.IsComponentsV2,
+            allowedMentions: { parse: [] },
+        });
         // Keep parity with OG UX where users can keep starring in starboard channel.
         await sent.react('⭐').catch((error) => {
             console.debug('Could not add star reaction to starboard post:', error);

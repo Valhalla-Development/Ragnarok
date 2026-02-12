@@ -8,7 +8,6 @@ import {
     type CommandInteraction,
     ContainerBuilder,
     codeBlock,
-    EmbedBuilder,
     type GuildMember,
     type Interaction,
     type Message,
@@ -354,6 +353,21 @@ export async function RagnarokComponent(
 }
 
 /**
+ * Builds a simple Components V2 container with a title and body text.
+ * @param title - Heading shown at the top of the container.
+ * @param body - Markdown body content.
+ */
+export function RagnarokContainer(title: string, body: string): ContainerBuilder {
+    const header = new TextDisplayBuilder().setContent(`# ${title}`);
+    const content = new TextDisplayBuilder().setContent(body);
+
+    return new ContainerBuilder()
+        .addTextDisplayComponents(header)
+        .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+        .addTextDisplayComponents(content);
+}
+
+/**
  * Components V2 pagination helper (no custom :nav: handlers required).
  *
  * - Works for both Slash commands (replies) and Button interactions (edits the existing message)
@@ -635,14 +649,14 @@ export async function handleError(client: Client, error: unknown): Promise<void>
             codeBlock('js', errorStack),
         ].join('\n');
 
-        const embed = new EmbedBuilder()
-            .setTitle('Error')
-            .setDescription(truncateDescription(fullString))
-            .setColor('#FF0000');
-
-        await channel.send({ embeds: [embed] });
+        const container = RagnarokContainer('Error', truncateDescription(fullString));
+        await channel.send({
+            components: [container],
+            flags: MessageFlags.IsComponentsV2,
+            allowedMentions: { parse: [] },
+        });
     } catch (sendError) {
-        console.error('Failed to send the error embed:', sendError);
+        console.error('Failed to send the error component message:', sendError);
     }
 }
 

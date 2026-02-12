@@ -2,16 +2,16 @@ import { Category } from '@discordx/utilities';
 import {
     ApplicationCommandOptionType,
     type CommandInteraction,
-    EmbedBuilder,
     type GuildMember,
     type GuildMemberRoleManager,
     type GuildTextBasedChannel,
+    MessageFlags,
     PermissionsBitField,
 } from 'discord.js';
 import { type Client, Discord, Guard, Slash, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
 import Logging from '../../mongo/Logging.js';
-import { color, RagnarokComponent } from '../../utils/Util.js';
+import { RagnarokComponent, RagnarokContainer } from '../../utils/Util.js';
 
 @Discord()
 @Category('Moderation')
@@ -95,36 +95,24 @@ export class Kick {
         });
 
         try {
-            const authoMes = new EmbedBuilder()
-                .setThumbnail(`${client.user?.displayAvatarURL()}`)
-                .setColor(color(interaction.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                .addFields({
-                    name: `You have been kicked from: \`${interaction.guild!.name}\``,
-                    value: `**◎ Reason:** ${reason || 'No reason given.'}
-                    **◎ Moderator:** ${interaction.user.tag}`,
-                })
-                .setFooter({ text: 'You have been kicked' })
-                .setTimestamp();
-
-            await user.send({ embeds: [authoMes] });
+            const dmContainer = RagnarokContainer(
+                `You have been kicked from: \`${interaction.guild!.name}\``,
+                `**◎ Reason:** ${reason || 'No reason given.'}\n**◎ Moderator:** ${interaction.user.tag}`
+            );
+            await user.send({ components: [dmContainer], flags: MessageFlags.IsComponentsV2 });
         } catch {
             // Do nothing
         }
 
-        const embed = new EmbedBuilder()
-            .setColor('#FE4611')
-            .setAuthor({ name: 'Member Kicked', iconURL: user.user.displayAvatarURL() })
-            .setThumbnail(user.user.displayAvatarURL())
-            .setDescription(
-                `${user} - \`@${user.user.tag}${user.user.discriminator !== '0' ? `#${user.user.discriminator}` : ''}\``
-            )
-            .setFooter({ text: `ID: ${user.id}` })
-            .setTimestamp();
-
-        // Add a field for the ban reason if it exists
+        const logLines = [
+            `${user} - \`@${user.user.tag}${user.user.discriminator !== '0' ? `#${user.user.discriminator}` : ''}\``,
+            `**Avatar:** ${user.user.displayAvatarURL()}`,
+            `**ID:** \`${user.id}\``,
+        ];
         if (reason) {
-            embed.addFields({ name: 'Reason', value: `\`${reason}\`` });
+            logLines.push(`**Reason:** \`${reason}\``);
         }
+        const logContainer = RagnarokContainer('Member Kicked', logLines.join('\n'));
 
         const id = await Logging.findOne({ GuildId: interaction.guild!.id });
 
@@ -132,7 +120,11 @@ export class Kick {
             const loggingChannel = client.channels.cache.get(id.ChannelId) as GuildTextBasedChannel;
 
             if (loggingChannel) {
-                loggingChannel.send({ embeds: [embed] });
+                loggingChannel.send({
+                    components: [logContainer],
+                    flags: MessageFlags.IsComponentsV2,
+                    allowedMentions: { parse: [] },
+                });
             }
         }
     }

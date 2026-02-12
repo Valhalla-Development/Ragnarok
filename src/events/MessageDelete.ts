@@ -1,8 +1,8 @@
-import { AuditLogEvent, ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
+import { AuditLogEvent, ChannelType, Events, MessageFlags, PermissionsBitField } from 'discord.js';
 import type { ArgsOf } from 'discordx';
 import { Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
-import { color } from '../utils/Util.js';
+import { RagnarokContainer } from '../utils/Util.js';
 
 @Discord()
 export class MessageDelete {
@@ -40,18 +40,15 @@ export class MessageDelete {
                 const deletionLog = fetchedLogs.entries.first();
 
                 if (!deletionLog) {
-                    const noLogE = new EmbedBuilder()
-                        .setColor(color(message.guild?.members.me?.displayHexColor ?? '#5865F2'))
-                        .setAuthor({
-                            name: 'Message Deleted',
-                            iconURL: `${message.guild.iconURL()}`,
-                        })
-                        .setTitle('Message Deleted')
-                        .setDescription(
-                            `**◎ No Data:** A message sent by ${message.author} was deleted but no content was found.**`
-                        )
-                        .setTimestamp();
-                    chn.send({ embeds: [noLogE] });
+                    const noLogContainer = RagnarokContainer(
+                        'Message Deleted',
+                        `**◎ No Data:** A message sent by ${message.author} was deleted but no content was found.`
+                    );
+                    chn.send({
+                        components: [noLogContainer],
+                        flags: MessageFlags.IsComponentsV2,
+                        allowedMentions: { parse: [] },
+                    });
                     return;
                 }
 
@@ -59,31 +56,23 @@ export class MessageDelete {
                     ? message.attachments.map((attachment) => attachment.proxyURL)
                     : null;
 
-                const embed = new EmbedBuilder()
-                    .setColor('#FE4611')
-                    .setAuthor({
-                        name: 'Message Deleted',
-                        iconURL: `${message.guild!.iconURL()}`,
-                    })
-                    .setDescription(
-                        `**Message sent by ${message.author}, deleted in ${message.channel}**${message.content?.length ? `\n${message.content.substring(0, 3900)}` : ''}`
-                    )
-                    .setFooter({ text: `ID: ${message.id}` })
-                    .setTimestamp();
-
-                if (attachments) {
-                    embed.addFields({
-                        name: '**Attachments:**',
-                        value: `${attachments.join('\n')}`,
-                    });
-                }
-
                 if (!(message.content?.length || attachments)) {
                     return;
                 }
-
-                // Send the embed to the logging channel
-                chn.send({ embeds: [embed] });
+                const body = [
+                    `**Message sent by ${message.author}, deleted in ${message.channel}**`,
+                    message.content?.length ? message.content.substring(0, 3900) : '',
+                    attachments?.length ? `\n**Attachments:**\n${attachments.join('\n')}` : '',
+                    `\n**ID:** \`${message.id}\``,
+                ]
+                    .filter(Boolean)
+                    .join('\n');
+                const container = RagnarokContainer('Message Deleted', body);
+                chn.send({
+                    components: [container],
+                    flags: MessageFlags.IsComponentsV2,
+                    allowedMentions: { parse: [] },
+                });
             }
         }
     }

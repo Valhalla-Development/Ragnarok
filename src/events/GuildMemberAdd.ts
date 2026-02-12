@@ -4,8 +4,8 @@ import { createCanvas, loadImage, registerFont } from 'canvas';
 import {
     AttachmentBuilder,
     ChannelType,
-    EmbedBuilder,
     Events,
+    MessageFlags,
     PermissionsBitField,
 } from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
@@ -13,7 +13,7 @@ import ordinal from 'ordinal';
 import AutoRole from '../mongo/AutoRole.js';
 import Logging from '../mongo/Logging.js';
 import Welcome from '../mongo/Welcome.js';
-import { updateStatus } from '../utils/Util.js';
+import { RagnarokContainer, updateStatus } from '../utils/Util.js';
 
 registerFont('./assets/canvas/fonts/Handlee-Regular.ttf', {
     family: 'Handlee',
@@ -149,39 +149,29 @@ export class GuildMemberAdd {
                     .permissionsFor(channel.guild.members.me!)
                     .has(PermissionsBitField.Flags.SendMessages)
             ) {
-                // Create an embed with information about the joined member
-                const embed = new EmbedBuilder()
-                    .setColor('#FE4611')
-                    .setThumbnail(member.user.displayAvatarURL())
-                    .setAuthor({
-                        name: 'Member Joined',
-                        iconURL: `${member.user.displayAvatarURL()}`,
-                    })
-                    .setDescription(
-                        `${member} - \`@${member.user.tag}${member.user.discriminator !== '0' ? `#${member.user.discriminator}` : ''}\``
-                    )
-                    .addFields(
-                        {
-                            name: 'Account Age',
-                            value: `<t:${Math.round(
-                                member.user.createdTimestamp / 1000
-                            )}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)`,
-                            inline: true,
-                        },
-                        {
-                            name: 'Joined',
-                            value: `<t:${Math.round(
-                                member.joinedTimestamp! / 1000
-                            )}> - (<t:${Math.round(member.joinedTimestamp! / 1000)}:R>)`,
-                            inline: true,
-                        }
-                    )
-                    .setFooter({ text: `ID: ${member.user.id}` })
-                    .setTimestamp();
+                const joinedAt = member.joinedTimestamp
+                    ? `<t:${Math.round(member.joinedTimestamp / 1000)}> - (<t:${Math.round(
+                          member.joinedTimestamp / 1000
+                      )}:R>)`
+                    : '`Unknown`';
+                const container = RagnarokContainer(
+                    'Member Joined',
+                    [
+                        `${member} - \`@${member.user.tag}${member.user.discriminator !== '0' ? `#${member.user.discriminator}` : ''}\``,
+                        `**Avatar:** ${member.user.displayAvatarURL()}`,
+                        `**Account Age:** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)`,
+                        `**Joined:** ${joinedAt}`,
+                        `**ID:** \`${member.user.id}\``,
+                    ].join('\n')
+                );
 
                 // Send the embed to the logging channel
                 if (channel) {
-                    channel.send({ embeds: [embed] });
+                    channel.send({
+                        components: [container],
+                        flags: MessageFlags.IsComponentsV2,
+                        allowedMentions: { parse: [] },
+                    });
                 }
             }
         }

@@ -1,10 +1,10 @@
-import { ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
+import { ChannelType, Events, MessageFlags, PermissionsBitField } from 'discord.js';
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import urlRegexSafe from 'url-regex-safe';
 import AdsProtection from '../mongo/AdsProtection.js';
 import Logging from '../mongo/Logging.js';
-import { color, deletableCheck, messageDelete } from '../utils/Util.js';
+import { deletableCheck, messageDelete, RagnarokContainer } from '../utils/Util.js';
 
 @Discord()
 export class MessageUpdate {
@@ -26,15 +26,17 @@ export class MessageUpdate {
             );
 
             if (!botHasManageMessages) {
-                const errorEmbed = new EmbedBuilder()
-                    .setColor(color(newMessage.guild.members.me?.displayHexColor ?? '#5865F2'))
-                    .addFields({
-                        name: `**${client.user?.username} - Ads Protection**`,
-                        value: '**Error:** I lack the `Manage Messages` permission required for Ads Protection. This feature has been disabled.',
-                    });
+                const errorContainer = RagnarokContainer(
+                    `${client.user?.username ?? 'Bot'} - Ads Protection`,
+                    '**Error:** I lack the `Manage Messages` permission required for Ads Protection. This feature has been disabled.'
+                );
 
                 await newMessage.channel
-                    .send({ embeds: [errorEmbed] })
+                    .send({
+                        components: [errorContainer],
+                        flags: MessageFlags.IsComponentsV2,
+                        allowedMentions: { parse: [] },
+                    })
                     .then((m) => deletableCheck(m, 0));
                 await AdsProtection.deleteOne({ GuildId: newMessage.guild.id });
                 return;
@@ -83,23 +85,23 @@ export class MessageUpdate {
             return;
         }
 
-        const embed = new EmbedBuilder()
-            .setColor(color(newMessage.guild.members.me?.displayHexColor ?? '#5865F2'))
-            .setAuthor({
-                name: `${newMessage.author.tag}`,
-                iconURL: newMessage.author.displayAvatarURL({ extension: 'png' }),
-            })
-            .setTitle('Message Updated')
-            .addFields(
-                { name: '**◎ Before:**', value: oldMessage.content.substring(0, 1024) },
-                {
-                    name: '**◎ After:**',
-                    value: (newMessage.content ?? '*No content*').substring(0, 1024),
-                }
-            )
-            .setURL(newMessage.url)
-            .setTimestamp();
+        const container = RagnarokContainer(
+            'Message Updated',
+            [
+                `**Author:** ${newMessage.author.tag}`,
+                `**Avatar:** ${newMessage.author.displayAvatarURL({ extension: 'png' })}`,
+                `**Message Link:** ${newMessage.url}`,
+                '',
+                `**◎ Before:**\n${oldMessage.content.substring(0, 1024)}`,
+                '',
+                `**◎ After:**\n${(newMessage.content ?? '*No content*').substring(0, 1024)}`,
+            ].join('\n')
+        );
 
-        await chn.send({ embeds: [embed] });
+        await chn.send({
+            components: [container],
+            flags: MessageFlags.IsComponentsV2,
+            allowedMentions: { parse: [] },
+        });
     }
 }

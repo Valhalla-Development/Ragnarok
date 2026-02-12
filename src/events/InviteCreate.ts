@@ -1,6 +1,7 @@
-import { ChannelType, EmbedBuilder, Events, Guild, PermissionsBitField } from 'discord.js';
+import { ChannelType, Events, Guild, MessageFlags, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
+import { RagnarokContainer } from '../utils/Util.js';
 
 /**
  * Discord.js InviteCreate event handler.
@@ -37,20 +38,22 @@ export class InviteCreate {
                             ? `<t:${Math.floor(Date.now() / 1000) + invite.maxAge!}:R>`
                             : '`Never`';
 
-                    const embed = new EmbedBuilder()
-                        .setColor('#FE4611')
-                        .setAuthor({
-                            name: 'Invite Created',
-                            iconURL: `${invite.guild!.iconURL()}`,
-                        })
-                        .setDescription(
-                            `**Created By:** ${invite.inviter}\n**Expires:** ${expiry}\n**Location:** ${invite.channel}\n**Invite:** https://discord.gg/${invite.code}`
-                        )
-                        .setFooter({ text: `ID: ${invite.code}` })
-                        .setTimestamp();
+                    const container = RagnarokContainer(
+                        'Invite Created',
+                        [
+                            `**Created By:** ${invite.inviter ?? 'Unknown'}`,
+                            `**Expires:** ${expiry}`,
+                            `**Location:** ${invite.channel}`,
+                            `**Invite:** https://discord.gg/${invite.code}`,
+                            `**ID:** \`${invite.code}\``,
+                        ].join('\n')
+                    );
 
-                    // Send the embed to the logging channel
-                    chn.send({ embeds: [embed] });
+                    chn.send({
+                        components: [container],
+                        flags: MessageFlags.IsComponentsV2,
+                        allowedMentions: { parse: [] },
+                    });
                 }
             }
         }

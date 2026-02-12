@@ -13,6 +13,7 @@ import StarBoard from '../mongo/StarBoard.js';
 type AnyReaction = MessageReaction | PartialMessageReaction;
 
 const STAR_FOOTER_REGEX = /^⭐\s(\d+)\s\|\s(\d{17,20})$/;
+const STAR_INLINE_REGEX = /⭐\s(\d+)\s\|\s(\d{17,20})/;
 
 export function isStarEmoji(reaction: AnyReaction): boolean {
     return reaction.emoji.name === '⭐';
@@ -92,14 +93,54 @@ export function parseStarFooter(
     return { stars: Number(match[1] ?? 0), sourceMessageId: match[2] ?? '' };
 }
 
+export function parseStarMessageMeta(
+    message: Message
+): { stars: number; sourceMessageId: string } | null {
+    const embedFooter = message.embeds[0]?.footer?.text;
+    const parsedEmbed = parseStarFooter(embedFooter);
+    if (parsedEmbed) {
+        return parsedEmbed;
+    }
+
+    const componentRows = message.components as unknown[];
+    const componentText = componentRows
+        .flatMap((row) => {
+            if (!row || typeof row !== 'object') {
+                return [];
+            }
+            const rowData = row as { components?: unknown[] };
+            return Array.isArray(rowData.components) ? rowData.components : [];
+        })
+        .map((component) => {
+            const componentJson =
+                component &&
+                typeof component === 'object' &&
+                'toJSON' in component &&
+                typeof (component as { toJSON?: () => unknown }).toJSON === 'function'
+                    ? ((component as { toJSON: () => unknown }).toJSON() as {
+                          type?: number;
+                          content?: string;
+                      })
+                    : (component as { type?: number; content?: string });
+            return componentJson.type === 10 ? (componentJson.content ?? '') : '';
+        })
+        .filter(Boolean)
+        .join('\n');
+
+    const inlineMatch = STAR_INLINE_REGEX.exec(componentText);
+    if (!inlineMatch) {
+        return null;
+    }
+    return { stars: Number(inlineMatch[1] ?? 0), sourceMessageId: inlineMatch[2] ?? '' };
+}
+
 export async function findStarboardEntry(
     starChannel: GuildTextBasedChannel,
     sourceMessageId: string
 ): Promise<Message | null> {
     const fetched = await starChannel.messages.fetch({ limit: 100 });
     const found = fetched.find((m) => {
-        const embed = m.embeds[0];
-        const parsed = parseStarFooter(embed?.footer?.text);
+        const parsed = parseStarMessageMeta(m);
         return parsed?.sourceMessageId === sourceMessageId;
     });
 

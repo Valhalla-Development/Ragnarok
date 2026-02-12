@@ -1,6 +1,7 @@
-import { AuditLogEvent, ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
+import { AuditLogEvent, ChannelType, Events, MessageFlags, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
+import { RagnarokContainer } from '../utils/Util.js';
 
 /**
  * Discord.js GuildBanRemove event handler.
@@ -35,24 +36,23 @@ export class GuildBanRemove {
                     .permissionsFor(channel.guild.members.me!)
                     .has(PermissionsBitField.Flags.SendMessages)
             ) {
-                // Create an embed with information about the unbanned member
-                const embed = new EmbedBuilder()
-                    .setColor('#FE4611')
-                    .setAuthor({ name: 'Member Unbanned', iconURL: ban.user.displayAvatarURL() })
-                    .setThumbnail(ban.user.displayAvatarURL())
-                    .setDescription(
-                        `${ban.user} - \`@${ban.user.tag}${ban.user.discriminator !== '0' ? `#${ban.user.discriminator}` : ''}\``
-                    )
-                    .setFooter({ text: `ID: ${ban.user.id}` })
-                    .setTimestamp();
-
+                const lines = [
+                    `${ban.user} - \`@${ban.user.tag}${ban.user.discriminator !== '0' ? `#${ban.user.discriminator}` : ''}\``,
+                    `**Avatar:** ${ban.user.displayAvatarURL()}`,
+                    `**ID:** \`${ban.user.id}\``,
+                ];
                 if (entry?.executor) {
-                    embed.addFields({ name: 'Moderator', value: `${entry.executor}` });
+                    lines.push(`**Moderator:** ${entry.executor}`);
                 }
+                const container = RagnarokContainer('Member Unbanned', lines.join('\n'));
 
                 // Send the embed to the logging channel
                 if (channel) {
-                    channel.send({ embeds: [embed] });
+                    channel.send({
+                        components: [container],
+                        flags: MessageFlags.IsComponentsV2,
+                        allowedMentions: { parse: [] },
+                    });
                 }
             }
         }

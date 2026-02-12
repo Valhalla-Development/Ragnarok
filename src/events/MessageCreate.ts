@@ -1,11 +1,18 @@
 import type { Message, TextBasedChannel } from 'discord.js';
-import { EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
+import {
+    ContainerBuilder,
+    Events,
+    MediaGalleryBuilder,
+    MessageFlags,
+    PermissionsBitField,
+    TextDisplayBuilder,
+} from 'discord.js';
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import urlRegexSafe from 'url-regex-safe';
 import AdsProtection from '../mongo/AdsProtection.js';
 import Dad from '../mongo/Dad.js';
-import { color, deletableCheck, messageDelete, updateLevel } from '../utils/Util.js';
+import { deletableCheck, messageDelete, RagnarokContainer, updateLevel } from '../utils/Util.js';
 
 const dadCooldown = new Set();
 const dadCooldownSeconds = 60;
@@ -39,15 +46,13 @@ export class MessageCreate {
                     )
                 ) {
                     // Bot doesn't have MANAGE_MESSAGES permission, disable Ad Protection
-                    const errorEmbed = new EmbedBuilder()
-                        .setColor(color(`${message.guild?.members.me?.displayHexColor}`))
-                        .addFields({
-                            name: `**${client.user?.username} - Ads Protection**`,
-                            value: '**Error:** I lack the `Manage Messages` permission required for Ads Protection. This feature has been disabled.',
-                        });
+                    const errorContainer = RagnarokContainer(
+                        `${client.user?.username ?? 'Bot'} - Ads Protection`,
+                        '**Error:** I lack the `Manage Messages` permission required for Ads Protection. This feature has been disabled.'
+                    );
 
                     message.channel
-                        .send({ embeds: [errorEmbed] })
+                        .send({ components: [errorContainer], flags: MessageFlags.IsComponentsV2 })
                         .then((m) => deletableCheck(m, 0));
                     await AdsProtection.deleteOne({ GuildId: message.guild?.id });
                     return;
@@ -114,54 +119,55 @@ export class MessageCreate {
                         const unixEpochTimestamp = Math.floor(res.createdTimestamp / 1000);
                         const user = client.users.cache.get(res.author.id);
 
-                        const embed = new EmbedBuilder()
-                            .setAuthor({
-                                name: user?.displayName || message.author.displayName,
-                                iconURL:
-                                    user?.displayAvatarURL({ extension: 'png' }) ||
-                                    message.author.displayAvatarURL({ extension: 'png' }),
-                            })
-                            .setColor(color(`${message.guild?.members.me?.displayHexColor}`))
-                            .setFooter({ text: `Quoted by ${message.author.displayName}` })
-                            .setTimestamp();
-
                         const attachmentCheck = res.attachments.first();
+                        const quoteLines = [
+                            `# ${user?.displayName || message.author.displayName}`,
+                            `**Author Avatar:** ${user?.displayAvatarURL({ extension: 'png' }) || message.author.displayAvatarURL({ extension: 'png' })}`,
+                            `**Quoted by:** ${message.author.displayName}`,
+                            '',
+                        ];
+                        let quoteText = '';
+                        let imageUrl: string | null = null;
+
                         if (res.content && attachmentCheck) {
                             const attachmentUrl = attachmentCheck.url;
                             const fileExtension = attachmentUrl.substring(
                                 attachmentUrl.lastIndexOf('.') + 1
                             );
                             if (validExtensions.includes(fileExtension)) {
-                                embed.setDescription(
-                                    `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`
-                                );
-                                embed.setImage(attachmentUrl);
+                                quoteText = `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`;
+                                imageUrl = attachmentUrl;
                             } else {
-                                embed.setDescription(
-                                    `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`
-                                );
+                                quoteText = `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`;
                             }
                         } else if (res.content) {
-                            embed.setDescription(
-                                `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`
-                            );
+                            quoteText = `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`;
                         } else if (attachmentCheck) {
                             const attachmentUrl = attachmentCheck.url;
                             const fileExtension = attachmentUrl.substring(
                                 attachmentUrl.lastIndexOf('.') + 1
                             );
                             if (validExtensions.includes(fileExtension)) {
-                                embed.setDescription(
-                                    `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>`
-                                );
-                                embed.setImage(attachmentUrl);
+                                quoteText = `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>`;
+                                imageUrl = attachmentUrl;
                             } else {
-                                embed.setDescription(
-                                    `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>`
-                                );
+                                quoteText = `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>`;
                             }
                         }
-                        message.channel.send({ embeds: [embed] });
+                        quoteLines.push(quoteText);
+
+                        const container = new ContainerBuilder().addTextDisplayComponents(
+                            new TextDisplayBuilder().setContent(quoteLines.join('\n'))
+                        );
+                        if (imageUrl) {
+                            container.addMediaGalleryComponents(
+                                new MediaGalleryBuilder().addItems((item) => item.setURL(imageUrl!))
+                            );
+                        }
+                        message.channel.send({
+                            components: [container],
+                            flags: MessageFlags.IsComponentsV2,
+                        });
                     }
                 }
             }

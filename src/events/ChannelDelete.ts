@@ -1,6 +1,7 @@
-import { ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
+import { ChannelType, Events, MessageFlags, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
+import { RagnarokContainer } from '../utils/Util.js';
 
 /**
  * Discord.js ChannelDelete event handler.
@@ -43,26 +44,22 @@ export class ChannelDelete {
                           ? 'Category'
                           : 'Text';
 
-                // Create an embed with information about the joined member
-                const embed = new EmbedBuilder()
-                    .setColor('#FE4611')
-                    .setAuthor({
-                        name: `${channelType} Channel Deleted`,
-                        iconURL: `${channel.guild.iconURL()}`,
-                    })
-                    .setTitle(
-                        `${
-                            channelType === 'Category'
-                                ? `\`${channel.name}\``
-                                : `${channelType === 'Text' ? '#' : ''}${channel.type !== ChannelType.GuildCategory ? channel.name : ''}`
-                        }`
-                    )
-                    .setFooter({ text: `ID: ${channel.id}` })
-                    .setTimestamp();
+                const channelDisplay =
+                    channelType === 'Category'
+                        ? `\`${channel.name}\``
+                        : `${channelType === 'Text' ? '#' : ''}${channel.type !== ChannelType.GuildCategory ? channel.name : ''}`;
+                const container = RagnarokContainer(
+                    `${channelType} Channel Deleted`,
+                    `${channelDisplay}\n**ID:** \`${channel.id}\``
+                );
 
                 // Send the embed to the logging channel
                 if (channel) {
-                    chn.send({ embeds: [embed] });
+                    chn.send({
+                        components: [container],
+                        flags: MessageFlags.IsComponentsV2,
+                        allowedMentions: { parse: [] },
+                    });
                 }
             }
         }

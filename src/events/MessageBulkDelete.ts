@@ -1,7 +1,8 @@
-import { ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
+import { ChannelType, Events, MessageFlags, PermissionsBitField } from 'discord.js';
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
+import { RagnarokContainer } from '../utils/Util.js';
 
 /**
  * Discord.js MessageBulkDelete event handler.
@@ -45,19 +46,15 @@ export class MessageBulkDelete {
                     .permissionsFor(chn.guild.members.me!)
                     .has(PermissionsBitField.Flags.SendMessages)
             ) {
-                const embed = new EmbedBuilder()
-                    .setColor('#FE4611')
-                    .setAuthor({
-                        name: 'Messages Deleted',
-                        iconURL: `${guild.iconURL()}`,
-                    })
-                    .setDescription(
-                        `**Bulk Delete in ${channel}, ${messages.size} messages deleted**`
-                    )
-                    .setTimestamp();
-
-                // Send the embed to the logging channel
-                chn.send({ embeds: [embed] });
+                const container = RagnarokContainer(
+                    'Messages Deleted',
+                    `**Bulk Delete in ${channel}, ${messages.size} messages deleted**`
+                );
+                chn.send({
+                    components: [container],
+                    flags: MessageFlags.IsComponentsV2,
+                    allowedMentions: { parse: [] },
+                });
             }
         }
     }

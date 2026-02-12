@@ -1,6 +1,7 @@
-import { ChannelType, EmbedBuilder, Events, Guild, PermissionsBitField } from 'discord.js';
+import { ChannelType, Events, Guild, MessageFlags, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
+import { RagnarokContainer } from '../utils/Util.js';
 
 /**
  * Discord.js InviteDelete event handler.
@@ -32,18 +33,16 @@ export class InviteDelete {
                         .permissionsFor(chn.guild.members.me!)
                         .has(PermissionsBitField.Flags.SendMessages)
                 ) {
-                    const embed = new EmbedBuilder()
-                        .setColor('#FE4611')
-                        .setAuthor({
-                            name: 'Invite Deleted',
-                            iconURL: `${invite.guild!.iconURL()}`,
-                        })
-                        .setDescription(`**Invite:** https://discord.gg/${invite.code}`)
-                        .setFooter({ text: `ID: ${invite.code}` })
-                        .setTimestamp();
+                    const container = RagnarokContainer(
+                        'Invite Deleted',
+                        `**Invite:** https://discord.gg/${invite.code}\n**ID:** \`${invite.code}\``
+                    );
 
-                    // Send the embed to the logging channel
-                    chn.send({ embeds: [embed] });
+                    chn.send({
+                        components: [container],
+                        flags: MessageFlags.IsComponentsV2,
+                        allowedMentions: { parse: [] },
+                    });
                 }
             }
         }

@@ -1,6 +1,7 @@
-import { ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
+import { ChannelType, Events, MessageFlags, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
+import { RagnarokContainer } from '../utils/Util.js';
 
 /**
  * Discord.js ChannelUpdate event handler.
@@ -80,20 +81,17 @@ export class ChannelUpdate {
                 }
 
                 if (channelChanges.length) {
-                    // Create an embed with information about the joined member
-                    const embed = new EmbedBuilder()
-                        .setColor('#FE4611')
-                        .setAuthor({
-                            name: `${channelType} Channel Updated`,
-                            iconURL: `${oldChannel.guild.iconURL()}`,
-                        })
-                        .setDescription(channelChanges.join('\n'))
-                        .setFooter({ text: `ID: ${newChannel.id}` })
-                        .setTimestamp();
+                    const container = RagnarokContainer(
+                        `${channelType} Channel Updated`,
+                        `${channelChanges.join('\n')}\n**ID:** \`${newChannel.id}\``
+                    );
 
-                    // Send the embed to the logging channel
                     if (chn) {
-                        chn.send({ embeds: [embed] });
+                        chn.send({
+                            components: [container],
+                            flags: MessageFlags.IsComponentsV2,
+                            allowedMentions: { parse: [] },
+                        });
                     }
                 }
             }

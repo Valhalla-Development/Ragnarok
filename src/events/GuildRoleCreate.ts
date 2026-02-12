@@ -1,6 +1,7 @@
-import { ChannelType, EmbedBuilder, Events, PermissionsBitField } from 'discord.js';
+import { ChannelType, Events, MessageFlags, PermissionsBitField } from 'discord.js';
 import { type ArgsOf, Discord, On } from 'discordx';
 import Logging from '../mongo/Logging.js';
+import { RagnarokContainer } from '../utils/Util.js';
 
 /**
  * Discord.js GuildRoleCreate event handler.
@@ -31,19 +32,15 @@ export class GuildRoleCreate {
                     .permissionsFor(chn.guild.members.me!)
                     .has(PermissionsBitField.Flags.SendMessages)
             ) {
-                // Create an embed with information about the joined member
-                const embed = new EmbedBuilder()
-                    .setColor('#FE4611')
-                    .setAuthor({
-                        name: 'Role Created',
-                        iconURL: `${role.guild.iconURL()}`,
-                    })
-                    .setDescription(`${role} - \`@${role.name}\``)
-                    .setFooter({ text: `ID: ${role.id}` })
-                    .setTimestamp();
-
-                // Send the embed to the logging channel
-                chn.send({ embeds: [embed] });
+                const container = RagnarokContainer(
+                    'Role Created',
+                    `${role} - \`@${role.name}\`\n**ID:** \`${role.id}\``
+                );
+                chn.send({
+                    components: [container],
+                    flags: MessageFlags.IsComponentsV2,
+                    allowedMentions: { parse: [] },
+                });
             }
         }
     }
