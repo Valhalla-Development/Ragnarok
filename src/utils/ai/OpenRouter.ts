@@ -141,6 +141,9 @@ export async function isAIChannelAllowed(
     }
 
     const cfg = await AIConfig.findOne({ GuildId: guildId }).lean().exec();
+    if (cfg?.Enabled === false) {
+        return false;
+    }
     const allowed = cfg?.AllowedChannelIds ?? [];
     if (allowed.length === 0) {
         return true;
@@ -151,6 +154,20 @@ export async function isAIChannelAllowed(
 export async function getAIAllowedChannels(guildId: string): Promise<string[]> {
     const cfg = await AIConfig.findOne({ GuildId: guildId }).lean().exec();
     return (cfg?.AllowedChannelIds ?? []).map((id) => String(id));
+}
+
+export async function isAIGuildEnabled(guildId: string): Promise<boolean> {
+    const cfg = await AIConfig.findOne({ GuildId: guildId }).lean().exec();
+    return cfg?.Enabled !== false;
+}
+
+export async function setAIGuildEnabled(guildId: string, enabled: boolean): Promise<boolean> {
+    await AIConfig.findOneAndUpdate(
+        { GuildId: guildId },
+        { $set: { GuildId: guildId, Enabled: enabled } },
+        { upsert: true }
+    ).exec();
+    return enabled;
 }
 
 export async function toggleAIAllowedChannel(
@@ -179,6 +196,19 @@ export async function clearAIAllowedChannels(guildId: string): Promise<void> {
         { $set: { GuildId: guildId, AllowedChannelIds: [] } },
         { upsert: true }
     ).exec();
+}
+
+export async function setAIAllowedChannels(
+    guildId: string,
+    channelIds: string[]
+): Promise<string[]> {
+    const unique = Array.from(new Set(channelIds)).slice(0, 25);
+    await AIConfig.findOneAndUpdate(
+        { GuildId: guildId },
+        { $set: { GuildId: guildId, AllowedChannelIds: unique } },
+        { upsert: true }
+    ).exec();
+    return unique;
 }
 
 export async function getAITopUsers(
@@ -433,9 +463,28 @@ export async function resetAICooldown(userId: string): Promise<AIUserData> {
 export async function resetAIHistory(userId: string): Promise<void> {
     const safeUser = userId.replace(/[:/\\?#%]/g, '_');
     const suffix = `_user:${safeUser}`;
-    await AIHistory.deleteMany({
+    const keyFilter = {
         $or: [{ Key: `user:${safeUser}` }, { Key: { $regex: `${suffix}$` } }],
-    }).exec();
+    };
+
+    // Capture keys first so we can also clear in-memory cache in OpenRouter Kit.
+    const docs = await AIHistory.find(keyFilter, { Key: 1, _id: 0 }).lean().exec();
+    const keys = Array.from(new Set([`user:${safeUser}`, ...docs.map((doc) => String(doc.Key))]));
+
+    await AIHistory.deleteMany(keyFilter).exec();
+
+    if (aiClient) {
+        const historyManager = aiClient.getHistoryManager();
+        await Promise.all(
+            keys.map((key) =>
+                historyManager.deleteHistory(key).catch((error) => {
+                    if (config.ENABLE_LOGGING) {
+                        console.warn(`Failed to clear cached AI history key '${key}':`, error);
+                    }
+                })
+            )
+        );
+    }
 }
 
 export function buildAIGroupId(input: {
@@ -472,10 +521,16 @@ export async function runAIChat(params: {
         return { ok: false, message: 'Please enter a query with at least 4 characters.' };
     }
     const normalizedDisplayName = params.displayName?.trim();
-    const promptWithContext =
+    const systemPrompt =
         normalizedDisplayName && normalizedDisplayName.length > 0
-            ? `Current user display name: ${normalizedDisplayName}\n\nUser message: ${stripped}`
-            : stripped;
+            ? [
+                  getSystemPrompt(),
+                  '',
+                  `Context: The current user's name is "${normalizedDisplayName}".`,
+                  'Use this naturally only when relevant.',
+                  'Never mention "display name" or that this comes from metadata.',
+              ].join('\n')
+            : getSystemPrompt();
 
     const availability = await checkAIAvailability(params.userId);
     if (!availability.ok) {
@@ -489,8 +544,8 @@ export async function runAIChat(params: {
         const result = (await client.chat({
             user: params.userId,
             group: params.groupId,
-            prompt: promptWithContext,
-            systemPrompt: getSystemPrompt(),
+            prompt: stripped,
+            systemPrompt,
         })) as ChatCompletionResult;
 
         const content = normalizeResponseContent(result.content);
