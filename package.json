@@ -46,7 +46,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.14",
+    "@biomejs/biome": "^2.3.15",
     "@types/ms": "^2.1.0",
     "@types/url-regex-safe": "^1.0.2",
     "typescript": "^5.9.3",
