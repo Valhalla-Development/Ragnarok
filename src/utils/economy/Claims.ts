@@ -3,6 +3,7 @@ import { RagnarokComponent } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import { updateHomeContainer } from './Home.js';
 import { getOrCreateBalance } from './Profile.js';
+import { scheduleEconomyViewTimer } from './SessionTimers.js';
 import type { ButtonRows, Claim, EcoPrices } from './Types.js';
 
 /**
@@ -153,7 +154,7 @@ export async function handleClaim(
     }
 
     // Remove the message after 5 seconds
-    setTimeout(async () => {
+    scheduleEconomyViewTimer(interaction.message?.id, 5000, async () => {
         const updatedHomeContainer = await updateHomeContainer(interaction, buttons);
         if (updatedHomeContainer) {
             await interaction.message?.edit({
@@ -162,5 +163,5 @@ export async function handleClaim(
                 flags: MessageFlags.IsComponentsV2,
             });
         }
-    }, 5000);
+    });
 }

@@ -2,6 +2,7 @@ import type { ButtonBuilder, ModalSubmitInteraction } from 'discord.js';
 import { type ButtonInteraction, MessageFlags } from 'discord.js';
 import { updateHomeContainer } from './Home.js';
 import { getOrCreateBalance } from './Profile.js';
+import { scheduleEconomyViewTimer } from './SessionTimers.js';
 
 /**
  * Asynchronously handles the deposit button interaction.
@@ -47,7 +48,7 @@ export async function handleDeposit(
         }
 
         // Remove the message after 5 seconds
-        setTimeout(async () => {
+        scheduleEconomyViewTimer(interaction.message?.id, 5000, async () => {
             const updatedHomeContainer = await updateHomeContainer(interaction, buttons);
             if (updatedHomeContainer) {
                 await interaction.message?.edit({
@@ -56,7 +57,7 @@ export async function handleDeposit(
                     flags: MessageFlags.IsComponentsV2,
                 });
             }
-        }, 5000);
+        });
         return;
     }
 
@@ -91,7 +92,7 @@ export async function handleDeposit(
     }
 
     // Remove the message after 5 seconds
-    setTimeout(async () => {
+    scheduleEconomyViewTimer(interaction.message?.id, 5000, async () => {
         const updatedHomeContainer = await updateHomeContainer(interaction, buttons);
         if (updatedHomeContainer) {
             await interaction.message?.edit({
@@ -100,7 +101,7 @@ export async function handleDeposit(
                 flags: MessageFlags.IsComponentsV2,
             });
         }
-    }, 5000);
+    });
 }
 
 /**
@@ -136,7 +137,7 @@ export async function handleWithdraw(
             });
         }
 
-        setTimeout(async () => {
+        scheduleEconomyViewTimer(interaction.message?.id, 5000, async () => {
             const updatedHomeContainer = await updateHomeContainer(interaction, buttons);
             if (updatedHomeContainer) {
                 await interaction.message?.edit({
@@ -145,7 +146,7 @@ export async function handleWithdraw(
                     flags: MessageFlags.IsComponentsV2,
                 });
             }
-        }, 5000);
+        });
     }
 
     if (!balance) {

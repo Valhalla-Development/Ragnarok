@@ -16,6 +16,7 @@ import type { Client } from 'discordx';
 import { RagnarokComponent } from '../Util.js';
 import { buildGambleMenuContainer } from './GambleMenu.js';
 import { getOrCreateBalance } from './Profile.js';
+import { scheduleEconomyViewTimer } from './SessionTimers.js';
 import type { ButtonRows } from './Types.js';
 
 // Add timeout duration property (in milliseconds)
@@ -194,7 +195,7 @@ export async function handleCoinflip(
 
         // Reset back to the Gamble menu after a delay
         if (interaction instanceof ButtonInteraction) {
-            setTimeout(async () => {
+            scheduleEconomyViewTimer(interaction.message?.id, commandTimeout, async () => {
                 // Reset all buttons to primary style and enabled
                 for (const row of rows) {
                     for (const button of row.components) {
@@ -213,7 +214,7 @@ export async function handleCoinflip(
                     files: [],
                     flags: MessageFlags.IsComponentsV2,
                 });
-            }, commandTimeout);
+            });
         }
     } else {
         if (Number.isNaN(Number(amount))) {

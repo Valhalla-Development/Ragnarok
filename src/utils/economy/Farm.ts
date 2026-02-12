@@ -15,6 +15,7 @@ import { RagnarokComponent } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import { updateHomeContainer } from './Home.js';
 import { getOrCreateBalance } from './Profile.js';
+import { scheduleEconomyViewTimer } from './SessionTimers.js';
 import type { ButtonRows, Items } from './Types.js';
 
 // Add timeout duration property (in milliseconds)
@@ -242,7 +243,7 @@ export async function handleFarm(
 
     // Reset after timeout
     if (homeContainer) {
-        setTimeout(async () => {
+        scheduleEconomyViewTimer(interaction.message?.id, commandTimeout, async () => {
             // Reset all buttons to primary style and enabled
             for (const row of rows) {
                 for (const button of row.components) {
@@ -259,6 +260,6 @@ export async function handleFarm(
                 files: [],
                 flags: MessageFlags.IsComponentsV2,
             });
-        }, commandTimeout);
+        });
     }
 }

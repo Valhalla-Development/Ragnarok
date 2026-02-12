@@ -15,6 +15,7 @@ import { RagnarokComponent } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import { updateHomeContainer } from './Home.js';
 import { getOrCreateBalance } from './Profile.js';
+import { scheduleEconomyViewTimer } from './SessionTimers.js';
 import type { ButtonRows, Items } from './Types.js';
 
 // Add timeout duration property (in milliseconds)
@@ -276,7 +277,7 @@ export async function handleFish(
         // Reset back to home after a delay (same behavior as win flow)
         const homeContainer = await updateHomeContainer(interaction, buttons);
         if (homeContainer) {
-            setTimeout(async () => {
+            scheduleEconomyViewTimer(interaction.message?.id, commandTimeout, async () => {
                 for (const row of rows) {
                     for (const button of row.components) {
                         button.setStyle(ButtonStyle.Primary);
@@ -292,7 +293,7 @@ export async function handleFish(
                     files: [],
                     flags: MessageFlags.IsComponentsV2,
                 });
-            }, commandTimeout);
+            });
         }
 
         return;
@@ -341,7 +342,7 @@ export async function handleFish(
 
     // Reset after timeout
     if (homeContainer) {
-        setTimeout(async () => {
+        scheduleEconomyViewTimer(interaction.message?.id, commandTimeout, async () => {
             // Reset all buttons to primary style and enabled
             for (const row of rows) {
                 for (const button of row.components) {
@@ -358,6 +359,6 @@ export async function handleFish(
                 files: [],
                 flags: MessageFlags.IsComponentsV2,
             });
-        }, commandTimeout);
+        });
     }
 }

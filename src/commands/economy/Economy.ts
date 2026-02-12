@@ -22,6 +22,7 @@ import {
 } from 'discordx';
 import { Economy } from '../../utils/Economy.js';
 import { getOrCreateBalance } from '../../utils/economy/Profile.js';
+import { clearEconomyViewTimer } from '../../utils/economy/SessionTimers.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
@@ -54,6 +55,8 @@ export class EconomyCommand {
      */
     @ButtonComponent({ id: /^economy_.*/ })
     async buttonInteraction(interaction: ButtonInteraction, client: Client) {
+        clearEconomyViewTimer(interaction.message?.id);
+
         if (this.user !== interaction.user.id) {
             await RagnarokComponent(
                 interaction,
@@ -134,6 +137,8 @@ export class EconomyCommand {
      */
     @ModalComponent({ id: 'coinflipAmount' })
     async modalSubmit(interaction: ModalSubmitInteraction, client: Client): Promise<void> {
+        clearEconomyViewTimer(interaction.message?.id);
+
         if (!this.instance) {
             await RagnarokComponent(
                 interaction,
@@ -153,6 +158,8 @@ export class EconomyCommand {
 
     @ModalComponent({ id: 'economy_withdraw_modal' })
     async withdrawModal(interaction: ModalSubmitInteraction): Promise<void> {
+        clearEconomyViewTimer(interaction.message?.id);
+
         if (!this.instance) {
             await RagnarokComponent(
                 interaction,
@@ -180,6 +187,8 @@ export class EconomyCommand {
 
     @SelectMenuComponent({ id: 'economy_shop_action_select' })
     async onShopActionSelect(interaction: StringSelectMenuInteraction): Promise<void> {
+        clearEconomyViewTimer(interaction.message?.id);
+
         if (!this.instance) {
             await RagnarokComponent(
                 interaction,
@@ -209,6 +218,8 @@ export class EconomyCommand {
 
     @SelectMenuComponent({ id: 'economy_shop_qty_select' })
     async onShopQuantitySelect(interaction: StringSelectMenuInteraction): Promise<void> {
+        clearEconomyViewTimer(interaction.message?.id);
+
         if (!this.instance) {
             await RagnarokComponent(
                 interaction,
@@ -238,6 +249,8 @@ export class EconomyCommand {
 
     @SelectMenuComponent({ id: 'economy_plant_crop_select' })
     async onPlantCropSelect(interaction: StringSelectMenuInteraction): Promise<void> {
+        clearEconomyViewTimer(interaction.message?.id);
+
         if (!this.instance) {
             await RagnarokComponent(
                 interaction,
@@ -270,6 +283,8 @@ export class EconomyCommand {
 
     @SelectMenuComponent({ id: 'economy_plant_amount_select' })
     async onPlantAmountSelect(interaction: StringSelectMenuInteraction): Promise<void> {
+        clearEconomyViewTimer(interaction.message?.id);
+
         if (!this.instance) {
             await RagnarokComponent(
                 interaction,
@@ -304,6 +319,8 @@ export class EconomyCommand {
      */
     @SelectMenuComponent({ id: 'heist_target_select' })
     async heistTargetSelect(interaction: UserSelectMenuInteraction): Promise<void> {
+        clearEconomyViewTimer(interaction.message?.id);
+
         if (!this.instance) {
             await RagnarokComponent(
                 interaction,
