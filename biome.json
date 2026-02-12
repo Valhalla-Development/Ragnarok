@@ -1,0 +1,39 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.15/schema.json",
+  "extends": ["ultracite/core"],
+  "files": {
+    "includes": ["**", "!**/*.json"]
+  },
+  "linter": {
+    "rules": {
+      "suspicious": {
+        "noConsole": "off"
+      },
+      "style": {
+        "useFilenamingConvention": "off",
+        "noNonNullAssertion": "off",
+        "noNestedTernary": "off"
+      },
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "off"
+      },
+      "performance": {
+        "useTopLevelRegex": "off",
+        "noBarrelFile": "off"
+      },
+	  "nursery": {
+		"useMaxParams": "off"
+	  }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "indentWidth": 4,
+      "lineWidth": 100,
+	  "quoteStyle": "single"
+    },
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  }
+}

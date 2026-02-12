@@ -1,0 +1,398 @@
+import {
+    ButtonBuilder,
+    ButtonInteraction,
+    ButtonStyle,
+    type CommandInteraction,
+    ContainerBuilder,
+    MessageFlags,
+    type ModalSubmitInteraction,
+    SeparatorSpacingSize,
+    TextDisplayBuilder,
+} from 'discord.js';
+// @ts-expect-error no type file available for this package
+import converter from 'number-to-words-en';
+import Balance, { type BalanceInterface } from '../../mongo/Balance.js';
+import { RagnarokComponent } from '../Util.js';
+import { getOrCreateBalance } from './Profile.js';
+
+/**
+ * Builds the home container with all sections
+ * @param interaction - The interaction to get user data from
+ * @param balance - The user's balance data
+ * @param rankPos - The user's rank position
+ * @param currentTotalSeeds - Total number of seeds
+ * @param currentTotalFish - Total number of fish
+ * @param currentTotalFarm - Total number of farm items
+ * @param claimUserTime - Time for claim cooldown
+ * @param wealthStatusMessage - Temporary message to display under wealth text
+ * @param claimStatusMessage - Temporary message to display in treasure vault section
+ * @param buttons - Button instances from the main Economy class
+ * @returns ContainerBuilder with all sections
+ */
+export function buildHomeContainer(
+    interaction: CommandInteraction | ButtonInteraction | ModalSubmitInteraction,
+    balance: BalanceInterface,
+    rankPos: string,
+    currentTotalSeeds: number,
+    currentTotalFish: number,
+    currentTotalFarm: number,
+    claimUserTime: number,
+    buttons: {
+        baltopButton: ButtonBuilder;
+        gambleButton?: ButtonBuilder;
+        depositButton: ButtonBuilder;
+        heistButton: ButtonBuilder;
+        fishButton: ButtonBuilder;
+        farmButton: ButtonBuilder;
+        plantButton?: ButtonBuilder;
+        shopButton?: ButtonBuilder;
+        itemsButton: ButtonBuilder;
+        claimButton: ButtonBuilder;
+        withdrawButton: ButtonBuilder;
+    },
+    wealthStatusMessage?: string,
+    claimStatusMessage?: string
+): ContainerBuilder {
+    const now = Date.now();
+    const cash = Number(balance.Cash ?? 0);
+    const bank = Number(balance.Bank ?? 0);
+    const total = Number(balance.Total ?? 0);
+    const stealCool = Number(balance.StealCool ?? 0);
+    const fishCool = Number(balance.FishCool ?? 0);
+    const farmCool = Number(balance.FarmCool ?? 0);
+    const hourly = Number(balance.Hourly ?? 0);
+    const daily = Number(balance.Daily ?? 0);
+    const weekly = Number(balance.Weekly ?? 0);
+    const monthly = Number(balance.Monthly ?? 0);
+    // ═══════════════════════════════════════════════════════════════
+    // User Profile & Rank
+    // ═══════════════════════════════════════════════════════════════
+    const headerText = new TextDisplayBuilder().setContent(
+        [
+            `# 🏰 **${interaction.user.displayName}'s Empire**`,
+            `> 👑 ***Rank ${rankPos} on Leaderboard***`,
+        ].join('\n')
+    );
+
+    // ═══════════════════════════════════════════════════════════════
+    // Balance Display
+    // ═══════════════════════════════════════════════════════════════
+    const wealthText = new TextDisplayBuilder().setContent(
+        [
+            '## 💎 **Wealth Portfolio**',
+            `> 💵 **Wallet Cash:** 💰 \`${cash.toLocaleString('en')}\``,
+            `> 🏦 **Bank Vault:** 💰 \`${bank.toLocaleString('en')}\``,
+            `> 🌟 **Net Worth:** 💰 \`${total.toLocaleString('en')}\``,
+            wealthStatusMessage ? `> ${wealthStatusMessage}` : '',
+        ].join('\n')
+    );
+
+    // ═══════════════════════════════════════════════════════════════
+    // Cooldown Display
+    // ═══════════════════════════════════════════════════════════════
+    const activityText = new TextDisplayBuilder().setContent(
+        [
+            '## ⚡ **Activity Status**',
+            `> 🔥 **Heist:** ${now > stealCool ? '✅ `Ready to Strike!`' : `⏳ <t:${Math.round(stealCool / 1000)}:R>`}`,
+            `> 🎣 **Fishing:** ${balance.Items?.FishingRod ? `${now > fishCool ? '✅ `Cast Your Line!`' : `⏳ <t:${Math.round(fishCool / 1000)}:R>`}` : '❌ `Need Fishing Rod`'}`,
+            `> 🌾 **Farming:** ${now > farmCool ? '✅ `Harvest Time!`' : `⏳ <t:${Math.round(farmCool / 1000)}:R>`}`,
+        ].join('\n')
+    );
+
+    // ═══════════════════════════════════════════════════════════════
+    // Inventory Management
+    // ═══════════════════════════════════════════════════════════════
+    const storageText = new TextDisplayBuilder().setContent(
+        [
+            '## 🎒 **Storage Empire**',
+            `> 🌱 **Seed Vault:** ${
+                balance.Boosts?.SeedBag
+                    ? `\`${Number(currentTotalSeeds).toLocaleString('en')}\` / \`${Number(balance.Boosts.SeedBag).toLocaleString('en')}\``
+                    : '🚫 `Vault Locked`'
+            }`,
+            `> 🐟 **Fish Cooler:** ${
+                balance.Boosts?.FishBag
+                    ? `\`${Number(currentTotalFish).toLocaleString('en')}\` / \`${Number(balance.Boosts.FishBag).toLocaleString('en')}\``
+                    : '🚫 `Cooler Locked`'
+            }`,
+            `> 🥕 **Harvest Bin:** ${
+                balance.Boosts?.FarmBag
+                    ? `\`${Number(currentTotalFarm).toLocaleString('en')}\` / \`${Number(balance.Boosts.FarmBag).toLocaleString('en')}\``
+                    : '🚫 `Bin Locked`'
+            }`,
+            `> 🏡 **Farm Plots:** ${
+                balance.Boosts?.FarmPlot
+                    ? `\`${balance.FarmPlot.length.toLocaleString('en')}\` / \`${Number(balance.Boosts.FarmPlot).toLocaleString('en')}\``
+                    : '🚫 `No Land Owned`'
+            }`,
+        ].join('\n')
+    );
+
+    // ═══════════════════════════════════════════════════════════════
+    // Claim Rewards
+    // ═══════════════════════════════════════════════════════════════
+    const treasureText = new TextDisplayBuilder().setContent(
+        [
+            '## 🎁 **Treasure Vault**',
+            `> ⏰ **Hourly Chest:** ${balance.ClaimNewUser ? (now > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : now > hourly ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(hourly / 1000)}:R>`}`,
+            `> 🌅 **Daily Vault:** ${balance.ClaimNewUser ? (now > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : now > daily ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(daily / 1000)}:R>`}`,
+            `> 📅 **Weekly Safe:** ${balance.ClaimNewUser ? (now > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : now > weekly ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(weekly / 1000)}:R>`}`,
+            `> 🗓️ **Monthly Prize:** ${balance.ClaimNewUser ? (now > balance.ClaimNewUser ? '🎉 `Open Now!`' : `⏳ <t:${claimUserTime}:R>`) : now > monthly ? '🎉 `Open Now!`' : `⏳ <t:${Math.round(monthly / 1000)}:R>`}`,
+            claimStatusMessage ? `> ${claimStatusMessage}` : '',
+        ].join('\n')
+    );
+
+    // Check if anything is claimable
+    const hasClaimNewUserBlock = balance.ClaimNewUser && now <= balance.ClaimNewUser;
+    const isHourlyClaimable = !hourly || now > hourly;
+    const isDailyClaimable = !daily || now > daily;
+    const isWeeklyClaimable = !weekly || now > weekly;
+    const isMonthlyClaimable = !monthly || now > monthly;
+
+    const hasClaimableRewards =
+        !hasClaimNewUserBlock &&
+        (isHourlyClaimable || isDailyClaimable || isWeeklyClaimable || isMonthlyClaimable);
+
+    // Clone the deposit and withdraw buttons to disable when resource is unavailable
+    const depositButton = ButtonBuilder.from(buttons.depositButton.toJSON());
+    // Normalize style in case upstream flows mutated the shared button instance
+    depositButton.setStyle(ButtonStyle.Primary);
+
+    if (!balance.Cash || balance.Cash === 0) {
+        depositButton.setDisabled(true);
+        depositButton.setStyle(ButtonStyle.Success);
+    }
+
+    const withdrawButton = ButtonBuilder.from(buttons.withdrawButton.toJSON());
+    // Normalize style in case upstream flows mutated the shared button instance
+    withdrawButton.setStyle(ButtonStyle.Primary);
+
+    if (!balance.Bank || balance.Bank === 0) {
+        withdrawButton.setDisabled(true);
+        withdrawButton.setStyle(ButtonStyle.Success);
+    }
+
+    // Clone the fish button and disable it if user doesn't own a fishing rod
+    const fishButton = ButtonBuilder.from(buttons.fishButton.toJSON());
+    // Normalize style in case upstream flows mutated the shared button instance
+    fishButton.setStyle(ButtonStyle.Primary);
+
+    if (!balance.Items?.FishingRod) {
+        fishButton.setDisabled(true);
+        fishButton.setStyle(ButtonStyle.Success);
+    }
+    // Disable fishing while on cooldown
+    if (balance.FishCool && now < balance.FishCool) {
+        fishButton.setDisabled(true);
+        fishButton.setStyle(ButtonStyle.Success);
+    }
+
+    // Clone the farm button and disable it if the user is on cooldown
+    const farmButton = ButtonBuilder.from(buttons.farmButton.toJSON());
+    // Normalize style in case upstream flows mutated the shared button instance
+    farmButton.setStyle(ButtonStyle.Primary);
+
+    if (balance.FarmCool && now < balance.FarmCool) {
+        farmButton.setDisabled(true);
+        farmButton.setStyle(ButtonStyle.Success);
+    }
+
+    // Clone the heist button and disable it if the user is on cooldown
+    const heistButton = ButtonBuilder.from(buttons.heistButton.toJSON());
+    // Normalize style in case upstream flows mutated the shared button instance
+    heistButton.setStyle(ButtonStyle.Primary);
+
+    if (balance.StealCool && now < balance.StealCool) {
+        heistButton.setDisabled(true);
+        heistButton.setStyle(ButtonStyle.Success);
+    }
+
+    // Clone the claim button and disable it if nothing is claimable
+    const claimButton = ButtonBuilder.from(buttons.claimButton.toJSON());
+    // Normalize style in case upstream flows mutated the shared button instance
+    claimButton.setStyle(ButtonStyle.Primary);
+
+    if (!hasClaimableRewards) {
+        claimButton.setDisabled(true);
+        claimButton.setStyle(ButtonStyle.Success);
+    }
+
+    // Build and return the stunning container
+    return new ContainerBuilder()
+        .addTextDisplayComponents(headerText)
+        .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Large))
+        .addTextDisplayComponents(wealthText)
+        .addActionRowComponents((row) =>
+            row.addComponents(
+                buttons.baltopButton,
+                ...(buttons.gambleButton ? [buttons.gambleButton] : []),
+                depositButton,
+                withdrawButton
+            )
+        )
+        .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+        .addTextDisplayComponents(activityText)
+        .addActionRowComponents((row) =>
+            row.addComponents(
+                heistButton,
+                fishButton,
+                ...(balance.Items?.FarmingTools ? [] : [farmButton]),
+                ...(buttons.plantButton && balance.Items?.FarmingTools
+                    ? [buttons.plantButton]
+                    : []),
+                ...(buttons.shopButton ? [buttons.shopButton] : [])
+            )
+        )
+        .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+        .addTextDisplayComponents(storageText)
+        .addActionRowComponents((row) => row.addComponents(buttons.itemsButton))
+        .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+        .addTextDisplayComponents(treasureText)
+        .addActionRowComponents((row) => row.addComponents(claimButton));
+}
+
+/**
+ * Asynchronously updates the home container based on user interaction.
+ * @param interaction - The interaction (Command, Button, or Modal) triggering the update.
+ * @param client - The Discord client.
+ * @param buttons - Button instances from the main Economy class
+ * @param wealthStatusMessage - Temporary message to display under wealth text
+ * @param claimStatusMessage - Temporary message to display in treasure vault section
+ * @returns The built home container
+ */
+export async function updateHomeContainer(
+    interaction: CommandInteraction | ButtonInteraction | ModalSubmitInteraction,
+    buttons: {
+        baltopButton: ButtonBuilder;
+        gambleButton?: ButtonBuilder;
+        depositButton: ButtonBuilder;
+        heistButton: ButtonBuilder;
+        fishButton: ButtonBuilder;
+        farmButton: ButtonBuilder;
+        plantButton?: ButtonBuilder;
+        shopButton?: ButtonBuilder;
+        itemsButton: ButtonBuilder;
+        claimButton: ButtonBuilder;
+        withdrawButton: ButtonBuilder;
+    },
+    wealthStatusMessage?: string,
+    claimStatusMessage?: string
+): Promise<ContainerBuilder | null> {
+    // Fetch user balance based on their ID and guild ID
+    const balance = await getOrCreateBalance(interaction);
+
+    // If balance is not found, show an error message and return
+    if (!balance) {
+        await RagnarokComponent(
+            interaction,
+            'Error',
+            'No economy profile found. Send a message in this server to create one, then rerun `/economy`.',
+            true
+        );
+        return null;
+    }
+
+    // Fetch user leaderboard rank
+    const userRank: BalanceInterface[] = await Balance.find({
+        GuildId: interaction.guild!.id,
+    }).sort({ Total: -1 });
+    const userPos = userRank.find(
+        (b) => b.IdJoined === `${interaction.user.id}-${interaction.guild!.id}`
+    );
+
+    const rankPos = converter.toOrdinal(userRank.indexOf(userPos!) + 1);
+
+    // Map item types to their respective names
+    const itemTypes = new Map<string, string[]>([
+        ['seeds', ['CornSeeds', 'WheatSeeds', 'PotatoSeeds', 'TomatoSeeds']],
+        ['fish', ['Trout', 'KingSalmon', 'Swordfish', 'Pufferfish']],
+        ['crops', ['corn', 'wheat', 'potato', 'tomato']],
+    ]);
+
+    // Calculate claim cooldown time in seconds
+    const claimUserTime = balance.ClaimNewUser ? Math.round(balance.ClaimNewUser / 1000) : 0;
+
+    // Function to calculate total count of items of a specific type
+    function calculateTotal(itemType: string, bal: BalanceInterface): number {
+        const types = itemTypes.get(itemType);
+        if (!types) {
+            return 0;
+        }
+
+        return types.reduce((acc, type) => {
+            const itemQuantity = bal?.Items?.[type as keyof typeof bal.Items] || 0;
+            return acc + (typeof itemQuantity === 'number' ? itemQuantity : 0);
+        }, 0);
+    }
+
+    // Calculate totals and prepare data
+    const currentTotalSeeds = calculateTotal('seeds', balance);
+    const currentTotalFish = calculateTotal('fish', balance);
+    const currentTotalFarm = balance.HarvestedCrops?.length
+        ? balance.HarvestedCrops.filter((crop: { CropType: string }) =>
+              itemTypes.get('crops')?.includes(crop.CropType)
+          ).length
+        : 0;
+
+    // Build the container
+    return buildHomeContainer(
+        interaction,
+        balance,
+        rankPos,
+        currentTotalSeeds,
+        currentTotalFish,
+        currentTotalFarm,
+        claimUserTime,
+        buttons,
+        wealthStatusMessage,
+        claimStatusMessage
+    );
+}
+
+/**
+ * Asynchronously handles the home interaction (Command or Button).
+ * @param interaction - The interaction (Command or Button) triggering the home function.
+ * @param buttons - Button instances from the main Economy class
+ */
+export async function handleHome(
+    interaction: CommandInteraction | ButtonInteraction,
+    buttons: {
+        baltopButton: ButtonBuilder;
+        gambleButton?: ButtonBuilder;
+        depositButton: ButtonBuilder;
+        heistButton: ButtonBuilder;
+        fishButton: ButtonBuilder;
+        farmButton: ButtonBuilder;
+        plantButton?: ButtonBuilder;
+        shopButton?: ButtonBuilder;
+        itemsButton: ButtonBuilder;
+        claimButton: ButtonBuilder;
+        withdrawButton: ButtonBuilder;
+    }
+) {
+    // Update the home embed based on the interaction
+    const homeContainer = await updateHomeContainer(interaction, buttons);
+
+    if (!homeContainer) {
+        return;
+    }
+
+    // If the interaction is a ButtonInteraction, update the original message
+    if (interaction instanceof ButtonInteraction) {
+        await interaction.deferReply(); // Defer the original reply to prevent timeout
+        await interaction.deleteReply();
+
+        // Edit the original message with the updated embed and components
+        await interaction.message.edit({
+            components: [homeContainer],
+            files: [],
+            flags: MessageFlags.IsComponentsV2,
+        });
+    } else {
+        // If the interaction is a CommandInteraction, reply with the updated embed and components
+        await interaction.reply({
+            components: [homeContainer],
+            flags: MessageFlags.IsComponentsV2,
+        });
+    }
+}

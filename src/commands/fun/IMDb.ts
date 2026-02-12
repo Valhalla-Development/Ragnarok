@@ -1,0 +1,139 @@
+import { Category } from '@discordx/utilities';
+import {
+    ApplicationCommandOptionType,
+    ButtonBuilder,
+    ButtonStyle,
+    type CommandInteraction,
+    ContainerBuilder,
+    MediaGalleryBuilder,
+    MediaGalleryItemBuilder,
+    MessageFlags,
+    SeparatorSpacingSize,
+    TextDisplayBuilder,
+} from 'discord.js';
+import { Discord, Slash, SlashOption } from 'discordx';
+import { Duration } from 'luxon';
+import { getContentDetails, RagnarokComponent } from '../../utils/Util.js';
+
+@Discord()
+@Category('Fun')
+export class TraktCommand {
+    /**
+     * Fetches IMDb information for specified content.
+     * @param interaction - The command interaction.
+     * @param client - The Discord client.
+     * @param content - Optional type of content
+     */
+    @Slash({ description: 'Fetches IMDb information for specified content.' })
+    async imdb(
+        @SlashOption({
+            description: 'Content to fetch',
+            name: 'content',
+            required: true,
+            type: ApplicationCommandOptionType.String,
+        })
+        content: string,
+        interaction: CommandInteraction
+    ): Promise<void> {
+        const imdbRegexPattern = /https?:\/\/(www\.|m\.)?imdb\.com\/title\/tt(\d+)(\/)?/;
+
+        const isIMDbURLValid = content.match(imdbRegexPattern);
+
+        const typeOfRequest = isIMDbURLValid ? 'url' : 'name';
+
+        await interaction.deferReply();
+
+        // Data is valid, fetch details
+        const details = await getContentDetails(content, typeOfRequest);
+
+        if (!details) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'I was unable to find the content you were looking for. Please try again.',
+                true
+            );
+            return;
+        }
+
+        const runtimeSeconds = details.runtime?.seconds;
+        const runTime =
+            typeof runtimeSeconds === 'number' && runtimeSeconds > 0
+                ? Duration.fromObject({ seconds: runtimeSeconds }).toFormat("h'h' m'm'")
+                : null;
+
+        const header = new TextDisplayBuilder().setContent(
+            [
+                `# ${details.type === 'Movie' ? '🎬' : '📺'} ${details.title} (${details.year})`,
+                `> ${details.plot}`,
+            ].join('\n')
+        );
+
+        console.log(details.runtime);
+        const stats = new TextDisplayBuilder().setContent(
+            [
+                '## 📊 Stats',
+                '',
+                `> 🎭 **Genres**: \`${details.genres || 'N/A'}\``,
+                `> 🎬 **Director**: \`${details.director || 'N/A'}\``,
+                `> 🌟 **Stars**: \`${details.cast || 'N/A'}\``,
+                `> 🏢 **Production**: \`${details.productionCompany || 'N/A'}\``,
+                ...(runTime ? [`> ⏱️ **Runtime**: \`${runTime}\``] : []),
+                `> <:imdb:1202979511755612173> Rating: \`${details.rating}/10 (${details.totalVotes.toLocaleString('en')} votes)\``,
+            ].join('\n')
+        );
+
+        const imageSection = new MediaGalleryBuilder().addItems(
+            new MediaGalleryItemBuilder().setURL(details.image)
+        );
+
+        const buttonRow = [
+            new ButtonBuilder()
+                .setLabel(`Open ${details.type}`)
+                .setStyle(ButtonStyle.Link)
+                .setURL(details.url),
+            new ButtonBuilder()
+                .setStyle(ButtonStyle.Link)
+                .setLabel('View Reviews')
+                .setURL(`https://imdb.com/title/${details.id}/ratings`),
+            new ButtonBuilder()
+                .setStyle(ButtonStyle.Link)
+                .setLabel('View Cast')
+                .setURL(`https://imdb.com/title/${details.id}/fullcredits`),
+        ];
+
+        const trailerId = details.trailers?.[0]?.id;
+        const trailerUrl =
+            details.trailers?.[0]?.playbackUrls?.[0] ??
+            (trailerId ? `https://www.imdb.com/video/${trailerId}` : undefined);
+        if (trailerUrl) {
+            buttonRow.push(
+                new ButtonBuilder()
+                    .setStyle(ButtonStyle.Link)
+                    .setLabel('Watch Trailer')
+                    .setURL(trailerUrl)
+            );
+        } else {
+            buttonRow.push(
+                new ButtonBuilder()
+                    .setStyle(ButtonStyle.Link)
+                    .setLabel('Trivia')
+                    .setURL(`https://imdb.com/title/${details.id}/trivia`)
+            );
+        }
+
+        const container = new ContainerBuilder()
+            .addTextDisplayComponents(header)
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addActionRowComponents((row) => row.addComponents(...buttonRow))
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(stats)
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addMediaGalleryComponents(imageSection);
+
+        await interaction.editReply({
+            components: [container],
+            flags: MessageFlags.IsComponentsV2,
+        });
+    }
+}
