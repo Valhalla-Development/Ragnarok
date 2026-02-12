@@ -18,7 +18,7 @@ import {
     clearAIAllowedChannels,
     getAIAllowedChannels,
     isAIStaff,
-    toggleAIAllowedChannel,
+    setAIAllowedChannels,
 } from '../../utils/ai/OpenRouter.js';
 
 const AI_CHANNEL_SELECT_ID = 'cfg:ai:channels';
@@ -72,13 +72,12 @@ export class AIChannels {
             return;
         }
 
-        const channelId = interaction.values[0];
-        if (!channelId) {
+        if (interaction.values.length === 0) {
             await interaction.deferUpdate();
             return;
         }
 
-        await toggleAIAllowedChannel(interaction.guild.id, channelId);
+        await setAIAllowedChannels(interaction.guild.id, interaction.values);
         const payload = await this.buildPayload(interaction.guild.id);
         await interaction.update(payload);
     }
@@ -107,11 +106,11 @@ export class AIChannels {
             channels.length === 0
                 ? [
                       '> Mode: `All channels allowed`',
-                      '> Select channels below to switch into allow-list mode.',
+                      '> Select one or more channels below to enable allow-list mode.',
                   ].join('\n')
                 : [
                       '> Mode: `Allow-list enabled`',
-                      `> Allowed channels: ${channels.map((id) => `<#${id}>`).join(', ')}`,
+                      `> Allowed channels (${channels.length}): ${channels.map((id) => `<#${id}>`).join(', ')}`,
                   ].join('\n');
 
         const container = new ContainerBuilder()
@@ -123,7 +122,10 @@ export class AIChannels {
                 row.addComponents(
                     new ChannelSelectMenuBuilder()
                         .setCustomId(AI_CHANNEL_SELECT_ID)
-                        .setPlaceholder('Toggle an AI-allowed channel')
+                        .setPlaceholder('Select AI-allowed channels')
+                        .setMinValues(1)
+                        .setMaxValues(25)
+                        .setDefaultChannels(...channels.slice(0, 25))
                         .addChannelTypes(ChannelType.GuildText)
                 )
             )
