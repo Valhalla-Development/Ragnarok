@@ -4,10 +4,10 @@
   "description": "A multi-purpose Discord bot.",
   "license": "GPL-3.0-or-later",
   "author": "Ragnar Lothbrok <ragnarlothbrokjr@proton.me>",
-  "homepage": "https://github.com/Valhalla-Development/Ragnarok-Discord#readme",
-  "repository": "https://github.com/Valhalla-Development/Ragnarok-Discord.git",
+  "homepage": "https://github.com/Valhalla-Development/Ragnarok#readme",
+  "repository": "https://github.com/Valhalla-Development/Ragnarok.git",
   "bugs": {
-    "url": "https://github.com/Valhalla-Development/Ragnarok-Discord/issues"
+    "url": "https://github.com/Valhalla-Development/Ragnarok/issues"
   },
   "scripts": {
     "lint": "tsc --noEmit -p tsconfig.json && biome check --files-ignore-unknown=true --diagnostic-level=error --no-errors-on-unmatched src",
