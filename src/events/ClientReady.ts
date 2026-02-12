@@ -119,6 +119,12 @@ export class ClientReady {
 
                     await channel.messages.fetch({ limit: 10 });
                 } catch (error) {
+                    // If the bot is no longer in the guild (stale DB row), delete config and move on.
+                    const err = error as { code?: number; message?: string };
+                    if (err?.code === 10_004 || err?.message?.includes('Unknown Guild')) {
+                        await StarBoard.deleteOne({ GuildId: starboard.GuildId });
+                        return;
+                    }
                     console.error('Error in Starboard Cron Job:', error);
                 }
             })
