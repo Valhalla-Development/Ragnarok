@@ -57,26 +57,24 @@ async function awardPerMessagePayout(interaction: Message, memberId: string): Pr
     }
 
     const idJoined = `${memberId}-${guildId}`;
-    await Balance.findOneAndUpdate(
+    const claimNewUserAt = Date.now() + ecoPrices.claims.newUserTime;
+    await Balance.collection.updateOne(
         { IdJoined: idJoined },
-        {
-            $setOnInsert: {
-                IdJoined: idJoined,
-                UserId: memberId,
-                GuildId: guildId,
-                Cash: 0,
-                Bank: 500,
-                Total: 500,
-                ClaimNewUser: Date.now() + ecoPrices.claims.newUserTime,
+        [
+            {
+                $set: {
+                    IdJoined: { $ifNull: ['$IdJoined', idJoined] },
+                    UserId: { $ifNull: ['$UserId', memberId] },
+                    GuildId: { $ifNull: ['$GuildId', guildId] },
+                    Cash: { $add: [{ $ifNull: ['$Cash', 0] }, payout] },
+                    Bank: { $ifNull: ['$Bank', 500] },
+                    Total: { $add: [{ $ifNull: ['$Total', 500] }, payout] },
+                    ClaimNewUser: { $ifNull: ['$ClaimNewUser', claimNewUserAt] },
+                },
             },
-            $inc: { Cash: payout, Total: payout },
-        },
-        {
-            upsert: true,
-            returnDocument: 'after',
-            setDefaultsOnInsert: true,
-        }
-    ).exec();
+        ],
+        { upsert: true }
+    );
 }
 
 /**
