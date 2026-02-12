@@ -224,20 +224,33 @@ export class MessageCreate {
             }
 
             const isMentioningBot = message.mentions.has(client.user.id);
+            let referencedMessage: Message | null = null;
             let isReplyingToBot = false;
+            let isReplyingToOtherUser = false;
 
             if (message.reference?.messageId) {
-                const repliedMessage = await message.channel.messages
+                referencedMessage = await message.channel.messages
                     .fetch(message.reference.messageId)
                     .catch(() => null);
-                isReplyingToBot = repliedMessage?.author.id === client.user.id;
+                isReplyingToBot = referencedMessage?.author.id === client.user.id;
+                isReplyingToOtherUser = Boolean(
+                    referencedMessage?.author.id && referencedMessage.author.id !== client.user.id
+                );
             }
 
             if (!(isMentioningBot || isReplyingToBot)) {
                 return;
             }
 
-            const prompt = message.content.replace(/<@!?(\d+)>/g, '').trim();
+            const cleanedPrompt = message.content.replace(/<@!?(\d+)>/g, '').trim();
+            const prompt =
+                isMentioningBot && isReplyingToOtherUser && referencedMessage
+                    ? [
+                          cleanedPrompt,
+                          '',
+                          `Reply target (${referencedMessage.author.displayName}): ${referencedMessage.content || '[No text content]'}`,
+                      ].join('\n')
+                    : cleanedPrompt;
             if (prompt.length < 4) {
                 return;
             }
@@ -267,10 +280,18 @@ export class MessageCreate {
             }
 
             const [first, ...rest] = result.chunks;
-            await message.reply({
-                content: first,
-                allowedMentions: { parse: [], repliedUser: false },
-            });
+            if (isMentioningBot && isReplyingToOtherUser && referencedMessage) {
+                await message.channel.send({
+                    content: first,
+                    reply: { messageReference: referencedMessage.id },
+                    allowedMentions: { parse: [], repliedUser: true },
+                });
+            } else {
+                await message.reply({
+                    content: first,
+                    allowedMentions: { parse: [], repliedUser: false },
+                });
+            }
             for (const chunk of rest) {
                 await message.channel.send({
                     content: chunk,
