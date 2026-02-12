@@ -31,6 +31,22 @@ const configSchema = z.object({
     // Valhalla API settings
     VALHALLA_API_URI: z.string().min(1, 'VALHALLA_API_URI is required'),
     VALHALLA_API_KEY: z.string().min(1, 'VALHALLA_API_KEY is required'),
+
+    // OpenRouter AI settings (optional)
+    OPENROUTER_API_KEY: z.string().optional().default(''),
+    OPENROUTER_MODEL: z.string().optional().default('openai/gpt-4o-mini'),
+    OPENROUTER_SYSTEM_PROMPT_FILE: z.string().optional().default('assets/ai/system-prompt.md'),
+    OPENROUTER_SYSTEM_PROMPT: z.string().optional().default(''),
+    MAX_AI_QUERIES_LIMIT: z.string().optional().default('30').transform(Number),
+    AI_QUERIES_RESET_TIME: z.string().optional().default('24h'),
+    AI_ADMIN_USER_IDS: z
+        .string()
+        .optional()
+        .transform((val) => (val ? stringToArray(val) : [])),
+    AI_STAFF_ROLE_IDS: z
+        .string()
+        .optional()
+        .transform((val) => (val ? stringToArray(val) : [])),
 });
 
 // Parse config with error handling
@@ -59,3 +75,35 @@ try {
 
 export { config };
 export const isDev = config.NODE_ENV === 'development';
+
+/**
+ * Converts duration string (e.g., "1h", "6h", "24h", "7d") to milliseconds.
+ * @param duration - Duration string like "1h", "6h", "24h", "7d"
+ */
+export function durationToMs(duration: string): number {
+    const timeRegex = /^(\d+)(m|h|d)$/i;
+    const match = duration.match(timeRegex);
+
+    if (!match) {
+        throw new Error(`Invalid duration format: ${duration}`);
+    }
+
+    const valueStr = match[1];
+    const unitStr = match[2];
+    if (!(valueStr && unitStr)) {
+        throw new Error(`Invalid duration format: ${duration}`);
+    }
+    const value = Number.parseInt(valueStr, 10);
+    const unit = unitStr.toLowerCase();
+
+    switch (unit) {
+        case 'm':
+            return value * 60 * 1000;
+        case 'h':
+            return value * 60 * 60 * 1000;
+        case 'd':
+            return value * 24 * 60 * 60 * 1000;
+        default:
+            throw new Error(`Invalid duration unit: ${unit}`);
+    }
+}
