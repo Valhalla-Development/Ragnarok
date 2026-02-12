@@ -5,7 +5,9 @@ import {
     MediaGalleryBuilder,
     MessageFlags,
     PermissionsBitField,
+    SectionBuilder,
     TextDisplayBuilder,
+    ThumbnailBuilder,
 } from 'discord.js';
 import type { ArgsOf, Client } from 'discordx';
 import { Discord, On } from 'discordx';
@@ -124,11 +126,13 @@ export class MessageCreate {
                     if (res) {
                         const unixEpochTimestamp = Math.floor(res.createdTimestamp / 1000);
                         const user = client.users.cache.get(res.author.id);
+                        const authorAvatar =
+                            user?.displayAvatarURL({ extension: 'png' }) ||
+                            message.author.displayAvatarURL({ extension: 'png' });
 
                         const attachmentCheck = res.attachments.first();
                         const quoteLines = [
                             `# ${user?.displayName || message.author.displayName}`,
-                            `**Author Avatar:** ${user?.displayAvatarURL({ extension: 'png' }) || message.author.displayAvatarURL({ extension: 'png' })}`,
                             `**Quoted by:** ${message.author.displayName}`,
                             '',
                         ];
@@ -162,8 +166,14 @@ export class MessageCreate {
                         }
                         quoteLines.push(quoteText);
 
-                        const container = new ContainerBuilder().addTextDisplayComponents(
-                            new TextDisplayBuilder().setContent(quoteLines.join('\n'))
+                        const summarySection = new SectionBuilder()
+                            .addTextDisplayComponents(
+                                new TextDisplayBuilder().setContent(quoteLines.join('\n'))
+                            )
+                            .setThumbnailAccessory(new ThumbnailBuilder().setURL(authorAvatar));
+
+                        const container = new ContainerBuilder().addSectionComponents(
+                            summarySection
                         );
                         if (imageUrl) {
                             container.addMediaGalleryComponents(
