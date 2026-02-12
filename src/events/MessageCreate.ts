@@ -12,6 +12,12 @@ import { Discord, On } from 'discordx';
 import urlRegexSafe from 'url-regex-safe';
 import AdsProtection from '../mongo/AdsProtection.js';
 import Dad from '../mongo/Dad.js';
+import {
+    buildAIGroupId,
+    isAIChannelAllowed,
+    isAIEnabled,
+    runAIChat,
+} from '../utils/ai/OpenRouter.js';
 import { deletableCheck, messageDelete, RagnarokContainer, updateLevel } from '../utils/Util.js';
 
 const dadCooldown = new Set();
@@ -205,6 +211,74 @@ export class MessageCreate {
             setTimeout(() => dadCooldown.delete(message.author.id), dadCooldownSeconds * 1000);
         }
         await dadBot();
+
+        /**
+         * AI chatbot (mention-based)
+         */
+        async function aiChatbot() {
+            if (!(isAIEnabled() && client.user)) {
+                return;
+            }
+            if (!(await isAIChannelAllowed(message.guildId, message.channelId))) {
+                return;
+            }
+
+            const isMentioningBot = message.mentions.has(client.user.id);
+            let isReplyingToBot = false;
+
+            if (message.reference?.messageId) {
+                const repliedMessage = await message.channel.messages
+                    .fetch(message.reference.messageId)
+                    .catch(() => null);
+                isReplyingToBot = repliedMessage?.author.id === client.user.id;
+            }
+
+            if (!(isMentioningBot || isReplyingToBot)) {
+                return;
+            }
+
+            const prompt = message.content.replace(/<@!?(\d+)>/g, '').trim();
+            if (prompt.length < 4) {
+                return;
+            }
+
+            await message.channel.sendTyping();
+
+            const groupId = buildAIGroupId({
+                guildId: message.guild?.id,
+                channelId: message.channel.id,
+                threadId: message.channel.isThread() ? message.channel.id : null,
+                userId: message.author.id,
+            });
+
+            const result = await runAIChat({
+                userId: message.author.id,
+                groupId,
+                prompt,
+                displayName: message.member?.displayName ?? message.author.displayName,
+            });
+
+            if (!result.ok) {
+                await message.reply({
+                    content: result.message,
+                    allowedMentions: { parse: [], repliedUser: false },
+                });
+                return;
+            }
+
+            const [first, ...rest] = result.chunks;
+            await message.reply({
+                content: first,
+                allowedMentions: { parse: [], repliedUser: false },
+            });
+            for (const chunk of rest) {
+                await message.channel.send({
+                    content: chunk,
+                    allowedMentions: { parse: [] },
+                });
+            }
+        }
+        await aiChatbot();
 
         /**
          * Easter Eggs
