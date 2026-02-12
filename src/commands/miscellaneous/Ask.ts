@@ -1,0 +1,66 @@
+import { Category } from '@discordx/utilities';
+import { ApplicationCommandOptionType, type CommandInteraction } from 'discord.js';
+import { Discord, Slash, SlashOption } from 'discordx';
+import { buildAIGroupId, isAIChannelAllowed, runAIChat } from '../../utils/ai/OpenRouter.js';
+import { RagnarokComponent } from '../../utils/Util.js';
+
+@Discord()
+@Category('Miscellaneous')
+export class Ask {
+    @Slash({ description: 'Ask the AI chatbot a question.' })
+    async ask(
+        @SlashOption({
+            description: 'What do you want to ask?',
+            name: 'query',
+            required: true,
+            type: ApplicationCommandOptionType.String,
+            minLength: 4,
+            maxLength: 2000,
+        })
+        query: string,
+        interaction: CommandInteraction
+    ): Promise<void> {
+        await interaction.deferReply();
+
+        if (!(await isAIChannelAllowed(interaction.guildId, interaction.channelId))) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'AI is disabled in this channel. Ask staff to allow it via `/aichannels`.',
+                true
+            );
+            return;
+        }
+
+        const groupId = buildAIGroupId({
+            guildId: interaction.guildId,
+            channelId: interaction.channelId,
+            userId: interaction.user.id,
+        });
+
+        const result = await runAIChat({
+            userId: interaction.user.id,
+            groupId,
+            prompt: query,
+            displayName: interaction.user.displayName,
+        });
+
+        if (!result.ok) {
+            await RagnarokComponent(interaction, 'Error', result.message, true);
+            return;
+        }
+
+        const [first, ...rest] = result.chunks;
+        await interaction.editReply({
+            content: first,
+            allowedMentions: { parse: [] },
+        });
+
+        for (const chunk of rest) {
+            await interaction.followUp({
+                content: chunk,
+                allowedMentions: { parse: [] },
+            });
+        }
+    }
+}
