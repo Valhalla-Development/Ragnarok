@@ -13,7 +13,7 @@ import {
     type ThreadChannel,
 } from 'discord.js';
 import { Discord, Slash } from 'discordx';
-import { config } from '../../config/Config.js';
+import { config, isValhallaEnabled } from '../../config/Config.js';
 import {
     deletableCheck,
     getRandomWord,
@@ -42,6 +42,16 @@ export class Hangman {
                 interaction,
                 'Error',
                 'I need the **Create Public Threads** permission to start a Hangman game.',
+                true
+            );
+            return;
+        }
+
+        if (!isValhallaEnabled()) {
+            await RagnarokComponent(
+                interaction,
+                'Disabled',
+                'Hangman is currently disabled (missing `VALHALLA_API_KEY`).',
                 true
             );
             return;
