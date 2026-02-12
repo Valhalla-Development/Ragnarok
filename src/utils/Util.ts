@@ -14,10 +14,12 @@ import {
     MessageFlags,
     type ModalSubmitInteraction,
     PermissionsBitField,
+    SectionBuilder,
     SeparatorSpacingSize,
     type StringSelectMenuInteraction,
     type TextChannel,
     TextDisplayBuilder,
+    ThumbnailBuilder,
     type UserSelectMenuInteraction,
 } from 'discord.js';
 import type { Client } from 'discordx';
@@ -357,12 +359,32 @@ export async function RagnarokComponent(
  */
 export function RagnarokContainer(title: string, body: string): ContainerBuilder {
     const header = new TextDisplayBuilder().setContent(`# ${title}`);
-    const content = new TextDisplayBuilder().setContent(body);
+    const lines = body.split('\n');
+    const avatarLineIndex = lines.findIndex((line) => line.startsWith('**Avatar:**'));
+    const avatarUrlRaw =
+        avatarLineIndex >= 0 ? lines[avatarLineIndex]?.replace('**Avatar:**', '').trim() : null;
+    const avatarUrl = avatarUrlRaw && /^https?:\/\//.test(avatarUrlRaw) ? avatarUrlRaw : null;
 
-    return new ContainerBuilder()
+    if (avatarLineIndex >= 0 && avatarUrl) {
+        lines.splice(avatarLineIndex, 1);
+    }
+
+    const contentText = lines.join('\n').trim();
+    const content = new TextDisplayBuilder().setContent(contentText.length > 0 ? contentText : '-');
+
+    const container = new ContainerBuilder()
         .addTextDisplayComponents(header)
-        .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
-        .addTextDisplayComponents(content);
+        .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small));
+
+    if (avatarUrl) {
+        const section = new SectionBuilder()
+            .addTextDisplayComponents(content)
+            .setThumbnailAccessory(new ThumbnailBuilder().setURL(avatarUrl));
+        container.addSectionComponents(section);
+        return container;
+    }
+
+    return container.addTextDisplayComponents(content);
 }
 
 /**
