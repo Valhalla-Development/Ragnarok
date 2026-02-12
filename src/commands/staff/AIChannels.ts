@@ -17,6 +17,7 @@ import { ButtonComponent, Discord, SelectMenuComponent, Slash } from 'discordx';
 import {
     clearAIAllowedChannels,
     getAIAllowedChannels,
+    isAIGuildEnabled,
     isAIStaff,
     setAIAllowedChannels,
 } from '../../utils/ai/OpenRouter.js';
@@ -101,14 +102,19 @@ export class AIChannels {
     }
 
     private async buildPayload(guildId: string): Promise<{ components: [ContainerBuilder] }> {
-        const channels = await getAIAllowedChannels(guildId);
+        const [channels, enabled] = await Promise.all([
+            getAIAllowedChannels(guildId),
+            isAIGuildEnabled(guildId),
+        ]);
         const statusText =
             channels.length === 0
                 ? [
+                      `> Global AI: ${enabled ? '`Enabled` ✅' : '`Disabled` ⛔'} (toggle in \`/config\`)`,
                       '> Mode: `All channels allowed`',
                       '> Select one or more channels below to enable allow-list mode.',
                   ].join('\n')
                 : [
+                      `> Global AI: ${enabled ? '`Enabled` ✅' : '`Disabled` ⛔'} (toggle in \`/config\`)`,
                       '> Mode: `Allow-list enabled`',
                       `> Allowed channels (${channels.length}): ${channels.map((id) => `<#${id}>`).join(', ')}`,
                   ].join('\n');
