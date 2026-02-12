@@ -1,5 +1,7 @@
 import type { Message, TextBasedChannel } from 'discord.js';
 import {
+    ButtonBuilder,
+    ButtonStyle,
     ContainerBuilder,
     Events,
     MediaGalleryBuilder,
@@ -124,47 +126,46 @@ export class MessageCreate {
                     const res = resolvedPromise.value;
 
                     if (res) {
-                        const unixEpochTimestamp = Math.floor(res.createdTimestamp / 1000);
                         const user = client.users.cache.get(res.author.id);
                         const authorAvatar =
                             user?.displayAvatarURL({ extension: 'png' }) ||
                             message.author.displayAvatarURL({ extension: 'png' });
 
-                        const attachmentCheck = res.attachments.first();
+                        const imageAttachment = res.attachments.find((attachment) => {
+                            const contentType = attachment.contentType?.toLowerCase() ?? '';
+                            if (contentType.startsWith('image/')) {
+                                return true;
+                            }
+
+                            if (typeof attachment.width === 'number' && attachment.width > 0) {
+                                return true;
+                            }
+
+                            const normalizedUrl = attachment.url.toLowerCase().split('?')[0] ?? '';
+                            const fileExtension = normalizedUrl.substring(
+                                normalizedUrl.lastIndexOf('.') + 1
+                            );
+                            return validExtensions.includes(fileExtension);
+                        });
+                        const normalizedText = res.content.trim();
+                        const hasTextContent = normalizedText.length > 0;
+                        const clippedText = hasTextContent
+                            ? normalizedText.slice(0, 900)
+                            : imageAttachment
+                              ? '[Image attachment]'
+                              : '[No text content]';
                         const quoteLines = [
-                            `# ${user?.displayName || message.author.displayName}`,
-                            `**Quoted by:** ${message.author.displayName}`,
+                            '### 💬 Message Quote',
+                            `**Author:** <@${res.author.id}>`,
+                            `**Quoted by:** <@${message.author.id}>`,
                             '',
+                            `> ${clippedText}`,
                         ];
-                        let quoteText = '';
                         let imageUrl: string | null = null;
 
-                        if (res.content && attachmentCheck) {
-                            const attachmentUrl = attachmentCheck.url;
-                            const fileExtension = attachmentUrl.substring(
-                                attachmentUrl.lastIndexOf('.') + 1
-                            );
-                            if (validExtensions.includes(fileExtension)) {
-                                quoteText = `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`;
-                                imageUrl = attachmentUrl;
-                            } else {
-                                quoteText = `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`;
-                            }
-                        } else if (res.content) {
-                            quoteText = `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>\n${res.content.substring(0, 1048)}`;
-                        } else if (attachmentCheck) {
-                            const attachmentUrl = attachmentCheck.url;
-                            const fileExtension = attachmentUrl.substring(
-                                attachmentUrl.lastIndexOf('.') + 1
-                            );
-                            if (validExtensions.includes(fileExtension)) {
-                                quoteText = `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>`;
-                                imageUrl = attachmentUrl;
-                            } else {
-                                quoteText = `**[Message Link](${exec[0]}) ➜** ${exec[0]} - <t:${unixEpochTimestamp}>`;
-                            }
+                        if (imageAttachment) {
+                            imageUrl = imageAttachment.url;
                         }
-                        quoteLines.push(quoteText);
 
                         const summarySection = new SectionBuilder()
                             .addTextDisplayComponents(
@@ -172,9 +173,17 @@ export class MessageCreate {
                             )
                             .setThumbnailAccessory(new ThumbnailBuilder().setURL(authorAvatar));
 
-                        const container = new ContainerBuilder().addSectionComponents(
-                            summarySection
-                        );
+                        const container = new ContainerBuilder()
+                            .addSectionComponents(summarySection)
+                            .addActionRowComponents((row) =>
+                                row.addComponents(
+                                    new ButtonBuilder()
+                                        .setStyle(ButtonStyle.Link)
+                                        .setURL(exec[0]!)
+                                        .setLabel('Jump to Message')
+                                        .setEmoji('🔗')
+                                )
+                            );
                         if (imageUrl) {
                             container.addMediaGalleryComponents(
                                 new MediaGalleryBuilder().addItems((item) => item.setURL(imageUrl!))
@@ -183,6 +192,7 @@ export class MessageCreate {
                         message.channel.send({
                             components: [container],
                             flags: MessageFlags.IsComponentsV2,
+                            allowedMentions: { parse: [] },
                         });
                     }
                 }
