@@ -5,6 +5,7 @@ import {
     MessageFlags,
     ModalBuilder,
     type ModalSubmitInteraction,
+    PermissionsBitField,
     TextInputBuilder,
     TextInputStyle,
 } from 'discord.js';
@@ -15,7 +16,14 @@ import { RagnarokComponent } from '../../utils/Util.js';
 @Discord()
 @Category('Hidden')
 export class SetAnnouncement {
-    @Slash({ description: 'Sets the bot announcement displayed in /stats.' })
+    /**
+     * Developer command to set announcement message.
+     * @param interaction - The command interaction.
+     */
+    @Slash({
+        description: 'Sets the bot announcement displayed in /stats.',
+        defaultMemberPermissions: [PermissionsBitField.Flags.Administrator],
+    })
     async setannouncement(interaction: CommandInteraction): Promise<void> {
         // Create the modal
         const modal = new ModalBuilder()
