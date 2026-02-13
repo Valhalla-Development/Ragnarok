@@ -14,6 +14,7 @@ import converter from 'number-to-words-en';
 import Balance, { type BalanceInterface } from '../../mongo/Balance.js';
 import { RagnarokComponent } from '../Util.js';
 import { getOrCreateBalance } from './Profile.js';
+import { clearEconomyViewTimer } from './SessionTimers.js';
 
 /**
  * Builds the home container with all sections
@@ -386,6 +387,10 @@ export async function handleHome(
         withdrawButton: ButtonBuilder;
     }
 ) {
+    // Clear any existing timers to prevent unwanted view changes
+    clearEconomyViewTimer(
+        interaction instanceof ButtonInteraction ? interaction.message?.id : undefined
+    );
     // Update the home embed based on the interaction
     const homeContainer = await updateHomeContainer(interaction, buttons);
 

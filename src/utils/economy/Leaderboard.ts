@@ -8,6 +8,7 @@ import {
 } from 'discord.js';
 import Balance from '../../mongo/Balance.js';
 import { paginationComponentsV2, RagnarokComponent } from '../Util.js';
+import { clearEconomyViewTimer } from './SessionTimers.js';
 
 const USERS_PER_PAGE = 10;
 
@@ -23,6 +24,8 @@ export async function handleBaltop(
     homeButton: ButtonBuilder,
     pageIndex = 0
 ) {
+    // Clear any existing timers to prevent unwanted view changes
+    clearEconomyViewTimer(interaction.message?.id);
     // Fetch all balances from the database sorted by total balance
     const allUsers = await Balance.find({ GuildId: interaction.guild!.id }).sort({ Total: -1 });
 
