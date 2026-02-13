@@ -8,6 +8,7 @@ import {
 } from 'discord.js';
 import type { BalanceInterface } from '../../mongo/Balance.js';
 import { RagnarokComponent } from '../Util.js';
+import { ecoPrices } from './Config.js';
 import { getOrCreateBalance } from './Profile.js';
 
 const num = (value: unknown) => Number(value ?? 0);
@@ -123,11 +124,41 @@ function buildInventoryContainer(
 
     // Show paid crops if user has farming tools
     if (hasFarmingTools) {
+        // Calculate value and decay for each paid crop type
+        const cornCrops = harvestedCrops.filter((c) => c.CropType === 'corn');
+        const wheatCrops = harvestedCrops.filter((c) => c.CropType === 'wheat');
+        const potatoCrops = harvestedCrops.filter((c) => c.CropType === 'potato');
+        const tomatoCrops = harvestedCrops.filter((c) => c.CropType === 'tomato');
+
+        const calcValue = (crops: typeof harvestedCrops, basePrice: number) => {
+            return crops.reduce((sum, c) => {
+                const value = Math.floor(basePrice * (1 - (c.Decay ?? 0) / 100));
+                return sum + value;
+            }, 0);
+        };
+
+        const calcAvgDecay = (crops: typeof harvestedCrops) => {
+            if (crops.length === 0) {
+                return 0;
+            }
+            return crops.reduce((sum, c) => sum + (c.Decay ?? 0), 0) / crops.length;
+        };
+
+        const cornValue = calcValue(cornCrops, ecoPrices.farming.rewards.corn);
+        const wheatValue = calcValue(wheatCrops, ecoPrices.farming.rewards.wheat);
+        const potatoValue = calcValue(potatoCrops, ecoPrices.farming.rewards.potatoes);
+        const tomatoValue = calcValue(tomatoCrops, ecoPrices.farming.rewards.tomatoes);
+
+        const cornDecay = calcAvgDecay(cornCrops);
+        const wheatDecay = calcAvgDecay(wheatCrops);
+        const potatoDecay = calcAvgDecay(potatoCrops);
+        const tomatoDecay = calcAvgDecay(tomatoCrops);
+
         cropsLines.push(
-            `> 🌽 Corn: \`${cornCount.toLocaleString('en')}\``,
-            `> 🌾 Wheat: \`${wheatCount.toLocaleString('en')}\``,
-            `> 🥔 Potato: \`${potatoCount.toLocaleString('en')}\``,
-            `> 🍅 Tomato: \`${tomatoCount.toLocaleString('en')}\``
+            `> 🌽 Corn: \`${cornCount.toLocaleString('en')}\` - 💰\`${cornValue.toLocaleString('en')}\` - 📉\`${cornDecay.toFixed(2)}%\``,
+            `> 🌾 Wheat: \`${wheatCount.toLocaleString('en')}\` - 💰\`${wheatValue.toLocaleString('en')}\` - 📉\`${wheatDecay.toFixed(2)}%\``,
+            `> 🥔 Potato: \`${potatoCount.toLocaleString('en')}\` - 💰\`${potatoValue.toLocaleString('en')}\` - 📉\`${potatoDecay.toFixed(2)}%\``,
+            `> 🍅 Tomato: \`${tomatoCount.toLocaleString('en')}\` - 💰\`${tomatoValue.toLocaleString('en')}\` - 📉\`${tomatoDecay.toFixed(2)}%\``
         );
     }
 
@@ -136,26 +167,46 @@ function buildInventoryContainer(
         // If user has farming tools, only show the free crops they actually have
         if (hasFarmingTools) {
             if (num(items.Barley) > 0) {
-                cropsLines.push(`> 🌾 Barley: \`${num(items.Barley).toLocaleString('en')}\``);
+                const barleyValue =
+                    num(items.Barley) * ecoPrices.farming.farmingWithoutTools.barley;
+                cropsLines.push(
+                    `> 🌾 Barley: \`${num(items.Barley).toLocaleString('en')}\` - 💰\`${barleyValue.toLocaleString('en')}\``
+                );
             }
             if (num(items.Lettuce) > 0) {
-                cropsLines.push(`> 🥬 Lettuce: \`${num(items.Lettuce).toLocaleString('en')}\``);
+                const lettuceValue =
+                    num(items.Lettuce) * ecoPrices.farming.farmingWithoutTools.lettuce;
+                cropsLines.push(
+                    `> 🥬 Lettuce: \`${num(items.Lettuce).toLocaleString('en')}\` - 💰\`${lettuceValue.toLocaleString('en')}\``
+                );
             }
             if (num(items.Strawberries) > 0) {
+                const strawberriesValue =
+                    num(items.Strawberries) * ecoPrices.farming.farmingWithoutTools.strawberries;
                 cropsLines.push(
-                    `> 🍓 Strawberries: \`${num(items.Strawberries).toLocaleString('en')}\``
+                    `> 🍓 Strawberries: \`${num(items.Strawberries).toLocaleString('en')}\` - 💰\`${strawberriesValue.toLocaleString('en')}\``
                 );
             }
             if (num(items.Spinach) > 0) {
-                cropsLines.push(`> 🥗 Spinach: \`${num(items.Spinach).toLocaleString('en')}\``);
+                const spinachValue =
+                    num(items.Spinach) * ecoPrices.farming.farmingWithoutTools.spinach;
+                cropsLines.push(
+                    `> 🥗 Spinach: \`${num(items.Spinach).toLocaleString('en')}\` - 💰\`${spinachValue.toLocaleString('en')}\``
+                );
             }
         } else {
-            // If user doesn't have farming tools, show all free crops
+            // If user doesn't have farming tools, show all free crops with values
+            const barleyValue = num(items.Barley) * ecoPrices.farming.farmingWithoutTools.barley;
+            const lettuceValue = num(items.Lettuce) * ecoPrices.farming.farmingWithoutTools.lettuce;
+            const strawberriesValue =
+                num(items.Strawberries) * ecoPrices.farming.farmingWithoutTools.strawberries;
+            const spinachValue = num(items.Spinach) * ecoPrices.farming.farmingWithoutTools.spinach;
+
             cropsLines.push(
-                `> 🌾 Barley: \`${num(items.Barley).toLocaleString('en')}\``,
-                `> 🥬 Lettuce: \`${num(items.Lettuce).toLocaleString('en')}\``,
-                `> 🍓 Strawberries: \`${num(items.Strawberries).toLocaleString('en')}\``,
-                `> 🥗 Spinach: \`${num(items.Spinach).toLocaleString('en')}\``
+                `> 🌾 Barley: \`${num(items.Barley).toLocaleString('en')}\` - 💰\`${barleyValue.toLocaleString('en')}\``,
+                `> 🥬 Lettuce: \`${num(items.Lettuce).toLocaleString('en')}\` - 💰\`${lettuceValue.toLocaleString('en')}\``,
+                `> 🍓 Strawberries: \`${num(items.Strawberries).toLocaleString('en')}\` - 💰\`${strawberriesValue.toLocaleString('en')}\``,
+                `> 🥗 Spinach: \`${num(items.Spinach).toLocaleString('en')}\` - 💰\`${spinachValue.toLocaleString('en')}\``
             );
         }
     }
