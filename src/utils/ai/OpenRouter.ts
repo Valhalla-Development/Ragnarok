@@ -32,7 +32,9 @@ class MongoHistoryStorage implements IHistoryStorage {
         if (!doc?.Entries) {
             return [];
         }
-        return doc.Entries as HistoryEntry[];
+        // Filter out system messages to ensure fresh system prompt is used on every request
+        const entries = doc.Entries as HistoryEntry[];
+        return entries.filter((entry) => entry.message?.role !== 'system');
     }
 
     async save(key: string, entries: HistoryEntry[]): Promise<void> {
