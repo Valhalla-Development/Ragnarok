@@ -672,9 +672,9 @@ export class Config {
             return {
                 title: '# 🎛️ RoleMenu',
                 lines: [
-                    `> Roles Configured: \`${validRoleIds.length}\``,
+                    `> Roles Configured: \`${validRoleIds.length.toLocaleString()}\``,
                     `> ${rolePreview}`,
-                    `> Hidden (cannot be managed by bot): \`${Math.max(0, guild.roles.cache.size - 1 - this.getManageableRoleIds(guild).length)}\``,
+                    `> Hidden (cannot be managed by bot): \`${Math.max(0, guild.roles.cache.size - 1 - this.getManageableRoleIds(guild).length).toLocaleString()}\``,
                     '> Set roles here, then mods can run `/rolemenu` to post/refresh the menu.',
                 ].filter(Boolean),
                 controls: [

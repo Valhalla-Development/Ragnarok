@@ -111,9 +111,11 @@ export class Userinfo {
         );
 
         const rolesDisplay = new TextDisplayBuilder().setContent(
-            [`## 🎭 Roles [${roles.length}]`, '', roles.length ? `> ${roleMsg}` : '> None'].join(
-                '\n'
-            )
+            [
+                `## 🎭 Roles [${roles.length.toLocaleString()}]`,
+                '',
+                roles.length ? `> ${roleMsg}` : '> None',
+            ].join('\n')
         );
 
         const avatarUrl = member.user.displayAvatarURL();

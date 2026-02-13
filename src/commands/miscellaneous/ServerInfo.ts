@@ -73,8 +73,8 @@ export class Ping {
                 `> 📅 **Created:** <t:${Math.round((interaction.guild?.createdTimestamp ?? 0) / 1000)}:F> (<t:${Math.round((interaction.guild?.createdTimestamp ?? 0) / 1000)}:R>)`,
                 `> 🔐 **Verification Level:** \`${verificationLevels[interaction.guild?.verificationLevel ?? 0]}\``,
                 `> 🔏 **MFA Level:** \`${mfa[interaction.guild?.mfaLevel ?? 0]}\``,
-                `> 🧑‍🤝‍🧑 **Members:** \`${memberCount}\``,
-                `> 🤖 **Bots:** \`${botCount}\``,
+                `> 🧑‍🤝‍🧑 **Members:** \`${memberCount.toLocaleString()}\``,
+                `> 🤖 **Bots:** \`${botCount.toLocaleString()}\``,
             ].join('\n')
         );
 
@@ -82,8 +82,8 @@ export class Ping {
             [
                 `## 📝 Guild Channels [${totalChannels}]`,
                 '',
-                `> <:TextChannel:855591004236546058> **Text:** \`${textChannels?.size}\``,
-                `> <:VoiceChannel:855591004300115998> **Voice:** \`${voiceChannels?.size}\``,
+                `> <:TextChannel:855591004236546058> **Text:** \`${(textChannels?.size || 0).toLocaleString()}\``,
+                `> <:VoiceChannel:855591004300115998> **Voice:** \`${(voiceChannels?.size || 0).toLocaleString()}\``,
             ].join('\n')
         );
 
@@ -92,7 +92,7 @@ export class Ping {
                 '## ⭐ Guild Perks',
                 '',
                 `> <a:Booster:855593231294267412> **Boost Tier:** \`${interaction.guild?.premiumTier ?? 0}\``,
-                `> <a:Booster:855593231294267412> **Boosts:** \`${interaction.guild?.premiumSubscriptionCount ?? 0}\``,
+                `> <a:Booster:855593231294267412> **Boosts:** \`${(interaction.guild?.premiumSubscriptionCount ?? 0).toLocaleString()}\``,
             ].join('\n')
         );
 
@@ -100,7 +100,7 @@ export class Ping {
         if (roles && roles.length > 0) {
             buttons.push(
                 new ButtonBuilder()
-                    .setLabel(`View Roles [${roles.length}]`)
+                    .setLabel(`View Roles [${roles.length.toLocaleString()}]`)
                     .setStyle(ButtonStyle.Primary)
                     .setCustomId('serverinfo_roles')
             );
@@ -108,7 +108,7 @@ export class Ping {
         if (emojiMap && emojiMap.length > 0) {
             buttons.push(
                 new ButtonBuilder()
-                    .setLabel(`View Emojis [${emojiMap.length}]`)
+                    .setLabel(`View Emojis [${emojiMap.length.toLocaleString()}]`)
                     .setStyle(ButtonStyle.Primary)
                     .setCustomId('serverinfo_emojis')
             );
@@ -161,7 +161,7 @@ export class Ping {
 
         const rolesDisplay = new TextDisplayBuilder().setContent(
             [
-                `# 🎭 Server Roles [${roles.length}]`,
+                `# 🎭 Server Roles [${roles.length.toLocaleString()}]`,
                 '',
                 roles.length <= 25
                     ? `> ${roleList}`
@@ -201,7 +201,7 @@ export class Ping {
 
         const emojisDisplay = new TextDisplayBuilder().setContent(
             [
-                `# 😀 Server Emojis [${emojiMap.length}]`,
+                `# 😀 Server Emojis [${emojiMap.length.toLocaleString()}]`,
                 '',
                 emojiMap.length <= 25
                     ? `> ${emojiList}`
