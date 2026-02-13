@@ -2,9 +2,12 @@ import { Category } from '@discordx/utilities';
 import {
     ApplicationCommandOptionType,
     type CommandInteraction,
+    MessageFlags,
     PermissionsBitField,
 } from 'discord.js';
 import { type Client, Discord, Slash, SlashChoice, SlashOption } from 'discordx';
+
+import { config } from '../../config/Config.js';
 
 @Discord()
 @Category('Hidden')
@@ -35,6 +38,14 @@ export class Emit {
         interaction: CommandInteraction,
         client: Client
     ) {
+        if (!config.OWNER_IDS.includes(interaction.user.id)) {
+            await interaction.reply({
+                content: 'This command is restricted to the bot owner.',
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+
         await interaction.deferReply();
         await interaction.deleteReply();
 

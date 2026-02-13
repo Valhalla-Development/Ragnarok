@@ -47,6 +47,10 @@ const configSchema = z.object({
         .string()
         .optional()
         .transform((val) => (val ? stringToArray(val) : [])),
+    OWNER_IDS: z
+        .string()
+        .optional()
+        .transform((val) => (val ? stringToArray(val) : [])),
 });
 
 // Parse config with error handling

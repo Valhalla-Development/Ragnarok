@@ -10,6 +10,7 @@ import {
     TextInputStyle,
 } from 'discord.js';
 import { Discord, ModalComponent, Slash } from 'discordx';
+import { config } from '../../config/Config.js';
 import Announcement from '../../mongo/Announcement.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
@@ -25,6 +26,14 @@ export class SetAnnouncement {
         defaultMemberPermissions: [PermissionsBitField.Flags.Administrator],
     })
     async setannouncement(interaction: CommandInteraction): Promise<void> {
+        if (!config.OWNER_IDS.includes(interaction.user.id)) {
+            await interaction.reply({
+                content: 'This command is restricted to the bot owner.',
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+
         // Create the modal
         const modal = new ModalBuilder()
             .setTitle('Set Announcement')
