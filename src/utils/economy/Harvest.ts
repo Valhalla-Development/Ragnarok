@@ -12,6 +12,7 @@ import type { BalanceInterface } from '../../mongo/Balance.js';
 import { capitalise, paginationComponentsV2, RagnarokComponent } from '../Util.js';
 import { ecoPrices } from './Config.js';
 import { getOrCreateBalance } from './Profile.js';
+import { clearEconomyViewTimer } from './SessionTimers.js';
 import type { ButtonRows, CropData, HarvestResult } from './Types.js';
 
 /**
@@ -105,6 +106,8 @@ async function showCropStatus(
     balance: BalanceInterface,
     homeButton: ButtonBuilder
 ) {
+    // Clear any existing timers to prevent unwanted view changes
+    clearEconomyViewTimer(interaction.message?.id);
     const statusEntries: string[] = [];
 
     const growingCrops = balance.FarmPlot.filter((crop) => crop.CropGrowTime !== 'na');
@@ -113,7 +116,7 @@ async function showCropStatus(
     // Add ready crops to status
     for (const crop of readyCrops) {
         statusEntries.push(
-            `\u3000Crop Type: \`${capitalise(crop.CropType)}\` - Crop Decay: \`${crop.Decay.toFixed(4)}%\``
+            `\u3000Crop Type: \`${capitalise(crop.CropType)}\` - Crop Decay: \`${crop.Decay.toFixed(2)}%\``
         );
     }
 
@@ -215,7 +218,7 @@ function processHarvest(balance: BalanceInterface, availableSpots: number): Harv
         const cropData = calculateCropValue(crop);
         totalValue += cropData.value;
         displayEntries.push(
-            `\u3000Crop Type: \`${capitalise(crop.CropType)}\` - Current Value: 💰\`${cropData.value.toLocaleString('en')}\` - Decayed: \`${crop.Decay.toFixed(4)}\`%`
+            `\u3000Crop Type: \`${capitalise(crop.CropType)}\` - Current Value: 💰\`${cropData.value.toLocaleString('en')}\` - Decayed: \`${crop.Decay.toFixed(2)}\`%`
         );
     }
 
@@ -229,6 +232,8 @@ async function displayHarvestResults(
     harvestResults: HarvestResult,
     homeButton: ButtonBuilder
 ) {
+    // Clear any existing timers to prevent unwanted view changes
+    clearEconomyViewTimer(interaction.message?.id);
     const { displayEntries, totalValue } = harvestResults;
 
     if (!displayEntries.length) {
