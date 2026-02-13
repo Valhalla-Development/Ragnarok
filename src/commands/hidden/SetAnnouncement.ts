@@ -27,10 +27,12 @@ export class SetAnnouncement {
     })
     async setannouncement(interaction: CommandInteraction): Promise<void> {
         if (!config.OWNER_IDS.includes(interaction.user.id)) {
-            await interaction.reply({
-                content: 'This command is restricted to the bot owner.',
-                flags: MessageFlags.Ephemeral,
-            });
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'This command is restricted to the bot owner.',
+                true
+            );
             return;
         }
 
