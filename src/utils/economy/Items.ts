@@ -68,14 +68,18 @@ function buildInventoryContainer(
             }`,
             `> 🥕 Farm Bin: ${
                 boosts.FarmBag
-                    ? `\`${(
-                          num(items.Barley) +
-                              num(items.Spinach) +
-                              num(items.Strawberries) +
-                              num(items.Lettuce)
-                      ).toLocaleString(
-                          'en'
-                      )}\` / \`${Number(boosts.FarmBag).toLocaleString('en')}\``
+                    ? items.FarmingTools
+                        ? `\`${(balance.HarvestedCrops?.length ?? 0).toLocaleString(
+                              'en'
+                          )}\` / \`${Number(boosts.FarmBag).toLocaleString('en')}\``
+                        : `\`${(
+                              num(items.Barley) +
+                                  num(items.Spinach) +
+                                  num(items.Strawberries) +
+                                  num(items.Lettuce)
+                          ).toLocaleString(
+                              'en'
+                          )}\` / \`${Number(boosts.FarmBag).toLocaleString('en')}\``
                     : '🚫 Locked'
             }`,
             `> 🏡 Farm Plots: ${
@@ -100,19 +104,71 @@ function buildInventoryContainer(
         ].join('\n')
     );
 
-    const cropsSection = new TextDisplayBuilder().setContent(
-        [
-            '## 🌾 Harvest & Seeds',
-            `> 🌾 Barley: \`${num(items.Barley).toLocaleString('en')}\``,
-            `> 🥬 Lettuce: \`${num(items.Lettuce).toLocaleString('en')}\``,
-            `> 🍓 Strawberries: \`${num(items.Strawberries).toLocaleString('en')}\``,
-            `> 🥗 Spinach: \`${num(items.Spinach).toLocaleString('en')}\``,
-            `> 🌽 Corn Seeds: \`${num(items.CornSeeds).toLocaleString('en')}\``,
-            `> 🌾 Wheat Seeds: \`${num(items.WheatSeeds).toLocaleString('en')}\``,
-            `> 🥔 Potato Seeds: \`${num(items.PotatoSeeds).toLocaleString('en')}\``,
-            `> 🍅 Tomato Seeds: \`${num(items.TomatoSeeds).toLocaleString('en')}\``,
-        ].join('\n')
+    // Count harvested crops by type (from paid farming system)
+    const harvestedCrops = balance.HarvestedCrops ?? [];
+    const cornCount = harvestedCrops.filter((c) => c.CropType === 'corn').length;
+    const wheatCount = harvestedCrops.filter((c) => c.CropType === 'wheat').length;
+    const potatoCount = harvestedCrops.filter((c) => c.CropType === 'potato').length;
+    const tomatoCount = harvestedCrops.filter((c) => c.CropType === 'tomato').length;
+
+    // Build crops section based on whether user has farming tools
+    const hasFarmingTools = items.FarmingTools;
+    const hasFreeCrops =
+        num(items.Barley) > 0 ||
+        num(items.Lettuce) > 0 ||
+        num(items.Strawberries) > 0 ||
+        num(items.Spinach) > 0;
+
+    const cropsLines: string[] = ['## 🌾 Harvest & Seeds'];
+
+    // Show paid crops if user has farming tools
+    if (hasFarmingTools) {
+        cropsLines.push(
+            `> 🌽 Corn: \`${cornCount.toLocaleString('en')}\``,
+            `> 🌾 Wheat: \`${wheatCount.toLocaleString('en')}\``,
+            `> 🥔 Potato: \`${potatoCount.toLocaleString('en')}\``,
+            `> 🍅 Tomato: \`${tomatoCount.toLocaleString('en')}\``
+        );
+    }
+
+    // Show free crops if user doesn't have farming tools OR if they still have some
+    if (!hasFarmingTools || hasFreeCrops) {
+        // If user has farming tools, only show the free crops they actually have
+        if (hasFarmingTools) {
+            if (num(items.Barley) > 0) {
+                cropsLines.push(`> 🌾 Barley: \`${num(items.Barley).toLocaleString('en')}\``);
+            }
+            if (num(items.Lettuce) > 0) {
+                cropsLines.push(`> 🥬 Lettuce: \`${num(items.Lettuce).toLocaleString('en')}\``);
+            }
+            if (num(items.Strawberries) > 0) {
+                cropsLines.push(
+                    `> 🍓 Strawberries: \`${num(items.Strawberries).toLocaleString('en')}\``
+                );
+            }
+            if (num(items.Spinach) > 0) {
+                cropsLines.push(`> 🥗 Spinach: \`${num(items.Spinach).toLocaleString('en')}\``);
+            }
+        } else {
+            // If user doesn't have farming tools, show all free crops
+            cropsLines.push(
+                `> 🌾 Barley: \`${num(items.Barley).toLocaleString('en')}\``,
+                `> 🥬 Lettuce: \`${num(items.Lettuce).toLocaleString('en')}\``,
+                `> 🍓 Strawberries: \`${num(items.Strawberries).toLocaleString('en')}\``,
+                `> 🥗 Spinach: \`${num(items.Spinach).toLocaleString('en')}\``
+            );
+        }
+    }
+
+    // Always show seeds
+    cropsLines.push(
+        `> 🌽 Corn Seeds: \`${num(items.CornSeeds).toLocaleString('en')}\``,
+        `> 🌾 Wheat Seeds: \`${num(items.WheatSeeds).toLocaleString('en')}\``,
+        `> 🥔 Potato Seeds: \`${num(items.PotatoSeeds).toLocaleString('en')}\``,
+        `> 🍅 Tomato Seeds: \`${num(items.TomatoSeeds).toLocaleString('en')}\``
     );
+
+    const cropsSection = new TextDisplayBuilder().setContent(cropsLines.join('\n'));
 
     return new ContainerBuilder()
         .addTextDisplayComponents(header)
