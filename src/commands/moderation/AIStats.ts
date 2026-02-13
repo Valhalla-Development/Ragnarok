@@ -45,7 +45,7 @@ export class AIStats {
             return;
         }
 
-        const [enabled, total, top] = await Promise.all([
+        const [_enabled, total, top] = await Promise.all([
             isAIGuildEnabled(interaction.guild.id),
             getAITotalQueryCount(),
             getAITopUsers(10),
@@ -70,9 +70,7 @@ export class AIStats {
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(
                     [
-                        `> **Global AI:** ${enabled ? '`Enabled` ✅' : '`Disabled` ⛔'} (toggle in \`/config\`)`,
                         `> **Total Queries:** \`${total.toLocaleString()}\``,
-                        '',
                         '## 🏆 Top Users',
                         ...lines,
                     ].join('\n')
