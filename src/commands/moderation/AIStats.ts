@@ -16,7 +16,7 @@ import {
 } from '../../utils/ai/OpenRouter.js';
 
 @Discord()
-@Category('Staff')
+@Category('Moderation')
 export class AIStats {
     @Slash({
         description: 'View AI usage statistics.',

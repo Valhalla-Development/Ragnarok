@@ -26,7 +26,7 @@ const AI_CHANNEL_SELECT_ID = 'cfg:ai:channels';
 const AI_CHANNEL_CLEAR_ID = 'cfg:ai:channels:clear';
 
 @Discord()
-@Category('Staff')
+@Category('Moderation')
 export class AIChannels {
     @Slash({
         description: 'Configure channels where AI is allowed.',
