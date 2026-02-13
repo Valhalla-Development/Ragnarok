@@ -221,6 +221,18 @@ export function buildHomeContainer(
         }
     }
 
+    // Clone the plant button and disable it if the user is on cooldown
+    let plantButton: ButtonBuilder | undefined;
+    if (buttons.plantButton) {
+        plantButton = ButtonBuilder.from(buttons.plantButton.toJSON());
+        plantButton.setStyle(ButtonStyle.Primary);
+
+        if (balance.FarmCool && now < balance.FarmCool) {
+            plantButton.setDisabled(true);
+            plantButton.setStyle(ButtonStyle.Success);
+        }
+    }
+
     // Clone the claim button and disable it if nothing is claimable
     const claimButton = ButtonBuilder.from(buttons.claimButton.toJSON());
     // Normalize style in case upstream flows mutated the shared button instance
@@ -251,9 +263,7 @@ export function buildHomeContainer(
                 heistButton,
                 fishButton,
                 ...(balance.Items?.FarmingTools ? [] : [farmButton]),
-                ...(buttons.plantButton && balance.Items?.FarmingTools
-                    ? [buttons.plantButton]
-                    : []),
+                ...(plantButton && balance.Items?.FarmingTools ? [plantButton] : []),
                 ...(harvestButton && balance.Items?.FarmingTools ? [harvestButton] : []),
                 ...(buttons.shopButton ? [buttons.shopButton] : [])
             )
