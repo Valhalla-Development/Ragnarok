@@ -28,11 +28,7 @@ import { RagnarokComponent } from '../../utils/Util.js';
 @Discord()
 @Category('Economy')
 export class EconomyCommand {
-    private coinflipAmount: string | null = null;
-
-    private instance: Economy | null = null;
-
-    private user: string | null = null;
+    private readonly sessions = new Map<string, Economy>();
 
     /**
      * Access to the economy module.
@@ -41,9 +37,8 @@ export class EconomyCommand {
      */
     @Slash({ description: 'Access to the economy module' })
     async economy(interaction: CommandInteraction): Promise<void> {
-        const economyInstance = new Economy();
-        this.instance = economyInstance;
-        this.user = interaction.user.id;
+        const economyInstance = new Economy(interaction.user.id);
+        this.sessions.set(interaction.user.id, economyInstance);
 
         await economyInstance.home(interaction);
     }
@@ -57,7 +52,10 @@ export class EconomyCommand {
     async buttonInteraction(interaction: ButtonInteraction, client: Client) {
         clearEconomyViewTimer(interaction.message?.id);
 
-        if (this.user !== interaction.user.id) {
+        const customIdParts = interaction.customId.split('_');
+        const userId = customIdParts.at(-1);
+
+        if (userId !== interaction.user.id) {
             await RagnarokComponent(
                 interaction,
                 'Error',
@@ -67,7 +65,9 @@ export class EconomyCommand {
             return;
         }
 
-        if (!this.instance) {
+        const instance = this.sessions.get(userId);
+
+        if (!instance) {
             await RagnarokComponent(
                 interaction,
                 'Error',
@@ -77,53 +77,51 @@ export class EconomyCommand {
             return;
         }
 
-        if (interaction.customId === 'economy_plant_confirm') {
-            await this.instance.processPlant(interaction);
+        if (interaction.customId.startsWith('economy_plant_confirm')) {
+            await instance.processPlant(interaction);
             return;
         }
-        if (interaction.customId === 'economy_shop_confirm') {
-            await this.instance.processShopConfirm(interaction);
+        if (interaction.customId.startsWith('economy_shop_confirm')) {
+            await instance.processShopConfirm(interaction);
             return;
         }
 
         if (interaction.customId.startsWith('economy_shop_mode_')) {
-            const mode = interaction.customId.replace('economy_shop_mode_', '');
+            const mode = customIdParts[3]; // economy_shop_mode_buy_userId
             if (mode === 'buy' || mode === 'sell' || mode === 'upgrade') {
-                await this.instance.setShopMode(interaction, mode);
+                await instance.setShopMode(interaction, mode as 'buy' | 'sell' | 'upgrade');
                 return;
             }
         }
 
-        const button = interaction.customId.split('_');
+        const button = customIdParts[1];
+        if (!button) {
+            return;
+        }
 
         const actionMap = new Map([
-            ['home', async () => this.instance?.home(interaction)],
-            ['baltop', async () => this.instance?.baltop(interaction)],
-            ['deposit', async () => this.instance?.deposit(interaction)],
-            ['withdraw', async () => this.instance?.withdraw(interaction)],
-            ['claim', async () => this.instance?.claim(interaction)],
-            ['items', async () => this.instance?.items(interaction)],
-            ['gamble', async () => this.instance?.gamble(interaction)],
+            ['home', async () => instance.home(interaction)],
+            ['baltop', async () => instance.baltop(interaction)],
+            ['deposit', async () => instance.deposit(interaction)],
+            ['withdraw', async () => instance.withdraw(interaction)],
+            ['claim', async () => instance.claim(interaction)],
+            ['items', async () => instance.items(interaction)],
+            ['gamble', async () => instance.gamble(interaction)],
             [
                 'coinflip',
                 async () => {
-                    await this.instance?.coinflip(
-                        interaction,
-                        client,
-                        button[2] ? this.coinflipAmount : null,
-                        button[2] || null
-                    );
+                    await instance.coinflip(interaction, client, null, customIdParts[2] || null);
                 },
             ],
-            ['heist', async () => this.instance?.heist(interaction)],
-            ['farm', async () => this.instance?.farm(interaction, client)],
-            ['fish', async () => this.instance?.fish(interaction, client)],
-            ['harvest', async () => this.instance?.harvest(interaction, client)],
-            ['shop', async () => this.instance?.shop(interaction)],
-            ['plant', async () => this.instance?.plant(interaction)],
+            ['heist', async () => instance.heist(interaction)],
+            ['farm', async () => instance.farm(interaction, client)],
+            ['fish', async () => instance.fish(interaction, client)],
+            ['harvest', async () => instance.harvest(interaction, client)],
+            ['shop', async () => instance.shop(interaction)],
+            ['plant', async () => instance.plant(interaction)],
         ]);
 
-        const selectedAction = actionMap.get(button[1] as string);
+        const selectedAction = actionMap.get(button);
 
         if (selectedAction) {
             await selectedAction();
@@ -135,11 +133,26 @@ export class EconomyCommand {
      * @param interaction - The ModalSubmitInteraction object that represents the user's interaction with the modal.
      * @param client - The Discord client.
      */
-    @ModalComponent({ id: 'coinflipAmount' })
+    @ModalComponent({ id: /^coinflipAmount/ })
     async modalSubmit(interaction: ModalSubmitInteraction, client: Client): Promise<void> {
         clearEconomyViewTimer(interaction.message?.id);
 
-        if (!this.instance) {
+        const customIdParts = interaction.customId.split('_');
+        const userId = customIdParts.at(-1);
+
+        if (userId !== interaction.user.id) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Only the command executor can submit this form.',
+                true
+            );
+            return;
+        }
+
+        const instance = this.sessions.get(userId);
+
+        if (!instance) {
             await RagnarokComponent(
                 interaction,
                 'Error',
@@ -151,26 +164,18 @@ export class EconomyCommand {
 
         await interaction.deferReply();
         const amount = interaction.fields.getTextInputValue('amountField');
-        this.coinflipAmount = amount;
-        await this.instance.coinflip(interaction, client, amount);
+        await instance.coinflip(interaction, client, amount);
         await interaction.deleteReply();
     }
 
-    @ModalComponent({ id: 'economy_withdraw_modal' })
+    @ModalComponent({ id: /^economy_withdraw_modal_.*/ })
     async withdrawModal(interaction: ModalSubmitInteraction): Promise<void> {
         clearEconomyViewTimer(interaction.message?.id);
 
-        if (!this.instance) {
-            await RagnarokComponent(
-                interaction,
-                'Error',
-                'Session expired. Please run /economy again to refresh your controls.',
-                true
-            );
-            return;
-        }
+        const customIdParts = interaction.customId.split('_');
+        const userId = customIdParts.at(-1);
 
-        if (this.user !== interaction.user.id) {
+        if (userId !== interaction.user.id) {
             await RagnarokComponent(
                 interaction,
                 'Error',
@@ -180,25 +185,31 @@ export class EconomyCommand {
             return;
         }
 
+        const instance = this.sessions.get(userId);
+
+        if (!instance) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Session expired. Please run /economy again to refresh your controls.',
+                true
+            );
+            return;
+        }
+
         const amountInput = interaction.fields.getTextInputValue('withdrawAmount');
         const amount = Number(amountInput.replace(/,/g, ''));
-        await this.instance.processWithdraw(interaction, amount);
+        await instance.processWithdraw(interaction, amount);
     }
 
-    @SelectMenuComponent({ id: 'economy_shop_action_select' })
+    @SelectMenuComponent({ id: /^economy_shop_action_select_.*/ })
     async onShopActionSelect(interaction: StringSelectMenuInteraction): Promise<void> {
         clearEconomyViewTimer(interaction.message?.id);
 
-        if (!this.instance) {
-            await RagnarokComponent(
-                interaction,
-                'Error',
-                'Session expired. Please run /economy again to refresh your controls.',
-                true
-            );
-            return;
-        }
-        if (this.user !== interaction.user.id) {
+        const customIdParts = interaction.customId.split('_');
+        const userId = customIdParts.at(-1);
+
+        if (userId !== interaction.user.id) {
             await RagnarokComponent(
                 interaction,
                 'Error',
@@ -208,32 +219,50 @@ export class EconomyCommand {
             return;
         }
 
-        const selected = interaction.values[0];
-        if (!selected) {
-            await this.instance.shop(interaction, 'No option selected.');
+        const instance = this.sessions.get(userId);
+
+        if (!instance) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Session expired. Please run /economy again to refresh your controls.',
+                true
+            );
             return;
         }
-        await this.instance.processShopAction(interaction, selected);
+
+        const selected = interaction.values[0];
+        if (!selected) {
+            await instance.shop(interaction, 'No option selected.');
+            return;
+        }
+        await instance.processShopAction(interaction, selected);
     }
 
-    @SelectMenuComponent({ id: 'economy_shop_qty_select' })
+    @SelectMenuComponent({ id: /^economy_shop_qty_select_.*/ })
     async onShopQuantitySelect(interaction: StringSelectMenuInteraction): Promise<void> {
         clearEconomyViewTimer(interaction.message?.id);
 
-        if (!this.instance) {
-            await RagnarokComponent(
-                interaction,
-                'Error',
-                'Session expired. Please run /economy again to refresh your controls.',
-                true
-            );
-            return;
-        }
-        if (this.user !== interaction.user.id) {
+        const customIdParts = interaction.customId.split('_');
+        const userId = customIdParts.at(-1);
+
+        if (userId !== interaction.user.id) {
             await RagnarokComponent(
                 interaction,
                 'Error',
                 'Only the command executor can select an option.',
+                true
+            );
+            return;
+        }
+
+        const instance = this.sessions.get(userId);
+
+        if (!instance) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Session expired. Please run /economy again to refresh your controls.',
                 true
             );
             return;
@@ -241,30 +270,36 @@ export class EconomyCommand {
 
         const selected = interaction.values[0];
         if (!selected) {
-            await this.instance.shop(interaction);
+            await instance.shop(interaction);
             return;
         }
-        await this.instance.setShopQuantity(interaction, selected);
+        await instance.setShopQuantity(interaction, selected);
     }
 
-    @SelectMenuComponent({ id: 'economy_plant_crop_select' })
+    @SelectMenuComponent({ id: /^economy_plant_crop_select_.*/ })
     async onPlantCropSelect(interaction: StringSelectMenuInteraction): Promise<void> {
         clearEconomyViewTimer(interaction.message?.id);
 
-        if (!this.instance) {
-            await RagnarokComponent(
-                interaction,
-                'Error',
-                'Session expired. Please run /economy again to refresh your controls.',
-                true
-            );
-            return;
-        }
-        if (this.user !== interaction.user.id) {
+        const customIdParts = interaction.customId.split('_');
+        const userId = customIdParts.at(-1);
+
+        if (userId !== interaction.user.id) {
             await RagnarokComponent(
                 interaction,
                 'Error',
                 'Only the command executor can select an option.',
+                true
+            );
+            return;
+        }
+
+        const instance = this.sessions.get(userId);
+
+        if (!instance) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Session expired. Please run /economy again to refresh your controls.',
                 true
             );
             return;
@@ -272,29 +307,23 @@ export class EconomyCommand {
 
         const selected = interaction.values[0];
         if (!(selected && ['corn', 'wheat', 'potato', 'tomato'].includes(selected))) {
-            await this.instance.plant(interaction, 'Invalid crop selection.');
+            await instance.plant(interaction, 'Invalid crop selection.');
             return;
         }
-        await this.instance.setPlantCrop(
+        await instance.setPlantCrop(
             interaction,
             selected as 'corn' | 'wheat' | 'potato' | 'tomato'
         );
     }
 
-    @SelectMenuComponent({ id: 'economy_plant_amount_select' })
+    @SelectMenuComponent({ id: /^economy_plant_amount_select_.*/ })
     async onPlantAmountSelect(interaction: StringSelectMenuInteraction): Promise<void> {
         clearEconomyViewTimer(interaction.message?.id);
 
-        if (!this.instance) {
-            await RagnarokComponent(
-                interaction,
-                'Error',
-                'Session expired. Please run /economy again to refresh your controls.',
-                true
-            );
-            return;
-        }
-        if (this.user !== interaction.user.id) {
+        const customIdParts = interaction.customId.split('_');
+        const userId = customIdParts.at(-1);
+
+        if (userId !== interaction.user.id) {
             await RagnarokComponent(
                 interaction,
                 'Error',
@@ -304,24 +333,9 @@ export class EconomyCommand {
             return;
         }
 
-        const selected = interaction.values[0];
-        if (!selected) {
-            await this.instance.plant(interaction);
-            return;
-        }
-        await this.instance.setPlantAmount(interaction, selected);
-    }
+        const instance = this.sessions.get(userId);
 
-    /**
-     * Handles heist target selection
-     * @param interaction - The UserSelectMenuInteraction object
-     * @param client - The Discord client
-     */
-    @SelectMenuComponent({ id: 'heist_target_select' })
-    async heistTargetSelect(interaction: UserSelectMenuInteraction): Promise<void> {
-        clearEconomyViewTimer(interaction.message?.id);
-
-        if (!this.instance) {
+        if (!instance) {
             await RagnarokComponent(
                 interaction,
                 'Error',
@@ -331,7 +345,27 @@ export class EconomyCommand {
             return;
         }
 
-        if (this.user !== interaction.user.id) {
+        const selected = interaction.values[0];
+        if (!selected) {
+            await instance.plant(interaction);
+            return;
+        }
+        await instance.setPlantAmount(interaction, selected);
+    }
+
+    /**
+     * Handles heist target selection
+     * @param interaction - The UserSelectMenuInteraction object
+     * @param client - The Discord client
+     */
+    @SelectMenuComponent({ id: /^heist_target_select_.*/ })
+    async heistTargetSelect(interaction: UserSelectMenuInteraction): Promise<void> {
+        clearEconomyViewTimer(interaction.message?.id);
+
+        const customIdParts = interaction.customId.split('_');
+        const userId = customIdParts.at(-1);
+
+        if (userId !== interaction.user.id) {
             await RagnarokComponent(
                 interaction,
                 'Error',
@@ -341,7 +375,19 @@ export class EconomyCommand {
             return;
         }
 
-        const economyInstance = this.instance;
+        const instance = this.sessions.get(userId);
+
+        if (!instance) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Session expired. Please run /economy again to refresh your controls.',
+                true
+            );
+            return;
+        }
+
+        const economyInstance = instance;
 
         const showHeistResult = async (statusLabel: string, statusMessage: string) => {
             const resultContainer = new ContainerBuilder()
