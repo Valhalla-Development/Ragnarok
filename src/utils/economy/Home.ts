@@ -45,6 +45,7 @@ export function buildHomeContainer(
         fishButton: ButtonBuilder;
         farmButton: ButtonBuilder;
         plantButton?: ButtonBuilder;
+        harvestButton?: ButtonBuilder;
         shopButton?: ButtonBuilder;
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
@@ -207,6 +208,18 @@ export function buildHomeContainer(
         heistButton.setStyle(ButtonStyle.Success);
     }
 
+    // Clone the harvest button and disable it if there are no crops
+    let harvestButton: ButtonBuilder | undefined;
+    if (buttons.harvestButton) {
+        harvestButton = ButtonBuilder.from(buttons.harvestButton.toJSON());
+        harvestButton.setStyle(ButtonStyle.Primary);
+
+        if (!balance.FarmPlot || balance.FarmPlot.length === 0) {
+            harvestButton.setDisabled(true);
+            harvestButton.setStyle(ButtonStyle.Success);
+        }
+    }
+
     // Clone the claim button and disable it if nothing is claimable
     const claimButton = ButtonBuilder.from(buttons.claimButton.toJSON());
     // Normalize style in case upstream flows mutated the shared button instance
@@ -240,6 +253,7 @@ export function buildHomeContainer(
                 ...(buttons.plantButton && balance.Items?.FarmingTools
                     ? [buttons.plantButton]
                     : []),
+                ...(harvestButton && balance.Items?.FarmingTools ? [harvestButton] : []),
                 ...(buttons.shopButton ? [buttons.shopButton] : [])
             )
         )
@@ -270,6 +284,7 @@ export async function updateHomeContainer(
         fishButton: ButtonBuilder;
         farmButton: ButtonBuilder;
         plantButton?: ButtonBuilder;
+        harvestButton?: ButtonBuilder;
         shopButton?: ButtonBuilder;
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;
@@ -364,6 +379,7 @@ export async function handleHome(
         fishButton: ButtonBuilder;
         farmButton: ButtonBuilder;
         plantButton?: ButtonBuilder;
+        harvestButton?: ButtonBuilder;
         shopButton?: ButtonBuilder;
         itemsButton: ButtonBuilder;
         claimButton: ButtonBuilder;

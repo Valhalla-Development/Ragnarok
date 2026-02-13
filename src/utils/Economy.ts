@@ -189,6 +189,7 @@ export class Economy {
             withdrawButton: this.withdrawButton,
             shopButton: this.shopButton,
             plantButton: this.plantButton,
+            harvestButton: this.harvestButton,
         };
     }
 
