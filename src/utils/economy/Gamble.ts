@@ -72,8 +72,9 @@ export async function handleCoinflip(
         claimButton: ButtonBuilder;
         withdrawButton: ButtonBuilder;
     },
-    amount: string | null = null,
-    option: string | null = null
+    amount: string | null,
+    option: string | null,
+    userId: string
 ) {
     // Set the state of the coinflip button first if it's a button interaction
     if (interaction instanceof ButtonInteraction) {
@@ -98,7 +99,7 @@ export async function handleCoinflip(
     if (!(amount || option) && interaction instanceof ButtonInteraction) {
         const coinflipModal = new ModalBuilder()
             .setTitle('Coin Flip Amount')
-            .setCustomId('coinflipAmount');
+            .setCustomId(`coinflipAmount_${userId}`);
 
         const amountField = new TextInputBuilder()
             .setCustomId('amountField')
@@ -120,12 +121,12 @@ export async function handleCoinflip(
     const headsButton = new ButtonBuilder()
         .setLabel('Heads!')
         .setStyle(ButtonStyle.Primary)
-        .setCustomId('economy_coinflip_heads');
+        .setCustomId(`economy_coinflip_heads_${userId}`);
 
     const tailsButton = new ButtonBuilder()
         .setLabel('Tails!')
         .setStyle(ButtonStyle.Primary)
-        .setCustomId('economy_coinflip_tails');
+        .setCustomId(`economy_coinflip_tails_${userId}`);
 
     const backButton = ButtonBuilder.from(homeButton.toJSON())
         .setDisabled(false)

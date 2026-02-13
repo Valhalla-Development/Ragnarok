@@ -55,79 +55,83 @@ export class Economy {
     private selectedShopItem: ShopItem | null = null;
     private selectedCrop: CropType = 'corn';
     private selectedPlantAmount = 1;
+    userId: string;
+    coinflipAmount: string | null = null;
 
-    constructor() {
+    constructor(userId: string) {
+        this.userId = userId;
+
         this.homeButton = new ButtonBuilder()
             .setEmoji('↩️')
             .setLabel('Back')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_home');
+            .setCustomId(`economy_home_${userId}`);
 
         this.baltopButton = new ButtonBuilder()
             .setLabel('Leaderboard')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_baltop');
+            .setCustomId(`economy_baltop_${userId}`);
 
         this.claimButton = new ButtonBuilder()
             .setLabel('Claim Rewards')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_claim');
+            .setCustomId(`economy_claim_${userId}`);
 
         this.depositButton = new ButtonBuilder()
             .setLabel('Deposit Cash')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_deposit');
+            .setCustomId(`economy_deposit_${userId}`);
 
         this.withdrawButton = new ButtonBuilder()
             .setLabel('Withdraw Cash')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_withdraw');
+            .setCustomId(`economy_withdraw_${userId}`);
 
         this.gambleButton = new ButtonBuilder()
             .setLabel('Gamble')
             .setEmoji('🎲')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_gamble');
+            .setCustomId(`economy_gamble_${userId}`);
 
         this.coinflipButton = new ButtonBuilder()
             .setLabel('Coin Flip')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_coinflip');
+            .setCustomId(`economy_coinflip_${userId}`);
 
         this.heistButton = new ButtonBuilder()
             .setLabel('Start Heist')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_heist');
+            .setCustomId(`economy_heist_${userId}`);
 
         this.farmButton = new ButtonBuilder()
             .setLabel('Plant Crops')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_farm');
+            .setCustomId(`economy_farm_${userId}`);
 
         this.fishButton = new ButtonBuilder()
             .setLabel('Go Fishing')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_fish');
+            .setCustomId(`economy_fish_${userId}`);
 
         this.harvestButton = new ButtonBuilder()
             .setLabel('Harvest Crops')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_harvest');
+            .setCustomId(`economy_harvest_${userId}`);
 
         this.itemsButton = new ButtonBuilder()
             .setLabel('View Inventory')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_items');
+            .setCustomId(`economy_items_${userId}`);
 
         this.shopButton = new ButtonBuilder()
             .setLabel('Shop')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_shop');
+            .setCustomId(`economy_shop_${userId}`);
 
         this.plantButton = new ButtonBuilder()
             .setLabel('Plant')
             .setStyle(ButtonStyle.Primary)
-            .setCustomId('economy_plant');
+            .setCustomId(`economy_plant_${userId}`);
 
         const row1 = new ActionRowBuilder<ButtonBuilder>().addComponents(
             this.homeButton,
@@ -215,7 +219,7 @@ export class Economy {
     async withdraw(interaction: ButtonInteraction) {
         const withdrawModal = new ModalBuilder()
             .setTitle('Withdraw Cash')
-            .setCustomId('economy_withdraw_modal');
+            .setCustomId(`economy_withdraw_modal_${this.userId}`);
 
         const amountField = new TextInputBuilder()
             .setCustomId('withdrawAmount')
@@ -254,6 +258,10 @@ export class Economy {
         amount: string | null = null,
         option: string | null = null
     ) {
+        if (amount) {
+            this.coinflipAmount = amount;
+        }
+
         await handleCoinflip(
             interaction,
             client,
@@ -261,8 +269,9 @@ export class Economy {
             this.homeButton,
             this.rows,
             this.getButtons(),
-            amount,
-            option
+            amount ?? this.coinflipAmount,
+            option,
+            this.userId
         );
     }
 
@@ -363,19 +372,19 @@ export class Economy {
             .addActionRowComponents((row) =>
                 row.addComponents(
                     new ButtonBuilder()
-                        .setCustomId('economy_shop_mode_buy')
+                        .setCustomId(`economy_shop_mode_buy_${this.userId}`)
                         .setLabel('Buy')
                         .setStyle(
                             this.shopMode === 'buy' ? ButtonStyle.Success : ButtonStyle.Primary
                         ),
                     new ButtonBuilder()
-                        .setCustomId('economy_shop_mode_sell')
+                        .setCustomId(`economy_shop_mode_sell_${this.userId}`)
                         .setLabel('Sell')
                         .setStyle(
                             this.shopMode === 'sell' ? ButtonStyle.Success : ButtonStyle.Primary
                         ),
                     new ButtonBuilder()
-                        .setCustomId('economy_shop_mode_upgrade')
+                        .setCustomId(`economy_shop_mode_upgrade_${this.userId}`)
                         .setLabel('Upgrade')
                         .setStyle(
                             this.shopMode === 'upgrade' ? ButtonStyle.Success : ButtonStyle.Primary
@@ -385,7 +394,7 @@ export class Economy {
             .addActionRowComponents((row) =>
                 row.addComponents(
                     new StringSelectMenuBuilder()
-                        .setCustomId('economy_shop_action_select')
+                        .setCustomId(`economy_shop_action_select_${this.userId}`)
                         .setPlaceholder(`Select ${this.shopMode} option`)
                         .setDisabled(!hasShopOptions)
                         .addOptions(
@@ -400,7 +409,7 @@ export class Economy {
             container.addActionRowComponents((row) =>
                 row.addComponents(
                     new StringSelectMenuBuilder()
-                        .setCustomId('economy_shop_qty_select')
+                        .setCustomId(`economy_shop_qty_select_${this.userId}`)
                         .setPlaceholder(
                             selectedSeedPrice > 0
                                 ? 'Seed pack quantity (with prices)'
@@ -417,7 +426,7 @@ export class Economy {
             .addActionRowComponents((row) =>
                 row.addComponents(
                     new ButtonBuilder()
-                        .setCustomId('economy_shop_confirm')
+                        .setCustomId(`economy_shop_confirm_${this.userId}`)
                         .setLabel(
                             this.shopMode === 'buy'
                                 ? 'Buy Now'
@@ -513,7 +522,7 @@ export class Economy {
             .addActionRowComponents((row) =>
                 row.addComponents(
                     new StringSelectMenuBuilder()
-                        .setCustomId('economy_plant_crop_select')
+                        .setCustomId(`economy_plant_crop_select_${this.userId}`)
                         .setPlaceholder('Select crop')
                         .addOptions(
                             { label: 'Corn', value: 'corn', default: this.selectedCrop === 'corn' },
@@ -538,7 +547,7 @@ export class Economy {
             .addActionRowComponents((row) =>
                 row.addComponents(
                     new StringSelectMenuBuilder()
-                        .setCustomId('economy_plant_amount_select')
+                        .setCustomId(`economy_plant_amount_select_${this.userId}`)
                         .setPlaceholder('Select amount')
                         .setDisabled(maxPlantable <= 0)
                         .addOptions(...amountOptions)
@@ -547,7 +556,7 @@ export class Economy {
             .addActionRowComponents((row) =>
                 row.addComponents(
                     new ButtonBuilder()
-                        .setCustomId('economy_plant_confirm')
+                        .setCustomId(`economy_plant_confirm_${this.userId}`)
                         .setLabel('Plant Now')
                         .setStyle(ButtonStyle.Success)
                         .setDisabled(maxPlantable <= 0),

@@ -24,7 +24,7 @@ export async function handleHeist(interaction: ButtonInteraction, homeButton: Bu
 
     // Create user select menu for choosing heist targets
     const userSelectMenu = new UserSelectMenuBuilder()
-        .setCustomId('heist_target_select')
+        .setCustomId(`heist_target_select_${interaction.user.id}`)
         .setPlaceholder('Select target...')
         .setMinValues(1)
         .setMaxValues(1);
