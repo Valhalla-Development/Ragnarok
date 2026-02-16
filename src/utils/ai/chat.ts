@@ -54,6 +54,8 @@ export async function runAIChat(params: {
             group: params.groupId,
             prompt: stripped,
             systemPrompt,
+            temperature: persona.temperature,
+            topP: persona.top_p,
         })) as ChatCompletionResult;
 
         const content = normalizeResponseContent(result.content);
