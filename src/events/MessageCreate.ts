@@ -18,7 +18,7 @@ import AdsProtection from '../mongo/AdsProtection.js';
 import Dad from '../mongo/Dad.js';
 import {
     buildAIGroupId,
-    getAIGuildPersona,
+    getEffectivePersonaId,
     isAIChannelAllowed,
     isAIEnabled,
     runAIChat,
@@ -287,9 +287,10 @@ export class MessageCreate {
                 userId: message.author.id,
             });
 
-            const personaId = message.guild?.id
-                ? await getAIGuildPersona(message.guild.id)
-                : 'default';
+            const personaId = await getEffectivePersonaId(
+                message.author.id,
+                message.guild?.id ?? null
+            );
             const result = await runAIChat({
                 userId: message.author.id,
                 groupId,
