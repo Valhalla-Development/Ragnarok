@@ -16,7 +16,13 @@ import { Discord, On } from 'discordx';
 import urlRegexSafe from 'url-regex-safe';
 import AdsProtection from '../mongo/AdsProtection.js';
 import Dad from '../mongo/Dad.js';
-import { buildAIGroupId, isAIChannelAllowed, isAIEnabled, runAIChat } from '../utils/ai/index.js';
+import {
+    buildAIGroupId,
+    getAIGuildPersona,
+    isAIChannelAllowed,
+    isAIEnabled,
+    runAIChat,
+} from '../utils/ai/index.js';
 import { deletableCheck, messageDelete, RagnarokContainer, updateLevel } from '../utils/Util.js';
 
 const dadCooldown = new Set();
@@ -281,12 +287,16 @@ export class MessageCreate {
                 userId: message.author.id,
             });
 
+            const personaId = message.guild?.id
+                ? await getAIGuildPersona(message.guild.id)
+                : 'default';
             const result = await runAIChat({
                 userId: message.author.id,
                 groupId,
                 prompt,
                 displayName: message.member?.displayName ?? message.author.displayName,
                 botName: message.guild?.members.me?.displayName ?? client.user?.displayName,
+                personaId,
             });
 
             if (!result.ok) {

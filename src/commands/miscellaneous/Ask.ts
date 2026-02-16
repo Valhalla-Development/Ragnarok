@@ -4,6 +4,7 @@ import { type Client, Discord, Slash, SlashOption } from 'discordx';
 import {
     buildAIGroupId,
     getAIAllowedChannels,
+    getAIGuildPersona,
     isAIChannelAllowed,
     isAIGuildEnabled,
     runAIChat,
@@ -66,6 +67,9 @@ export class Ask {
             userId: interaction.user.id,
         });
 
+        const personaId = interaction.guildId
+            ? await getAIGuildPersona(interaction.guildId)
+            : 'default';
         const result = await runAIChat({
             userId: interaction.user.id,
             groupId,
@@ -75,6 +79,7 @@ export class Ask {
                 interaction.guild?.members.me?.displayName ??
                 client.user?.displayName ??
                 'Assistant',
+            personaId,
         });
 
         if (!result.ok) {
