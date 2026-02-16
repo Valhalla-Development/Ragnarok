@@ -10,6 +10,8 @@ import { OpenRouterClient as OpenRouterClientCtor } from 'openrouter-kit';
 import { config, durationToMs } from '../../config/Config.js';
 import AIHistory from '../../mongo/AIHistory.js';
 
+const MAX_HISTORY_ENTRIES = 30;
+
 class MongoHistoryStorage implements IHistoryStorage {
     async load(key: string): Promise<HistoryEntry[]> {
         const doc = await AIHistory.findOne({ Key: key }).lean().exec();
@@ -18,16 +20,18 @@ class MongoHistoryStorage implements IHistoryStorage {
         }
         // Filter out system messages to ensure fresh system prompt is used on every request
         const entries = doc.Entries as HistoryEntry[];
-        return entries.filter((entry) => entry.message?.role !== 'system');
+        const withoutSystem = entries.filter((entry) => entry.message?.role !== 'system');
+        return withoutSystem.slice(-MAX_HISTORY_ENTRIES);
     }
 
     async save(key: string, entries: HistoryEntry[]): Promise<void> {
+        const trimmed = entries.slice(-MAX_HISTORY_ENTRIES);
         await AIHistory.findOneAndUpdate(
             { Key: key },
             {
                 $set: {
                     Key: key,
-                    Entries: entries,
+                    Entries: trimmed,
                     UpdatedAt: Date.now(),
                 },
             },
