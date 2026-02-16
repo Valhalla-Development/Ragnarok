@@ -27,7 +27,17 @@ import Logging from '../../mongo/Logging.js';
 import RoleMenu from '../../mongo/RoleMenu.js';
 import StarBoard from '../../mongo/StarBoard.js';
 import Welcome from '../../mongo/Welcome.js';
-import { isAIGuildEnabled, setAIGuildEnabled } from '../../utils/ai/Index.js';
+import {
+    clearAIAllowedChannels,
+    clearAllAIHistoryForGuild,
+    getAIAllowedChannels,
+    getAIGuildPersona,
+    isAIGuildEnabled,
+    setAIAllowedChannels,
+    setAIGuildEnabled,
+    setAIGuildPersona,
+} from '../../utils/ai/Index.js';
+import { personas } from '../../utils/ai/personas/Index.js';
 
 type ConfigModule =
     | 'home'
@@ -71,6 +81,23 @@ const STARBOARD_CHANNEL_SELECT_ID = 'cfg:starboard:channel';
 const STARBOARD_DISABLE_BUTTON_ID = 'cfg:starboard:disable';
 const WELCOME_CHANNEL_SELECT_ID = 'cfg:welcome:channel';
 const WELCOME_DISABLE_BUTTON_ID = 'cfg:welcome:disable';
+const AI_CHANNEL_SELECT_ID = 'cfg:ai:channels';
+const AI_CHANNEL_CLEAR_ID = 'cfg:ai:channels:clear';
+const AI_PERSONA_SELECT_ID = 'cfg:ai:persona';
+const AI_DELETE_ALL_HISTORY_BUTTON_ID = 'cfg:ai:delete-all-history';
+
+const AI_SECTION_NOTICE_TTL_MS = 4000;
+
+interface AISectionNotices {
+    status?: string;
+    channels?: string;
+    persona?: string;
+    deleteAllHistory?: string;
+}
+
+function personaIdToLabel(id: string): string {
+    return id.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 @Discord()
 @Category('Moderation')
@@ -113,8 +140,7 @@ export class Config {
             return;
         }
         await setAIGuildEnabled(interaction.guild.id, true);
-        const payload = await this.buildPayload(interaction.guild, 'ai');
-        await interaction.update(payload);
+        await this.updateAIWithNotice(interaction, { status: '✅ AI enabled.' });
     }
 
     @ButtonComponent({ id: AI_DISABLE_BUTTON_ID })
@@ -123,8 +149,92 @@ export class Config {
             return;
         }
         await setAIGuildEnabled(interaction.guild.id, false);
-        const payload = await this.buildPayload(interaction.guild, 'ai');
-        await interaction.update(payload);
+        await this.updateAIWithNotice(interaction, { status: '✅ AI disabled.' });
+    }
+
+    @SelectMenuComponent({ id: AI_CHANNEL_SELECT_ID })
+    async onAiChannelSelect(interaction: AnySelectMenuInteraction): Promise<void> {
+        if (!(interaction.guild && interaction.isChannelSelectMenu())) {
+            return;
+        }
+        if (interaction.user.id !== interaction.message.interaction?.user.id) {
+            await interaction.reply({
+                content: 'Only the command executor can change AI channel settings.',
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+        if (interaction.values.length === 0) {
+            await interaction.deferUpdate();
+            return;
+        }
+        const me = interaction.guild.members.me;
+        const canSend = me
+            ? interaction.values.filter((id) => {
+                  const ch = interaction.guild!.channels.cache.get(id);
+                  return ch && me.permissionsIn(ch).has(PermissionsBitField.Flags.SendMessages);
+              })
+            : [];
+        await setAIAllowedChannels(interaction.guild.id, canSend);
+        await this.updateAIWithNotice(interaction, { channels: '✅ Channels updated.' });
+    }
+
+    @ButtonComponent({ id: AI_CHANNEL_CLEAR_ID })
+    async onAiChannelClear(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        if (interaction.user.id !== interaction.message.interaction?.user.id) {
+            await interaction.reply({
+                content: 'Only the command executor can change AI channel settings.',
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+        await clearAIAllowedChannels(interaction.guild.id);
+        await this.updateAIWithNotice(interaction, {
+            channels: '✅ Allow-list cleared. All channels allowed.',
+        });
+    }
+
+    @SelectMenuComponent({ id: AI_PERSONA_SELECT_ID })
+    async onAiPersonaSelect(interaction: AnySelectMenuInteraction): Promise<void> {
+        if (!(interaction.guild && interaction.isStringSelectMenu())) {
+            return;
+        }
+        if (interaction.user.id !== interaction.message.interaction?.user.id) {
+            await interaction.reply({
+                content: 'Only the command executor can change the AI persona.',
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+        const [value] = interaction.values;
+        const validPersona = value && personas[value];
+        if (!validPersona) {
+            await interaction.deferUpdate();
+            return;
+        }
+        await setAIGuildPersona(interaction.guild.id, value);
+        await this.updateAIWithNotice(interaction, { persona: '✅ Default persona updated.' });
+    }
+
+    @ButtonComponent({ id: AI_DELETE_ALL_HISTORY_BUTTON_ID })
+    async onAiDeleteAllHistory(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        if (interaction.user.id !== interaction.message.interaction?.user.id) {
+            await interaction.reply({
+                content: 'Only the command executor can use this action.',
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+        const deleted = await clearAllAIHistoryForGuild(interaction.guild.id);
+        await this.updateAIWithNotice(interaction, {
+            deleteAllHistory: `✅ Deleted ${deleted.toLocaleString()} history entries for this server.`,
+        });
     }
 
     @ButtonComponent({ id: ADS_ENABLE_BUTTON_ID })
@@ -585,31 +695,6 @@ export class Config {
             };
         }
 
-        if (module === 'ai') {
-            const enabled = await isAIGuildEnabled(guild.id);
-            return {
-                title: '# 🤖 AI',
-                lines: [
-                    `> Status: ${enabled ? '`Enabled`' : '`Disabled`'}`,
-                    '> Toggle global AI availability for this server.',
-                    '> Use `/aichannels` to configure channel allow-list.',
-                ].filter(Boolean),
-                controls: [
-                    selector,
-                    new ButtonBuilder()
-                        .setCustomId(AI_ENABLE_BUTTON_ID)
-                        .setLabel('Enable')
-                        .setStyle(ButtonStyle.Success)
-                        .setDisabled(enabled),
-                    new ButtonBuilder()
-                        .setCustomId(AI_DISABLE_BUTTON_ID)
-                        .setLabel('Disable')
-                        .setStyle(ButtonStyle.Secondary)
-                        .setDisabled(!enabled),
-                ],
-            };
-        }
-
         if (module === 'ads') {
             const ads = await AdsProtection.findOne({ GuildId: guild.id });
             const isEnabled = ads?.Status === true;
@@ -827,7 +912,37 @@ export class Config {
         };
     }
 
-    private async buildPayload(guild: Guild, module: ConfigModule) {
+    private async updateAIWithNotice(
+        interaction: ButtonInteraction | AnySelectMenuInteraction,
+        notices: AISectionNotices
+    ): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        const payload = await this.buildPayload(interaction.guild, 'ai', notices);
+        await interaction.update({ ...payload, flags: MessageFlags.IsComponentsV2 });
+        setTimeout(async () => {
+            try {
+                const clean = await this.buildPayload(interaction.guild!, 'ai');
+                await interaction.editReply({
+                    ...clean,
+                    flags: MessageFlags.IsComponentsV2,
+                });
+            } catch {
+                // Ignore edit failures (e.g. token expired after 15 min).
+            }
+        }, AI_SECTION_NOTICE_TTL_MS);
+    }
+
+    private async buildPayload(
+        guild: Guild,
+        module: ConfigModule,
+        aiNotices?: AISectionNotices
+    ): Promise<{ components: [ContainerBuilder] }> {
+        if (module === 'ai') {
+            return this.buildAIPayload(guild, aiNotices);
+        }
+
         const view = await this.getModuleView(guild, module);
 
         const header = new TextDisplayBuilder().setContent(view.title);
@@ -876,6 +991,140 @@ export class Config {
         return {
             components: [container],
         };
+    }
+
+    private async buildAIPayload(
+        guild: Guild,
+        notices?: AISectionNotices
+    ): Promise<{ components: [ContainerBuilder] }> {
+        const selector = this.buildModuleSelector('ai');
+        const [channels, enabled, currentPersonaId] = await Promise.all([
+            getAIAllowedChannels(guild.id),
+            isAIGuildEnabled(guild.id),
+            getAIGuildPersona(guild.id),
+        ]);
+
+        const me = guild.members.me;
+        const defaultChannels =
+            me && channels.length > 0
+                ? channels.filter((id) => {
+                      const ch = guild.channels.cache.get(id);
+                      return ch && me.permissionsIn(ch).has(PermissionsBitField.Flags.SendMessages);
+                  })
+                : channels;
+
+        const statusLines = [
+            `> Status: ${enabled ? '`Enabled`' : '`Disabled`'}`,
+            '> Toggle global AI availability for this server.',
+        ];
+        if (notices?.status) {
+            statusLines.push(`> ${notices.status}`);
+        }
+        const channelLines = [
+            channels.length === 0
+                ? '> Mode: `All channels allowed`'
+                : `> Mode: \`Allow-list\` · ${channels.length} channel(s): ${channels.map((id) => `<#${id}>`).join(', ')}`,
+            '> Select channels to allow AI, or clear to allow all.',
+        ];
+        if (notices?.channels) {
+            channelLines.push(`> ${notices.channels}`);
+        }
+        const currentPersona = personas[currentPersonaId];
+        const personaLabel = currentPersona
+            ? personaIdToLabel(currentPersona.id)
+            : personaIdToLabel(currentPersonaId);
+        const personaLines = [
+            '> **⚠️ This sets the default persona.**',
+            "> ⛔️ You may need to clear all users' history below for the change to take effect for existing conversations.",
+            `> Current: **${personaLabel}**`,
+            '> Use the dropdown to change how the AI behaves in this server.',
+        ];
+        if (notices?.persona) {
+            personaLines.push(`> ${notices.persona}`);
+        }
+        const deleteAllLines = [
+            "> Permanently delete every user's AI conversation history in this server.",
+        ];
+        if (notices?.deleteAllHistory) {
+            deleteAllLines.push(`> ${notices.deleteAllHistory}`);
+        }
+
+        const personaOptions = Object.entries(personas)
+            .map(([value, persona]) => ({
+                label: personaIdToLabel(persona.id),
+                value,
+                description: persona.description,
+                default: value === currentPersonaId,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label));
+
+        const container = new ContainerBuilder()
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent('# 🤖 AI'))
+            .addActionRowComponents((row) => row.addComponents(selector))
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(statusLines.join('\n')))
+            .addActionRowComponents((row) =>
+                row.addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(AI_ENABLE_BUTTON_ID)
+                        .setLabel('Enable')
+                        .setStyle(ButtonStyle.Success)
+                        .setDisabled(enabled),
+                    new ButtonBuilder()
+                        .setCustomId(AI_DISABLE_BUTTON_ID)
+                        .setLabel('Disable')
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(!enabled)
+                )
+            )
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(channelLines.join('\n')))
+            .addActionRowComponents((row) =>
+                row.addComponents(
+                    new ChannelSelectMenuBuilder()
+                        .setCustomId(AI_CHANNEL_SELECT_ID)
+                        .setPlaceholder('Select AI-allowed channels')
+                        .setMinValues(1)
+                        .setMaxValues(25)
+                        .setDefaultChannels(...defaultChannels.slice(0, 25))
+                        .addChannelTypes(ChannelType.GuildText)
+                )
+            )
+            .addActionRowComponents((row) =>
+                row.addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(AI_CHANNEL_CLEAR_ID)
+                        .setLabel('Allow All Channels')
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(channels.length === 0)
+                )
+            )
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent(personaLines.join('\n')))
+            .addActionRowComponents((row) =>
+                row.addComponents(
+                    new StringSelectMenuBuilder()
+                        .setCustomId(AI_PERSONA_SELECT_ID)
+                        .setPlaceholder('Choose default persona…')
+                        .setMinValues(1)
+                        .setMaxValues(1)
+                        .addOptions(...personaOptions)
+                )
+            )
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(
+                new TextDisplayBuilder().setContent(deleteAllLines.join('\n'))
+            )
+            .addActionRowComponents((row) =>
+                row.addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(AI_DELETE_ALL_HISTORY_BUTTON_ID)
+                        .setLabel("Delete All Users' History")
+                        .setStyle(ButtonStyle.Danger)
+                )
+            );
+
+        return { components: [container] };
     }
 
     private getManageableRoleIds(guild: Guild): string[] {
