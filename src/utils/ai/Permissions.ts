@@ -1,4 +1,5 @@
 import AIConfig from '../../mongo/AIConfig.js';
+import { getAIUserPersona } from './Users.js';
 
 export async function isAIChannelAllowed(
     guildId: string | null | undefined,
@@ -38,26 +39,6 @@ export async function setAIGuildEnabled(guildId: string, enabled: boolean): Prom
     return enabled;
 }
 
-export async function toggleAIAllowedChannel(
-    guildId: string,
-    channelId: string
-): Promise<string[]> {
-    const current = await getAIAllowedChannels(guildId);
-    const set = new Set(current);
-    if (set.has(channelId)) {
-        set.delete(channelId);
-    } else {
-        set.add(channelId);
-    }
-    const next = Array.from(set);
-    await AIConfig.findOneAndUpdate(
-        { GuildId: guildId },
-        { $set: { GuildId: guildId, AllowedChannelIds: next } },
-        { upsert: true }
-    ).exec();
-    return next;
-}
-
 export async function clearAIAllowedChannels(guildId: string): Promise<void> {
     await AIConfig.findOneAndUpdate(
         { GuildId: guildId },
@@ -93,4 +74,18 @@ export async function setAIGuildPersona(guildId: string, personaId: string): Pro
         { upsert: true }
     ).exec();
     return id;
+}
+
+export async function getEffectivePersonaId(
+    userId: string,
+    guildId: string | null | undefined
+): Promise<string> {
+    const userPersona = await getAIUserPersona(userId);
+    if (userPersona) {
+        return userPersona;
+    }
+    if (guildId) {
+        return getAIGuildPersona(guildId);
+    }
+    return 'default';
 }
