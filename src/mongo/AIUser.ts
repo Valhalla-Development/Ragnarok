@@ -7,6 +7,7 @@ const AIUser = new Schema({
     Expiration: { type: Number, default: 0 },
     Whitelisted: { type: Boolean, default: false },
     Blacklisted: { type: Boolean, default: false },
+    PersonaId: { type: String, default: null },
 });
 
 export type AIUserInterface = InferSchemaType<typeof AIUser>;

@@ -18,10 +18,11 @@ import AdsProtection from '../mongo/AdsProtection.js';
 import Dad from '../mongo/Dad.js';
 import {
     buildAIGroupId,
+    getEffectivePersonaId,
     isAIChannelAllowed,
     isAIEnabled,
     runAIChat,
-} from '../utils/ai/OpenRouter.js';
+} from '../utils/ai/Index.js';
 import { deletableCheck, messageDelete, RagnarokContainer, updateLevel } from '../utils/Util.js';
 
 const dadCooldown = new Set();
@@ -286,11 +287,17 @@ export class MessageCreate {
                 userId: message.author.id,
             });
 
+            const personaId = await getEffectivePersonaId(
+                message.author.id,
+                message.guild?.id ?? null
+            );
             const result = await runAIChat({
                 userId: message.author.id,
                 groupId,
                 prompt,
                 displayName: message.member?.displayName ?? message.author.displayName,
+                botName: message.guild?.members.me?.displayName ?? client.user?.displayName,
+                personaId,
             });
 
             if (!result.ok) {

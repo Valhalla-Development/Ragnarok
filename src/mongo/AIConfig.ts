@@ -4,6 +4,7 @@ const AIConfig = new Schema({
     GuildId: { type: String, required: true, unique: true, index: true },
     Enabled: { type: Boolean, default: true },
     AllowedChannelIds: { type: [String], default: [] },
+    PersonaId: { type: String, default: 'default' },
 });
 
 export type AIConfigInterface = InferSchemaType<typeof AIConfig>;
