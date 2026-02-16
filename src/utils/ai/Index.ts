@@ -28,7 +28,7 @@ export type { AIAvailabilityResult, AIRunResult, AIUserData } from './Types.js';
 export {
     buildAIGroupId,
     checkAIAvailability,
-    clearAllAIHistory,
+    clearAllAIHistoryForGuild,
     getAITopUsers,
     getAITotalQueryCount,
     getAiUserData,

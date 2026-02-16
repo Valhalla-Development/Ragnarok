@@ -316,12 +316,14 @@ export async function resetAICooldown(userId: string): Promise<AIUserData> {
     return setAiUserData(userId, next);
 }
 
-/** Deletes every AI conversation history entry (all users). Returns number of docs removed. */
-export async function clearAllAIHistory(): Promise<number> {
-    const docs = await AIHistory.find({}, { Key: 1, _id: 0 }).lean().exec();
+/** Deletes all AI conversation history for a single guild. Returns number of docs removed. */
+export async function clearAllAIHistoryForGuild(guildId: string): Promise<number> {
+    const escaped = guildId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const keyFilter = { Key: new RegExp(`^group:guild_${escaped}_`) };
+    const docs = await AIHistory.find(keyFilter, { Key: 1, _id: 0 }).lean().exec();
     const keys = docs.map((d) => String(d.Key));
 
-    const result = await AIHistory.deleteMany({}).exec();
+    const result = await AIHistory.deleteMany(keyFilter).exec();
     const deleted = result.deletedCount ?? 0;
 
     if (aiClient && keys.length > 0) {
