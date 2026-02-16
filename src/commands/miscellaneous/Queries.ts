@@ -1,5 +1,6 @@
 import { Category } from '@discordx/utilities';
 import {
+    type AnySelectMenuInteraction,
     ApplicationCommandOptionType,
     ButtonBuilder,
     type ButtonInteraction,
@@ -8,39 +9,52 @@ import {
     ContainerBuilder,
     MessageFlags,
     SeparatorSpacingSize,
+    StringSelectMenuBuilder,
     TextDisplayBuilder,
     type User,
 } from 'discord.js';
-import { ButtonComponent, Discord, Slash, SlashOption } from 'discordx';
+import { ButtonComponent, Discord, SelectMenuComponent, Slash, SlashOption } from 'discordx';
 import { config } from '../../config/Config.js';
 import {
+    getAIUserPersona,
     getAiUserData,
+    getEffectivePersonaId,
     isAIAdmin,
     isAIStaff,
     resetAICooldown,
     resetAIHistory,
     setAIBlacklist,
+    setAIUserPersona,
     setAIWhitelist,
 } from '../../utils/ai/Index.js';
+import { personas } from '../../utils/ai/personas/Index.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
 const RESET_BUTTON_ID = 'aiq:reset';
 const RESET_HISTORY_BUTTON_ID = 'aiq:reset-history';
 const BLACKLIST_BUTTON_ID = 'aiq:blacklist';
 const WHITELIST_BUTTON_ID = 'aiq:whitelist';
+const AIQ_PERSONA_SELECT_ID = 'aiq:persona';
+const USE_SERVER_DEFAULT_VALUE = 'server_default';
+const PERSONA_NOTICE_TTL_MS = 4000;
+
+function personaIdToLabel(id: string): string {
+    return id.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/\b\w/g, (c) => c.toUpperCase());
+}
 
 @Discord()
 @Category('Miscellaneous')
 export class Queries {
     private readonly targetByMessage = new Map<string, string>();
-
     private readonly ownerByMessage = new Map<string, string>();
+    private readonly staffViewByMessage = new Map<string, boolean>();
 
     private async buildPayload(
         target: User,
         invokerId: string,
         isStaffView: boolean,
-        actionNotice?: string
+        actionNotice?: string,
+        options?: { guildId?: string | null; personaNotice?: string }
     ) {
         const data = await getAiUserData(target.id);
         if (!data) {
@@ -99,6 +113,52 @@ export class Queries {
                 .addTextDisplayComponents(new TextDisplayBuilder().setContent(`> ${actionNotice}`));
         }
 
+        if (options !== undefined) {
+            const personaId = await getEffectivePersonaId(invokerId, options.guildId ?? null);
+            const userPersona = await getAIUserPersona(invokerId);
+            const persona = personas[personaId];
+            const label = persona ? personaIdToLabel(persona.id) : personaIdToLabel(personaId);
+            const personaLines = [
+                `> **AI Persona:** ${label}`,
+                '> Choose a persona or "Use server/default" to follow the server default.',
+                '> ⛔️ You may need to clear your history below for the change to take effect.',
+            ];
+            if (options.personaNotice) {
+                personaLines.push(`> ${options.personaNotice}`);
+            }
+            const personaOptionsList = Object.entries(personas)
+                .map(([value, p]) => ({
+                    label: personaIdToLabel(p.id),
+                    value,
+                    description: p.description,
+                    default: value === personaId && userPersona !== null,
+                }))
+                .sort((a, b) => a.label.localeCompare(b.label));
+            container
+                .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(personaLines.join('\n'))
+                )
+                .addActionRowComponents((row) =>
+                    row.addComponents(
+                        new StringSelectMenuBuilder()
+                            .setCustomId(AIQ_PERSONA_SELECT_ID)
+                            .setPlaceholder('Choose persona…')
+                            .setMinValues(1)
+                            .setMaxValues(1)
+                            .addOptions(
+                                {
+                                    label: 'Use server/default',
+                                    value: USE_SERVER_DEFAULT_VALUE,
+                                    description: "Follow this server's default or global default",
+                                    default: userPersona === null,
+                                },
+                                ...personaOptionsList
+                            )
+                    )
+                );
+        }
+
         if (!isStaffView) {
             container
                 .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
@@ -111,7 +171,6 @@ export class Queries {
                             .setEmoji('🧹')
                     )
                 );
-
             return {
                 components: [container],
                 allowedMentions: { parse: [] as never[] },
@@ -238,7 +297,15 @@ export class Queries {
         }
 
         const isStaffView = isAIStaff(roleIds, interaction.user.id) && interaction.member !== null;
-        const payload = await this.buildPayload(target, interaction.user.id, isStaffView);
+        const isSelfView = target.id === interaction.user.id;
+        const guildId = interaction.guild?.id ?? null;
+        const payload = await this.buildPayload(
+            target,
+            interaction.user.id,
+            isStaffView,
+            undefined,
+            isSelfView ? { guildId } : undefined
+        );
 
         if (!isStaffView) {
             await interaction.reply({
@@ -248,6 +315,7 @@ export class Queries {
             const reply = await interaction.fetchReply();
             this.ownerByMessage.set(reply.id, interaction.user.id);
             this.targetByMessage.set(reply.id, target.id);
+            this.staffViewByMessage.set(reply.id, false);
             return;
         }
 
@@ -258,6 +326,64 @@ export class Queries {
         const reply = await interaction.fetchReply();
         this.ownerByMessage.set(reply.id, interaction.user.id);
         this.targetByMessage.set(reply.id, target.id);
+        this.staffViewByMessage.set(reply.id, isStaffView);
+    }
+
+    @SelectMenuComponent({ id: AIQ_PERSONA_SELECT_ID })
+    async onPersonaSelect(interaction: AnySelectMenuInteraction): Promise<void> {
+        if (!interaction.isStringSelectMenu()) {
+            return;
+        }
+        const messageId = interaction.message.id;
+        const targetId = this.targetByMessage.get(messageId);
+        const ownerId = this.ownerByMessage.get(messageId);
+        const isStaffView = this.staffViewByMessage.get(messageId) ?? false;
+        if (!(targetId && ownerId)) {
+            return;
+        }
+        if (targetId !== interaction.user.id) {
+            await interaction.reply({
+                content: 'Only the user whose stats are shown can change their persona here.',
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+        const [value] = interaction.values;
+        if (value === USE_SERVER_DEFAULT_VALUE) {
+            await setAIUserPersona(interaction.user.id, null);
+        } else if (value && personas[value]) {
+            await setAIUserPersona(interaction.user.id, value);
+        } else {
+            await interaction.deferUpdate();
+            return;
+        }
+        const guildId = interaction.guild?.id ?? null;
+        const notice =
+            value === USE_SERVER_DEFAULT_VALUE
+                ? "✅ Now using server's default persona."
+                : '✅ Preference saved.';
+        const target = await interaction.client.users.fetch(targetId);
+        const payload = await this.buildPayload(target, ownerId, isStaffView, undefined, {
+            guildId,
+            personaNotice: notice,
+        });
+        await interaction.update({
+            ...payload,
+            flags: MessageFlags.IsComponentsV2,
+        });
+        setTimeout(async () => {
+            try {
+                const clean = await this.buildPayload(target, ownerId, isStaffView, undefined, {
+                    guildId,
+                });
+                await interaction.editReply({
+                    ...clean,
+                    flags: MessageFlags.IsComponentsV2,
+                });
+            } catch {
+                // Ignore edit failures (e.g. token expired).
+            }
+        }, PERSONA_NOTICE_TTL_MS);
     }
 
     @ButtonComponent({ id: RESET_BUTTON_ID })
