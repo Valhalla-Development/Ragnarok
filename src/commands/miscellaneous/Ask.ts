@@ -1,6 +1,6 @@
 import { Category } from '@discordx/utilities';
 import { ApplicationCommandOptionType, type CommandInteraction } from 'discord.js';
-import { Discord, Slash, SlashOption } from 'discordx';
+import { type Client, Discord, Slash, SlashOption } from 'discordx';
 import {
     buildAIGroupId,
     getAIAllowedChannels,
@@ -24,7 +24,8 @@ export class Ask {
             maxLength: 2000,
         })
         query: string,
-        interaction: CommandInteraction
+        interaction: CommandInteraction,
+        client: Client
     ): Promise<void> {
         if (!(await isAIChannelAllowed(interaction.guildId, interaction.channelId))) {
             const guildId = interaction.guildId;
@@ -70,6 +71,10 @@ export class Ask {
             groupId,
             prompt: query,
             displayName: interaction.user.displayName,
+            botName:
+                interaction.guild?.members.me?.displayName ??
+                client.user?.displayName ??
+                'Assistant',
         });
 
         if (!result.ok) {
