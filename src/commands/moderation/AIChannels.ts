@@ -8,6 +8,7 @@ import {
     ChannelType,
     type CommandInteraction,
     ContainerBuilder,
+    type Guild,
     MessageFlags,
     PermissionsBitField,
     SeparatorSpacingSize,
@@ -52,7 +53,7 @@ export class AIChannels {
             return;
         }
 
-        const payload = await this.buildPayload(interaction.guild.id);
+        const payload = await this.buildPayload(interaction.guild.id, interaction.guild);
         await interaction.reply({
             ...payload,
             flags: [MessageFlags.Ephemeral, MessageFlags.IsComponentsV2],
@@ -78,8 +79,21 @@ export class AIChannels {
             return;
         }
 
-        await setAIAllowedChannels(interaction.guild.id, interaction.values);
-        const payload = await this.buildPayload(interaction.guild.id);
+        const me = interaction.guild.members.me;
+        const canSend = me
+            ? interaction.values.filter((id) => {
+                  const ch = interaction.guild!.channels.cache.get(id);
+                  return ch && me.permissionsIn(ch).has(PermissionsBitField.Flags.SendMessages);
+              })
+            : [];
+
+        const skipped = interaction.values.length - canSend.length;
+        await setAIAllowedChannels(interaction.guild.id, canSend);
+        const notice =
+            skipped > 0
+                ? `\n> ⚠️ ${skipped} channel(s) were not added because the bot cannot send messages there.`
+                : '';
+        const payload = await this.buildPayload(interaction.guild.id, interaction.guild, notice);
         await interaction.update(payload);
     }
 
@@ -97,27 +111,41 @@ export class AIChannels {
         }
 
         await clearAIAllowedChannels(interaction.guild.id);
-        const payload = await this.buildPayload(interaction.guild.id);
+        const payload = await this.buildPayload(interaction.guild.id, interaction.guild);
         await interaction.update(payload);
     }
 
-    private async buildPayload(guildId: string): Promise<{ components: [ContainerBuilder] }> {
+    private async buildPayload(
+        guildId: string,
+        guild: Guild | null,
+        notice = ''
+    ): Promise<{ components: [ContainerBuilder] }> {
         const [channels, enabled] = await Promise.all([
             getAIAllowedChannels(guildId),
             isAIGuildEnabled(guildId),
         ]);
+
+        const me = guild?.members.me;
+        const defaultChannels =
+            me && channels.length > 0
+                ? channels.filter((id) => {
+                      const ch = guild.channels.cache.get(id);
+                      return ch && me.permissionsIn(ch).has(PermissionsBitField.Flags.SendMessages);
+                  })
+                : channels;
+
         const statusText =
             channels.length === 0
                 ? [
                       `> Global AI: ${enabled ? '`Enabled` ✅' : '`Disabled` ⛔'} (toggle in \`/config\`)`,
                       '> Mode: `All channels allowed`',
                       '> Select one or more channels below to enable allow-list mode.',
-                  ].join('\n')
+                  ].join('\n') + notice
                 : [
                       `> Global AI: ${enabled ? '`Enabled` ✅' : '`Disabled` ⛔'} (toggle in \`/config\`)`,
                       '> Mode: `Allow-list enabled`',
                       `> Allowed channels (${channels.length}): ${channels.map((id) => `<#${id}>`).join(', ')}`,
-                  ].join('\n');
+                  ].join('\n') + notice;
 
         const container = new ContainerBuilder()
             .addTextDisplayComponents(new TextDisplayBuilder().setContent('# AI Channel Gating'))
@@ -131,7 +159,7 @@ export class AIChannels {
                         .setPlaceholder('Select AI-allowed channels')
                         .setMinValues(1)
                         .setMaxValues(25)
-                        .setDefaultChannels(...channels.slice(0, 25))
+                        .setDefaultChannels(...defaultChannels.slice(0, 25))
                         .addChannelTypes(ChannelType.GuildText)
                 )
             )
