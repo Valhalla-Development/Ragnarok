@@ -216,7 +216,10 @@ export class Config {
             return;
         }
         await setAIGuildPersona(interaction.guild.id, value);
-        await this.updateAIWithNotice(interaction, { persona: '✅ Default persona updated.' });
+        const deleted = await clearAllAIHistoryForGuild(interaction.guild.id);
+        await this.updateAIWithNotice(interaction, {
+            persona: `✅ Default persona updated. Cleared ${deleted.toLocaleString()} history entries for everyone in this server.`,
+        });
     }
 
     @ButtonComponent({ id: AI_DELETE_ALL_HISTORY_BUTTON_ID })
@@ -1034,8 +1037,7 @@ export class Config {
             ? personaIdToLabel(currentPersona.id)
             : personaIdToLabel(currentPersonaId);
         const personaLines = [
-            '> **⚠️ This sets the default persona.**',
-            "> ⛔️ You may need to clear all users' history below for the change to take effect for existing conversations.",
+            "> **⚠️ This sets the default persona.** Changing it will automatically clear everyone's AI history in this server.",
             `> Current: **${personaLabel}**`,
             '> Use the dropdown to change how the AI behaves in this server.',
         ];
