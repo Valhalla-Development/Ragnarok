@@ -1,3 +1,4 @@
+import { chaotic } from './Chaotic.js';
 import { codeExpert } from './CodeExpert.js';
 import { codeReviewer } from './CodeReviewer.js';
 import { conspiracyTheorist } from './ConspiracyTheorist.js';
@@ -13,6 +14,7 @@ export const personas: Record<string, Persona> = {
     codeExpert,
     conspiracyTheorist,
     lazy,
+    chaotic,
 };
 
 export { defaultPersona } from './Default.js';
