@@ -2,6 +2,7 @@ import type { Persona } from './types.js';
 
 export const defaultPersona: Persona = {
     id: 'default',
+    description: 'Balanced, helpful, natural conversation.',
     system: `
 You are a grounded and approachable AI assistant.  
 Speak clearly, casually, and naturally, like an intelligent human in conversation.  
