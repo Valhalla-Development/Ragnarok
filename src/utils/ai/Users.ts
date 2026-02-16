@@ -62,6 +62,29 @@ export async function getAiUserData(userId: string): Promise<AIUserData | null> 
     return toAIUserData(data);
 }
 
+export async function getAIUserPersona(userId: string): Promise<string | null> {
+    const doc = await AIUser.findOne({ UserId: userId }, { PersonaId: 1 }).lean().exec();
+    const id = doc?.PersonaId?.trim();
+    return id && id.length > 0 ? id : null;
+}
+
+export async function setAIUserPersona(userId: string, personaId: string | null): Promise<void> {
+    const id = personaId?.trim();
+
+    if (id && id.length > 0) {
+        await AIUser.findOneAndUpdate(
+            { UserId: userId },
+            { $set: { UserId: userId, PersonaId: id } },
+            { upsert: true, lean: true }
+        ).exec();
+    } else {
+        await AIUser.updateOne(
+            { UserId: userId, PersonaId: { $exists: true } },
+            { $unset: { PersonaId: 1 } }
+        ).exec();
+    }
+}
+
 async function setAiUserData(userId: string, data: AIUserData): Promise<AIUserData> {
     await AIUser.findOneAndUpdate(
         { UserId: userId },
