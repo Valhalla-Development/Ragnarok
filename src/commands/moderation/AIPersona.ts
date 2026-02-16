@@ -16,7 +16,7 @@ import { personas } from '../../utils/ai/personas/Index.js';
 const AI_PERSONA_SELECT_ID = 'cfg:ai:persona';
 
 function personaIdToLabel(id: string): string {
-    return id.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+    return id.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 @Discord()
