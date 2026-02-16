@@ -286,6 +286,7 @@ export class MessageCreate {
                 groupId,
                 prompt,
                 displayName: message.member?.displayName ?? message.author.displayName,
+                botName: message.guild?.members.me?.displayName ?? client.user?.displayName,
             });
 
             if (!result.ok) {
