@@ -78,3 +78,19 @@ export async function setAIAllowedChannels(
     ).exec();
     return unique;
 }
+
+export async function getAIGuildPersona(guildId: string): Promise<string> {
+    const cfg = await AIConfig.findOne({ GuildId: guildId }).lean().exec();
+    const id = cfg?.PersonaId?.trim();
+    return id && id.length > 0 ? id : 'default';
+}
+
+export async function setAIGuildPersona(guildId: string, personaId: string): Promise<string> {
+    const id = personaId?.trim() && personaId.trim().length > 0 ? personaId.trim() : 'default';
+    await AIConfig.findOneAndUpdate(
+        { GuildId: guildId },
+        { $set: { GuildId: guildId, PersonaId: id } },
+        { upsert: true }
+    ).exec();
+    return id;
+}

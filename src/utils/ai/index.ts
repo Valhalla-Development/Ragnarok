@@ -14,10 +14,12 @@ export {
 export {
     clearAIAllowedChannels,
     getAIAllowedChannels,
+    getAIGuildPersona,
     isAIChannelAllowed,
     isAIGuildEnabled,
     setAIAllowedChannels,
     setAIGuildEnabled,
+    setAIGuildPersona,
     toggleAIAllowedChannel,
 } from './permissions.js';
 
