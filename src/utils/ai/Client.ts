@@ -70,10 +70,12 @@ export function aiLogDone(result: ChatCompletionResult, durationMs: number): voi
     }
 
     const totalTokens = result.usage?.total_tokens ?? 0;
+    const cost = (result as { cost?: number }).cost;
+    const costStr = cost != null ? ` ${'Cost:'.brightBlue.bold} $${cost.toFixed(6)}` : '';
     console.log(
         `${'✅ AI Complete'.brightGreen.bold} ${`(${durationMs}ms)`.gray} ` +
             `${'Model:'.brightBlue.bold} ${result.model.brightMagenta.bold} ` +
-            `${'Tokens:'.brightBlue.bold} ${String(totalTokens).brightYellow.bold}`
+            `${'Tokens:'.brightBlue.bold} ${String(totalTokens).brightYellow.bold}${costStr}`
     );
 }
 
@@ -98,7 +100,7 @@ export function getClient(): OpenRouterClient {
         apiKey: config.OPENROUTER_API_KEY,
         model: config.OPENROUTER_MODEL,
         historyAdapter: new MongoHistoryStorage(),
-        enableCostTracking: false,
+        enableCostTracking: true,
         // Keep library internals quiet; we print concise custom logs.
         debug: false,
     });
