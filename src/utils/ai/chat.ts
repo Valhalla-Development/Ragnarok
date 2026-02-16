@@ -18,6 +18,7 @@ export async function runAIChat(params: {
     prompt: string;
     displayName?: string;
     personaId?: string;
+    botName: string;
 }): Promise<AIRunResult> {
     if (!isAIEnabled()) {
         return {
@@ -33,7 +34,11 @@ export async function runAIChat(params: {
     }
     const normalizedDisplayName = params.displayName?.trim();
     const persona = personas[params.personaId ?? 'default'] ?? defaultPersona;
-    const systemPrompt = buildFinalSystemPrompt(persona.system, normalizedDisplayName);
+    const systemPrompt = buildFinalSystemPrompt(
+        persona.system,
+        normalizedDisplayName,
+        params.botName
+    );
 
     const availability = await checkAIAvailability(params.userId);
     if (!availability.ok) {
