@@ -3,11 +3,12 @@ import {
     aiLogDone,
     aiLogStart,
     getClient,
-    getSystemPrompt,
     isAIEnabled,
     normalizeResponseContent,
     splitMessages,
 } from './client.js';
+import { defaultPersona, personas } from './personas/index.js';
+import { buildFinalSystemPrompt } from './security.js';
 import type { AIRunResult } from './types.js';
 import { checkAIAvailability } from './users.js';
 
@@ -16,6 +17,7 @@ export async function runAIChat(params: {
     groupId: string;
     prompt: string;
     displayName?: string;
+    personaId?: string;
 }): Promise<AIRunResult> {
     if (!isAIEnabled()) {
         return {
@@ -30,16 +32,8 @@ export async function runAIChat(params: {
         return { ok: false, message: 'Please enter a query with at least 4 characters.' };
     }
     const normalizedDisplayName = params.displayName?.trim();
-    const systemPrompt =
-        normalizedDisplayName && normalizedDisplayName.length > 0
-            ? [
-                  getSystemPrompt(),
-                  '',
-                  `Context: The current user's name is "${normalizedDisplayName}".`,
-                  'Use this naturally only when relevant.',
-                  'Never mention "display name" or that this comes from metadata.',
-              ].join('\n')
-            : getSystemPrompt();
+    const persona = personas[params.personaId ?? 'default'] ?? defaultPersona;
+    const systemPrompt = buildFinalSystemPrompt(persona.system, normalizedDisplayName);
 
     const availability = await checkAIAvailability(params.userId);
     if (!availability.ok) {
