@@ -5,8 +5,6 @@ import type {
     OpenRouterClient,
 } from 'openrouter-kit';
 import '@colors/colors';
-import { readFileSync } from 'node:fs';
-import path from 'node:path';
 import moment from 'moment';
 import { OpenRouterClient as OpenRouterClientCtor } from 'openrouter-kit';
 import { config, durationToMs } from '../../config/Config.js';
@@ -48,7 +46,6 @@ class MongoHistoryStorage implements IHistoryStorage {
 }
 
 let aiClient: OpenRouterClient | null = null;
-let cachedSystemPrompt: string | null = null;
 
 export function aiLogStart(userId: string, prompt: string): void {
     if (!config.ENABLE_LOGGING) {
@@ -82,38 +79,6 @@ export function getResetTimeMs(): number {
     } catch {
         return durationToMs('24h');
     }
-}
-
-export function getSystemPrompt(): string {
-    if (cachedSystemPrompt) {
-        return cachedSystemPrompt;
-    }
-
-    const fallback =
-        config.OPENROUTER_SYSTEM_PROMPT ||
-        'You are a helpful Discord assistant. Keep answers concise and practical.';
-
-    const relativePath = config.OPENROUTER_SYSTEM_PROMPT_FILE?.trim();
-    if (!relativePath) {
-        cachedSystemPrompt = fallback;
-        return cachedSystemPrompt;
-    }
-
-    const promptPath = path.isAbsolute(relativePath)
-        ? relativePath
-        : path.join(process.cwd(), relativePath);
-
-    try {
-        const filePrompt = readFileSync(promptPath, 'utf-8').trim();
-        cachedSystemPrompt = filePrompt.length > 0 ? filePrompt : fallback;
-    } catch (error) {
-        if (config.ENABLE_LOGGING) {
-            console.warn(`Could not read AI prompt file at ${promptPath}:`, error);
-        }
-        cachedSystemPrompt = fallback;
-    }
-
-    return cachedSystemPrompt;
 }
 
 export function isAIEnabled(): boolean {

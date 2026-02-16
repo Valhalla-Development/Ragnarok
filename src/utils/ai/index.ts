@@ -4,7 +4,6 @@ export { runAIChat } from './Chat.js';
 // Client utilities
 export {
     getClient,
-    getSystemPrompt,
     isAIAdmin,
     isAIEnabled,
     isAIStaff,
