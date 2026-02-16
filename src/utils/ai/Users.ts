@@ -265,8 +265,8 @@ export async function checkAIAvailability(userId: string): Promise<AIAvailabilit
         ],
         {
             upsert: true,
-            // keeping this false on purpose so I can read the old state and
-            // decide the exact allow/deny message without another query.
+            updatePipeline: true,
+            new: false,
             returnDocument: 'before',
             lean: true,
         }
@@ -314,6 +314,29 @@ export async function resetAICooldown(userId: string): Promise<AIUserData> {
         blacklisted: existing?.blacklisted ?? false,
     };
     return setAiUserData(userId, next);
+}
+
+/** Deletes every AI conversation history entry (all users). Returns number of docs removed. */
+export async function clearAllAIHistory(): Promise<number> {
+    const docs = await AIHistory.find({}, { Key: 1, _id: 0 }).lean().exec();
+    const keys = docs.map((d) => String(d.Key));
+
+    const result = await AIHistory.deleteMany({}).exec();
+    const deleted = result.deletedCount ?? 0;
+
+    if (aiClient && keys.length > 0) {
+        const historyManager = aiClient.getHistoryManager();
+        await Promise.all(
+            keys.map((key) =>
+                historyManager.deleteHistory(key).catch((err) => {
+                    if (config.ENABLE_LOGGING) {
+                        console.warn(`Failed to clear cached AI history key '${key}':`, err);
+                    }
+                })
+            )
+        );
+    }
+    return deleted;
 }
 
 export async function resetAIHistory(userId: string): Promise<void> {
