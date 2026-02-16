@@ -172,7 +172,7 @@ export async function checkAIAvailability(userId: string): Promise<AIAvailabilit
                     Blacklisted: false,
                 },
             },
-            { new: true, upsert: true, lean: true }
+            { returnDocument: 'after', upsert: true, lean: true }
         ).exec();
 
         const adminData = toAIUserData(adminUpdated);
@@ -267,7 +267,7 @@ export async function checkAIAvailability(userId: string): Promise<AIAvailabilit
             upsert: true,
             // keeping this false on purpose so I can read the old state and
             // decide the exact allow/deny message without another query.
-            new: false,
+            returnDocument: 'before',
             lean: true,
         }
     ).exec();
