@@ -1,5 +1,5 @@
 // Chat
-export { runAIChat } from './chat.js';
+export { runAIChat } from './Chat.js';
 
 // Client utilities
 export {
@@ -8,7 +8,7 @@ export {
     isAIAdmin,
     isAIEnabled,
     isAIStaff,
-} from './client.js';
+} from './Client.js';
 
 // Permission management
 export {
@@ -21,10 +21,10 @@ export {
     setAIGuildEnabled,
     setAIGuildPersona,
     toggleAIAllowedChannel,
-} from './permissions.js';
+} from './Permissions.js';
 
 // Types
-export type { AIAvailabilityResult, AIRunResult, AIUserData } from './types.js';
+export type { AIAvailabilityResult, AIRunResult, AIUserData } from './Types.js';
 // User management
 export {
     buildAIGroupId,
@@ -36,4 +36,4 @@ export {
     resetAIHistory,
     setAIBlacklist,
     setAIWhitelist,
-} from './users.js';
+} from './Users.js';

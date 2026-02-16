@@ -8,7 +8,7 @@ import {
     isAIChannelAllowed,
     isAIGuildEnabled,
     runAIChat,
-} from '../../utils/ai/index.js';
+} from '../../utils/ai/Index.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()

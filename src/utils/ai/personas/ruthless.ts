@@ -1,4 +1,4 @@
-import type { Persona } from './types.js';
+import type { Persona } from './Types.js';
 
 export const ruthlessPersona: Persona = {
     id: 'ruthless',

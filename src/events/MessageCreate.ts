@@ -22,7 +22,7 @@ import {
     isAIChannelAllowed,
     isAIEnabled,
     runAIChat,
-} from '../utils/ai/index.js';
+} from '../utils/ai/Index.js';
 import { deletableCheck, messageDelete, RagnarokContainer, updateLevel } from '../utils/Util.js';
 
 const dadCooldown = new Set();

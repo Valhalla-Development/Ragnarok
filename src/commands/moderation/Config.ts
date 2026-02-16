@@ -27,7 +27,7 @@ import Logging from '../../mongo/Logging.js';
 import RoleMenu from '../../mongo/RoleMenu.js';
 import StarBoard from '../../mongo/StarBoard.js';
 import Welcome from '../../mongo/Welcome.js';
-import { isAIGuildEnabled, setAIGuildEnabled } from '../../utils/ai/index.js';
+import { isAIGuildEnabled, setAIGuildEnabled } from '../../utils/ai/Index.js';
 
 type ConfigModule =
     | 'home'

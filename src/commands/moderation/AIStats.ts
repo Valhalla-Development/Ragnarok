@@ -13,7 +13,7 @@ import {
     getAITotalQueryCount,
     isAIGuildEnabled,
     isAIStaff,
-} from '../../utils/ai/index.js';
+} from '../../utils/ai/Index.js';
 
 @Discord()
 @Category('Moderation')

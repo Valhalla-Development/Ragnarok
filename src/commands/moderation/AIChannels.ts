@@ -21,7 +21,7 @@ import {
     isAIGuildEnabled,
     isAIStaff,
     setAIAllowedChannels,
-} from '../../utils/ai/index.js';
+} from '../../utils/ai/Index.js';
 
 const AI_CHANNEL_SELECT_ID = 'cfg:ai:channels';
 const AI_CHANNEL_CLEAR_ID = 'cfg:ai:channels:clear';

@@ -6,11 +6,11 @@ import {
     isAIEnabled,
     normalizeResponseContent,
     splitMessages,
-} from './client.js';
-import { defaultPersona, personas } from './personas/index.js';
-import { buildFinalSystemPrompt } from './security.js';
-import type { AIRunResult } from './types.js';
-import { checkAIAvailability } from './users.js';
+} from './Client.js';
+import { defaultPersona, personas } from './personas/Index.js';
+import { buildFinalSystemPrompt } from './Security.js';
+import type { AIRunResult } from './Types.js';
+import { checkAIAvailability } from './Users.js';
 
 export async function runAIChat(params: {
     userId: string;

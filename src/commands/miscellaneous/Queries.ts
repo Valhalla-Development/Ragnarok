@@ -21,7 +21,7 @@ import {
     resetAIHistory,
     setAIBlacklist,
     setAIWhitelist,
-} from '../../utils/ai/index.js';
+} from '../../utils/ai/Index.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
 const RESET_BUTTON_ID = 'aiq:reset';

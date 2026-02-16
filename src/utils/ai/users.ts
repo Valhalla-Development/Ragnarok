@@ -1,8 +1,8 @@
 import { config } from '../../config/Config.js';
 import AIHistory from '../../mongo/AIHistory.js';
 import AIUser from '../../mongo/AIUser.js';
-import { aiClient, getResetTimeMs, isAIAdmin } from './client.js';
-import type { AIAvailabilityResult, AIUserData } from './types.js';
+import { aiClient, getResetTimeMs, isAIAdmin } from './Client.js';
+import type { AIAvailabilityResult, AIUserData } from './Types.js';
 
 export async function getAITopUsers(
     limit = 10
