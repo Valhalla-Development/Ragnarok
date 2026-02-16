@@ -14,16 +14,17 @@ export {
     clearAIAllowedChannels,
     getAIAllowedChannels,
     getAIGuildPersona,
+    getEffectivePersonaId,
     isAIChannelAllowed,
     isAIGuildEnabled,
     setAIAllowedChannels,
     setAIGuildEnabled,
     setAIGuildPersona,
-    toggleAIAllowedChannel,
 } from './Permissions.js';
 
 // Types
 export type { AIAvailabilityResult, AIRunResult, AIUserData } from './Types.js';
+
 // User management
 export {
     buildAIGroupId,
@@ -31,9 +32,11 @@ export {
     clearAllAIHistoryForGuild,
     getAITopUsers,
     getAITotalQueryCount,
+    getAIUserPersona,
     getAiUserData,
     resetAICooldown,
     resetAIHistory,
     setAIBlacklist,
+    setAIUserPersona,
     setAIWhitelist,
 } from './Users.js';
