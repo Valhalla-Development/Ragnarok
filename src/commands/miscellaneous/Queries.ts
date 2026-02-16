@@ -121,7 +121,7 @@ export class Queries {
             const personaLines = [
                 `> **AI Persona:** ${label}`,
                 '> Choose a persona or "Use server/default" to follow the server default.',
-                '> ⛔️ You may need to clear your history below for the change to take effect.',
+                '> **⚠️** Changing your persona will automatically clear your AI history.',
             ];
             if (options.personaNotice) {
                 personaLines.push(`> ${options.personaNotice}`);
@@ -357,11 +357,12 @@ export class Queries {
             await interaction.deferUpdate();
             return;
         }
+        await resetAIHistory(interaction.user.id);
         const guildId = interaction.guild?.id ?? null;
         const notice =
             value === USE_SERVER_DEFAULT_VALUE
-                ? "✅ Now using server's default persona."
-                : '✅ Preference saved.';
+                ? "✅ Now using server's default. Your AI history was cleared."
+                : '✅ Preference saved. Your AI history was cleared.';
         const target = await interaction.client.users.fetch(targetId);
         const payload = await this.buildPayload(target, ownerId, isStaffView, undefined, {
             guildId,
