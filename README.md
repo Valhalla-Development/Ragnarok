@@ -28,11 +28,11 @@ Ragnarok is a multi-purpose Discord bot built with [discordx](https://discord-x.
   <tr>
     <td width="50%">
       <h3>🤖 OpenRouter AI Chat</h3>
-      <p>Use slash commands and mention/reply flow with persistent history and per-guild controls.</p>
+      <p>Slash commands and mention/reply with persistent history. Multiple personas; users can set a preferred persona in <code>/queries</code> (otherwise server default).</p>
     </td>
     <td width="50%">
       <h3>⚙️ AI Control Panel</h3>
-      <p>Configure AI globally in <code>/config</code> and per-channel via <code>/aichannels</code>.</p>
+      <p>In <code>/config</code> (AI): enable/disable, channel allow-list, default persona, and delete all users' history for the server.</p>
     </td>
   </tr>
   <tr>
