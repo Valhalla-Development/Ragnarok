@@ -44,8 +44,17 @@ export class Queries {
     ) {
         const data = await getAiUserData(target.id);
         if (!data) {
+            const container = new ContainerBuilder()
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent('# 🤖 AI Query Checker')
+                )
+                .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(`> ⚠️ No AI query data found for ${target}.`)
+                );
             return {
-                content: `⚠️ No AI query data found for ${target}.`,
+                components: [container],
+                allowedMentions: { parse: [] as never[] },
             };
         }
 
