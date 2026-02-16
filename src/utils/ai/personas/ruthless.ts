@@ -1,6 +1,6 @@
 import type { Persona } from './Types.js';
 
-export const ruthlessPersona: Persona = {
+export const ruthless: Persona = {
     id: 'ruthless',
     description: 'Blunt, no-nonsense, reality-check tone. No filler.',
     system: `
