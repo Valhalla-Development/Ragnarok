@@ -21,7 +21,7 @@ import {
     resetAIHistory,
     setAIBlacklist,
     setAIWhitelist,
-} from '../../utils/ai/OpenRouter.js';
+} from '../../utils/ai/index.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
 const RESET_BUTTON_ID = 'aiq:reset';

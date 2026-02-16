@@ -16,12 +16,7 @@ import { Discord, On } from 'discordx';
 import urlRegexSafe from 'url-regex-safe';
 import AdsProtection from '../mongo/AdsProtection.js';
 import Dad from '../mongo/Dad.js';
-import {
-    buildAIGroupId,
-    isAIChannelAllowed,
-    isAIEnabled,
-    runAIChat,
-} from '../utils/ai/OpenRouter.js';
+import { buildAIGroupId, isAIChannelAllowed, isAIEnabled, runAIChat } from '../utils/ai/index.js';
 import { deletableCheck, messageDelete, RagnarokContainer, updateLevel } from '../utils/Util.js';
 
 const dadCooldown = new Set();

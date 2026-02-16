@@ -13,7 +13,7 @@ import {
     getAITotalQueryCount,
     isAIGuildEnabled,
     isAIStaff,
-} from '../../utils/ai/OpenRouter.js';
+} from '../../utils/ai/index.js';
 
 @Discord()
 @Category('Moderation')

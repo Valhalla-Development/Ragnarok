@@ -20,7 +20,7 @@ import {
     isAIGuildEnabled,
     isAIStaff,
     setAIAllowedChannels,
-} from '../../utils/ai/OpenRouter.js';
+} from '../../utils/ai/index.js';
 
 const AI_CHANNEL_SELECT_ID = 'cfg:ai:channels';
 const AI_CHANNEL_CLEAR_ID = 'cfg:ai:channels:clear';

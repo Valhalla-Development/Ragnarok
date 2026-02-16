@@ -7,7 +7,7 @@ import {
     isAIChannelAllowed,
     isAIGuildEnabled,
     runAIChat,
-} from '../../utils/ai/OpenRouter.js';
+} from '../../utils/ai/index.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
