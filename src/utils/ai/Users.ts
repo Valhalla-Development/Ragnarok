@@ -289,7 +289,6 @@ export async function checkAIAvailability(userId: string): Promise<AIAvailabilit
         {
             upsert: true,
             updatePipeline: true,
-            new: false,
             returnDocument: 'before',
             lean: true,
         }
