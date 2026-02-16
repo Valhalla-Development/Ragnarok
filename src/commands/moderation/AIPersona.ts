@@ -74,14 +74,17 @@ export class AIPersona {
         const statusText = [
             `> **Current persona:** ${currentLabel}`,
             '> Use the dropdown below to change how the AI behaves in this server.',
+            '> *Users may need to reset their AI history for the new persona to take effect.*',
         ].join('\n');
 
-        const options = Object.entries(personas).map(([value, persona]) => ({
-            label: personaIdToLabel(persona.id),
-            value,
-            description: persona.description,
-            default: value === currentPersonaId,
-        }));
+        const options = Object.entries(personas)
+            .map(([value, persona]) => ({
+                label: personaIdToLabel(persona.id),
+                value,
+                description: persona.description,
+                default: value === currentPersonaId,
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label));
 
         const container = new ContainerBuilder()
             .addTextDisplayComponents(new TextDisplayBuilder().setContent('# AI Persona'))
