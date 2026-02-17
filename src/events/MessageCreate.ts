@@ -84,7 +84,7 @@ export class MessageCreate {
                     await messageDelete(message, 0);
                     message.channel
                         .send(
-                            `**◎ Link detected:** Your message has been deleted, ${message.author}.`
+                            `**Link detected:** Your message has been deleted, ${message.author}.`
                         )
                         .then((msg) => {
                             deletableCheck(msg, 5000);

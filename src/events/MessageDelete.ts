@@ -42,7 +42,7 @@ export class MessageDelete {
                 if (!deletionLog) {
                     const noLogContainer = RagnarokContainer(
                         'Message Deleted',
-                        `**◎ No Data:** A message sent by ${message.author} was deleted but no content was found.`
+                        `**No Data:** A message sent by ${message.author} was deleted but no content was found.`
                     );
                     chn.send({
                         components: [noLogContainer],

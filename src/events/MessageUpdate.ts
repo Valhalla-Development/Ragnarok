@@ -53,7 +53,7 @@ export class MessageUpdate {
                 await messageDelete(newMessage, 0);
                 await newMessage.channel
                     .send(
-                        `**◎ Link detected:** Your edited message has been deleted, ${newMessage.author}.`
+                        `**Link detected:** Your edited message has been deleted, ${newMessage.author}.`
                     )
                     .then((msg) => deletableCheck(msg, 5000));
             }
@@ -92,9 +92,9 @@ export class MessageUpdate {
                 `**Avatar:** ${newMessage.author.displayAvatarURL({ extension: 'png' })}`,
                 `**Message Link:** ${newMessage.url}`,
                 '',
-                `**◎ Before:**\n${oldMessage.content.substring(0, 1024)}`,
+                `**Before:**\n${oldMessage.content.substring(0, 1024)}`,
                 '',
-                `**◎ After:**\n${(newMessage.content ?? '*No content*').substring(0, 1024)}`,
+                `**After:**\n${(newMessage.content ?? '*No content*').substring(0, 1024)}`,
             ].join('\n')
         );
 

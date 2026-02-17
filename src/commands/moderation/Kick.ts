@@ -97,7 +97,7 @@ export class Kick {
         try {
             const dmContainer = RagnarokContainer(
                 `You have been kicked from: \`${interaction.guild!.name}\``,
-                `**◎ Reason:** ${reason || 'No reason given.'}\n**◎ Moderator:** ${interaction.user.tag}`
+                `**Reason:** ${reason || 'No reason given.'}\n**Moderator:** ${interaction.user.tag}`
             );
             await user.send({ components: [dmContainer], flags: MessageFlags.IsComponentsV2 });
         } catch {
