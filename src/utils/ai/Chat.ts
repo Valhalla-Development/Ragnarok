@@ -7,6 +7,7 @@ import {
     normalizeResponseContent,
     splitMessages,
 } from './Client.js';
+import { recordAIGlobalUsage } from './GlobalStats.js';
 import { friendly, personas } from './personas/Index.js';
 import { buildFinalSystemPrompt } from './Security.js';
 import type { AIRunResult } from './Types.js';
@@ -64,6 +65,8 @@ export async function runAIChat(params: {
         }
 
         aiLogDone(result, Date.now() - start);
+        const cost = (result as { cost?: number }).cost;
+        await recordAIGlobalUsage({ queries: 1, cost: cost ?? 0 });
         return { ok: true, chunks: splitMessages(content, 1900) };
     } catch (error) {
         console.error('OpenRouter chat error:', error);
