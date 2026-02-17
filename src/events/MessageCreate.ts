@@ -16,6 +16,7 @@ import { Discord, On } from 'discordx';
 import urlRegexSafe from 'url-regex-safe';
 import AdsProtection from '../mongo/AdsProtection.js';
 import Dad from '../mongo/Dad.js';
+import Rock from '../mongo/Rock.js';
 import {
     buildAIGroupId,
     getEffectivePersonaId,
@@ -25,8 +26,11 @@ import {
 } from '../utils/ai/Index.js';
 import { deletableCheck, messageDelete, RagnarokContainer, updateLevel } from '../utils/Util.js';
 
-const dadCooldown = new Set();
+const dadCooldown = new Set<string>();
 const dadCooldownSeconds = 10;
+
+const rockCooldown = new Set<string>();
+const rockCooldownSeconds = 10;
 
 @Discord()
 export class MessageCreate {
@@ -207,7 +211,7 @@ export class MessageCreate {
                 return;
             }
 
-            const messageContent = message.content.toLowerCase();
+            const messageContent = message.content.toLowerCase().trim();
             if (!(messageContent.startsWith('im ') || messageContent.startsWith("i'm "))) {
                 return;
             }
@@ -219,19 +223,35 @@ export class MessageCreate {
 
             switch (true) {
                 case urlRegexSafe({ strict: false }).test(messageContent):
-                    message.reply({ files: ['./assets/dadNo.png'] });
+                    await message.reply({ files: ['./assets/fun/dadNo.png'] });
                     break;
                 case messageContent.startsWith('im dad') || messageContent.startsWith("i'm dad"):
-                    message.reply({ content: "No, I'm Dad!" });
+                    await message.reply({ content: "No, I'm Dad!" });
                     break;
                 case messageContent.includes('@everyone') || messageContent.includes('@here'):
                     await message.reply({ content: '<:pepebruh:987742251297931274>' });
                     break;
                 default:
-                    message.channel.send({ content: `Hi ${content}, I'm Dad!` });
+                    await message.reply({ content: `Hi ${content}, I'm Dad!` });
             }
         }
         await dadBot();
+
+        async function rockBot() {
+            const rockData = await Rock.findOne({ GuildId: message.guild?.id });
+            if (rockData?.Status === false || rockCooldown.has(message.author.id)) {
+                return;
+            }
+            const content = message.content.toLowerCase().trim();
+            const rockPhrase = /i\s*don'?t\s+like\s+this\s+rock/i;
+            if (!rockPhrase.test(content)) {
+                return;
+            }
+            rockCooldown.add(message.author.id);
+            setTimeout(() => rockCooldown.delete(message.author.id), rockCooldownSeconds * 1000);
+            await message.reply({ files: ['./assets/fun/sensitive.mov'] });
+        }
+        await rockBot();
 
         /**
          * AI chatbot (mention-based)
