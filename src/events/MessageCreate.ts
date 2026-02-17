@@ -214,6 +214,9 @@ export class MessageCreate {
 
             const content = messageContent.split(' ').slice(1).join(' ');
 
+            dadCooldown.add(message.author.id);
+            setTimeout(() => dadCooldown.delete(message.author.id), dadCooldownSeconds * 1000);
+
             switch (true) {
                 case urlRegexSafe({ strict: false }).test(messageContent):
                     message.reply({ files: ['./assets/dadNo.png'] });
@@ -227,9 +230,6 @@ export class MessageCreate {
                 default:
                     message.channel.send({ content: `Hi ${content}, I'm Dad!` });
             }
-
-            dadCooldown.add(message.author.id);
-            setTimeout(() => dadCooldown.delete(message.author.id), dadCooldownSeconds * 1000);
         }
         await dadBot();
 
