@@ -13,6 +13,11 @@ import { getOrCreateBalance } from './Profile.js';
 
 const num = (value: unknown) => Number(value ?? 0);
 
+interface CropWithDecay {
+    CropType: string;
+    Decay?: number;
+}
+
 /**
  * Build a component container showing the user's inventory.
  */
@@ -130,36 +135,48 @@ function buildInventoryContainer(
         const potatoCrops = harvestedCrops.filter((c) => c.CropType === 'potato');
         const tomatoCrops = harvestedCrops.filter((c) => c.CropType === 'tomato');
 
-        const calcValue = (crops: typeof harvestedCrops, basePrice: number) => {
-            return crops.reduce((sum, c) => {
-                const value = Math.floor(basePrice * (1 - (c.Decay ?? 0) / 100));
-                return sum + value;
-            }, 0);
-        };
+        const calcValue = (crops: CropWithDecay[], basePrice: number) =>
+            crops.reduce((sum, c) => sum + Math.floor(basePrice * (1 - (c.Decay ?? 0) / 100)), 0);
 
-        const calcAvgDecay = (crops: typeof harvestedCrops) => {
-            if (crops.length === 0) {
-                return 0;
+        const calcAvgDecay = (crops: CropWithDecay[]) =>
+            crops.length === 0
+                ? 0
+                : crops.reduce((sum, c) => sum + (c.Decay ?? 0), 0) / crops.length;
+
+        const formatPaidCrop = (
+            count: number,
+            crops: CropWithDecay[],
+            basePrice: number,
+            emoji: string,
+            name: string
+        ): string | null => {
+            if (count === 0) {
+                return null;
             }
-            return crops.reduce((sum, c) => sum + (c.Decay ?? 0), 0) / crops.length;
+            const value = calcValue(crops, basePrice);
+            const decay = calcAvgDecay(crops);
+            return `> ${emoji} ${name}: \`${count.toLocaleString('en')}\` - 💰\`${value.toLocaleString('en')}\` - 📉\`${decay.toFixed(2)}%\``;
         };
 
-        const cornValue = calcValue(cornCrops, ecoPrices.farming.rewards.corn);
-        const wheatValue = calcValue(wheatCrops, ecoPrices.farming.rewards.wheat);
-        const potatoValue = calcValue(potatoCrops, ecoPrices.farming.rewards.potatoes);
-        const tomatoValue = calcValue(tomatoCrops, ecoPrices.farming.rewards.tomatoes);
-
-        const cornDecay = calcAvgDecay(cornCrops);
-        const wheatDecay = calcAvgDecay(wheatCrops);
-        const potatoDecay = calcAvgDecay(potatoCrops);
-        const tomatoDecay = calcAvgDecay(tomatoCrops);
-
-        cropsLines.push(
-            `> 🌽 Corn: \`${cornCount.toLocaleString('en')}\` - 💰\`${cornValue.toLocaleString('en')}\` - 📉\`${cornDecay.toFixed(2)}%\``,
-            `> 🌾 Wheat: \`${wheatCount.toLocaleString('en')}\` - 💰\`${wheatValue.toLocaleString('en')}\` - 📉\`${wheatDecay.toFixed(2)}%\``,
-            `> 🥔 Potato: \`${potatoCount.toLocaleString('en')}\` - 💰\`${potatoValue.toLocaleString('en')}\` - 📉\`${potatoDecay.toFixed(2)}%\``,
-            `> 🍅 Tomato: \`${tomatoCount.toLocaleString('en')}\` - 💰\`${tomatoValue.toLocaleString('en')}\` - 📉\`${tomatoDecay.toFixed(2)}%\``
-        );
+        const paidCropLines = [
+            formatPaidCrop(cornCount, cornCrops, ecoPrices.farming.rewards.corn, '🌽', 'Corn'),
+            formatPaidCrop(wheatCount, wheatCrops, ecoPrices.farming.rewards.wheat, '🌾', 'Wheat'),
+            formatPaidCrop(
+                potatoCount,
+                potatoCrops,
+                ecoPrices.farming.rewards.potatoes,
+                '🥔',
+                'Potato'
+            ),
+            formatPaidCrop(
+                tomatoCount,
+                tomatoCrops,
+                ecoPrices.farming.rewards.tomatoes,
+                '🍅',
+                'Tomato'
+            ),
+        ].filter((line): line is string => line !== null);
+        cropsLines.push(...paidCropLines);
     }
 
     // Show free crops if user doesn't have farming tools OR if they still have some
@@ -195,19 +212,35 @@ function buildInventoryContainer(
                 );
             }
         } else {
-            // If user doesn't have farming tools, show all free crops with values
-            const barleyValue = num(items.Barley) * ecoPrices.farming.farmingWithoutTools.barley;
-            const lettuceValue = num(items.Lettuce) * ecoPrices.farming.farmingWithoutTools.lettuce;
-            const strawberriesValue =
-                num(items.Strawberries) * ecoPrices.farming.farmingWithoutTools.strawberries;
-            const spinachValue = num(items.Spinach) * ecoPrices.farming.farmingWithoutTools.spinach;
-
-            cropsLines.push(
-                `> 🌾 Barley: \`${num(items.Barley).toLocaleString('en')}\` - 💰\`${barleyValue.toLocaleString('en')}\``,
-                `> 🥬 Lettuce: \`${num(items.Lettuce).toLocaleString('en')}\` - 💰\`${lettuceValue.toLocaleString('en')}\``,
-                `> 🍓 Strawberries: \`${num(items.Strawberries).toLocaleString('en')}\` - 💰\`${strawberriesValue.toLocaleString('en')}\``,
-                `> 🥗 Spinach: \`${num(items.Spinach).toLocaleString('en')}\` - 💰\`${spinachValue.toLocaleString('en')}\``
-            );
+            // If user doesn't have farming tools, only show free crops they own
+            if (num(items.Barley) > 0) {
+                const barleyValue =
+                    num(items.Barley) * ecoPrices.farming.farmingWithoutTools.barley;
+                cropsLines.push(
+                    `> 🌾 Barley: \`${num(items.Barley).toLocaleString('en')}\` - 💰\`${barleyValue.toLocaleString('en')}\``
+                );
+            }
+            if (num(items.Lettuce) > 0) {
+                const lettuceValue =
+                    num(items.Lettuce) * ecoPrices.farming.farmingWithoutTools.lettuce;
+                cropsLines.push(
+                    `> 🥬 Lettuce: \`${num(items.Lettuce).toLocaleString('en')}\` - 💰\`${lettuceValue.toLocaleString('en')}\``
+                );
+            }
+            if (num(items.Strawberries) > 0) {
+                const strawberriesValue =
+                    num(items.Strawberries) * ecoPrices.farming.farmingWithoutTools.strawberries;
+                cropsLines.push(
+                    `> 🍓 Strawberries: \`${num(items.Strawberries).toLocaleString('en')}\` - 💰\`${strawberriesValue.toLocaleString('en')}\``
+                );
+            }
+            if (num(items.Spinach) > 0) {
+                const spinachValue =
+                    num(items.Spinach) * ecoPrices.farming.farmingWithoutTools.spinach;
+                cropsLines.push(
+                    `> 🥗 Spinach: \`${num(items.Spinach).toLocaleString('en')}\` - 💰\`${spinachValue.toLocaleString('en')}\``
+                );
+            }
         }
     }
 
