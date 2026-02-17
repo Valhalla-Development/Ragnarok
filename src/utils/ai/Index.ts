@@ -8,6 +8,10 @@ export {
     isAIEnabled,
     isAIStaff,
 } from './Client.js';
+export type { AIGlobalStatsResult } from './GlobalStats.js';
+
+// Global stats
+export { getAIGlobalStats, recordAIGlobalUsage } from './GlobalStats.js';
 
 // Permission management
 export {
