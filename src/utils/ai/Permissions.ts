@@ -67,7 +67,7 @@ export async function getAIGuildPersona(guildId: string): Promise<string> {
 }
 
 export async function setAIGuildPersona(guildId: string, personaId: string): Promise<string> {
-    const id = personaId?.trim() && personaId.trim().length > 0 ? personaId.trim() : 'default';
+    const id = personaId?.trim() && personaId.trim().length > 0 ? personaId.trim() : 'friendly';
     await AIConfig.findOneAndUpdate(
         { GuildId: guildId },
         { $set: { GuildId: guildId, PersonaId: id } },

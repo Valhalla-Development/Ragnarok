@@ -7,7 +7,7 @@ import {
     normalizeResponseContent,
     splitMessages,
 } from './Client.js';
-import { defaultPersona, personas } from './personas/Index.js';
+import { friendly, personas } from './personas/Index.js';
 import { buildFinalSystemPrompt } from './Security.js';
 import type { AIRunResult } from './Types.js';
 import { checkAIAvailability } from './Users.js';
@@ -33,7 +33,7 @@ export async function runAIChat(params: {
         return { ok: false, message: 'Please enter a query with at least 4 characters.' };
     }
     const normalizedDisplayName = params.displayName?.trim();
-    const persona = personas[params.personaId ?? 'default'] ?? defaultPersona;
+    const persona = personas[params.personaId ?? 'friendly'] ?? friendly;
     const systemPrompt = buildFinalSystemPrompt(
         persona.system,
         normalizedDisplayName,

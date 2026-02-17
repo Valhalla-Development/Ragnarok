@@ -2,13 +2,13 @@ import { chaotic } from './Chaotic.js';
 import { codeExpert } from './CodeExpert.js';
 import { codeReviewer } from './CodeReviewer.js';
 import { conspiracyTheorist } from './ConspiracyTheorist.js';
-import { defaultPersona } from './Default.js';
+import { friendly } from './Friendly.js';
 import { lazy } from './LazyAI.js';
 import { ruthless } from './Ruthless.js';
 import type { Persona } from './Types.js';
 
 export const personas: Record<string, Persona> = {
-    default: defaultPersona,
+    friendly,
     ruthless,
     codeReviewer,
     codeExpert,
@@ -17,5 +17,5 @@ export const personas: Record<string, Persona> = {
     chaotic,
 };
 
-export { defaultPersona } from './Default.js';
+export { friendly } from './Friendly.js';
 export type { Persona } from './Types.js';
