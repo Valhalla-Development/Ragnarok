@@ -62,6 +62,9 @@ export function aiLogStart(userId: string, prompt: string): void {
             `${'🤖 OpenRouter Query'.brightBlue.bold} ${`user:${userId}`.brightMagenta.bold}\n` +
             `${'📝 Prompt: '.brightBlue.bold}${shortPrompt.brightYellow.bold}`
     );
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`${'Raw sent to AI:'.gray}\n${prompt.gray}\n`);
+    }
 }
 
 export function aiLogDone(result: ChatCompletionResult, durationMs: number): void {
