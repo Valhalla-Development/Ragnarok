@@ -5,6 +5,7 @@ import AutoRole from '../mongo/AutoRole.js';
 import BirthdayConfig from '../mongo/BirthdayConfig.js';
 import Dad from '../mongo/Dad.js';
 import Logging from '../mongo/Logging.js';
+import Rock from '../mongo/Rock.js';
 import RoleMenu from '../mongo/RoleMenu.js';
 import StarBoard from '../mongo/StarBoard.js';
 import Welcome from '../mongo/Welcome.js';
@@ -38,6 +39,8 @@ export class GuildDelete {
         await BirthdayConfig.deleteMany({ GuildId: guild.id });
 
         await Dad.deleteMany({ GuildId: guild.id });
+
+        await Rock.deleteMany({ GuildId: guild.id });
 
         await Logging.deleteMany({ GuildId: guild.id });
 
