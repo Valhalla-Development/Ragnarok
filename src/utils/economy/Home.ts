@@ -215,6 +215,7 @@ export function buildHomeContainer(
     if (buttons.harvestButton && balance.Items?.FarmingTools && hasCrops) {
         harvestButton = ButtonBuilder.from(buttons.harvestButton.toJSON());
         harvestButton.setStyle(ButtonStyle.Primary);
+        harvestButton.setDisabled(false);
     }
 
     // Clone the plant button and disable it if the user is on cooldown
