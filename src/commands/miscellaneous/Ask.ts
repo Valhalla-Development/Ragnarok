@@ -21,7 +21,7 @@ export class Ask {
             name: 'query',
             required: true,
             type: ApplicationCommandOptionType.String,
-            minLength: 4,
+            minLength: 2,
             maxLength: 2000,
         })
         query: string,

@@ -29,8 +29,8 @@ export async function runAIChat(params: {
     }
 
     const stripped = params.prompt.trim();
-    if (stripped.length < 4) {
-        return { ok: false, message: 'Please enter a query with at least 4 characters.' };
+    if (stripped.length < 2) {
+        return { ok: false, message: 'Please enter a query with at least 2 characters.' };
     }
     const normalizedDisplayName = params.displayName?.trim();
     const persona = personas[params.personaId ?? 'friendly'] ?? friendly;
