@@ -1,7 +1,10 @@
 import {
+    ButtonBuilder,
+    ButtonStyle,
     ContainerBuilder,
     Events,
     MediaGalleryBuilder,
+    type Message,
     MessageFlags,
     SectionBuilder,
     SeparatorSpacingSize,
@@ -24,33 +27,76 @@ import {
 
 @Discord()
 export class MessageReactionAdd {
+    private buildQuotedContent(content: string): string {
+        return content
+            .trim()
+            .slice(0, 1024)
+            .split('\n')
+            .map((line) => `> ${line || ' '}`)
+            .join('\n');
+    }
+
+    private getPreferredImageUrl(
+        message: Awaited<ReturnType<typeof resolveMessage>>
+    ): string | null {
+        if (!message) {
+            return null;
+        }
+
+        const imageAttachment = message.attachments.find((attachment) =>
+            isImageAttachment(attachment)
+        );
+        if (imageAttachment?.url) {
+            return imageAttachment.url;
+        }
+
+        const embedImage = message.embeds.find((embed) => embed.image?.url || embed.thumbnail?.url);
+        return embedImage?.image?.url ?? embedImage?.thumbnail?.url ?? null;
+    }
+
+    private async updateStarboardMessage(
+        message: Message,
+        starCount: number,
+        sourceMessageId: string
+    ): Promise<void> {
+        const updatedComponents = updateStarMetaComponents(message, starCount, sourceMessageId);
+        await message.edit({
+            components: updatedComponents,
+            flags: MessageFlags.IsComponentsV2,
+        });
+    }
+
     private buildStarboardContainer(
         authorTag: string,
         authorAvatar: string,
-        channelId: string,
         content: string,
         messageUrl: string,
         starCount: number,
-        sourceMessageId: string,
         imageUrl: string | null
     ): ContainerBuilder {
-        const summaryLines = [
-            `**Channel:** <#${channelId}>`,
-            `**Message:** ${content.trim() ? content.substring(0, 1024) : 'N/A'}`,
-            `**Jump:** [Jump To Message](${messageUrl})`,
-        ];
-
-        const summarySection = new SectionBuilder()
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent(summaryLines.join('\n')))
-            .setThumbnailAccessory(new ThumbnailBuilder().setURL(authorAvatar));
+        const hasText = content.trim().length > 0;
+        const quotedContent = this.buildQuotedContent(content);
 
         const container = new ContainerBuilder()
-            .addTextDisplayComponents(new TextDisplayBuilder().setContent('# Starboard'))
+            .addTextDisplayComponents(new TextDisplayBuilder().setContent('# ⭐ Starboard'))
             .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
             .addTextDisplayComponents(
                 new TextDisplayBuilder().setContent(`**Author:** ${authorTag}`)
-            )
-            .addSectionComponents(summarySection);
+            );
+
+        if (hasText) {
+            container.addSectionComponents(
+                new SectionBuilder()
+                    .addTextDisplayComponents(new TextDisplayBuilder().setContent(quotedContent))
+                    .setThumbnailAccessory(new ThumbnailBuilder().setURL(authorAvatar))
+            );
+        } else if (imageUrl) {
+            container.addSectionComponents(
+                new SectionBuilder()
+                    .addTextDisplayComponents(new TextDisplayBuilder().setContent('\u200B'))
+                    .setThumbnailAccessory(new ThumbnailBuilder().setURL(authorAvatar))
+            );
+        }
 
         if (imageUrl) {
             container.addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small));
@@ -59,11 +105,20 @@ export class MessageReactionAdd {
             );
         }
 
-        container
-            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
-            .addTextDisplayComponents(
-                new TextDisplayBuilder().setContent(`⭐ ${starCount} | ${sourceMessageId}`)
-            );
+        container.addActionRowComponents((row) =>
+            row.addComponents(
+                new ButtonBuilder()
+                    .setStyle(ButtonStyle.Secondary)
+                    .setCustomId('starboard-count')
+                    .setLabel(`⭐ ${starCount}`)
+                    .setDisabled(true),
+                new ButtonBuilder()
+                    .setStyle(ButtonStyle.Link)
+                    .setURL(messageUrl)
+                    .setLabel('Jump to Message')
+                    .setEmoji('🔗')
+            )
+        );
 
         return container;
     }
@@ -106,44 +161,24 @@ export class MessageReactionAdd {
                 return;
             }
 
-            const updatedComponents = updateStarMetaComponents(
-                message,
-                effectiveCount,
-                parsed.sourceMessageId
-            );
-            await message.edit({
-                components: updatedComponents,
-                flags: MessageFlags.IsComponentsV2,
-            });
+            await this.updateStarboardMessage(message, effectiveCount, parsed.sourceMessageId);
             return;
         }
 
         const existingStarboardMessage = await findStarboardEntry(starChannel, message.id);
         if (existingStarboardMessage) {
-            const updatedComponents = updateStarMetaComponents(
-                existingStarboardMessage,
-                effectiveCount,
-                message.id
-            );
-            await existingStarboardMessage.edit({
-                components: updatedComponents,
-                flags: MessageFlags.IsComponentsV2,
-            });
+            await this.updateStarboardMessage(existingStarboardMessage, effectiveCount, message.id);
             return;
         }
 
-        const attachment = message.attachments.first();
-        const imageUrl =
-            attachment?.url && isImageAttachment(attachment.url) ? attachment.url : null;
+        const imageUrl = this.getPreferredImageUrl(message);
 
         const container = this.buildStarboardContainer(
             `${message.author}`,
             message.author.displayAvatarURL({ extension: 'png' }),
-            message.channel.id,
             message.content ?? '',
             message.url,
             effectiveCount,
-            message.id,
             imageUrl
         );
 
@@ -152,7 +187,6 @@ export class MessageReactionAdd {
             flags: MessageFlags.IsComponentsV2,
             allowedMentions: { parse: [] },
         });
-        // Keep parity with OG UX where users can keep starring in starboard channel.
         await sent.react('⭐').catch((error) => {
             console.debug('Could not add star reaction to starboard post:', error);
         });
