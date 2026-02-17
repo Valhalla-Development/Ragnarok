@@ -10,17 +10,98 @@ import {
 import StarBoard from '../mongo/StarBoard.js';
 
 type AnyReaction = MessageReaction | PartialMessageReaction;
+interface StarMeta {
+    stars: number;
+    sourceMessageId: string;
+}
+
+interface CollectedComponentData {
+    texts: string[];
+    labels: string[];
+    urls: string[];
+}
 
 const STAR_FOOTER_REGEX = /^⭐\s(\d+)\s\|\s(\d{17,20})$/;
 const STAR_INLINE_REGEX = /⭐\s(\d+)\s\|\s(\d{17,20})/;
 const STAR_META_REGEX = /⭐\s\d+\s\|\s\d{17,20}/;
+const STAR_COUNT_LABEL_REGEX = /⭐\s\d+/;
+const STAR_COUNT_VALUE_REGEX = /⭐\s(\d+)/;
+const DISCORD_MSG_URL_REGEX = /discord\.com\/channels\/\d+\/\d+\/(\d{17,20})/;
+const BUTTON_COMPONENT_TYPE = 2;
+const LINK_BUTTON_STYLE = 5;
+
+function toJsonNode(node: unknown): unknown {
+    if (!node || typeof node !== 'object') {
+        return node;
+    }
+
+    if ('toJSON' in node && typeof (node as { toJSON?: () => unknown }).toJSON === 'function') {
+        return (node as { toJSON: () => unknown }).toJSON();
+    }
+
+    return node;
+}
+
+function collectComponentData(components: readonly unknown[]): CollectedComponentData {
+    const data: CollectedComponentData = { texts: [], labels: [], urls: [] };
+
+    const walk = (node: unknown): void => {
+        if (Array.isArray(node)) {
+            node.forEach(walk);
+            return;
+        }
+
+        const jsonNode = toJsonNode(node);
+        if (!jsonNode || typeof jsonNode !== 'object') {
+            return;
+        }
+
+        const obj = jsonNode as Record<string, unknown>;
+        if (typeof obj.content === 'string') {
+            data.texts.push(obj.content);
+        }
+
+        if (obj.type === BUTTON_COMPONENT_TYPE) {
+            if (typeof obj.label === 'string') {
+                data.labels.push(obj.label);
+            }
+            if (typeof obj.url === 'string') {
+                data.urls.push(obj.url);
+            }
+        }
+
+        if (Array.isArray(obj.components)) {
+            obj.components.forEach(walk);
+        }
+    };
+
+    walk(components);
+    return data;
+}
+
+function parseStarsFromLabel(label: string): number {
+    const match = STAR_COUNT_VALUE_REGEX.exec(label);
+    return Number(match?.[1] ?? 0);
+}
+
+function parseSourceMessageIdFromUrl(url: string): string {
+    const match = DISCORD_MSG_URL_REGEX.exec(url);
+    return match?.[1] ?? '';
+}
 
 export function isStarEmoji(reaction: AnyReaction): boolean {
     return reaction.emoji.name === '⭐';
 }
 
-export function isImageAttachment(url: string): boolean {
-    return /\.(png|jpe?g|gif|webp)$/i.test(url);
+export function isImageAttachment(attachment: {
+    url?: string;
+    contentType?: string | null;
+}): boolean {
+    if (attachment.contentType?.startsWith('image/')) {
+        return true;
+    }
+    const url = attachment.url ?? '';
+    return /\.(png|jpe?g|gif|webp)(\?|$)/i.test(url);
 }
 
 export async function resolveReaction(reaction: AnyReaction): Promise<MessageReaction | null> {
@@ -80,12 +161,16 @@ export async function getStarboardChannel(message: Message): Promise<GuildTextBa
         guild.channels.cache.get(config.ChannelId) ??
         (await guild.channels.fetch(config.ChannelId));
 
+    if (!channel) {
+        await StarBoard.deleteOne({ GuildId: guild.id });
+        return null;
+    }
+
     if (
-        !channel ||
-        (channel.type !== ChannelType.GuildText &&
-            channel.type !== ChannelType.PublicThread &&
-            channel.type !== ChannelType.PrivateThread &&
-            channel.type !== ChannelType.AnnouncementThread)
+        channel.type !== ChannelType.GuildText &&
+        channel.type !== ChannelType.PublicThread &&
+        channel.type !== ChannelType.PrivateThread &&
+        channel.type !== ChannelType.AnnouncementThread
     ) {
         await StarBoard.deleteOne({ GuildId: guild.id });
         return null;
@@ -98,9 +183,7 @@ export async function getStarboardChannel(message: Message): Promise<GuildTextBa
     return channel;
 }
 
-export function parseStarFooter(
-    text?: string | null
-): { stars: number; sourceMessageId: string } | null {
+export function parseStarFooter(text?: string | null): StarMeta | null {
     if (!text) {
         return null;
     }
@@ -111,43 +194,28 @@ export function parseStarFooter(
     return { stars: Number(match[1] ?? 0), sourceMessageId: match[2] ?? '' };
 }
 
-export function parseStarMessageMeta(
-    message: Message
-): { stars: number; sourceMessageId: string } | null {
+export function parseStarMessageMeta(message: Message): StarMeta | null {
     const embedFooter = message.embeds[0]?.footer?.text;
     const parsedEmbed = parseStarFooter(embedFooter);
     if (parsedEmbed) {
         return parsedEmbed;
     }
 
-    const collectText = (node: unknown): string[] => {
-        if (Array.isArray(node)) {
-            return node.flatMap(collectText);
-        }
-        if (!node || typeof node !== 'object') {
-            return [];
-        }
+    const data = collectComponentData(message.components as unknown[]);
 
-        const jsonNode =
-            'toJSON' in node && typeof (node as { toJSON?: () => unknown }).toJSON === 'function'
-                ? (node as { toJSON: () => unknown }).toJSON()
-                : node;
-        if (!jsonNode || typeof jsonNode !== 'object') {
-            return [];
-        }
-
-        const typed = jsonNode as { content?: unknown; components?: unknown[] };
-        const current = typeof typed.content === 'string' ? [typed.content] : [];
-        return [...current, ...(typed.components ? collectText(typed.components) : [])];
-    };
-
-    const componentText = collectText(message.components as unknown[]).join('\n');
-
-    const inlineMatch = STAR_INLINE_REGEX.exec(componentText);
-    if (!inlineMatch) {
-        return null;
+    const inlineMatch = STAR_INLINE_REGEX.exec(data.texts.join('\n'));
+    if (inlineMatch) {
+        return { stars: Number(inlineMatch[1]), sourceMessageId: inlineMatch[2] ?? '' };
     }
-    return { stars: Number(inlineMatch[1] ?? 0), sourceMessageId: inlineMatch[2] ?? '' };
+
+    const starLabel = data.labels.find((l) => /⭐\s\d+/.test(l));
+    const stars = starLabel ? parseStarsFromLabel(starLabel) : 0;
+    const jumpUrl = data.urls.find((u) => DISCORD_MSG_URL_REGEX.test(u));
+    const sourceMessageId = jumpUrl ? parseSourceMessageIdFromUrl(jumpUrl) : '';
+    if (stars > 0 && sourceMessageId) {
+        return { stars, sourceMessageId };
+    }
+    return null;
 }
 
 export function updateStarMetaComponents(
@@ -156,6 +224,7 @@ export function updateStarMetaComponents(
     sourceMessageId: string
 ): APIMessageTopLevelComponent[] {
     const nextMeta = `⭐ ${starCount} | ${sourceMessageId}`;
+    const nextLabel = `⭐ ${starCount}`;
     const replaceNode = (node: unknown): unknown => {
         if (Array.isArray(node)) {
             return node.map(replaceNode);
@@ -164,10 +233,7 @@ export function updateStarMetaComponents(
             return node;
         }
 
-        const jsonNode =
-            'toJSON' in node && typeof (node as { toJSON?: () => unknown }).toJSON === 'function'
-                ? (node as { toJSON: () => unknown }).toJSON()
-                : node;
+        const jsonNode = toJsonNode(node);
         if (!jsonNode || typeof jsonNode !== 'object') {
             return jsonNode;
         }
@@ -177,6 +243,15 @@ export function updateStarMetaComponents(
         for (const [key, value] of Object.entries(input)) {
             if (key === 'content' && typeof value === 'string' && STAR_META_REGEX.test(value)) {
                 output[key] = value.replace(STAR_META_REGEX, nextMeta);
+                continue;
+            }
+            if (
+                key === 'label' &&
+                typeof value === 'string' &&
+                STAR_COUNT_LABEL_REGEX.test(value) &&
+                input.style !== LINK_BUTTON_STYLE
+            ) {
+                output[key] = value.replace(STAR_COUNT_LABEL_REGEX, nextLabel);
                 continue;
             }
             output[key] = replaceNode(value);
