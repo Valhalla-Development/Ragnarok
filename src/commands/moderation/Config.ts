@@ -24,6 +24,7 @@ import AutoRole from '../../mongo/AutoRole.js';
 import BirthdayConfig from '../../mongo/BirthdayConfig.js';
 import Dad from '../../mongo/Dad.js';
 import Logging from '../../mongo/Logging.js';
+import Rock from '../../mongo/Rock.js';
 import RoleMenu from '../../mongo/RoleMenu.js';
 import StarBoard from '../../mongo/StarBoard.js';
 import Welcome from '../../mongo/Welcome.js';
@@ -46,6 +47,7 @@ type ConfigModule =
     | 'autorole'
     | 'birthday'
     | 'dad'
+    | 'rock'
     | 'rolemenu'
     | 'logging'
     | 'starboard'
@@ -69,6 +71,8 @@ const AI_ENABLE_BUTTON_ID = 'cfg:ai:enable';
 const AI_DISABLE_BUTTON_ID = 'cfg:ai:disable';
 const DAD_ENABLE_BUTTON_ID = 'cfg:dad:enable';
 const DAD_DISABLE_BUTTON_ID = 'cfg:dad:disable';
+const ROCK_ENABLE_BUTTON_ID = 'cfg:rock:enable';
+const ROCK_DISABLE_BUTTON_ID = 'cfg:rock:disable';
 const ROLEMENU_SELECT_ID = 'cfg:rolemenu:roles:string';
 const ROLEMENU_CLEAR_BUTTON_ID = 'cfg:rolemenu:clear';
 const AUTOROLE_SELECT_ID = 'cfg:autorole:role';
@@ -285,6 +289,34 @@ export class Config {
         }
         await Dad.deleteOne({ GuildId: interaction.guild.id });
         const payload = await this.buildPayload(interaction.guild, 'dad');
+        await interaction.update(payload);
+    }
+
+    @ButtonComponent({ id: ROCK_ENABLE_BUTTON_ID })
+    async onRockEnable(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        await Rock.findOneAndUpdate(
+            { GuildId: interaction.guild.id },
+            { $set: { Status: true } },
+            { upsert: true, returnDocument: 'after' }
+        );
+        const payload = await this.buildPayload(interaction.guild, 'rock');
+        await interaction.update(payload);
+    }
+
+    @ButtonComponent({ id: ROCK_DISABLE_BUTTON_ID })
+    async onRockDisable(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        await Rock.findOneAndUpdate(
+            { GuildId: interaction.guild.id },
+            { $set: { Status: false } },
+            { upsert: true, returnDocument: 'after' }
+        );
+        const payload = await this.buildPayload(interaction.guild, 'rock');
         await interaction.update(payload);
     }
 
@@ -658,6 +690,12 @@ export class Config {
                     default: current === 'dad',
                 },
                 {
+                    label: 'Rock',
+                    value: 'rock',
+                    description: "Toggle 'I don't like this rock' video response",
+                    default: current === 'rock',
+                },
+                {
                     label: 'RoleMenu',
                     value: 'rolemenu',
                     description: 'Configure self-assign role menu',
@@ -741,6 +779,31 @@ export class Config {
                         .setDisabled(isEnabled),
                     new ButtonBuilder()
                         .setCustomId(DAD_DISABLE_BUTTON_ID)
+                        .setLabel('Disable')
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(!isEnabled),
+                ],
+            };
+        }
+
+        if (module === 'rock') {
+            const rock = await Rock.findOne({ GuildId: guild.id });
+            const isEnabled = rock?.Status !== false;
+            return {
+                title: '# 🪨 Rock Module',
+                lines: [
+                    `> Status: ${isEnabled ? '`Enabled`' : '`Disabled`'}`,
+                    '> Responds to "i don\'t like this rock" with a video.',
+                ].filter(Boolean),
+                controls: [
+                    selector,
+                    new ButtonBuilder()
+                        .setCustomId(ROCK_ENABLE_BUTTON_ID)
+                        .setLabel('Enable')
+                        .setStyle(ButtonStyle.Success)
+                        .setDisabled(isEnabled),
+                    new ButtonBuilder()
+                        .setCustomId(ROCK_DISABLE_BUTTON_ID)
                         .setLabel('Disable')
                         .setStyle(ButtonStyle.Secondary)
                         .setDisabled(!isEnabled),
