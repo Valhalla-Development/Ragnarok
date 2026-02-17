@@ -493,6 +493,38 @@ export async function paginationComponentsV2(
         time: timeoutMs,
     });
 
+    const isPaginatorStillActive = (msg: Message): boolean => {
+        const walk = (node: unknown): boolean => {
+            if (Array.isArray(node)) {
+                return node.some(walk);
+            }
+            if (!node || typeof node !== 'object') {
+                return false;
+            }
+
+            const jsonNode =
+                'toJSON' in node &&
+                typeof (node as { toJSON?: () => unknown }).toJSON === 'function'
+                    ? (node as { toJSON: () => unknown }).toJSON()
+                    : node;
+            if (!jsonNode || typeof jsonNode !== 'object') {
+                return false;
+            }
+
+            const obj = jsonNode as { custom_id?: unknown; components?: unknown[] };
+            if (
+                typeof obj.custom_id === 'string' &&
+                [idPrev, idHome, idNext].includes(obj.custom_id)
+            ) {
+                return true;
+            }
+
+            return Array.isArray(obj.components) ? obj.components.some(walk) : false;
+        };
+
+        return walk(msg.components as unknown[]);
+    };
+
     collector.on('collect', async (b) => {
         collector.resetTimer();
 
@@ -509,12 +541,20 @@ export async function paginationComponentsV2(
     });
 
     collector.on('end', async () => {
+        const latest = await message.fetch().catch(() => null);
+        if (!latest) {
+            return;
+        }
+        if (!isPaginatorStillActive(latest)) {
+            return;
+        }
+
         prev.setDisabled(true);
         home.setDisabled(true);
         next.setDisabled(true);
 
         const payload = await render();
-        await message.edit(payload);
+        await latest.edit(payload);
     });
 }
 
