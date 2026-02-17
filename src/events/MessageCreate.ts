@@ -257,24 +257,63 @@ export class MessageCreate {
                     .catch(() => null);
                 isReplyingToBot = referencedMessage?.author.id === client.user.id;
                 isReplyingToOtherUser = Boolean(
-                    referencedMessage?.author.id && referencedMessage.author.id !== client.user.id
+                    referencedMessage?.author.id &&
+                        referencedMessage.author.id !== client.user.id &&
+                        referencedMessage.author.id !== message.author.id
                 );
             }
+            const isReplyingToSelf = referencedMessage?.author.id === message.author.id;
 
             if (!(hasExplicitBotMention || isReplyingToBot)) {
                 return;
             }
 
-            const cleanedPrompt = message.content.replace(/<@!?(\d+)>/g, '').trim();
-            const prompt =
-                hasExplicitBotMention && isReplyingToOtherUser && referencedMessage
-                    ? [
-                          cleanedPrompt,
-                          '',
-                          `Reply target (${referencedMessage.author.displayName}): ${referencedMessage.content || '[No text content]'}`,
-                      ].join('\n')
-                    : cleanedPrompt;
-            if (prompt.length < 4) {
+            // Clean current message of mentions
+            const cleanedPrompt = message.content.replace(/<@!?\d+>/g, '').trim();
+
+            // Process quoted message content with readable mention replacement
+            const getQuotedContent = (msg: Message) => {
+                if (!msg.content) {
+                    return '[No text content]';
+                }
+
+                const processed = msg.content.replace(/<@!?(\d+)>/g, (match, id) => {
+                    if (id === client.user?.id) {
+                        return '';
+                    }
+
+                    const name =
+                        msg.mentions.members?.get(id)?.displayName ??
+                        msg.mentions.users?.get(id)?.username;
+                    return name ? `@${name}` : match;
+                });
+
+                return processed.replace(/\s+/g, ' ').trim() || '[No text content]';
+            };
+
+            const quotedContent = referencedMessage
+                ? getQuotedContent(referencedMessage)
+                : '[No text content]';
+
+            // Build prompt based on context
+            let prompt = '';
+
+            if (hasExplicitBotMention && isReplyingToOtherUser && referencedMessage) {
+                // Replying to another user with bot mention
+                const instruction = `Reply target: "${quotedContent}" quoted from "${referencedMessage.author.displayName}"`;
+                const addressNote =
+                    '\n\nAddress your reply to the person quoted above, not to the person who sent this message. Do not output any preamble like "To the user..." or "To [name]:". Just reply directly as if talking to them.';
+
+                prompt = `${cleanedPrompt || 'The user wants you to respond to the reply target.'}\n\n${instruction}${addressNote}`;
+            } else if (isReplyingToSelf && referencedMessage) {
+                // Replying to self - use quoted content
+                prompt = quotedContent;
+            } else {
+                // Direct message to bot
+                prompt = cleanedPrompt;
+            }
+
+            if (prompt.length < 2) {
                 return;
             }
 
@@ -309,7 +348,10 @@ export class MessageCreate {
             }
 
             const [first, ...rest] = result.chunks;
-            if (hasExplicitBotMention && isReplyingToOtherUser && referencedMessage) {
+            const shouldReplyToReferenced =
+                referencedMessage &&
+                ((hasExplicitBotMention && isReplyingToOtherUser) || isReplyingToSelf);
+            if (shouldReplyToReferenced && referencedMessage) {
                 await message.channel.send({
                     content: first,
                     reply: { messageReference: referencedMessage.id },
