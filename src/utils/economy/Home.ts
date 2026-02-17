@@ -211,14 +211,10 @@ export function buildHomeContainer(
 
     // Clone the harvest button and disable it if there are no crops
     let harvestButton: ButtonBuilder | undefined;
-    if (buttons.harvestButton) {
+    const hasCrops = (balance.FarmPlot?.length ?? 0) > 0;
+    if (buttons.harvestButton && balance.Items?.FarmingTools && hasCrops) {
         harvestButton = ButtonBuilder.from(buttons.harvestButton.toJSON());
         harvestButton.setStyle(ButtonStyle.Primary);
-
-        if (!balance.FarmPlot || balance.FarmPlot.length === 0) {
-            harvestButton.setDisabled(true);
-            harvestButton.setStyle(ButtonStyle.Success);
-        }
     }
 
     // Clone the plant button and disable it if the user is on cooldown
@@ -264,7 +260,7 @@ export function buildHomeContainer(
                 fishButton,
                 ...(balance.Items?.FarmingTools ? [] : [farmButton]),
                 ...(plantButton && balance.Items?.FarmingTools ? [plantButton] : []),
-                ...(harvestButton && balance.Items?.FarmingTools ? [harvestButton] : []),
+                ...(harvestButton ? [harvestButton] : []),
                 ...(buttons.shopButton ? [buttons.shopButton] : [])
             )
         )
