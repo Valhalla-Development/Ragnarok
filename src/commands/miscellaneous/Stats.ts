@@ -11,6 +11,7 @@ import { type Client, type DApplicationCommand, Discord, MetadataStorage, Slash 
 import si from 'systeminformation';
 
 import Announcement from '../../mongo/Announcement.js';
+import { getAIGlobalStats, isAIEnabled } from '../../utils/ai/Index.js';
 
 @Discord()
 @Category('Miscellaneous')
@@ -86,12 +87,31 @@ export class Stats {
             ['## 📢 Announcement', '', `\`\`\`${announcement}\`\`\``].join('\n')
         );
 
+        let aiDisplay: TextDisplayBuilder;
+        if (isAIEnabled()) {
+            const aiStats = await getAIGlobalStats();
+            aiDisplay = new TextDisplayBuilder().setContent(
+                [
+                    '## 🤖 AI Usage',
+                    '',
+                    `> 📨 **Total Queries:** \`${aiStats.totalQueries.toLocaleString()}\``,
+                    `> 💰 **Total Cost:** \`$${aiStats.totalCost.toFixed(2)}\``,
+                ].join('\n')
+            );
+        } else {
+            aiDisplay = new TextDisplayBuilder().setContent(
+                ['## 🤖 AI Usage', '', '> AI is not configured.'].join('\n')
+            );
+        }
+
         const container = new ContainerBuilder()
             .addTextDisplayComponents(header)
             .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
             .addTextDisplayComponents(overview)
             .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
             .addTextDisplayComponents(systemInfoDisplay)
+            .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
+            .addTextDisplayComponents(aiDisplay)
             .addSeparatorComponents((separator) => separator.setSpacing(SeparatorSpacingSize.Small))
             .addTextDisplayComponents(announcementDisplay);
 
