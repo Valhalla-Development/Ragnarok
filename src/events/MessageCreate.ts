@@ -375,7 +375,7 @@ export class MessageCreate {
         /**
          * Easter Eggs
          */
-        if (message.content.includes('(╯°□°）╯︵ ┻━┻')) {
+        if (message.content.includes('(╯°□°)╯︵ ┻━┻')) {
             await message.reply({
                 content: 'Leave my table alone!\n┬─┬ ノ( ゜-゜ノ)',
             });
