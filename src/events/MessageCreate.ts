@@ -26,7 +26,7 @@ import {
 import { deletableCheck, messageDelete, RagnarokContainer, updateLevel } from '../utils/Util.js';
 
 const dadCooldown = new Set();
-const dadCooldownSeconds = 60;
+const dadCooldownSeconds = 10;
 
 @Discord()
 export class MessageCreate {
@@ -216,10 +216,10 @@ export class MessageCreate {
 
             switch (true) {
                 case urlRegexSafe({ strict: false }).test(messageContent):
-                    message.channel.send({ files: ['./Storage/Images/dadNo.png'] });
+                    message.reply({ files: ['./assets/dadNo.png'] });
                     break;
                 case messageContent.startsWith('im dad') || messageContent.startsWith("i'm dad"):
-                    message.channel.send({ content: "No, I'm Dad!" });
+                    message.reply({ content: "No, I'm Dad!" });
                     break;
                 case messageContent.includes('@everyone') || messageContent.includes('@here'):
                     await message.reply({ content: '<:pepebruh:987742251297931274>' });
