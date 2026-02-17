@@ -6,8 +6,6 @@ import {
     type MessageReaction,
     type PartialMessage,
     type PartialMessageReaction,
-    type PartialUser,
-    type User,
 } from 'discord.js';
 import StarBoard from '../mongo/StarBoard.js';
 
@@ -53,6 +51,18 @@ export async function getCurrentStarCount(message: Message): Promise<number> {
     const refreshed = await message.fetch().catch(() => message);
     const starReaction = refreshed.reactions.cache.find((reaction) => reaction.emoji.name === '⭐');
     return Math.max(0, starReaction?.count ?? 0);
+}
+
+/**
+ * Returns star count excluding self-stars
+ */
+export async function getEffectiveStarCount(message: Message, reactorId: string): Promise<number> {
+    const total = await getCurrentStarCount(message);
+    const authorId = message.author?.id;
+    if (!authorId || authorId !== reactorId) {
+        return total;
+    }
+    return Math.max(0, total - 1);
 }
 
 export async function getStarboardChannel(message: Message): Promise<GuildTextBasedChannel | null> {
@@ -192,19 +202,4 @@ export async function findStarboardEntry(
     });
 
     return found ?? null;
-}
-
-export async function removeSelfStar(
-    reaction: MessageReaction,
-    user: User | PartialUser
-): Promise<void> {
-    const authorId = reaction.message.author?.id;
-    if (!authorId || authorId !== user.id) {
-        return;
-    }
-    try {
-        await reaction.users.remove(user.id);
-    } catch {
-        // Ignore missing permission/race conditions.
-    }
 }

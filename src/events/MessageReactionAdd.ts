@@ -12,12 +12,11 @@ import type { ArgsOf } from 'discordx';
 import { Discord, On } from 'discordx';
 import {
     findStarboardEntry,
-    getCurrentStarCount,
+    getEffectiveStarCount,
     getStarboardChannel,
     isImageAttachment,
     isStarEmoji,
     parseStarMessageMeta,
-    removeSelfStar,
     resolveMessage,
     resolveReaction,
     updateStarMetaComponents,
@@ -94,10 +93,9 @@ export class MessageReactionAdd {
             return;
         }
 
-        // Prevent users starring their own messages (OG behavior).
-        await removeSelfStar(resolvedReaction, user);
-        const safeStarCount = await getCurrentStarCount(message);
-        if (safeStarCount < 1) {
+        // Allow self-stars to remain but don't count them toward starboard.
+        const effectiveCount = await getEffectiveStarCount(message, user.id);
+        if (effectiveCount < 1) {
             return;
         }
 
@@ -110,7 +108,7 @@ export class MessageReactionAdd {
 
             const updatedComponents = updateStarMetaComponents(
                 message,
-                safeStarCount,
+                effectiveCount,
                 parsed.sourceMessageId
             );
             await message.edit({
@@ -124,7 +122,7 @@ export class MessageReactionAdd {
         if (existingStarboardMessage) {
             const updatedComponents = updateStarMetaComponents(
                 existingStarboardMessage,
-                safeStarCount,
+                effectiveCount,
                 message.id
             );
             await existingStarboardMessage.edit({
@@ -144,7 +142,7 @@ export class MessageReactionAdd {
             message.channel.id,
             message.content ?? '',
             message.url,
-            safeStarCount,
+            effectiveCount,
             message.id,
             imageUrl
         );
