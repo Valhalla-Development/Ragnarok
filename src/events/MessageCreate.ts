@@ -159,12 +159,16 @@ export class MessageCreate {
                             : imageAttachment
                               ? '[Image attachment]'
                               : '[No text content]';
+                        const quotedBlock = clippedText
+                            .split('\n')
+                            .map((line) => `> ${line || ' '}`)
+                            .join('\n');
                         const quoteLines = [
                             '### 💬 Message Quote',
                             `**Author:** <@${res.author.id}>`,
                             `**Quoted by:** <@${message.author.id}>`,
                             '',
-                            `> ${clippedText}`,
+                            quotedBlock,
                         ];
                         let imageUrl: string | null = null;
 
