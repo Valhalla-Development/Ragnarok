@@ -248,7 +248,9 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
         }
 
         if (type === 'name') {
-            data = await getTitleDetailsByName(url);
+            data = await getTitleDetailsByName(url, {
+                tmdbReadAccessToken: config.TMDB_READ_ACCESS_TOKEN,
+            });
         }
 
         if (!data) {
