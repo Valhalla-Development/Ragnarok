@@ -101,10 +101,8 @@ export class TraktCommand {
                 .setURL(`https://imdb.com/title/${details.id}/fullcredits`),
         ];
 
-        const trailerId = details.trailers?.[0]?.id;
         const trailerUrl =
-            details.trailers?.[0]?.playbackUrls?.[0] ??
-            (trailerId ? `https://www.imdb.com/video/${trailerId}` : undefined);
+            details.trailers?.[0]?.playbackUrls?.[0] ?? details.trailers?.[0]?.sourceUrl;
         if (trailerUrl) {
             buttonRow.push(
                 new ButtonBuilder()
