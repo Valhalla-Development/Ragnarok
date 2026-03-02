@@ -18,8 +18,8 @@ export async function recordAIGlobalUsage(params: {
 }
 
 export interface AIGlobalStatsResult {
-    totalQueries: number;
     totalCost: number;
+    totalQueries: number;
 }
 
 /**

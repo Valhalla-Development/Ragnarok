@@ -1,9 +1,9 @@
 export interface AIUserData {
-    totalQueries: number;
-    queriesRemaining: number;
-    expiration: number;
-    whitelisted: boolean;
     blacklisted: boolean;
+    expiration: number;
+    queriesRemaining: number;
+    totalQueries: number;
+    whitelisted: boolean;
 }
 
 export type AIAvailabilityResult = { ok: true; data: AIUserData } | { ok: false; message: string };

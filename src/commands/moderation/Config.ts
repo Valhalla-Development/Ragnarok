@@ -54,14 +54,14 @@ type ConfigModule =
     | 'welcome';
 
 interface ModuleViewResult {
-    title: string;
-    lines: string[];
     controls: (
         | StringSelectMenuBuilder
         | ButtonBuilder
         | RoleSelectMenuBuilder
         | ChannelSelectMenuBuilder
     )[];
+    lines: string[];
+    title: string;
 }
 
 const MODULE_SELECT_ID = 'cfg:module';
@@ -93,10 +93,10 @@ const AI_DELETE_ALL_HISTORY_BUTTON_ID = 'cfg:ai:delete-all-history';
 const AI_SECTION_NOTICE_TTL_MS = 4000;
 
 interface AISectionNotices {
-    status?: string;
     channels?: string;
-    persona?: string;
     deleteAllHistory?: string;
+    persona?: string;
+    status?: string;
 }
 
 function personaIdToLabel(id: string): string {

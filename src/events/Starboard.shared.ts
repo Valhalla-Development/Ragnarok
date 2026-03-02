@@ -11,13 +11,13 @@ import StarBoard from '../mongo/StarBoard.js';
 
 type AnyReaction = MessageReaction | PartialMessageReaction;
 interface StarMeta {
-    stars: number;
     sourceMessageId: string;
+    stars: number;
 }
 
 interface CollectedComponentData {
-    texts: string[];
     labels: string[];
+    texts: string[];
     urls: string[];
 }
 

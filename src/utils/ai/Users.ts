@@ -8,11 +8,11 @@ const AI_BLACKLIST_MESSAGE =
     'You are currently blacklisted from AI usage. If this is a mistake, contact a moderator.';
 
 interface AIUserDoc {
-    TotalQueries?: number;
-    QueriesRemaining?: number;
-    Expiration?: number;
-    Whitelisted?: boolean;
     Blacklisted?: boolean;
+    Expiration?: number;
+    QueriesRemaining?: number;
+    TotalQueries?: number;
+    Whitelisted?: boolean;
 }
 
 function toAIUserData(data: AIUserDoc | null): AIUserData | null {

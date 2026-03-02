@@ -1,42 +1,42 @@
 export interface EcoPrices {
-    Hourly: { min: number; max: number };
     Daily: { min: number; max: number };
-    Weekly: { min: number; max: number };
+    Hourly: { min: number; max: number };
     Monthly: { min: number; max: number };
+    Weekly: { min: number; max: number };
 }
 
 export interface Claim {
-    Hourly?: number;
     Daily?: number;
-    Weekly?: number;
+    Hourly?: number;
     Monthly?: number;
+    Weekly?: number;
 }
 
 export interface Items {
-    Trout: number;
-    KingSalmon: number;
-    SwordFish: number;
-    PufferFish: number;
-    Treasure: number;
-    GoldBar: number;
-    GoldNugget: number;
     Barley: number;
-    Spinach: number;
-    Strawberries: number;
-    Lettuce: number;
     CornSeeds: number;
-    WheatSeeds: number;
-    PotatoSeeds: number;
-    TomatoSeeds: number;
     FarmingTools: boolean;
     FishingRod: boolean;
+    GoldBar: number;
+    GoldNugget: number;
+    KingSalmon: number;
+    Lettuce: number;
+    PotatoSeeds: number;
+    PufferFish: number;
+    Spinach: number;
+    Strawberries: number;
+    SwordFish: number;
+    TomatoSeeds: number;
+    Treasure: number;
+    Trout: number;
+    WheatSeeds: number;
 }
 
 export interface CropData {
+    CropGrowTime: number | string;
     CropStatus: string;
     CropType: string;
     Decay: number;
-    CropGrowTime: number | string;
     LastUpdateTime?: number;
 }
 
@@ -44,8 +44,8 @@ import type { ActionRowBuilder, ButtonBuilder } from 'discord.js';
 
 export interface HarvestResult {
     crops: CropData[];
-    totalValue: number;
     displayEntries: string[];
+    totalValue: number;
 }
 
 export type ButtonRows = ActionRowBuilder<ButtonBuilder>[];

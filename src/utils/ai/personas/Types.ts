@@ -1,7 +1,7 @@
 export interface Persona {
+    description: string;
     id: string;
     system: string;
-    description: string;
     temperature: number;
     top_p: number;
 }
