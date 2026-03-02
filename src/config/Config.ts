@@ -32,6 +32,9 @@ const configSchema = z.object({
     VALHALLA_API_URI: z.string().optional().default('https://api.valhalladev.org/v1'),
     VALHALLA_API_KEY: z.string().optional().default(''),
 
+    // TMDB API settings for movier
+    TMDB_READ_ACCESS_TOKEN: z.string().optional().default(''),
+
     // OpenRouter AI settings (optional)
     OPENROUTER_API_KEY: z.string().optional().default(''),
     OPENROUTER_MODEL: z.string().optional().default('openai/gpt-4o-mini'),
