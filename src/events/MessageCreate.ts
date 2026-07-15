@@ -16,6 +16,7 @@ import { Discord, On } from 'discordx';
 import urlRegexSafe from 'url-regex-safe';
 import AdsProtection from '../mongo/AdsProtection.js';
 import Dad from '../mongo/Dad.js';
+import Honeypot from '../mongo/Honeypot.js';
 import Rock from '../mongo/Rock.js';
 import {
     buildAIGroupId,
@@ -42,6 +43,36 @@ export class MessageCreate {
     @On({ event: Events.MessageCreate })
     async onMessage([message]: ArgsOf<'messageCreate'>, client: Client) {
         if (!message.guild || message.author.bot) {
+            return;
+        }
+
+        /**
+         * Honeypot trap channel: anyone posting in the configured channel is
+         * banned automatically and their recent messages are deleted.
+         * @returns Whether the message was posted in the honeypot channel.
+         */
+        async function honeypot(): Promise<boolean> {
+            const honeypotData = await Honeypot.findOne({ GuildId: message.guild?.id });
+            if (!honeypotData?.ChannelId || honeypotData.ChannelId !== message.channel.id) {
+                return false;
+            }
+
+            const member = message.member;
+            if (!member || member.id === message.guild?.ownerId || !member.bannable) {
+                return true;
+            }
+
+            try {
+                await member.ban({
+                    deleteMessageSeconds: 604_800,
+                    reason: 'Honeypot: posted in trap channel',
+                });
+            } catch {
+                // Ban failed (role hierarchy or missing Ban Members permission).
+            }
+            return true;
+        }
+        if (await honeypot()) {
             return;
         }
 
