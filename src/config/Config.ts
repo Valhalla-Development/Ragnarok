@@ -11,48 +11,48 @@ const stringToArray = (val: string): string[] =>
         : [];
 
 const configSchema = z.object({
+    AI_ADMIN_USER_IDS: z
+        .string()
+        .optional()
+        .transform((val) => (val ? stringToArray(val) : [])),
+    AI_QUERIES_RESET_TIME: z.string().optional().default('24h'),
+    AI_STAFF_ROLE_IDS: z
+        .string()
+        .optional()
+        .transform((val) => (val ? stringToArray(val) : [])),
     // Required bot token
     BOT_TOKEN: z.string().min(1, 'Bot token is required'),
+    COMMAND_LOGGING_CHANNEL: z.string().optional(),
 
-    // Environment (defaults to development)
-    NODE_ENV: z.enum(['development', 'production']).default('development'),
+    // Logging settings
+    ENABLE_LOGGING: z.string().optional().default('false').transform(stringToBoolean),
+    ERROR_LOGGING_CHANNEL: z.string().optional(),
 
     // Optional comma-separated guild IDs (undefined = global, string[] = guild-specific)
     GUILDS: z
         .string()
         .optional()
         .transform((val) => (val ? stringToArray(val) : undefined)),
+    MAX_AI_QUERIES_LIMIT: z.string().optional().default('30').transform(Number),
 
-    // Logging settings
-    ENABLE_LOGGING: z.string().optional().default('false').transform(stringToBoolean),
-    ERROR_LOGGING_CHANNEL: z.string().optional(),
-    COMMAND_LOGGING_CHANNEL: z.string().optional(),
-
-    // Valhalla API settings
-    VALHALLA_API_URI: z.string().optional().default('https://api.valhalladev.org/v1'),
-    VALHALLA_API_KEY: z.string().optional().default(''),
-
-    // TMDB API settings for movier
-    TMDB_READ_ACCESS_TOKEN: z.string().optional().default(''),
+    // Environment (defaults to development)
+    NODE_ENV: z.enum(['development', 'production']).default('development'),
 
     // OpenRouter AI settings (optional)
     OPENROUTER_API_KEY: z.string().optional().default(''),
     OPENROUTER_MODEL: z.string().optional().default('openai/gpt-4o-mini'),
     OPENROUTER_SYSTEM_PROMPT: z.string().optional().default(''),
-    MAX_AI_QUERIES_LIMIT: z.string().optional().default('30').transform(Number),
-    AI_QUERIES_RESET_TIME: z.string().optional().default('24h'),
-    AI_ADMIN_USER_IDS: z
-        .string()
-        .optional()
-        .transform((val) => (val ? stringToArray(val) : [])),
-    AI_STAFF_ROLE_IDS: z
-        .string()
-        .optional()
-        .transform((val) => (val ? stringToArray(val) : [])),
     OWNER_IDS: z
         .string()
         .optional()
         .transform((val) => (val ? stringToArray(val) : [])),
+
+    // TMDB API settings for movier
+    TMDB_READ_ACCESS_TOKEN: z.string().optional().default(''),
+    VALHALLA_API_KEY: z.string().optional().default(''),
+
+    // Valhalla API settings
+    VALHALLA_API_URI: z.string().optional().default('https://api.valhalladev.org/v1'),
 });
 
 // Parse config with error handling
@@ -84,7 +84,7 @@ try {
             .map((issue) => issue.path[0])
             .join(', ');
 
-        throw new Error(`Missing required environment variables: ${missingVars}`);
+        throw new Error(`Missing required environment variables: ${missingVars}`, { cause: error });
     }
     throw error;
 }
@@ -108,22 +108,21 @@ export function durationToMs(duration: string): number {
         throw new Error(`Invalid duration format: ${duration}`);
     }
 
-    const valueStr = match[1];
-    const unitStr = match[2];
+    const [, valueStr, unitStr] = match;
     if (!(valueStr && unitStr)) {
         throw new Error(`Invalid duration format: ${duration}`);
     }
     const value = Number.parseInt(valueStr, 10);
     const unit = unitStr.toLowerCase();
 
-    switch (unit) {
-        case 'm':
-            return value * 60 * 1000;
-        case 'h':
-            return value * 60 * 60 * 1000;
-        case 'd':
-            return value * 24 * 60 * 60 * 1000;
-        default:
-            throw new Error(`Invalid duration unit: ${unit}`);
+    if (unit === 'm') {
+        return value * 60 * 1000;
     }
+    if (unit === 'h') {
+        return value * 60 * 60 * 1000;
+    }
+    if (unit === 'd') {
+        return value * 24 * 60 * 60 * 1000;
+    }
+    throw new Error(`Invalid duration unit: ${unit}`);
 }

@@ -23,8 +23,8 @@ export class AddRole {
      * @param role - The role to add to the user
      */
     @Slash({
-        description: 'Add a role to a specified user.',
         defaultMemberPermissions: [PermissionsBitField.Flags.ManageRoles],
+        description: 'Add a role to a specified user.',
     })
     @Guard(BotHasPerm([PermissionsBitField.Flags.ManageRoles]))
     async addrole(
@@ -44,7 +44,7 @@ export class AddRole {
         role: Role,
         interaction: CommandInteraction
     ): Promise<void> {
-        const targetMember = user || interaction.member;
+        const targetMember = user;
 
         if (targetMember.id === interaction.member!.user.id) {
             await RagnarokComponent(interaction, 'Error', 'You cannot give yourself a role!', true);

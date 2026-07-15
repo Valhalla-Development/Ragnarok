@@ -39,7 +39,7 @@ export class GuildMemberRemove {
                 const container = RagnarokContainer(
                     'Member Left',
                     [
-                        `${member} - \`@${member.user.tag}${member.user.discriminator !== '0' ? `#${member.user.discriminator}` : ''}\``,
+                        `${member} - \`@${member.user.tag}${member.user.discriminator === '0' ? '' : `#${member.user.discriminator}`}\``,
                         `**Avatar:** ${member.user.displayAvatarURL()}`,
                         `**ID:** \`${member.user.id}\``,
                     ].join('\n')
@@ -48,9 +48,9 @@ export class GuildMemberRemove {
                 // Send the embed to the logging channel
                 if (channel) {
                     channel.send({
+                        allowedMentions: { parse: [] },
                         components: [container],
                         flags: MessageFlags.IsComponentsV2,
-                        allowedMentions: { parse: [] },
                     });
                 }
             }

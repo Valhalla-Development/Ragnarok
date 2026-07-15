@@ -135,7 +135,7 @@ export class LevelContext {
         const rankNumber = `#${rankPos}`;
         const rankText = 'RANK';
         const usergrab = member.user.displayName;
-        const discrim = member.user.discriminator !== '0' ? `#${member.user.discriminator}` : null;
+        const discrim = member.user.discriminator === '0' ? null : `#${member.user.discriminator}`;
         const avatarGrab = member.user.displayAvatarURL({ extension: 'png' });
 
         class ProgressBar {
@@ -216,10 +216,10 @@ export class LevelContext {
 
         const progressbar = new ProgressBar(
             {
+                height: 36.5,
+                width: 628.4,
                 x: 259.8,
                 y: 182.62,
-                width: 628.4,
-                height: 36.5,
             },
             color(member.displayHexColor).toString(),
             xpPercent
@@ -302,7 +302,7 @@ export class LevelContext {
             ctx.strokeStyle = 'black';
             ctx.lineWidth = 0.5;
             while (ctx.measureText(modifiedUse).width > max) {
-                modifiedUse = modifiedUse.substring(0, modifiedUse.length - 1);
+                modifiedUse = modifiedUse.slice(0, modifiedUse.length - 1);
             }
             ctx.fillText(modifiedUse, x, y);
             ctx.strokeText(modifiedUse, x, y);

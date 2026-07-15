@@ -29,8 +29,8 @@ export class Stats {
 
         // Retrieve system information
         const systemData = await si.get({
-            osInfo: 'distro',
             currentLoad: 'currentLoadUser',
+            osInfo: 'distro',
         });
 
         // Retrieve system memory

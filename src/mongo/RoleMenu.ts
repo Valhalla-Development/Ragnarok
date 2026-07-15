@@ -5,11 +5,11 @@ import { model, Schema } from 'mongoose';
  */
 const RoleMenu = new Schema({
     GuildId: { type: String, unique: true },
+    RoleList: { default: [], type: Array },
     RoleMenuId: {
-        channel: { type: String, default: null },
-        message: { type: String, default: null },
+        channel: { default: null, type: String },
+        message: { default: null, type: String },
     },
-    RoleList: { type: Array, default: [] },
 });
 
 export default model('RoleMenu', RoleMenu, 'RoleMenu');

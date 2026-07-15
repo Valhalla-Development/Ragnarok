@@ -20,18 +20,18 @@ export class Purge {
      * @param amount - The number of messages to delete
      */
     @Slash({
-        description: 'Deletes specified number of messages from the channel',
         defaultMemberPermissions: [PermissionsBitField.Flags.ManageMessages],
+        description: 'Deletes specified number of messages from the channel',
     })
     @Guard(BotHasPerm([PermissionsBitField.Flags.ManageMessages]))
     async purge(
         @SlashOption({
             description: 'Amount of messages to delete',
+            maxValue: 50,
+            minValue: 1,
             name: 'amount',
             required: true,
             type: ApplicationCommandOptionType.Number,
-            minValue: 1,
-            maxValue: 50,
         })
         amount: number,
         interaction: CommandInteraction

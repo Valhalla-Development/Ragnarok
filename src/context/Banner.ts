@@ -41,7 +41,7 @@ export class BannerContext {
             await interaction.reply({
                 files: [attachment],
             });
-        } catch (_error) {
+        } catch {
             await RagnarokComponent(
                 interaction,
                 'Error',

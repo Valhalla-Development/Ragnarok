@@ -23,15 +23,15 @@ export async function runAIChat(params: {
 }): Promise<AIRunResult> {
     if (!isAIEnabled()) {
         return {
-            ok: false,
             message:
                 'AI is not configured yet. Set `OPENROUTER_API_KEY` in your environment first.',
+            ok: false,
         };
     }
 
     const stripped = params.prompt.trim();
     if (stripped.length < 2) {
-        return { ok: false, message: 'Please enter a query with at least 2 characters.' };
+        return { message: 'Please enter a query with at least 2 characters.', ok: false };
     }
     const normalizedDisplayName = params.displayName?.trim();
     const persona = personas[params.personaId ?? 'friendly'] ?? friendly;
@@ -51,28 +51,28 @@ export async function runAIChat(params: {
         const start = Date.now();
         aiLogStart(params.userId, stripped);
         const result = (await client.chat({
-            user: params.userId,
             group: params.groupId,
             prompt: stripped,
             systemPrompt,
             temperature: persona.temperature,
             topP: persona.top_p,
+            user: params.userId,
         })) as ChatCompletionResult;
 
         const content = normalizeResponseContent(result.content);
         if (!content.length) {
-            return { ok: false, message: 'The model returned an empty response. Try again.' };
+            return { message: 'The model returned an empty response. Try again.', ok: false };
         }
 
         aiLogDone(result, Date.now() - start);
-        const cost = (result as { cost?: number }).cost;
-        await recordAIGlobalUsage({ queries: 1, cost: cost ?? 0 });
-        return { ok: true, chunks: splitMessages(content, 1900) };
+        const { cost } = result as { cost?: number };
+        await recordAIGlobalUsage({ cost: cost ?? 0, queries: 1 });
+        return { chunks: splitMessages(content, 1900), ok: true };
     } catch (error) {
         console.error('OpenRouter chat error:', error);
         return {
-            ok: false,
             message: 'An AI error occurred while processing your request. Please try again.',
+            ok: false,
         };
     }
 }

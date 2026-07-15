@@ -157,7 +157,7 @@ export class GuildMemberAdd {
                 const container = RagnarokContainer(
                     'Member Joined',
                     [
-                        `${member} - \`@${member.user.tag}${member.user.discriminator !== '0' ? `#${member.user.discriminator}` : ''}\``,
+                        `${member} - \`@${member.user.tag}${member.user.discriminator === '0' ? '' : `#${member.user.discriminator}`}\``,
                         `**Avatar:** ${member.user.displayAvatarURL()}`,
                         `**Account Age:** <t:${Math.round(member.user.createdTimestamp / 1000)}> - (<t:${Math.round(member.user.createdTimestamp / 1000)}:R>)`,
                         `**Joined:** ${joinedAt}`,
@@ -168,9 +168,9 @@ export class GuildMemberAdd {
                 // Send the embed to the logging channel
                 if (channel) {
                     channel.send({
+                        allowedMentions: { parse: [] },
                         components: [container],
                         flags: MessageFlags.IsComponentsV2,
-                        allowedMentions: { parse: [] },
                     });
                 }
             }

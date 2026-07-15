@@ -34,9 +34,9 @@ export class InviteCreate {
                         .has(PermissionsBitField.Flags.SendMessages)
                 ) {
                     const expiry =
-                        invite.maxAge !== 0
-                            ? `<t:${Math.floor(Date.now() / 1000) + invite.maxAge!}:R>`
-                            : '`Never`';
+                        invite.maxAge === 0
+                            ? '`Never`'
+                            : `<t:${Math.floor(Date.now() / 1000) + invite.maxAge!}:R>`;
 
                     const container = RagnarokContainer(
                         'Invite Created',
@@ -50,9 +50,9 @@ export class InviteCreate {
                     );
 
                     chn.send({
+                        allowedMentions: { parse: [] },
                         components: [container],
                         flags: MessageFlags.IsComponentsV2,
-                        allowedMentions: { parse: [] },
                     });
                 }
             }

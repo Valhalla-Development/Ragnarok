@@ -39,9 +39,9 @@ export class InviteDelete {
                     );
 
                     chn.send({
+                        allowedMentions: { parse: [] },
                         components: [container],
                         flags: MessageFlags.IsComponentsV2,
-                        allowedMentions: { parse: [] },
                     });
                 }
             }

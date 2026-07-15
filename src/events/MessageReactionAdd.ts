@@ -144,7 +144,7 @@ export class MessageReactionAdd {
             return;
         }
         const isStarboardMessage = message.channelId === starChannel.id;
-        if (message.author?.bot && !isStarboardMessage) {
+        if (message.author.bot && !isStarboardMessage) {
             return;
         }
 
@@ -176,16 +176,16 @@ export class MessageReactionAdd {
         const container = this.buildStarboardContainer(
             `${message.author}`,
             message.author.displayAvatarURL({ extension: 'png' }),
-            message.content ?? '',
+            message.content,
             message.url,
             effectiveCount,
             imageUrl
         );
 
         const sent = await starChannel.send({
+            allowedMentions: { parse: [] },
             components: [container],
             flags: MessageFlags.IsComponentsV2,
-            allowedMentions: { parse: [] },
         });
         await sent.react('⭐').catch((error) => {
             console.debug('Could not add star reaction to starboard post:', error);

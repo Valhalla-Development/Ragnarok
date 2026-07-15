@@ -19,8 +19,8 @@ export class Emit {
      * @param client
      */
     @Slash({
-        description: 'Developer command to trigger specific events.\n',
         defaultMemberPermissions: [PermissionsBitField.Flags.Administrator],
+        description: 'Developer command to trigger specific events.\n',
     })
     async emit(
         @SlashChoice({ name: 'guildMemberAdd', value: 'guildMemberAdd' })

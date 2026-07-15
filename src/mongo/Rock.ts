@@ -6,7 +6,7 @@ import { model, Schema } from 'mongoose';
  */
 const Rock = new Schema({
     GuildId: { type: String, unique: true },
-    Status: { type: Boolean, default: true },
+    Status: { default: true, type: Boolean },
 });
 
 export default model('Rock', Rock, 'Rock');

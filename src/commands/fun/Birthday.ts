@@ -31,8 +31,8 @@ export class Birthday {
         @SlashOption({
             description: 'View birthday of a user',
             name: 'user',
-            type: ApplicationCommandOptionType.User,
             required: false,
+            type: ApplicationCommandOptionType.User,
         })
         user: GuildMember | null,
         interaction: CommandInteraction
@@ -137,8 +137,8 @@ export class Birthday {
 
         await Birthdays.findOneAndUpdate(
             { UserId: interaction.user.id },
-            { Date: date, UserId: interaction.user.id, LastRun: null },
-            { upsert: true, returnDocument: 'after' }
+            { Date: date, LastRun: null, UserId: interaction.user.id },
+            { returnDocument: 'after', upsert: true }
         );
 
         await RagnarokComponent(
@@ -246,7 +246,7 @@ export class Birthday {
         const sortedRows = filteredRows
             .map((row) => {
                 const next = row.Date ? computeNextBirthday(row.Date) : null;
-                return { row, next };
+                return { next, row };
             })
             .filter(
                 (x): x is { row: (typeof filteredRows)[number]; next: moment.Moment } => !!x.next

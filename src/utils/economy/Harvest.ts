@@ -96,7 +96,7 @@ function calculateTimeRemaining(cropGrowTime: number): string {
         millisecondsDecimalDigits: 1,
     });
     const cleanTime = timeDiff.replace(/-/g, '');
-    return cleanTime.substring(0, cleanTime.indexOf('s') + 1);
+    return cleanTime.slice(0, cleanTime.indexOf('s') + 1);
 }
 
 // Helper method to show current crop status when nothing is harvestable
@@ -107,7 +107,7 @@ async function showCropStatus(
     homeButton: ButtonBuilder
 ) {
     // Clear any existing timers to prevent unwanted view changes
-    clearEconomyViewTimer(interaction.message?.id);
+    clearEconomyViewTimer(interaction.message.id);
     const statusEntries: string[] = [];
 
     const growingCrops = balance.FarmPlot.filter((crop) => crop.CropGrowTime !== 'na');
@@ -177,9 +177,9 @@ async function showCropStatus(
 function calculateCropValue(crop: { CropType: string; Decay: number }): { value: number } {
     const cropPrices: { [key: string]: number } = {
         corn: ecoPrices.farming.rewards.corn,
-        wheat: ecoPrices.farming.rewards.wheat,
         potato: ecoPrices.farming.rewards.potatoes,
         tomato: ecoPrices.farming.rewards.tomatoes,
+        wheat: ecoPrices.farming.rewards.wheat,
     };
 
     const basePrice = cropPrices[crop.CropType] || 0;
@@ -196,13 +196,17 @@ function processHarvest(balance: BalanceInterface, availableSpots: number): Harv
     let totalValue = 0;
 
     // Process harvest
-    for (let i = 0, harvested = 0; i < balance.FarmPlot.length && harvested < availableSpots; i++) {
+    for (
+        let i = 0, harvested = 0;
+        i < balance.FarmPlot.length && harvested < availableSpots;
+        i += 1
+    ) {
         const crop = balance.FarmPlot[i];
         if (crop && crop.CropStatus === 'harvest') {
             // Calculate final decay before harvesting
             crop.Decay = calculateDecay(crop, currentTime);
 
-            const removedCrop = balance.FarmPlot.splice(i, 1)[0];
+            const [removedCrop] = balance.FarmPlot.splice(i, 1);
             if (removedCrop) {
                 removedCrop.LastUpdateTime = currentTime; // Set harvest time
                 balance.HarvestedCrops.push(removedCrop);
@@ -222,7 +226,7 @@ function processHarvest(balance: BalanceInterface, availableSpots: number): Harv
         );
     }
 
-    return { crops: harvestedCrops, totalValue, displayEntries };
+    return { crops: harvestedCrops, displayEntries, totalValue };
 }
 
 // Helper method to display harvest results
@@ -233,7 +237,7 @@ async function displayHarvestResults(
     homeButton: ButtonBuilder
 ) {
     // Clear any existing timers to prevent unwanted view changes
-    clearEconomyViewTimer(interaction.message?.id);
+    clearEconomyViewTimer(interaction.message.id);
     const { displayEntries, totalValue } = harvestResults;
 
     if (!displayEntries.length) {

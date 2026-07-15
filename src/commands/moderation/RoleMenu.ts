@@ -23,8 +23,8 @@ const ROLEMENU_BUTTON_PREFIX = 'rm:';
 @Category('Moderation')
 export class RoleMenuCommand {
     @Slash({
-        description: 'Post or refresh the self-role menu in this channel',
         defaultMemberPermissions: [PermissionsBitField.Flags.ManageGuild],
+        description: 'Post or refresh the self-role menu in this channel',
     })
     async rolemenu(interaction: CommandInteraction): Promise<void> {
         if (!interaction.guild) {
@@ -70,7 +70,7 @@ export class RoleMenuCommand {
                         RoleMenuId: { channel: null, message: null },
                     },
                 },
-                { upsert: true, returnDocument: 'after' }
+                { returnDocument: 'after', upsert: true }
             );
             await RagnarokComponent(
                 interaction,
@@ -86,7 +86,7 @@ export class RoleMenuCommand {
             await RoleMenu.findOneAndUpdate(
                 { GuildId: interaction.guild.id },
                 { $set: { RoleList: cleanRoleIds } },
-                { upsert: true, returnDocument: 'after' }
+                { returnDocument: 'after', upsert: true }
             );
         }
 
@@ -110,26 +110,26 @@ export class RoleMenuCommand {
 
                 if (existingMessage) {
                     posted = await existingMessage.edit({
-                        content: `## 🎭 Role Menu\n${description}`,
                         components: rows,
+                        content: `## 🎭 Role Menu\n${description}`,
                     });
                     actionWord = 'refreshed';
                 } else {
                     posted = await interaction.channel.send({
-                        content: `## 🎭 Role Menu\n${description}`,
                         components: rows,
+                        content: `## 🎭 Role Menu\n${description}`,
                     });
                 }
             } else {
                 posted = await interaction.channel.send({
-                    content: `## 🎭 Role Menu\n${description}`,
                     components: rows,
+                    content: `## 🎭 Role Menu\n${description}`,
                 });
             }
         } else {
             posted = await interaction.channel.send({
-                content: `## 🎭 Role Menu\n${description}`,
                 components: rows,
+                content: `## 🎭 Role Menu\n${description}`,
             });
         }
 
@@ -137,11 +137,11 @@ export class RoleMenuCommand {
             { GuildId: interaction.guild.id },
             {
                 $set: {
-                    RoleMenuId: { channel: posted.channelId, message: posted.id },
                     RoleList: cleanRoleIds,
+                    RoleMenuId: { channel: posted.channelId, message: posted.id },
                 },
             },
-            { upsert: true, returnDocument: 'after' }
+            { returnDocument: 'after', upsert: true }
         );
 
         await RagnarokComponent(
@@ -248,7 +248,7 @@ export class RoleMenuCommand {
         await RoleMenu.findOneAndUpdate(
             { GuildId: message.guild.id },
             { $set: { RoleMenuId: { channel: null, message: null } } },
-            { upsert: true, returnDocument: 'after' }
+            { returnDocument: 'after', upsert: true }
         );
     }
 }

@@ -22,8 +22,8 @@ export class SetAnnouncement {
      * @param interaction - The command interaction.
      */
     @Slash({
-        description: 'Sets the bot announcement displayed in /stats.',
         defaultMemberPermissions: [PermissionsBitField.Flags.Administrator],
+        description: 'Sets the bot announcement displayed in /stats.',
     })
     async setannouncement(interaction: CommandInteraction): Promise<void> {
         if (!config.OWNER_IDS.includes(interaction.user.id)) {

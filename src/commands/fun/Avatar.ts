@@ -24,8 +24,8 @@ export class Avatar {
         @SlashOption({
             description: 'User to fetch (optional)',
             name: 'user',
-            type: ApplicationCommandOptionType.User,
             required: false,
+            type: ApplicationCommandOptionType.User,
         })
         user: GuildMember | null,
         interaction: CommandInteraction
@@ -56,7 +56,7 @@ export class Avatar {
             await interaction.reply({
                 files: [attachment],
             });
-        } catch (_error) {
+        } catch {
             await RagnarokComponent(
                 interaction,
                 'Error',

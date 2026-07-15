@@ -19,8 +19,8 @@ import {
 @Category('Moderation')
 export class AIStats {
     @Slash({
-        description: 'View AI usage statistics.',
         defaultMemberPermissions: [PermissionsBitField.Flags.ManageMessages],
+        description: 'View AI usage statistics.',
     })
     async aistats(interaction: CommandInteraction): Promise<void> {
         if (!interaction.guild) {
@@ -38,9 +38,9 @@ export class AIStats {
 
         if (!canView) {
             await interaction.reply({
+                allowedMentions: { parse: [] },
                 content: '⚠️ Only AI staff can view usage stats.',
                 flags: MessageFlags.Ephemeral,
-                allowedMentions: { parse: [] },
             });
             return;
         }
@@ -52,9 +52,9 @@ export class AIStats {
         ]);
         if (top.length === 0) {
             await interaction.reply({
+                allowedMentions: { parse: [] },
                 content: 'No AI usage data found yet.',
                 flags: MessageFlags.Ephemeral,
-                allowedMentions: { parse: [] },
             });
             return;
         }
@@ -78,9 +78,9 @@ export class AIStats {
             );
 
         await interaction.reply({
+            allowedMentions: { parse: [] },
             components: [container],
             flags: MessageFlags.IsComponentsV2,
-            allowedMentions: { parse: [] },
         });
     }
 }

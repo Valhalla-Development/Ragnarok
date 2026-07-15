@@ -294,7 +294,7 @@ export async function handleItems(interaction: ButtonInteraction, homeButton: Bu
         homeButton
     );
 
-    await interaction.message?.edit({
+    await interaction.message.edit({
         components: [inventoryContainer],
         files: [],
         flags: MessageFlags.IsComponentsV2,

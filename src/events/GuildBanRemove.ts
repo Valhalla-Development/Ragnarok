@@ -37,7 +37,7 @@ export class GuildBanRemove {
                     .has(PermissionsBitField.Flags.SendMessages)
             ) {
                 const lines = [
-                    `${ban.user} - \`@${ban.user.tag}${ban.user.discriminator !== '0' ? `#${ban.user.discriminator}` : ''}\``,
+                    `${ban.user} - \`@${ban.user.tag}${ban.user.discriminator === '0' ? '' : `#${ban.user.discriminator}`}\``,
                     `**Avatar:** ${ban.user.displayAvatarURL()}`,
                     `**ID:** \`${ban.user.id}\``,
                 ];
@@ -49,9 +49,9 @@ export class GuildBanRemove {
                 // Send the embed to the logging channel
                 if (channel) {
                     channel.send({
+                        allowedMentions: { parse: [] },
                         components: [container],
                         flags: MessageFlags.IsComponentsV2,
-                        allowedMentions: { parse: [] },
                     });
                 }
             }

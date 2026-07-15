@@ -87,9 +87,9 @@ export class InteractionCreate {
                 if (channel?.type === ChannelType.GuildText) {
                     channel
                         .send({
+                            allowedMentions: { parse: [] },
                             components: [logContainer],
                             flags: MessageFlags.IsComponentsV2,
-                            allowedMentions: { parse: [] },
                         })
                         .catch(console.error);
                 }

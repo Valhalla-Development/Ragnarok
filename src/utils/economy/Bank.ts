@@ -40,7 +40,7 @@ export async function handleDeposit(
 
         // If home container is available, update the message
         if (homeContainer) {
-            await interaction.message?.edit({
+            await interaction.message.edit({
                 components: [homeContainer],
                 files: [],
                 flags: MessageFlags.IsComponentsV2,
@@ -48,10 +48,10 @@ export async function handleDeposit(
         }
 
         // Remove the message after 5 seconds
-        scheduleEconomyViewTimer(interaction.message?.id, 5000, async () => {
+        scheduleEconomyViewTimer(interaction.message.id, 5000, async () => {
             const updatedHomeContainer = await updateHomeContainer(interaction, buttons);
             if (updatedHomeContainer) {
-                await interaction.message?.edit({
+                await interaction.message.edit({
                     components: [updatedHomeContainer],
                     files: [],
                     flags: MessageFlags.IsComponentsV2,
@@ -84,7 +84,7 @@ export async function handleDeposit(
 
     // If home container is available, update the message
     if (homeContainer) {
-        await interaction.message?.edit({
+        await interaction.message.edit({
             components: [homeContainer],
             files: [],
             flags: MessageFlags.IsComponentsV2,
@@ -92,10 +92,10 @@ export async function handleDeposit(
     }
 
     // Remove the message after 5 seconds
-    scheduleEconomyViewTimer(interaction.message?.id, 5000, async () => {
+    scheduleEconomyViewTimer(interaction.message.id, 5000, async () => {
         const updatedHomeContainer = await updateHomeContainer(interaction, buttons);
         if (updatedHomeContainer) {
-            await interaction.message?.edit({
+            await interaction.message.edit({
                 components: [updatedHomeContainer],
                 files: [],
                 flags: MessageFlags.IsComponentsV2,
@@ -121,26 +121,32 @@ export async function handleWithdraw(
         withdrawButton: ButtonBuilder;
     }
 ) {
+    if (!interaction.message) {
+        return;
+    }
+    // Capture after the null check so nested callbacks keep a definite Message.
+    const sourceMessage = interaction.message;
+
     await interaction.deferReply();
     await interaction.deleteReply();
 
     const balance = await getOrCreateBalance(interaction);
 
-    async function showTemporaryMessage(message: string) {
-        const homeContainer = await updateHomeContainer(interaction, buttons, message);
+    async function showTemporaryMessage(tempMessage: string) {
+        const homeContainer = await updateHomeContainer(interaction, buttons, tempMessage);
 
         if (homeContainer) {
-            await interaction.message?.edit({
+            await sourceMessage.edit({
                 components: [homeContainer],
                 files: [],
                 flags: MessageFlags.IsComponentsV2,
             });
         }
 
-        scheduleEconomyViewTimer(interaction.message?.id, 5000, async () => {
+        scheduleEconomyViewTimer(sourceMessage.id, 5000, async () => {
             const updatedHomeContainer = await updateHomeContainer(interaction, buttons);
             if (updatedHomeContainer) {
-                await interaction.message?.edit({
+                await sourceMessage.edit({
                     components: [updatedHomeContainer],
                     files: [],
                     flags: MessageFlags.IsComponentsV2,

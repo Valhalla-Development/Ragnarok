@@ -22,8 +22,8 @@ export class Sudo {
      * @param input - The message to send as the user
      */
     @Slash({
-        description: 'Send a message as the bot',
         defaultMemberPermissions: [PermissionsBitField.Flags.ManageMessages],
+        description: 'Send a message as the bot',
     })
     @Guard(BotHasPerm([PermissionsBitField.Flags.ManageWebhooks]))
     async sudo(
@@ -36,10 +36,10 @@ export class Sudo {
         user: GuildMember,
         @SlashOption({
             description: 'The message to send as the user',
+            maxLength: 1000,
+            minLength: 2,
             name: 'input',
             required: true,
-            minLength: 2,
-            maxLength: 1000,
             type: ApplicationCommandOptionType.String,
         })
         input: string,
@@ -57,8 +57,8 @@ export class Sudo {
 
         await interaction
             .channel!.createWebhook({
-                name: user.displayName,
                 avatar: user.displayAvatarURL({ extension: 'png' }),
+                name: user.displayName,
                 reason: 'Ragnarok sudo command',
             })
             .then(async (webhook) => {

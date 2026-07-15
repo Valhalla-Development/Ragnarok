@@ -43,7 +43,7 @@ export class ChannelCreate {
                 const channelDisplay =
                     channelType === 'Category'
                         ? `\`${channel.name}\``
-                        : `${channel} - ${channelType === 'Text' ? '#' : ''}${channel.type !== ChannelType.GuildCategory ? channel.name : ''}`;
+                        : `${channel} - ${channelType === 'Text' ? '#' : ''}${channel.type === ChannelType.GuildCategory ? '' : channel.name}`;
                 const container = RagnarokContainer(
                     `${channelType} Channel Created`,
                     `${channelDisplay}\n**ID:** \`${channel.id}\``
@@ -52,9 +52,9 @@ export class ChannelCreate {
                 // Send the embed to the logging channel
                 if (channel) {
                     chn.send({
+                        allowedMentions: { parse: [] },
                         components: [container],
                         flags: MessageFlags.IsComponentsV2,
-                        allowedMentions: { parse: [] },
                     });
                 }
             }

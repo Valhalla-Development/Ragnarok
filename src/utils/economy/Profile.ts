@@ -33,19 +33,19 @@ export async function getOrCreateBalance(
         { IdJoined: idJoined },
         {
             $setOnInsert: {
-                IdJoined: idJoined,
-                UserId: userId,
-                GuildId: guildId,
-                Cash: 0,
                 Bank: 500,
-                Total: 500,
+                Cash: 0,
                 ClaimNewUser: Date.now() + ecoPrices.claims.newUserTime,
+                GuildId: guildId,
+                IdJoined: idJoined,
+                Total: 500,
+                UserId: userId,
             },
         },
         {
-            upsert: true,
             returnDocument: 'after',
             setDefaultsOnInsert: true,
+            upsert: true,
         }
     );
 

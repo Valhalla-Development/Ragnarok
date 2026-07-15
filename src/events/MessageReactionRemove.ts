@@ -35,7 +35,7 @@ export class MessageReactionRemove {
             return;
         }
         const isStarboardMessage = message.channelId === starChannel.id;
-        if (message.author?.bot && !isStarboardMessage) {
+        if (message.author.bot && !isStarboardMessage) {
             return;
         }
 

@@ -23,8 +23,8 @@ export class Rob {
         @SlashOption({
             description: 'User to steal from',
             name: 'user',
-            type: ApplicationCommandOptionType.User,
             required: true,
+            type: ApplicationCommandOptionType.User,
         })
         user: GuildMember,
         interaction: CommandInteraction

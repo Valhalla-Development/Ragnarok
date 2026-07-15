@@ -25,7 +25,7 @@ export async function handleBaltop(
     pageIndex = 0
 ) {
     // Clear any existing timers to prevent unwanted view changes
-    clearEconomyViewTimer(interaction.message?.id);
+    clearEconomyViewTimer(interaction.message.id);
     // Fetch all balances from the database sorted by total balance
     const allUsers = await Balance.find({ GuildId: interaction.guild!.id }).sort({ Total: -1 });
 

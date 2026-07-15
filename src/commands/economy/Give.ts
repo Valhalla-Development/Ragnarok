@@ -23,16 +23,16 @@ export class Give {
         @SlashOption({
             description: 'User to give money to',
             name: 'user',
-            type: ApplicationCommandOptionType.User,
             required: true,
+            type: ApplicationCommandOptionType.User,
         })
         user: GuildMember,
         @SlashOption({
             description: 'Amount to give the user',
-            name: 'amount',
-            type: ApplicationCommandOptionType.Number,
-            required: true,
             minValue: 10,
+            name: 'amount',
+            required: true,
+            type: ApplicationCommandOptionType.Number,
         })
         amount: number,
         interaction: CommandInteraction

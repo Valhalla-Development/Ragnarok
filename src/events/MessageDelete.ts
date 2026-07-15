@@ -45,9 +45,9 @@ export class MessageDelete {
                         `**No Data:** A message sent by ${message.author} was deleted but no content was found.`
                     );
                     chn.send({
+                        allowedMentions: { parse: [] },
                         components: [noLogContainer],
                         flags: MessageFlags.IsComponentsV2,
-                        allowedMentions: { parse: [] },
                     });
                     return;
                 }
@@ -61,7 +61,7 @@ export class MessageDelete {
                 }
                 const body = [
                     `**Message sent by ${message.author}, deleted in ${message.channel}**`,
-                    message.content?.length ? message.content.substring(0, 3900) : '',
+                    message.content?.length ? message.content.slice(0, 3900) : '',
                     attachments?.length ? `\n**Attachments:**\n${attachments.join('\n')}` : '',
                     `\n**ID:** \`${message.id}\``,
                 ]
@@ -69,9 +69,9 @@ export class MessageDelete {
                     .join('\n');
                 const container = RagnarokContainer('Message Deleted', body);
                 chn.send({
+                    allowedMentions: { parse: [] },
                     components: [container],
                     flags: MessageFlags.IsComponentsV2,
-                    allowedMentions: { parse: [] },
                 });
             }
         }

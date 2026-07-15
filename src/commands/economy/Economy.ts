@@ -50,7 +50,7 @@ export class EconomyCommand {
      */
     @ButtonComponent({ id: /^economy_.*/ })
     async buttonInteraction(interaction: ButtonInteraction, client: Client) {
-        clearEconomyViewTimer(interaction.message?.id);
+        clearEconomyViewTimer(interaction.message.id);
 
         const customIdParts = interaction.customId.split('_');
         const userId = customIdParts.at(-1);
@@ -87,14 +87,14 @@ export class EconomyCommand {
         }
 
         if (interaction.customId.startsWith('economy_shop_mode_')) {
-            const mode = customIdParts[3]; // economy_shop_mode_buy_userId
+            const [, , , mode] = customIdParts; // economy_shop_mode_buy_userId
             if (mode === 'buy' || mode === 'sell' || mode === 'upgrade') {
                 await instance.setShopMode(interaction, mode as 'buy' | 'sell' | 'upgrade');
                 return;
             }
         }
 
-        const button = customIdParts[1];
+        const [, button] = customIdParts;
         if (!button) {
             return;
         }
@@ -135,7 +135,10 @@ export class EconomyCommand {
      */
     @ModalComponent({ id: /^coinflipAmount/ })
     async modalSubmit(interaction: ModalSubmitInteraction, client: Client): Promise<void> {
-        clearEconomyViewTimer(interaction.message?.id);
+        if (!interaction.message) {
+            return;
+        }
+        clearEconomyViewTimer(interaction.message.id);
 
         const customIdParts = interaction.customId.split('_');
         const userId = customIdParts.at(-1);
@@ -170,7 +173,10 @@ export class EconomyCommand {
 
     @ModalComponent({ id: /^economy_withdraw_modal_.*/ })
     async withdrawModal(interaction: ModalSubmitInteraction): Promise<void> {
-        clearEconomyViewTimer(interaction.message?.id);
+        if (!interaction.message) {
+            return;
+        }
+        clearEconomyViewTimer(interaction.message.id);
 
         const customIdParts = interaction.customId.split('_');
         const userId = customIdParts.at(-1);
@@ -204,7 +210,7 @@ export class EconomyCommand {
 
     @SelectMenuComponent({ id: /^economy_shop_action_select_.*/ })
     async onShopActionSelect(interaction: StringSelectMenuInteraction): Promise<void> {
-        clearEconomyViewTimer(interaction.message?.id);
+        clearEconomyViewTimer(interaction.message.id);
 
         const customIdParts = interaction.customId.split('_');
         const userId = customIdParts.at(-1);
@@ -231,7 +237,7 @@ export class EconomyCommand {
             return;
         }
 
-        const selected = interaction.values[0];
+        const [selected] = interaction.values;
         if (!selected) {
             await instance.shop(interaction, 'No option selected.');
             return;
@@ -241,7 +247,7 @@ export class EconomyCommand {
 
     @SelectMenuComponent({ id: /^economy_shop_qty_select_.*/ })
     async onShopQuantitySelect(interaction: StringSelectMenuInteraction): Promise<void> {
-        clearEconomyViewTimer(interaction.message?.id);
+        clearEconomyViewTimer(interaction.message.id);
 
         const customIdParts = interaction.customId.split('_');
         const userId = customIdParts.at(-1);
@@ -268,7 +274,7 @@ export class EconomyCommand {
             return;
         }
 
-        const selected = interaction.values[0];
+        const [selected] = interaction.values;
         if (!selected) {
             await instance.shop(interaction);
             return;
@@ -278,7 +284,7 @@ export class EconomyCommand {
 
     @SelectMenuComponent({ id: /^economy_plant_crop_select_.*/ })
     async onPlantCropSelect(interaction: StringSelectMenuInteraction): Promise<void> {
-        clearEconomyViewTimer(interaction.message?.id);
+        clearEconomyViewTimer(interaction.message.id);
 
         const customIdParts = interaction.customId.split('_');
         const userId = customIdParts.at(-1);
@@ -305,7 +311,7 @@ export class EconomyCommand {
             return;
         }
 
-        const selected = interaction.values[0];
+        const [selected] = interaction.values;
         if (!(selected && ['corn', 'wheat', 'potato', 'tomato'].includes(selected))) {
             await instance.plant(interaction, 'Invalid crop selection.');
             return;
@@ -318,7 +324,7 @@ export class EconomyCommand {
 
     @SelectMenuComponent({ id: /^economy_plant_amount_select_.*/ })
     async onPlantAmountSelect(interaction: StringSelectMenuInteraction): Promise<void> {
-        clearEconomyViewTimer(interaction.message?.id);
+        clearEconomyViewTimer(interaction.message.id);
 
         const customIdParts = interaction.customId.split('_');
         const userId = customIdParts.at(-1);
@@ -345,7 +351,7 @@ export class EconomyCommand {
             return;
         }
 
-        const selected = interaction.values[0];
+        const [selected] = interaction.values;
         if (!selected) {
             await instance.plant(interaction);
             return;
@@ -360,7 +366,7 @@ export class EconomyCommand {
      */
     @SelectMenuComponent({ id: /^heist_target_select_.*/ })
     async heistTargetSelect(interaction: UserSelectMenuInteraction): Promise<void> {
-        clearEconomyViewTimer(interaction.message?.id);
+        clearEconomyViewTimer(interaction.message.id);
 
         const customIdParts = interaction.customId.split('_');
         const userId = customIdParts.at(-1);
@@ -411,10 +417,6 @@ export class EconomyCommand {
 
             await interaction.deferReply();
             await interaction.deleteReply();
-
-            if (!interaction.message) {
-                return;
-            }
 
             await interaction.message.edit({
                 components: [resultContainer],

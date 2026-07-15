@@ -96,8 +96,8 @@ export class Leader {
 
         const allUsers = await Level.find({ GuildId: interaction.guild!.id }).sort({ Xp: -1 });
         const mappedUsers = allUsers.map((row) => ({
-            UserId: row.UserId ?? '',
             Level: Number(row.Level ?? 0),
+            UserId: row.UserId ?? '',
             Xp: Number(row.Xp ?? 0),
         }));
 

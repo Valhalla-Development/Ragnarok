@@ -179,17 +179,17 @@ export class Economy {
     private getButtons() {
         return {
             baltopButton: this.baltopButton,
-            gambleButton: this.gambleButton,
-            depositButton: this.depositButton,
-            heistButton: this.heistButton,
-            fishButton: this.fishButton,
-            farmButton: this.farmButton,
-            itemsButton: this.itemsButton,
             claimButton: this.claimButton,
-            withdrawButton: this.withdrawButton,
-            shopButton: this.shopButton,
-            plantButton: this.plantButton,
+            depositButton: this.depositButton,
+            farmButton: this.farmButton,
+            fishButton: this.fishButton,
+            gambleButton: this.gambleButton,
             harvestButton: this.harvestButton,
+            heistButton: this.heistButton,
+            itemsButton: this.itemsButton,
+            plantButton: this.plantButton,
+            shopButton: this.shopButton,
+            withdrawButton: this.withdrawButton,
         };
     }
 
@@ -282,8 +282,8 @@ export class Economy {
      */
     async gamble(interaction: ButtonInteraction): Promise<void> {
         await showGambleMenu(interaction, {
-            homeButton: this.homeButton,
             coinflipButton: this.coinflipButton,
+            homeButton: this.homeButton,
         });
     }
 
@@ -526,21 +526,21 @@ export class Economy {
                         .setCustomId(`economy_plant_crop_select_${this.userId}`)
                         .setPlaceholder('Select crop')
                         .addOptions(
-                            { label: 'Corn', value: 'corn', default: this.selectedCrop === 'corn' },
+                            { default: this.selectedCrop === 'corn', label: 'Corn', value: 'corn' },
                             {
+                                default: this.selectedCrop === 'wheat',
                                 label: 'Wheat',
                                 value: 'wheat',
-                                default: this.selectedCrop === 'wheat',
                             },
                             {
+                                default: this.selectedCrop === 'potato',
                                 label: 'Potato',
                                 value: 'potato',
-                                default: this.selectedCrop === 'potato',
                             },
                             {
+                                default: this.selectedCrop === 'tomato',
                                 label: 'Tomato',
                                 value: 'tomato',
-                                default: this.selectedCrop === 'tomato',
                             }
                         )
                 )
@@ -610,44 +610,44 @@ export class Economy {
             const qty = this.shopQuantity;
             return [
                 {
-                    label: 'Fishing Rod',
-                    value: 'rod',
                     default: this.selectedShopItem === 'rod',
                     description: items?.FishingRod
                         ? 'Owned'
                         : `Cost ${this.coinFmt(ecoPrices.fishing.items.fishingRod)}`,
+                    label: 'Fishing Rod',
+                    value: 'rod',
                 },
                 {
-                    label: 'Farming Tools',
-                    value: 'tools',
                     default: this.selectedShopItem === 'tools',
                     description: items?.FarmingTools
                         ? 'Owned'
                         : `Cost ${this.coinFmt(ecoPrices.farming.items.farmingTools)}`,
+                    label: 'Farming Tools',
+                    value: 'tools',
                 },
                 {
-                    label: 'Corn Seeds',
-                    value: 'corn',
                     default: this.selectedShopItem === 'corn',
                     description: `${qty} pack${qty > 1 ? 's' : ''} (${qty * 10} seeds) • ${this.coinFmt(ecoPrices.boosts.seeds.cornSeed * qty)}`,
+                    label: 'Corn Seeds',
+                    value: 'corn',
                 },
                 {
-                    label: 'Wheat Seeds',
-                    value: 'wheat',
                     default: this.selectedShopItem === 'wheat',
                     description: `${qty} pack${qty > 1 ? 's' : ''} (${qty * 10} seeds) • ${this.coinFmt(ecoPrices.boosts.seeds.wheatSeed * qty)}`,
+                    label: 'Wheat Seeds',
+                    value: 'wheat',
                 },
                 {
-                    label: 'Potato Seeds',
-                    value: 'potato',
                     default: this.selectedShopItem === 'potato',
                     description: `${qty} pack${qty > 1 ? 's' : ''} (${qty * 10} seeds) • ${this.coinFmt(ecoPrices.boosts.seeds.potatoSeed * qty)}`,
+                    label: 'Potato Seeds',
+                    value: 'potato',
                 },
                 {
-                    label: 'Tomato Seeds',
-                    value: 'tomato',
                     default: this.selectedShopItem === 'tomato',
                     description: `${qty} pack${qty > 1 ? 's' : ''} (${qty * 10} seeds) • ${this.coinFmt(ecoPrices.boosts.seeds.tomatoSeed * qty)}`,
+                    label: 'Tomato Seeds',
+                    value: 'tomato',
                 },
             ];
         }
@@ -698,34 +698,34 @@ export class Economy {
             }[] = [];
             if (allCount > 0) {
                 options.push({
-                    label: 'Sell All',
-                    value: 'all',
                     default: this.selectedShopItem === 'all',
                     description: `${allCount.toLocaleString('en')} items | ${this.coinFmt(allValue)}`,
+                    label: 'Sell All',
+                    value: 'all',
                 });
             }
             if (fishCount > 0) {
                 options.push({
-                    label: 'Sell Fish',
-                    value: 'fish',
                     default: this.selectedShopItem === 'fish',
                     description: `${fishCount.toLocaleString('en')} fish | ${this.coinFmt(fishValue)}`,
+                    label: 'Sell Fish',
+                    value: 'fish',
                 });
             }
             if (farmCount > 0) {
                 options.push({
-                    label: 'Sell Farm',
-                    value: 'farm',
                     default: this.selectedShopItem === 'farm',
                     description: `${farmCount.toLocaleString('en')} farm items | ${this.coinFmt(farmValue)}`,
+                    label: 'Sell Farm',
+                    value: 'farm',
                 });
             }
             if (treasureCount > 0) {
                 options.push({
-                    label: 'Sell Treasure',
-                    value: 'treasure',
                     default: this.selectedShopItem === 'treasure',
                     description: `${treasureCount.toLocaleString('en')} treasure | ${this.coinFmt(treasureValue)}`,
+                    label: 'Sell Treasure',
+                    value: 'treasure',
                 });
             }
             return options;
@@ -739,51 +739,51 @@ export class Economy {
             price: number;
         }[] = [
             {
-                label: 'Seed Bag',
-                value: 'seedbag',
                 current: Number(boosts?.SeedBag ?? 0),
+                label: 'Seed Bag',
                 limit: ecoPrices.boosts.seedBagLimit,
                 price: ecoPrices.boosts.seedBagPrice,
+                value: 'seedbag',
             },
             {
-                label: 'Fish Bag',
-                value: 'fishbag',
                 current: Number(boosts?.FishBag ?? 0),
+                label: 'Fish Bag',
                 limit: ecoPrices.fishing.items.fishBagLimit,
                 price: ecoPrices.fishing.items.fishBagPrice,
+                value: 'fishbag',
             },
             {
-                label: 'Farm Bag',
-                value: 'farmbag',
                 current: Number(boosts?.FarmBag ?? 0),
+                label: 'Farm Bag',
                 limit: ecoPrices.farming.items.farmBagLimit,
                 price: ecoPrices.farming.items.farmBagPrice,
+                value: 'farmbag',
             },
             {
-                label: 'Farm Plot',
-                value: 'plot',
                 current: Number(boosts?.FarmPlot ?? 0),
+                label: 'Farm Plot',
                 limit: ecoPrices.farming.items.farmPlotLimit,
                 price: ecoPrices.farming.items.farmPlotPrice,
+                value: 'plot',
             },
         ];
 
         const capacityUpgrades = upgradeTargets
             .filter((x) => x.current > 0 && x.current < x.limit)
             .map((x) => ({
-                label: x.label,
-                value: x.value,
                 default: this.selectedShopItem === x.value,
                 description: `${x.current}/${x.limit} | Next ${this.coinFmt(x.current * x.price * 3)}`,
+                label: x.label,
+                value: x.value,
             }));
 
         const autoDepositOwned = Boolean(boosts?.AutoDeposit);
         if (!autoDepositOwned) {
             capacityUpgrades.push({
-                label: 'Auto Deposit (Heist)',
-                value: 'autodeposit',
                 default: this.selectedShopItem === 'autodeposit',
                 description: `Heist wins go straight to bank | ${this.coinFmt(ecoPrices.boosts.autoDepositPrice)}`,
+                label: 'Auto Deposit (Heist)',
+                value: 'autodeposit',
             });
         }
 
@@ -796,9 +796,9 @@ export class Economy {
     ): number {
         const seedByCrop: Record<CropType, number> = {
             corn: Number(balance.Items?.CornSeeds ?? 0),
-            wheat: Number(balance.Items?.WheatSeeds ?? 0),
             potato: Number(balance.Items?.PotatoSeeds ?? 0),
             tomato: Number(balance.Items?.TomatoSeeds ?? 0),
+            wheat: Number(balance.Items?.WheatSeeds ?? 0),
         };
 
         const seedCount = seedByCrop[crop];
@@ -822,9 +822,9 @@ export class Economy {
             this.selectedPlantAmount <= maxPlantable ? this.selectedPlantAmount : maxPlantable;
 
         return merged.map((n) => ({
+            default: n === selected,
             label: `x${n}`,
             value: `${n}`,
-            default: n === selected,
         }));
     }
 
@@ -833,10 +833,10 @@ export class Economy {
     ): { label: string; value: string; default?: boolean; description?: string }[] {
         const qtyOptions = [1, 5, 10];
         return qtyOptions.map((qty) => ({
-            label: `${qty} pack${qty > 1 ? 's' : ''}`,
-            value: `${qty}`,
             default: this.shopQuantity === qty,
             description: `${qty * 10} seeds • ${this.coinFmt(selectedSeedPackPrice * qty)}`,
+            label: `${qty} pack${qty > 1 ? 's' : ''}`,
+            value: `${qty}`,
         }));
     }
 

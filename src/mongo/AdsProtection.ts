@@ -5,7 +5,7 @@ import { model, Schema } from 'mongoose';
  */
 const AdsProtection = new Schema({
     GuildId: { type: String, unique: true },
-    Status: { type: Boolean, default: null },
+    Status: { default: null, type: Boolean },
 });
 
 export default model('AdsProtection', AdsProtection, 'AdsProtection');

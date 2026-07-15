@@ -37,47 +37,47 @@ export class Crypto {
             name: 'currency',
             type: ApplicationCommandOptionType.String,
         })
-        currency: string,
+        currency: string | undefined,
         interaction: CommandInteraction
     ): Promise<void> {
         const symbolDict: { [key: string]: string } = {
-            USD: '$',
-            BTC: '₿',
-            ETH: 'Ξ',
-            LTC: 'Ł',
-            EUR: '€',
-            JPY: '¥',
-            RUB: '₽',
             AED: 'د.إ',
             BDT: '৳',
             BHD: 'BD',
+            BTC: '₿',
             CNY: '¥',
             CZK: 'Kč',
             DKK: 'kr.',
+            ETH: 'Ξ',
+            EUR: '€',
             GBP: '£',
             HUF: 'Ft',
             IDR: 'Rp',
             ILS: '₪',
             INR: '₹',
+            JPY: '¥',
             KRW: '₩',
             KWD: 'KD',
             LKR: 'රු',
+            LTC: 'Ł',
             MMK: 'K',
             MYR: 'RM',
             NOK: 'kr',
             PHP: '₱',
             PKR: 'Rs',
             PLN: 'zł',
+            RUB: '₽',
             SAR: 'SR',
             SEK: 'kr',
             THB: '฿',
             TRY: '₺',
+            USD: '$',
             VEF: 'Bs.',
             VND: '₫',
-            ZAR: 'R',
-            XDR: 'SDR',
             XAG: 'XAG',
             XAU: 'XAU',
+            XDR: 'SDR',
+            ZAR: 'R',
         };
 
         const currencyUpperCase = currency ? currency.toUpperCase() : 'USD';
@@ -105,8 +105,8 @@ export class Crypto {
         try {
             const rawResponse = await axios.get('https://api.coingecko.com/api/v3/coins/markets', {
                 params: {
-                    vs_currency: currencyUpperCase.toLowerCase(),
                     ids: cryptoType.toLowerCase(),
+                    vs_currency: currencyUpperCase.toLowerCase(),
                 },
             });
 
@@ -170,7 +170,7 @@ export class Crypto {
                 components: [container],
                 flags: MessageFlags.IsComponentsV2,
             });
-        } catch (_error) {
+        } catch {
             await RagnarokComponent(
                 interaction,
                 'Error',

@@ -17,10 +17,10 @@ export class Withdraw {
     async withdraw(
         @SlashOption({
             description: 'Amount to withdraw',
-            name: 'amount',
-            type: ApplicationCommandOptionType.Number,
-            required: true,
             minValue: 10,
+            name: 'amount',
+            required: true,
+            type: ApplicationCommandOptionType.Number,
         })
         amount: number,
         interaction: CommandInteraction

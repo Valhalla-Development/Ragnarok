@@ -187,18 +187,18 @@ export class Scramble {
                         delete activeGames[gameId];
 
                         const ended = this.createWotdStyleResultContainer({
-                            topTitle: 'Scramble Ended',
+                            definition: game.definition,
+                            linkLabel: 'Explore this word',
+                            linkUrl: `https://www.merriam-webster.com/dictionary/${game.originalWord}`,
+                            partOfSpeech: game.partOfSpeech,
+                            pronunciation: game.pronunciation,
                             topLines: [
                                 `Scrambled: \`${game.scrambledWord.toLowerCase()}\``,
                                 "Time's up — nobody solved it.",
                                 `Answer: **${capitalise(game.originalWord)}**`,
                             ],
+                            topTitle: 'Scramble Ended',
                             word: game.originalWord,
-                            pronunciation: game.pronunciation,
-                            partOfSpeech: game.partOfSpeech,
-                            definition: game.definition,
-                            linkUrl: `https://www.merriam-webster.com/dictionary/${game.originalWord}`,
-                            linkLabel: 'Explore this word',
                         });
 
                         await initial.edit({
@@ -302,18 +302,18 @@ export class Scramble {
                 }
 
                 const ended = this.createWotdStyleResultContainer({
-                    topTitle: '🏆 Scramble Winner',
+                    definition: game.definition,
+                    linkLabel: 'Explore this word',
+                    linkUrl: `https://www.merriam-webster.com/dictionary/${game.originalWord}`,
+                    partOfSpeech: game.partOfSpeech,
+                    pronunciation: game.pronunciation,
                     topLines: [
                         `Solved by: ${interaction.user}`,
                         `Scrambled: \`${game.scrambledWord.toLowerCase()}\``,
                         `Answer: **${capitalise(game.originalWord)}**`,
                     ],
+                    topTitle: '🏆 Scramble Winner',
                     word: game.originalWord,
-                    pronunciation: game.pronunciation,
-                    partOfSpeech: game.partOfSpeech,
-                    definition: game.definition,
-                    linkUrl: `https://www.merriam-webster.com/dictionary/${game.originalWord}`,
-                    linkLabel: 'Explore this word',
                 });
 
                 await interaction.message?.edit({

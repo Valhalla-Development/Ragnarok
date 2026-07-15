@@ -33,7 +33,7 @@ export async function isAIGuildEnabled(guildId: string): Promise<boolean> {
 export async function setAIGuildEnabled(guildId: string, enabled: boolean): Promise<boolean> {
     await AIConfig.findOneAndUpdate(
         { GuildId: guildId },
-        { $set: { GuildId: guildId, Enabled: enabled } },
+        { $set: { Enabled: enabled, GuildId: guildId } },
         { upsert: true }
     ).exec();
     return enabled;
@@ -42,7 +42,7 @@ export async function setAIGuildEnabled(guildId: string, enabled: boolean): Prom
 export async function clearAIAllowedChannels(guildId: string): Promise<void> {
     await AIConfig.findOneAndUpdate(
         { GuildId: guildId },
-        { $set: { GuildId: guildId, AllowedChannelIds: [] } },
+        { $set: { AllowedChannelIds: [], GuildId: guildId } },
         { upsert: true }
     ).exec();
 }
@@ -54,7 +54,7 @@ export async function setAIAllowedChannels(
     const unique = Array.from(new Set(channelIds)).slice(0, 25);
     await AIConfig.findOneAndUpdate(
         { GuildId: guildId },
-        { $set: { GuildId: guildId, AllowedChannelIds: unique } },
+        { $set: { AllowedChannelIds: unique, GuildId: guildId } },
         { upsert: true }
     ).exec();
     return unique;
@@ -67,7 +67,7 @@ export async function getAIGuildPersona(guildId: string): Promise<string> {
 }
 
 export async function setAIGuildPersona(guildId: string, personaId: string): Promise<string> {
-    const id = personaId?.trim() && personaId.trim().length > 0 ? personaId.trim() : 'friendly';
+    const id = personaId.trim() && personaId.trim().length > 0 ? personaId.trim() : 'friendly';
     await AIConfig.findOneAndUpdate(
         { GuildId: guildId },
         { $set: { GuildId: guildId, PersonaId: id } },

@@ -57,7 +57,7 @@ export class MessageCreate {
                 return false;
             }
 
-            const member = message.member;
+            const { member } = message;
             if (!member || member.id === message.guild?.ownerId || !member.bannable) {
                 return true;
             }
@@ -151,7 +151,7 @@ export class MessageCreate {
 
                 const messagePromises = [
                     findChannel.messages.fetch({ message: messageID as string }),
-                    findChannel.messages.fetch({ message: messageID as string, cache: false }),
+                    findChannel.messages.fetch({ cache: false, message: messageID as string }),
                 ];
                 const settledPromises = await Promise.allSettled(messagePromises);
                 const resolvedPromise = settledPromises.find(
@@ -178,7 +178,7 @@ export class MessageCreate {
                             }
 
                             const normalizedUrl = attachment.url.toLowerCase().split('?')[0] ?? '';
-                            const fileExtension = normalizedUrl.substring(
+                            const fileExtension = normalizedUrl.slice(
                                 normalizedUrl.lastIndexOf('.') + 1
                             );
                             return validExtensions.includes(fileExtension);
@@ -230,9 +230,9 @@ export class MessageCreate {
                             );
                         }
                         message.channel.send({
+                            allowedMentions: { parse: [] },
                             components: [container],
                             flags: MessageFlags.IsComponentsV2,
-                            allowedMentions: { parse: [] },
                         });
                     }
                 }
@@ -339,7 +339,7 @@ export class MessageCreate {
 
                     const name =
                         msg.mentions.members?.get(id)?.displayName ??
-                        msg.mentions.users?.get(id)?.username;
+                        msg.mentions.users.get(id)?.username;
                     return name ? `@${name}` : match;
                 });
 
@@ -375,8 +375,8 @@ export class MessageCreate {
             await message.channel.sendTyping();
 
             const groupId = buildAIGroupId({
-                guildId: message.guild?.id,
                 channelId: message.channel.id,
+                guildId: message.guild?.id,
                 threadId: message.channel.isThread() ? message.channel.id : null,
                 userId: message.author.id,
             });
@@ -386,18 +386,18 @@ export class MessageCreate {
                 message.guild?.id ?? null
             );
             const result = await runAIChat({
-                userId: message.author.id,
-                groupId,
-                prompt,
-                displayName: message.member?.displayName ?? message.author.displayName,
                 botName: message.guild?.members.me?.displayName ?? client.user?.displayName,
+                displayName: message.member?.displayName ?? message.author.displayName,
+                groupId,
                 personaId,
+                prompt,
+                userId: message.author.id,
             });
 
             if (!result.ok) {
                 await message.reply({
-                    content: result.message,
                     allowedMentions: { parse: [], repliedUser: false },
+                    content: result.message,
                 });
                 return;
             }
@@ -408,22 +408,24 @@ export class MessageCreate {
                 ((hasExplicitBotMention && isReplyingToOtherUser) || isReplyingToSelf);
             if (shouldReplyToReferenced && referencedMessage) {
                 await message.channel.send({
+                    allowedMentions: { parse: [], repliedUser: true },
                     content: first,
                     reply: { messageReference: referencedMessage.id },
-                    allowedMentions: { parse: [], repliedUser: true },
                 });
             } else {
                 await message.reply({
-                    content: first,
                     allowedMentions: { parse: [], repliedUser: false },
+                    content: first,
                 });
             }
-            for (const chunk of rest) {
-                await message.channel.send({
-                    content: chunk,
-                    allowedMentions: { parse: [] },
-                });
-            }
+            await Promise.all(
+                rest.map((chunk) =>
+                    message.channel.send({
+                        allowedMentions: { parse: [] },
+                        content: chunk,
+                    })
+                )
+            );
         }
         await aiChatbot();
 

@@ -28,6 +28,7 @@ interface RagnarokClient extends Client {
  * - Each instance of the bot (cluster) will handle a subset of the total shards
  */
 const clientConfig = {
+    botGuilds: config.GUILDS,
     intents: [
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMessages,
@@ -53,12 +54,11 @@ const clientConfig = {
         Partials.Reaction,
     ],
     silent: true,
-    botGuilds: config.GUILDS,
     ...(isDev
         ? {}
         : {
-              shards: getInfo().SHARD_LIST,
               shardCount: getInfo().TOTAL_SHARDS,
+              shards: getInfo().SHARD_LIST,
           }),
 };
 

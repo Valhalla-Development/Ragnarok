@@ -28,17 +28,17 @@ const subreddits = [
 
 async function getMeme() {
     return await RedditImageFetcher.fetch({
-        type: 'custom',
-        total: 1,
         subreddit: subreddits,
+        total: 1,
+        type: 'custom',
     });
 }
 
 async function getNewMeme() {
     return await RedditImageFetcher.fetch({
-        type: 'custom',
-        total: 25,
         subreddit: subreddits,
+        total: 25,
+        type: 'custom',
     });
 }
 
@@ -54,7 +54,7 @@ export class Meme {
         const meme = await getMeme();
 
         const title =
-            meme[0].title.length >= 256 ? `${meme[0].title.substring(0, 253)}...` : meme[0].title;
+            meme[0].title.length >= 256 ? `${meme[0].title.slice(0, 253)}...` : meme[0].title;
 
         const header = new TextDisplayBuilder().setContent(
             [
@@ -120,7 +120,7 @@ export class Meme {
 
         const title =
             randomMeme.title.length >= 256
-                ? `${randomMeme.title.substring(0, 253)}...`
+                ? `${randomMeme.title.slice(0, 253)}...`
                 : randomMeme.title;
 
         const header = new TextDisplayBuilder().setContent(
@@ -156,7 +156,7 @@ export class Meme {
             )
         );
 
-        await interaction.message?.edit({
+        await interaction.message.edit({
             components: [container],
             files: [attachment],
             flags: MessageFlags.IsComponentsV2,

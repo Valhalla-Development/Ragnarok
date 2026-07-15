@@ -52,13 +52,13 @@ async function doBuy(
 
     if (item === 'rod') {
         if (balance.Items!.FishingRod) {
-            return { ok: false, message: 'You already own a fishing rod.' };
+            return { message: 'You already own a fishing rod.', ok: false };
         }
         const cost = ecoPrices.fishing.items.fishingRod;
         if (!hasBank(balance, cost)) {
             return {
-                ok: false,
                 message: `Not enough bank coins. Need ${fmt(cost - bank(balance))} more.`,
+                ok: false,
             };
         }
         spendBank(balance, cost);
@@ -67,18 +67,18 @@ async function doBuy(
             balance.Boosts!.FishBag = ecoPrices.fishing.items.fishBagFirst;
         }
         await save(balance);
-        return { ok: true, message: `Bought fishing rod for ${fmt(cost)}.` };
+        return { message: `Bought fishing rod for ${fmt(cost)}.`, ok: true };
     }
 
     if (item === 'tools') {
         if (balance.Items!.FarmingTools) {
-            return { ok: false, message: 'You already own farming tools.' };
+            return { message: 'You already own farming tools.', ok: false };
         }
         const cost = ecoPrices.farming.items.farmingTools;
         if (!hasBank(balance, cost)) {
             return {
-                ok: false,
                 message: `Not enough bank coins. Need ${fmt(cost - bank(balance))} more.`,
+                ok: false,
             };
         }
 
@@ -99,14 +99,14 @@ async function doBuy(
         balance.Items!.Strawberries = 0;
         balance.Items!.Lettuce = 0;
         await save(balance);
-        return { ok: true, message: `Bought farming tools for ${fmt(cost)}.` };
+        return { message: `Bought farming tools for ${fmt(cost)}.`, ok: true };
     }
 
     if (!isSeedItem(item)) {
-        return { ok: false, message: 'Invalid buy option.' };
+        return { message: 'Invalid buy option.', ok: false };
     }
     if (!balance.Items!.FarmingTools) {
-        return { ok: false, message: 'You need farming tools before buying seeds.' };
+        return { message: 'You need farming tools before buying seeds.', ok: false };
     }
 
     const seedMeta: Record<
@@ -117,18 +117,18 @@ async function doBuy(
             name: string;
         }
     > = {
-        corn: { key: 'CornSeeds', cost: ecoPrices.boosts.seeds.cornSeed, name: 'corn seeds' },
-        wheat: { key: 'WheatSeeds', cost: ecoPrices.boosts.seeds.wheatSeed, name: 'wheat seeds' },
+        corn: { cost: ecoPrices.boosts.seeds.cornSeed, key: 'CornSeeds', name: 'corn seeds' },
         potato: {
-            key: 'PotatoSeeds',
             cost: ecoPrices.boosts.seeds.potatoSeed,
+            key: 'PotatoSeeds',
             name: 'potato seeds',
         },
         tomato: {
-            key: 'TomatoSeeds',
             cost: ecoPrices.boosts.seeds.tomatoSeed,
+            key: 'TomatoSeeds',
             name: 'tomato seeds',
         },
+        wheat: { cost: ecoPrices.boosts.seeds.wheatSeed, key: 'WheatSeeds', name: 'wheat seeds' },
     };
 
     const bagCap = num(balance.Boosts!.SeedBag);
@@ -136,8 +136,8 @@ async function doBuy(
     const addSeeds = qty * SEED_PACK_SIZE;
     if (currentSeeds + addSeeds > bagCap) {
         return {
-            ok: false,
             message: `Seed bag full. Capacity: \`${currentSeeds}\`/\`${bagCap}\`.`,
+            ok: false,
         };
     }
 
@@ -145,8 +145,8 @@ async function doBuy(
     const totalCost = seed.cost * qty;
     if (!hasBank(balance, totalCost)) {
         return {
-            ok: false,
             message: `Not enough bank coins. Need ${fmt(totalCost - bank(balance))} more.`,
+            ok: false,
         };
     }
 
@@ -154,8 +154,8 @@ async function doBuy(
     balance.Items![seed.key] = num(balance.Items![seed.key]) + addSeeds;
     await save(balance);
     return {
-        ok: true,
         message: `Bought \`${addSeeds}\` ${seed.name} for ${fmt(totalCost)}.`,
+        ok: true,
     };
 }
 
@@ -167,68 +167,68 @@ async function doUpgrade(
 
     if (item === 'autodeposit') {
         if (balance.Boosts!.AutoDeposit) {
-            return { ok: false, message: 'Auto Deposit is already enabled.' };
+            return { message: 'Auto Deposit is already enabled.', ok: false };
         }
         const cost = ecoPrices.boosts.autoDepositPrice;
         if (!hasBank(balance, cost)) {
             return {
-                ok: false,
                 message: `Not enough bank coins. Need ${fmt(cost - bank(balance))} more.`,
+                ok: false,
             };
         }
         spendBank(balance, cost);
         balance.Boosts!.AutoDeposit = true;
         await save(balance);
         return {
-            ok: true,
             message: `Enabled Auto Deposit for ${fmt(cost)}. Heist wins now go straight to your bank.`,
+            ok: true,
         };
     }
 
     const map = {
-        seedbag: {
-            key: 'SeedBag' as const,
-            max: ecoPrices.boosts.seedBagLimit,
-            price: ecoPrices.boosts.seedBagPrice,
-            name: 'Seed Bag',
+        farmbag: {
+            key: 'FarmBag' as const,
+            max: ecoPrices.farming.items.farmBagLimit,
+            name: 'Farm Bag',
+            price: ecoPrices.farming.items.farmBagPrice,
         },
         fishbag: {
             key: 'FishBag' as const,
             max: ecoPrices.fishing.items.fishBagLimit,
-            price: ecoPrices.fishing.items.fishBagPrice,
             name: 'Fish Bag',
-        },
-        farmbag: {
-            key: 'FarmBag' as const,
-            max: ecoPrices.farming.items.farmBagLimit,
-            price: ecoPrices.farming.items.farmBagPrice,
-            name: 'Farm Bag',
+            price: ecoPrices.fishing.items.fishBagPrice,
         },
         plot: {
             key: 'FarmPlot' as const,
             max: ecoPrices.farming.items.farmPlotLimit,
-            price: ecoPrices.farming.items.farmPlotPrice,
             name: 'Farm Plot',
+            price: ecoPrices.farming.items.farmPlotPrice,
+        },
+        seedbag: {
+            key: 'SeedBag' as const,
+            max: ecoPrices.boosts.seedBagLimit,
+            name: 'Seed Bag',
+            price: ecoPrices.boosts.seedBagPrice,
         },
     };
 
     if (!(item in map)) {
-        return { ok: false, message: 'Invalid upgrade option.' };
+        return { message: 'Invalid upgrade option.', ok: false };
     }
     const target = map[item as keyof typeof map];
     const current = num(balance.Boosts![target.key]);
     if (current <= 0) {
-        return { ok: false, message: `You do not own ${target.name} yet.` };
+        return { message: `You do not own ${target.name} yet.`, ok: false };
     }
     if (current >= target.max) {
-        return { ok: false, message: `${target.name} is already maxed.` };
+        return { message: `${target.name} is already maxed.`, ok: false };
     }
 
     const cost = current * target.price * UPGRADE_COST_MULTIPLIER;
     if (!hasBank(balance, cost)) {
         return {
-            ok: false,
             message: `Not enough bank coins. Need ${fmt(cost - bank(balance))} more.`,
+            ok: false,
         };
     }
 
@@ -236,8 +236,8 @@ async function doUpgrade(
     balance.Boosts![target.key] = Math.min(target.max, current + UPGRADE_STEP);
     await save(balance);
     return {
-        ok: true,
         message: `${target.name} upgraded for ${fmt(cost)}. New capacity: \`${num(balance.Boosts![target.key])}\`.`,
+        ok: true,
     };
 }
 
@@ -261,7 +261,7 @@ async function doSell(
         items.KingSalmon = 0;
         items.SwordFish = 0;
         items.PufferFish = 0;
-        return { value, count };
+        return { count, value };
     };
 
     const sellTreasure = () => {
@@ -273,7 +273,7 @@ async function doSell(
         items.Treasure = 0;
         items.GoldBar = 0;
         items.GoldNugget = 0;
-        return { value, count };
+        return { count, value };
     };
 
     const sellFarm = () => {
@@ -294,10 +294,10 @@ async function doSell(
         items.Strawberries = 0;
         items.Lettuce = 0;
         balance.HarvestedCrops.splice(0, balance.HarvestedCrops.length);
-        return { value: looseValue + cropValue, count: looseCount + cropCount };
+        return { count: looseCount + cropCount, value: looseValue + cropValue };
     };
 
-    let sold = { value: 0, count: 0 };
+    let sold = { count: 0, value: 0 };
     if (item === 'fish') {
         sold = sellFish();
     } else if (item === 'treasure') {
@@ -309,20 +309,20 @@ async function doSell(
         const treasure = sellTreasure();
         const farm = sellFarm();
         sold = {
-            value: fish.value + treasure.value + farm.value,
             count: fish.count + treasure.count + farm.count,
+            value: fish.value + treasure.value + farm.value,
         };
     } else {
-        return { ok: false, message: 'Invalid sell option.' };
+        return { message: 'Invalid sell option.', ok: false };
     }
 
     if (sold.value <= 0 || sold.count <= 0) {
-        return { ok: false, message: 'Nothing to sell in that category.' };
+        return { message: 'Nothing to sell in that category.', ok: false };
     }
 
     addBank(balance, sold.value);
     await save(balance);
-    return { ok: true, message: `Sold \`${sold.count}\` item(s) for ${fmt(sold.value)}.` };
+    return { message: `Sold \`${sold.count}\` item(s) for ${fmt(sold.value)}.`, ok: true };
 }
 
 function isSeedItem(item: ShopItem): item is SeedItem {
@@ -348,23 +348,23 @@ function cropPrice(crop: string): number {
 function ensureItems(balance: BalanceInterface) {
     if (!balance.Items) {
         balance.Items = {
-            Trout: 0,
-            KingSalmon: 0,
-            SwordFish: 0,
-            PufferFish: 0,
-            Treasure: 0,
-            GoldBar: 0,
-            GoldNugget: 0,
             Barley: 0,
-            Spinach: 0,
-            Strawberries: 0,
-            Lettuce: 0,
             CornSeeds: 0,
-            WheatSeeds: 0,
-            PotatoSeeds: 0,
-            TomatoSeeds: 0,
             FarmingTools: false,
             FishingRod: false,
+            GoldBar: 0,
+            GoldNugget: 0,
+            KingSalmon: 0,
+            Lettuce: 0,
+            PotatoSeeds: 0,
+            PufferFish: 0,
+            Spinach: 0,
+            Strawberries: 0,
+            SwordFish: 0,
+            TomatoSeeds: 0,
+            Treasure: 0,
+            Trout: 0,
+            WheatSeeds: 0,
         };
     }
 }
@@ -372,11 +372,11 @@ function ensureItems(balance: BalanceInterface) {
 function ensureBoosts(balance: BalanceInterface) {
     if (!balance.Boosts) {
         balance.Boosts = {
-            FishBag: 0,
-            SeedBag: 0,
+            AutoDeposit: false,
             FarmBag: 0,
             FarmPlot: 0,
-            AutoDeposit: false,
+            FishBag: 0,
+            SeedBag: 0,
         };
     }
 }

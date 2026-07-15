@@ -1,13 +1,13 @@
 import { type InferSchemaType, model, Schema } from 'mongoose';
 
 const AIUser = new Schema({
-    UserId: { type: String, required: true, unique: true, index: true },
-    TotalQueries: { type: Number, default: 0 },
-    QueriesRemaining: { type: Number, default: 0 },
-    Expiration: { type: Number, default: 0 },
-    Whitelisted: { type: Boolean, default: false },
-    Blacklisted: { type: Boolean, default: false },
-    PersonaId: { type: String, default: null },
+    Blacklisted: { default: false, type: Boolean },
+    Expiration: { default: 0, type: Number },
+    PersonaId: { default: null, type: String },
+    QueriesRemaining: { default: 0, type: Number },
+    TotalQueries: { default: 0, type: Number },
+    UserId: { index: true, required: true, type: String, unique: true },
+    Whitelisted: { default: false, type: Boolean },
 });
 
 export type AIUserInterface = InferSchemaType<typeof AIUser>;

@@ -24,8 +24,8 @@ export class Kick {
      * @param reason - Reason for the kick (optional)
      */
     @Slash({
-        description: 'Kick a user from the server.',
         defaultMemberPermissions: [PermissionsBitField.Flags.KickMembers],
+        description: 'Kick a user from the server.',
     })
     @Guard(BotHasPerm([PermissionsBitField.Flags.KickMembers]))
     async kick(
@@ -41,7 +41,7 @@ export class Kick {
             name: 'reason',
             type: ApplicationCommandOptionType.String,
         })
-        reason: string,
+        reason: string | undefined,
         interaction: CommandInteraction,
         client: Client
     ): Promise<void> {
@@ -105,7 +105,7 @@ export class Kick {
         }
 
         const logLines = [
-            `${user} - \`@${user.user.tag}${user.user.discriminator !== '0' ? `#${user.user.discriminator}` : ''}\``,
+            `${user} - \`@${user.user.tag}${user.user.discriminator === '0' ? '' : `#${user.user.discriminator}`}\``,
             `**Avatar:** ${user.user.displayAvatarURL()}`,
             `**ID:** \`${user.id}\``,
         ];
@@ -121,9 +121,9 @@ export class Kick {
 
             if (loggingChannel) {
                 loggingChannel.send({
+                    allowedMentions: { parse: [] },
                     components: [logContainer],
                     flags: MessageFlags.IsComponentsV2,
-                    allowedMentions: { parse: [] },
                 });
             }
         }

@@ -44,8 +44,8 @@ export async function handleHeist(interaction: ButtonInteraction, homeButton: Bu
 
     // Update the original message with the updated embed and components
     await interaction.message.edit({
-        files: [],
         components: [container],
+        files: [],
         flags: MessageFlags.IsComponentsV2,
     });
 }

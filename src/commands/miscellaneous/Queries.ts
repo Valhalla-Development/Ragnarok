@@ -67,8 +67,8 @@ export class Queries {
                     new TextDisplayBuilder().setContent(`> ⚠️ No AI query data found for ${target}.`)
                 );
             return {
-                components: [container],
                 allowedMentions: { parse: [] as never[] },
+                components: [container],
             };
         }
 
@@ -128,10 +128,10 @@ export class Queries {
             }
             const personaOptionsList = Object.entries(personas)
                 .map(([value, p]) => ({
+                    default: value === personaId && userPersona !== null,
+                    description: p.description,
                     label: personaIdToLabel(p.id),
                     value,
-                    description: p.description,
-                    default: value === personaId && userPersona !== null,
                 }))
                 .sort((a, b) => a.label.localeCompare(b.label));
             container
@@ -148,10 +148,10 @@ export class Queries {
                             .setMaxValues(1)
                             .addOptions(
                                 {
+                                    default: userPersona === null,
+                                    description: "Follow this server's default or global default",
                                     label: 'Use server/default',
                                     value: USE_SERVER_DEFAULT_VALUE,
-                                    description: "Follow this server's default or global default",
-                                    default: userPersona === null,
                                 },
                                 ...personaOptionsList
                             )
@@ -172,8 +172,8 @@ export class Queries {
                     )
                 );
             return {
-                components: [container],
                 allowedMentions: { parse: [] as never[] },
+                components: [container],
             };
         }
 
@@ -214,8 +214,8 @@ export class Queries {
             .addActionRowComponents((row) => row.addComponents(...actionButtons));
 
         return {
-            components: [container],
             allowedMentions: { parse: [] as never[] },
+            components: [container],
         };
     }
 
@@ -230,13 +230,13 @@ export class Queries {
         }
         if (interaction.user.id !== ownerId) {
             await interaction.reply({
+                allowedMentions: { parse: [] },
                 content: 'Only the command executor can use these buttons.',
                 flags: MessageFlags.Ephemeral,
-                allowedMentions: { parse: [] },
             });
             return null;
         }
-        return { targetId, ownerId };
+        return { ownerId, targetId };
     }
 
     private async updateWithNotice(
@@ -408,7 +408,7 @@ export class Queries {
         }
         const { targetId, ownerId } = state;
         const existing = await getAiUserData(targetId);
-        const nextBlacklisted = !(existing?.blacklisted ?? false);
+        const nextBlacklisted = !existing?.blacklisted;
         await setAIBlacklist(targetId, nextBlacklisted);
         const target = await interaction.client.users.fetch(targetId);
         await this.updateWithNotice(
@@ -442,15 +442,15 @@ export class Queries {
 
         if (!isAIAdmin(ownerId)) {
             await interaction.reply({
+                allowedMentions: { parse: [] },
                 content: 'Only AI admins can toggle whitelist status.',
                 flags: MessageFlags.Ephemeral,
-                allowedMentions: { parse: [] },
             });
             return;
         }
 
         const existing = await getAiUserData(targetId);
-        const nextWhitelisted = !(existing?.whitelisted ?? false);
+        const nextWhitelisted = !existing?.whitelisted;
         await setAIWhitelist(targetId, nextWhitelisted);
         const target = await interaction.client.users.fetch(targetId);
         await this.updateWithNotice(

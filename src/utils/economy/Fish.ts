@@ -207,17 +207,6 @@ export async function handleFish(
     // Generate fish result
     const fishResult = generateFishResult();
 
-    // If fish result is not generated, display error and return
-    if (!fishResult) {
-        await RagnarokComponent(
-            interaction,
-            'Error',
-            'Could not roll a fishing outcome. Please try again in a moment.',
-            true
-        );
-        return;
-    }
-
     // If fish result is a fail, handle it and return
     if (fishResult.name === 'Fail') {
         const failMessages = [
@@ -268,7 +257,7 @@ export async function handleFish(
 
         await interaction.deferReply();
         await interaction.deleteReply();
-        await interaction.message?.edit({
+        await interaction.message.edit({
             components: [failContainer],
             files: [],
             flags: MessageFlags.IsComponentsV2,
@@ -277,7 +266,7 @@ export async function handleFish(
         // Reset back to home after a delay (same behavior as win flow)
         const homeContainer = await updateHomeContainer(interaction, buttons);
         if (homeContainer) {
-            scheduleEconomyViewTimer(interaction.message?.id, commandTimeout, async () => {
+            scheduleEconomyViewTimer(interaction.message.id, commandTimeout, async () => {
                 for (const row of rows) {
                     for (const button of row.components) {
                         button.setStyle(ButtonStyle.Primary);
@@ -288,7 +277,7 @@ export async function handleFish(
                 homeButton.setStyle(ButtonStyle.Success);
                 homeButton.setDisabled(true);
 
-                await interaction.message?.edit({
+                await interaction.message.edit({
                     components: [homeContainer],
                     files: [],
                     flags: MessageFlags.IsComponentsV2,
@@ -331,7 +320,7 @@ export async function handleFish(
     // Defer reply, delete original interaction, update message with embed and attachment
     await interaction.deferReply();
     await interaction.deleteReply();
-    await interaction.message?.edit({
+    await interaction.message.edit({
         components: [container],
         files: [attachment],
         flags: MessageFlags.IsComponentsV2,
@@ -342,7 +331,7 @@ export async function handleFish(
 
     // Reset after timeout
     if (homeContainer) {
-        scheduleEconomyViewTimer(interaction.message?.id, commandTimeout, async () => {
+        scheduleEconomyViewTimer(interaction.message.id, commandTimeout, async () => {
             // Reset all buttons to primary style and enabled
             for (const row of rows) {
                 for (const button of row.components) {
@@ -354,7 +343,7 @@ export async function handleFish(
             homeButton.setStyle(ButtonStyle.Success);
             homeButton.setDisabled(true);
 
-            await interaction.message?.edit({
+            await interaction.message.edit({
                 components: [homeContainer],
                 files: [],
                 flags: MessageFlags.IsComponentsV2,

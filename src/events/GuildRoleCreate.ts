@@ -37,9 +37,9 @@ export class GuildRoleCreate {
                     `${role} - \`@${role.name}\`\n**ID:** \`${role.id}\``
                 );
                 chn.send({
+                    allowedMentions: { parse: [] },
                     components: [container],
                     flags: MessageFlags.IsComponentsV2,
-                    allowedMentions: { parse: [] },
                 });
             }
         }

@@ -20,24 +20,24 @@ export async function runPlantAction(
         }
     > = {
         corn: {
-            seed: 'CornSeeds',
             growMs: ecoPrices.farming.plantingTimes.cornPlant,
             label: 'Corn',
-        },
-        wheat: {
-            seed: 'WheatSeeds',
-            growMs: ecoPrices.farming.plantingTimes.wheatPlant,
-            label: 'Wheat',
+            seed: 'CornSeeds',
         },
         potato: {
-            seed: 'PotatoSeeds',
             growMs: ecoPrices.farming.plantingTimes.potatoPlant,
             label: 'Potato',
+            seed: 'PotatoSeeds',
         },
         tomato: {
-            seed: 'TomatoSeeds',
             growMs: ecoPrices.farming.plantingTimes.tomatoPlant,
             label: 'Tomato',
+            seed: 'TomatoSeeds',
+        },
+        wheat: {
+            growMs: ecoPrices.farming.plantingTimes.wheatPlant,
+            label: 'Wheat',
+            seed: 'WheatSeeds',
         },
     };
 
@@ -45,16 +45,16 @@ export async function runPlantAction(
     const plotCap = num(balance.Boosts!.FarmPlot);
     if (plotCap <= 0 || !balance.Items!.FarmingTools) {
         return {
-            ok: false,
             message: 'You need farming tools and farm plots first (`/economy` -> Shop).',
+            ok: false,
         };
     }
 
     const seeds = num(balance.Items![crop.seed]);
     if (seeds < amount) {
         return {
-            ok: false,
             message: `Not enough ${crop.label.toLowerCase()} seeds. You have \`${seeds}\`.`,
+            ok: false,
         };
     }
 
@@ -62,18 +62,18 @@ export async function runPlantAction(
     const freePlots = Math.max(0, plotCap - usedPlots);
     if (amount > freePlots) {
         return {
-            ok: false,
             message: `Not enough plot space. Free plots: \`${freePlots}\`.`,
+            ok: false,
         };
     }
 
     const now = Date.now();
     const growTime = now + crop.growMs;
-    for (let i = 0; i < amount; i++) {
+    for (let i = 0; i < amount; i += 1) {
         balance.FarmPlot.push({
-            CropType: type,
-            CropStatus: 'planting',
             CropGrowTime: growTime,
+            CropStatus: 'planting',
+            CropType: type,
             Decay: 0,
             LastUpdateTime: now,
         });
@@ -82,31 +82,31 @@ export async function runPlantAction(
     await save(balance);
 
     return {
-        ok: true,
         message: `Planted \`${amount}\` ${crop.label.toLowerCase()} seed${amount > 1 ? 's' : ''}. Plots: \`${balance.FarmPlot.length}\`/\`${plotCap}\`.`,
+        ok: true,
     };
 }
 
 function ensureItems(balance: BalanceInterface) {
     if (!balance.Items) {
         balance.Items = {
-            Trout: 0,
-            KingSalmon: 0,
-            SwordFish: 0,
-            PufferFish: 0,
-            Treasure: 0,
-            GoldBar: 0,
-            GoldNugget: 0,
             Barley: 0,
-            Spinach: 0,
-            Strawberries: 0,
-            Lettuce: 0,
             CornSeeds: 0,
-            WheatSeeds: 0,
-            PotatoSeeds: 0,
-            TomatoSeeds: 0,
             FarmingTools: false,
             FishingRod: false,
+            GoldBar: 0,
+            GoldNugget: 0,
+            KingSalmon: 0,
+            Lettuce: 0,
+            PotatoSeeds: 0,
+            PufferFish: 0,
+            Spinach: 0,
+            Strawberries: 0,
+            SwordFish: 0,
+            TomatoSeeds: 0,
+            Treasure: 0,
+            Trout: 0,
+            WheatSeeds: 0,
         };
     }
 }
@@ -114,11 +114,11 @@ function ensureItems(balance: BalanceInterface) {
 function ensureBoosts(balance: BalanceInterface) {
     if (!balance.Boosts) {
         balance.Boosts = {
-            FishBag: 0,
-            SeedBag: 0,
+            AutoDeposit: false,
             FarmBag: 0,
             FarmPlot: 0,
-            AutoDeposit: false,
+            FishBag: 0,
+            SeedBag: 0,
         };
     }
 }

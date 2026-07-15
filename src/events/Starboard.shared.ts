@@ -43,7 +43,7 @@ function toJsonNode(node: unknown): unknown {
 }
 
 function collectComponentData(components: readonly unknown[]): CollectedComponentData {
-    const data: CollectedComponentData = { texts: [], labels: [], urls: [] };
+    const data: CollectedComponentData = { labels: [], texts: [], urls: [] };
 
     const walk = (node: unknown): void => {
         if (Array.isArray(node)) {
@@ -139,7 +139,7 @@ export async function getCurrentStarCount(message: Message): Promise<number> {
  */
 export async function getEffectiveStarCount(message: Message, reactorId: string): Promise<number> {
     const total = await getCurrentStarCount(message);
-    const authorId = message.author?.id;
+    const authorId = message.author.id;
     if (!authorId || authorId !== reactorId) {
         return total;
     }
@@ -147,7 +147,7 @@ export async function getEffectiveStarCount(message: Message, reactorId: string)
 }
 
 export async function getStarboardChannel(message: Message): Promise<GuildTextBasedChannel | null> {
-    const guild = message.guild;
+    const { guild } = message;
     if (!guild) {
         return null;
     }
@@ -191,7 +191,7 @@ export function parseStarFooter(text?: string | null): StarMeta | null {
     if (!match) {
         return null;
     }
-    return { stars: Number(match[1] ?? 0), sourceMessageId: match[2] ?? '' };
+    return { sourceMessageId: match[2] ?? '', stars: Number(match[1] ?? 0) };
 }
 
 export function parseStarMessageMeta(message: Message): StarMeta | null {
@@ -205,7 +205,7 @@ export function parseStarMessageMeta(message: Message): StarMeta | null {
 
     const inlineMatch = STAR_INLINE_REGEX.exec(data.texts.join('\n'));
     if (inlineMatch) {
-        return { stars: Number(inlineMatch[1]), sourceMessageId: inlineMatch[2] ?? '' };
+        return { sourceMessageId: inlineMatch[2] ?? '', stars: Number(inlineMatch[1]) };
     }
 
     const starLabel = data.labels.find((l) => /⭐\s\d+/.test(l));
@@ -213,7 +213,7 @@ export function parseStarMessageMeta(message: Message): StarMeta | null {
     const jumpUrl = data.urls.find((u) => DISCORD_MSG_URL_REGEX.test(u));
     const sourceMessageId = jumpUrl ? parseSourceMessageIdFromUrl(jumpUrl) : '';
     if (stars > 0 && sourceMessageId) {
-        return { stars, sourceMessageId };
+        return { sourceMessageId, stars };
     }
     return null;
 }

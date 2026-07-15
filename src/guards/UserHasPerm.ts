@@ -9,8 +9,9 @@ import { RagnarokComponent } from '../utils/Util.js';
  */
 export function UserHasPerm(requiredPermissions: bigint[]): GuardFunction<CommandInteraction> {
     return async (interaction, _client, next) => {
+        const permissions = interaction.member?.permissions as PermissionsBitField | undefined;
         const missingPermissions = requiredPermissions.filter(
-            (permission) => !(<PermissionsBitField>interaction.member?.permissions).has(permission)
+            (permission) => !permissions?.has(permission)
         );
 
         if (missingPermissions.length > 0) {

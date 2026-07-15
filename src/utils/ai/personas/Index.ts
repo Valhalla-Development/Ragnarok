@@ -8,13 +8,13 @@ import { ruthless } from './Ruthless.js';
 import type { Persona } from './Types.js';
 
 export const personas: Record<string, Persona> = {
-    friendly,
-    ruthless,
-    codeReviewer,
-    codeExpert,
-    conspiracyTheorist,
-    lazy,
     chaotic,
+    codeExpert,
+    codeReviewer,
+    conspiracyTheorist,
+    friendly,
+    lazy,
+    ruthless,
 };
 
 export { friendly } from './Friendly.js';

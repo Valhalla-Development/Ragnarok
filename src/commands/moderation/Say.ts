@@ -22,17 +22,17 @@ export class Say {
      * @param channel - The channel to send the message in (optional)
      */
     @Slash({
-        description: 'Send a message as the bot',
         defaultMemberPermissions: [PermissionsBitField.Flags.ManageMessages],
+        description: 'Send a message as the bot',
     })
     async say(
         @SlashOption({
             description: 'The message to send',
+            maxLength: 100,
+            minLength: 2,
             name: 'input',
             required: true,
             type: ApplicationCommandOptionType.String,
-            minLength: 2,
-            maxLength: 100,
         })
         input: string,
         @SlashOption({
@@ -40,55 +40,45 @@ export class Say {
             name: 'channel',
             type: ApplicationCommandOptionType.Channel,
         })
-        channel: TextChannel,
+        channel: TextChannel | undefined,
         interaction: CommandInteraction
     ): Promise<void> {
         if (!interaction.channel || interaction.channel.type !== ChannelType.GuildText) {
             return;
         }
 
+        const targetChannel = channel ?? interaction.channel;
         const member = interaction.member as GuildMember;
 
-        if (
-            !member!
-                .permissionsIn(channel || interaction.channel)
-                .has(PermissionsBitField.Flags.SendMessages)
-        ) {
+        if (!member.permissionsIn(targetChannel).has(PermissionsBitField.Flags.SendMessages)) {
             await RagnarokComponent(
                 interaction,
                 'Error',
-                `You do not have permission to send messages to ${channel}`,
+                `You do not have permission to send messages to ${targetChannel}`,
                 true
             );
             return;
         }
 
         try {
-            if (channel) {
-                if (channel.type !== ChannelType.GuildText) {
-                    await RagnarokComponent(
-                        interaction,
-                        'Error',
-                        'Please input a valid **Text** channel.',
-                        true
-                    );
-                    return;
-                }
-
-                await channel.send(input);
-
+            if (targetChannel.type !== ChannelType.GuildText) {
                 await RagnarokComponent(
                     interaction,
-                    'Success',
-                    `The following message has been posted in ${channel}\n\n${codeBlock('text', input)}`,
+                    'Error',
+                    'Please input a valid **Text** channel.',
                     true
                 );
-            } else {
-                await interaction.deferReply();
-                await interaction.deleteReply();
-
-                interaction.channel!.send(input);
+                return;
             }
+
+            await targetChannel.send(input);
+
+            await RagnarokComponent(
+                interaction,
+                'Success',
+                `The following message has been posted in ${targetChannel}\n\n${codeBlock('text', input)}`,
+                true
+            );
         } catch (error) {
             await RagnarokComponent(
                 interaction,

@@ -73,10 +73,10 @@ export class Hangman {
         await interaction.deleteReply();
 
         const gameState = {
-            word: word.toLowerCase(),
             guessed: '',
             hangmanState: 0,
             showWord: false,
+            word: word.toLowerCase(),
         };
 
         const buildThreadNotice = (title: string, lines: string[]) =>
@@ -89,15 +89,15 @@ export class Hangman {
             let response: AxiosResponse<Buffer>;
             try {
                 response = await axios.get(`${config.VALHALLA_API_URI}/hangman`, {
+                    headers: { Authorization: `Bearer ${config.VALHALLA_API_KEY}` },
                     params: {
                         api_key: `${config.VALHALLA_API_KEY}`,
-                        word: gameState.word,
                         guessed: gameState.guessed,
                         hangmanState: gameState.hangmanState,
                         showWord: gameState.showWord,
+                        word: gameState.word,
                     },
                     responseType: 'arraybuffer',
-                    headers: { Authorization: `Bearer ${config.VALHALLA_API_KEY}` },
                 });
 
                 const attachment = new AttachmentBuilder(response.data, { name: 'Hangman.jpg' });
@@ -116,14 +116,13 @@ export class Hangman {
                     ],
                     flags: MessageFlags.IsComponentsV2,
                 });
-                return;
             }
         }
 
         // Create thread
         const thread = await interaction.channel.threads.create({
-            name: `Hangman - @${interaction.user.username}`,
             autoArchiveDuration: 60,
+            name: `Hangman - @${interaction.user.username}`,
             reason: `Hangman game started by ${interaction.user.username}`,
         });
 
@@ -136,13 +135,13 @@ export class Hangman {
             if (m.author.id !== interaction.user.id) {
                 await m
                     .reply({
+                        allowedMentions: { repliedUser: false },
                         components: [
                             buildThreadNotice('Not your game', [
                                 `Only ${interaction.member} can play this Hangman game.`,
                             ]),
                         ],
                         flags: MessageFlags.IsComponentsV2,
-                        allowedMentions: { repliedUser: false },
                     })
                     .then((ms) => deletableCheck(ms, 2500));
                 await messageDelete(m, 0);
@@ -242,7 +241,7 @@ export class Hangman {
             }
 
             // If letter has already been guessed
-            if (gameState && letterPattern.test(m.content)) {
+            if (letterPattern.test(m.content)) {
                 const letter = m.content.toLowerCase();
                 if (gameState.guessed.includes(letter)) {
                     await m

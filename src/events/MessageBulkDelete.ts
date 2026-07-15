@@ -51,9 +51,9 @@ export class MessageBulkDelete {
                     `**Bulk Delete in ${channel}, ${messages.size} messages deleted**`
                 );
                 chn.send({
+                    allowedMentions: { parse: [] },
                     components: [container],
                     flags: MessageFlags.IsComponentsV2,
-                    allowedMentions: { parse: [] },
                 });
             }
         }

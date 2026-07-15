@@ -107,10 +107,10 @@ export async function handleClaim(
 
     const periods = ['Hourly', 'Daily', 'Weekly', 'Monthly'];
     const prices: EcoPrices = {
-        Hourly: ecoPrices.claims.hourly,
         Daily: ecoPrices.claims.daily,
-        Weekly: ecoPrices.claims.weekly,
+        Hourly: ecoPrices.claims.hourly,
         Monthly: ecoPrices.claims.monthly,
+        Weekly: ecoPrices.claims.weekly,
     };
 
     for (const period of periods) {
@@ -146,7 +146,7 @@ export async function handleClaim(
 
     // If home container is available, update the message
     if (homeContainer) {
-        await interaction.message?.edit({
+        await interaction.message.edit({
             components: [homeContainer],
             files: [],
             flags: MessageFlags.IsComponentsV2,
@@ -154,10 +154,10 @@ export async function handleClaim(
     }
 
     // Remove the message after 5 seconds
-    scheduleEconomyViewTimer(interaction.message?.id, 5000, async () => {
+    scheduleEconomyViewTimer(interaction.message.id, 5000, async () => {
         const updatedHomeContainer = await updateHomeContainer(interaction, buttons);
         if (updatedHomeContainer) {
-            await interaction.message?.edit({
+            await interaction.message.edit({
                 components: [updatedHomeContainer],
                 files: [],
                 flags: MessageFlags.IsComponentsV2,

@@ -1,9 +1,9 @@
 import { type InferSchemaType, model, Schema } from 'mongoose';
 
 const AIHistory = new Schema({
-    Key: { type: String, required: true, unique: true, index: true },
-    Entries: { type: [Schema.Types.Mixed], default: [] },
-    UpdatedAt: { type: Number, default: Date.now },
+    Entries: { default: [], type: [Schema.Types.Mixed] },
+    Key: { index: true, required: true, type: String, unique: true },
+    UpdatedAt: { default: Date.now, type: Number },
 });
 
 export type AIHistoryInterface = InferSchemaType<typeof AIHistory>;

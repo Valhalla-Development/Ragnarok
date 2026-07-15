@@ -104,8 +104,8 @@ export class Ban {
      * @param deleteMessages - How many messages to delete from the user (optional)
      */
     @Slash({
-        description: 'Ban a user from the server.',
         defaultMemberPermissions: [PermissionsBitField.Flags.BanMembers],
+        description: 'Ban a user from the server.',
     })
     @Guard(BotHasPerm([PermissionsBitField.Flags.BanMembers]))
     async ban(
@@ -121,33 +121,33 @@ export class Ban {
             name: 'reason',
             type: ApplicationCommandOptionType.String,
         })
-        reason: string,
-        @SlashChoice({ name: 'Previous Hour', value: 'delete1h' })
-        @SlashChoice({ name: 'Previous 6 Hours', value: 'delete6h' })
-        @SlashChoice({ name: 'Previous 12 Hours', value: 'delete12h' })
-        @SlashChoice({ name: 'Previous 24 Hours', value: 'delete24h' })
-        @SlashChoice({ name: 'Previous 3 Days', value: 'delete3d' })
-        @SlashChoice({ name: 'Previous 7 Days', value: 'delete7d' })
+        reason: string | undefined,
+        @SlashChoice({ name: 'Previous Hour', value: 'Previous Hour' })
+        @SlashChoice({ name: 'Previous 6 Hours', value: 'Previous 6 Hours' })
+        @SlashChoice({ name: 'Previous 12 Hours', value: 'Previous 12 Hours' })
+        @SlashChoice({ name: 'Previous 24 Hours', value: 'Previous 24 Hours' })
+        @SlashChoice({ name: 'Previous 3 Days', value: 'Previous 3 Days' })
+        @SlashChoice({ name: 'Previous 7 Days', value: 'Previous 7 Days' })
         @SlashOption({
             description: 'Specify the number of messages to delete from the user.',
             name: 'delete_messages',
             type: ApplicationCommandOptionType.String,
         })
-        deleteMessages: DeleteTimeKey,
+        deleteMessages: DeleteTimeKey | undefined,
         interaction: CommandInteraction,
         client: Client
     ): Promise<void> {
         const deleteTime = {
-            'Previous Hour': 3600,
+            'Previous 3 Days': 259_200,
             'Previous 6 Hours': 21_600,
+            'Previous 7 Days': 604_800,
             'Previous 12 Hours': 43_200,
             'Previous 24 Hours': 86_400,
-            'Previous 3 Days': 259_200,
-            'Previous 7 Days': 604_800,
+            'Previous Hour': 3600,
         };
 
-        const deleteMessage = deleteTime[deleteMessages || 'Previous Hour'];
-        const deleteMessagesLabel = deleteMessages || 'Previous Hour';
+        const deleteMessage = deleteTime[deleteMessages ?? 'Previous Hour'];
+        const deleteMessagesLabel = deleteMessages ?? 'Previous Hour';
         const banReason = reason || 'No reason given.';
 
         // If user id = message id
@@ -218,11 +218,11 @@ export class Ban {
 
         const unbanCustomId = `ban:unban:${interaction.guild!.id}:${user.id}`;
         const container = this.buildBanContainer({
+            deleteMessagesLabel,
             guildName: interaction.guild!.name,
-            target: user,
             moderator: `${interaction.user}`,
             reason: banReason,
-            deleteMessagesLabel,
+            target: user,
             unbanCustomId,
         });
 
@@ -236,8 +236,7 @@ export class Ban {
     async onUnban(interaction: import('discord.js').ButtonInteraction): Promise<void> {
         const parts = interaction.customId.split(':');
         // ban:unban:<guildId>:<userId>
-        const guildId = parts[2];
-        const userId = parts[3];
+        const [, , guildId, userId] = parts;
 
         if (!(interaction.guild && guildId && userId) || interaction.guild.id !== guildId) {
             await RagnarokComponent(interaction, 'Error', 'Invalid guild for this action.', true);

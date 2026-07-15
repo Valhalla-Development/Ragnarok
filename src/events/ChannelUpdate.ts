@@ -88,9 +88,9 @@ export class ChannelUpdate {
 
                     if (chn) {
                         chn.send({
+                            allowedMentions: { parse: [] },
                             components: [container],
                             flags: MessageFlags.IsComponentsV2,
-                            allowedMentions: { parse: [] },
                         });
                     }
                 }

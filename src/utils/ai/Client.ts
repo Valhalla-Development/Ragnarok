@@ -30,8 +30,8 @@ class MongoHistoryStorage implements IHistoryStorage {
             { Key: key },
             {
                 $set: {
-                    Key: key,
                     Entries: trimmed,
+                    Key: key,
                     UpdatedAt: Date.now(),
                 },
             },
@@ -44,7 +44,7 @@ class MongoHistoryStorage implements IHistoryStorage {
     }
 
     async listKeys(): Promise<string[]> {
-        const docs = await AIHistory.find({}, { Key: 1, _id: 0 }).lean().exec();
+        const docs = await AIHistory.find({}, { _id: 0, Key: 1 }).lean().exec();
         return docs.map((doc) => String(doc.Key));
     }
 }
@@ -72,9 +72,10 @@ export function aiLogDone(result: ChatCompletionResult, durationMs: number): voi
         return;
     }
 
-    const totalTokens = result.usage?.total_tokens ?? 0;
-    const cost = (result as { cost?: number }).cost;
-    const costStr = cost != null ? ` ${'Cost:'.brightBlue.bold} $${cost.toFixed(6)}` : '';
+    const totalTokens = result.usage?.total_tokens;
+    const { cost } = result as { cost?: number };
+    const costStr =
+        typeof cost === 'number' ? ` ${'Cost:'.brightBlue.bold} $${cost.toFixed(6)}` : '';
     console.log(
         `${'✅ AI Complete'.brightGreen.bold} ${`(${durationMs}ms)`.gray} ` +
             `${'Model:'.brightBlue.bold} ${result.model.brightMagenta.bold} ` +
@@ -101,11 +102,11 @@ export function getClient(): OpenRouterClient {
 
     aiClient = new OpenRouterClientCtor({
         apiKey: config.OPENROUTER_API_KEY,
-        model: config.OPENROUTER_MODEL,
-        historyAdapter: new MongoHistoryStorage(),
-        enableCostTracking: true,
         // Keep library internals quiet; we print concise custom logs.
         debug: false,
+        enableCostTracking: true,
+        historyAdapter: new MongoHistoryStorage(),
+        model: config.OPENROUTER_MODEL,
     });
 
     return aiClient;

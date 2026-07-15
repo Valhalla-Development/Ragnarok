@@ -70,7 +70,7 @@ export class WOTD {
                     const wordDef = $('.wod-definition-container');
                     if (wordDef.length) {
                         const def = wordDef.html();
-                        const wordDefSplit1 = def?.substring(def.indexOf('<p>') + 3);
+                        const wordDefSplit1 = def?.slice(def.indexOf('<p>') + 3);
                         const wordDefSplit2 = wordDefSplit1?.split('</p>')[0];
                         const repl = replEm(wordDefSplit2 || '');
                         const output = repl.replace(
@@ -84,7 +84,7 @@ export class WOTD {
                     if (wordEx.length) {
                         const def = wordEx.html();
                         const output = def
-                            ?.substring(3)
+                            ?.slice(3)
                             .replace(/<a href="([^"]+)">([^<]+)<\/a>/g, '[**$2**]($1)');
                         exampleText = replEm(output || '');
                     }
@@ -93,15 +93,15 @@ export class WOTD {
                         { Date: dateKey },
                         {
                             $set: {
-                                Word: word,
-                                Type: type,
-                                Syllables: syllables,
                                 Definition: definitionText,
                                 Example: exampleText,
                                 FetchedAt: new Date(),
+                                Syllables: syllables,
+                                Type: type,
+                                Word: word,
                             },
                         },
-                        { upsert: true, returnDocument: 'after' }
+                        { returnDocument: 'after', upsert: true }
                     );
                 }
             }

@@ -33,9 +33,9 @@ export class MessageUpdate {
 
                 await newMessage.channel
                     .send({
+                        allowedMentions: { parse: [] },
                         components: [errorContainer],
                         flags: MessageFlags.IsComponentsV2,
-                        allowedMentions: { parse: [] },
                     })
                     .then((m) => deletableCheck(m, 0));
                 await AdsProtection.deleteOne({ GuildId: newMessage.guild.id });
@@ -92,16 +92,16 @@ export class MessageUpdate {
                 `**Avatar:** ${newMessage.author.displayAvatarURL({ extension: 'png' })}`,
                 `**Message Link:** ${newMessage.url}`,
                 '',
-                `**Before:**\n${oldMessage.content.substring(0, 1024)}`,
+                `**Before:**\n${oldMessage.content.slice(0, 1024)}`,
                 '',
-                `**After:**\n${(newMessage.content ?? '*No content*').substring(0, 1024)}`,
+                `**After:**\n${(newMessage.content ?? '*No content*').slice(0, 1024)}`,
             ].join('\n')
         );
 
         await chn.send({
+            allowedMentions: { parse: [] },
             components: [container],
             flags: MessageFlags.IsComponentsV2,
-            allowedMentions: { parse: [] },
         });
     }
 }

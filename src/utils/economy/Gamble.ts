@@ -206,8 +206,8 @@ export async function handleCoinflip(
                 }
 
                 const gambleMenu = buildGambleMenuContainer({
-                    homeButton,
                     coinflipButton,
+                    homeButton,
                 });
 
                 await interaction.message?.edit({

@@ -12,7 +12,7 @@ export async function recordAIGlobalUsage(params: {
 
     await AIGlobalStats.findOneAndUpdate(
         {},
-        { $inc: { TotalQueries: queries, TotalCost: cost } },
+        { $inc: { TotalCost: cost, TotalQueries: queries } },
         { upsert: true }
     ).exec();
 }
@@ -28,7 +28,7 @@ export interface AIGlobalStatsResult {
 export async function getAIGlobalStats(): Promise<AIGlobalStatsResult> {
     const doc = await AIGlobalStats.findOne().lean().exec();
     return {
-        totalQueries: Number(doc?.TotalQueries ?? 0),
         totalCost: Number(doc?.TotalCost ?? 0),
+        totalQueries: Number(doc?.TotalQueries ?? 0),
     };
 }

@@ -65,13 +65,13 @@ async function awardPerMessagePayout(interaction: Message, memberId: string): Pr
         [
             {
                 $set: {
-                    IdJoined: { $ifNull: ['$IdJoined', idJoined] },
-                    UserId: { $ifNull: ['$UserId', memberId] },
-                    GuildId: { $ifNull: ['$GuildId', guildId] },
-                    Cash: { $add: [{ $ifNull: ['$Cash', 0] }, payout] },
                     Bank: { $ifNull: ['$Bank', 500] },
-                    Total: { $add: [{ $ifNull: ['$Total', 500] }, payout] },
+                    Cash: { $add: [{ $ifNull: ['$Cash', 0] }, payout] },
                     ClaimNewUser: { $ifNull: ['$ClaimNewUser', claimNewUserAt] },
+                    GuildId: { $ifNull: ['$GuildId', guildId] },
+                    IdJoined: { $ifNull: ['$IdJoined', idJoined] },
+                    Total: { $add: [{ $ifNull: ['$Total', 500] }, payout] },
+                    UserId: { $ifNull: ['$UserId', memberId] },
                 },
             },
         ],
@@ -127,7 +127,7 @@ export async function messageDelete(message: Message, time: number): Promise<voi
                 await message.delete().catch((error: unknown) => {
                     // Ignore races where the message was already deleted (DiscordAPIError 10008)
                     const err = error as { code?: number; message?: string };
-                    if (err?.code === 10_008 || err?.message?.includes('Unknown Message')) {
+                    if (err.code === 10_008 || err.message?.includes('Unknown Message')) {
                         return;
                     }
                     throw error;
@@ -272,24 +272,24 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
 
         // Extract relevant details from the data
         return {
-            title: data.name,
-            year: data.titleYear,
-            plot: data.plot,
-            type: contentType[data.mainType],
-            rating: data.mainRate.rate,
-            totalVotes: data.mainRate.votesCount,
             cast: data.casts
                 .slice(0, 3)
                 .map((cast) => cast.name)
                 .join(', '),
-            genres: capitalise(data.genres.join(', ')),
-            image: data.posterImage.url,
-            url: data.mainSource.sourceUrl,
-            id: data.mainSource.sourceId,
-            productionCompany: data.productionCompanies[0]?.name,
-            runtime: data.runtime,
             director: data.directors[0]?.name,
+            genres: capitalise(data.genres.join(', ')),
+            id: data.mainSource.sourceId,
+            image: data.posterImage.url,
+            plot: data.plot,
+            productionCompany: data.productionCompanies[0]?.name,
+            rating: data.mainRate.rate,
+            runtime: data.runtime,
+            title: data.name,
+            totalVotes: data.mainRate.votesCount,
             trailers: data.trailers ?? [],
+            type: contentType[data.mainType],
+            url: data.mainSource.sourceUrl,
+            year: data.titleYear,
         };
     } catch (error) {
         console.error('Error fetching data:', error);
@@ -408,9 +408,9 @@ export async function paginationComponentsV2(
 ): Promise<void> {
     const timeoutMs = options?.timeoutMs ?? 30_000;
     const emojis = {
-        prev: options?.emojis?.prev ?? '◀️',
         home: options?.emojis?.home ?? '🏠',
         next: options?.emojis?.next ?? '▶️',
+        prev: options?.emojis?.prev ?? '◀️',
     };
 
     const safeTotalPages = Math.max(1, totalPages);
@@ -469,7 +469,7 @@ export async function paginationComponentsV2(
         } else {
             await interaction.update(payload);
         }
-        message = interaction.message;
+        ({ message } = interaction);
     } else {
         const payload = await render();
         const resp = await interaction.reply({ ...payload, withResponse: true });
@@ -571,10 +571,6 @@ export async function updateLevel(interaction: Message | CommandInteraction) {
     try {
         const member = interaction.member as GuildMember;
 
-        if (!member) {
-            return;
-        }
-
         if (xpCooldown.has(member.id)) {
             return;
         }
@@ -586,9 +582,9 @@ export async function updateLevel(interaction: Message | CommandInteraction) {
             { IdJoined: `${member.id}-${interaction.guild.id}` },
             {
                 $inc: { Xp: xpAdd },
-                $setOnInsert: { UserId: member.id, GuildId: interaction.guild.id, Level: 0 },
+                $setOnInsert: { GuildId: interaction.guild.id, Level: 0, UserId: member.id },
             },
-            { upsert: true, returnDocument: 'after' }
+            { returnDocument: 'after', upsert: true }
         ).exec();
 
         const currentLevel = Number(score.Level ?? 0);
@@ -611,8 +607,8 @@ export async function updateLevel(interaction: Message | CommandInteraction) {
             ) {
                 interaction.channel
                     .send({
-                        content: `${interaction.member} has reached level **${score.Level}**!`,
                         allowedMentions: { parse: [] },
+                        content: `${interaction.member} has reached level **${score.Level}**!`,
                     })
                     .then((m) => deletableCheck(m, 10_000));
             }
@@ -635,9 +631,9 @@ export async function updateLevel(interaction: Message | CommandInteraction) {
  */
 export function updateStatus(client: Client) {
     client.user?.setActivity({
-        type: ActivityType.Watching,
         name: `${client.guilds.cache.size.toLocaleString('en')} Guilds
             ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
+        type: ActivityType.Watching,
     });
 }
 
@@ -713,9 +709,9 @@ export async function handleError(client: Client, error: unknown): Promise<void>
 
         const container = RagnarokContainer('Error', truncateDescription(fullString));
         await channel.send({
+            allowedMentions: { parse: [] },
             components: [container],
             flags: MessageFlags.IsComponentsV2,
-            allowedMentions: { parse: [] },
         });
     } catch (sendError) {
         console.error('Failed to send the error component message:', sendError);
@@ -784,12 +780,12 @@ export async function fetchAndScrambleWord(): Promise<{
         fieldArray.push({ name: '**Definition:**', value: `>>> *${definition.join('\n')}*` });
 
         return {
-            originalWord: word,
-            scrambledWord,
-            pronunciation,
-            partOfSpeech,
             definition,
             fieldArray,
+            originalWord: word,
+            partOfSpeech,
+            pronunciation,
+            scrambledWord,
         };
     } catch (error) {
         console.error('Error fetching and scrambling word:', error);

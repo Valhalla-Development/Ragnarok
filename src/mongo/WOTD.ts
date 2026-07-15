@@ -5,12 +5,12 @@ import { model, Schema } from 'mongoose';
  */
 const WOTD = new Schema({
     Date: { type: String, unique: true },
-    Word: { type: String, required: true },
-    Type: { type: String, required: true },
-    Syllables: { type: String, required: true },
-    Definition: { type: String, required: true },
-    Example: { type: String, required: true },
-    FetchedAt: { type: Date, default: Date.now },
+    Definition: { required: true, type: String },
+    Example: { required: true, type: String },
+    FetchedAt: { default: Date.now, type: Date },
+    Syllables: { required: true, type: String },
+    Type: { required: true, type: String },
+    Word: { required: true, type: String },
 });
 
 export default model('WOTD', WOTD, 'WOTD');

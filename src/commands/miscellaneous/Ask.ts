@@ -18,18 +18,18 @@ export class Ask {
     async ask(
         @SlashOption({
             description: 'What do you want to ask?',
+            maxLength: 2000,
+            minLength: 2,
             name: 'query',
             required: true,
             type: ApplicationCommandOptionType.String,
-            minLength: 2,
-            maxLength: 2000,
         })
         query: string,
         interaction: CommandInteraction,
         client: Client
     ): Promise<void> {
         if (!(await isAIChannelAllowed(interaction.guildId, interaction.channelId))) {
-            const guildId = interaction.guildId;
+            const { guildId } = interaction;
             const guildEnabled = guildId ? await isAIGuildEnabled(guildId) : true;
 
             if (!guildEnabled) {
@@ -62,8 +62,8 @@ export class Ask {
         await interaction.deferReply();
 
         const groupId = buildAIGroupId({
-            guildId: interaction.guildId,
             channelId: interaction.channelId,
+            guildId: interaction.guildId,
             userId: interaction.user.id,
         });
 
@@ -72,15 +72,15 @@ export class Ask {
             interaction.guildId ?? null
         );
         const result = await runAIChat({
-            userId: interaction.user.id,
-            groupId,
-            prompt: query,
-            displayName: interaction.user.displayName,
             botName:
                 interaction.guild?.members.me?.displayName ??
                 client.user?.displayName ??
                 'Assistant',
+            displayName: interaction.user.displayName,
+            groupId,
             personaId,
+            prompt: query,
+            userId: interaction.user.id,
         });
 
         if (!result.ok) {
@@ -90,15 +90,17 @@ export class Ask {
 
         const [first, ...rest] = result.chunks;
         await interaction.editReply({
-            content: first,
             allowedMentions: { parse: [] },
+            content: first,
         });
 
-        for (const chunk of rest) {
-            await interaction.followUp({
-                content: chunk,
-                allowedMentions: { parse: [] },
-            });
-        }
+        await Promise.all(
+            rest.map((chunk) =>
+                interaction.followUp({
+                    allowedMentions: { parse: [] },
+                    content: chunk,
+                })
+            )
+        );
     }
 }

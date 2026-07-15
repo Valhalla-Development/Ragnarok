@@ -155,8 +155,8 @@ export class Ping {
         let roleList = roles.join(', ');
 
         if (roleList.length > 4000) {
-            roleList = roleList.substring(0, 4000);
-            roleList = roleList.substring(0, roleList.lastIndexOf('<'));
+            roleList = roleList.slice(0, 4000);
+            roleList = roleList.slice(0, roleList.lastIndexOf('<'));
         }
 
         const rolesDisplay = new TextDisplayBuilder().setContent(
@@ -195,8 +195,8 @@ export class Ping {
         let emojiList = emojiMap.join(', ');
 
         if (emojiList.length > 4000) {
-            emojiList = emojiList.substring(0, 4000);
-            emojiList = emojiList.substring(0, emojiList.lastIndexOf('<'));
+            emojiList = emojiList.slice(0, 4000);
+            emojiList = emojiList.slice(0, emojiList.lastIndexOf('<'));
         }
 
         const emojisDisplay = new TextDisplayBuilder().setContent(

@@ -13,8 +13,8 @@ export class Nuke {
      * @param client - The Discord client.
      */
     @Slash({
-        description: 'Nuke a channel.',
         defaultMemberPermissions: [PermissionsBitField.Flags.Administrator],
+        description: 'Nuke a channel.',
     })
     @Guard(BotHasPerm([PermissionsBitField.Flags.ManageChannels]))
     async nuke(interaction: CommandInteraction): Promise<void> {

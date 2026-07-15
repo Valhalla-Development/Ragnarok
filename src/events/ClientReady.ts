@@ -5,10 +5,10 @@ import '@colors/colors';
 import { CronJob } from 'cron';
 import { ChannelType, Events, version } from 'discord.js';
 import moment from 'moment';
-import { updateStatus } from 'utils/Util.js';
 import BirthdayConfig from '../mongo/BirthdayConfig.js';
 import Birthdays from '../mongo/Birthdays.js';
 import StarBoard from '../mongo/StarBoard.js';
+import { updateStatus } from '../utils/Util.js';
 
 /**
  * Discord.js ClientReady event handler.
@@ -41,7 +41,6 @@ export class ClientReady {
                     ],
                 },
                 {
-                    title: `${client.user?.username} Stats`,
                     content: [
                         `${'>>'.red} Users: `.white +
                             client.guilds.cache
@@ -53,9 +52,9 @@ export class ClientReady {
                             `${client.application?.commands.cache.size ?? 0}`.yellow,
                         `${'>>'.blue} Events: `.white + client.eventNames().length.toString().blue,
                     ],
+                    title: `${client.user?.username} Stats`,
                 },
                 {
-                    title: `${client.user?.username} Specs`,
                     content: [
                         `${`${'>>'.magenta} Node: `.white}${process.version.magenta}${' on '.white}${`${process.platform} ${process.arch}`.magenta}`,
                         `${'>>'.cyan} Memory: `.white +
@@ -65,14 +64,15 @@ export class ClientReady {
                         `${'>>'.yellow} Discord.js: `.white + `v${version}`.yellow,
                         `${'>>'.blue} Version: `.white + `v${process.env.npm_package_version}`.blue,
                     ],
+                    title: `${client.user?.username} Specs`,
                 },
                 {
-                    title: `${client.user?.username} Invite Link`,
                     content: [
                         `${'>>'.blue} `.white +
                             `https://discordapp.com/oauth2/authorize?client_id=${client.user?.id}&scope=bot%20applications.commands&permissions=535327927376`
                                 .blue.underline,
                     ],
+                    title: `${client.user?.username} Invite Link`,
                 },
             ];
 
@@ -121,7 +121,7 @@ export class ClientReady {
                 } catch (error) {
                     // If the bot is no longer in the guild (stale DB row), delete config and move on.
                     const err = error as { code?: number; message?: string };
-                    if (err?.code === 10_004 || err?.message?.includes('Unknown Guild')) {
+                    if (err.code === 10_004 || err.message?.includes('Unknown Guild')) {
                         await StarBoard.deleteOne({ GuildId: starboard.GuildId });
                         return;
                     }

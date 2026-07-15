@@ -31,31 +31,31 @@ export class Userinfo {
             name: 'user',
             type: ApplicationCommandOptionType.User,
         })
-        user: GuildMember,
+        user: GuildMember | undefined,
         interaction: CommandInteraction
     ): Promise<void> {
         const flags: { [key: string]: string } = {
             ActiveDeveloper: '<:ActiveDeveloper:1094985831112003604>',
-            BotHTTPInteractions: '<:Bot:854724408458870814>',
-            CertifiedModerator: '<:CertifiedModerator:854722328382406676>',
-            HypeSquadOnlineHouse3: '<:HypeSquadBalance:748651259631894579>',
-            PremiumEarlySupporter: '<:DiscordNitroEarlySupporter:748651259816312992>',
-            Staff: '<:DiscordStaff:748651259849998377>',
-            VerifiedDeveloper: '<:VerifiedBotDeveloper:748651259858255973>',
-            BugHunterLevel1: '<:DiscordBugHunter1:748651259724300364>',
-            HypeSquadOnlineHouse1: '<:HypeSquadBravery:748651259845673020>',
-            Hypesquad: '<:HypeSquadEvents:748651259761786981>',
-            Quarantined: '<:Quarantined:1021867285582983208>',
-            TeamPseudoUser: 'Team User',
-            BugHunterLevel2: '<:DiscordBugHunter2:748651259741077574>',
-            HypeSquadOnlineHouse2: '<:HypeSquadBrilliance:748651259933753464>',
-            Partner: '<:DiscordPartner:748985364022165694>',
-            VerifiedBot: '<:VerifiedBot:854725852101476382>',
-            Spammer: '<:Spammer:1021857158280794172>',
             Bot: '<:Bot:854724408458870814>',
+            BotHTTPInteractions: '<:Bot:854724408458870814>',
+            BugHunterLevel1: '<:DiscordBugHunter1:748651259724300364>',
+            BugHunterLevel2: '<:DiscordBugHunter2:748651259741077574>',
+            CertifiedModerator: '<:CertifiedModerator:854722328382406676>',
+            HypeSquadOnlineHouse1: '<:HypeSquadBravery:748651259845673020>',
+            HypeSquadOnlineHouse2: '<:HypeSquadBrilliance:748651259933753464>',
+            HypeSquadOnlineHouse3: '<:HypeSquadBalance:748651259631894579>',
+            Hypesquad: '<:HypeSquadEvents:748651259761786981>',
+            Partner: '<:DiscordPartner:748985364022165694>',
+            PremiumEarlySupporter: '<:DiscordNitroEarlySupporter:748651259816312992>',
+            Quarantined: '<:Quarantined:1021867285582983208>',
+            Spammer: '<:Spammer:1021857158280794172>',
+            Staff: '<:DiscordStaff:748651259849998377>',
+            TeamPseudoUser: 'Team User',
+            VerifiedBot: '<:VerifiedBot:854725852101476382>',
+            VerifiedDeveloper: '<:VerifiedBotDeveloper:748651259858255973>',
         };
 
-        const member = (user || interaction.member) as GuildMember;
+        const member = (user ?? interaction.member) as GuildMember;
         await member.user.fetch();
 
         const roles = member.roles.cache

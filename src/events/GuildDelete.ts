@@ -26,9 +26,9 @@ export class GuildDelete {
     async onGuildDelete([guild]: ArgsOf<'guildDelete'>, client: Client) {
         // Set activity
         client.user?.setActivity({
-            type: ActivityType.Watching,
             name: `${client.guilds.cache.size.toLocaleString('en')} Guilds
             ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
+            type: ActivityType.Watching,
         });
 
         console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);

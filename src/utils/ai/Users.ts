@@ -20,11 +20,11 @@ function toAIUserData(data: AIUserDoc | null): AIUserData | null {
         return null;
     }
     return {
-        totalQueries: Number(data.TotalQueries ?? 0),
-        queriesRemaining: Number(data.QueriesRemaining ?? 0),
-        expiration: Number(data.Expiration ?? 0),
-        whitelisted: Boolean(data.Whitelisted),
         blacklisted: Boolean(data.Blacklisted),
+        expiration: Number(data.Expiration ?? 0),
+        queriesRemaining: Number(data.QueriesRemaining ?? 0),
+        totalQueries: Number(data.TotalQueries ?? 0),
+        whitelisted: Boolean(data.Whitelisted),
     };
 }
 
@@ -34,9 +34,9 @@ export async function getAITopUsers(
     const docs = await AIUser.find(
         {},
         {
-            UserId: 1,
-            TotalQueries: 1,
             _id: 0,
+            TotalQueries: 1,
+            UserId: 1,
         }
     )
         .sort({ TotalQueries: -1 })
@@ -45,8 +45,8 @@ export async function getAITopUsers(
         .exec();
 
     return docs.map((doc) => ({
-        userId: String(doc.UserId),
         totalQueries: Number(doc.TotalQueries ?? 0),
+        userId: String(doc.UserId),
     }));
 }
 
@@ -74,12 +74,12 @@ export async function setAIUserPersona(userId: string, personaId: string | null)
     if (id && id.length > 0) {
         await AIUser.findOneAndUpdate(
             { UserId: userId },
-            { $set: { UserId: userId, PersonaId: id } },
-            { upsert: true, lean: true }
+            { $set: { PersonaId: id, UserId: userId } },
+            { lean: true, upsert: true }
         ).exec();
     } else {
         await AIUser.updateOne(
-            { UserId: userId, PersonaId: { $exists: true } },
+            { PersonaId: { $exists: true }, UserId: userId },
             { $unset: { PersonaId: 1 } }
         ).exec();
     }
@@ -90,12 +90,12 @@ async function setAiUserData(userId: string, data: AIUserData): Promise<AIUserDa
         { UserId: userId },
         {
             $set: {
-                UserId: userId,
-                TotalQueries: data.totalQueries,
-                QueriesRemaining: data.queriesRemaining,
-                Expiration: data.expiration,
-                Whitelisted: data.whitelisted,
                 Blacklisted: data.blacklisted,
+                Expiration: data.expiration,
+                QueriesRemaining: data.queriesRemaining,
+                TotalQueries: data.totalQueries,
+                UserId: userId,
+                Whitelisted: data.whitelisted,
             },
         },
         { upsert: true }
@@ -115,62 +115,62 @@ function resolveNonAdminAvailability(
 ): AIAvailabilityResult {
     if (!previous) {
         return {
-            ok: true,
             data: {
-                totalQueries: 1,
-                queriesRemaining: maxLimit - 1,
-                expiration: nextExpiration,
-                whitelisted: false,
                 blacklisted: false,
+                expiration: nextExpiration,
+                queriesRemaining: maxLimit - 1,
+                totalQueries: 1,
+                whitelisted: false,
             },
+            ok: true,
         };
     }
 
     if (previous.blacklisted) {
-        return { ok: false, message: AI_BLACKLIST_MESSAGE };
+        return { message: AI_BLACKLIST_MESSAGE, ok: false };
     }
 
     if (previous.whitelisted) {
         return {
-            ok: true,
             data: {
                 ...previous,
-                totalQueries: previous.totalQueries + 1,
-                queriesRemaining: maxLimit,
                 expiration: 1,
+                queriesRemaining: maxLimit,
+                totalQueries: previous.totalQueries + 1,
             },
+            ok: true,
         };
     }
 
     if (previous.queriesRemaining > 0) {
         return {
-            ok: true,
             data: {
                 ...previous,
-                totalQueries: previous.totalQueries + 1,
-                queriesRemaining: previous.queriesRemaining - 1,
                 expiration: calculateExpiration(previous.expiration, nextExpiration),
+                queriesRemaining: previous.queriesRemaining - 1,
+                totalQueries: previous.totalQueries + 1,
             },
+            ok: true,
         };
     }
 
     if (now > previous.expiration) {
         return {
-            ok: true,
             data: {
                 ...previous,
-                totalQueries: previous.totalQueries + 1,
-                queriesRemaining: maxLimit - 1,
                 expiration: nextExpiration,
+                queriesRemaining: maxLimit - 1,
+                totalQueries: previous.totalQueries + 1,
             },
+            ok: true,
         };
     }
 
     return {
-        ok: false,
         message: `You've reached your AI query limit. It resets <t:${Math.floor(
             previous.expiration / 1000
         )}:R>.`,
+        ok: false,
     };
 }
 
@@ -186,21 +186,21 @@ export async function checkAIAvailability(userId: string): Promise<AIAvailabilit
             {
                 $inc: { TotalQueries: 1 },
                 $set: {
-                    QueriesRemaining: maxLimit,
                     Expiration: 1,
+                    QueriesRemaining: maxLimit,
                 },
                 $setOnInsert: {
+                    Blacklisted: false,
                     UserId: userId,
                     Whitelisted: false,
-                    Blacklisted: false,
                 },
             },
-            { returnDocument: 'after', upsert: true, lean: true }
+            { lean: true, returnDocument: 'after', upsert: true }
         ).exec();
 
         const adminData = toAIUserData(adminUpdated);
         if (adminData) {
-            return { ok: true, data: adminData };
+            return { data: adminData, ok: true };
         }
     }
 
@@ -209,19 +209,16 @@ export async function checkAIAvailability(userId: string): Promise<AIAvailabilit
         [
             {
                 $set: {
-                    UserId: { $ifNull: ['$UserId', userId] },
-                    TotalQueries: { $ifNull: ['$TotalQueries', 0] },
-                    QueriesRemaining: { $ifNull: ['$QueriesRemaining', 0] },
-                    Expiration: { $ifNull: ['$Expiration', 0] },
-                    Whitelisted: { $ifNull: ['$Whitelisted', false] },
                     Blacklisted: { $ifNull: ['$Blacklisted', false] },
+                    Expiration: { $ifNull: ['$Expiration', 0] },
+                    QueriesRemaining: { $ifNull: ['$QueriesRemaining', 0] },
+                    TotalQueries: { $ifNull: ['$TotalQueries', 0] },
+                    UserId: { $ifNull: ['$UserId', userId] },
+                    Whitelisted: { $ifNull: ['$Whitelisted', false] },
                 },
             },
             {
                 $set: {
-                    _canUseWhitelist: {
-                        $and: [{ $eq: ['$Blacklisted', false] }, { $eq: ['$Whitelisted', true] }],
-                    },
                     _canUseNormal: {
                         $and: [
                             { $eq: ['$Blacklisted', false] },
@@ -237,32 +234,13 @@ export async function checkAIAvailability(userId: string): Promise<AIAvailabilit
                             { $lt: ['$Expiration', now] },
                         ],
                     },
+                    _canUseWhitelist: {
+                        $and: [{ $eq: ['$Blacklisted', false] }, { $eq: ['$Whitelisted', true] }],
+                    },
                 },
             },
             {
                 $set: {
-                    TotalQueries: {
-                        $cond: [
-                            { $or: ['$_canUseWhitelist', '$_canUseNormal', '$_canUseReset'] },
-                            { $add: ['$TotalQueries', 1] },
-                            '$TotalQueries',
-                        ],
-                    },
-                    QueriesRemaining: {
-                        $cond: [
-                            '$_canUseWhitelist',
-                            maxLimit,
-                            {
-                                $cond: [
-                                    '$_canUseNormal',
-                                    { $subtract: ['$QueriesRemaining', 1] },
-                                    {
-                                        $cond: ['$_canUseReset', maxLimit - 1, '$QueriesRemaining'],
-                                    },
-                                ],
-                            },
-                        ],
-                    },
                     Expiration: {
                         $cond: [
                             '$_canUseWhitelist',
@@ -282,15 +260,37 @@ export async function checkAIAvailability(userId: string): Promise<AIAvailabilit
                             },
                         ],
                     },
+                    QueriesRemaining: {
+                        $cond: [
+                            '$_canUseWhitelist',
+                            maxLimit,
+                            {
+                                $cond: [
+                                    '$_canUseNormal',
+                                    { $subtract: ['$QueriesRemaining', 1] },
+                                    {
+                                        $cond: ['$_canUseReset', maxLimit - 1, '$QueriesRemaining'],
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    TotalQueries: {
+                        $cond: [
+                            { $or: ['$_canUseWhitelist', '$_canUseNormal', '$_canUseReset'] },
+                            { $add: ['$TotalQueries', 1] },
+                            '$TotalQueries',
+                        ],
+                    },
                 },
             },
             { $unset: ['_canUseWhitelist', '_canUseNormal', '_canUseReset'] },
         ],
         {
-            upsert: true,
-            updatePipeline: true,
-            returnDocument: 'before',
             lean: true,
+            returnDocument: 'before',
+            updatePipeline: true,
+            upsert: true,
         }
     ).exec();
 
@@ -302,11 +302,11 @@ export async function setAIBlacklist(userId: string, blacklisted: boolean): Prom
     const existing = await getAiUserData(userId);
 
     const next: AIUserData = {
-        totalQueries: existing?.totalQueries ?? 0,
-        queriesRemaining: maxLimit,
-        expiration: 1,
-        whitelisted: false,
         blacklisted,
+        expiration: 1,
+        queriesRemaining: maxLimit,
+        totalQueries: existing?.totalQueries ?? 0,
+        whitelisted: false,
     };
     return setAiUserData(userId, next);
 }
@@ -316,11 +316,11 @@ export async function setAIWhitelist(userId: string, whitelisted: boolean): Prom
     const existing = await getAiUserData(userId);
 
     const next: AIUserData = {
-        totalQueries: existing?.totalQueries ?? 0,
-        queriesRemaining: maxLimit,
-        expiration: 1,
-        whitelisted,
         blacklisted: false,
+        expiration: 1,
+        queriesRemaining: maxLimit,
+        totalQueries: existing?.totalQueries ?? 0,
+        whitelisted,
     };
     return setAiUserData(userId, next);
 }
@@ -329,11 +329,11 @@ export async function resetAICooldown(userId: string): Promise<AIUserData> {
     const maxLimit = Math.max(1, Number(config.MAX_AI_QUERIES_LIMIT || 30));
     const existing = await getAiUserData(userId);
     const next: AIUserData = {
-        totalQueries: existing?.totalQueries ?? 0,
-        queriesRemaining: maxLimit,
-        expiration: 1,
-        whitelisted: existing?.whitelisted ?? false,
         blacklisted: existing?.blacklisted ?? false,
+        expiration: 1,
+        queriesRemaining: maxLimit,
+        totalQueries: existing?.totalQueries ?? 0,
+        whitelisted: existing?.whitelisted ?? false,
     };
     return setAiUserData(userId, next);
 }
@@ -342,7 +342,7 @@ export async function resetAICooldown(userId: string): Promise<AIUserData> {
 export async function clearAllAIHistoryForGuild(guildId: string): Promise<number> {
     const escaped = guildId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const keyFilter = { Key: new RegExp(`^group:guild_${escaped}_`) };
-    const docs = await AIHistory.find(keyFilter, { Key: 1, _id: 0 }).lean().exec();
+    const docs = await AIHistory.find(keyFilter, { _id: 0, Key: 1 }).lean().exec();
     const keys = docs.map((d) => String(d.Key));
 
     const result = await AIHistory.deleteMany(keyFilter).exec();
@@ -371,7 +371,7 @@ export async function resetAIHistory(userId: string): Promise<void> {
     };
 
     // Capture keys first so we can also clear in-memory cache in OpenRouter Kit.
-    const docs = await AIHistory.find(keyFilter, { Key: 1, _id: 0 }).lean().exec();
+    const docs = await AIHistory.find(keyFilter, { _id: 0, Key: 1 }).lean().exec();
     const keys = Array.from(new Set([`user:${safeUser}`, ...docs.map((doc) => String(doc.Key))]));
 
     await AIHistory.deleteMany(keyFilter).exec();

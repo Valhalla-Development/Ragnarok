@@ -111,8 +111,8 @@ function personaIdToLabel(id: string): string {
 @Category('Moderation')
 export class Config {
     @Slash({
-        description: 'Configure server modules',
         defaultMemberPermissions: [PermissionsBitField.Flags.ManageGuild],
+        description: 'Configure server modules',
     })
     async config(interaction: CommandInteraction): Promise<void> {
         if (!interaction.guild) {
@@ -176,7 +176,7 @@ export class Config {
             await interaction.deferUpdate();
             return;
         }
-        const me = interaction.guild.members.me;
+        const { me } = interaction.guild.members;
         const canSend = me
             ? interaction.values.filter((id) => {
                   const ch = interaction.guild!.channels.cache.get(id);
@@ -192,7 +192,8 @@ export class Config {
         if (!interaction.guild) {
             return;
         }
-        if (interaction.user.id !== interaction.message.interaction?.user.id) {
+        const sourceInteraction = interaction.message.interaction;
+        if (!sourceInteraction || interaction.user.id !== sourceInteraction.user.id) {
             await interaction.reply({
                 content: 'Only the command executor can change AI channel settings.',
                 flags: MessageFlags.Ephemeral,
@@ -235,7 +236,8 @@ export class Config {
         if (!interaction.guild) {
             return;
         }
-        if (interaction.user.id !== interaction.message.interaction?.user.id) {
+        const sourceInteraction = interaction.message.interaction;
+        if (!sourceInteraction || interaction.user.id !== sourceInteraction.user.id) {
             await interaction.reply({
                 content: 'Only the command executor can use this action.',
                 flags: MessageFlags.Ephemeral,
@@ -256,7 +258,7 @@ export class Config {
         await AdsProtection.findOneAndUpdate(
             { GuildId: interaction.guild.id },
             { $set: { Status: true } },
-            { upsert: true, returnDocument: 'after' }
+            { returnDocument: 'after', upsert: true }
         );
         const payload = await this.buildPayload(interaction.guild, 'ads');
         await interaction.update(payload);
@@ -280,7 +282,7 @@ export class Config {
         await Dad.findOneAndUpdate(
             { GuildId: interaction.guild.id },
             { $set: { Status: true } },
-            { upsert: true, returnDocument: 'after' }
+            { returnDocument: 'after', upsert: true }
         );
         const payload = await this.buildPayload(interaction.guild, 'dad');
         await interaction.update(payload);
@@ -304,7 +306,7 @@ export class Config {
         await Rock.findOneAndUpdate(
             { GuildId: interaction.guild.id },
             { $set: { Status: true } },
-            { upsert: true, returnDocument: 'after' }
+            { returnDocument: 'after', upsert: true }
         );
         const payload = await this.buildPayload(interaction.guild, 'rock');
         await interaction.update(payload);
@@ -318,7 +320,7 @@ export class Config {
         await Rock.findOneAndUpdate(
             { GuildId: interaction.guild.id },
             { $set: { Status: false } },
-            { upsert: true, returnDocument: 'after' }
+            { returnDocument: 'after', upsert: true }
         );
         const payload = await this.buildPayload(interaction.guild, 'rock');
         await interaction.update(payload);
@@ -326,7 +328,7 @@ export class Config {
 
     @SelectMenuComponent({ id: ROLEMENU_SELECT_ID })
     async onRolemenuSelect(interaction: AnySelectMenuInteraction): Promise<void> {
-        const guild = interaction.guild;
+        const { guild } = interaction;
         if (!guild) {
             return;
         }
@@ -363,7 +365,7 @@ export class Config {
         await RoleMenu.findOneAndUpdate(
             { GuildId: guild.id },
             { $set: { RoleList: validRoleIds.slice(0, 25) } },
-            { upsert: true, returnDocument: 'after' }
+            { returnDocument: 'after', upsert: true }
         );
 
         const payload = await this.buildPayload(guild, 'rolemenu');
@@ -379,7 +381,7 @@ export class Config {
         await RoleMenu.findOneAndUpdate(
             { GuildId: interaction.guild.id },
             { $set: { RoleList: [] } },
-            { upsert: true, returnDocument: 'after' }
+            { returnDocument: 'after', upsert: true }
         );
 
         const payload = await this.buildPayload(interaction.guild, 'rolemenu');
@@ -393,7 +395,7 @@ export class Config {
         }
 
         try {
-            const roleId = interaction.values[0];
+            const [roleId] = interaction.values;
             if (!roleId) {
                 await interaction.deferUpdate();
                 return;
@@ -430,7 +432,7 @@ export class Config {
             await AutoRole.findOneAndUpdate(
                 { GuildId: interaction.guild.id },
                 { $set: { Role: role.id } },
-                { upsert: true, returnDocument: 'after' }
+                { returnDocument: 'after', upsert: true }
             );
 
             const payload = await this.buildPayload(interaction.guild, 'autorole');
@@ -539,7 +541,7 @@ export class Config {
             return;
         }
 
-        const channelId = interaction.values[0];
+        const [channelId] = interaction.values;
         if (!channelId) {
             return;
         }
@@ -583,7 +585,7 @@ export class Config {
             await BirthdayConfig.findOneAndUpdate(
                 { GuildId: interaction.guild.id },
                 { $set: { ChannelId: channel.id } },
-                { upsert: true, returnDocument: 'after' }
+                { returnDocument: 'after', upsert: true }
             );
         }
 
@@ -591,7 +593,7 @@ export class Config {
             await Logging.findOneAndUpdate(
                 { GuildId: interaction.guild.id },
                 { $set: { ChannelId: channel.id } },
-                { upsert: true, returnDocument: 'after' }
+                { returnDocument: 'after', upsert: true }
             );
         }
 
@@ -599,7 +601,7 @@ export class Config {
             await StarBoard.findOneAndUpdate(
                 { GuildId: interaction.guild.id },
                 { $set: { ChannelId: channel.id } },
-                { upsert: true, returnDocument: 'after' }
+                { returnDocument: 'after', upsert: true }
             );
         }
 
@@ -607,7 +609,7 @@ export class Config {
             await Welcome.findOneAndUpdate(
                 { GuildId: interaction.guild.id },
                 { $set: { ChannelId: channel.id } },
-                { upsert: true, returnDocument: 'after' }
+                { returnDocument: 'after', upsert: true }
             );
         }
 
@@ -615,7 +617,7 @@ export class Config {
             await Honeypot.findOneAndUpdate(
                 { GuildId: interaction.guild.id },
                 { $set: { ChannelId: channel.id } },
-                { upsert: true, returnDocument: 'after' }
+                { returnDocument: 'after', upsert: true }
             );
 
             try {
@@ -669,7 +671,7 @@ export class Config {
                 await BirthdayConfig.findOneAndUpdate(
                     { GuildId: guild.id },
                     { $set: { ChannelId: null } },
-                    { upsert: true, returnDocument: 'after' }
+                    { returnDocument: 'after', upsert: true }
                 );
             }
 
@@ -677,7 +679,7 @@ export class Config {
                 await Logging.findOneAndUpdate(
                     { GuildId: guild.id },
                     { $set: { ChannelId: null } },
-                    { upsert: true, returnDocument: 'after' }
+                    { returnDocument: 'after', upsert: true }
                 );
             }
 
@@ -685,7 +687,7 @@ export class Config {
                 await StarBoard.findOneAndUpdate(
                     { GuildId: guild.id },
                     { $set: { ChannelId: null } },
-                    { upsert: true, returnDocument: 'after' }
+                    { returnDocument: 'after', upsert: true }
                 );
             }
 
@@ -693,7 +695,7 @@ export class Config {
                 await Welcome.findOneAndUpdate(
                     { GuildId: guild.id },
                     { $set: { ChannelId: null } },
-                    { upsert: true, returnDocument: 'after' }
+                    { returnDocument: 'after', upsert: true }
                 );
             }
 
@@ -701,7 +703,7 @@ export class Config {
                 await Honeypot.findOneAndUpdate(
                     { GuildId: guild.id },
                     { $set: { ChannelId: null } },
-                    { upsert: true, returnDocument: 'after' }
+                    { returnDocument: 'after', upsert: true }
                 );
             }
 
@@ -725,7 +727,7 @@ export class Config {
             await RoleMenu.findOneAndUpdate(
                 { GuildId: guild.id },
                 { $set: { RoleList: validRoleIds } },
-                { upsert: true, returnDocument: 'after' }
+                { returnDocument: 'after', upsert: true }
             );
         }
 
@@ -741,70 +743,70 @@ export class Config {
             .setPlaceholder(placeholder)
             .addOptions(
                 {
+                    default: current === 'ai',
+                    description: 'Enable or disable AI for this server',
                     label: 'AI',
                     value: 'ai',
-                    description: 'Enable or disable AI for this server',
-                    default: current === 'ai',
                 },
                 {
+                    default: current === 'ads',
+                    description: 'Toggle link deletion module',
                     label: 'Ads Protection',
                     value: 'ads',
-                    description: 'Toggle link deletion module',
-                    default: current === 'ads',
                 },
                 {
+                    default: current === 'autorole',
+                    description: 'Set role granted on member join',
                     label: 'AutoRole',
                     value: 'autorole',
-                    description: 'Set role granted on member join',
-                    default: current === 'autorole',
                 },
                 {
+                    default: current === 'birthday',
+                    description: 'Configure birthday announcement channel',
                     label: 'Birthday',
                     value: 'birthday',
-                    description: 'Configure birthday announcement channel',
-                    default: current === 'birthday',
                 },
                 {
+                    default: current === 'dad',
+                    description: 'Toggle Dad responses module',
                     label: 'Dad',
                     value: 'dad',
-                    description: 'Toggle Dad responses module',
-                    default: current === 'dad',
                 },
                 {
+                    default: current === 'honeypot',
+                    description: 'Trap channel that auto-bans spam bots',
                     label: 'Honeypot',
                     value: 'honeypot',
-                    description: 'Trap channel that auto-bans spam bots',
-                    default: current === 'honeypot',
                 },
                 {
+                    default: current === 'rock',
+                    description: "Toggle 'I don't like this rock' video response",
                     label: 'Rock',
                     value: 'rock',
-                    description: "Toggle 'I don't like this rock' video response",
-                    default: current === 'rock',
                 },
                 {
+                    default: current === 'rolemenu',
+                    description: 'Configure self-assign role menu',
                     label: 'RoleMenu',
                     value: 'rolemenu',
-                    description: 'Configure self-assign role menu',
-                    default: current === 'rolemenu',
                 },
                 {
+                    default: current === 'logging',
+                    description: 'Set moderation logs channel',
                     label: 'Logging',
                     value: 'logging',
-                    description: 'Set moderation logs channel',
-                    default: current === 'logging',
                 },
                 {
+                    default: current === 'starboard',
+                    description: 'Set channel for starred messages',
                     label: 'Starboard',
                     value: 'starboard',
-                    description: 'Set channel for starred messages',
-                    default: current === 'starboard',
                 },
                 {
+                    default: current === 'welcome',
+                    description: 'Configure welcome channel and image',
                     label: 'Welcome',
                     value: 'welcome',
-                    description: 'Configure welcome channel and image',
-                    default: current === 'welcome',
                 }
             );
     }
@@ -814,12 +816,12 @@ export class Config {
 
         if (module === 'home') {
             return {
-                title: '# ⚙️ Configuration',
+                controls: [selector],
                 lines: [
                     '> Select a module from the dropdown.',
                     '> Use the controls below to update settings.',
                 ].filter(Boolean),
-                controls: [selector],
+                title: '# ⚙️ Configuration',
             };
         }
 
@@ -827,11 +829,6 @@ export class Config {
             const ads = await AdsProtection.findOne({ GuildId: guild.id });
             const isEnabled = ads?.Status === true;
             return {
-                title: '# 🛡️ Ads Protection',
-                lines: [
-                    `> Status: ${isEnabled ? '`Enabled`' : '`Disabled`'}`,
-                    '> Deletes non-mod link messages when enabled.',
-                ].filter(Boolean),
                 controls: [
                     selector,
                     new ButtonBuilder()
@@ -845,6 +842,11 @@ export class Config {
                         .setStyle(ButtonStyle.Secondary)
                         .setDisabled(!isEnabled),
                 ],
+                lines: [
+                    `> Status: ${isEnabled ? '`Enabled`' : '`Disabled`'}`,
+                    '> Deletes non-mod link messages when enabled.',
+                ].filter(Boolean),
+                title: '# 🛡️ Ads Protection',
             };
         }
 
@@ -852,11 +854,6 @@ export class Config {
             const dad = await Dad.findOne({ GuildId: guild.id });
             const isEnabled = dad?.Status === true;
             return {
-                title: '# 👨‍👧 Dad Module',
-                lines: [
-                    `> Status: ${isEnabled ? '`Enabled`' : '`Disabled`'}`,
-                    '> Responds to "im/i\'m ..." patterns.',
-                ].filter(Boolean),
                 controls: [
                     selector,
                     new ButtonBuilder()
@@ -870,6 +867,11 @@ export class Config {
                         .setStyle(ButtonStyle.Secondary)
                         .setDisabled(!isEnabled),
                 ],
+                lines: [
+                    `> Status: ${isEnabled ? '`Enabled`' : '`Disabled`'}`,
+                    '> Responds to "im/i\'m ..." patterns.',
+                ].filter(Boolean),
+                title: '# 👨‍👧 Dad Module',
             };
         }
 
@@ -877,11 +879,6 @@ export class Config {
             const rock = await Rock.findOne({ GuildId: guild.id });
             const isEnabled = rock?.Status !== false;
             return {
-                title: '# 🪨 Rock Module',
-                lines: [
-                    `> Status: ${isEnabled ? '`Enabled`' : '`Disabled`'}`,
-                    '> Responds to "i don\'t like this rock" with a video.',
-                ].filter(Boolean),
                 controls: [
                     selector,
                     new ButtonBuilder()
@@ -895,6 +892,11 @@ export class Config {
                         .setStyle(ButtonStyle.Secondary)
                         .setDisabled(!isEnabled),
                 ],
+                lines: [
+                    `> Status: ${isEnabled ? '`Enabled`' : '`Disabled`'}`,
+                    '> Responds to "i don\'t like this rock" with a video.',
+                ].filter(Boolean),
+                title: '# 🪨 Rock Module',
             };
         }
 
@@ -908,13 +910,6 @@ export class Config {
                 : '`None configured`';
 
             return {
-                title: '# 🎛️ RoleMenu',
-                lines: [
-                    `> Roles Configured: \`${validRoleIds.length.toLocaleString()}\``,
-                    `> ${rolePreview}`,
-                    `> Hidden (cannot be managed by bot): \`${Math.max(0, guild.roles.cache.size - 1 - this.getManageableRoleIds(guild).length).toLocaleString()}\``,
-                    '> Set roles here, then mods can run `/rolemenu` to post/refresh the menu.',
-                ].filter(Boolean),
                 controls: [
                     selector,
                     this.buildRoleMenuSelect(guild, validRoleIds),
@@ -924,6 +919,13 @@ export class Config {
                         .setStyle(ButtonStyle.Secondary)
                         .setDisabled(validRoleIds.length === 0),
                 ],
+                lines: [
+                    `> Roles Configured: \`${validRoleIds.length.toLocaleString()}\``,
+                    `> ${rolePreview}`,
+                    `> Hidden (cannot be managed by bot): \`${Math.max(0, guild.roles.cache.size - 1 - this.getManageableRoleIds(guild).length).toLocaleString()}\``,
+                    '> Set roles here, then mods can run `/rolemenu` to post/refresh the menu.',
+                ].filter(Boolean),
+                title: '# 🎛️ RoleMenu',
             };
         }
 
@@ -932,11 +934,6 @@ export class Config {
             const isEnabled = Boolean(autorole?.Role);
             const roleMention = autorole?.Role ? `<@&${autorole.Role}>` : '`Not Set`';
             return {
-                title: '# 🎭 AutoRole',
-                lines: [
-                    `> Current Role: ${roleMention}`,
-                    '> Choose a role below to set AutoRole.',
-                ].filter(Boolean),
                 controls: [
                     selector,
                     new RoleSelectMenuBuilder()
@@ -948,6 +945,11 @@ export class Config {
                         .setStyle(ButtonStyle.Secondary)
                         .setDisabled(!isEnabled),
                 ],
+                lines: [
+                    `> Current Role: ${roleMention}`,
+                    '> Choose a role below to set AutoRole.',
+                ].filter(Boolean),
+                title: '# 🎭 AutoRole',
             };
         }
 
@@ -960,11 +962,6 @@ export class Config {
             );
             const isEnabled = channelMention !== '`Not Set`';
             return {
-                title: '# 🎂 Birthday',
-                lines: [
-                    `> Channel: ${channelMention}`,
-                    '> Choose a text channel for birthday announcements.',
-                ].filter(Boolean),
                 controls: [
                     selector,
                     new ChannelSelectMenuBuilder()
@@ -977,6 +974,11 @@ export class Config {
                         .setStyle(ButtonStyle.Secondary)
                         .setDisabled(!isEnabled),
                 ],
+                lines: [
+                    `> Channel: ${channelMention}`,
+                    '> Choose a text channel for birthday announcements.',
+                ].filter(Boolean),
+                title: '# 🎂 Birthday',
             };
         }
 
@@ -988,26 +990,14 @@ export class Config {
                 honeypot?.ChannelId
             );
             const isEnabled = channelMention !== '`Not Set`';
-            const canBan = guild.members.me?.permissions.has(
-                PermissionsBitField.Flags.BanMembers
-            );
+            const canBan = guild.members.me?.permissions.has(PermissionsBitField.Flags.BanMembers);
             return {
-                title: '# 🍯 Honeypot',
-                lines: [
-                    `> Channel: ${channelMention}`,
-                    '> Select a trap channel. Anyone who posts there is banned automatically.',
-                    canBan
-                        ? ''
-                        : '> ⚠️ I need the `Ban Members` permission before Honeypot can be enabled.',
-                ].filter(Boolean),
                 controls: [
                     selector,
                     new ChannelSelectMenuBuilder()
                         .setCustomId(HONEYPOT_CHANNEL_SELECT_ID)
                         .setPlaceholder(
-                            canBan
-                                ? 'Select honeypot channel'
-                                : 'Missing Ban Members permission'
+                            canBan ? 'Select honeypot channel' : 'Missing Ban Members permission'
                         )
                         .addChannelTypes(ChannelType.GuildText)
                         .setDisabled(!canBan),
@@ -1017,6 +1007,14 @@ export class Config {
                         .setStyle(ButtonStyle.Danger)
                         .setDisabled(!isEnabled),
                 ],
+                lines: [
+                    `> Channel: ${channelMention}`,
+                    '> Select a trap channel. Anyone who posts there is banned automatically.',
+                    canBan
+                        ? ''
+                        : '> ⚠️ I need the `Ban Members` permission before Honeypot can be enabled.',
+                ].filter(Boolean),
+                title: '# 🍯 Honeypot',
             };
         }
 
@@ -1029,11 +1027,6 @@ export class Config {
             );
             const isEnabled = channelMention !== '`Not Set`';
             return {
-                title: '# 📝 Logging',
-                lines: [
-                    `> Channel: ${channelMention}`,
-                    '> Select where moderation logs should be sent.',
-                ].filter(Boolean),
                 controls: [
                     selector,
                     new ChannelSelectMenuBuilder()
@@ -1046,6 +1039,11 @@ export class Config {
                         .setStyle(ButtonStyle.Secondary)
                         .setDisabled(!isEnabled),
                 ],
+                lines: [
+                    `> Channel: ${channelMention}`,
+                    '> Select where moderation logs should be sent.',
+                ].filter(Boolean),
+                title: '# 📝 Logging',
             };
         }
 
@@ -1058,11 +1056,6 @@ export class Config {
             );
             const isEnabled = channelMention !== '`Not Set`';
             return {
-                title: '# ⭐ Starboard',
-                lines: [
-                    `> Channel: ${channelMention}`,
-                    '> Select where starred messages are posted.',
-                ].filter(Boolean),
                 controls: [
                     selector,
                     new ChannelSelectMenuBuilder()
@@ -1075,6 +1068,11 @@ export class Config {
                         .setStyle(ButtonStyle.Secondary)
                         .setDisabled(!isEnabled),
                 ],
+                lines: [
+                    `> Channel: ${channelMention}`,
+                    '> Select where starred messages are posted.',
+                ].filter(Boolean),
+                title: '# ⭐ Starboard',
             };
         }
 
@@ -1086,10 +1084,6 @@ export class Config {
         );
         const isEnabled = channelMention !== '`Not Set`';
         return {
-            title: '# 🖼️ Welcome',
-            lines: [`> Channel: ${channelMention}`, '> Select a channel to enable Welcome.'].filter(
-                Boolean
-            ),
             controls: [
                 selector,
                 new ChannelSelectMenuBuilder()
@@ -1102,6 +1096,10 @@ export class Config {
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(!isEnabled),
             ],
+            lines: [`> Channel: ${channelMention}`, '> Select a channel to enable Welcome.'].filter(
+                Boolean
+            ),
+            title: '# 🖼️ Welcome',
         };
     }
 
@@ -1224,7 +1222,7 @@ export class Config {
             getAIGuildPersona(guild.id),
         ]);
 
-        const me = guild.members.me;
+        const { me } = guild.members;
         const defaultChannels =
             me && channels.length > 0
                 ? channels.filter((id) => {
@@ -1270,10 +1268,10 @@ export class Config {
 
         const personaOptions = Object.entries(personas)
             .map(([value, persona]) => ({
+                default: value === currentPersonaId,
+                description: persona.description,
                 label: personaIdToLabel(persona.id),
                 value,
-                description: persona.description,
-                default: value === currentPersonaId,
             }))
             .sort((a, b) => a.label.localeCompare(b.label));
 
@@ -1387,9 +1385,9 @@ export class Config {
                 optionIds.map((roleId) => {
                     const role = guild.roles.cache.get(roleId)!;
                     return {
+                        default: selectedSet.has(role.id),
                         label: role.name.slice(0, 100),
                         value: role.id,
-                        default: selectedSet.has(role.id),
                     };
                 })
             );

@@ -47,7 +47,7 @@ export class ChannelDelete {
                 const channelDisplay =
                     channelType === 'Category'
                         ? `\`${channel.name}\``
-                        : `${channelType === 'Text' ? '#' : ''}${channel.type !== ChannelType.GuildCategory ? channel.name : ''}`;
+                        : `${channelType === 'Text' ? '#' : ''}${channel.type === ChannelType.GuildCategory ? '' : channel.name}`;
                 const container = RagnarokContainer(
                     `${channelType} Channel Deleted`,
                     `${channelDisplay}\n**ID:** \`${channel.id}\``
@@ -56,9 +56,9 @@ export class ChannelDelete {
                 // Send the embed to the logging channel
                 if (channel) {
                     chn.send({
+                        allowedMentions: { parse: [] },
                         components: [container],
                         flags: MessageFlags.IsComponentsV2,
-                        allowedMentions: { parse: [] },
                     });
                 }
             }

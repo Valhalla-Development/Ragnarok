@@ -5,7 +5,7 @@ import { model, Schema } from 'mongoose';
  */
 const AutoRole = new Schema({
     GuildId: { type: String, unique: true },
-    Role: { type: String, default: null },
+    Role: { default: null, type: String },
 });
 
 export default model('AutoRole', AutoRole, 'AutoRole');

@@ -189,17 +189,6 @@ export async function handleFarm(
     // Generate farm result
     const farmResult = generateFarmResult();
 
-    // If farm result is not generated, display error and return
-    if (!farmResult) {
-        await RagnarokComponent(
-            interaction,
-            'Error',
-            'Could not roll a farm outcome. Please try again in a moment.',
-            true
-        );
-        return;
-    }
-
     // Initialize balance items if not present
     if (!balance.Items) {
         balance.Items = {} as Items;
@@ -232,7 +221,7 @@ export async function handleFarm(
     // Defer reply, delete original interaction, update message with embed and attachment
     await interaction.deferReply();
     await interaction.deleteReply();
-    await interaction.message?.edit({
+    await interaction.message.edit({
         components: [container],
         files: [attachment],
         flags: MessageFlags.IsComponentsV2,
@@ -243,7 +232,7 @@ export async function handleFarm(
 
     // Reset after timeout
     if (homeContainer) {
-        scheduleEconomyViewTimer(interaction.message?.id, commandTimeout, async () => {
+        scheduleEconomyViewTimer(interaction.message.id, commandTimeout, async () => {
             // Reset all buttons to primary style and enabled
             for (const row of rows) {
                 for (const button of row.components) {
@@ -255,7 +244,7 @@ export async function handleFarm(
             homeButton.setStyle(ButtonStyle.Success);
             homeButton.setDisabled(true);
 
-            await interaction.message?.edit({
+            await interaction.message.edit({
                 components: [homeContainer],
                 files: [],
                 flags: MessageFlags.IsComponentsV2,
