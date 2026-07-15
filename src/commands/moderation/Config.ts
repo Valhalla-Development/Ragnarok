@@ -635,14 +635,14 @@ export class Config {
     }
 
     private buildHoneypotWarningContainer(): ContainerBuilder {
-        const header = new TextDisplayBuilder().setContent('# 🍯 Honeypot — Do Not Post Here');
+        const header = new TextDisplayBuilder().setContent('# 🍯 Honeypot - Do NOT Post Here');
 
         const warning = new TextDisplayBuilder().setContent(
             [
-                '## ⛔ This channel is a trap.',
+                '## ⛔ Sending any message in this channel triggers an **immediate ban**.',
                 '',
-                '> Sending **any message** in this channel triggers an **immediate, automatic ban**',
-                '> and deletes your recent messages across the entire server.',
+                '> This channel is a trap for compromised and spam bots.',
+                '> This is your only warning.',
             ].join('\n')
         );
 
