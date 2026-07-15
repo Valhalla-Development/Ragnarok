@@ -1,6 +1,6 @@
 {
   "name": "ragnarok",
-  "version": "6.2.416",
+  "version": "6.2.421",
   "description": "A multi-purpose Discord bot.",
   "license": "GPL-3.0-or-later",
   "author": "Ragnar Lothbrok <ragnarlothbrokjr@proton.me>",
@@ -14,7 +14,7 @@
     "lint:fix": "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true src",
     "dev": "NODE_ENV=development bun --watch src/Main.ts",
     "start": "NODE_ENV=production bun src/Cluster.ts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "@colors/colors": "^1.6.0",
