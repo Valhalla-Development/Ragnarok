@@ -546,8 +546,11 @@ export class Config {
 
         const channel = interaction.guild.channels.cache.get(channelId);
         if (!channel || channel.type !== ChannelType.GuildText) {
-            const payload = await this.buildPayload(interaction.guild, module);
-            await interaction.update(payload);
+            await this.updateModuleWithNotice(
+                interaction,
+                module,
+                '❌ That channel is not a usable text channel.'
+            );
             return;
         }
 
@@ -556,8 +559,23 @@ export class Config {
                 ?.permissionsIn(channel)
                 .has(PermissionsBitField.Flags.SendMessages)
         ) {
-            const payload = await this.buildPayload(interaction.guild, module);
-            await interaction.update(payload);
+            await this.updateModuleWithNotice(
+                interaction,
+                module,
+                `❌ **I can't send messages in ${channel}. Give me \`Send Messages\` there and try again.**`
+            );
+            return;
+        }
+
+        if (
+            module === 'honeypot' &&
+            !interaction.guild.members.me?.permissions.has(PermissionsBitField.Flags.BanMembers)
+        ) {
+            await this.updateModuleWithNotice(
+                interaction,
+                module,
+                '❌ I need the `Ban Members` permission before Honeypot can be enabled.'
+            );
             return;
         }
 
@@ -970,18 +988,29 @@ export class Config {
                 honeypot?.ChannelId
             );
             const isEnabled = channelMention !== '`Not Set`';
+            const canBan = guild.members.me?.permissions.has(
+                PermissionsBitField.Flags.BanMembers
+            );
             return {
                 title: '# 🍯 Honeypot',
                 lines: [
                     `> Channel: ${channelMention}`,
                     '> Select a trap channel. Anyone who posts there is banned automatically.',
+                    canBan
+                        ? ''
+                        : '> ⚠️ I need the `Ban Members` permission before Honeypot can be enabled.',
                 ].filter(Boolean),
                 controls: [
                     selector,
                     new ChannelSelectMenuBuilder()
                         .setCustomId(HONEYPOT_CHANNEL_SELECT_ID)
-                        .setPlaceholder('Select honeypot channel')
-                        .addChannelTypes(ChannelType.GuildText),
+                        .setPlaceholder(
+                            canBan
+                                ? 'Select honeypot channel'
+                                : 'Missing Ban Members permission'
+                        )
+                        .addChannelTypes(ChannelType.GuildText)
+                        .setDisabled(!canBan),
                     new ButtonBuilder()
                         .setCustomId(HONEYPOT_DISABLE_BUTTON_ID)
                         .setLabel('Disable')
@@ -1076,6 +1105,29 @@ export class Config {
         };
     }
 
+    private async updateModuleWithNotice(
+        interaction: ButtonInteraction | AnySelectMenuInteraction,
+        module: ConfigModule,
+        notice: string
+    ): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        const payload = await this.buildPayload(interaction.guild, module, undefined, notice);
+        await interaction.update({ ...payload, flags: MessageFlags.IsComponentsV2 });
+        setTimeout(async () => {
+            try {
+                const clean = await this.buildPayload(interaction.guild!, module);
+                await interaction.editReply({
+                    ...clean,
+                    flags: MessageFlags.IsComponentsV2,
+                });
+            } catch {
+                // Ignore edit failures (e.g. token expired after 15 min).
+            }
+        }, AI_SECTION_NOTICE_TTL_MS);
+    }
+
     private async updateAIWithNotice(
         interaction: ButtonInteraction | AnySelectMenuInteraction,
         notices: AISectionNotices
@@ -1101,13 +1153,17 @@ export class Config {
     private async buildPayload(
         guild: Guild,
         module: ConfigModule,
-        aiNotices?: AISectionNotices
+        aiNotices?: AISectionNotices,
+        moduleNotice?: string
     ): Promise<{ components: [ContainerBuilder] }> {
         if (module === 'ai') {
             return this.buildAIPayload(guild, aiNotices);
         }
 
         const view = await this.getModuleView(guild, module);
+        if (moduleNotice) {
+            view.lines.push(`> ${moduleNotice}`);
+        }
 
         const header = new TextDisplayBuilder().setContent(view.title);
         const body = new TextDisplayBuilder().setContent(view.lines.join('\n'));
