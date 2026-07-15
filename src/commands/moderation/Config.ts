@@ -23,6 +23,7 @@ import AdsProtection from '../../mongo/AdsProtection.js';
 import AutoRole from '../../mongo/AutoRole.js';
 import BirthdayConfig from '../../mongo/BirthdayConfig.js';
 import Dad from '../../mongo/Dad.js';
+import Honeypot from '../../mongo/Honeypot.js';
 import Logging from '../../mongo/Logging.js';
 import Rock from '../../mongo/Rock.js';
 import RoleMenu from '../../mongo/RoleMenu.js';
@@ -47,6 +48,7 @@ type ConfigModule =
     | 'autorole'
     | 'birthday'
     | 'dad'
+    | 'honeypot'
     | 'rock'
     | 'rolemenu'
     | 'logging'
@@ -85,6 +87,8 @@ const STARBOARD_CHANNEL_SELECT_ID = 'cfg:starboard:channel';
 const STARBOARD_DISABLE_BUTTON_ID = 'cfg:starboard:disable';
 const WELCOME_CHANNEL_SELECT_ID = 'cfg:welcome:channel';
 const WELCOME_DISABLE_BUTTON_ID = 'cfg:welcome:disable';
+const HONEYPOT_CHANNEL_SELECT_ID = 'cfg:honeypot:channel';
+const HONEYPOT_DISABLE_BUTTON_ID = 'cfg:honeypot:disable';
 const AI_CHANNEL_SELECT_ID = 'cfg:ai:channels';
 const AI_CHANNEL_CLEAR_ID = 'cfg:ai:channels:clear';
 const AI_PERSONA_SELECT_ID = 'cfg:ai:persona';
@@ -497,6 +501,21 @@ export class Config {
         await interaction.update(payload);
     }
 
+    @SelectMenuComponent({ id: HONEYPOT_CHANNEL_SELECT_ID })
+    async onHoneypotChannel(interaction: ChannelSelectMenuInteraction): Promise<void> {
+        await this.handleChannelConfigSelection(interaction, 'honeypot');
+    }
+
+    @ButtonComponent({ id: HONEYPOT_DISABLE_BUTTON_ID })
+    async onHoneypotDisable(interaction: ButtonInteraction): Promise<void> {
+        if (!interaction.guild) {
+            return;
+        }
+        await Honeypot.deleteOne({ GuildId: interaction.guild.id });
+        const payload = await this.buildPayload(interaction.guild, 'honeypot');
+        await interaction.update(payload);
+    }
+
     @SelectMenuComponent({ id: WELCOME_CHANNEL_SELECT_ID })
     async onWelcomeChannel(interaction: ChannelSelectMenuInteraction): Promise<void> {
         await this.handleChannelConfigSelection(interaction, 'welcome');
@@ -514,7 +533,7 @@ export class Config {
 
     private async handleChannelConfigSelection(
         interaction: ChannelSelectMenuInteraction,
-        module: 'birthday' | 'logging' | 'starboard' | 'welcome'
+        module: 'birthday' | 'honeypot' | 'logging' | 'starboard' | 'welcome'
     ): Promise<void> {
         if (!interaction.guild) {
             return;
@@ -574,13 +593,49 @@ export class Config {
             );
         }
 
+        if (module === 'honeypot') {
+            await Honeypot.findOneAndUpdate(
+                { GuildId: interaction.guild.id },
+                { $set: { ChannelId: channel.id } },
+                { upsert: true, returnDocument: 'after' }
+            );
+
+            try {
+                await channel.send({
+                    components: [this.buildHoneypotWarningContainer()],
+                    flags: MessageFlags.IsComponentsV2,
+                });
+            } catch {
+                // Warning post failed
+            }
+        }
+
         const payload = await this.buildPayload(interaction.guild, module);
         await interaction.update(payload);
     }
 
+    private buildHoneypotWarningContainer(): ContainerBuilder {
+        const header = new TextDisplayBuilder().setContent('# 🍯 Honeypot — Do Not Post Here');
+
+        const warning = new TextDisplayBuilder().setContent(
+            [
+                '## ⛔ This channel is a trap.',
+                '',
+                '> Sending **any message** in this channel triggers an **immediate, automatic ban**',
+                '> and deletes your recent messages across the entire server.',
+            ].join('\n')
+        );
+
+        return new ContainerBuilder()
+            .setAccentColor(0xf1_c4_0f)
+            .addTextDisplayComponents(header)
+            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Large))
+            .addTextDisplayComponents(warning);
+    }
+
     private async resolveConfiguredChannelMention(
         guild: Guild,
-        module: 'birthday' | 'logging' | 'starboard' | 'welcome',
+        module: 'birthday' | 'honeypot' | 'logging' | 'starboard' | 'welcome',
         channelId?: string | null
     ): Promise<string> {
         if (!channelId) {
@@ -618,6 +673,14 @@ export class Config {
 
             if (module === 'welcome') {
                 await Welcome.findOneAndUpdate(
+                    { GuildId: guild.id },
+                    { $set: { ChannelId: null } },
+                    { upsert: true, returnDocument: 'after' }
+                );
+            }
+
+            if (module === 'honeypot') {
+                await Honeypot.findOneAndUpdate(
                     { GuildId: guild.id },
                     { $set: { ChannelId: null } },
                     { upsert: true, returnDocument: 'after' }
@@ -688,6 +751,12 @@ export class Config {
                     value: 'dad',
                     description: 'Toggle Dad responses module',
                     default: current === 'dad',
+                },
+                {
+                    label: 'Honeypot',
+                    value: 'honeypot',
+                    description: 'Trap channel that auto-bans spam bots',
+                    default: current === 'honeypot',
                 },
                 {
                     label: 'Rock',
@@ -888,6 +957,35 @@ export class Config {
                         .setCustomId(BIRTHDAY_DISABLE_BUTTON_ID)
                         .setLabel('Disable')
                         .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(!isEnabled),
+                ],
+            };
+        }
+
+        if (module === 'honeypot') {
+            const honeypot = await Honeypot.findOne({ GuildId: guild.id });
+            const channelMention = await this.resolveConfiguredChannelMention(
+                guild,
+                'honeypot',
+                honeypot?.ChannelId
+            );
+            const isEnabled = channelMention !== '`Not Set`';
+            return {
+                title: '# 🍯 Honeypot',
+                lines: [
+                    `> Channel: ${channelMention}`,
+                    '> Select a trap channel. Anyone who posts there is banned automatically.',
+                ].filter(Boolean),
+                controls: [
+                    selector,
+                    new ChannelSelectMenuBuilder()
+                        .setCustomId(HONEYPOT_CHANNEL_SELECT_ID)
+                        .setPlaceholder('Select honeypot channel')
+                        .addChannelTypes(ChannelType.GuildText),
+                    new ButtonBuilder()
+                        .setCustomId(HONEYPOT_DISABLE_BUTTON_ID)
+                        .setLabel('Disable')
+                        .setStyle(ButtonStyle.Danger)
                         .setDisabled(!isEnabled),
                 ],
             };
