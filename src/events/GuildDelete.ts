@@ -4,6 +4,7 @@ import AdsProtection from '../mongo/AdsProtection.js';
 import AutoRole from '../mongo/AutoRole.js';
 import BirthdayConfig from '../mongo/BirthdayConfig.js';
 import Dad from '../mongo/Dad.js';
+import Honeypot from '../mongo/Honeypot.js';
 import Logging from '../mongo/Logging.js';
 import Rock from '../mongo/Rock.js';
 import RoleMenu from '../mongo/RoleMenu.js';
@@ -39,6 +40,8 @@ export class GuildDelete {
         await BirthdayConfig.deleteMany({ GuildId: guild.id });
 
         await Dad.deleteMany({ GuildId: guild.id });
+
+        await Honeypot.deleteMany({ GuildId: guild.id });
 
         await Rock.deleteMany({ GuildId: guild.id });
 
