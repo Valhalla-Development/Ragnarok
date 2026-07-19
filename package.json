@@ -41,7 +41,7 @@
     "ordinal": "^1.0.3",
     "pretty-ms": "^9.3.0",
     "reddit-image-fetcher": "^2.0.12",
-    "systeminformation": "^5.31.17",
+    "systeminformation": "^5.32.0",
     "url-regex-safe": "^4.0.0",
     "uuid": "^14.0.1",
     "zod": "^4.4.3"
