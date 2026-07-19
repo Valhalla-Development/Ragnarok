@@ -47,6 +47,11 @@ export class InteractionCreate {
             console.error(`Error executing interaction: ${err}`);
         }
 
+        // Ignore honeypot counter button clicks.
+        if (interaction.isButton() && interaction.customId === 'honeypot:counter') {
+            interaction.deferUpdate();
+        }
+
         if (process.env.ENABLE_LOGGING?.toLowerCase() === 'true') {
             if (!interaction.isChatInputCommand()) {
                 return;
