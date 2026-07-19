@@ -25,6 +25,7 @@ import {
     isAIEnabled,
     runAIChat,
 } from '../utils/ai/Index.js';
+import { editHoneypotWarningMessage, resolveHoneypotMode } from '../utils/Honeypot.js';
 import { deletableCheck, messageDelete, RagnarokContainer, updateLevel } from '../utils/Util.js';
 
 const dadCooldown = new Set<string>();
@@ -48,7 +49,7 @@ export class MessageCreate {
 
         /**
          * Honeypot trap channel: anyone posting in the configured channel is
-         * banned automatically and their recent messages are deleted.
+         * actioned automatically (ban or softban) and their recent messages are deleted.
          * @returns Whether the message was posted in the honeypot channel.
          */
         async function honeypot(): Promise<boolean> {
@@ -57,18 +58,52 @@ export class MessageCreate {
                 return false;
             }
 
-            const { member } = message;
-            if (!member || member.id === message.guild?.ownerId || !member.bannable) {
+            const { member, guild } = message;
+            if (!(member && guild) || member.id === guild.ownerId || !member.bannable) {
                 return true;
             }
+
+            const mode = resolveHoneypotMode(honeypotData.Mode);
+            let actionTaken = false;
 
             try {
                 await member.ban({
                     deleteMessageSeconds: 604_800,
-                    reason: 'Honeypot: posted in trap channel',
+                    reason:
+                        mode === 'softban'
+                            ? 'Honeypot (softban): posted in trap channel'
+                            : 'Honeypot: posted in trap channel',
                 });
+                actionTaken = true;
+
+                if (mode === 'softban') {
+                    await guild.members.unban(
+                        member.id,
+                        'Honeypot softban: reverse ban after purge'
+                    );
+                }
             } catch {
-                // Ban failed (role hierarchy or missing Ban Members permission).
+                // Ban failed (role hierarchy or missing Ban Members permission), or the
+                // softban unban failed after a successful ban.
+            }
+
+            if (!actionTaken) {
+                return true;
+            }
+
+            const updated = await Honeypot.findOneAndUpdate(
+                { GuildId: guild.id },
+                { $inc: { ActionCount: 1 } },
+                { returnDocument: 'after' }
+            ).catch(() => null);
+
+            if (updated?.ChannelId && updated.WarningMessageId) {
+                await editHoneypotWarningMessage(guild, {
+                    actionCount: updated.ActionCount ?? 0,
+                    channelId: updated.ChannelId,
+                    messageId: updated.WarningMessageId,
+                    mode,
+                });
             }
             return true;
         }
