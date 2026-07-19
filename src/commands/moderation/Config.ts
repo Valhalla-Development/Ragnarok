@@ -40,6 +40,11 @@ import {
     setAIGuildPersona,
 } from '../../utils/ai/Index.js';
 import { personas } from '../../utils/ai/personas/Index.js';
+import {
+    buildHoneypotWarningContainer,
+    editHoneypotWarningMessage,
+    resolveHoneypotMode,
+} from '../../utils/Honeypot.js';
 
 type ConfigModule =
     | 'home'
@@ -89,6 +94,7 @@ const WELCOME_CHANNEL_SELECT_ID = 'cfg:welcome:channel';
 const WELCOME_DISABLE_BUTTON_ID = 'cfg:welcome:disable';
 const HONEYPOT_CHANNEL_SELECT_ID = 'cfg:honeypot:channel';
 const HONEYPOT_DISABLE_BUTTON_ID = 'cfg:honeypot:disable';
+const HONEYPOT_MODE_SELECT_ID = 'cfg:honeypot:mode';
 const AI_CHANNEL_SELECT_ID = 'cfg:ai:channels';
 const AI_CHANNEL_CLEAR_ID = 'cfg:ai:channels:clear';
 const AI_PERSONA_SELECT_ID = 'cfg:ai:persona';
@@ -518,6 +524,34 @@ export class Config {
         await interaction.update(payload);
     }
 
+    @SelectMenuComponent({ id: HONEYPOT_MODE_SELECT_ID })
+    async onHoneypotMode(interaction: AnySelectMenuInteraction): Promise<void> {
+        if (!(interaction.guild && interaction.isStringSelectMenu())) {
+            return;
+        }
+        const [selected] = interaction.values;
+        const mode = resolveHoneypotMode(selected);
+
+        const honeypot = await Honeypot.findOneAndUpdate(
+            { GuildId: interaction.guild.id },
+            { $set: { Mode: mode } },
+            { returnDocument: 'after', upsert: true }
+        );
+
+        // Keep the live warning message copy in sync with the new mode.
+        if (honeypot?.ChannelId && honeypot.WarningMessageId) {
+            await editHoneypotWarningMessage(interaction.guild, {
+                actionCount: honeypot.ActionCount ?? 0,
+                channelId: honeypot.ChannelId,
+                messageId: honeypot.WarningMessageId,
+                mode,
+            });
+        }
+
+        const payload = await this.buildPayload(interaction.guild, 'honeypot');
+        await interaction.update(payload);
+    }
+
     @SelectMenuComponent({ id: WELCOME_CHANNEL_SELECT_ID })
     async onWelcomeChannel(interaction: ChannelSelectMenuInteraction): Promise<void> {
         await this.handleChannelConfigSelection(interaction, 'welcome');
@@ -614,17 +648,25 @@ export class Config {
         }
 
         if (module === 'honeypot') {
-            await Honeypot.findOneAndUpdate(
+            // Preserve Mode/ActionCount when re-selecting a channel; only ChannelId changes.
+            const honeypot = await Honeypot.findOneAndUpdate(
                 { GuildId: interaction.guild.id },
                 { $set: { ChannelId: channel.id } },
                 { returnDocument: 'after', upsert: true }
             );
+            const mode = resolveHoneypotMode(honeypot?.Mode);
+            const actionCount = honeypot?.ActionCount ?? 0;
 
             try {
-                await channel.send({
-                    components: [this.buildHoneypotWarningContainer()],
+                const warningMessage = await channel.send({
+                    components: [buildHoneypotWarningContainer(actionCount, mode)],
                     flags: MessageFlags.IsComponentsV2,
                 });
+                await Honeypot.findOneAndUpdate(
+                    { GuildId: interaction.guild.id },
+                    { $set: { WarningMessageId: warningMessage.id } },
+                    { returnDocument: 'after', upsert: true }
+                );
             } catch {
                 // Warning post failed
             }
@@ -632,25 +674,6 @@ export class Config {
 
         const payload = await this.buildPayload(interaction.guild, module);
         await interaction.update(payload);
-    }
-
-    private buildHoneypotWarningContainer(): ContainerBuilder {
-        const header = new TextDisplayBuilder().setContent('# 🍯 Honeypot - Do NOT Post Here');
-
-        const warning = new TextDisplayBuilder().setContent(
-            [
-                '## ⛔ Sending any message in this channel triggers an **immediate ban**.',
-                '',
-                '> This channel is a trap for compromised and spam bots.',
-                '> This is your only warning.',
-            ].join('\n')
-        );
-
-        return new ContainerBuilder()
-            .setAccentColor(0xf1_c4_0f)
-            .addTextDisplayComponents(header)
-            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Large))
-            .addTextDisplayComponents(warning);
     }
 
     private async resolveConfiguredChannelMention(
@@ -991,29 +1014,66 @@ export class Config {
             );
             const isEnabled = channelMention !== '`Not Set`';
             const canBan = guild.members.me?.permissions.has(PermissionsBitField.Flags.BanMembers);
+            const mode = resolveHoneypotMode(honeypot?.Mode);
+
+            let configuredChannelName: string | undefined;
+            let configuredChannelId: string | undefined;
+            if (isEnabled && honeypot?.ChannelId) {
+                const channel =
+                    guild.channels.cache.get(honeypot.ChannelId) ??
+                    (await guild.channels.fetch(honeypot.ChannelId).catch(() => null));
+                if (channel?.type === ChannelType.GuildText) {
+                    configuredChannelId = channel.id;
+                    configuredChannelName = channel.name;
+                }
+            }
+
+            const channelSelect = new ChannelSelectMenuBuilder()
+                .setCustomId(HONEYPOT_CHANNEL_SELECT_ID)
+                .setPlaceholder(
+                    canBan
+                        ? configuredChannelName
+                            ? `#${configuredChannelName}`
+                            : 'Select honeypot channel'
+                        : 'Missing Ban Members permission'
+                )
+                .setMinValues(configuredChannelId ? 1 : 0)
+                .setMaxValues(1)
+                .addChannelTypes(ChannelType.GuildText)
+                .setDisabled(!canBan);
+            if (configuredChannelId) {
+                channelSelect.setDefaultChannels(configuredChannelId);
+            }
+
             return {
                 controls: [
                     selector,
-                    new ChannelSelectMenuBuilder()
-                        .setCustomId(HONEYPOT_CHANNEL_SELECT_ID)
-                        .setPlaceholder(
-                            canBan ? 'Select honeypot channel' : 'Missing Ban Members permission'
-                        )
-                        .addChannelTypes(ChannelType.GuildText)
-                        .setDisabled(!canBan),
+                    channelSelect,
+                    new StringSelectMenuBuilder()
+                        .setCustomId(HONEYPOT_MODE_SELECT_ID)
+                        .setPlaceholder('Select action mode')
+                        .setDisabled(!canBan)
+                        .addOptions(
+                            {
+                                default: mode === 'ban',
+                                label: 'Ban',
+                                value: 'ban',
+                            },
+                            {
+                                default: mode === 'softban',
+                                label: 'Soft ban',
+                                value: 'softban',
+                            }
+                        ),
                     new ButtonBuilder()
                         .setCustomId(HONEYPOT_DISABLE_BUTTON_ID)
                         .setLabel('Disable')
                         .setStyle(ButtonStyle.Danger)
                         .setDisabled(!isEnabled),
                 ],
-                lines: [
-                    `> Channel: ${channelMention}`,
-                    '> Select a trap channel. Anyone who posts there is banned automatically.',
-                    canBan
-                        ? ''
-                        : '> ⚠️ I need the `Ban Members` permission before Honeypot can be enabled.',
-                ].filter(Boolean),
+                lines: canBan
+                    ? ['> Pick a trap channel and action mode below.']
+                    : ['> ⚠️ I need the `Ban Members` permission before Honeypot can be enabled.'],
                 title: '# 🍯 Honeypot',
             };
         }
@@ -1164,7 +1224,6 @@ export class Config {
         }
 
         const header = new TextDisplayBuilder().setContent(view.title);
-        const body = new TextDisplayBuilder().setContent(view.lines.join('\n'));
 
         const [firstControl, ...remainingControls] = view.controls;
         const container = new ContainerBuilder().addTextDisplayComponents(header);
@@ -1174,9 +1233,13 @@ export class Config {
             container.addActionRowComponents((row) => row.addComponents(firstControl));
         }
 
-        container
-            .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
-            .addTextDisplayComponents(body);
+        if (view.lines.length > 0) {
+            container
+                .addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small))
+                .addTextDisplayComponents(
+                    new TextDisplayBuilder().setContent(view.lines.join('\n'))
+                );
+        }
 
         if (remainingControls.length > 0) {
             container.addSeparatorComponents((s) => s.setSpacing(SeparatorSpacingSize.Small));
