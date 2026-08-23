@@ -4,10 +4,8 @@ import si from 'systeminformation';
 import '@colors/colors';
 import { CronJob } from 'cron';
 import { ChannelType, Events, version } from 'discord.js';
-import moment from 'moment';
-import BirthdayConfig from '../mongo/BirthdayConfig.js';
-import Birthdays from '../mongo/Birthdays.js';
 import StarBoard from '../mongo/StarBoard.js';
+import { runBirthdayAnnouncements } from '../utils/Birthday.js';
 import { updateStatus } from '../utils/Util.js';
 
 /**
@@ -130,129 +128,14 @@ export class ClientReady {
             })
         );
 
-        // Run a cron job once per day to check for users' birthdays
-        const birthdayCron = new CronJob(
-            '0 0 0 * * *',
-            async () => {
-                try {
-                    const birthdays = await Birthdays.find();
-                    const birthdayConfigs = await BirthdayConfig.find();
+        const birthdayCron = new CronJob('0 0 0 * * *', async () => {
+            try {
+                await runBirthdayAnnouncements(client);
+            } catch (error) {
+                console.error('Error in Birthday Cron Job:', error);
+            }
+        });
 
-                    const findUserBirthday = async (id: string) =>
-                        Birthdays.findOne({ UserId: id });
-
-                    await Promise.all(
-                        birthdayConfigs.map(async (config) => {
-                            if (!config.GuildId) {
-                                return;
-                            }
-
-                            const guild = client.guilds.cache.get(config.GuildId);
-                            if (!guild) {
-                                await BirthdayConfig.deleteMany({ GuildId: config.GuildId });
-                                return;
-                            }
-
-                            const channelId = config.ChannelId;
-                            if (!channelId) {
-                                await BirthdayConfig.deleteMany({ GuildId: config.GuildId });
-                                return;
-                            }
-
-                            const channel = guild.channels.cache.get(channelId);
-                            if (!channel) {
-                                await BirthdayConfig.deleteMany({ GuildId: config.GuildId });
-                                return;
-                            }
-
-                            const currentDate = new Date();
-                            currentDate.setHours(0, 0, 0, 0);
-
-                            await Promise.all(
-                                birthdays.map(async (birthday) => {
-                                    if (
-                                        !(
-                                            birthday.UserId &&
-                                            guild.members.cache.has(birthday.UserId)
-                                        )
-                                    ) {
-                                        return;
-                                    }
-
-                                    const user = await guild.members.fetch(birthday.UserId);
-                                    if (!user) {
-                                        return;
-                                    }
-
-                                    const userBirthday = await findUserBirthday(user.id);
-                                    if (!userBirthday) {
-                                        return;
-                                    }
-
-                                    const now = moment();
-                                    const lastRunGuild = userBirthday?.LastRun || [];
-
-                                    const birthdayDate = userBirthday.Date;
-                                    if (!birthdayDate) {
-                                        return;
-                                    }
-
-                                    const savedDate = new Date(Date.parse(birthdayDate));
-                                    savedDate.setFullYear(currentDate.getFullYear());
-                                    savedDate.setHours(0, 0, 0, 0);
-
-                                    if (currentDate.getTime() === savedDate.getTime()) {
-                                        const lastRunForGuild = lastRunGuild.find(
-                                            (entry) => entry[guild.id]
-                                        );
-                                        if (
-                                            lastRunForGuild &&
-                                            now.unix() < lastRunForGuild[guild.id] + 86_400
-                                        ) {
-                                            return;
-                                        }
-
-                                        const message = `It's ${user}'s birthday! Say Happy Birthday! 🍰`;
-
-                                        try {
-                                            if (channel.type === ChannelType.GuildText) {
-                                                await channel.send(message);
-                                            }
-
-                                            const guildIndex = lastRunGuild.findIndex(
-                                                (obj) => obj[guild.id]
-                                            );
-
-                                            if (guildIndex === -1) {
-                                                lastRunGuild.push({ [guild.id]: now.unix() });
-                                            } else {
-                                                lastRunGuild[guildIndex][guild.id] = now.unix();
-                                            }
-
-                                            await Birthdays.findOneAndUpdate(
-                                                { UserId: user.id },
-                                                { LastRun: lastRunGuild }
-                                            );
-                                        } catch (error) {
-                                            console.error(
-                                                `Error sending birthday message for ${user}:`,
-                                                error
-                                            );
-                                        }
-                                    }
-                                })
-                            );
-                        })
-                    );
-                } catch (error) {
-                    console.error('Error in Birthday Cron Job:', error);
-                }
-            },
-            null,
-            true
-        );
-
-        // Run the birthdayCron job
         birthdayCron.start();
     }
 }
