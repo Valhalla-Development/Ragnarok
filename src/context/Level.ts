@@ -13,6 +13,7 @@ import abbreviate from 'number-abbreviate';
 // @ts-expect-error no type file available for this package
 import converter from 'number-to-words-en';
 import Level from '../mongo/Level.js';
+import { log } from '../utils/Console.js';
 import { color, RagnarokComponent } from '../utils/Util.js';
 
 @Discord()
@@ -349,6 +350,8 @@ export class LevelContext {
         ctx.save();
 
         const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: 'level.jpg' });
-        interaction.editReply({ files: [attachment] }).catch((err) => console.error(err));
+        interaction
+            .editReply({ files: [attachment] })
+            .catch((err) => log.error('Failed to send level card', err));
     }
 }

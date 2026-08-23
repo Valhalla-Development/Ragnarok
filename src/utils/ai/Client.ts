@@ -4,11 +4,10 @@ import type {
     IHistoryStorage,
     OpenRouterClient,
 } from 'openrouter-kit';
-import '@colors/colors';
-import moment from 'moment';
 import { OpenRouterClient as OpenRouterClientCtor } from 'openrouter-kit';
 import { config, durationToMs } from '../../config/Config.js';
 import AIHistory from '../../mongo/AIHistory.js';
+import { log } from '../Console.js';
 
 const MAX_HISTORY_ENTRIES = 30;
 
@@ -57,14 +56,7 @@ export function aiLogStart(userId: string, prompt: string): void {
     }
 
     const shortPrompt = prompt.length > 80 ? `${prompt.slice(0, 77)}...` : prompt;
-    console.log(
-        `${'◆◆◆◆◆◆'.rainbow.bold} ${moment().format('MMM D, h:mm A')} ${'◆◆◆◆◆◆'.rainbow.bold}\n` +
-            `${'🤖 OpenRouter Query'.brightBlue.bold} ${`user:${userId}`.brightMagenta.bold}\n` +
-            `${'📝 Prompt: '.brightBlue.bold}${shortPrompt.brightYellow.bold}`
-    );
-    if (process.env.NODE_ENV === 'development') {
-        console.log(`${'Raw sent to AI:'.gray}\n${prompt.gray}\n`);
-    }
+    log.info(`[AI] OpenRouter query user:${userId} — ${shortPrompt}`);
 }
 
 export function aiLogDone(result: ChatCompletionResult, durationMs: number): void {
@@ -74,12 +66,9 @@ export function aiLogDone(result: ChatCompletionResult, durationMs: number): voi
 
     const totalTokens = result.usage?.total_tokens;
     const { cost } = result as { cost?: number };
-    const costStr =
-        typeof cost === 'number' ? ` ${'Cost:'.brightBlue.bold} $${cost.toFixed(6)}` : '';
-    console.log(
-        `${'✅ AI Complete'.brightGreen.bold} ${`(${durationMs}ms)`.gray} ` +
-            `${'Model:'.brightBlue.bold} ${result.model.brightMagenta.bold} ` +
-            `${'Tokens:'.brightBlue.bold} ${String(totalTokens).brightYellow.bold}${costStr}`
+    const costStr = typeof cost === 'number' ? ` cost $${cost.toFixed(6)}` : '';
+    log.ok(
+        `[AI] Complete (${durationMs}ms) model ${result.model} tokens ${String(totalTokens)}${costStr}`
     );
 }
 

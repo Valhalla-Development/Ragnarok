@@ -2,6 +2,7 @@ import { ChannelType, type Client } from 'discord.js';
 import moment from 'moment';
 import BirthdayConfig from '../mongo/BirthdayConfig.js';
 import Birthdays from '../mongo/Birthdays.js';
+import { log } from './Console.js';
 
 /**
  * Announce today's birthdays for every configured guild this process has.
@@ -101,7 +102,7 @@ export async function runBirthdayAnnouncements(client: Client): Promise<{
                         await channel.send(`It's ${user}'s birthday! Say Happy Birthday! 🍰`);
                         sent += 1;
                     } catch (error) {
-                        console.error(`Error sending birthday message for ${user.id}:`, error);
+                        log.error(`Failed to send birthday message for ${user.id}`, error);
                     }
                 })
             );

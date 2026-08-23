@@ -1,4 +1,11 @@
 import {
+    getTitleDetailsByName,
+    getTitleDetailsByUrl,
+    type ITitle,
+    TitleMainType,
+} from '@valhalladev/movier';
+import axios from 'axios';
+import {
     ActivityType,
     ButtonBuilder,
     type ButtonInteraction,
@@ -23,19 +30,12 @@ import {
     type UserSelectMenuInteraction,
 } from 'discord.js';
 import type { Client } from 'discordx';
-import '@colors/colors';
-import {
-    getTitleDetailsByName,
-    getTitleDetailsByUrl,
-    type ITitle,
-    TitleMainType,
-} from '@valhalladev/movier';
-import axios from 'axios';
 import mongoose from 'mongoose';
 import { config, isValhallaEnabled } from '../config/Config.js';
 import Balance from '../mongo/Balance.js';
 import Level from '../mongo/Level.js';
 import LevelConfig from '../mongo/LevelConfig.js';
+import { log } from './Console.js';
 import { ecoPrices } from './economy/Config.js';
 
 const xpCooldown = new Set();
@@ -136,7 +136,7 @@ export async function messageDelete(message: Message, time: number): Promise<voi
         }
     } catch (error) {
         // Handle any errors that occur during message deletion
-        console.error('Error: Failed to delete the message:', error);
+        log.error('Failed to delete the message', error);
         throw error;
     }
 }
@@ -148,7 +148,7 @@ export async function messageDelete(message: Message, time: number): Promise<voi
  */
 export function deletableCheck(message: Message, time: number): void {
     setTimeout(() => {
-        message.delete().catch((error) => console.error('Error deleting message:', error));
+        message.delete().catch((error) => log.error('Failed to delete message', error));
     }, time);
 }
 
@@ -176,7 +176,7 @@ export async function getCommandIds(
                 commandIds.set(cmd.name, cmd.id);
             }
         } catch (error) {
-            console.warn('Could not fetch global commands:', error);
+            log.warn('Could not fetch global commands', error);
         }
     }
 
@@ -189,7 +189,7 @@ export async function getCommandIds(
                 commandIds.set(cmd.name, cmd.id);
             }
         } catch (error) {
-            console.warn(`Could not fetch commands for guild ${guild.name}:`, error);
+            log.warn(`Could not fetch commands for guild ${guild.name}`, error);
         }
     }
 
@@ -203,32 +203,26 @@ export async function getCommandIds(
 export async function loadMongoEvents(): Promise<void> {
     try {
         await mongoose.connect(`${process.env.MONGO_URI}`);
-        console.log('[Database Status]: Connected.'.green.bold);
+        log.ok('[Database Status] Connected');
     } catch (err) {
-        console.error(
-            '[Database Status]: An error occurred with the Mongo connection:'.red.bold,
-            `\n${err}`
-        );
+        log.error('[Database Status] Mongo connection failed', err);
         throw err;
     }
 
     mongoose.connection.on('connecting', () => {
-        console.log('[Database Status]: Connecting.'.cyan.bold);
+        log.info('[Database Status] Connecting');
     });
 
     mongoose.connection.on('connected', () => {
-        console.log('[Database Status]: Connected.'.green.bold);
+        log.ok('[Database Status] Connected');
     });
 
     mongoose.connection.on('error', (err) => {
-        console.error(
-            '[Database Status]: An error occurred with the Mongo connection:'.red.bold,
-            `\n${err}`
-        );
+        log.error('[Database Status] Mongo connection failed', err);
     });
 
     mongoose.connection.on('disconnected', () => {
-        console.log('[Database Status]: Disconnected'.red.bold);
+        log.warn('[Database Status] Disconnected');
     });
 }
 
@@ -254,7 +248,7 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
         }
 
         if (!data) {
-            console.error('Content is not available.');
+            log.error('Content is not available');
             return; // Return early if data is not available
         }
 
@@ -292,7 +286,7 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
             year: data.titleYear,
         };
     } catch (error) {
-        console.error('Error fetching data:', error);
+        log.error('Failed to fetch content data', error);
     }
 }
 
@@ -350,7 +344,7 @@ export async function RagnarokComponent(
             });
         }
     } catch (error) {
-        console.error('Error sending component response:', error);
+        log.error('Failed to send component response', error);
     }
 }
 
@@ -621,15 +615,46 @@ export async function updateLevel(interaction: Message | CommandInteraction) {
         xpCooldown.add(member.id);
         setTimeout(() => xpCooldown.delete(member.id), xpCooldownSeconds * 1000);
     } catch (error) {
-        console.error(error);
+        log.error('Failed to update level', error);
     }
 }
+
+const STATUS_INTERVAL_MS = 15_000;
+let lastStatusAt = 0;
+let statusScheduled = false;
+let queuedClient: Client | undefined;
 
 /**
  * Updates the status of the Discord client with information about guilds and users.
  * @param client - The Discord client instance.
  */
 export function updateStatus(client: Client) {
+    queuedClient = client;
+    const remaining = STATUS_INTERVAL_MS - (Date.now() - lastStatusAt);
+
+    if (remaining > 0) {
+        if (statusScheduled) {
+            return;
+        }
+        statusScheduled = true;
+        setTimeout(() => {
+            statusScheduled = false;
+            flushStatus();
+        }, remaining);
+        return;
+    }
+
+    flushStatus();
+}
+
+function flushStatus() {
+    const client = queuedClient;
+    queuedClient = undefined;
+    if (!client) {
+        return;
+    }
+
+    lastStatusAt = Date.now();
     client.user?.setActivity({
         name: `${client.guilds.cache.size.toLocaleString('en')} Guilds
             ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
@@ -637,18 +662,26 @@ export function updateStatus(client: Client) {
     });
 }
 
-/**
- * Applies a reversed rainbow effect to the input string.
- * @param str - The string to apply the reversed rainbow effect.
- * @returns The input string with reversed rainbow coloring.
- */
-export const reversedRainbow = (str: string): string => {
-    const colors = ['red', 'magenta', 'blue', 'green', 'yellow', 'red'] as const;
-    return str
-        .split('')
-        .map((char, i) => char[colors[i % colors.length] as keyof typeof char])
-        .join('');
-};
+export async function getTextChannel(
+    client: Client,
+    channelId: string
+): Promise<TextChannel | undefined> {
+    const cached = client.channels.cache.get(channelId);
+    if (cached?.type === ChannelType.GuildText) {
+        return cached;
+    }
+
+    try {
+        const fetched = await client.channels.fetch(channelId);
+        if (fetched?.type === ChannelType.GuildText) {
+            return fetched;
+        }
+    } catch (error) {
+        log.error(`Failed to fetch channel ${channelId}`, error);
+    }
+
+    return undefined;
+}
 
 /**
  * Handles given error by logging it and optionally sending it to a Discord channel.
@@ -656,14 +689,10 @@ export const reversedRainbow = (str: string): string => {
  * @param error - The unknown error
  */
 export async function handleError(client: Client, error: unknown): Promise<void> {
-    // Properly log the raw error for debugging
-    console.error('Raw error:', error);
-
-    // Create an error object if we received something else
     const normalizedError = error instanceof Error ? error : new Error(String(error));
-
-    // Ensure we have a stack trace
     const errorStack = normalizedError.stack || normalizedError.message || String(error);
+
+    log.error(normalizedError.message, normalizedError);
 
     if (!(config.ENABLE_LOGGING && config.ERROR_LOGGING_CHANNEL)) {
         return;
@@ -684,12 +713,9 @@ export async function handleError(client: Client, error: unknown): Promise<void>
     }
 
     try {
-        const channel = client.channels.cache.get(config.ERROR_LOGGING_CHANNEL!) as
-            | TextChannel
-            | undefined;
-
-        if (!channel || channel.type !== ChannelType.GuildText) {
-            console.error(`Invalid logging channel: ${config.ERROR_LOGGING_CHANNEL}`);
+        const channel = await getTextChannel(client, config.ERROR_LOGGING_CHANNEL!);
+        if (!channel) {
+            log.error(`Invalid logging channel ${config.ERROR_LOGGING_CHANNEL}`);
             return;
         }
 
@@ -711,7 +737,7 @@ export async function handleError(client: Client, error: unknown): Promise<void>
             flags: MessageFlags.IsComponentsV2,
         });
     } catch (sendError) {
-        console.error('Failed to send the error component message:', sendError);
+        log.error('Failed to send the error log', sendError);
     }
 }
 
@@ -785,7 +811,7 @@ export async function fetchAndScrambleWord(): Promise<{
             scrambledWord,
         };
     } catch (error) {
-        console.error('Error fetching and scrambling word:', error);
+        log.error('Failed to fetch and scramble word', error);
         throw error;
     }
 }
@@ -813,10 +839,10 @@ export async function getRandomWord(): Promise<string | null> {
             const { word } = response.data;
             return word;
         }
-        console.log(`Error: ${response.status}`);
+        log.error(`Valhalla word API returned ${response.status}`);
         return null;
     } catch (error) {
-        console.log(`Error: ${error}`);
+        log.error('Failed to fetch a random word', error);
         return null;
     }
 }

@@ -8,6 +8,7 @@ import {
 import { type Client, Discord, Slash, SlashChoice, SlashOption } from 'discordx';
 
 import { config } from '../../config/Config.js';
+import { log } from '../../utils/Console.js';
 
 @Discord()
 @Category('Hidden')
@@ -52,7 +53,7 @@ export class Emit {
         try {
             client.emit(event, interaction.member);
         } catch (error) {
-            console.error(error);
+            log.error('Failed to emit event', error);
         }
     }
 }

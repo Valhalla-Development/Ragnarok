@@ -1,6 +1,7 @@
 import { config } from '../../config/Config.js';
 import AIHistory from '../../mongo/AIHistory.js';
 import AIUser from '../../mongo/AIUser.js';
+import { log } from '../Console.js';
 import { aiClient, getResetTimeMs, isAIAdmin } from './Client.js';
 import type { AIAvailabilityResult, AIUserData } from './Types.js';
 
@@ -354,7 +355,7 @@ export async function clearAllAIHistoryForGuild(guildId: string): Promise<number
             keys.map((key) =>
                 historyManager.deleteHistory(key).catch((err) => {
                     if (config.ENABLE_LOGGING) {
-                        console.warn(`Failed to clear cached AI history key '${key}':`, err);
+                        log.warn(`Failed to clear cached AI history key '${key}'`, err);
                     }
                 })
             )
@@ -382,7 +383,7 @@ export async function resetAIHistory(userId: string): Promise<void> {
             keys.map((key) =>
                 historyManager.deleteHistory(key).catch((error) => {
                     if (config.ENABLE_LOGGING) {
-                        console.warn(`Failed to clear cached AI history key '${key}':`, error);
+                        log.warn(`Failed to clear cached AI history key '${key}'`, error);
                     }
                 })
             )

@@ -10,6 +10,7 @@ import {
 } from 'discord.js';
 import { Discord, Guard, Slash, SlashOption } from 'discordx';
 import { BotHasPerm } from '../../guards/BotHasPerm.js';
+import { log } from '../../utils/Console.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
@@ -83,7 +84,7 @@ export class AddRole {
                 `I have added the ${role} role to ${targetMember}`
             );
         } catch (error) {
-            console.error('Error adding role:', error);
+            log.error('Failed to add role', error);
 
             await RagnarokComponent(
                 interaction,

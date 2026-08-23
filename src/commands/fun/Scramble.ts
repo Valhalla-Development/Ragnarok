@@ -18,6 +18,7 @@ import {
 import { ButtonComponent, Discord, ModalComponent, Slash } from 'discordx';
 import { v4 as uuidv4 } from 'uuid';
 import { isValhallaEnabled } from '../../config/Config.js';
+import { log } from '../../utils/Console.js';
 import { capitalise, fetchAndScrambleWord, RagnarokComponent } from '../../utils/Util.js';
 
 class Game {
@@ -210,7 +211,7 @@ export class Scramble {
                 10 * 60 * 1000
             ); // 10 minutes
         } catch (error) {
-            console.error(error);
+            log.error('Failed to start Scramble', error);
             delete activeGames[gameId];
             await RagnarokComponent(
                 interaction,

@@ -13,6 +13,7 @@ import {
 } from 'discord.js';
 import { Discord, Slash } from 'discordx';
 import WOTDModel from '../../mongo/WOTD.js';
+import { log } from '../../utils/Console.js';
 import { capitalise, RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
@@ -40,13 +41,13 @@ export class WOTD {
             const today = new Date();
             const dateKey = today.toISOString().slice(0, 10); // YYYY-MM-DD
             let cached = await WOTDModel.findOne({ Date: dateKey });
-            console.log(cached);
+            log.info(`[WOTD] Cache ${cached ? 'hit' : 'miss'} for ${dateKey}`);
             if (!cached) {
                 const url = 'https://www.merriam-webster.com/word-of-the-day';
                 const response = await fetch(url);
 
                 if (!response.ok) {
-                    console.log('Failed to fetch word of the day:', response.statusText);
+                    log.warn(`[WOTD] Failed to fetch word of the day: ${response.statusText}`);
                     if (!cached) {
                         throw new Error('Unable to fetch Word of the Day and no cache available.');
                     }

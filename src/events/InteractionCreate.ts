@@ -1,9 +1,8 @@
-import { ChannelType, codeBlock, Events, MessageFlags } from 'discord.js';
-import type { ArgsOf, Client } from 'discordx';
-import { Discord, On } from 'discordx';
-import moment from 'moment';
+import { codeBlock, Events, MessageFlags } from 'discord.js';
+import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import { config } from '../config/Config.js';
-import { handleError, RagnarokContainer, reversedRainbow, updateLevel } from '../utils/Util.js';
+import { log } from '../utils/Console.js';
+import { getTextChannel, handleError, RagnarokContainer, updateLevel } from '../utils/Util.js';
 
 @Discord()
 export class InteractionCreate {
@@ -14,21 +13,20 @@ export class InteractionCreate {
      */
     @On({ event: Events.InteractionCreate })
     async onInteraction([interaction]: ArgsOf<'interactionCreate'>, client: Client) {
-        // Check if the interaction is in a guild and in a guild text channel, and is either a string select menu or a chat input command.
+        // Check if the interaction is in a guild text-based channel, and is a supported interaction type.
         if (
-            !(interaction?.guild && interaction.channel) ||
-            interaction.channel.type !== ChannelType.GuildText ||
             !(
-                interaction.isButton() ||
-                interaction.isStringSelectMenu() ||
-                interaction.isRoleSelectMenu() ||
-                interaction.isChannelSelectMenu() ||
-                interaction.isMentionableSelectMenu() ||
-                interaction.isChatInputCommand() ||
-                interaction.isContextMenuCommand() ||
-                interaction.isContextMenuCommand() ||
-                interaction.isModalSubmit() ||
-                interaction.isUserSelectMenu()
+                interaction.guild &&
+                interaction.channel?.isTextBased() &&
+                (interaction.isButton() ||
+                    interaction.isStringSelectMenu() ||
+                    interaction.isRoleSelectMenu() ||
+                    interaction.isChannelSelectMenu() ||
+                    interaction.isMentionableSelectMenu() ||
+                    interaction.isChatInputCommand() ||
+                    interaction.isContextMenuCommand() ||
+                    interaction.isModalSubmit() ||
+                    interaction.isUserSelectMenu())
             )
         ) {
             return;
@@ -45,7 +43,6 @@ export class InteractionCreate {
             await client.executeInteraction(interaction);
         } catch (err) {
             await handleError(client, err);
-            console.error(`Error executing interaction: ${err}`);
         }
 
         // Ignore honeypot counter button clicks.
@@ -60,28 +57,35 @@ export class InteractionCreate {
 
             const reply = await interaction.fetchReply().catch(() => null);
 
-            const link =
+            const jumpUrl =
                 reply?.guildId && reply?.channelId && reply?.id
                     ? `https://discord.com/channels/${reply.guildId}/${reply.channelId}/${reply.id}`
-                    : `<#${interaction.channelId}>`;
+                    : undefined;
 
-            const now = Date.now();
-            const nowInSeconds = Math.floor(now / 1000);
+            const nowInSeconds = Math.floor(Date.now() / 1000);
             const executedCommand = interaction.toString();
 
-            // Console logging
-            console.log(
-                `${'◆◆◆◆◆◆'.rainbow.bold} ${moment(now).format('MMM D, h:mm A')} ${reversedRainbow('◆◆◆◆◆◆')}\n` +
-                    `${'🔧 Command:'.brightBlue.bold} ${executedCommand.brightYellow.bold}\n` +
-                    `${'🔍 Executor:'.brightBlue.bold} ${interaction.user.displayName.underline.brightMagenta.bold} ${'('.gray.bold}${'Guild: '.brightBlue.bold}${interaction.guild.name.underline.brightMagenta.bold}${')'}`
-            );
+            const channelName =
+                interaction.channel && 'name' in interaction.channel && interaction.channel.name
+                    ? `#${interaction.channel.name}`
+                    : `#${interaction.channelId}`;
+
+            log.command({
+                channel: channelName,
+                command: executedCommand,
+                guild: interaction.guild.name,
+                jump: jumpUrl,
+                latency: Date.now() - interaction.createdTimestamp,
+                user: interaction.user.displayName,
+                userUrl: `https://discord.com/users/${interaction.user.id}`,
+            });
 
             const logContainer = RagnarokContainer(
                 'Command Executed',
                 [
                     `**👤 User:** ${interaction.user}`,
                     `**📅 Date:** <t:${nowInSeconds}:F>`,
-                    `**📰 Interaction:** ${link}`,
+                    `**📰 Interaction:** ${jumpUrl ?? `<#${interaction.channelId}>`}`,
                     '',
                     `**🖥️ Command**\n${codeBlock('kotlin', executedCommand)}`,
                 ].join('\n')
@@ -89,15 +93,17 @@ export class InteractionCreate {
 
             // Channel logging
             if (config.COMMAND_LOGGING_CHANNEL) {
-                const channel = client.channels.cache.get(config.COMMAND_LOGGING_CHANNEL);
-                if (channel?.type === ChannelType.GuildText) {
+                const channel = await getTextChannel(client, config.COMMAND_LOGGING_CHANNEL);
+                if (channel) {
                     channel
                         .send({
                             allowedMentions: { parse: [] },
                             components: [logContainer],
                             flags: MessageFlags.IsComponentsV2,
                         })
-                        .catch(console.error);
+                        .catch((error: unknown) => {
+                            log.error('Failed to send command log', error);
+                        });
                 }
             }
         }

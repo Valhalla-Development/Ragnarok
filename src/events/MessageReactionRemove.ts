@@ -1,6 +1,7 @@
 import { Events, MessageFlags } from 'discord.js';
 import type { ArgsOf } from 'discordx';
 import { Discord, On } from 'discordx';
+import { log } from '../utils/Console.js';
 import {
     findStarboardEntry,
     getCurrentStarCount,
@@ -50,7 +51,7 @@ export class MessageReactionRemove {
 
             if (starCount <= 0) {
                 await message.delete().catch((error) => {
-                    console.debug('Could not delete starboard message after 0 stars:', error);
+                    log.warn('Could not delete starboard message after 0 stars', error);
                 });
                 return;
             }
@@ -74,7 +75,7 @@ export class MessageReactionRemove {
 
         if (starCount <= 0) {
             await existingStarboardMessage.delete().catch((error) => {
-                console.debug('Could not delete linked starboard message after 0 stars:', error);
+                log.warn('Could not delete linked starboard message after 0 stars', error);
             });
             return;
         }

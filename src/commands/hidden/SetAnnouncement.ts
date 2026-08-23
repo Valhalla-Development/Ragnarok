@@ -12,6 +12,7 @@ import {
 import { Discord, ModalComponent, Slash } from 'discordx';
 import { config } from '../../config/Config.js';
 import Announcement from '../../mongo/Announcement.js';
+import { log } from '../../utils/Console.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
@@ -78,7 +79,7 @@ export class SetAnnouncement {
                 true
             );
         } catch (error) {
-            console.error('Error setting announcement:', error);
+            log.error('Failed to set announcement', error);
             await RagnarokComponent(
                 interaction,
                 'Error',

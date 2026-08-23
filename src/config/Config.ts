@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { log } from '../utils/Console.js';
 
 // Helper transforms for common patterns
 const stringToBoolean = (val: string): boolean => val.toLowerCase() === 'true';
@@ -35,9 +36,6 @@ const configSchema = z.object({
         .transform((val) => (val ? stringToArray(val) : undefined)),
     MAX_AI_QUERIES_LIMIT: z.string().optional().default('30').transform(Number),
 
-    // Environment (defaults to development)
-    NODE_ENV: z.enum(['development', 'production']).default('development'),
-
     // OpenRouter AI settings (optional)
     OPENROUTER_API_KEY: z.string().optional().default(''),
     OPENROUTER_MODEL: z.string().optional().default('openai/gpt-4o-mini'),
@@ -61,9 +59,9 @@ try {
     config = configSchema.parse(process.env);
 
     if (!config.VALHALLA_API_KEY.trim()) {
-        console.warn(
+        log.warn(
             [
-                '⚠️ Valhalla API key missing — Valhalla-powered word/Hangman/Scramble features are DISABLED.',
+                'Valhalla API key missing — Valhalla-powered word/Hangman/Scramble features are DISABLED.',
                 `- VALHALLA_API_URI: ${config.VALHALLA_API_URI}`,
                 '- To enable: set VALHALLA_API_KEY (request via emailing ragnarlothbrokjr@proton.me)',
             ].join('\n')
@@ -72,8 +70,8 @@ try {
 
     // Validate logging channels required when logging is enabled
     if (config.ENABLE_LOGGING && !config.ERROR_LOGGING_CHANNEL && !config.COMMAND_LOGGING_CHANNEL) {
-        console.warn(
-            '⚠️  ENABLE_LOGGING is true but ERROR_LOGGING_CHANNEL and COMMAND_LOGGING_CHANNEL are missing. Logging will be disabled.'
+        log.warn(
+            'ENABLE_LOGGING is true but ERROR_LOGGING_CHANNEL and COMMAND_LOGGING_CHANNEL are missing. Logging will be disabled.'
         );
         config.ENABLE_LOGGING = false;
     }
@@ -90,7 +88,6 @@ try {
 }
 
 export { config };
-export const isDev = config.NODE_ENV === 'development';
 
 export function isValhallaEnabled(): boolean {
     return Boolean(config.VALHALLA_API_KEY.trim());

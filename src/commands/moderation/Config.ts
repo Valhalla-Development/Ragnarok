@@ -40,6 +40,7 @@ import {
     setAIGuildPersona,
 } from '../../utils/ai/Index.js';
 import { personas } from '../../utils/ai/personas/Index.js';
+import { log } from '../../utils/Console.js';
 import {
     buildHoneypotWarningContainer,
     editHoneypotWarningMessage,
@@ -444,12 +445,12 @@ export class Config {
             const payload = await this.buildPayload(interaction.guild, 'autorole');
             await interaction.update(payload);
         } catch (error) {
-            console.error('AutoRole select failed:', error);
+            log.error('AutoRole select failed', error);
             if (interaction.deferred || interaction.replied) {
                 return;
             }
             await interaction.deferUpdate().catch((deferError) => {
-                console.error('AutoRole deferUpdate failed:', deferError);
+                log.error('AutoRole deferUpdate failed', deferError);
             });
         }
     }

@@ -1,4 +1,5 @@
 import type { ChatCompletionResult } from 'openrouter-kit';
+import { log } from '../Console.js';
 import {
     aiLogDone,
     aiLogStart,
@@ -69,7 +70,7 @@ export async function runAIChat(params: {
         await recordAIGlobalUsage({ cost: cost ?? 0, queries: 1 });
         return { chunks: splitMessages(content, 1900), ok: true };
     } catch (error) {
-        console.error('OpenRouter chat error:', error);
+        log.error('OpenRouter chat failed', error);
         return {
             message: 'An AI error occurred while processing your request. Please try again.',
             ok: false,

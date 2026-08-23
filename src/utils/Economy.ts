@@ -15,7 +15,6 @@ import {
     TextInputBuilder,
     TextInputStyle,
 } from 'discord.js';
-import '@colors/colors';
 import type { Client } from 'discordx';
 import { handleDeposit, handleWithdraw } from './economy/Bank.js';
 import { handleClaim } from './economy/Claims.js';

@@ -13,6 +13,7 @@ import {
 } from 'discord.js';
 import type { ArgsOf } from 'discordx';
 import { Discord, On } from 'discordx';
+import { log } from '../utils/Console.js';
 import {
     findStarboardEntry,
     getEffectiveStarCount,
@@ -188,7 +189,7 @@ export class MessageReactionAdd {
             flags: MessageFlags.IsComponentsV2,
         });
         await sent.react('⭐').catch((error) => {
-            console.debug('Could not add star reaction to starboard post:', error);
+            log.warn('Could not add star reaction to starboard post', error);
         });
     }
 }

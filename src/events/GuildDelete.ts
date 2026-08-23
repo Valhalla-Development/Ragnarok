@@ -1,4 +1,4 @@
-import { ActivityType, Events } from 'discord.js';
+import { Events } from 'discord.js';
 import { type ArgsOf, type Client, Discord, On } from 'discordx';
 import AdsProtection from '../mongo/AdsProtection.js';
 import AutoRole from '../mongo/AutoRole.js';
@@ -10,6 +10,8 @@ import Rock from '../mongo/Rock.js';
 import RoleMenu from '../mongo/RoleMenu.js';
 import StarBoard from '../mongo/StarBoard.js';
 import Welcome from '../mongo/Welcome.js';
+import { log } from '../utils/Console.js';
+import { updateStatus } from '../utils/Util.js';
 
 /**
  * Discord.js GuildDelete event handler.
@@ -25,13 +27,9 @@ export class GuildDelete {
     @On({ event: Events.GuildDelete })
     async onGuildDelete([guild]: ArgsOf<'guildDelete'>, client: Client) {
         // Set activity
-        client.user?.setActivity({
-            name: `${client.guilds.cache.size.toLocaleString('en')} Guilds
-            ${client.guilds.cache.reduce((a, b) => a + b.memberCount, 0).toLocaleString('en')} Users`,
-            type: ActivityType.Watching,
-        });
+        updateStatus(client);
 
-        console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
+        log.warn(`[Guild] Removed from ${guild.name} (${guild.id})`);
 
         await AdsProtection.deleteMany({ GuildId: guild.id });
 
