@@ -128,7 +128,7 @@ export class MessageCreate {
                 ) {
                     // Bot doesn't have MANAGE_MESSAGES permission, disable Ad Protection
                     const errorContainer = RagnarokContainer(
-                        `${client.user?.username ?? 'Bot'} - Ads Protection`,
+                        `${client.user?.username} - Ads Protection`,
                         '**Error:** I lack the `Manage Messages` permission required for Ads Protection. This feature has been disabled.'
                     );
 

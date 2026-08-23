@@ -56,7 +56,7 @@ export class TraktCommand {
             return;
         }
 
-        const runtimeSeconds = details.runtime?.seconds;
+        const runtimeSeconds = details.runtime.seconds;
         const runTime =
             typeof runtimeSeconds === 'number' && runtimeSeconds > 0
                 ? Duration.fromObject({ seconds: runtimeSeconds }).toFormat("h'h' m'm'")
@@ -101,8 +101,7 @@ export class TraktCommand {
                 .setURL(`https://imdb.com/title/${details.id}/fullcredits`),
         ];
 
-        const trailerUrl =
-            details.trailers?.[0]?.playbackUrls?.[0] ?? details.trailers?.[0]?.sourceUrl;
+        const trailerUrl = details.trailers[0]?.playbackUrls?.[0] ?? details.trailers[0]?.sourceUrl;
         if (trailerUrl) {
             buttonRow.push(
                 new ButtonBuilder()

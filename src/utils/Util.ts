@@ -286,7 +286,7 @@ export async function getContentDetails(url: string, type: 'name' | 'url') {
             runtime: data.runtime,
             title: data.name,
             totalVotes: data.mainRate.votesCount,
-            trailers: data.trailers ?? [],
+            trailers: data.trailers,
             type: contentType[data.mainType],
             url: data.mainSource.sourceUrl,
             year: data.titleYear,

@@ -149,7 +149,7 @@ async function showCropStatus(
 
         const body = new TextDisplayBuilder().setContent(
             [
-                `**${client.user?.username ?? 'Ragnarok'} — Harvest**`,
+                `**${client.user?.username} — Harvest**`,
                 '',
                 '**Current crop status:**',
                 ...pageEntries.map((e) => `- ${e.trim()}`),
@@ -261,7 +261,7 @@ async function displayHarvestResults(
 
         const body = new TextDisplayBuilder().setContent(
             [
-                `**${client.user?.username ?? 'Ragnarok'} — Harvest**`,
+                `**${client.user?.username} — Harvest**`,
                 '',
                 '**You harvested:**',
                 ...pageEntries.map((e) => `- ${e.trim()}`),
