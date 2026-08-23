@@ -5,7 +5,7 @@ import { model, Schema } from 'mongoose';
  */
 const Birthdays = new Schema({
     Date: { default: null, type: String },
-    LastRun: { default: [], type: Array },
+    LastRun: { default: {}, type: Schema.Types.Mixed },
     UserId: { type: String, unique: true },
 });
 
