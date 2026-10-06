@@ -59,7 +59,7 @@ Ragnarok is a multi-purpose Discord bot built with [discordx](https://discord-x.
 
 ## 🚀 Requirements
 
-- [Bun](https://bun.sh/) - Fast JavaScript runtime
+- [Bun v1.4.0](https://bun.sh/) - Tested runtime, also pinned in CI
 - [Discord Bot Application](https://discord.com/developers/applications) with bot token
 - Optional external service keys (OpenRouter, Valhalla)
 
@@ -125,7 +125,7 @@ We welcome contributions to improve Ragnarok! If you'd like to contribute:
    ```
 5. Open a Pull Request against the main repository's `main` branch
 
-Please ensure your code follows the existing patterns and include clear descriptions in your Pull Request. Focus on performance and user experience improvements.
+Please ensure your code follows the existing patterns and include clear descriptions in your Pull Request. Run `bun run lint` and `bun run test` before submitting changes. Focus on performance and user experience improvements.
 
 ## 📜 License
 
