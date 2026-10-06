@@ -1,4 +1,4 @@
-import { ChannelType, type Client } from 'discord.js';
+import { ChannelType, type Client, DiscordAPIError } from 'discord.js';
 import moment from 'moment';
 import BirthdayConfig from '../mongo/BirthdayConfig.js';
 import Birthdays from '../mongo/Birthdays.js';
@@ -13,6 +13,7 @@ export async function runBirthdayAnnouncements(client: Client): Promise<{
     sent: number;
 }> {
     const today = moment().format('MM/DD');
+    const attemptDate = moment().format('YYYY-MM-DD');
     const nowUnix = moment().unix();
     const cutoff = nowUnix - 86_400;
     const [birthdays, birthdayConfigs] = await Promise.all([
@@ -70,10 +71,39 @@ export async function runBirthdayAnnouncements(client: Client): Promise<{
                                     },
                                 },
                             ],
+                            $or: [
+                                { [`AnnouncementAttempts.${guildId}.Date`]: { $ne: attemptDate } },
+                                { [`AnnouncementAttempts.${guildId}.Count`]: { $lt: 3 } },
+                            ],
                         },
                         [
                             {
                                 $set: {
+                                    [`AnnouncementAttempts.${guildId}`]: {
+                                        Count: {
+                                            $cond: [
+                                                {
+                                                    $eq: [
+                                                        `$AnnouncementAttempts.${guildId}.Date`,
+                                                        attemptDate,
+                                                    ],
+                                                },
+                                                {
+                                                    $add: [
+                                                        {
+                                                            $ifNull: [
+                                                                `$AnnouncementAttempts.${guildId}.Count`,
+                                                                0,
+                                                            ],
+                                                        },
+                                                        1,
+                                                    ],
+                                                },
+                                                1,
+                                            ],
+                                        },
+                                        Date: attemptDate,
+                                    },
                                     LastRun: {
                                         $mergeObjects: [
                                             {
@@ -103,6 +133,17 @@ export async function runBirthdayAnnouncements(client: Client): Promise<{
                         sent += 1;
                     } catch (error) {
                         log.error(`Failed to send birthday message for ${user.id}`, error);
+                        // Only release rejected requests; transport failures may have delivered the message.
+                        if (
+                            error instanceof DiscordAPIError &&
+                            error.status >= 400 &&
+                            error.status < 500
+                        ) {
+                            await Birthdays.updateOne(
+                                { _id: birthday._id, [`LastRun.${guildId}`]: nowUnix },
+                                { $unset: { [`LastRun.${guildId}`]: 1 } }
+                            );
+                        }
                     }
                 })
             );

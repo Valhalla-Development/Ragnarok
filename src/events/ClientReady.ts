@@ -126,7 +126,8 @@ export class ClientReady {
             })
         );
 
-        const birthdayCron = new CronJob('0 0 0 * * *', async () => {
+        // Revisit failed sends and catch birthdays missed while the bot was offline.
+        const birthdayCron = new CronJob('0 */5 * * * *', async () => {
             try {
                 await runBirthdayAnnouncements(client);
             } catch (error) {
