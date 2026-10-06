@@ -6,6 +6,7 @@ import {
 } from 'discord.js';
 import { Discord, Slash, SlashOption } from 'discordx';
 import { getOrCreateBalance } from '../../utils/economy/Profile.js';
+import { transferBankFunds } from '../../utils/economy/Transfers.js';
 import { RagnarokComponent } from '../../utils/Util.js';
 
 @Discord()
@@ -37,6 +38,13 @@ export class Give {
         amount: number,
         interaction: CommandInteraction
     ): Promise<void> {
+        await interaction.deferReply();
+
+        if (!Number.isFinite(amount) || amount < 10 || amount > Number.MAX_SAFE_INTEGER) {
+            await RagnarokComponent(interaction, 'Error', 'Please enter a valid amount.', true);
+            return;
+        }
+
         const balance = await getOrCreateBalance(interaction);
 
         const otherB = await getOrCreateBalance(interaction, user.id, interaction.guild!.id);
@@ -87,13 +95,16 @@ export class Give {
             return;
         }
 
-        otherB.Bank = Number(otherB.Bank ?? 0) + amount;
-        otherB.Total = Number(otherB.Total ?? 0) + amount;
-        await otherB.save();
-
-        balance.Bank = senderBank - amount;
-        balance.Total = Number(balance.Total ?? 0) - amount;
-        await balance.save();
+        const transferred = await transferBankFunds(balance.IdJoined!, otherB.IdJoined!, amount);
+        if (!transferred) {
+            await RagnarokComponent(
+                interaction,
+                'Error',
+                'Your balance changed before the transfer completed. Please retry with a valid amount.',
+                true
+            );
+            return;
+        }
 
         await RagnarokComponent(
             interaction,
