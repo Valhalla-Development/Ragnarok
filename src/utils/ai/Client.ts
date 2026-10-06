@@ -9,6 +9,8 @@ import { config, durationToMs } from '../../config/Config.js';
 import AIHistory from '../../mongo/AIHistory.js';
 import { log } from '../Console.js';
 
+export { splitMessages } from './Messages.js';
+
 const MAX_HISTORY_ENTRIES = 30;
 
 class MongoHistoryStorage implements IHistoryStorage {
@@ -99,29 +101,6 @@ export function getClient(): OpenRouterClient {
     });
 
     return aiClient;
-}
-
-export function splitMessages(content: string, length = 1900): string[] {
-    if (content.length <= length) {
-        return [content];
-    }
-
-    const chunks: string[] = [];
-    let remainingContent = content.trim();
-
-    while (remainingContent.length > 0) {
-        const chunkEnd =
-            remainingContent.length <= length
-                ? remainingContent.length
-                : remainingContent.lastIndexOf(' ', length) ||
-                  remainingContent.indexOf(' ', length);
-
-        chunks.push(remainingContent.slice(0, chunkEnd).trim());
-        remainingContent = remainingContent.slice(chunkEnd).trim();
-    }
-
-    const totalChunks = chunks.length;
-    return chunks.map((chunk, index) => `${chunk}\n\`${index + 1}\`/\`${totalChunks}\``);
 }
 
 export function normalizeResponseContent(content: unknown): string {
