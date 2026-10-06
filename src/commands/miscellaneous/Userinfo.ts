@@ -186,11 +186,6 @@ export class Userinfo {
         const userId = interaction.customId.split('_')[3]!.toString();
         const member = await interaction.client.users.fetch(userId, { force: true });
 
-        if (!member) {
-            await interaction.reply({ content: 'Banner not found.', ephemeral: true });
-            return;
-        }
-
         const bannerUrl = member.bannerURL({ size: 1024 });
 
         const attachment = new AttachmentBuilder(bannerUrl!);

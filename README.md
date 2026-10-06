@@ -104,6 +104,8 @@ Ragnarok is a multi-purpose Discord bot built with [discordx](https://discord-x.
     bun run start
     ```
 
+Ultracite is pinned to `7.8.0` to avoid the unpatched Braces dependency introduced by newer tooling. Review GHSA-vfj7-8cjw-p6xm and the dependency tree before upgrading it.
+
 ## 🤝 Contributing
 
 We welcome contributions to improve Ragnarok! If you'd like to contribute:

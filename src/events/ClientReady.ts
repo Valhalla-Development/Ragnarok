@@ -100,11 +100,6 @@ export class ClientReady {
 
                 try {
                     const guild = await client.guilds.fetch(starboard.GuildId);
-                    if (!guild) {
-                        await StarBoard.deleteOne({ GuildId: starboard.GuildId });
-                        return;
-                    }
-
                     const channel = await guild.channels
                         .fetch(starboard.ChannelId)
                         .catch(() => null);
