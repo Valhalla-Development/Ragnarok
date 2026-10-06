@@ -88,8 +88,9 @@ Ragnarok is a multi-purpose Discord bot built with [discordx](https://discord-x.
     cd /path/to/your/extracted/source
     ```
 
-5. Rename `.env.example` to `.env` and configure your settings:
-   - **Required:** Bot token and MongoDB URI
+5. Copy `.env_example` to `.env` and configure your settings:
+   - **Required:** `BOT_TOKEN` and `MONGO_URI` (a `mongodb://` or `mongodb+srv://` URI)
+   - Bank transfers require a MongoDB replica set or sharded cluster for transactions. A single-node replica set is sufficient for local development.
    - [Bot Token Guide](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token)
    - [Channel ID Guide](https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-)
 

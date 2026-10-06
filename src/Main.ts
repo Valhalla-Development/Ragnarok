@@ -133,6 +133,8 @@ async function run() {
             await client.login(config.BOT_TOKEN);
         } catch (error) {
             log.error('Failed to start the bot', error);
+            client.destroy();
+            process.exit(1);
         }
     };
     await loadSequentially();

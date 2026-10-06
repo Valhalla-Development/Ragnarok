@@ -33,4 +33,4 @@ manager.on('clusterCreate', (cluster) => {
 });
 
 // Spawns all clusters and shards
-await manager.spawn({ timeout: -1 });
+await manager.spawn({ timeout: 120_000 });

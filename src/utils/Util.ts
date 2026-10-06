@@ -202,7 +202,7 @@ export async function getCommandIds(
  */
 export async function loadMongoEvents(): Promise<void> {
     try {
-        await mongoose.connect(`${process.env.MONGO_URI}`);
+        await mongoose.connect(config.MONGO_URI, { serverSelectionTimeoutMS: 30_000 });
         log.ok('[Database Status] Connected');
     } catch (err) {
         log.error('[Database Status] Mongo connection failed', err);

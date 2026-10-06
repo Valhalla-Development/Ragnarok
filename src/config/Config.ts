@@ -36,6 +36,12 @@ const configSchema = z.object({
         .transform((val) => (val ? stringToArray(val) : undefined)),
     MAX_AI_QUERIES_LIMIT: z.string().optional().default('30').transform(Number),
 
+    // MongoDB is required before the client can log in.
+    MONGO_URI: z
+        .string()
+        .trim()
+        .regex(/^mongodb(?:\+srv)?:\/\//, 'MongoDB URI is required'),
+
     // OpenRouter AI settings (optional)
     OPENROUTER_API_KEY: z.string().optional().default(''),
     OPENROUTER_MODEL: z.string().optional().default('openai/gpt-4o-mini'),
@@ -77,12 +83,11 @@ try {
     }
 } catch (error) {
     if (error instanceof z.ZodError) {
-        const missingVars = error.issues
-            .filter((issue) => issue.code === 'too_small' || issue.code === 'invalid_type')
-            .map((issue) => issue.path[0])
-            .join(', ');
+        const missingVars = error.issues.map((issue) => issue.path[0]).join(', ');
 
-        throw new Error(`Missing required environment variables: ${missingVars}`, { cause: error });
+        throw new Error(`Missing or invalid environment variables: ${missingVars}`, {
+            cause: error,
+        });
     }
     throw error;
 }
